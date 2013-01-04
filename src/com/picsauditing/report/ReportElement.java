@@ -2,17 +2,14 @@ package com.picsauditing.report;
 
 import java.util.Map;
 
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.util.Strings;
 
-public class ReportElement implements JSONable {
+public class ReportElement {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportElement.class);
 
@@ -29,30 +26,6 @@ public class ReportElement implements JSONable {
 
 	public ReportElement(String fieldName) {
 		setId(fieldName);
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-		json.put("name", id);
-		if (field == null) {
-			Field fakeField = new Field(id, "", FieldType.String);
-			json.put("field", fakeField.toJSONObject());
-		} else {
-			json.put("field", field.toJSONObject());
-		}
-		return json;
-	}
-
-	public void fromJSON(JSONObject json) {
-		if (json == null)
-			return;
-
-		setId((String) json.get("name"));
-
-		// this.field = (Field) json.get("field");
-		// We are going to ignore the field and set this each time from
-		// availableFields in SqlBuilder
 	}
 
 	public String getId() {

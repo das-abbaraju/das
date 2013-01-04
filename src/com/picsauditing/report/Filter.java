@@ -1,13 +1,11 @@
 package com.picsauditing.report;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +14,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
@@ -24,116 +21,17 @@ import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
-public class Filter extends ReportElement implements JSONable {
+public class Filter extends ReportElement {
 
-	private static final String JSON_FIELD_FOR_COMPARISON_KEY = "fieldCompare";
+	public static final String FIELD_COMPARE = "fieldCompare";
 
-	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	List<String> values = new ArrayList<String>();
 
 	private boolean advancedFilter;
 	private Field fieldForComparison;
-
-	// TODO: Needs to be modified to serialize to JSON with the new advanced
-	// filter
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSON(boolean full) {
-		JSONObject json = super.toJSON(full);
-
-		json.put("operator", operator.toString());
-
-		if (operator.isValueUsed()) {
-			JSONArray valueArray = new JSONArray();
-			valueArray.addAll(values);
-			json.put("values", valueArray);
-
-			// Until we phase out the old code, we need this for backwards
-			// compatibility
-			if (values.size() == 1) {
-				json.put("value", values.get(0));
-			} else {
-				json.put("value", StringUtils.join(values, ", "));
-			}
-		}
-
-		if (isAdvancedFilter())
-			json.put(JSON_FIELD_FOR_COMPARISON_KEY, fieldForComparison.getName());
-
-		return json;
-	}
-
-	// TODO: Needs to be deserialized from JSON with the new advanced filter
-	// option
-	public void fromJSON(JSONObject json) {
-		if (json == null)
-			return;
-
-		super.fromJSON(json);
-
-		parseOperator(json);
-
-		parseValues(json);
-
-		parseAdvancedFilter(json);
-	}
-
-	private void parseOperator(JSONObject json) {
-		String object = (String) json.get("operator");
-		if (Strings.isEmpty(object)) {
-			operator = QueryFilterOperator.Equals;
-			return;
-		}
-
-		this.operator = QueryFilterOperator.valueOf(object.toString());
-	}
-
-	private void parseValues(JSONObject json) {
-		JSONArray valuesJsonArray = null;
-
-		try {
-			valuesJsonArray = (JSONArray) json.get("values");
-		} catch (ClassCastException cce) {
-			logger.warn("A filter's values field is not a JSONArray", cce);
-		} catch (Exception e) {
-			logger.warn("Old format report that doesn't have 'values' in filter for fieldName = {0}", id);
-		}
-
-		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
-			for (Object value : valuesJsonArray) {
-				this.values.add(value.toString().trim());
-			}
-		} else {
-			String value = (String) json.get("value");
-
-			if (Strings.isEmpty(value))
-				return;
-
-			if (value.contains(",")) {
-				logger.warn("Old style filter value found with commas separating multiple values. " +
-						"Until we phase out the old code, we need this for backwards compatibility");
-				
-				String[] valueSplit = value.split(", ");
-				if (valueSplit.length == 1 && value.contains(","))
-					valueSplit = value.split(",");
-				this.values.addAll(Arrays.asList(valueSplit));
-			} else {
-				this.values.add(value);
-			}
-		}
-	}
-
-	private void parseAdvancedFilter(JSONObject json) {
-		String advancedFilterOption = (String) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
-		// FIXME: HACK!!!!
-		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false"))
-			advancedFilter = false;
-		else {
-			advancedFilter = true;
-			fieldForComparison = new Field(advancedFilterOption.toString());
-		}
-	}
 
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAccountStatusList() {
@@ -182,7 +80,7 @@ public class Filter extends ReportElement implements JSONable {
 	public List<String> getValues() {
 		return values;
 	}
-
+	
 	public boolean isAdvancedFilter() {
 		return advancedFilter;
 	}

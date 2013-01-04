@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.version.previous.ReportDTOFacadeImpl;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {
@@ -32,7 +33,11 @@ public class ColumnTest {
 		assertEquals("AccountName", column.getId());
 
 		String expected = "\"id\":\"AccountName\"";
-		assertContains(expected, column.toJSON(true).toJSONString());
+		assertContains(expected, convertColumnToJson());
+	}
+
+	private String convertColumnToJson() {
+		return ReportDTOFacadeImpl.toJSON(column).toString();
 	}
 
 	@Test
@@ -43,7 +48,7 @@ public class ColumnTest {
 		assertEquals(SqlFunction.UpperCase, column.getMethod());
 
 		String expected = "\"sql_function\":\"UpperCase\"";
-		assertContains(expected, column.toJSON(true).toJSONString());
+		assertContains(expected, convertColumnToJson());
 	}
 
 	@Test
@@ -68,8 +73,8 @@ public class ColumnTest {
 	@Test
 	public void testToJsonWithNonAutoMethod() {
 		column.setId("FacilityCount__Count");
-		JSONObject json = column.toJSON(true);
-		Column column2 = new Column(json);
+		JSONObject json = ReportDTOFacadeImpl.toJSON(column);
+		Column column2 = ReportDTOFacadeImpl.toColumn(json);
 		assertEquals(column.getId(), column2.getId());
 	}
 

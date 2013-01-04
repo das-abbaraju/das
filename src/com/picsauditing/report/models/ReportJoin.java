@@ -7,8 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
@@ -139,29 +139,29 @@ public class ReportJoin {
 		return fields;
 	}
 
-	public boolean isNeeded(Definition definition) {
+	public boolean isNeeded(Report report) {
 		logger.debug("Is " + alias + " required?");
 		if (joinType == JoinType.RequiredJoin)
 			return true;
 
-		if (definition == null)
+		if (report == null)
 			return false;
 
 		for (Field field : getFields()) {
 			String fieldName = field.getName();
-			for (Column column : definition.getColumns()) {
+			for (Column column : report.getColumns()) {
 				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
 			}
 
-			for (Filter filter : definition.getFilters()) {
+			for (Filter filter : report.getFilters()) {
 				String filterName = filter.getFieldNameWithoutMethod();
 				if (filterName.equalsIgnoreCase(fieldName))
 					return true;
 			}
 
-			for (Filter filter : definition.getFilters()) {
+			for (Filter filter : report.getFilters()) {
 				if (filter.getFieldForComparison() != null) {
 					String filterName = filter.getFieldForComparison().getName();
 					if (filterName.equalsIgnoreCase(fieldName))
@@ -169,7 +169,7 @@ public class ReportJoin {
 				}
 			}
 
-			for (Sort sort : definition.getSorts()) {
+			for (Sort sort : report.getSorts()) {
 				String sortName = sort.getFieldNameWithoutMethod();
 				if (sortName.equalsIgnoreCase(fieldName))
 					return true;

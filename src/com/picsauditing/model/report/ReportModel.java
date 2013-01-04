@@ -1,5 +1,19 @@
 package com.picsauditing.model.report;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
@@ -8,22 +22,15 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportPermissionAccount;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class ReportModel {
 
@@ -145,22 +152,22 @@ public class ReportModel {
      * that the model type is set and that the report-spec is parsable as valid
      * JSON.
      */
-    public static void validate(Report report) throws ReportValidationException {
-        if (report == null)
-            throw new ReportValidationException("Report object is null. (Possible security concern.)");
+	public static void validate(Report report) throws ReportValidationException {
+		if (report == null)
+			throw new ReportValidationException("Report object is null. (Possible security concern.)");
 
-        if (report.getModelType() == null)
-            throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
+		if (report.getModelType() == null)
+			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
 
-        if (report.getDefinition().getColumns().size() == 0)
-            throw new ReportValidationException("Report contained no columns");
+		if (report.getColumns().size() == 0)
+			throw new ReportValidationException("Report contained no columns");
 
-        try {
-            new JSONParser().parse(report.getParameters());
-        } catch (ParseException e) {
-            throw new ReportValidationException(e, report);
-        }
-    }
+		try {
+			new JSONParser().parse(report.getParameters());
+		} catch (ParseException e) {
+			throw new ReportValidationException(e, report);
+		}
+	}
 
     public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {
         List<Report> reports = new ArrayList<Report>();

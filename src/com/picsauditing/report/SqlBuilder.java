@@ -19,7 +19,7 @@ import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
-	private Definition definition;
+	private Report definition;
 	private SelectSQL sql;
 	private Map<String, Field> availableFields;
 
@@ -27,10 +27,11 @@ public class SqlBuilder {
 
 	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
 		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
-		return initializeSql(model, report.getDefinition(), permissions);
+		definition = report;
+		return initializeSql(model, definition, permissions);
 	}
 
-	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions)
+	public SelectSQL initializeSql(AbstractModel model, Report definition, Permissions permissions)
 			throws ReportValidationException {
 		logger.info("Starting SqlBuilder for " + model);
 		this.definition = definition;
@@ -40,7 +41,7 @@ public class SqlBuilder {
 		sql.setFromTable(model.getStartingJoin().getTableClause());
 
 		availableFields = model.getAvailableFields();
-		
+
 		addFieldsAndGroupBy(definition.getColumns());
 		addRuntimeFilters(permissions);
 		addOrderByClauses(model);
@@ -139,7 +140,7 @@ public class SqlBuilder {
 
 		for (Filter filter : definition.getFilters()) {
 			filter.addFieldCopy(availableFields);
-			
+
 			if (filter.isValid()) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {

@@ -10,6 +10,9 @@ public class AppVersion {
 	private int minor;
 	private int patch;
 
+	public AppVersion() {
+	}
+
 	public AppVersion(int major, int minor) {
 		this.major = major;
 		this.minor = minor;

@@ -32,17 +32,17 @@ public class ReportTester extends PicsActionSupport {
 			SqlBuilder sqlBuilder = new SqlBuilder();
 			report.setSql(sqlBuilder.initializeSql(report, permissions).toString());
 
-			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
+			ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
 
 			reportElements = new ArrayList<ReportElement>();
 			reportElements.add(new ReportElement("COLUMNS"));
-			reportElements.addAll(report.getDefinition().getColumns());
+			reportElements.addAll(report.getColumns());
 			reportElements.add(new ReportElement("--------------"));
 			reportElements.add(new ReportElement("FILTERS"));
-			reportElements.addAll(report.getDefinition().getFilters());
+			reportElements.addAll(report.getFilters());
 			reportElements.add(new ReportElement("--------------"));
 			reportElements.add(new ReportElement("SORTS"));
-			reportElements.addAll(report.getDefinition().getSorts());
+			reportElements.addAll(report.getSorts());
 			
 			ModelType modelType = report.getModelType();
 

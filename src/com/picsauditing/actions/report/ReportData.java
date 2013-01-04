@@ -27,101 +27,102 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
-@SuppressWarnings({"unchecked", "serial"})
+@SuppressWarnings({ "unchecked", "serial" })
 public class ReportData extends PicsApiSupport {
 
-    private static final String PRINT = "print";
-    
-    @Autowired
-    private ReportDAO reportDao;
-    @Autowired
-    private ReportModel reportModel;
-    
-    protected Report report;
-    protected String debugSQL = "";
-    protected SelectSQL sql = null;
-    protected ReportDataConverter converter;
-    protected int pageNumber = 1;
-    protected boolean reportParameters;
-    protected boolean includeReport;
-    protected boolean includeColumns;
-    protected boolean includeFilters;
-    protected boolean includeData;
-    
-    private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
+	private static final String PRINT = "print";
 
-    protected String initialize() throws Exception {
-        logger.debug("initializing report " + report.getId());
-        ReportModel.validate(report);
-        Report reportFromDb = reportDao.find(Report.class, report.getId());
-        reportDao.refresh(reportFromDb);
-        reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
-        sql = new SqlBuilder().initializeSql(report, permissions);
-        logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+	@Autowired
+	private ReportDAO reportDao;
+	@Autowired
+	private ReportModel reportModel;
 
-        ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
+	protected Report report;
+	protected String debugSQL = "";
+	protected SelectSQL sql = null;
+	protected ReportDataConverter converter;
+	protected int pageNumber = 1;
+	protected boolean reportParameters;
+	protected boolean includeReport;
+	protected boolean includeColumns;
+	protected boolean includeFilters;
+	protected boolean includeData;
 
-        // Not sure if we need this anymore
-        json.put("reportID", report.getId());
-        return SUCCESS;
-    }
+	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
 
-    public String execute() {
-    	try {
-            initialize();
-            
-            if (includeReport) {
-            	json.put(ReportUtil.REPORT, report.toJSON(true));
-            }
-            
-            if (includeColumns) {
-            	json.put(ReportUtil.COLUMNS, "");
-            }
-            
-            if (includeFilters) {
-            	json.put(ReportUtil.FILTERS, "");
-            }
-            
-            if (includeData) {
-            	json.put(ReportUtil.REPORT_DATA, getData());
-            }
-            
-            if (includeSql()) {
-            	json.put(ReportUtil.SQL, debugSQL);
-            }
-            
-            json.put(ReportUtil.SUCCESS, true);
-        } catch (ReportValidationException rve) {
-            logger.warn("Invalid report in ReportDynamic.report()", rve);
-            writeJsonError(rve);
-        } catch (Exception e) {
-            logger.error("Unexpected exception in ReportDynamic.report()", e);
-            writeJsonError(e);
-        }
-    	
-    	return JSON;
-    }
-    
-    private boolean includeSql() {
-    	 return (permissions.isAdmin() || permissions.getAdminID() > 0);
-    }
+	protected String initialize() throws Exception {
+		logger.debug("initializing report " + report.getId());
+		ReportModel.validate(report);
+		Report reportFromDb = reportDao.find(Report.class, report.getId());
+		reportDao.refresh(reportFromDb);
+		reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
 
-    private JSONObject getData() throws Exception {
-    	JSONObject jsonObject = new JSONObject();
-    	try {
-            sql.setPageNumber(report.getRowsPerPage(), pageNumber);
-            runQuery();
-            
-            converter.convertForExtJS();
-            ReportResults reportResults = converter.getReportResults();            
-            jsonObject.put(ReportUtil.DATA, reportResults.toJson());
-            jsonObject.put(ReportUtil.TOTAL, reportResults.size());
-        } catch (Exception error) {
-            handleErrorForData(error);
-        }
-    	
-    	return jsonObject;
-    }
+		sql = new SqlBuilder().initializeSql(report, permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+
+		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
+
+		// Not sure if we need this anymore
+		json.put("reportID", report.getId());
+		return SUCCESS;
+	}
+
+	public String execute() {
+		try {
+			initialize();
+
+			if (includeReport) {
+				json.put(ReportUtil.REPORT, report.toJSON(true));
+			}
+
+			if (includeColumns) {
+				json.put(ReportUtil.COLUMNS, "");
+			}
+
+			if (includeFilters) {
+				json.put(ReportUtil.FILTERS, "");
+			}
+
+			if (includeData) {
+				json.put(ReportUtil.REPORT_DATA, getData());
+			}
+
+			if (includeSql()) {
+				json.put(ReportUtil.SQL, debugSQL);
+			}
+
+			json.put(ReportUtil.SUCCESS, true);
+		} catch (ReportValidationException rve) {
+			logger.warn("Invalid report in ReportDynamic.report()", rve);
+			writeJsonError(rve);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
+			writeJsonError(e);
+		}
+
+		return JSON;
+	}
+
+	private boolean includeSql() {
+		return (permissions.isAdmin() || permissions.getAdminID() > 0);
+	}
+
+	private JSONObject getData() throws Exception {
+		JSONObject jsonObject = new JSONObject();
+		try {
+			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
+			runQuery();
+
+			converter.convertForExtJS();
+			ReportResults reportResults = converter.getReportResults();
+			jsonObject.put(ReportUtil.DATA, reportResults.toJson());
+			jsonObject.put(ReportUtil.TOTAL, reportResults.size());
+		} catch (Exception error) {
+			handleErrorForData(error);
+		}
+
+		return jsonObject;
+	}
 
 	private void handleErrorForData(Exception error) throws Exception {
 		logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
@@ -129,108 +130,108 @@ public class ReportData extends PicsApiSupport {
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
 			throw new Exception(error + " debug SQL: " + debugSQL);
 		} else {
-		    throw new Exception("Invalid Query");
+			throw new Exception("Invalid Query");
 		}
 	}
 
-    public String print() throws Exception {
-        initialize();
-        runQuery();
-        converter.convertForPrinting();
+	public String print() throws Exception {
+		initialize();
+		runQuery();
+		converter.convertForPrinting();
 
-        return PRINT;
-    }
+		return PRINT;
+	}
 
-    public String download() {
-        try {
-            initialize();
-            runQuery();
-            converter.convertForPrinting();
-            HSSFWorkbook workbook = buildWorkbook();
-            writeFile(report.getName() + ".xls", workbook);
-        } catch (Exception e) {
-            logger.error("Error while downloading report", e);
-        }
+	public String download() {
+		try {
+			initialize();
+			runQuery();
+			converter.convertForPrinting();
+			HSSFWorkbook workbook = buildWorkbook();
+			writeFile(report.getName() + ".xls", workbook);
+		} catch (Exception e) {
+			logger.error("Error while downloading report", e);
+		}
 
-        return BLANK;
-    }
+		return BLANK;
+	}
 
-    private HSSFWorkbook buildWorkbook() {
-        logger.info("Building XLS File");
-        ExcelBuilder builder = new ExcelBuilder();
-        builder.addColumns(report.getDefinition().getColumns());
-        builder.addSheet(report.getName(), converter.getReportResults());
-        return builder.getWorkbook();
-    }
+	private HSSFWorkbook buildWorkbook() {
+		logger.info("Building XLS File");
+		ExcelBuilder builder = new ExcelBuilder();
+		builder.addColumns(report.getColumns());
+		builder.addSheet(report.getName(), converter.getReportResults());
+		return builder.getWorkbook();
+	}
 
-    private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
-        logger.info("Streaming XLS File to response");
-        ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-        ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-        ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-        workbook.write(outstream);
-        outstream.flush();
-        ServletActionContext.getResponse().flushBuffer();
-    }
+	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
+		logger.info("Streaming XLS File to response");
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		workbook.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+	}
 
-    protected void runQuery() throws SQLException {
-        debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
+	protected void runQuery() throws SQLException {
+		debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
 
-        List<BasicDynaBean> queryResults = reportDao.runQuery(debugSQL, json);
-        converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
-        converter.setLocale(permissions.getLocale());
-    }
+		List<BasicDynaBean> queryResults = reportDao.runQuery(debugSQL, json);
+		converter = new ReportDataConverter(report.getColumns(), queryResults);
+		converter.setLocale(permissions.getLocale());
+	}
 
-    protected void writeJsonError(Exception e) {
-        // TODO decide if this should be logged, but it shouldn't be rather than
-        // output to STDOUT
-        // e.printStackTrace();
-        String message = e.getMessage();
-        if (message == null) {
-            message = e.toString();
-        }
+	protected void writeJsonError(Exception e) {
+		// TODO decide if this should be logged, but it shouldn't be rather than
+		// output to STDOUT
+		// e.printStackTrace();
+		String message = e.getMessage();
+		if (message == null) {
+			message = e.toString();
+		}
 
-        writeJsonError(message);
-    }
+		writeJsonError(message);
+	}
 
-    protected void writeJsonError(String message) {
-        json.put(ReportUtil.SUCCESS, false);
-        json.put(ReportUtil.MESSAGE, message);
-    }
+	protected void writeJsonError(String message) {
+		json.put(ReportUtil.SUCCESS, false);
+		json.put(ReportUtil.MESSAGE, message);
+	}
 
-    public Report getReport() {
-        return report;
-    }
+	public Report getReport() {
+		return report;
+	}
 
-    public void setReport(Report report) {
-        this.report = report;
-    }
+	public void setReport(Report report) {
+		this.report = report;
+	}
 
-    public ReportResults getResults() {
-        return converter.getReportResults();
-    }
+	public ReportResults getResults() {
+		return converter.getReportResults();
+	}
 
-    public void setPage(int page) {
-        this.pageNumber = page;
-    }
-    
-    public void setReportParameters(boolean reportParameters) {
-    	this.reportParameters = reportParameters;
-    }
-    
-    public void setIncludeReport(boolean includeReport) {
-    	this.includeReport = includeReport;
-    }
-    
-    public void setIncludeColumns(boolean includeColumns) {
-    	this.includeColumns = includeColumns;
-    }
-    
-    public void setIncludeFilters(boolean includeFilters) {
-    	this.includeFilters = includeFilters;
-    }
-    
-    public void setIncludeData(boolean includeData) {
-    	this.includeData = includeData; 
-    }
+	public void setPage(int page) {
+		this.pageNumber = page;
+	}
+
+	public void setReportParameters(boolean reportParameters) {
+		this.reportParameters = reportParameters;
+	}
+
+	public void setIncludeReport(boolean includeReport) {
+		this.includeReport = includeReport;
+	}
+
+	public void setIncludeColumns(boolean includeColumns) {
+		this.includeColumns = includeColumns;
+	}
+
+	public void setIncludeFilters(boolean includeFilters) {
+		this.includeFilters = includeFilters;
+	}
+
+	public void setIncludeData(boolean includeData) {
+		this.includeData = includeData;
+	}
 }

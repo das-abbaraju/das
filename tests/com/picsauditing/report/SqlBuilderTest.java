@@ -16,6 +16,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AccountContractorModel;
@@ -29,7 +30,7 @@ public class SqlBuilderTest {
 	@Mock
 	private Permissions permissions;
 	
-	private Definition definition;
+	private Report definition;
 	private SelectSQL sql;
 
 	private final int USER_ID = 123;
@@ -45,7 +46,6 @@ public class SqlBuilderTest {
 		when(permissions.getUserId()).thenReturn(USER_ID);
 
 		builder = new SqlBuilder();
-		definition = new Definition("");
 	}
 
 	@Test

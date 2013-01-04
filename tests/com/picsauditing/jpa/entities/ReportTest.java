@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.report.Column;
-import com.picsauditing.report.Definition;
 import com.picsauditing.report.models.ModelType;
 
 public class ReportTest {
@@ -32,9 +31,8 @@ public class ReportTest {
 
 	@Test
 	public void testSimpleReportToJson() {
-		Definition definition = new Definition("");
+		Report definition = new Report();
 		definition.getColumns().add(new Column("accountName"));
-		report.setDefinition(definition);
 
 		String jsonString = report.toJSON(true).toJSONString();
 		assertContains("\"columns\":[{", jsonString);

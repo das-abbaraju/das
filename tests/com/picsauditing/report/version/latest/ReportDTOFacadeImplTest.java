@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.version.latest;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
@@ -7,11 +7,19 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
-@SuppressWarnings("unchecked")
-public class DefinitionTest {
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.Column;
+import com.picsauditing.report.Filter;
+import com.picsauditing.report.Sort;
+import com.picsauditing.report.version.ReportVersionFacadeFactory;
 
+/**
+ * Latest Version
+ */
+@SuppressWarnings("unchecked")
+public class ReportDTOFacadeImplTest {
 	private JSONObject jsonObj = new JSONObject();
-	private Definition definition = new Definition("");
+	private Report report;
 
 	@Test
 	public void testColumnParsing() {
@@ -20,12 +28,12 @@ public class DefinitionTest {
 
 		list.add(new Column("AccountID").toJSON(true));
 		list.add(new Column("AccountName").toJSON(true));
-		definition = new Definition(jsonObj.toString());
+		report = ReportVersionFacadeFactory.createReport(jsonObj);
 
-		assertEquals(2, definition.getColumns().size());
-		assertEquals("AccountID", definition.getColumns().get(0).getId());
+		assertEquals(2, report.getColumns().size());
+		assertEquals("AccountID", report.getColumns().get(0).getId());
 
-		String definitionJson = definition.toJSON(true).toJSONString();
+		String definitionJson = report.toJSON(true).toJSONString();
 		assertContains("\"name\":\"AccountID\"", definitionJson);
 		assertContains("\"name\":\"AccountName\"", definitionJson);
 	}
@@ -37,12 +45,12 @@ public class DefinitionTest {
 
 		addFilter(list, "AccountID", "3");
 
-		definition.fromJSON(jsonObj);
-		assertEquals(1, definition.getFilters().size());
-		assertEquals("AccountID", definition.getFilters().get(0).getId());
+		report.fromJSON(jsonObj);
+		assertEquals(1, report.getFilters().size());
+		assertEquals("AccountID", report.getFilters().get(0).getId());
 
 		String expected = "{\"filters\":[";
-		assertContains(expected, definition.toJSON(true).toJSONString());
+		assertContains(expected, report.toJSON(true).toJSONString());
 	}
 
 	private void addFilter(JSONArray list, String name, String value) {
@@ -59,22 +67,23 @@ public class DefinitionTest {
 
 		list.add(new Sort("AccountID").toJSON(true));
 
-		definition.fromJSON(jsonObj);
-		assertEquals(1, definition.getSorts().size());
-		assertEquals("AccountID", definition.getSorts().get(0).getId());
+		report.fromJSON(jsonObj);
+		assertEquals(1, report.getSorts().size());
+		assertEquals("AccountID", report.getSorts().get(0).getId());
 
 		String expected = "{\"sorts\":[";
-		assertContains(expected, definition.toJSON(true).toJSONString());
+		assertContains(expected, report.toJSON(true).toJSONString());
 	}
-	
+
 	@Test
 	public void testFilterExpression() {
 		jsonObj.put("filterExpression", "{1}");
-		definition.fromJSON(jsonObj);
-		
-		assertEquals("{1}", definition.getFilterExpression());
+		report.fromJSON(jsonObj);
+
+		assertEquals("{1}", report.getFilterExpression());
 
 		String expected = "{\"filterExpression\":\"{1}\"";
-		assertContains(expected, definition.toJSON(true).toJSONString());
+		assertContains(expected, report.toJSON(true).toJSONString());
 	}
+
 }

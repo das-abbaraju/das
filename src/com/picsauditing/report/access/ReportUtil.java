@@ -31,7 +31,6 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
@@ -94,13 +93,13 @@ public final class ReportUtil {
 		return fieldsJsonArray;
 	}
 
-	public static void addTranslatedLabelsToReportParameters(Definition definition, Locale locale) {
+	public static void addTranslatedLabelsToReportParameters(Report definition, Locale locale) {
 		addTranslationLabelsToFields(definition, locale);
 		addTranslationLabelsToFilters(definition, locale);
 		addTranslationLabelsToSorts(definition, locale);
 	}
 
-	private static void addTranslationLabelsToFields(Definition definition, Locale locale) {
+	private static void addTranslationLabelsToFields(Report definition, Locale locale) {
 		if (CollectionUtils.isEmpty(definition.getColumns()))
 			return;
 
@@ -138,7 +137,7 @@ public final class ReportUtil {
 		field.setFunctions(translatedFunctions);
 	}
 
-	private static void addTranslationLabelsToFilters(Definition definition, Locale locale) {
+	private static void addTranslationLabelsToFilters(Report definition, Locale locale) {
 		if (CollectionUtils.isEmpty(definition.getFilters()))
 			return;
 
@@ -153,7 +152,7 @@ public final class ReportUtil {
 		}
 	}
 
-	private static void addTranslationLabelsToSorts(Definition definition, Locale locale) {
+	private static void addTranslationLabelsToSorts(Report definition, Locale locale) {
 		if (CollectionUtils.isEmpty(definition.getSorts()))
 			return;
 

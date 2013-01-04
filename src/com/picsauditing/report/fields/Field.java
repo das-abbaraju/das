@@ -7,17 +7,13 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
-public class Field implements JSONAware {
+public class Field {
 
 	private static final Pattern FIELD_VARIABLE_PATTERN = Pattern.compile("\\{(\\w+)\\}");
 	
@@ -73,54 +69,6 @@ public class Field implements JSONAware {
 		this.type = type;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSONObject() {
-		// TODO Move this to SimpleColumn.js toGridColumn
-		JSONObject json = new JSONObject();
-		json.put("name", name);
-		json.put("text", text);
-		json.put("help", help);
-
-		if (width > 0)
-			json.put("width", width);
-		
-		if (visible)
-			json.put("visible", visible);
-		
-		if (filterable)
-			json.put("filterable", filterable);
-		
-		if (sortable)
-			json.put("sortable", sortable);
-
-		if (!Strings.isEmpty(url))
-			json.put("url", url);
-
-		// TODO these will change when we refactor the "handshake"
-		json.put("fieldType", type.toString());
-		json.put("filterType", type.getFilterType().toString());
-		// TODO convert List to ShortList in JavaScript
-		// TODO convert type to displayType in JavaScript
-		json.put("displayType", type.toString().toLowerCase());
-		json.put("type", type.toString().toLowerCase());
-		
-		JSONArray functionsArray = new JSONArray();
-		for (String key : functions.keySet()) {
-			JSONObject translatedFunction = new JSONObject();
-			translatedFunction.put("key", key);
-			translatedFunction.put("value", functions.get(key));
-			functionsArray.add(translatedFunction);
-		}
-		
-		json.put("functions", functionsArray);
-
-		return json;
-	}
-
-	public String toJSONString() {
-		return toJSONObject().toJSONString();
-	}
-
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;

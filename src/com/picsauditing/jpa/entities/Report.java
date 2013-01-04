@@ -12,9 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONObject;
-
-import com.picsauditing.report.Definition;
+import com.picsauditing.report.Filter;
+import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
@@ -26,16 +25,19 @@ public class Report extends BaseTable {
 
 	private ModelType modelType;
 	private String name;
-	private String description;
-	private String parameters;
-	private int rowsPerPage = 50;
-	
 	private int numTimesFavorited;
+	private String parameters;
+	private String description;
 
-	private Definition definition;
-	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 	private String sql;
+	private List<com.picsauditing.report.Column> columns = new ArrayList<com.picsauditing.report.Column>();
+	private List<Filter> filters = new ArrayList<Filter>();
+	private List<Sort> sorts = new ArrayList<Sort>();
+	private String filterExpression;
+	private boolean editable;
+	private boolean favorite;
 
+	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@ReportField(importance = FieldImportance.Required, width = 200)
@@ -58,15 +60,6 @@ public class Report extends BaseTable {
 	}
 
 	@ReportField(importance = FieldImportance.Low, width = 400)
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getParameters() {
 		return parameters;
 	}
@@ -75,57 +68,22 @@ public class Report extends BaseTable {
 		this.parameters = parameters;
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSON(boolean full) {
-		JSONObject obj = super.toJSON(full);
-		obj.put("modelType", modelType.toString());
-		obj.put("name", name);
-
-		if (!full)
-			return obj;
-
-		obj.put("description", description);
-
-		Definition defaultDefinition = this.definition;
-		if (defaultDefinition == null) {
-			defaultDefinition = new Definition(parameters);
-		}
-		
-		JSONObject jsonDefinition = defaultDefinition.toJSON(true);
-		obj.putAll(jsonDefinition);
-		
-		return obj;
+	@ReportField(importance = FieldImportance.Average, width = 10)
+	public int getNumTimesFavorited() {
+		return numTimesFavorited;
 	}
 
-	@Transient
-	public Definition getDefinition() {
-		if (definition == null) {
-			definition = new Definition(getParameters());
-		}
-
-		return definition;
+	public void setNumTimesFavorited(int numTimesFavorited) {
+		this.numTimesFavorited = numTimesFavorited;
 	}
 
-	public void setDefinition(Definition definition) {
-		this.definition = definition;
-	}
-	
-	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
-	public List<ReportUser> getReportUsers() {
-		return reportUsers;
+	// TODO Make this transient
+	public String getDescription() {
+		return description;
 	}
 
-	public void setReportUsers(List<ReportUser> reportUsers) {
-		this.reportUsers = reportUsers;
-	}
-	
-	@Transient
-	public ReportUser getReportUser(int userId) {
-		for (ReportUser reportUser : reportUsers)
-			if (userId == reportUser.getUser().getId())
-				return reportUser;
-		
-		return null;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Transient
@@ -136,27 +94,83 @@ public class Report extends BaseTable {
 	public void setSql(String sql) {
 		this.sql = sql;
 	}
-
-	@Transient
-	public int getRowsPerPage() {
-		return rowsPerPage;
-	}
-
-	public void setRowsPerPage(int rowsPerPage) {
-		this.rowsPerPage = rowsPerPage;
-	}
-
-	@Transient
-	public int getNumTimesFavorited() {
-		return numTimesFavorited;
-	}
-
-	public void setNumTimesFavorited(int numTimesFavorited) {
-		this.numTimesFavorited = numTimesFavorited;
-	}
 	
+	@Transient
+	public List<com.picsauditing.report.Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<com.picsauditing.report.Column> columns) {
+		this.columns = columns;
+	}
+
+	@Transient
+	public List<Filter> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(List<Filter> filters) {
+		this.filters = filters;
+	}
+
+	@Transient
+	public List<Sort> getSorts() {
+		return sorts;
+	}
+
+	public void setSorts(List<Sort> sorts) {
+		this.sorts = sorts;
+	}
+
+	@Transient
+	public String getFilterExpression() {
+		return filterExpression;
+	}
+
+	public void setFilterExpression(String filterExpression) {
+		this.filterExpression = filterExpression;
+	}
+
+	@Transient
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+	@Transient
+	public boolean isFavorite() {
+		return favorite;
+	}
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
+	}
+
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
+	@Deprecated
+	// TODO this should not be used here
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	public List<ReportUser> getReportUsers() {
+		return reportUsers;
+	}
+
+	@Transient
+	@Deprecated
+	// TODO this should not be used here
+	public ReportUser getReportUser(int userId) {
+		for (ReportUser reportUser : reportUsers)
+			if (userId == reportUser.getUser().getId())
+				return reportUser;
+
+		return null;
 	}
 }
