@@ -9,7 +9,7 @@ Ext.define('PICS.controller.report.Filter', {
         selector: 'reportfilteroptions reportfilterformula'
     }, {
         ref: 'filterFormulaExpression',
-        selector: 'repogrtfilteroptions reportfilterformula textfield[name=filter_formula]'
+        selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
         ref: 'filterHeader',
         selector: 'reportfilterheader'
