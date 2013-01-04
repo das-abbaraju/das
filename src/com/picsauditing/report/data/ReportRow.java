@@ -20,7 +20,7 @@ public class ReportRow {
 		for (Column column : columns) {
 			if (column.getField() != null) {
 				try {
-					Object value = dynaBean.get(column.getId());
+					Object value = dynaBean.get(column.getName());
 					cells.put(column, new ReportCell(this, column, value));
 					// TODO do this more efficiently by getting the list of
 					// dependent columns first
@@ -67,7 +67,7 @@ public class ReportRow {
 		for (ReportCell cell : cells.values()) {
 			Object value = cell.getValue();
 			if (value != null) {
-				jsonRow.put(cell.getColumn().getId(), value);
+				jsonRow.put(cell.getColumn().getName(), value);
 			}
 		}
 
@@ -84,7 +84,7 @@ public class ReportRow {
 		}
 
 		for (Column column : cells.keySet()) {
-			if (fieldName.equals(column.getId())) {
+			if (fieldName.equals(column.getName())) {
 				return true;
 			}
 		}

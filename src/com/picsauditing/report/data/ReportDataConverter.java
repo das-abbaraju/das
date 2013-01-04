@@ -48,11 +48,11 @@ public class ReportDataConverter {
 		Column column = cell.getColumn();
 
 		if (column != null) {
-			if (column.getMethod() != null && column.getMethod() == SqlFunction.Month) {
+			if (column.getSqlFunction() != null && column.getSqlFunction() == SqlFunction.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
-			if (column.getId().contains("StatusSubstatus")) {
+			if (column.getName().contains("StatusSubstatus")) {
 				String[] valueString = ((String) value).split(":");
 
 				String statusI18nKey = "AuditStatus." + valueString[0];
@@ -71,7 +71,7 @@ public class ReportDataConverter {
 			if (column.getField() == null) {
 				// This really shouldn't happen but just in case, this message
 				// is better than an NPE
-				return column.getId() + ": Field not available";
+				return column.getName() + ": Field not available";
 			}
 			
 			if (column.getField().isTranslated()) {
@@ -113,13 +113,13 @@ public class ReportDataConverter {
 		Column column = cell.getColumn();
 
 		if (column != null) {
-			logger.info("Converting {} value: {}", cell.getColumn().getId(), value );
+			logger.info("Converting {} value: {}", cell.getColumn().getName(), value );
 			
-			if (column.getMethod() != null && column.getMethod() == SqlFunction.Month) {
+			if (column.getSqlFunction() != null && column.getSqlFunction() == SqlFunction.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
-			if (column.getId().contains("StatusSubstatus")) {
+			if (column.getName().contains("StatusSubstatus")) {
 				String[] valueString = ((String) value).split(":");
 
 				String statusI18nKey = "AuditStatus." + valueString[0];
@@ -138,7 +138,7 @@ public class ReportDataConverter {
 			if (column.getField() == null) {
 				// This really shouldn't happen but just in case, this message
 				// is better than an NPE
-				return column.getId() + ": Field not available";
+				return column.getName() + ": Field not available";
 			}
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());

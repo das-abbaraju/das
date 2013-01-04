@@ -4,71 +4,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
+@SuppressWarnings("serial")
+@Entity
+@Table(name = "report_filter")
 public class Filter extends ReportElement {
-
-	public static final String FIELD_COMPARE = "fieldCompare";
 
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
-	List<String> values = new ArrayList<String>();
+	private List<String> values = new ArrayList<String>();
 
-	private boolean advancedFilter;
+	public static final String FIELD_COMPARE = "fieldCompare";
+	private String columnCompare;
 	private Field fieldForComparison;
 
-	@SuppressWarnings("unchecked")
-	public static JSONArray getAccountStatusList() {
-		AccountStatus[] list = AccountStatus.values();
-
-		JSONArray json = new JSONArray();
-		for (AccountStatus accountStatus : list) {
-			json.add(accountStatus.toString());
-		}
-
-		return json;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static JSONArray getAuditStatusList() {
-		AuditStatus[] list = AuditStatus.values();
-
-		JSONArray json = new JSONArray();
-		for (AuditStatus auditStatus : list) {
-			json.add(auditStatus.toString());
-		}
-
-		return json;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static JSONArray getLowMedHighList() {
-		LowMedHigh[] list = LowMedHigh.values();
-
-		JSONArray json = new JSONArray();
-		for (LowMedHigh lowMedHigh : list) {
-			json.add(lowMedHigh.toString());
-		}
-
-		return json;
-	}
-
+	@Enumerated(EnumType.STRING)
 	public QueryFilterOperator getOperator() {
 		return operator;
 	}
@@ -77,28 +47,23 @@ public class Filter extends ReportElement {
 		this.operator = operator;
 	}
 
+	@Column(name = "value")
 	public List<String> getValues() {
 		return values;
 	}
-	
-	public boolean isAdvancedFilter() {
-		return advancedFilter;
-	}
 
-	public void setAdvancedFilter(boolean advancedFilter) {
-		this.advancedFilter = advancedFilter;
-	}
-
+	@Transient
 	public String getSql() {
-		if (id.equalsIgnoreCase("accountName")) {
+		if (name.equalsIgnoreCase("accountName")) {
 			field.setDatabaseColumnName("Account.nameIndex");
-		} else if (id.equalsIgnoreCase("AccountUserUser")) {
+		} else if (name.equalsIgnoreCase("AccountUserUser")) {
 			field.setDatabaseColumnName("AccountUser.userID");
 		}
 
 		return super.getSql();
 	}
 
+	@Transient
 	public String getSqlForFilter() throws ReportValidationException {
 		if (!isValid())
 			return "true";
@@ -122,7 +87,7 @@ public class Filter extends ReportElement {
 
 	private String toValueSql() throws ReportValidationException {
 		if (operator == null)
-			throw new ReportValidationException("missing operator for field " + id);
+			throw new ReportValidationException("missing operator for field " + name);
 
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();
@@ -134,7 +99,7 @@ public class Filter extends ReportElement {
 	private String buildFilterSingleValue() {
 		DisplayType fieldType = getActualFieldTypeForFilter();
 
-		if (isAdvancedFilter()) {
+		if (fieldForComparison != null) {
 			return fieldForComparison.getDatabaseColumnName();
 		}
 
@@ -177,19 +142,19 @@ public class Filter extends ReportElement {
 			case NotBeginsWith:
 			case BeginsWith:
 				return "'" + filterValue + "%'";
-				
+
 			case NotEndsWith:
 			case EndsWith:
 				return "'%" + filterValue + "'";
-				
+
 			case NotContains:
 			case Contains:
 				return "'%" + filterValue + "%'";
-				
+
 			case NotEmpty:
 			case Empty:
 				return "";
-				
+
 			default:
 				return "'" + filterValue + "'";
 			}
@@ -201,19 +166,19 @@ public class Filter extends ReportElement {
 	private DisplayType getActualFieldTypeForFilter() {
 		DisplayType fieldType = field.getType().getDisplayType();
 		if (hasMethodWithDifferentFieldType()) {
-			fieldType = method.getDisplayType();
+			fieldType = sqlFunction.getDisplayType();
 		}
-
 		return fieldType;
 	}
 
 	private boolean hasMethodWithDifferentFieldType() {
-		if (method == null || method.getDisplayType() == null)
+		if (sqlFunction == null || sqlFunction.getDisplayType() == null)
 			return false;
 
 		return true;
 	}
 
+	@Transient
 	public boolean isValid() {
 		if (field == null)
 			return false;
@@ -242,11 +207,29 @@ public class Filter extends ReportElement {
 		}
 	}
 
+	@Column(name = "columnCompare")
+	public String getColumnCompare() {
+		return columnCompare;
+	}
+
+	public void setColumnCompare(String name) {
+		this.columnCompare = name;
+	}
+
+	@Transient
+	public Field getFieldForComparison() {
+		return fieldForComparison;
+	}
+
+	public void setFieldForComparison(Field fieldForComparison) {
+		this.fieldForComparison = fieldForComparison;
+	}
+
 	@Override
 	public void addFieldCopy(Map<String, Field> availableFields) {
 		super.addFieldCopy(availableFields);
 
-		if (!advancedFilter || fieldForComparison == null || fieldForComparison.getName() == null) {
+		if (columnCompare == null) {
 			fieldForComparison = null;
 			return;
 		}
@@ -267,15 +250,7 @@ public class Filter extends ReportElement {
 		String display = values.toString();
 		if (fieldForComparison != null)
 			display = fieldForComparison.toString();
-		
+
 		return super.toString() + " " + operator + " " + display;
-	}
-
-	public Field getFieldForComparison() {
-		return fieldForComparison;
-	}
-
-	public void setFieldForComparison(Field fieldForComparison) {
-		this.fieldForComparison = fieldForComparison;
 	}
 }

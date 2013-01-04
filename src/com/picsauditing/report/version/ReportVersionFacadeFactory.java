@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.util.AppVersion;
+import com.picsauditing.report.version.previous.ReportDTOFacadeImpl;
 
 public class ReportVersionFacadeFactory {
 
@@ -29,29 +29,8 @@ public class ReportVersionFacadeFactory {
 	}
 
 	private static void applyJsonToReport(JSONObject json, Report report) {
-		ReportDTOFacade facade = getFacade(json);
+		ReportDTOFacadeImpl facade = new ReportDTOFacadeImpl();
 		facade.fromJSON(json, report);
-	}
-
-	public static ReportDTOFacade getFacade(JSONObject json) {
-		return getFacade(getVersion(json));
-	}
-
-	private static AppVersion getVersion(JSONObject json) {
-		Object version = json.get("version");
-		if (version == null)
-			return new AppVersion();
-		return new AppVersion(version.toString());
-	}
-
-	private static ReportDTOFacade getFacade(AppVersion version) {
-		if (version.greaterThanOrEqualTo(6, 33))
-			return new com.picsauditing.report.version.latest.ReportDTOFacadeImpl();
-
-		return new com.picsauditing.report.version.previous.ReportDTOFacadeImpl();
-		// throw new
-		// RuntimeException("Could not find valid ReportVersionFacade for version "
-		// + version.getVersion());
 	}
 
 }

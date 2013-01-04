@@ -89,7 +89,7 @@ public class SqlBuilder {
 				sql.addGroupBy(columnSql);
 			}
 
-			sql.addField(columnSql + " AS `" + column.getId() + "`");
+			sql.addField(columnSql + " AS `" + column.getName() + "`");
 
 			addDependentFields(dependentFields);
 		}
@@ -168,7 +168,7 @@ public class SqlBuilder {
 			sort.addFieldCopy(availableFields);
 
 			String fieldName;
-			Column column = getColumnFromFieldName(sort.getId());
+			Column column = getColumnFromFieldName(sort.getName());
 			if (column == null) {
 				Field field = sort.getField();
 				if (field != null && field.getDatabaseColumnName() != null)
@@ -177,7 +177,7 @@ public class SqlBuilder {
 					continue;
 				sort.setField(field);
 			} else {
-				fieldName = column.getId();
+				fieldName = column.getName();
 			}
 
 			if (!sort.isAscending())
@@ -189,7 +189,7 @@ public class SqlBuilder {
 
 	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : definition.getColumns()) {
-			if (column.getId().equals(fieldName))
+			if (column.getName().equals(fieldName))
 				return column;
 		}
 

@@ -1,13 +1,18 @@
 package com.picsauditing.report;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
 
+@SuppressWarnings("serial")
+@Entity
+@Table(name = "report_column")
 public class Column extends ReportElement {
 
 	private int width = 200;
-	private PivotDimension pivotDimension = null;
-	private PivotCellMethod pivotCellMethod = null;
 
 	public Column() {
 	}
@@ -24,19 +29,15 @@ public class Column extends ReportElement {
 		this.width = width;
 	}
 
+	@Transient
 	public PivotDimension getPivotDimension() {
-		return pivotDimension;
+		// Need to move this to another table or decide to store it here
+		return null;
 	}
 
-	public void setPivotDimension(PivotDimension pivotDimension) {
-		this.pivotDimension = pivotDimension;
-	}
-
+	@Transient
 	public PivotCellMethod getPivotCellMethod() {
-		return pivotCellMethod;
-	}
-
-	public void setPivotCellMethod(PivotCellMethod pivotCellMethod) {
-		this.pivotCellMethod = pivotCellMethod;
+		// Need to move this to another table or decide to store it here
+		return null;
 	}
 }

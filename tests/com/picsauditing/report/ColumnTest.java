@@ -12,15 +12,15 @@ public class ColumnTest {
 
 	@Test
 	public void testMethod() {
-		column.setId("AccountName__Count");
-		column.setMethod(SqlFunction.UpperCase);
-		assertEquals(SqlFunction.UpperCase, column.getMethod());
+		column.setName("AccountName__Count");
+		column.setSqlFunction(SqlFunction.UpperCase);
+		assertEquals(SqlFunction.UpperCase, column.getSqlFunction());
 	}
 
 	@Test
 	public void testBadMethodName() throws Exception {
 		try {
-			column.setId("AccountName__BadMethodThatDoesNotExist");
+			column.setName("AccountName__BadMethodThatDoesNotExist");
 		} catch (Exception weWantToThrowException) {
 			return;
 		}
@@ -29,10 +29,10 @@ public class ColumnTest {
 
 	@Test
 	public void testGetFieldNameWithoutMethod() {
-		column.setId("FacilityCount");
-		column.setMethod(SqlFunction.Count);
-		assertEquals("FacilityCount__Count", column.getId());
+		column.setName("FacilityCount");
+		column.setSqlFunction(SqlFunction.Count);
+		assertEquals("FacilityCount__Count", column.getName());
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
-		assertEquals(SqlFunction.Count, column.getMethod());
+		assertEquals(SqlFunction.Count, column.getSqlFunction());
 	}
 }

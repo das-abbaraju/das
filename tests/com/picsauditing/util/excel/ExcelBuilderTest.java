@@ -88,7 +88,7 @@ public class ExcelBuilderTest {
 
 	private Column getColumn(String fieldName) {
 		for (Column column : columns) {
-			if (column.getId().equals(fieldName))
+			if (column.getName().equals(fieldName))
 				return column;
 		}
 		throw new RuntimeException("Couldn't find " + fieldName + " in list of columns: " + columns);

@@ -37,7 +37,6 @@ public class Report extends BaseTable {
 	private boolean editable;
 	private boolean favorite;
 
-	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@ReportField(importance = FieldImportance.Required, width = 200)
@@ -104,7 +103,7 @@ public class Report extends BaseTable {
 		this.columns = columns;
 	}
 
-	@Transient
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
 	public List<Filter> getFilters() {
 		return filters;
 	}

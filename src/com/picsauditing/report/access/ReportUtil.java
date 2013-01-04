@@ -115,11 +115,11 @@ public final class ReportUtil {
 			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
-			field.setName(column.getId());
+			field.setName(column.getName());
 
-			if (column.getMethod() != null) {
+			if (column.getSqlFunction() != null) {
 				field.setTranslationPrefixAndSuffix(null, null);
-				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": "
+				translateLabel = getText("Report.Function." + column.getSqlFunction().toString(), locale) + ": "
 						+ translateLabel;
 			}
 
@@ -149,7 +149,7 @@ public final class ReportUtil {
 				field.setName(filter.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
-				field.setName(filter.getId());
+				field.setName(filter.getName());
 			}
 		}
 	}
@@ -164,7 +164,7 @@ public final class ReportUtil {
 				field.setName(sort.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
-				field.setName(sort.getId());
+				field.setName(sort.getName());
 			}
 		}
 	}

@@ -66,7 +66,7 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 		Column reportColumn = new Column(fieldName);
 		reportColumn.setField(new Field(fieldName, "", FieldType.String));
 		reportColumn.getField().setText(columnLabel);
-		reportColumns.put(reportColumn.getId(), reportColumn);
+		reportColumns.put(reportColumn.getName(), reportColumn);
 		excelBuilder.getColumns().add(new ExcelColumn(reportColumn));
 	}
 

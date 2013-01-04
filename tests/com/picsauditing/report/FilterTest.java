@@ -19,8 +19,8 @@ public class FilterTest {
 
 	@Test
 	public void testFilterEmpty() throws ReportValidationException {
-		filter.setId("FieldName");
-		filter.setField(new Field(filter.getId(), "fieldName", FieldType.String));
+		filter.setName("FieldName");
+		filter.setField(new Field(filter.getName(), "fieldName", FieldType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
 
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
@@ -28,8 +28,8 @@ public class FilterTest {
 
 	@Test
 	public void testFilterWithValue() throws ReportValidationException {
-		filter.setId("FieldName");
-		filter.setField(new Field(filter.getId(), "fieldName", FieldType.String));
+		filter.setName("FieldName");
+		filter.setField(new Field(filter.getName(), "fieldName", FieldType.String));
 		filter.getValues().add("Trevor's");
 
 		assertEquals("fieldName = 'Trevor''s'", filter.getSqlForFilter());
@@ -37,7 +37,7 @@ public class FilterTest {
 
 	@Test
 	public void testFilterFromJson__CommaSeparatedValues() throws ReportValidationException {
-		filter.setId("AccountStatus");
+		filter.setName("AccountStatus");
 		filter.getValues().add("Active");
 		filter.getValues().add("Pending");
 

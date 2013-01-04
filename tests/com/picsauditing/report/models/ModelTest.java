@@ -17,7 +17,7 @@ import com.picsauditing.report.fields.Field;
 
 abstract public class ModelTest {
 	protected Permissions permissions;
-	protected Report definition;
+	protected Report definition = new Report();
 	protected Map<String, Field> availableFields;
 	protected Set<String> includedFields;
 	protected Set<String> excludedFields;

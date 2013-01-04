@@ -1,109 +1,150 @@
 package com.picsauditing.report;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
 import java.util.Map;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
-import com.picsauditing.util.Strings;
 
-public class ReportElement {
+@SuppressWarnings("serial")
+@MappedSuperclass
+public abstract class ReportElement implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportElement.class);
 
 	public static String METHOD_SEPARATOR = "__";
 
-	protected String id;
+	protected int id;
+	protected Report report;
+	protected String name;
+	protected SqlFunction sqlFunction;
 	protected Field field;
 
-	private String originalId;
-	protected SqlFunction method;
+	private String originalName;
 
 	public ReportElement() {
 	}
 
 	public ReportElement(String fieldName) {
-		setId(fieldName);
+		setName(fieldName);
+	}
+	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(nullable = false)
+	public int getId() {
+		return id;
 	}
 
-	public String getId() {
-		return Strings.escapeQuotes(id);
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "reportID", nullable = false, updatable = false)
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
+	}
+
+	@Column(nullable = false)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		// TODO verify somewhere no quotes exist Strings.escapeQuotes(name)
+		this.name = name;
 	}
 
 	public void setMethodToFieldName() {
-		int startOfMethod = id.lastIndexOf(METHOD_SEPARATOR);
-		if (startOfMethod >= 0 || method == null)
+		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
+		if (startOfMethod >= 0 || sqlFunction == null)
 			return;
 
-		this.id = id + METHOD_SEPARATOR + method;
-		parseFieldNameMethod();
-	}
-
-	public void setId(String id) {
-		this.id = id;
+		this.name = name + METHOD_SEPARATOR + sqlFunction;
 		parseFieldNameMethod();
 	}
 
 	private void parseFieldNameMethod() {
-		method = null;
-		originalId = id;
+		sqlFunction = null;
+		originalName = name;
 
-		int startOfMethod = id.lastIndexOf(METHOD_SEPARATOR);
+		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
 			return;
 
-		originalId = id.substring(0, startOfMethod);
-		String methodName = id.substring(startOfMethod + 2);
-		method = SqlFunction.valueOf(methodName);
+		originalName = name.substring(0, startOfMethod);
+		String methodName = name.substring(startOfMethod + 2);
+		sqlFunction = SqlFunction.valueOf(methodName);
 	}
 
+	@Transient
 	public String getFieldNameWithoutMethod() {
-		return originalId;
+		return originalName;
 	}
 
-	public SqlFunction getMethod() {
-		return method;
+	public SqlFunction getSqlFunction() {
+		return sqlFunction;
 	}
 
-	public void setMethod(SqlFunction method) {
-		this.method = method;
+	public void setSqlFunction(SqlFunction method) {
+		this.sqlFunction = method;
 		if (method == null)
-			id = originalId;
+			name = originalName;
 		else
-			id = originalId + METHOD_SEPARATOR + method.toString();
+			name = originalName + METHOD_SEPARATOR + method.toString();
 	}
 
+	@Transient
 	public Field getField() {
 		return field;
 	}
 
 	public void setField(Field field) {
 		this.field = field;
-		this.field.setName(id);
+		this.field.setName(name);
 	}
 
+	@Transient
 	public boolean isHasAggregateMethod() {
-		if (method == null)
+		if (sqlFunction == null)
 			return false;
 
-		return method.isAggregate();
+		return sqlFunction.isAggregate();
 	}
 
+	@Transient
 	public String getSql() {
 		if (field == null) {
-			throw new RuntimeException(id + " is missing from available fields");
+			throw new RuntimeException(name + " is missing from available fields");
 		}
 		String fieldSql = field.getDatabaseColumnName();
-		if (method == null)
+		if (sqlFunction == null)
 			return fieldSql;
 
-		if (method.isAggregate()) {
+		if (sqlFunction.isAggregate()) {
 			field.setUrl(null);
 		}
 
-		switch (method) {
+		switch (sqlFunction) {
 		case Average:
 			return "AVG(" + fieldSql + ")";
 		case Count:
@@ -148,18 +189,18 @@ public class ReportElement {
 	}
 
 	public void addFieldCopy(Map<String, Field> availableFields) {
-		Field field = availableFields.get(originalId.toUpperCase());
+		Field field = availableFields.get(originalName.toUpperCase());
 
 		if (field == null) {
-			logger.warn("Failed to find " + originalId + " in availableFields");
+			logger.warn("Failed to find " + originalName + " in availableFields");
 			return;
 		}
 
 		setField(field.clone());
-		this.field.setName(id);
+		this.field.setName(name);
 	}
 
 	public String toString() {
-		return id;
+		return name;
 	}
 }

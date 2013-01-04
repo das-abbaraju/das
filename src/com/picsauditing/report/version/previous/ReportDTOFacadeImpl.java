@@ -24,12 +24,13 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.version.ReportDTOFacade;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
-public class ReportDTOFacadeImpl implements ReportDTOFacade {
+public class ReportDTOFacadeImpl {
 
+	private static final String VERSION = "6.29";
 	private Report report;
 	private JSONObject json;
 	private static final Logger logger = LoggerFactory.getLogger(ReportDTOFacadeImpl.class);
@@ -38,6 +39,8 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 
 	public JSONObject toJSON(Report report) {
 		json = new JSONObject();
+		json.put("version", VERSION);
+		
 		this.report = report;
 
 		convertReportLevelData();
@@ -49,7 +52,8 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 	}
 
 	private void convertReportLevelData() {
-		json.put("id", report.getId());
+		// json.put("id", report.getId());
+		json.put("name", report.getName());
 		if (report.getModelType() != null)
 			json.put("modelType", report.getModelType().toString());
 		json.put("description", report.getDescription());
@@ -82,15 +86,19 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 		}
 	}
 
-	public static JSONObject toJSON(Column obj) {
-		JSONObject json = toJSONBase(obj);
+	private static JSONObject toJSONBase(ReportElement obj) {
+		JSONObject json = new JSONObject();
+		json.put("name", obj.getName());
+		// This is a legacy feature only used on the old ExtJS
+		// Removing for now since it makes testing a lot easier
+		// json.put("field", toJSON(obj.getField()));
 		return json;
 	}
 
-	private static JSONObject toJSONBase(ReportElement obj) {
-		JSONObject json = new JSONObject();
-		json.put("name", obj.getId());
-		json.put("field", toJSON(obj.getField()));
+	public static JSONObject toJSON(Column obj) {
+		JSONObject json = toJSONBase(obj);
+		if (obj.getSqlFunction() != null)
+			json.put("method", obj.getSqlFunction().toString());
 		return json;
 	}
 
@@ -131,13 +139,13 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 
 	public static JSONObject toJSON(Filter obj) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getId());
+		json.put("name", obj.getName());
 		json.put("operator", obj.getOperator().toString());
 
 		if (obj.getOperator().isValueUsed()) {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(obj.getValues());
-			json.put("values", valueArray);
+			// json.put("values", valueArray);
 
 			// Until we phase out the old code, we need this for backwards
 			// compatibility
@@ -148,7 +156,7 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 			}
 		}
 
-		if (obj.isAdvancedFilter())
+		if (obj.getFieldForComparison() != null)
 			json.put(Filter.FIELD_COMPARE, obj.getFieldForComparison().getName());
 
 		return json;
@@ -156,7 +164,7 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 
 	public static JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getId());
+		json.put("name", obj.getName());
 		if (!obj.isAscending())
 			json.put("direction", "DESC");
 
@@ -170,18 +178,64 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 			return;
 		}
 		dto.setName((String) json.get("name"));
+		dto.setDescription((String) json.get("description"));
+		dto.setModelType(parseModelType(json));
+		dto.setFilterExpression(parseFilterExpression(json));
+
+		addColumns(json, dto);
+		addFilters(json, dto);
+		addSorts(json, dto);
+	}
+
+	private static ModelType parseModelType(JSONObject json) {
+		// We may need to consider error handling if the modelType doesn't exist
+		return ModelType.valueOf((String) json.get("modelType"));
+	}
+
+	private static String parseFilterExpression(JSONObject json) {
 		String filterExpressionFromJson = (String) json.get(FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson))
-			dto.setFilterExpression(filterExpressionFromJson);
+			return filterExpressionFromJson;
+		return null;
+	}
 
-		dto.setFilters(parseJsonToList(json.get(FILTERS), Filter.class));
-		dto.setColumns(parseJsonToList(json.get(COLUMNS), Column.class));
-		dto.setSorts(parseJsonToList(json.get(SORTS), Sort.class));
+	private static void addColumns(JSONObject json, Report dto) {
+		JSONArray jsonArray = (JSONArray) json.get(COLUMNS);
+		if (jsonArray == null)
+			return;
+
+		for (Object object : jsonArray) {
+			if (object != null) {
+				dto.getColumns().add(toColumn((JSONObject) object));
+			}
+		}
+	}
+
+	private static void addFilters(JSONObject json, Report dto) {
+		JSONArray jsonArray = (JSONArray) json.get(FILTERS);
+		if (jsonArray == null)
+			return;
+
+		for (Object object : jsonArray) {
+			if (object != null) {
+				dto.getFilters().add(toFilter((JSONObject) object));
+			}
+		}
+	}
+
+	private static void addSorts(JSONObject json, Report dto) {
+		JSONArray jsonArray = (JSONArray) json.get(SORTS);
+		if (jsonArray == null)
+			return;
+
+		for (Object object : jsonArray) {
+			if (object != null) {
+				dto.getSorts().add(toSort((JSONObject) object));
+			}
+		}
 	}
 
 	public static Column toColumn(JSONObject json) {
-		if (json == null)
-			return null;
 
 		Column column = new Column();
 		toElementFromJSON(json, column);
@@ -220,7 +274,7 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 	}
 
 	private static void toElementFromJSON(JSONObject json, ReportElement obj) {
-		obj.setId((String) json.get("name"));
+		obj.setName((String) json.get("name"));
 	}
 
 	private static QueryFilterOperator parseOperator(JSONObject json) {
@@ -279,22 +333,4 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 	}
 
 	// END FROM JSON to Filters ///
-
-	private static <T extends ReportElement> List<T> parseJsonToList(Object jsonObject, Class<T> c) {
-		List<T> parsedJsonObjects = new ArrayList<T>();
-		// if (jsonObject == null)
-		// return parsedJsonObjects;
-		//
-		// JSONArray jsonArray = (JSONArray) jsonObject;
-		// for (Object object : jsonArray) {
-		// T t = (T) GenericUtil.newInstance(c);
-		// if (object instanceof JSONObject) {
-		// t.fromJSON((JSONObject) object);
-		// parsedJsonObjects.add(t);
-		// }
-		// }
-
-		return parsedJsonObjects;
-	}
-
 }

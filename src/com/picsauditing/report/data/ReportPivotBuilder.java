@@ -38,9 +38,9 @@ public class ReportPivotBuilder {
 
 		for (Object jsonRowObject : jsonResults) {
 			JSONObject jsonRow = (JSONObject) jsonRowObject;
-			Object rowValue = jsonRow.get(definition.getRow().getId());
-			Object columnValue = jsonRow.get(definition.getColumn().getId());
-			Object cellValue = jsonRow.get(definition.getCell().getId());
+			Object rowValue = jsonRow.get(definition.getRow().getName());
+			Object columnValue = jsonRow.get(definition.getColumn().getName());
+			Object cellValue = jsonRow.get(definition.getCell().getName());
 			getColumn(rowValue, columnValue).add(cellValue);
 		}
 
@@ -50,7 +50,7 @@ public class ReportPivotBuilder {
 		
 		for (Object rowValue : this.dataTree.keySet()) {
 			JSONObject rowObject = new JSONObject();
-			rowObject.put(definition.getRow().getId(), rowValue);
+			rowObject.put(definition.getRow().getName(), rowValue);
 			pivotedResults.add(rowObject);
 			for (Object colValue : this.dataTree.get(rowValue).keySet()) {
 				List<Object> columnValues = getRow(rowValue).get(colValue);

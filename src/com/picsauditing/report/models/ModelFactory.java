@@ -13,7 +13,7 @@ public class ModelFactory {
 
 		// We might want to reconsider the naming convention between ModelType
 		// and classes that extend BaseModel
-		// We could make them the same and use reflection
+		// We could make them the same and use reflection or Spring Loader
 
 		if (type.equals(ModelType.Accounts))
 			return new AccountsModel(permissions);

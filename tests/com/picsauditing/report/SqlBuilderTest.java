@@ -30,7 +30,7 @@ public class SqlBuilderTest {
 	@Mock
 	private Permissions permissions;
 	
-	private Report definition;
+	private Report report = new Report();
 	private SelectSQL sql;
 
 	private final int USER_ID = 123;
@@ -73,7 +73,7 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testJoins() throws Exception {
-		sql = builder.initializeSql(new AccountContractorModel(permissions), definition, permissions);
+		sql = builder.initializeSql(new AccountContractorModel(permissions), report, permissions);
 
 		String expected = "FROM contractor_info AS Contractor "
 				+ "JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'";
@@ -95,7 +95,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testFilters() throws Exception {
 		Column column = addColumn("AccountName");
-		addFilter(column.getId(), QueryFilterOperator.BeginsWith, "Trevor's");
+		addFilter(column.getName(), QueryFilterOperator.BeginsWith, "Trevor's");
 
 		initializeSql();
 
@@ -107,7 +107,7 @@ public class SqlBuilderTest {
 	public void testFiltersWithComplexColumn() throws Exception {
 		Column column = addColumn("AccountCreationDate__Year");
 
-		addFilter(column.getId(), QueryFilterOperator.GreaterThan, "2010");
+		addFilter(column.getName(), QueryFilterOperator.GreaterThan, "2010");
 
 		initializeSql();
 
@@ -120,7 +120,7 @@ public class SqlBuilderTest {
 		Column column = addColumn("AccountName");
 		Column columnCompare = addColumn("AccountContactName");
 		
-		addFilter(column.getId(), QueryFilterOperator.Equals, columnCompare.getId(), true);
+		addFilter(column.getName(), QueryFilterOperator.Equals, columnCompare.getName(), true);
 				
 		initializeSql();
 		
@@ -147,7 +147,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testInvalidFilters() throws Exception {
 		Column column = addColumn("AccountName");
-		addFilter(column.getId(), QueryFilterOperator.BeginsWith, null);
+		addFilter(column.getName(), QueryFilterOperator.BeginsWith, null);
 		when(permissions.has(OpPerms.AllOperators)).thenReturn(true);
 		
 		initializeSql();
@@ -156,7 +156,7 @@ public class SqlBuilderTest {
 	}
 
 	private void assertAllFiltersHaveFields() {
-		for (Filter filter : definition.getFilters()) {
+		for (Filter filter : report.getFilters()) {
 			Assert.assertTrue(filter + " is missing the field", filter.getField() != null);
 		}
 	}
@@ -205,7 +205,7 @@ public class SqlBuilderTest {
 
 	private Column addColumn(String fieldName) {
 		Column column = new Column(fieldName);
-		definition.getColumns().add(column);
+		report.getColumns().add(column);
 		return column;
 	}
 	
@@ -215,26 +215,25 @@ public class SqlBuilderTest {
 
 	private Filter addFilter(String fieldName, QueryFilterOperator operator, String value, boolean advanced) {
 		Filter filter = new Filter();
-		filter.setId(fieldName);
+		filter.setName(fieldName);
 		filter.setOperator(operator);
-		filter.values.add(value);
+		filter.getValues().add(value);
 		if (advanced) {
-			filter.setAdvancedFilter(advanced);
 			filter.setFieldForComparison(new Field(value));
 		}
 
-		definition.getFilters().add(filter);
+		report.getFilters().add(filter);
 		return filter;
 	}
 
 	private Sort addSort(String fieldName) {
 		Sort sort = new Sort(fieldName);
-		definition.getSorts().add(sort);
+		report.getSorts().add(sort);
 		return sort;
 	}
 
 	private void initializeSql() throws ReportValidationException {
-		sql = builder.initializeSql(new AccountsModel(permissions), definition, permissions);
+		sql = builder.initializeSql(new AccountsModel(permissions), report, permissions);
 	}
 
 }

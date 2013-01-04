@@ -76,7 +76,7 @@ public class ContractorFlagDataModel extends AbstractModel {
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.getId().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
+			if (filter.getName().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
 				return filter;
 			}
 		}
