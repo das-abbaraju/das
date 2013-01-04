@@ -1,4 +1,4 @@
-package com.picsauditing.report.version.previous;
+package com.picsauditing.report;
 
 import static com.picsauditing.report.access.ReportUtil.COLUMNS;
 import static com.picsauditing.report.access.ReportUtil.FILTERS;
@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +28,14 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
+// TODO Remove this method after the next release
 @SuppressWarnings("unchecked")
-public class ReportDTOFacadeImpl {
+public class ReportDefinitionToExtJSConverter {
 
 	private static final String VERSION = "6.29";
 	private Report report;
 	private JSONObject json;
-	private static final Logger logger = LoggerFactory.getLogger(ReportDTOFacadeImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReportDefinitionToExtJSConverter.class);
 
 	// From Report to JSON
 
@@ -173,13 +175,12 @@ public class ReportDTOFacadeImpl {
 
 	// From JSON to Report
 
-	public void fromJSON(JSONObject json, Report dto) {
-		if (json == null) {
-			return;
-		}
+	public void fillParameters(Report dto) {
+		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
 		dto.setName((String) json.get("name"));
 		dto.setDescription((String) json.get("description"));
 		dto.setModelType(parseModelType(json));
+		
 		dto.setFilterExpression(parseFilterExpression(json));
 
 		addColumns(json, dto);

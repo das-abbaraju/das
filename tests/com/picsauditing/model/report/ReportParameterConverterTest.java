@@ -1,4 +1,4 @@
-package com.picsauditing.report.version.previous;
+package com.picsauditing.model.report;
 
 import static org.junit.Assert.*;
 
@@ -8,13 +8,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.model.report.ReportParameterConverter;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.version.ReportVersionFacadeFactory;
+import comimport com.picsauditing.report.version.previous.ReportParameterConverter;
+.picsauditing.report.version.ReportVersionFacadeFactory;
 
 /**
  * Previous Version
  */
-public class ReportDTOFacadeImplTest {
+public class ReportParameterConverterTest {
 
 	private static final String SAMPLE_JSON = "{\"modelType\":\"Contractors\","
 			+ "\"name\":\"Report Title\",\"description\":\"Sub title of report\",\"filterExpression\":\"1 AND (2 OR 3)\","
@@ -27,7 +29,7 @@ public class ReportDTOFacadeImplTest {
 	private JSONObject jsonIn;
 	private JSONObject jsonOut;
 	private Report report;
-	private ReportDTOFacadeImpl facade = new ReportDTOFacadeImpl();
+	private ReportParameterConverter facade = new ReportParameterConverter();
 
 	@Before
 	public void setup() {

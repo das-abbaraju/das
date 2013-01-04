@@ -57,6 +57,7 @@ public class ReportData extends PicsApiSupport {
 		ReportModel.validate(report);
 		Report reportFromDb = reportDao.find(Report.class, report.getId());
 		reportDao.refresh(reportFromDb);
+		ReportModel.processReportParameters(report);
 		reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
 
 		if (!StringUtils.isEmpty(reportParameters))

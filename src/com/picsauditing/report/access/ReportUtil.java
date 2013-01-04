@@ -30,6 +30,7 @@ import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.model.report.ReportParameterConverter;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
@@ -37,7 +38,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelFactory;
-import com.picsauditing.report.version.previous.ReportDTOFacadeImpl;
 import com.picsauditing.util.Strings;
 
 /**
@@ -80,7 +80,7 @@ public final class ReportUtil {
 
 			applyFunctionsToField(locale, field);
 			// TODO Change this to the new Impl that will generate visibleFields and filterableFields
-			JSONObject obj = ReportDTOFacadeImpl.toJSON(field);
+			JSONObject obj = ReportParameterConverter.toJSON(field);
 
 			obj.put("category", translateCategory(field.getCategory().toString(), locale));
 

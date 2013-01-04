@@ -37,6 +37,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String save(boolean copy) {
 		try {
+			ReportModel.processReportParameters(report);
 			if (copy)
 				report = reportModel.copy(report, permissions, favorite);
 			else

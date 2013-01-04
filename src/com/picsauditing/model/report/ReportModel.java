@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
@@ -113,6 +115,7 @@ public class ReportModel {
         reportDao.refresh(sourceReport);
 
         ReportModel.validate(newReport);
+        setReportParameters(newReport);
         newReport.setAuditColumns(permissions);
         reportDao.save(newReport);
 
@@ -132,8 +135,20 @@ public class ReportModel {
         if (!canUserEdit(permissions, report))
             throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
+        setReportParameters(report);
         report.setAuditColumns(permissions);
         reportDao.save(report);
+    }
+    
+    public static void processReportParameters(Report report) {
+    	// TODO Remove this method after the next release
+		 ReportParameterConverter.fillParameters(report);
+    }
+    
+    private static void setReportParameters(Report report) {
+    	// TODO Remove this method after the next release
+		JSONObject json = ReportParameterConverter.toJSON(report);
+		report.setParameters(json.toString());
     }
 
     private Report copyReportWithoutPermissions(Report sourceReport) {
