@@ -20,6 +20,13 @@ import com.picsauditing.report.version.ReportVersionFacadeFactory;
  */
 @SuppressWarnings("unchecked")
 public class ReportDTOFacadeImplTest {
+
+	private static final String SAMPLE_JSON_IN = "{\"id\":135,\"modelType\":\"Contractors\",\"name\":\"Report Title\","
+			+ "\"description\":\"Sub title of report\",\"filterExpression\":\"1 AND (2 OR 3)\",\"rowsPerPage\":50,"
+			+ "\"columns\":[{\"name\":\"AccountName\"},{\"name\":\"AccountStatus\"},{\"name\":\"ContractorPayingFacilities__Count\",\"method\":\"Count\"}],"
+			+ "\"filters\":[{\"name\":\"AccountStatus\",\"operator\":\"In\",\"value\":\"Active, Pending\"},{\"name\":\"AccountCreationDate\",\"operator\":\"GreaterThan\",\"value\":\"-8D\"}],"
+			+ "\"sorts\":[{\"name\":\"AccountCreationDate\",\"direction\":\"DESC\"}]}";
+
 	private JSONObject jsonObj = new JSONObject();
 	private Report report;
 	private ReportDTOFacade facade;

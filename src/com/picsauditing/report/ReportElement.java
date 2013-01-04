@@ -18,7 +18,7 @@ public class ReportElement {
 	protected String id;
 	protected Field field;
 
-	private String originalFieldName;
+	private String originalId;
 	protected SqlFunction method;
 
 	public ReportElement() {
@@ -48,23 +48,31 @@ public class ReportElement {
 
 	private void parseFieldNameMethod() {
 		method = null;
-		originalFieldName = id;
+		originalId = id;
 
 		int startOfMethod = id.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
 			return;
 
-		originalFieldName = id.substring(0, startOfMethod);
+		originalId = id.substring(0, startOfMethod);
 		String methodName = id.substring(startOfMethod + 2);
 		method = SqlFunction.valueOf(methodName);
 	}
 
 	public String getFieldNameWithoutMethod() {
-		return originalFieldName;
+		return originalId;
 	}
 
 	public SqlFunction getMethod() {
 		return method;
+	}
+
+	public void setMethod(SqlFunction method) {
+		this.method = method;
+		if (method == null)
+			id = originalId;
+		else
+			id = originalId + METHOD_SEPARATOR + method.toString();
 	}
 
 	public Field getField() {
@@ -140,10 +148,10 @@ public class ReportElement {
 	}
 
 	public void addFieldCopy(Map<String, Field> availableFields) {
-		Field field = availableFields.get(originalFieldName.toUpperCase());
+		Field field = availableFields.get(originalId.toUpperCase());
 
 		if (field == null) {
-			logger.warn("Failed to find " + originalFieldName + " in availableFields");
+			logger.warn("Failed to find " + originalId + " in availableFields");
 			return;
 		}
 

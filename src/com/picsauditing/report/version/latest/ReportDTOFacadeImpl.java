@@ -36,14 +36,14 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 		if (!Strings.isEmpty(reportDTO.getFilterExpression()))
 			json.put(FILTER_EXPRESSION, reportDTO.getFilterExpression());
 
-		if (CollectionUtils.isNotEmpty(reportDTO.getColumns()))
-			json.put(COLUMNS, JSONUtilities.convertFromList(reportDTO.getColumns()));
-
-		if (CollectionUtils.isNotEmpty(reportDTO.getFilters()))
-			json.put(FILTERS, JSONUtilities.convertFromList(reportDTO.getFilters()));
-
-		if (CollectionUtils.isNotEmpty(reportDTO.getSorts()))
-			json.put(SORTS, JSONUtilities.convertFromList(reportDTO.getSorts()));
+//		if (CollectionUtils.isNotEmpty(reportDTO.getColumns()))
+//			json.put(COLUMNS, JSONUtilities.convertFromList(reportDTO.getColumns()));
+//
+//		if (CollectionUtils.isNotEmpty(reportDTO.getFilters()))
+//			json.put(FILTERS, JSONUtilities.convertFromList(reportDTO.getFilters()));
+//
+//		if (CollectionUtils.isNotEmpty(reportDTO.getSorts()))
+//			json.put(SORTS, JSONUtilities.convertFromList(reportDTO.getSorts()));
 		return json;
 	}
 
@@ -67,13 +67,13 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 			return parsedJsonObjects;
 
 		JSONArray jsonArray = (JSONArray) jsonObject;
-		for (Object object : jsonArray) {
-			T t = (T) GenericUtil.newInstance(c);
-			if (object instanceof JSONObject) {
-				t.fromJSON((JSONObject) object);
-				parsedJsonObjects.add(t);
-			}
-		}
+//		for (Object object : jsonArray) {
+//			T t = (T) GenericUtil.newInstance(c);
+//			if (object instanceof JSONObject) {
+//				t.fromJSON((JSONObject) object);
+//				parsedJsonObjects.add(t);
+//			}
+//		}
 
 		return parsedJsonObjects;
 	}

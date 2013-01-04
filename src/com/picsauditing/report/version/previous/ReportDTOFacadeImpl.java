@@ -94,7 +94,7 @@ public class ReportDTOFacadeImpl implements ReportDTOFacade {
 		return json;
 	}
 
-	private static JSONObject toJSON(Field obj) {
+	public static JSONObject toJSON(Field obj) {
 		if (obj == null) {
 			obj = new Field("Missing", "", FieldType.String);
 		}

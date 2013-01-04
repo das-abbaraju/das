@@ -37,6 +37,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.version.previous.ReportDTOFacadeImpl;
 import com.picsauditing.util.Strings;
 
 /**
@@ -78,7 +79,8 @@ public final class ReportUtil {
 			field.setText(translateLabel(field, locale));
 
 			applyFunctionsToField(locale, field);
-			JSONObject obj = field.toJSONObject();
+			// TODO Change this to the new Impl that will generate visibleFields and filterableFields
+			JSONObject obj = ReportDTOFacadeImpl.toJSON(field);
 
 			obj.put("category", translateCategory(field.getCategory().toString(), locale));
 
@@ -353,6 +355,7 @@ public final class ReportUtil {
 		return json;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private static Class getEnumClassForName(FieldType fieldType) throws ClassNotFoundException {
 		if (fieldType == FieldType.UserAccountRole) {
 			return Class.forName("com.picsauditing.actions.users." + fieldType.name());
