@@ -361,7 +361,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 					caow.setNotes("Due to data change");
 					caowDAO.save(caow);
 					updateAudit = true;
-					break;
 				}
 			}
 		}
