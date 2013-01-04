@@ -46,9 +46,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             available_field_checkbox_model = available_field_list.getSelectionModel();
 
         if (available_field_checkbox_model.getCount() > 0) {
-            var available_fields = available_field_checkbox_model.getSelection(),
-                report_store = this.getReportReportsStore(),
+            var report_store = this.getReportReportsStore(),
                 report = report_store.first(),
+                available_fields = available_field_checkbox_model.getSelection(),
                 columns = [];
             
             Ext.Array.forEach(available_fields, function (available_field) {
@@ -68,9 +68,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             available_field_checkbox_model = available_field_list.getSelectionModel();
     
         if (available_field_checkbox_model.getCount() > 0) {
-            var available_fields = available_field_checkbox_model.getSelection(),
-                report_store = this.getReportReportsStore(),
+            var report_store = this.getReportReportsStore(),
                 report = report_store.first(),
+                available_fields = available_field_checkbox_model.getSelection(),
                 filters = [];
 
             Ext.Array.forEach(available_fields, function (available_field) {
@@ -108,7 +108,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     onAvailableFieldCancel: function (cmp, event, eOpts) {
-        this.getAvailableFieldModal().close();
+        var available_field_modal = this.getAvailableFieldModal();
+        
+        available_field_modal.close();
     },
 
     onAvailableFieldSearch: function (cmp, event, eOpts) {

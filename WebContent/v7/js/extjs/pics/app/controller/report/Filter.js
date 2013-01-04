@@ -8,7 +8,7 @@ Ext.define('PICS.controller.report.Filter', {
         ref: 'filterFormula',
         selector: 'reportfilteroptions reportfilterformula'
     }, {
-        ref: 'filterFormulaExpression',
+        ref: 'filterFormulaTextfield',
         selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
         ref: 'filterHeader',
@@ -29,9 +29,7 @@ Ext.define('PICS.controller.report.Filter', {
     ],
 
     views: [
-        'PICS.view.report.filter.Filters',
-        'PICS.view.report.filter.FilterFormula',
-        'PICS.view.report.filter.FilterToolbar'
+        'PICS.view.report.filter.Filters'
     ],
 
     init: function() {
@@ -145,32 +143,35 @@ Ext.define('PICS.controller.report.Filter', {
             refreshfilters: this.refreshFilters,
             scope: this
         });
-
-        var that = this;
-        Ext.EventManager.onWindowResize(that.positionRemoveButtons, that);
     },
 
     /**
      * Filter Options
      */
 
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
     onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
-        // Toggle the pencil icon's color.
-        var el = cmp.getEl(),
+        var filter_panel = cmp.up('reportfilter'),
+            filter_content = filter_panel.down('reportfilterbaseuseridfilter'),
+            filter = filter_panel.record,
+            el = cmp.getEl(),
             advanced_button = el.down('.icon-pencil'),
             advanced_on = el.down('.icon-pencil.selected');
 
-        var filter = this.findParentFilter(cmp),
-            filter_content = filter.down('reportfilterbaseuseridfilter');
-
         if (advanced_on) {
-            filter.record.set('fieldCompare', null);
-            filter_content.createNumberfield(filter.record);
+            filter.set('fieldCompare', null);
+            
+            filter_content.createNumberfield(filter);
+            
             advanced_button.removeCls('selected');
         } else {
-            filter.record.set('value', null);
+            filter.set('value', null);
+            
             advanced_button.addCls('selected');
-            filter_content.createFieldSelect(filter.record);
+            
+            filter_content.createFieldSelect(filter);
         }
     },
     
@@ -180,57 +181,35 @@ Ext.define('PICS.controller.report.Filter', {
         if (!filters) {
             return;
         }
-
-        var body = Ext.getBody(),
-            filter_footer = this.getFilterFooter(),
-            filter_formula = this.getFilterFormula(),
-            filter_header = this.getFilterHeader(),
-            filter_toolbar = this.getFilterToolbar(),
-            filter_offset;
-
-        // if filters show fully on screen
-        if (body.getHeight() > (filters.el.getY() + filters.getHeight())) {
-            cmp.body.setHeight(filters.getHeight());
-
-        // if filters bleed off screen
-        } else {
-            cmp.body.setHeight(filters.getHeight() - ((filters.el.getY() + filters.getHeight()) - body.getHeight()));
-        }
-
-        if (filter_toolbar) {
-            filter_offset = filter_header.getHeight() + filter_toolbar.getHeight() + filters.getHeight();
-        } else if (filter_formula) {
-            filter_offset = filter_header.getHeight() + filter_formula.getHeight() + filters.getHeight();
-        }
-
-        if (filter_offset) {
-            filter_footer.setPosition(0, filter_offset);
-        }
-
-        this.positionRemoveButtons();
+        
+        cmp.updateBodyHeight();
+        
+        cmp.updateFooterPosition();
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore();
+    
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
+                var report = report_store.first(),
+                    filter_expression = report.get('filterExpression');
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                var report = store.first();
-
-                this.application.fireEvent('refreshfilters');
-
-                if (report && report.get('filterExpression') != '') {
-                    this.showFilterFormula();
+                if (filter_expression != '') {
+                    cmp.showFormula();
                 }
+                
+                this.application.fireEvent('refreshfilters');
             }, this);
         } else {
-            var report = store.first();
+            var report = report_store.first(),
+                filter_expression = report.get('filterExpression');
 
-            this.application.fireEvent('refreshfilters');
-
-            if (report && report.get('filterExpression') != '') {
-                this.showFilterFormula();
+            if (filter_expression != '') {
+                cmp.showFormula();
             }
+            
+            this.application.fireEvent('refreshfilters');
         }
     },
 
@@ -247,21 +226,8 @@ Ext.define('PICS.controller.report.Filter', {
     },
     
     onFilterRender: function (cmp, eOpts) {
-        var record = cmp.record,
-            field = record.getAvailableField();
-        
-        Ext.create('Ext.tip.ToolTip', {
-            anchor: 'left',
-            showDelay: 0,
-            target: cmp.el.down('.filter-name'),
-            html: [
-                '<div>',
-                    '<p>' + field.get('help') + '</p>',
-                '</div>'
-            ].join('')
-        });
-            
-        Ext.QuickTips.init();
+        // attach tooltip on the name of each filter
+        cmp.createTooltip();
     },
 
     /**
@@ -277,52 +243,29 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onFilterFormulaShow: function (cmp, event, eOpts) {
-        this.showFilterFormula();
-    },
-
-    showFilterFormula: function () {
-        var filter_options = this.getFilterOptions(),
-        filter_toolbar = this.getFilterToolbar();
-
-        if (!filter_options) {
-            return false;
-        }
-
-        var filter_formula = {
-            xtype: 'reportfilterformula',
-            dock: 'top'
-        };
-
-        filter_options.removeDocked(filter_toolbar);
-        filter_options.addDocked(filter_formula);
+        var filter_options = cmp.up('reportfilteroptions');
+        
+        filter_options.showFormula();
     },
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
-        var filter_options = this.getFilterOptions(),
-            filter_formula = this.getFilterFormula();
-
-        var filter_toolbar = {
-            xtype: 'reportfiltertoolbar',
-            dock: 'top'
-        };
-
-        filter_options.removeDocked(filter_formula);
-        filter_options.addDocked(filter_toolbar);
-
-        this.getFilters().removeCls('x-active');
+        var filter_options = cmp.up('reportfilteroptions'),
+            filters = this.getFilters();
+        
+        filter_options.showToolbar();
+        
+        filters.removeCls('x-active');
     },
 
     onFilterFormulaBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            filter_formula = report.get('filterExpression'),
-            filter_formula_expression = this.getFilterFormulaExpression(),
-            filters = this.getFilters();
-
-        if (filter_formula != '') {
-            filter_formula = this.formatFilterFormula(filter_formula);
-
-            filter_formula_expression.setValue(filter_formula);
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filters = this.getFilters(),
+            filter_expression = report.get('filterExpression');
+            
+        if (filter_expression != '') {
+            filter_formula_textfield.setValue(report.getFilterExpression());
         }
 
         if (filters) {
@@ -330,92 +273,28 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    formatFilterFormula: function (formula) {
-        var formatted = formula.replace(/[{}]/g, '');
-
-        formatted = formatted.replace(/\d+/g, function(val) {
-            return parseInt(val);
-        });
-
-        return formatted;
-    },
-
     onFilterFormulaBlur: function (cmp, event, eOpts) {
-        this.saveFilterFormula();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filter_expression = filter_formula_textfield.getValue();
+        
+        report.setFilterExpression(filter_expression);
     },
 
     onFilterFormulaInputSpecialKey: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
-
-        this.saveFilterFormula();
+        
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filter_expression = filter_formula_textfield.getValue();
+        
+        report.setFilterExpression(filter_expression);
 
         this.application.fireEvent('refreshreport');
-    },
-
-    saveFilterFormula: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            filter_formula = this.getFilterFormulaExpression().getValue();
-
-        // Hack: because this is broken
-        if (filter_formula == '') {
-            report.set('filterExpression', filter_formula);
-
-            return false;
-        }
-
-        // TODO write a real grammar and parser for our filter formula DSL
-
-        // Split into tokens
-        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
-        filter_formula = filter_formula.replace(validTokenRegex, ' $& ');
-
-        var tokens = filter_formula.trim().split(/ +/);
-        filter_formula = '';
-
-        // Check for invalid tokens and make sure parens are balanced
-        var parenCount = 0;
-        for (var i = 0; i < tokens.length; i += 1) {
-            var token = tokens[i];
-
-            if (token.search(validTokenRegex) === -1) {
-                return false;
-            }
-
-            if (token === '(') {
-                parenCount += 1;
-                filter_formula += token;
-            } else if (token === ')') {
-                parenCount -= 1;
-                filter_formula += token;
-            } else if (token.toUpperCase() === 'AND') {
-                filter_formula += ' AND ';
-            } else if (token.toUpperCase() === 'OR') {
-                filter_formula += ' OR ';
-            } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
-                    return false;
-                }
-
-                // Convert from counting number to index
-                var indexNum = new Number(token);
-                filter_formula += '{' + indexNum + '}';
-            } else {
-                return false;
-            }
-
-            if (parenCount < 0) {
-                return false;
-            }
-        }
-
-        if (parenCount !== 0) {
-            return false;
-        }
-
-        report.set('filterExpression', filter_formula);
     },
 
     /**
@@ -423,7 +302,7 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     refreshFilters: function () {
-        var report_store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
             filter_options = this.getFilterOptions();
@@ -438,8 +317,6 @@ Ext.define('PICS.controller.report.Filter', {
 
         // add new filters
         filter_options.add(filters);
-
-        this.positionRemoveButtons();
     },
 
     /**
@@ -447,137 +324,118 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onFilterBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-
-        if (filter) {
-            filter.removeCls('x-form-focus');
-        }
+        var filter_panel = cmp.up('reportfilter');
+        
+        filter_panel.removeCls('x-form-focus');
     },
 
     onFilterFocus: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
+        var filter_panel = cmp.up('reportfilter');
 
-        if (filter) {
-            filter.addCls('x-form-focus');
-        }
+        filter_panel.addCls('x-form-focus');
     },
 
     onFilterOperatorSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp),
-            filter_value = cmp.next('textfield, inputfield, numberfield');
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            filter_value_textfield = cmp.next('textfield, inputfield, numberfield'),
+            operator_value = cmp.getSubmitValue();
         
-        filter.record.set('operator', cmp.getSubmitValue());
+        filter.set('operator', operator_value);
         
-        if (cmp.getSubmitValue() == 'Empty') {
-            filter_value.setValue('');
-            filter_value.disable();
+        if (operator_value == 'Empty') {
+            filter_value_textfield.setValue('');
+            filter_value_textfield.disable();
         } else {
-            filter_value.enable();
+            filter_value_textfield.enable();
         }
 
-        if (filter.record.get('value') != '') {
+        if (filter.get('value') != '') {
             this.application.fireEvent('refreshreport');
         }
     },
 
     onFilterRemove: function (cmp, event, eOpts) {
-        var filter_store = this.getReportReportsStore().first().filters(),
-            filter = this.findParentFilter(cmp),
-            record = filter.record;
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_store = report.filters(),
+            filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record;
 
-        if (record) {
-            filter_store.remove(record);
+        filter_store.remove(filter);
 
-            this.application.fireEvent('refreshfilters');
+        this.application.fireEvent('refreshfilters');
 
-            if (record.get('value') != '') {
-                this.application.fireEvent('refreshreport');
-            }
+        if (filter.get('value') != '') {
+            this.application.fireEvent('refreshreport');
         }
     },
 
     onFilterValueDateBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp),
-            date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getValue(),
+            // TODO: weird may need some unified date format
+            date = Ext.Date.format(value, 'Y-m-d') || value;
         
-        filter.record.set('value', date);
+        filter.set('value', date);
     },
 
     onFilterValueDateSpecialKey: function (cmp, event) {
-        if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp),
-                date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
-            
-            filter.record.set('value', date);
-
-            this.application.fireEvent('refreshreport');
+        if (event.getKey() != event.ENTER) {
+            return false;
         }
+        
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            // TODO: weird may need some unified date format
+            date = Ext.Date.format(value, 'Y-m-d') || value;
+        
+        filter.set('value', date);
+
+        this.application.fireEvent('refreshreport');
     },
     
     onFilterValueInputBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getSubmitValue());
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('value', value);
     },
 
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
     onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('fieldCompare', cmp.getSubmitValue());
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('fieldCompare', value);
     },
     
     onFilterValueInputSpecialKey: function (cmp, event) {
-        if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp);
-            filter.record.set('value', cmp.getSubmitValue());
-
-            this.application.fireEvent('refreshreport');
+        if (event.getKey() != event.ENTER) {
+            return false;
         }
-    },
-
-    onFilterValueSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getSubmitValue());
+        
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('value', value);
 
         this.application.fireEvent('refreshreport');
     },
 
-    /**
-     * MISC
-     */
-
-    positionRemoveButtons: function () {
-        var remove_filter_elements = Ext.select('.remove-filter').elements;
-
-        if (remove_filter_elements.length) {
-            var filter_options = this.getFilterOptions(),
-                scrollbar_width = Ext.getScrollbarSize().width,
-                scrollbar_left = filter_options.width - scrollbar_width,
-                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
-                button_left = parseInt(remove_filter_elements[0].style.left),
-                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
-
-            if (scrollbar_visible && button_obscured) {
-                button_left = button_left - scrollbar_width;
-                for (var i = 0; i < remove_filter_elements.length; i++) {
-                    remove_filter_elements[i].style.left = button_left + 'px';
-                }
-
-                // Do the same thing to any advanced filter buttons.
-                var advanced_button_elements = Ext.select('.advanced-filter-button').elements;
-                if (advanced_button_elements.length) {
-                    for (var i = 0; i < advanced_button_elements.length; i++) {
-                        advanced_button_elements[i].style.left = button_left + 'px';
-                    }
-                }
-
-            }
-        }
+    onFilterValueSelect: function (cmp, records, eOpts) {
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
         
-        var remove_filter_elements = Ext.select('.remove-filter').elements;
-    },
+        filter.set('value', value);
 
-    findParentFilter: function (cmp) {
-        return cmp.findParentBy(function (cmp) {
-            return cmp.cls == 'filter';
-        });
+        this.application.fireEvent('refreshreport');
     }
 });

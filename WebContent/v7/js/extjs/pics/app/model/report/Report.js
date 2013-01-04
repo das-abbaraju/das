@@ -42,6 +42,75 @@ Ext.define('PICS.model.report.Report', {
         model: 'PICS.model.report.Sort',
         name: 'sorts'
     }],
+    
+    getFilterExpression: function () {
+        var filter_expression = this.get('filterExpression');
+        
+        return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
+            return parseInt(p1);
+        });
+    },
+    
+    // TODO: probably fix this because nichols wrote it
+    setFilterExpression: function (filter_expression) {
+        // Hack: because this is broken
+        if (filter_expression == '') {
+            this.set('filterExpression', filter_expression);
+
+            return false;
+        }
+
+        // TODO write a real grammar and parser for our filter formula DSL
+
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
+
+        var tokens = filter_expression.trim().split(/ +/);
+        filter_expression = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+
+            if (token.search(validTokenRegex) === -1) {
+                return false;
+            }
+
+            if (token === '(') {
+                parenCount += 1;
+                filter_expression += token;
+            } else if (token === ')') {
+                parenCount -= 1;
+                filter_expression += token;
+            } else if (token.toUpperCase() === 'AND') {
+                filter_expression += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                filter_expression += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0') {
+                    return false;
+                }
+
+                // Convert from counting number to index
+                var indexNum = new Number(token);
+                filter_expression += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0) {
+                return false;
+            }
+        }
+
+        if (parenCount !== 0) {
+            return false;
+        }
+
+        this.set('filterExpression', filter_expression);
+    },
 
     /**
      * Get Report JSON

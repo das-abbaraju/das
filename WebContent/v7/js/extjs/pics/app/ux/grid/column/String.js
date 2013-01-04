@@ -1,8 +1,5 @@
-Ext.define('PICS.ux.grid.column.Int', {
+Ext.define('PICS.ux.grid.column.String', {
     extend: 'PICS.ux.grid.column.Column',
-
-    align: 'right',
-    format: '0',
     
     constructor: function () {
         this.callParent(arguments);

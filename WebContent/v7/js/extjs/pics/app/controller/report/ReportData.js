@@ -15,10 +15,6 @@ Ext.define('PICS.controller.report.ReportData', {
         'report.ReportDatas'
     ],
     
-    views: [
-        'PICS.view.report.report.ReportColumnTooltip'
-    ],
-
     init: function () {
         this.control({
             'reportdata': {
@@ -107,26 +103,10 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onColumnRender: function (cmp, eOpts) {
-        var column = cmp.record;
-        
-        // do not apply any tooltips on rownumberers, etc
-        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
-            return;
+        // only create tooltips for PICS.ux.grid.column.Column(s)
+        if (typeof cmp.createTooltip == 'function') {
+            cmp.createTooltip();
         }
-        
-        var target = cmp.el,
-            field = column.getAvailableField(),
-            text = field.get('text'),
-            help = field.get('help');
-        
-        var tooltip = Ext.create('PICS.view.report.report.ReportColumnTooltip', {
-            target: target
-        });
-        
-        tooltip.update({
-            text: text,
-            help: help
-        });
     },
 
     onColumnSortAsc: function (cmp, event, eOpts) {

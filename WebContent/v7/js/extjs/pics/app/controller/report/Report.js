@@ -88,8 +88,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     downloadReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -97,8 +97,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     favoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({
@@ -107,8 +107,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     printReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -118,16 +118,19 @@ Ext.define('PICS.controller.report.Report', {
     refreshReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = report.get('name'),
             report_data_store = this.getReportReportDatasStore(),
-            report_data = this.getReportData(),
+            report_data = this.getReportData();
+            
+        var report_name = report.get('name'),
+            // TODO: this should be removed
+            limit = report.get('rowsPerPage'),
             params = report.toRequestParams(),
             model_fields = report.convertColumnsToModelFields(),
-            grid_columns = report.convertColumnsToGridColumns(),
-            limit = report.get('rowsPerPage');
-        
+            grid_columns = report.convertColumnsToGridColumns();
+            
         this.updatePageTitle(report_name);
-        
+
+        // TODO: this should be removed
         report_data_store.setLimit(limit);
         
         // update data store proxy
@@ -214,8 +217,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     unfavoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({

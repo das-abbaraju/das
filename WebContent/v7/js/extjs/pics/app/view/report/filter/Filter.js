@@ -11,7 +11,8 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
         'PICS.view.report.filter.base.StringFilter',
-        'PICS.view.report.filter.base.UserIDFilter'
+        'PICS.view.report.filter.base.UserIDFilter',
+        'PICS.view.report.filter.FilterTooltip'
     ],
 
     bodyCls: 'filter-body',
@@ -36,21 +37,25 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
-        this.addRemoveButton();
-                
-        var filter_number = this.createFilterNumber(this.index);
-        var filter_content = this.createFilterContent(this.record);
+        var filter = this.record,
+            field = filter.getAvailableField();
+        
+        var type = field.get('filterType'),
+            cls = this.getFilterClassByType(type),
+            filter_number = this.createNumber(this.index),
+            filter_content = this.createContent(this.record);
 
         this.add([
             filter_number,
             filter_content
         ]);
         
-        var field = this.record.getAvailableField(),
-            type = field.get('filterType'),
-            cls = this.getFilterClassByType(type);
+        
+        // TODO: update this
+        this.addRemoveButton();
         
         if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
+            // TODO: update this - probably doesn't belong
             this.addEditableButton();
         }
     },
@@ -101,7 +106,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         });        
     },
     
-    createFilterNumber: function (index) {
+    createNumber: function (index) {
         return {
             xtype: 'displayfield',
             border: 0,
@@ -114,9 +119,9 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterContent: function (record) {
-        var filter_title = this.createFilterTitle(record);
-        var filter_input = this.createFilterInput(record);
+    createContent: function (record) {
+        var filter_title = this.createTitle(record);
+        var filter_input = this.createInput(record);
 
         return {
             border: 0,
@@ -130,7 +135,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterTitle: function (record) {
+    createTitle: function (record) {
         var field = record.getAvailableField();
 
         if (!field) {
@@ -166,7 +171,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterInput: function (record) {
+    createInput: function (record) {
         var field = record.getAvailableField(),
             type = field.get('filterType');
 
@@ -189,6 +194,26 @@ Ext.define('PICS.view.report.filter.Filter', {
             draggable: false,
             name: 'filter_input',
             record: record
+        });
+    },
+    
+    createTooltip: function () {
+        var filter = this.record;
+        
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter record');
+        }
+        
+        var target = this.el.down('.filter-name'),
+            field = filter.getAvailableField(),
+            help = field.get('help');
+        
+        var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
+            target: target
+        });
+        
+        tooltip.update({
+            help: help
         });
     },
 

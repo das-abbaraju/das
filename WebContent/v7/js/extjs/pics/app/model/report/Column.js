@@ -68,9 +68,7 @@ Ext.define('PICS.model.report.Column', {
         var type = field.get('type');
         
         var config = {
-            menuDisabled: true,
-            record: this,
-            sortable: false
+            column: this
         };
 
         switch (type) {
@@ -107,7 +105,7 @@ Ext.define('PICS.model.report.Column', {
             // text
             case 'string':
             default:
-                grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+                grid_column = Ext.create('PICS.ux.grid.column.String', config);
                 
                 break;
         }
