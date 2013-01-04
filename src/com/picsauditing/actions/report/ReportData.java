@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
@@ -39,14 +40,15 @@ public class ReportData extends PicsApiSupport {
 
 	protected Report report;
 	protected String debugSQL = "";
-	protected SelectSQL sql = null;
+	private SelectSQL sql = null;
 	protected ReportDataConverter converter;
-	protected int pageNumber = 1;
-	protected boolean reportParameters;
-	protected boolean includeReport;
-	protected boolean includeColumns;
-	protected boolean includeFilters;
-	protected boolean includeData;
+	private int limit = 100;
+	private int pageNumber = 1;
+	private String reportParameters;
+	private boolean includeReport;
+	private boolean includeColumns;
+	private boolean includeFilters;
+	private boolean includeData;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
 
@@ -57,6 +59,9 @@ public class ReportData extends PicsApiSupport {
 		reportDao.refresh(reportFromDb);
 		reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
 
+		if (!StringUtils.isEmpty(reportParameters))
+			reportFromDb.setParameters(reportParameters);
+		
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
@@ -110,7 +115,7 @@ public class ReportData extends PicsApiSupport {
 	private JSONObject getData() throws Exception {
 		JSONObject jsonObject = new JSONObject();
 		try {
-			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
+			sql.setPageNumber(limit, pageNumber);
 			runQuery();
 
 			converter.convertForExtJS();
@@ -215,7 +220,11 @@ public class ReportData extends PicsApiSupport {
 		this.pageNumber = page;
 	}
 
-	public void setReportParameters(boolean reportParameters) {
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	public void setReportParameters(String reportParameters) {
 		this.reportParameters = reportParameters;
 	}
 
