@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
@@ -21,6 +25,8 @@ public class ReportDynamic extends PicsActionSupport {
 	
 	@Autowired
 	private ReportModel reportModel;
+	@Autowired
+    private ReportDAO reportDao;
 
 	private Report report;
 	private boolean favorite;
@@ -37,6 +43,19 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String save(boolean copy) {
 		try {
+			for (Column c : report.getColumns()) {
+				dao.remove(c);
+			}
+			report.getColumns().clear();
+			for (Filter f : report.getFilters()) {
+				dao.remove(f);
+			}
+			report.getFilters().clear();
+			for (Sort s : report.getSorts()) {
+				dao.remove(s);
+			}
+			report.getSorts().clear();
+			
 			ReportModel.processReportParameters(report);
 			if (copy)
 				report = reportModel.copy(report, permissions, favorite);
@@ -49,7 +68,10 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			logger.error("An error occurred saving report id = {} for user {}", report.getId(), permissions.getUserId());
+			if (report == null)
+				logger.error("Report was not able to load from DB");
+			else
+				logger.error("An error occurred saving report id = {} for user {}", report.getId(), permissions.getUserId());
 			writeJsonError(e);
 		}
 

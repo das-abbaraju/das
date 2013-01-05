@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.Column;
-import com.picsauditing.report.ReportElement;
+import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;

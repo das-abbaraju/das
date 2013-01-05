@@ -10,8 +10,6 @@ import org.junit.Test;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportParameterConverter;
 import com.picsauditing.report.models.ModelType;
-import comimport com.picsauditing.report.version.previous.ReportParameterConverter;
-.picsauditing.report.version.ReportVersionFacadeFactory;
 
 /**
  * Previous Version
@@ -29,13 +27,14 @@ public class ReportParameterConverterTest {
 	private JSONObject jsonIn;
 	private JSONObject jsonOut;
 	private Report report;
-	private ReportParameterConverter facade = new ReportParameterConverter();
 
 	@Before
 	public void setup() {
 		jsonIn = (JSONObject) JSONValue.parse(SAMPLE_JSON);
-		report = ReportVersionFacadeFactory.createReport(jsonIn);
-		jsonOut = facade.toJSON(report);
+		report = new Report();
+		report.setParameters(SAMPLE_JSON);
+		ReportParameterConverter.fillParameters(report);
+		jsonOut = ReportParameterConverter.toJSON(report);
 	}
 
 	@Test

@@ -3,7 +3,7 @@ package com.picsauditing.report.models;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 
 public class AccountContractorAuditOperatorModelTest extends ModelTest {
 	private AccountContractorAuditOperatorModel model;

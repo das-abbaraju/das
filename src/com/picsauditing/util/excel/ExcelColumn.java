@@ -1,6 +1,6 @@
 package com.picsauditing.util.excel;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 
 public class ExcelColumn {
 	private String name;

@@ -12,8 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.Filter;
-import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
@@ -30,7 +28,7 @@ public class Report extends BaseTable {
 	private String description;
 
 	private String sql;
-	private List<com.picsauditing.report.Column> columns = new ArrayList<com.picsauditing.report.Column>();
+	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
 	private String filterExpression;
@@ -67,7 +65,8 @@ public class Report extends BaseTable {
 		this.parameters = parameters;
 	}
 
-	@ReportField(importance = FieldImportance.Average, width = 10)
+	@Transient
+	// @ReportField(importance = FieldImportance.Average, width = 10)
 	public int getNumTimesFavorited() {
 		return numTimesFavorited;
 	}
@@ -93,17 +92,17 @@ public class Report extends BaseTable {
 	public void setSql(String sql) {
 		this.sql = sql;
 	}
-	
-	@Transient
-	public List<com.picsauditing.report.Column> getColumns() {
+
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	public List<com.picsauditing.jpa.entities.Column> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<com.picsauditing.report.Column> columns) {
+	public void setColumns(List<com.picsauditing.jpa.entities.Column> columns) {
 		this.columns = columns;
 	}
 
-	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<Filter> getFilters() {
 		return filters;
 	}
@@ -112,7 +111,7 @@ public class Report extends BaseTable {
 		this.filters = filters;
 	}
 
-	@Transient
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<Sort> getSorts() {
 		return sorts;
 	}
@@ -121,7 +120,6 @@ public class Report extends BaseTable {
 		this.sorts = sorts;
 	}
 
-	@Transient
 	public String getFilterExpression() {
 		return filterExpression;
 	}
@@ -160,6 +158,10 @@ public class Report extends BaseTable {
 	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
 	public List<ReportUser> getReportUsers() {
 		return reportUsers;
+	}
+
+	public void setReportUsers(List<ReportUser> reportUsers) {
+		this.reportUsers = reportUsers;
 	}
 
 	@Transient

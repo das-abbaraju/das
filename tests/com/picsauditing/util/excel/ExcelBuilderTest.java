@@ -17,7 +17,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;

@@ -8,7 +8,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 
 public class ReportResults {
 	private List<ReportRow> rows = new ArrayList<ReportRow>();

@@ -1,13 +1,10 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.io.Serializable;
 import java.util.Map;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -16,21 +13,19 @@ import javax.persistence.Transient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class ReportElement implements Serializable {
+public abstract class ReportElement extends BaseTable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportElement.class);
 
 	public static String METHOD_SEPARATOR = "__";
 
-	protected int id;
 	protected Report report;
-	protected String name;
+	protected String name = "trevor";
 	protected SqlFunction sqlFunction;
 	protected Field field;
 
@@ -41,17 +36,6 @@ public abstract class ReportElement implements Serializable {
 
 	public ReportElement(String fieldName) {
 		setName(fieldName);
-	}
-	
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(nullable = false)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	@ManyToOne
@@ -64,7 +48,7 @@ public abstract class ReportElement implements Serializable {
 		this.report = report;
 	}
 
-	@Column(nullable = false)
+	@Column(length = 100)
 	public String getName() {
 		return name;
 	}
@@ -96,21 +80,25 @@ public abstract class ReportElement implements Serializable {
 		sqlFunction = SqlFunction.valueOf(methodName);
 	}
 
+	private void resetName(SqlFunction method) {
+		if (method == null)
+			name = originalName;
+		else
+			name = originalName + METHOD_SEPARATOR + method.toString();
+	}
+
 	@Transient
 	public String getFieldNameWithoutMethod() {
 		return originalName;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public SqlFunction getSqlFunction() {
 		return sqlFunction;
 	}
 
 	public void setSqlFunction(SqlFunction method) {
 		this.sqlFunction = method;
-		if (method == null)
-			name = originalName;
-		else
-			name = originalName + METHOD_SEPARATOR + method.toString();
 	}
 
 	@Transient

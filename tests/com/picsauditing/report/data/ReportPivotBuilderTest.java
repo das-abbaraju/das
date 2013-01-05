@@ -16,7 +16,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;

@@ -1,6 +1,6 @@
 package com.picsauditing.report.data;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 
 public class ReportCell {
 	private Column column;

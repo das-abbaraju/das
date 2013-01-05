@@ -5,7 +5,6 @@ import static com.picsauditing.util.Assert.assertContains;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.report.Column;
 import com.picsauditing.report.models.ModelType;
 
 public class ReportTest {

@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,7 +12,7 @@ import com.picsauditing.report.fields.PivotDimension;
 @Table(name = "report_column")
 public class Column extends ReportElement {
 
-	private int width = 200;
+	private int width = 100;
 
 	public Column() {
 	}

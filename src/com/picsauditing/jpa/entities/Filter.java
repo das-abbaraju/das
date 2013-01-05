@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,8 @@ public class Filter extends ReportElement {
 		this.operator = operator;
 	}
 
-	@Column(name = "value")
+	@Transient
+	// TODO add in a String value field
 	public List<String> getValues() {
 		return values;
 	}
@@ -163,6 +164,7 @@ public class Filter extends ReportElement {
 		throw new RuntimeException(fieldType + " has no filter caluculation defined yet");
 	}
 
+	@Transient
 	private DisplayType getActualFieldTypeForFilter() {
 		DisplayType fieldType = field.getType().getDisplayType();
 		if (hasMethodWithDifferentFieldType()) {

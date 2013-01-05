@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
 import java.util.Map;
 

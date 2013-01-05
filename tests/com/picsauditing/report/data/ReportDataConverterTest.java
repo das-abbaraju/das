@@ -22,7 +22,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AccountContractorModel;

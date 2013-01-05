@@ -1,11 +1,11 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.picsauditing.report.Sort;
+import com.picsauditing.jpa.entities.Sort;
 
 public class SortTest {
 	private Sort sort = new Sort();

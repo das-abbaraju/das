@@ -16,12 +16,12 @@ import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.Column;
-import com.picsauditing.report.Filter;
+import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.FilterExpression;
-import com.picsauditing.report.ReportElement;
-import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -91,7 +91,7 @@ public class ReportParameterConverter {
 		return json;
 	}
 
-	public static JSONObject toJSON(Column obj) {
+	private static JSONObject toJSON(Column obj) {
 		JSONObject json = toJSONBase(obj);
 		if (obj.getSqlFunction() != null)
 			json.put("method", obj.getSqlFunction().toString());
@@ -133,7 +133,7 @@ public class ReportParameterConverter {
 		return json;
 	}
 
-	public static JSONObject toJSON(Filter obj) {
+	private static JSONObject toJSON(Filter obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		json.put("operator", obj.getOperator().toString());
@@ -158,7 +158,7 @@ public class ReportParameterConverter {
 		return json;
 	}
 
-	public static JSONObject toJSON(Sort obj) {
+	private static JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		if (!obj.isAscending())
@@ -193,7 +193,9 @@ public class ReportParameterConverter {
 
 		for (Object object : jsonArray) {
 			if (object != null) {
-				dto.getColumns().add(toColumn((JSONObject) object));
+				Column column = toColumn((JSONObject) object);
+				column.setReport(dto);
+				dto.getColumns().add(column);
 			}
 		}
 	}
@@ -205,7 +207,9 @@ public class ReportParameterConverter {
 
 		for (Object object : jsonArray) {
 			if (object != null) {
-				dto.getFilters().add(toFilter((JSONObject) object));
+				Filter filter = toFilter((JSONObject) object);
+				filter.setReport(dto);
+				dto.getFilters().add(filter);
 			}
 		}
 	}
@@ -217,16 +221,16 @@ public class ReportParameterConverter {
 
 		for (Object object : jsonArray) {
 			if (object != null) {
-				dto.getSorts().add(toSort((JSONObject) object));
+				Sort sort = toSort((JSONObject) object);
+				sort.setReport(dto);
+				dto.getSorts().add(sort);
 			}
 		}
 	}
 
 	public static Column toColumn(JSONObject json) {
-
 		Column column = new Column();
 		toElementFromJSON(json, column);
-
 		return column;
 	}
 

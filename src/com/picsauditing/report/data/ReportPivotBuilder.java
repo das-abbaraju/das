@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.ReportPivotDefinition;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;

@@ -2,6 +2,7 @@ package com.picsauditing.report;
 
 import java.util.Collection;
 
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.PivotDimension;
 
 public class ReportPivotDefinition {

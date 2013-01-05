@@ -24,10 +24,13 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
@@ -137,6 +140,15 @@ public class ReportModel {
 
         setReportParameters(report);
         report.setAuditColumns(permissions);
+        for (Column column : report.getColumns()) {
+            reportDao.save(column);
+		}
+        for (Filter filter : report.getFilters()) {
+            reportDao.save(filter);
+		}
+        for (Sort sort : report.getSorts()) {
+            reportDao.save(sort);
+		}
         reportDao.save(report);
     }
     
@@ -148,7 +160,7 @@ public class ReportModel {
     private static void setReportParameters(Report report) {
     	// TODO Remove this method after the next release
 		JSONObject json = ReportParameterConverter.toJSON(report);
-		report.setParameters(json.toString());
+		// TODO report.setParameters(json.toString());
     }
 
     private Report copyReportWithoutPermissions(Report sourceReport) {

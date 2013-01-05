@@ -3,7 +3,7 @@ package com.picsauditing.report.models;
 import java.util.List;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Filter;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceTable;

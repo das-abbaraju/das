@@ -9,7 +9,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 

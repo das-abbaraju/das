@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.SqlFunction;
 

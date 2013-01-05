@@ -1,9 +1,10 @@
-package com.picsauditing.report;
+package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.SqlFunction;
 
 public class ColumnTest {
