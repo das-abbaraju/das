@@ -1480,6 +1480,11 @@
                     "path": "app/ux/grid/column/"
                 },
                 {
+                    "clsName": "PICS.ux.grid.column.String",
+                    "name": "String.js",
+                    "path": "app/ux/grid/column/"
+                },
+                {
                     "clsName": "PICS.model.report.Column",
                     "name": "Column.js",
                     "path": "app/model/report/"

@@ -98056,17 +98056,29 @@ Ext.define('PICS.ux.grid.column.Number', {
         return this.callParent(arguments);
     }
 });
+Ext.define('PICS.ux.grid.column.String', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
 Ext.define('PICS.model.report.Column', {
     extend: 'Ext.data.Model',
     
     requires: [
+        'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
         'PICS.ux.grid.column.Date',
         'PICS.ux.grid.column.Flag',
         'PICS.ux.grid.column.Float',
         'PICS.ux.grid.column.Int',
         'PICS.ux.grid.column.Number',
-        'PICS.ux.grid.column.Column'
+        'PICS.ux.grid.column.String'
     ],
 
     // http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
