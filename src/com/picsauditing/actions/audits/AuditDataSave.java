@@ -684,6 +684,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 		if (databaseCopy == null) {
 			databaseCopy = auditData;
+            databaseCopy.setQuestion(questionDao.find(databaseCopy.getQuestion().getId()));
 		}
 
 		String questionType = databaseCopy.getQuestion().getQuestionType();
