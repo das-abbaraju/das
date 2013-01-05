@@ -307,7 +307,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 			for (BasicDynaBean d : data) {
 				Integer conID = Integer.parseInt(d.get("id").toString());
-				d.set("flag", byConID.get(conID).toString());
+
+				if (byConID == null) {
+					continue;
+				}
+
+				FlagColor flagColor = byConID.get(conID);
+				if (flagColor == null) {
+					continue;
+				}
+
+				d.set("flag", flagColor.toString());
 			}
 		}
 
