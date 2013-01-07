@@ -138,6 +138,21 @@ public class ReportModel {
         if (!canUserEdit(permissions, report))
             throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
+		for (Column c : report.getColumns()) {
+			reportDao.remove(c);
+		}
+		report.getColumns().clear();
+		for (Filter f : report.getFilters()) {
+			reportDao.remove(f);
+		}
+		report.getFilters().clear();
+		for (Sort s : report.getSorts()) {
+			reportDao.remove(s);
+		}
+		report.getSorts().clear();
+		
+		ReportModel.processReportParameters(report);
+		
         setReportParameters(report);
         report.setAuditColumns(permissions);
         for (Column column : report.getColumns()) {
