@@ -21,116 +21,112 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.report.FilterExpression;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
-// TODO Remove this method after the next release
 @SuppressWarnings("unchecked")
 public class ReportDefinitionToExtJSConverter {
 
-	private static final String VERSION = "6.29";
-	private Report report;
-	private JSONObject json;
+	private enum ReportListType {
+		Columns, Filters, Sorts;
+
+		String getKey() {
+			return this.toString().toLowerCase();
+		}
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(ReportDefinitionToExtJSConverter.class);
 
 	// From Report to JSON
 
-	public JSONObject toJSON(Report report) {
-		json = new JSONObject();
-		json.put("version", VERSION);
-		
-		this.report = report;
+	public static JSONObject toJSON(Report report) {
+		JSONObject json = new JSONObject();
 
-		convertReportLevelData();
-		convertColumnsToJson();
-		convertFiltersToJson();
-		convertSortsToJson();
+		convertReportLevelData(report, json);
+		convertListToJson(report, json, ReportListType.Columns);
+		convertListToJson(report, json, ReportListType.Filters);
+		convertListToJson(report, json, ReportListType.Sorts);
 
 		return json;
 	}
 
-	private void convertReportLevelData() {
-		// json.put("id", report.getId());
+	private static void convertReportLevelData(Report report, JSONObject json) {
+		json.put("id", report.getId());
+		json.put("type", report.getModelType().toString());
 		json.put("name", report.getName());
-		if (report.getModelType() != null)
-			json.put("modelType", report.getModelType().toString());
 		json.put("description", report.getDescription());
 
 		if (!Strings.isEmpty(report.getFilterExpression()))
 			json.put(FILTER_EXPRESSION, report.getFilterExpression());
+		json.put("num_times_favorited", report.getNumTimesFavorited());
+		if (report.getCreatedBy() != null) {
+			json.put("created_by", report.getCreatedBy().getName());
+		}
+		json.put("creation_date", report.getCreationDate().getTime());
+		if (report.getCreatedBy() != null) {
+			json.put("updated_by", report.getUpdatedBy().getName());
+		}
+		json.put("update_date", report.getUpdateDate().getTime());
 	}
 
-	private void convertColumnsToJson() {
+	private static void convertListToJson(Report report, JSONObject json, ReportListType type) {
 		JSONArray jsonArray = new JSONArray();
-		json.put(COLUMNS, jsonArray);
-		for (Column obj : report.getColumns()) {
-			jsonArray.add(toJSON(obj));
+		json.put(type.getKey(), jsonArray);
+		for (ReportElement obj : getReportChild(report, type)) {
+			switch (type) {
+			case Columns:
+				jsonArray.add(toJSON((Column) obj));
+				break;
+			case Filters:
+				jsonArray.add(toJSON((Filter) obj));
+				break;
+			case Sorts:
+				jsonArray.add(toJSON((Sort) obj));
+				break;
+			}
 		}
 	}
 
-	private void convertFiltersToJson() {
-		JSONArray jsonArray = new JSONArray();
-		json.put(FILTERS, jsonArray);
-		for (Filter obj : report.getFilters()) {
-			jsonArray.add(toJSON(obj));
+	private static List<? extends ReportElement> getReportChild(Report report, ReportListType type) {
+		switch (type) {
+		case Columns:
+			return report.getColumns();
+		case Filters:
+			return report.getFilters();
+		case Sorts:
+			return report.getSorts();
 		}
+		return null;
 	}
 
-	private void convertSortsToJson() {
-		JSONArray jsonArray = new JSONArray();
-		json.put(SORTS, jsonArray);
-		for (Sort obj : report.getSorts()) {
-			jsonArray.add(toJSON(obj));
-		}
-	}
-
-	private static JSONObject toJSONBase(ReportElement obj) {
+	private static JSONObject toJSON(Column obj) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
-		// This is a legacy feature only used on the old ExtJS
-		// Removing for now since it makes testing a lot easier
-		// json.put("field", toJSON(obj.getField()));
-		return json;
-	}
-
-	public static JSONObject toJSON(Column obj) {
-		JSONObject json = toJSONBase(obj);
+		json.put("id", obj.getName());
 		if (obj.getSqlFunction() != null)
 			json.put("method", obj.getSqlFunction().toString());
-		return json;
-	}
-
-	public static JSONObject toJSON(Field obj) {
-		if (obj == null) {
-			obj = new Field("Missing", "", FieldType.String);
+		json.put("name", obj.getField().getText());
+		json.put("description", obj.getField().getHelp());
+		{
+			// TODO get the 
+			json.put("type", obj.getField().getType().toString().toLowerCase());
+			json.put("fieldType", obj.getField().getType().toString());
+			json.put("filterType", obj.getField().getType().getFilterType().toString());
+			json.put("displayType", obj.getField().getType().toString().toLowerCase());
 		}
 
-		// TODO Move this to SimpleColumn.js toGridColumn
-		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
-		json.put("text", obj.getText());
-		json.put("help", obj.getHelp());
+		if (!Strings.isEmpty(obj.getField().getUrl()))
+			json.put("url", obj.getField().getUrl());
 
 		if (obj.getWidth() > 0)
 			json.put("width", obj.getWidth());
 
-		if (!Strings.isEmpty(obj.getUrl()))
-			json.put("url", obj.getUrl());
-
-		json.put("fieldType", obj.getType().toString());
-		json.put("filterType", obj.getType().getFilterType().toString());
-		json.put("displayType", obj.getType().toString().toLowerCase());
-		json.put("type", obj.getType().toString().toLowerCase());
-
 		JSONArray functionsArray = new JSONArray();
-		for (String key : obj.getFunctions().keySet()) {
+		for (String key : obj.getField().getFunctions().keySet()) {
 			JSONObject translatedFunction = new JSONObject();
 			translatedFunction.put("key", key);
-			translatedFunction.put("value", obj.getFunctions().get(key));
+			translatedFunction.put("value", obj.getField().getFunctions().get(key));
 			functionsArray.add(translatedFunction);
 		}
 
@@ -139,9 +135,9 @@ public class ReportDefinitionToExtJSConverter {
 		return json;
 	}
 
-	public static JSONObject toJSON(Filter obj) {
+	private static JSONObject toJSON(Filter obj) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
+		json.put("id", obj.getName());
 		json.put("operator", obj.getOperator().toString());
 
 		if (obj.getOperator().isValueUsed()) {
@@ -164,28 +160,29 @@ public class ReportDefinitionToExtJSConverter {
 		return json;
 	}
 
-	public static JSONObject toJSON(Sort obj) {
+	private static JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
+		json.put("id", obj.getName());
 		if (!obj.isAscending())
 			json.put("direction", "DESC");
 
 		return json;
 	}
 
-	// From JSON to Report
-
-	public void fillParameters(Report dto) {
+	/**
+	 * From JSON to Report
+	 */
+	public static void fillParameters(Report report) {
 		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
-		dto.setName((String) json.get("name"));
-		dto.setDescription((String) json.get("description"));
-		dto.setModelType(parseModelType(json));
-		
-		dto.setFilterExpression(parseFilterExpression(json));
+		report.setName((String) json.get("name"));
+		report.setDescription((String) json.get("description"));
+		report.setModelType(parseModelType(json));
 
-		addColumns(json, dto);
-		addFilters(json, dto);
-		addSorts(json, dto);
+		report.setFilterExpression(parseFilterExpression(json));
+
+		addColumns(json, report);
+		addFilters(json, report);
+		addSorts(json, report);
 	}
 
 	private static ModelType parseModelType(JSONObject json) {
@@ -236,7 +233,7 @@ public class ReportDefinitionToExtJSConverter {
 		}
 	}
 
-	public static Column toColumn(JSONObject json) {
+	private static Column toColumn(JSONObject json) {
 
 		Column column = new Column();
 		toElementFromJSON(json, column);
@@ -244,7 +241,7 @@ public class ReportDefinitionToExtJSConverter {
 		return column;
 	}
 
-	public static Sort toSort(JSONObject json) {
+	private static Sort toSort(JSONObject json) {
 		if (json == null)
 			return null;
 
@@ -262,7 +259,7 @@ public class ReportDefinitionToExtJSConverter {
 		return true;
 	}
 
-	public static Filter toFilter(JSONObject json) {
+	private static Filter toFilter(JSONObject json) {
 		if (json == null)
 			return null;
 
