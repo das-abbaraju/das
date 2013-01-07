@@ -89,6 +89,9 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
 
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome-ie7.css?v=${version}" />
+
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
 		<script type="text/javascript" src="js/jquery/util/jquery.utils.js?v=${version}"></script>
@@ -178,10 +181,7 @@
         <% if (useDynamicReports) { %>
         
         <nav id="site_navigation"></nav>
-        
         <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome-ie7.css?v=${version}" />
         <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
         <script type="text/javascript" src="js/layout/menu.js"></script>
         
