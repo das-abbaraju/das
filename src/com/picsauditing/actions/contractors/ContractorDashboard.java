@@ -551,18 +551,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private String getIncompleteAnnualUpdates(ContractorAccount con,
 			int operatorId) {
 		String years = "";
-
+		
 		ArrayList<String> forYears = new ArrayList<String>();
-		for (ContractorAudit audit : con.getAudits()) {
-			if (audit.getAuditType().isAnnualAddendum()) {
-				for (ContractorAuditOperator cao : audit.getOperators()) {
-					if (!cao.getStatus().equals(AuditStatus.Complete)) {
-						for (ContractorAuditOperatorPermission caop : cao
-								.getCaoPermissions()) {
-							if (caop.getOperator().getId() == operatorId) {
-								forYears.add(audit.getAuditFor());
-								break;
-							}
+		for (ContractorAudit audit : con.getCurrentAnnualUpdates()) {
+			for (ContractorAuditOperator cao : audit.getOperators()) {
+				if (!cao.getStatus().equals(AuditStatus.Complete)) {
+					for (ContractorAuditOperatorPermission caop : cao
+							.getCaoPermissions()) {
+						if (caop.getOperator().getId() == operatorId) {
+							forYears.add(audit.getAuditFor());
+							break;
 						}
 					}
 				}

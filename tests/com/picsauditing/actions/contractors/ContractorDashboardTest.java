@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -131,19 +132,27 @@ public class ContractorDashboardTest {
 
 	@Test
 	public void testGetIncompleteAnnualUpdates() throws Exception {
-		
-		contractor.getAudits().add(createAU("2010", AuditStatus.Complete));
-		contractor.getAudits().add(createAU("2009", AuditStatus.Pending));
+		Calendar date = Calendar.getInstance();
+
+		String year1 = "" + date.get(Calendar.YEAR);
+		date.add(Calendar.YEAR, -1);
+		String year2 = "" + date.get(Calendar.YEAR);
+		contractor.getAudits().add(createAU(year1, AuditStatus.Complete));
+		contractor.getAudits().add(createAU(year2, AuditStatus.Pending));
 		
 		
 		String results = Whitebox.invokeMethod(dashboard, "getIncompleteAnnualUpdates" , contractor, operator.getId());
-		assertTrue(results.contains("2009"));
-		assertTrue(!results.contains("2010"));
+		assertTrue(results.contains(year2));
+		assertTrue(!results.contains(year1));
 	}
 	
 	private ContractorAudit createAU(String year, AuditStatus status) {
 		ContractorAudit audit;
 		audit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, year);
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.YEAR, 3);
+		audit.setExpiresDate(date.getTime());
+
 		ContractorAuditOperator cao;
 		cao = EntityFactory.addCao(audit, operator);
 		cao.setStatus(status);
