@@ -290,9 +290,9 @@ public class BillingCalculatorSingle {
 	private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
 		for (OperatorAccount oa : operators) {
 			int id = oa.getId();
-			if (id == OperatorAccount.OLDCASTLE || id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
+			if (id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
 				continue;
-			if (oa.isDescendantOf(OperatorAccount.OLDCASTLE) || oa.isDescendantOf(OperatorAccount.AI))
+			if (oa.isDescendantOf(OperatorAccount.AI))
 				continue;
 			return false;
 		}
