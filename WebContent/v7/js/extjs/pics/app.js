@@ -53,6 +53,11 @@ Ext.application({
         'report.SettingsModal'
     ],
 
+    stores: [
+        'report.Columns',
+        'report.Filters'
+    ],
+
     init: function () {
         // Override CSS3BorderRadius value which caused render problems in <IE9 when false.
         Ext.supports['CSS3BorderRadius'] = true;
