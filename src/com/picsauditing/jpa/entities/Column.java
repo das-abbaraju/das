@@ -22,6 +22,9 @@ public class Column extends ReportElement {
 	}
 
 	public int getWidth() {
+		if (width < 1 && field != null) {
+			return field.getWidth();
+		}
 		return width;
 	}
 

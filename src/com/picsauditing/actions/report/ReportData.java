@@ -1,8 +1,11 @@
 package com.picsauditing.actions.report;
 
+import static com.picsauditing.report.ReportJson.*;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 
@@ -21,10 +24,14 @@ import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.report.AvailableFieldsToExtJSConverter;
+import com.picsauditing.report.ReportDefinitionToExtJSConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
@@ -78,19 +85,20 @@ public class ReportData extends PicsApiSupport {
 			initialize();
 
 			if (includeReport) {
-				json.put(ReportUtil.REPORT, report.toJSON(true));
+				json.put(LEVEL_REPORT, ReportDefinitionToExtJSConverter.toJSON(report));
 			}
 
+			AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
 			if (includeColumns) {
-				json.put(ReportUtil.COLUMNS, "");
+				json.put(LEVEL_COLUMNS, AvailableFieldsToExtJSConverter.getColumns(model, permissions));
 			}
 
 			if (includeFilters) {
-				json.put(ReportUtil.FILTERS, "");
+				json.put(LEVEL_FILTERS, AvailableFieldsToExtJSConverter.getFilters(model, permissions));
 			}
 
 			if (includeData) {
-				json.put(ReportUtil.REPORT_DATA, getData());
+				json.put(LEVEL_DATA, getData());
 			}
 
 			if (includeSql()) {
@@ -109,6 +117,12 @@ public class ReportData extends PicsApiSupport {
 		return JSON;
 	}
 
+	public String sqlFunctions() {
+		Map<String, String> map = ReportUtil.getTranslatedFunctionsForField(permissions.getLocale(), null);
+		json.put("functions", ReportUtil.convertTranslatedFunctionstoJson(map));
+		return SUCCESS;
+	}
+	
 	private boolean includeSql() {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
@@ -121,8 +135,8 @@ public class ReportData extends PicsApiSupport {
 
 			converter.convertForExtJS();
 			ReportResults reportResults = converter.getReportResults();
-			jsonObject.put(ReportUtil.DATA, reportResults.toJson());
-			jsonObject.put(ReportUtil.TOTAL, reportResults.size());
+			jsonObject.put(LEVEL_DATA, reportResults.toJson());
+			jsonObject.put(RESULTS_TOTAL, reportResults.size());
 		} catch (Exception error) {
 			handleErrorForData(error);
 		}

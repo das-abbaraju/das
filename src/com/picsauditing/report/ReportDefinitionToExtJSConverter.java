@@ -1,9 +1,6 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.ReportUtil.COLUMNS;
-import static com.picsauditing.report.access.ReportUtil.FILTERS;
-import static com.picsauditing.report.access.ReportUtil.FILTER_EXPRESSION;
-import static com.picsauditing.report.access.ReportUtil.SORTS;
+import static com.picsauditing.report.ReportJson.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,14 +25,10 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ReportDefinitionToExtJSConverter {
-
-	private enum ReportListType {
-		Columns, Filters, Sorts;
-
-		String getKey() {
-			return this.toString().toLowerCase();
-		}
-	}
+	//import static com.picsauditing.report.access.ReportUtil.COLUMNS;
+	//import static com.picsauditing.report.access.ReportUtil.FILTERS;
+	//import static com.picsauditing.report.access.ReportUtil.FILTER_EXPRESSION;
+	//import static com.picsauditing.report.access.ReportUtil.SORTS;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDefinitionToExtJSConverter.class);
 
@@ -53,13 +46,13 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static void convertReportLevelData(Report report, JSONObject json) {
-		json.put("id", report.getId());
-		json.put("type", report.getModelType().toString());
-		json.put("name", report.getName());
-		json.put("description", report.getDescription());
+		json.put(REPORT_ID, report.getId());
+		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
+		json.put(REPORT_NAME, report.getName());
+		json.put(REPORT_DESCRIPTION, report.getDescription());
 
 		if (!Strings.isEmpty(report.getFilterExpression()))
-			json.put(FILTER_EXPRESSION, report.getFilterExpression());
+			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 		json.put("num_times_favorited", report.getNumTimesFavorited());
 		if (report.getCreatedBy() != null) {
 			json.put("created_by", report.getCreatedBy().getName());
@@ -102,42 +95,23 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static JSONObject toJSON(Column obj) {
-		JSONObject json = new JSONObject();
-		json.put("id", obj.getName());
+		JSONObject json = elementToCommonJson(obj);
+		json.put("type", obj.getField().getColumnType());
+		
+		json.put("url", obj.getField().getUrl());
 		if (obj.getSqlFunction() != null)
-			json.put("method", obj.getSqlFunction().toString());
-		json.put("name", obj.getField().getText());
-		json.put("description", obj.getField().getHelp());
-		{
-			// TODO get the 
-			json.put("type", obj.getField().getType().toString().toLowerCase());
-			json.put("fieldType", obj.getField().getType().toString());
-			json.put("filterType", obj.getField().getType().getFilterType().toString());
-			json.put("displayType", obj.getField().getType().toString().toLowerCase());
-		}
-
-		if (!Strings.isEmpty(obj.getField().getUrl()))
-			json.put("url", obj.getField().getUrl());
-
+			json.put("sql_function", obj.getSqlFunction().toString());
 		if (obj.getWidth() > 0)
 			json.put("width", obj.getWidth());
 
-		JSONArray functionsArray = new JSONArray();
-		for (String key : obj.getField().getFunctions().keySet()) {
-			JSONObject translatedFunction = new JSONObject();
-			translatedFunction.put("key", key);
-			translatedFunction.put("value", obj.getField().getFunctions().get(key));
-			functionsArray.add(translatedFunction);
-		}
-
-		json.put("functions", functionsArray);
+		json.put("is_sortable", obj.getField().isSortable());
 
 		return json;
 	}
 
 	private static JSONObject toJSON(Filter obj) {
-		JSONObject json = new JSONObject();
-		json.put("id", obj.getName());
+		JSONObject json = elementToCommonJson(obj);
+		json.put("type", obj.getField().getFilterType());
 		json.put("operator", obj.getOperator().toString());
 
 		if (obj.getOperator().isValueUsed()) {
@@ -169,6 +143,15 @@ public class ReportDefinitionToExtJSConverter {
 		return json;
 	}
 
+	private static JSONObject elementToCommonJson(ReportElement obj) {
+		JSONObject json = new JSONObject();
+		json.put("id", obj.getName());
+		json.put("category", obj.getField().getCategoryTranslation());
+		json.put("name", obj.getField().getText());
+		json.put("description", obj.getField().getHelp());
+		return json;
+	}
+	
 	/**
 	 * From JSON to Report
 	 */
@@ -191,14 +174,14 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
-		String filterExpressionFromJson = (String) json.get(FILTER_EXPRESSION);
+		String filterExpressionFromJson = (String) json.get(REPORT_FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson))
 			return filterExpressionFromJson;
 		return null;
 	}
 
 	private static void addColumns(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(COLUMNS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_COLUMNS);
 		if (jsonArray == null)
 			return;
 
@@ -210,7 +193,7 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static void addFilters(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(FILTERS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_FILTERS);
 		if (jsonArray == null)
 			return;
 
@@ -222,7 +205,7 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static void addSorts(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(SORTS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_SORTS);
 		if (jsonArray == null)
 			return;
 
@@ -253,7 +236,7 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static boolean isAscending(JSONObject json) {
-		String direction = (String) json.get("direction");
+		String direction = (String) json.get(SORT_DIRECTION);
 		if (direction != null && direction.equals("DESC"))
 			return false;
 		return true;
@@ -272,11 +255,11 @@ public class ReportDefinitionToExtJSConverter {
 	}
 
 	private static void toElementFromJSON(JSONObject json, ReportElement obj) {
-		obj.setName((String) json.get("name"));
+		obj.setName((String) json.get(REPORT_ELEMENT_NAME));
 	}
 
 	private static QueryFilterOperator parseOperator(JSONObject json) {
-		String object = (String) json.get("operator");
+		String object = (String) json.get(FILTER_OPERATOR);
 		if (Strings.isEmpty(object)) {
 			return QueryFilterOperator.Equals;
 		}

@@ -1,9 +1,6 @@
 package com.picsauditing.model.report;
 
-import static com.picsauditing.report.access.ReportUtil.COLUMNS;
-import static com.picsauditing.report.access.ReportUtil.FILTERS;
-import static com.picsauditing.report.access.ReportUtil.FILTER_EXPRESSION;
-import static com.picsauditing.report.access.ReportUtil.SORTS;
+import static com.picsauditing.report.ReportJson.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,12 +52,12 @@ public class ReportParameterConverter {
 		json.put("description", report.getDescription());
 
 		if (!Strings.isEmpty(report.getFilterExpression()))
-			json.put(FILTER_EXPRESSION, report.getFilterExpression());
+			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 	}
 
 	private static void convertColumnsToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
-		json.put(COLUMNS, jsonArray);
+		json.put(REPORT_COLUMNS, jsonArray);
 		for (Column obj : report.getColumns()) {
 			jsonArray.add(toJSON(obj));
 		}
@@ -68,7 +65,7 @@ public class ReportParameterConverter {
 
 	private static void convertFiltersToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
-		json.put(FILTERS, jsonArray);
+		json.put(REPORT_FILTERS, jsonArray);
 		for (Filter obj : report.getFilters()) {
 			jsonArray.add(toJSON(obj));
 		}
@@ -76,7 +73,7 @@ public class ReportParameterConverter {
 
 	private static void convertSortsToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
-		json.put(SORTS, jsonArray);
+		json.put(REPORT_SORTS, jsonArray);
 		for (Sort obj : report.getSorts()) {
 			jsonArray.add(toJSON(obj));
 		}
@@ -119,17 +116,6 @@ public class ReportParameterConverter {
 		json.put("filterType", obj.getType().getFilterType().toString());
 		json.put("displayType", obj.getType().toString().toLowerCase());
 		json.put("type", obj.getType().toString().toLowerCase());
-
-		JSONArray functionsArray = new JSONArray();
-		for (String key : obj.getFunctions().keySet()) {
-			JSONObject translatedFunction = new JSONObject();
-			translatedFunction.put("key", key);
-			translatedFunction.put("value", obj.getFunctions().get(key));
-			functionsArray.add(translatedFunction);
-		}
-
-		json.put("functions", functionsArray);
-
 		return json;
 	}
 
@@ -180,14 +166,14 @@ public class ReportParameterConverter {
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
-		String filterExpressionFromJson = (String) json.get(FILTER_EXPRESSION);
+		String filterExpressionFromJson = (String) json.get(REPORT_FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson))
 			return filterExpressionFromJson;
 		return null;
 	}
 
 	private static void addColumns(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(COLUMNS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_COLUMNS);
 		if (jsonArray == null)
 			return;
 
@@ -201,7 +187,7 @@ public class ReportParameterConverter {
 	}
 
 	private static void addFilters(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(FILTERS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_FILTERS);
 		if (jsonArray == null)
 			return;
 
@@ -215,7 +201,7 @@ public class ReportParameterConverter {
 	}
 
 	private static void addSorts(JSONObject json, Report dto) {
-		JSONArray jsonArray = (JSONArray) json.get(SORTS);
+		JSONArray jsonArray = (JSONArray) json.get(REPORT_SORTS);
 		if (jsonArray == null)
 			return;
 

@@ -1,5 +1,7 @@
 package com.picsauditing.report.data;
 
+import static com.picsauditing.report.ReportJson.*;
+
 import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
 import java.util.Collection;
@@ -38,24 +40,23 @@ public class ReportDataConverter {
 	public JSONObject convertReportForFrontEnd(Report report) {
 		JSONObject jsonReport = new JSONObject();
 
-		// TODO: Create constants for these values 
-		jsonReport.put("id", report.getId());
-		jsonReport.put("type", report.getModelType());
-		jsonReport.put("name", report.getName());		
-		jsonReport.put("description", report.getId());
-		jsonReport.put("columns", convertColumnsForFrontEnd(report.getColumns()));
-		jsonReport.put("filters", convertFiltersForFrontEnd(report.getFilters()));
-		jsonReport.put("sorts", convertSortsForFrontEnd(report.getSorts()));
-		jsonReport.put("filter_expression", report.getFilterExpression());
-		jsonReport.put("num_times_favorited", report.getNumTimesFavorited());
-		jsonReport.put("is_editable", report.isEditable());
-		jsonReport.put("is_favorite", report.isFavorite());
-		jsonReport.put("creation_date", report.getCreationDate());
-		jsonReport.put("created_by", report.getCreatedBy().getName());
-		jsonReport.put("update_date", report.getUpdateDate());
-		jsonReport.put("updated_by", report.getUpdatedBy().getName());
+		jsonReport.put(REPORT_ID, report.getId());
+		jsonReport.put(REPORT_MODEL_TYPE, report.getModelType());
+		jsonReport.put(REPORT_NAME, report.getName());		
+		jsonReport.put(REPORT_DESCRIPTION, report.getId());
+		jsonReport.put(REPORT_COLUMNS, convertColumnsForFrontEnd(report.getColumns()));
+		jsonReport.put(REPORT_FILTERS, convertFiltersForFrontEnd(report.getFilters()));
+		jsonReport.put(REPORT_SORTS, convertSortsForFrontEnd(report.getSorts()));
+		jsonReport.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
+		jsonReport.put(REPORT_FAVORITE_COUNT, report.getNumTimesFavorited());
+		jsonReport.put(REPORT_EDITABLE, report.isEditable());
+		jsonReport.put(REPORT_FAVORITE, report.isFavorite());
+		jsonReport.put(BASE_CREATION_DATE, report.getCreationDate());
+		jsonReport.put(BASE_CREATED_BY, report.getCreatedBy().getName());
+		jsonReport.put(BASE_UPDATE_DATE, report.getUpdateDate());
+		jsonReport.put(BASE_UPDATED_BY, report.getUpdatedBy().getName());
 		
-		jsonReport.put(ReportUtil.REPORT, jsonReport);
+		jsonReport.put(LEVEL_REPORT, jsonReport);
 		
 		return jsonReport;
 	}

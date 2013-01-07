@@ -33,7 +33,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.jpa.entities.Translatable;
-import com.picsauditing.model.report.ReportParameterConverter;
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
@@ -46,14 +46,6 @@ import com.picsauditing.util.Strings;
  */
 public final class ReportUtil {
 
-	public static final String REPORT = "report";
-	public static final String REPORT_DATA = "report_data";
-	public static final String DATA = "data";
-	public static final String TOTAL = "total";
-	public static final String COLUMNS = "columns";
-	public static final String FILTERS = "filters";
-	public static final String SORTS = "sorts";
-	public static final String FILTER_EXPRESSION = "filterExpression";
 	public static final String SQL = "sql";
 	public static final String SUCCESS = "success";
 	public static final String MESSAGE = "message";
@@ -67,32 +59,10 @@ public final class ReportUtil {
 		return i18nCache.getText(key, locale);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static JSONArray translateAndJsonify(Map<String, Field> availableFields, Permissions permissions,
-			Locale locale) {
-		JSONArray fieldsJsonArray = new JSONArray();
-
-		for (Field field : availableFields.values()) {
-			if (!field.canUserSeeQueryField(permissions))
-				continue;
-
-			field.setText(translateLabel(field, locale));
-
-			applyFunctionsToField(locale, field);
-			// TODO Change this to the new Impl that will generate visibleFields and filterableFields
-			JSONObject obj = ReportParameterConverter.toJSON(field);
-
-			obj.put("category", translateCategory(field.getCategory().toString(), locale));
-
-			String help = getText("Report." + field.getName() + ".help", locale);
-			if (help != null) {
-				obj.put("help", help);
-			}
-
-			fieldsJsonArray.add(obj);
-		}
-
-		return fieldsJsonArray;
+	public static void translateField(Field field, Locale locale) {
+		field.setText(translateLabel(field, locale));
+		field.setCategoryTranslation(translateCategory(field, locale));
+		field.setHelp(translateHelp(field, locale));
 	}
 
 	public static void addTranslatedLabelsToReportParameters(Report definition, Locale locale) {
@@ -123,20 +93,29 @@ public final class ReportUtil {
 						+ translateLabel;
 			}
 
-			applyFunctionsToField(locale, field);
 			field.setText(translateLabel);
 			field.setHelp(translateHelp);
 		}
 	}
 
-	private static void applyFunctionsToField(Locale locale, Field field) {
-		List<SqlFunction> functions = field.getType().getDisplayType().getFunctions();
+	public static Map<String, String> getTranslatedFunctionsForField(Locale locale, DisplayType type) {
 		Map<String,String> translatedFunctions = new TreeMap<String, String>();
-		for (SqlFunction function : functions) {
+		for (SqlFunction function : type.getFunctions()) {
 			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
 		}
-		
-		field.setFunctions(translatedFunctions);
+		return translatedFunctions;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray convertTranslatedFunctionstoJson(Map<String, String> map) {
+		JSONArray functionsArray = new JSONArray();
+		for (String key : map.keySet()) {
+			JSONObject translatedFunction = new JSONObject();
+			translatedFunction.put("key", key);
+			translatedFunction.put("value", map.get(key));
+			functionsArray.add(translatedFunction);
+		}
+		return functionsArray;
 	}
 
 	private static void addTranslationLabelsToFilters(Report definition, Locale locale) {
@@ -193,15 +172,15 @@ public final class ReportUtil {
 		return translatedText;
 	}
 
-	public static String translateCategory(String category, Locale locale) {
-		String translatedText = getText("Report.Category." + category, locale);
+	public static String translateCategory(Field field, Locale locale) {
+		String translatedText = getText("Report.Category." + field.getCategory(), locale);
 
 		if (translatedText == null) {
 			translatedText = getText("Report.Category.General", locale);
 		}
 
 		if (translatedText == null) {
-			translatedText = "?Report.Category." + category;
+			translatedText = "?" + field.getCategory();
 		}
 
 		return translatedText;
@@ -310,7 +289,7 @@ public final class ReportUtil {
 
 				translations.put(fieldKey, translateLabel(field, locale));
 				translations.put(fieldHelpKey, getText(fieldHelpKey, locale));
-				translations.put(fieldCategoryKey, translateCategory(category, locale));
+				translations.put(fieldCategoryKey, translateCategory(field, locale));
 			}
 		}
 

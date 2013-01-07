@@ -1,11 +1,11 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -16,10 +16,11 @@ import com.picsauditing.util.Strings;
 public class Field {
 
 	private static final Pattern FIELD_VARIABLE_PATTERN = Pattern.compile("\\{(\\w+)\\}");
-	
+
 	private FieldType type = FieldType.String;
 	private String name;
 	private FieldCategory category = FieldCategory.General;
+	private String categoryTranslation;
 	private String text;
 	private String suffix;
 	private String url;
@@ -35,7 +36,6 @@ public class Field {
 	private String postTranslation;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
-	private Map<String,String> functions = new TreeMap<String, String>();
 
 	public Field(ReportField annotation) {
 		type = annotation.type();
@@ -47,7 +47,7 @@ public class Field {
 		filterable = annotation.filterable();
 		sortable = annotation.sortable();
 		importance = annotation.importance();
-		
+
 		preTranslation = annotation.i18nKeyPrefix();
 		postTranslation = annotation.i18nKeySuffix();
 		if (type.getFilterType() == FilterType.ShortList && Strings.isEmpty(preTranslation)) {
@@ -68,7 +68,7 @@ public class Field {
 		}
 		this.type = type;
 	}
-	
+
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;
@@ -109,6 +109,20 @@ public class Field {
 
 	public FieldType getType() {
 		return type;
+	}
+	
+	@Transient
+	public String getColumnType() {
+		// TODO // [boolean, flag, number, string] - SEEMS WAY TO LIMITED - IMPLICITLY CREATE MODEL TYPE - CREATE MODEL TYPE CONVERSION CLASS FE
+        // dates, datetimes and functions on dates will all be transmitted back as translated and/or formated strings
+        // floats, ints, and currencies will be passed back as translated formatted numbers including relevant decimal and thousand separators
+		return type.toString();
+	}
+	
+	@Transient
+	public String getFilterType() {
+		// TODO // filter type - these need to be fixed [AccountID, AccountName, Autocomplete, Boolean, Date, DaysAgo, Enum, Float, Integer, LowMedHigh, NUmber*, String, UserID]
+		return type.toString();
 	}
 	
 	public String getName() {
@@ -176,6 +190,15 @@ public class Field {
 		return this;
 	}
 
+	@Transient
+	public String getCategoryTranslation() {
+		return categoryTranslation;
+	}
+
+	public void setCategoryTranslation(String categoryTranslation) {
+		this.categoryTranslation = categoryTranslation;
+	}
+
 	public void setPreTranslation(String preTranslation) {
 		this.preTranslation = preTranslation;
 	}
@@ -238,21 +261,13 @@ public class Field {
 	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
 	}
-	
+
 	public FieldImportance getImportance() {
 		return importance;
 	}
 
 	public void setImportance(FieldImportance importance) {
 		this.importance = importance;
-	}
-
-	public Map<String, String> getFunctions() {
-		return functions;
-	}
-
-	public void setFunctions(Map<String, String> functions) {
-		this.functions = functions;
 	}
 
 	public Field clone() {
@@ -271,7 +286,6 @@ public class Field {
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
-		copiedField.functions = functions;
 		return copiedField;
 	}
 
