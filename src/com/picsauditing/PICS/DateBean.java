@@ -300,6 +300,11 @@ public class DateBean {
 	}
 
 	public static Date getNextDayMidnight(Date date) {
+		if (date == null) {
+			// There is no good value to return here other than null
+			return null;
+		}
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.set(Calendar.HOUR_OF_DAY, 0);

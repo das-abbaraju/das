@@ -298,6 +298,13 @@ public class DateBeanTest {
 	}
 
 	@Test
+	public void testGetNextDayMidnight_NullReturnsNullAndDoesntCauseException() {
+		Date nextDayMidnight = DateBean.getNextDayMidnight(null);
+
+		assertNull(nextDayMidnight);
+	}
+
+	@Test
 	public void testGetNextDayMidnight() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		cal.set(2011, Calendar.JANUARY, 1, 1, 1, 1);
