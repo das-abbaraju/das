@@ -36,6 +36,7 @@ public class NewYearMailer extends PicsActionSupport {
 	private void queueReportRequest() {
 		EmailRequestDTO request = runner.buildEmailRequest();
 		request.templateID = ANNUAL_UPDATE_TEMPLATE_ID;
+		request.userTypes.add(OpPerms.ContractorAdmin);
 		try {
 			emailRequestPublisher.publish(request);
 			addActionMessage("Successfully added " + request.contractorIDs.size() + " contractors to the email queue");
