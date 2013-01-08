@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -25,15 +26,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ReportDefinitionToExtJSConverter {
-	//import static com.picsauditing.report.access.ReportUtil.COLUMNS;
-	//import static com.picsauditing.report.access.ReportUtil.FILTERS;
-	//import static com.picsauditing.report.access.ReportUtil.FILTER_EXPRESSION;
-	//import static com.picsauditing.report.access.ReportUtil.SORTS;
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(ReportDefinitionToExtJSConverter.class);
 
 	// From Report to JSON
-
+	
 	public static JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
 
@@ -53,15 +50,23 @@ public class ReportDefinitionToExtJSConverter {
 
 		if (!Strings.isEmpty(report.getFilterExpression()))
 			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		json.put("num_times_favorited", report.getNumTimesFavorited());
-		if (report.getCreatedBy() != null) {
-			json.put("created_by", report.getCreatedBy().getName());
+		json.put(REPORT_FAVORITE_COUNT, report.getNumTimesFavorited());
+		
+		json.put(REPORT_EDITABLE, report.isEditable());
+		json.put(REPORT_FAVORITE, report.isFavorite());
+		
+		setJsonForAuditColumns(report, json);
+	}
+	
+	private static void setJsonForAuditColumns(Report report, JSONObject json) {
+		if (report.getCreatedBy() != null && report.getCreationDate() != null) {
+			json.put(BASE_CREATION_DATE, report.getCreationDate().getTime());
+			json.put(BASE_CREATED_BY, report.getCreatedBy().getName());
 		}
-		json.put("creation_date", report.getCreationDate().getTime());
-		if (report.getCreatedBy() != null) {
-			json.put("updated_by", report.getUpdatedBy().getName());
+		if (report.getUpdatedBy() != null && report.getUpdateDate() != null) {
+			json.put(BASE_UPDATE_DATE, report.getUpdateDate().getTime());
+			json.put(BASE_UPDATED_BY, report.getUpdatedBy().getName());
 		}
-		json.put("update_date", report.getUpdateDate().getTime());
 	}
 
 	private static void convertListToJson(Report report, JSONObject json, ReportListType type) {
@@ -94,6 +99,45 @@ public class ReportDefinitionToExtJSConverter {
 		return null;
 	}
 
+	// TODO Figure out the cleanest way to do this
+	private static JSONArray convertColumnsForFrontEnd(List<Column> columns) {
+		JSONArray columnArray = new JSONArray();
+		if (CollectionUtils.isEmpty(columns)) {
+			return columnArray;
+		}
+		
+		for (Column column : columns) {
+			JSONObject columnObject = new JSONObject();
+			columnArray.add(columnObject);
+		}
+		
+		return columnArray;
+	}
+	private static JSONArray convertFiltersForFrontEnd(List<Filter> filters) {
+		JSONArray filterArray = new JSONArray();
+		if (CollectionUtils.isEmpty(filters)) {
+			return filterArray;
+		}
+		
+		for (Filter filter : filters) {
+			JSONObject filterObject = new JSONObject();
+			filterArray.add(filterObject);
+		}
+		
+		return filterArray;
+	}	
+	private static JSONArray convertSortsForFrontEnd(List<Sort> sorts) {
+		JSONArray sortArray = new JSONArray();
+		if (CollectionUtils.isEmpty(sorts)) {
+			return sortArray;
+		}
+		
+		for (Sort sort : sorts) {
+		}
+		
+		return sortArray;
+	}
+	
 	private static JSONObject toJSON(Column obj) {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getColumnType());
@@ -108,41 +152,41 @@ public class ReportDefinitionToExtJSConverter {
 
 		return json;
 	}
-
+	
 	private static JSONObject toJSON(Filter obj) {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getFilterType());
 		json.put("operator", obj.getOperator().toString());
 
+		setFilterValue(obj, json);
+
+		json.put(Filter.FIELD_COMPARE, obj.getColumnCompare());
+
+		return json;
+	}
+
+	private static void setFilterValue(Filter obj, JSONObject json) {
 		if (obj.getOperator().isValueUsed()) {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(obj.getValues());
-			// json.put("values", valueArray);
-
-			// Until we phase out the old code, we need this for backwards
-			// compatibility
+			
+			// TODO Make sure the value handshake is correct
+			// http://intranet.picsauditing.com/display/it/Handshake
 			if (obj.getValues().size() == 1) {
 				json.put("value", obj.getValues().get(0));
 			} else {
 				json.put("value", StringUtils.join(obj.getValues(), ", "));
 			}
 		}
-
-		if (obj.getFieldForComparison() != null)
-			json.put(Filter.FIELD_COMPARE, obj.getFieldForComparison().getName());
-
-		return json;
 	}
 
 	private static JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
 		json.put("id", obj.getName());
-		if (!obj.isAscending())
-			json.put("direction", "DESC");
-
+		json.put("direction", obj.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 		return json;
 	}
-
+	
 	private static JSONObject elementToCommonJson(ReportElement obj) {
 		JSONObject json = new JSONObject();
 		json.put("id", obj.getName());

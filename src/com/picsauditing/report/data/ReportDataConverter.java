@@ -1,7 +1,5 @@
 package com.picsauditing.report.data;
 
-import static com.picsauditing.report.ReportJson.*;
-
 import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
 import java.util.Collection;
@@ -9,18 +7,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.SqlFunction;
 
@@ -36,102 +27,6 @@ public class ReportDataConverter {
 		reportResults = new ReportResults(columns, results);
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONObject convertReportForFrontEnd(Report report) {
-		JSONObject jsonReport = new JSONObject();
-
-		jsonReport.put(REPORT_ID, report.getId());
-		jsonReport.put(REPORT_MODEL_TYPE, report.getModelType());
-		jsonReport.put(REPORT_NAME, report.getName());		
-		jsonReport.put(REPORT_DESCRIPTION, report.getId());
-		jsonReport.put(REPORT_COLUMNS, convertColumnsForFrontEnd(report.getColumns()));
-		jsonReport.put(REPORT_FILTERS, convertFiltersForFrontEnd(report.getFilters()));
-		jsonReport.put(REPORT_SORTS, convertSortsForFrontEnd(report.getSorts()));
-		jsonReport.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		jsonReport.put(REPORT_FAVORITE_COUNT, report.getNumTimesFavorited());
-		jsonReport.put(REPORT_EDITABLE, report.isEditable());
-		jsonReport.put(REPORT_FAVORITE, report.isFavorite());
-		jsonReport.put(BASE_CREATION_DATE, report.getCreationDate());
-		jsonReport.put(BASE_CREATED_BY, report.getCreatedBy().getName());
-		jsonReport.put(BASE_UPDATE_DATE, report.getUpdateDate());
-		jsonReport.put(BASE_UPDATED_BY, report.getUpdatedBy().getName());
-		
-		jsonReport.put(LEVEL_REPORT, jsonReport);
-		
-		return jsonReport;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONArray convertColumnsForFrontEnd(List<Column> columns) {
-		JSONArray columnArray = new JSONArray();
-		if (CollectionUtils.isEmpty(columns)) {
-			return columnArray;
-		}
-		
-		for (Column column : columns) {
-			JSONObject columnObject = new JSONObject();
-			columnObject.put("id", column.getFieldNameWithoutMethod());
-			columnObject.put("type", column.getField().getType());
-			columnObject.put("category", column.getField().getCategory());
-			columnObject.put("name", column.getName());
-			columnObject.put("description", column.getField());
-			columnObject.put("url", column.getField().getUrl());
-			columnObject.put("sql_function", column.getSqlFunction());
-			columnObject.put("width", column.getWidth());
-			columnObject.put("is_sortable", column.getField().isSortable());
-			
-			columnArray.add(columnObject);
-		}
-		
-		return columnArray;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONArray convertFiltersForFrontEnd(List<Filter> filters) {
-		JSONArray filterArray = new JSONArray();
-		if (CollectionUtils.isEmpty(filters)) {
-			return filterArray;
-		}
-		
-		for (Filter filter : filters) {
-			JSONObject filterObject = new JSONObject();
-			filterObject.put("id", filter.getName());
-			filterObject.put("type", filter.getField().getType());
-			filterObject.put("category", filter.getField().getCategory());
-			filterObject.put("name", filter.getName());
-			filterObject.put("description", filter.getField().getHelp());
-			filterObject.put("operator", filter.getOperator());
-			filterObject.put("value", filter.getValues());
-			filterObject.put("column_compare_id", filter.getColumnCompare());
-			
-			filterArray.add(filterObject);
-		}
-		
-		return filterArray;
-	}	
-	
-	@SuppressWarnings("unchecked")
-	public JSONArray convertSortsForFrontEnd(List<Sort> sorts) {
-		JSONArray sortArray = new JSONArray();
-		if (CollectionUtils.isEmpty(sorts)) {
-			return sortArray;
-		}
-		
-		for (Sort sort : sorts) {
-			JSONObject sortObject = new JSONObject();
-			sortObject.put("id", sort.getName());
-			sortObject.put("direction", getSortDirection(sort));
-			
-			sortArray.add(sortObject);
-		}
-		
-		return sortArray;
-	}
-	
-	private String getSortDirection(Sort sort) {
-		return sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING;
-	}
-	
 	public void convertForExtJS() {
 		for (ReportCell cell : reportResults.getCells()) {
 			Object value = convertValueForJson(cell);

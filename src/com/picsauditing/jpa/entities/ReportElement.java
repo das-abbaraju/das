@@ -1,10 +1,14 @@
 package com.picsauditing.jpa.entities;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -14,18 +18,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.search.IndexValueType;
+import com.picsauditing.search.IndexableField;
 
-@SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class ReportElement extends BaseTable {
+public abstract class ReportElement {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportElement.class);
 
 	public static String METHOD_SEPARATOR = "__";
 
+	protected int id;
 	protected Report report;
-	protected String name = "trevor";
+	protected String name;
 	protected SqlFunction sqlFunction;
 	protected Field field;
 
@@ -36,6 +44,19 @@ public abstract class ReportElement extends BaseTable {
 
 	public ReportElement(String fieldName) {
 		setName(fieldName);
+	}
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(nullable = false)
+	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 10)
+	@ReportField(type = FieldType.Integer)
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@ManyToOne

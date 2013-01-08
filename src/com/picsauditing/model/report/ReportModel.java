@@ -137,6 +137,8 @@ public class ReportModel {
         if (!canUserEdit(permissions, report))
             throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
+        // TODO Consider adding a "save" column to the ReportElement class to store Delete/Update/Insert flags
+        // Allow updating rather than full delete/insert instead
 		for (Column c : report.getColumns()) {
 			reportDao.remove(c);
 		}

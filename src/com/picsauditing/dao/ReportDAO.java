@@ -1,24 +1,30 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Paginatable;
 import com.picsauditing.util.pagination.PaginationParameters;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class ReportDAO extends PicsDAO implements Paginatable<Report> {
@@ -122,4 +128,20 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
         }
         return orderBy;
     }
+
+	public void remove(ReportElement row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+	
+	@Transactional(propagation = Propagation.NESTED)
+	public ReportElement save(ReportElement o) {
+		if (o.getId() == 0) {
+			em.persist(o);
+		} else {
+			o = em.merge(o);
+		}
+		return o;
+	}
 }
