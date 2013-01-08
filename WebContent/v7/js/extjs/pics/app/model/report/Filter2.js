@@ -25,6 +25,5 @@ Ext.define('PICS.model.report.Filter2', {
     }, {
         name: 'column_compare_id',
         type: 'string'
-    }
-    ]
+    }]
 });
