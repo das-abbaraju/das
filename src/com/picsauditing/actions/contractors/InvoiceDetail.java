@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,8 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
+	@Autowired
+	private InvoiceService invoiceService;
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -173,7 +176,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setQbSync(true);
 				invoice.updateAmount();
 				invoice.updateAmountApplied();
-				invoiceDAO.save(invoice);
+				invoiceService.saveInvoice(invoice);
 
 				addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
 						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
@@ -327,7 +330,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 			}
 
-			invoiceDAO.save(invoice);
+			invoiceService.saveInvoice(invoice);
 
 			if (!Strings.isEmpty(message)) {
 				addActionMessage(message);
@@ -341,7 +344,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		updateTotals();
-		invoiceDAO.save(invoice);
+		invoiceService.saveInvoice(invoice);
 
 		billingService.calculateAnnualFees(contractor);
 		contractor.syncBalance();

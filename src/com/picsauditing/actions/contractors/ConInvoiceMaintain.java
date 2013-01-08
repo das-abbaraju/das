@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
@@ -29,6 +30,8 @@ import com.picsauditing.jpa.entities.TransactionStatus;
  */
 @SuppressWarnings("serial")
 public class ConInvoiceMaintain extends ContractorActionSupport implements Preparable {
+	@Autowired
+	private InvoiceService invoiceService;
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -76,7 +79,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 			invoice.updateAmount();
 			invoice.setQbSync(true);
-			invoiceDAO.save(invoice);
+			invoiceService.saveInvoice(invoice);
 			addActionMessage(message);
 		}
 
@@ -102,7 +105,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 				invoice.updateAmount();
 				invoice.setQbSync(true);
-				invoiceDAO.save(invoice);
+				invoiceService.saveInvoice(invoice);
 			}
 		}
 

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.dao.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 	@Mock
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	@Mock
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Mock
 	private InvoiceFeeDAO feeDAO;
 	@Mock
@@ -86,6 +87,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		Whitebox.setInternalState(scheduleAudit, "emailSender", emailSender);
 		Whitebox.setInternalState(scheduleAudit, "expedite", expedite);
 		Whitebox.setInternalState(scheduleAudit, "rescheduling", rescheduling);
+		Whitebox.setInternalState(scheduleAudit, "invoiceService", invoiceService);
 
 		parameters.put("auditor.id", 941);
 
@@ -207,7 +209,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(invoiceDAO).save((Invoice) any());
+		verify(invoiceService).saveInvoice((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
@@ -238,7 +240,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 		verify(conAudit).setScheduledDate((Date) any());
 		verify(conAudit).setContractorConfirm(null);
 		verify(contractorAccountDao).save((ContractorAccount) any());
-		verify(invoiceDAO).save((Invoice) any());
+		verify(invoiceService).saveInvoice((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
@@ -272,6 +274,6 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(auditType.getI18nKey("name")).thenReturn("test");
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
 		when(contractor.getCountry()).thenReturn(country);
-		when(invoiceDAO.save((Invoice) any())).thenReturn(invoice);
+		when(invoiceService.saveInvoice((Invoice) any())).thenReturn(invoice);
 	}
 }

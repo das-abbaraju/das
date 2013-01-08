@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +17,6 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
@@ -44,7 +44,7 @@ public class BillingDetail extends ContractorActionSupport {
 	@Autowired
 	private OperatorAccountDAO opAccountDao;
 	@Autowired
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Autowired
 	private TransactionDAO transactionDAO;
 	@Autowired
@@ -113,7 +113,7 @@ public class BillingDetail extends ContractorActionSupport {
 				item.setInvoice(invoice);
 				item.setAuditColumns(permissions);
 			}
-			invoice = invoiceDAO.save(invoice);
+			invoice = invoiceService.saveInvoice(invoice);
 
 			contractor.getInvoices().add(invoice);
 			contractor.syncBalance();

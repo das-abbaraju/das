@@ -5,17 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
@@ -28,6 +24,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private BrainTreeService paymentService;
+	@Autowired
+	protected InvoiceService invoiceService;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -48,7 +46,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private boolean newRegistration = false;
 
 	private InvoiceFee activationFee;
-	private InvoiceFee gstFee;
+	private InvoiceFee canadianTaxFee;
+	private String canadianTaxFeeMsgKey;
 	private InvoiceFee vatFee;
 	private InvoiceFee importFee;
 
@@ -92,7 +91,26 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// Setup the new variables for sending the CC to braintree
 		loadCC();
 
+		if (contractor.getCountry().getCurrency().isCAD()) {
+			initCanadianTaxFee();
+		}
+
 		return SUCCESS;
+	}
+
+	private void initCanadianTaxFee() throws Exception {
+		CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
+		canadianTaxFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
+
+		BigDecimal total = BigDecimal.ZERO.setScale(2);
+		for (FeeClass feeClass : contractor.getFees().keySet()) {
+			if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+				total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+		}
+
+		total = total.add(getActivationFee().getAmount());
+		canadianTaxFee.setAmount(canadianTaxFee.getTax(total));
+		canadianTaxFeeMsgKey = canadianTaxFee.getI18nKey("fee");
 	}
 
 	private void loadCC() throws Exception {
@@ -467,28 +485,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		return false;
 	}
 
-	public InvoiceFee getGstFee() {
-		if (gstFee == null) {
-			gstFee = new InvoiceFee();
-
-			if (contractor.getCountry().getCurrency().isCAD()) {
-				gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-				BigDecimal total = BigDecimal.ZERO.setScale(2);
-				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-						total = total.add(contractor.getFees().get(feeClass).getNewAmount());
-				}
-
-				total = total.add(getActivationFee().getAmount());
-				gstFee.setAmount(gstFee.getTax(total));
-			}
-		}
-
-		return gstFee;
+	public InvoiceFee getCanadianTaxFee() {
+		return canadianTaxFee;
 	}
 
-	public void setGstFee(InvoiceFee gstFee) {
-		this.gstFee = gstFee;
+	public void setCanadianTaxFee(InvoiceFee canadianTaxFee) {
+		this.canadianTaxFee = canadianTaxFee;
 	}
 
 	public InvoiceFee getVatFee() {
@@ -531,4 +533,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getImportFeeForTranslation() {
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 	}
+
+	public String getCanadianTaxFeeMsgKey() {
+		return canadianTaxFeeMsgKey;
+	}
+
 }

@@ -14,6 +14,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.apache.struts2.ServletActionContext;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -25,7 +26,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditorAvailabilityDAO;
-import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -77,7 +77,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	@Autowired
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
 	@Autowired
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Autowired
 	private InvoiceFeeDAO feeDAO;
 	@Autowired
@@ -585,7 +585,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
 		invoice.setQbSync(true);
-		invoice = invoiceDAO.save(invoice);
+		invoice = invoiceService.saveInvoice(invoice);
 
 		InvoiceItem item = new InvoiceItem();
 		item.setAmount(contractor.getCountry().getAmount(fee));

@@ -80,7 +80,7 @@ public class BillingCalculatorSingle {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Autowired
 	protected BasicDAO dao;
 	@Autowired
@@ -95,6 +95,8 @@ public class BillingCalculatorSingle {
 	private InvoiceObserver invoiceObserver;
 	@Autowired
 	private PaymentObserver paymentObserver;
+	@Autowired
+	private TaxService taxService;
 
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
@@ -341,7 +343,7 @@ public class BillingCalculatorSingle {
 		toUpdate.setTotalAmount(updateWith.getTotalAmount());
 		toUpdate.setQbSync(true);
 
-		invoiceDAO.save(toUpdate);
+		invoiceService.saveInvoice(toUpdate);
 
 		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
 				+ " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
@@ -420,7 +422,7 @@ public class BillingCalculatorSingle {
 			item.setAuditColumns(new User(User.SYSTEM));
 		}
 
-		invoice.preSave();
+		taxService.applyTax(invoice);
 		return invoice;
 	}
 

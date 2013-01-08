@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +54,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 			return null;
 		}
 	}
-	
+
 	public InvoiceFee findMembershipByLegacyAuditGUARDID(FeeClass classType, InvoiceFee legacyAuditGUARDfee) {
 		int numPayingFacilities = 0;
 		// assigning numFacilities based on legacy id
@@ -72,6 +74,15 @@ public class InvoiceFeeDAO extends PicsDAO {
 
 	public List<InvoiceFee> findAll() {
 		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
+		return query.getResultList();
+	}
+
+	public List<InvoiceFeeCountry> findAllInvoiceFeeCountry(FeeClass feeClass, CountrySubdivision countrySubdivision) {
+		Query query = em.createQuery("SELECT c FROM InvoiceFeeCountry c JOIN c.invoiceFee " +
+				"WHERE c.invoiceFee.feeClass = :feeClass AND c.subdivision = :countrySubdivision");
+		query.setParameter("feeClass", feeClass);
+		query.setParameter("countrySubdivision", countrySubdivision);
+
 		return query.getResultList();
 	}
 

@@ -2,11 +2,20 @@ package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,16 +24,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 
 public class BillingCalculatorSingleTest {
 	private BillingCalculatorSingle billingService;
 
 	@Mock private Database databaseForTesting;
+	@Mock private ContractorAccount contractor;
+	@Mock private User user;
+	@Mock private TaxService taxService;
+	@Mock private InvoiceFeeDAO invoiceFeeDAO;
 
 	@AfterClass
 	public static void classTearDown() {
@@ -37,6 +46,8 @@ public class BillingCalculatorSingleTest {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
 		billingService = new BillingCalculatorSingle();
+		Whitebox.setInternalState(billingService, "taxService", taxService);
+		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 
 		assert(OAMocksSet.isEmpty());
 	}
@@ -167,6 +178,31 @@ public class BillingCalculatorSingleTest {
 		OAMocksSet.add(oa);
 		when(mockOA2.getId()).thenReturn(OperatorAccount.AI);
 		assertFalse(billingService.qualifiesForInsureGuard(OAMocksSet));
+	}
+
+	@Test
+	public void createInvoice_shouldCallApplyTax() {
+		Country country = mock(Country.class);
+		BigDecimal amount = new BigDecimal(100);
+		when(country.getAmount(any(InvoiceFee.class))).thenReturn(amount);
+
+		InvoiceFee invoiceFee = mock(InvoiceFee.class);
+		when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+
+		ContractorFee contractorFee = mock(ContractorFee.class);
+		when(contractorFee.getCurrentLevel()).thenReturn(invoiceFee);
+		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+
+		Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
+		contractorFees.put(FeeClass.BidOnly, contractorFee);
+		when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+		when(contractor.getCountry()).thenReturn(country);
+		when(contractor.getFees()).thenReturn(contractorFees);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+
+		billingService.createInvoice(contractor, BillingStatus.Current, user);
+
+		verify(taxService).applyTax(any(Invoice.class));
 	}
 
 }
