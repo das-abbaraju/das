@@ -130,7 +130,7 @@
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-    <bean id="InvoiceService" class="com.picsauditing.PICS.InvoiceService" scope="prototype"/>
+    <bean id="InvoiceService" class="com.picsauditing.PICS.InvoiceService"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
