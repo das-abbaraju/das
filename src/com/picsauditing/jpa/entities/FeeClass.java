@@ -79,7 +79,7 @@ public enum FeeClass implements Translatable {
 			return contractor.getCountry().getAmount(fee);
 		}
 	},
-	Activation {
+	ClientGUARD, Activation {
 		@Override
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			Set<BigDecimal> discounts = new HashSet<BigDecimal>();
