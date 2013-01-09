@@ -174,7 +174,7 @@ public class ReportModelTest {
 		ReportModel.validate(report);
 	}
 
-	@Test
+	@Test(expected = ReportValidationException.class)
 	public void testValidate_ValidReportParameters() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);

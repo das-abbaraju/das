@@ -39,7 +39,6 @@ public class ReportParameterConverterTest {
 
 	@Test
 	public void testBasicReportLevelFields() {
-		// TODO Should we remove the ID from the JSON?
 		// assertEquals(123, report.getId());
 		assertEquals(ModelType.Contractors, report.getModelType());
 		assertEquals("Report Title", report.getName());

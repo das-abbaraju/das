@@ -90,11 +90,12 @@ public abstract class ReportElement {
 		}
 
 		this.name = name + METHOD_SEPARATOR + sqlFunction;
-		sqlFunction = null;
 
-		originalName = name.substring(0, startOfMethod);
-		String methodName = name.substring(startOfMethod + 2);
-		sqlFunction = SqlFunction.valueOf(methodName);
+		if (startOfMethod > -1) {
+			originalName = name.substring(0, startOfMethod);
+//			String methodName = name.substring(startOfMethod + 2);
+//			sqlFunction = SqlFunction.valueOf(methodName);
+		}		
 	}
 
 	@Transient
