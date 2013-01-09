@@ -163,7 +163,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 		contractor.syncBalance();
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractorAccountDao.save(contractor);
 
 		// Free accounts should just be activated

@@ -473,6 +473,10 @@ public class DateBean {
 		return 12;
 	}
 
+	public static boolean isSameDate(Date firstDate, Date secondDate) {
+		return (getDateDifference(firstDate, secondDate) == 0);
+	}
+
 	/**
 	 * SecondDate - FirstDate <br/>
 	 * Example: 1/1/08 and 2/1/08 = 31 <br/>

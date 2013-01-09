@@ -124,14 +124,6 @@ public class BillingCalculatorSingle {
 		contractor.setPayingFacilities(payingOperators.size());
 	}
 	
-	/**
-	 * Please start using the method with the more descriptive name "calculateContractorInvoiceFees". 
-	 */
-	@Deprecated
-	public void calculateAnnualFees (ContractorAccount contractor) {
-		this.calculateContractorInvoiceFees(contractor);
-	}
-	
 	public void calculateContractorInvoiceFees (ContractorAccount contractor) {
 		if (contractor.getStatus().isRequested()) {
 			return;
@@ -355,12 +347,18 @@ public class BillingCalculatorSingle {
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
-
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
+		Invoice invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
+		taxService.applyTax(invoice);
 
+		return invoice;
+	}
+
+	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser) {
 		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
-		for (InvoiceItem item : invoiceItems)
+		for (InvoiceItem item : invoiceItems) {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
+		}
 
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0) {
 			return null;
@@ -372,38 +370,14 @@ public class BillingCalculatorSingle {
 		invoice.setStatus(TransactionStatus.Unpaid);
 		invoice.setItems(invoiceItems);
 		invoice.setTotalAmount(invoiceTotal);
-		invoice.setAuditColumns(new User(User.SYSTEM));
+		invoice.setAuditColumns(auditUser);
 
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			invoice.setQbSync(true);
 		}
 
-		// Calculate the due date for the invoice
-		if (billingStatus.isActivation()) {
-			invoice.setDueDate(new Date());
-		} else if (billingStatus.isReactivation()) {
-			invoice.setDueDate(new Date());
-		} else if (billingStatus.isUpgrade()) {
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
-			invoice.setDueDate(contractor.getPaymentExpires());
-		}
-
-		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-			invoice.setDueDate(contractor.getPaymentExpires());
-			contractor.setRenew(true);
-		}
-
-		if (invoice.getDueDate() == null) {
-			// For all other statuses like (Current)
-			invoice.setDueDate(DateBean.addDays(new Date(), 30));
-		}
-
-		// Make sure the invoice isn't due within 7 days for active accounts
-		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7) {
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		}
+		calculateAndSetDueDateOn(invoice, contractor);
+		setContractorRenewToTrueIfNeeded(contractor);
 
 		// Add the list of operators if this invoice has a membership level
 		// on it
@@ -419,11 +393,40 @@ public class BillingCalculatorSingle {
 
 		for (InvoiceItem item : invoiceItems) {
 			item.setInvoice(invoice);
-			item.setAuditColumns(new User(User.SYSTEM));
+			item.setAuditColumns(auditUser);
 		}
 
-		taxService.applyTax(invoice);
 		return invoice;
+	}
+
+	private void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {
+		BillingStatus billingStatus = contractor.getBillingStatus();
+		if (billingStatus.isActivation()) {
+			invoice.setDueDate(new Date());
+		} else if (billingStatus.isReactivation()) {
+			invoice.setDueDate(new Date());
+		} else if (billingStatus.isUpgrade()) {
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
+			invoice.setDueDate(contractor.getPaymentExpires());
+		}
+
+		if (invoice.getDueDate() == null) {
+			// For all other statuses like (Current)
+			invoice.setDueDate(DateBean.addDays(new Date(), 30));
+		}
+
+		// Make sure the invoice isn't due within 7 days for active accounts
+		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7) {
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		}
+	}
+
+	private void setContractorRenewToTrueIfNeeded(ContractorAccount contractor) {
+		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
+			contractor.setRenew(true);
+		}
 	}
 
 	/**
@@ -636,7 +639,7 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		calculateAnnualFees(contractor);
+		this.calculateContractorInvoiceFees(contractor);
 		accountDao.save(contractor);
 		return removedImportPQF;
 	}
@@ -651,7 +654,7 @@ public class BillingCalculatorSingle {
 			activateExpiredImportPQF(importPQFs);
 		}
 
-		calculateAnnualFees(contractor);
+		this.calculateContractorInvoiceFees(contractor);
 		contractor.setCompetitorMembership(true);
 		accountDao.save(contractor);
 	}

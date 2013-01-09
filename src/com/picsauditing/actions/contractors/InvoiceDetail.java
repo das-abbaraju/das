@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.picsauditing.PICS.InvoiceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
@@ -22,6 +22,7 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceDAO;
@@ -236,7 +237,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					noteDAO.save(note);
 				}
 
-				billingService.calculateAnnualFees(contractor);
+				billingService.calculateContractorInvoiceFees(contractor);
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
 				contractorAccountDao.save(contractor);
@@ -346,7 +347,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		updateTotals();
 		invoiceService.saveInvoice(invoice);
 
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 
 		contractor.setAuditColumns(permissions);

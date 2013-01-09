@@ -676,7 +676,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 
 		if (invoice == null) {

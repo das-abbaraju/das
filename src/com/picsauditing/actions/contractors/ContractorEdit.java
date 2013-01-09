@@ -111,7 +111,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (conID > 0) {
 				contractor = contractorAccountDao.find(conID);
 
-				billingService.calculateAnnualFees(contractor);
+				billingService.calculateContractorInvoiceFees(contractor);
 				contractor.syncBalance();
 				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 					operatorIds.add(conOperator.getOperatorAccount().getId());

@@ -89,6 +89,7 @@ public class PicsActionTest {
 		context.put(ActionContext.LOCALE, Locale.ENGLISH);
 		context.put(ActionContext.PARAMETERS, parameters);
 		context.put(ActionContext.ACTION_NAME, "UnitTest");
+		context.put(StrutsStatics.HTTP_RESPONSE, response);
 
 		actionContext = new ActionContext(context);
 		ActionContext.setContext(actionContext);

@@ -310,7 +310,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runBilling(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Billing))
 			return;
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 	}
 

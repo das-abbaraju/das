@@ -113,7 +113,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 				contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 
-			billingService.calculateAnnualFees(contractor);
+			billingService.calculateContractorInvoiceFees(contractor);
 			contractor.syncBalance();
 			recalculate();
 		} else {
@@ -306,7 +306,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (contractor.getAccountLevel().isBidOnly() && !contractor.getRequestedBy().isAcceptsBids()) {
 				contractor.setAccountLevel(AccountLevel.BidOnly);
 				contractor.setRenew(true);
-				billingService.calculateAnnualFees(contractor);
+				billingService.calculateContractorInvoiceFees(contractor);
 				contractor.syncBalance();
 			}
 
@@ -319,7 +319,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public String switchToTrialAccount() {
 		contractor.setAccountLevel(AccountLevel.BidOnly);
 		contractor.setRenew(false);
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 		accountDao.save(contractor);
 
@@ -469,7 +469,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				}
 			}
 
-			billingService.calculateAnnualFees(contractor);
+			billingService.calculateContractorInvoiceFees(contractor);
 			contractor.syncBalance();
 
 			accountDao.save(contractor);
@@ -506,7 +506,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	private void recalculate() throws Exception {
 		findContractor();
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 		accountDao.save(contractor);
 	}
