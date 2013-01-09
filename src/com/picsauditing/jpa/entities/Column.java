@@ -7,7 +7,6 @@ import javax.persistence.Transient;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "report_column")
 public class Column extends ReportElement {

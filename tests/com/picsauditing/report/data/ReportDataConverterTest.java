@@ -25,6 +25,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;
 
@@ -58,6 +59,7 @@ public class ReportDataConverterTest {
 		columns.add(createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE")));
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
 		membershipMonth.setName("ContractorMembershipDate__Month");
+		membershipMonth.setSqlFunction(SqlFunction.Month);
 		membershipMonth.getField().setUrl("Test.action?id={AccountZip}");
 		columns.add(membershipMonth);
 		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));

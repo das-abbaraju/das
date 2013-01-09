@@ -109,14 +109,15 @@ public class SqlBuilderTest {
 	@Test
 	public void testFiltersWithComplexColumn() throws Exception {
 		Column column = addColumn("AccountCreationDate__Year");
+		column.setSqlFunction(SqlFunction.Year);
+
+		Filter filter = addFilter("AccountCreationDate__Year", QueryFilterOperator.GreaterThan, "2010");
+		filter.setSqlFunction(SqlFunction.Year);
 		
 		Field field = new Field("AccountCreationDate");
 		field.setDatabaseColumnName("Account.creationDate");
 		column.setField(field);
-		column.setSqlFunction(SqlFunction.Year);
-
-		Filter filter = addFilter("AccountCreationDate", QueryFilterOperator.GreaterThan, "2010");
-		filter.setSqlFunction(SqlFunction.Year);
+		filter.setField(field);
 
 		verifySql();
 	}
@@ -166,43 +167,30 @@ public class SqlBuilderTest {
 	public void testGroupBy() throws Exception {
 		Column accountStatus = addColumn("AccountStatus");
 		Column accountStatusCount = addColumn("AccountStatus__Count");
+		accountStatusCount.setSqlFunction(SqlFunction.Count);
 
 		Field field = new Field("AccountStatus");
 		field.setDatabaseColumnName("Account.status");
 		
 		accountStatus.setField(field);		
 		accountStatusCount.setField(field);
-		accountStatusCount.setSqlFunction(SqlFunction.Count);
 		
 		verifySql();
 	}
 
 	@Test
 	public void testHaving() throws Exception {
-		Column accountStatus = addColumn("AccountStatus");
+		builder = new SqlBuilder();
+		addColumn("AccountStatus");
+		
 		Column accountStatusCount = addColumn("AccountName__Count");
+		accountStatusCount.setSqlFunction(SqlFunction.Count);
 
 		Filter countFilter = addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
-		Filter nameFilter = addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
-
-		Field field = new Field("AccountStatus");
-		field.setDatabaseColumnName("Account.status");
+		countFilter.setSqlFunction(SqlFunction.Count);
 		
-		countFilter.setField(field);
-		countFilter.setFieldForComparison(new Field("AccountName__Count"));
-		nameFilter.setField(field);
-		
-		accountStatus.setField(field);		
-		accountStatusCount.setField(field);
-		accountStatusCount.setSqlFunction(SqlFunction.Count);
-		
+		addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
 		verifySql();
-		
-//		initializeSql();
-//
-//		assertContains("HAVING (COUNT(TRIM(Account.name)) > 5)", sql.toString());
-//		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
-//		assertContains("GROUP BY Account.status", sql.toString());
 	}
 
 	@Test

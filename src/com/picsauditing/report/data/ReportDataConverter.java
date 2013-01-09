@@ -48,6 +48,8 @@ public class ReportDataConverter {
 		Column column = cell.getColumn();
 
 		if (column != null) {
+			// TODO Change this method to use column.getField().getColumnType() instead
+			
 			if (column.getSqlFunction() != null && column.getSqlFunction() == SqlFunction.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];

@@ -1,0 +1,5 @@
+SELECT Account.status AS `AccountStatus`, COUNT(TRIM(Account.name)) AS `AccountName__Count`
+FROM accounts AS Account
+WHERE ((Account.nameIndex LIKE 'A%')) 
+GROUP BY Account.status
+HAVING (COUNT(TRIM(Account.name)) > 5) 

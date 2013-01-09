@@ -79,7 +79,7 @@ public abstract class ReportElement {
 		this.name = name;
 		
 		if (originalName == null) {
-			originalName = name;
+			originalName = getFieldNameWithoutMethod();
 		}
 	}
 

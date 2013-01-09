@@ -1,0 +1,4 @@
+SELECT TRIM(Account.name) AS `AccountName`, AccountContact.name AS `AccountContactName`
+FROM accounts AS Account
+LEFT JOIN users AS AccountContact ON Account.contactID = AccountContact.id
+WHERE ((Account.nameIndex = AccountContact.name)) 
