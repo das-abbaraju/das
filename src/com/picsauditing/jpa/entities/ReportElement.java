@@ -23,6 +23,7 @@ import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
+import com.picsauditing.util.Strings;
 
 @MappedSuperclass
 public abstract class ReportElement {
@@ -75,42 +76,40 @@ public abstract class ReportElement {
 	}
 
 	public void setName(String name) {
-		// TODO verify somewhere no quotes exist Strings.escapeQuotes(name)
 		this.name = name;
+		
+		if (originalName == null) {
+			originalName = name;
+		}
 	}
 
 	public void setMethodToFieldName() {
 		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
-		if (startOfMethod >= 0 || sqlFunction == null)
+		if (startOfMethod >= 0 || sqlFunction == null) {
 			return;
+		}
 
 		this.name = name + METHOD_SEPARATOR + sqlFunction;
-		parseFieldNameMethod();
-	}
-
-	private void parseFieldNameMethod() {
 		sqlFunction = null;
-		originalName = name;
-
-		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
-		if (startOfMethod < 0)
-			return;
 
 		originalName = name.substring(0, startOfMethod);
 		String methodName = name.substring(startOfMethod + 2);
 		sqlFunction = SqlFunction.valueOf(methodName);
 	}
 
-	private void resetName(SqlFunction method) {
-		if (method == null)
-			name = originalName;
-		else
-			name = originalName + METHOD_SEPARATOR + method.toString();
-	}
-
 	@Transient
 	public String getFieldNameWithoutMethod() {
-		return originalName;
+//		return originalName;
+		if (Strings.isEmpty(name)) {
+			return Strings.EMPTY_STRING;
+		}
+		
+		int index = name.indexOf(METHOD_SEPARATOR);
+		if (index == -1) {
+			return name;
+		} else {
+			return name.substring(0, index);
+		}
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -199,6 +198,7 @@ public abstract class ReportElement {
 
 	public void addFieldCopy(Map<String, Field> availableFields) {
 		Field field = availableFields.get(originalName.toUpperCase());
+//		Field field = availableFields.get(getFieldNameWithoutMethod());
 
 		if (field == null) {
 			logger.warn("Failed to find " + originalName + " in availableFields");

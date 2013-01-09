@@ -225,6 +225,7 @@ public class Filter extends ReportElement {
 
 	public void setFieldForComparison(Field fieldForComparison) {
 		this.fieldForComparison = fieldForComparison;
+		setColumnCompare(fieldForComparison.getName()); 
 	}
 
 	@Override

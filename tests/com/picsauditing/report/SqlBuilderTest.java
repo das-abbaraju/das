@@ -6,6 +6,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 
+import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,17 +25,18 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountsModel;
 import com.picsauditing.search.SelectSQL;
 
+@UseReporter(DiffReporter.class)
 public class SqlBuilderTest {
-
-	private SqlBuilder builder;
 	
 	@Mock
 	private Permissions permissions;
 	
+	private SqlBuilder builder;
 	private Report report = new Report();
 	private SelectSQL sql;
 
@@ -60,18 +64,17 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testMultipleColumns() throws Exception {
+	public void testMultipleColumns() throws Exception {	
+		builder = new SqlBuilder();
 		addColumn("AccountID");
 		addColumn("AccountName");
 		addColumn("AccountStatus");
+		verifySql();
+	}
 
-		initializeSql();
-
-		assertEquals(3, sql.getFields().size());
-
-		assertContains("Account.id AS `AccountID`", sql.toString());
-		assertContains("TRIM(Account.name) AS `AccountName`", sql.toString());
-		assertContains("Account.status AS `AccountStatus`", sql.toString());
+	private void verifySql() throws ReportValidationException, Exception {
+		SelectSQL sql = initializeSql();
+		Approvals.verify(sql.toString());
 	}
 
 	@Test
@@ -100,35 +103,30 @@ public class SqlBuilderTest {
 		Column column = addColumn("AccountName");
 		addFilter(column.getName(), QueryFilterOperator.BeginsWith, "Trevor's");
 
-		initializeSql();
-
-		assertContains("WHERE ((Account.nameIndex LIKE 'Trevor''s%'))", sql.toString());
-		assertAllFiltersHaveFields();
+		verifySql();
 	}
 
 	@Test
 	public void testFiltersWithComplexColumn() throws Exception {
 		Column column = addColumn("AccountCreationDate__Year");
+		
+		Field field = new Field("AccountCreationDate");
+		field.setDatabaseColumnName("Account.creationDate");
+		column.setField(field);
+		column.setSqlFunction(SqlFunction.Year);
 
-		addFilter(column.getName(), QueryFilterOperator.GreaterThan, "2010");
+		Filter filter = addFilter("AccountCreationDate", QueryFilterOperator.GreaterThan, "2010");
+		filter.setSqlFunction(SqlFunction.Year);
 
-		initializeSql();
-
-		assertContains("(YEAR(Account.creationDate) > 2010)", sql.toString());
-		assertAllFiltersHaveFields();
+		verifySql();
 	}
 	
 	@Test
 	public void testAdvancedFilter() throws Exception {
 		Column column = addColumn("AccountName");
 		Column columnCompare = addColumn("AccountContactName");
-		
 		addFilter(column.getName(), QueryFilterOperator.Equals, columnCompare.getName(), true);
-				
-		initializeSql();
-		
-		assertContains("WHERE ((Account.nameIndex = AccountContact.name))", sql.toString());
-		assertAllFiltersHaveFields();
+		verifySql();
 	}
 
 	@Test
@@ -166,29 +164,45 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testGroupBy() throws Exception {
-		addColumn("AccountStatus");
-		addColumn("AccountStatus__Count");
+		Column accountStatus = addColumn("AccountStatus");
+		Column accountStatusCount = addColumn("AccountStatus__Count");
 
-		initializeSql();
-
-		assertContains("Account.status AS `AccountStatus`", sql.toString());
-		assertContains("COUNT(Account.status) AS `AccountStatus__Count`", sql.toString());
-		assertContains("GROUP BY Account.status", sql.toString());
+		Field field = new Field("AccountStatus");
+		field.setDatabaseColumnName("Account.status");
+		
+		accountStatus.setField(field);		
+		accountStatusCount.setField(field);
+		accountStatusCount.setSqlFunction(SqlFunction.Count);
+		
+		verifySql();
 	}
 
 	@Test
 	public void testHaving() throws Exception {
-		addColumn("AccountStatus");
-		addColumn("AccountName__Count");
+		Column accountStatus = addColumn("AccountStatus");
+		Column accountStatusCount = addColumn("AccountName__Count");
 
-		addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
-		addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
+		Filter countFilter = addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
+		Filter nameFilter = addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
 
-		initializeSql();
-
-		assertContains("HAVING (COUNT(TRIM(Account.name)) > 5)", sql.toString());
-		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
-		assertContains("GROUP BY Account.status", sql.toString());
+		Field field = new Field("AccountStatus");
+		field.setDatabaseColumnName("Account.status");
+		
+		countFilter.setField(field);
+		countFilter.setFieldForComparison(new Field("AccountName__Count"));
+		nameFilter.setField(field);
+		
+		accountStatus.setField(field);		
+		accountStatusCount.setField(field);
+		accountStatusCount.setSqlFunction(SqlFunction.Count);
+		
+		verifySql();
+		
+//		initializeSql();
+//
+//		assertContains("HAVING (COUNT(TRIM(Account.name)) > 5)", sql.toString());
+//		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
+//		assertContains("GROUP BY Account.status", sql.toString());
 	}
 
 	@Test
@@ -220,7 +234,7 @@ public class SqlBuilderTest {
 		Filter filter = new Filter();
 		filter.setName(fieldName);
 		filter.setOperator(operator);
-		filter.getValues().add(value);
+		filter.getValues().add(value); // ???
 		if (advanced) {
 			filter.setFieldForComparison(new Field(value));
 		}
@@ -235,8 +249,9 @@ public class SqlBuilderTest {
 		return sort;
 	}
 
-	private void initializeSql() throws ReportValidationException {
+	private SelectSQL initializeSql() throws ReportValidationException {
 		sql = builder.initializeSql(new AccountsModel(permissions), report, permissions);
+		return sql;
 	}
 
 }
