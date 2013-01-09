@@ -169,6 +169,7 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("{}");
+		ReportModel.processReportParameters(report);
 
 		ReportModel.validate(report);
 	}
@@ -178,6 +179,7 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("{\"columns\":[{\"name\":\"AccountName\"}]}");
+		ReportModel.processReportParameters(report);
 
 		ReportModel.validate(report);
 	}
