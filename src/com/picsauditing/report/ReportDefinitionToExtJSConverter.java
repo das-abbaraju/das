@@ -1,23 +1,6 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.ReportJson.BASE_CREATED_BY;
-import static com.picsauditing.report.ReportJson.BASE_CREATION_DATE;
-import static com.picsauditing.report.ReportJson.BASE_UPDATED_BY;
-import static com.picsauditing.report.ReportJson.BASE_UPDATE_DATE;
-import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
-import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
-import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
-import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
-import static com.picsauditing.report.ReportJson.REPORT_FAVORITE_COUNT;
-import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
-import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
-import static com.picsauditing.report.ReportJson.REPORT_ID;
-import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
-import static com.picsauditing.report.ReportJson.REPORT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_SORTS;
-import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
+import static com.picsauditing.report.ReportJson.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +22,7 @@ import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.ReportJson.ReportListType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
@@ -236,7 +220,7 @@ public class ReportDefinitionToExtJSConverter {
 
 	private static ModelType parseModelType(JSONObject json) {
 		// We may need to consider error handling if the modelType doesn't exist
-		return ModelType.valueOf((String) json.get("modelType"));
+		return ModelType.valueOf((String) json.get(REPORT_MODEL_TYPE));
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
@@ -322,6 +306,7 @@ public class ReportDefinitionToExtJSConverter {
 
 	private static void toElementFromJSON(JSONObject json, ReportElement obj) {
 		obj.setName((String) json.get(REPORT_ELEMENT_NAME));
+		obj.setSqlFunction(SqlFunction.valueOf((String) json.get(COLUMN_SQL_FUNCTION)));
 	}
 
 	private static QueryFilterOperator parseOperator(JSONObject json) {

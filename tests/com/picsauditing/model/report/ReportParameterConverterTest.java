@@ -12,10 +12,12 @@ import com.picsauditing.model.report.ReportParameterConverter;
 import com.picsauditing.report.models.ModelType;
 
 /**
- * Previous Version
+ * This is a Legacy converter to test taking the JSON in the old format and
+ * moving into the new peristence format.
  */
 public class ReportParameterConverterTest {
 
+	// TODO: Convert this to use ApprovalTests
 	private static final String SAMPLE_JSON = "{\"modelType\":\"Contractors\","
 			+ "\"name\":\"Report Title\",\"description\":\"Sub title of report\",\"filterExpression\":\"1 AND (2 OR 3)\","
 			+ "\"columns\":[{\"name\":\"AccountName\"},{\"name\":\"AccountStatus\"},{\"name\":\"ContractorPayingFacilities__Count\",\"method\":\"Count\"}],"
@@ -23,7 +25,7 @@ public class ReportParameterConverterTest {
 			+ "\"filters\":[{\"name\":\"AccountStatus\",\"value\":\"Active, Pending\",\"operator\":\"In\"},"
 			+ "{\"name\":\"AccountCreationDate\",\"value\":\"-8D\",\"operator\":\"GreaterThan\"}],"
 			+ "\"version\":\"6.29\"}";
-
+	
 	private JSONObject jsonIn;
 	private JSONObject jsonOut;
 	private Report report;

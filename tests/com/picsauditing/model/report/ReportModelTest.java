@@ -31,6 +31,7 @@ import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
@@ -178,7 +179,7 @@ public class ReportModelTest {
 	public void testValidate_ValidReportParameters() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
-		report.setParameters("{\"columns\":[{\"name\":\"AccountName\"}]}");
+		report.getColumns().add(new Column("Alex"));
 		ReportModel.processReportParameters(report);
 
 		ReportModel.validate(report);

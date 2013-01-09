@@ -83,6 +83,7 @@ public abstract class ReportElement {
 		}
 	}
 
+	// TODO: Move this into a Business Model or Utility class and keep the entity a POJO  
 	public void setMethodToFieldName() {
 		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod >= 0 || sqlFunction == null) {
@@ -93,14 +94,11 @@ public abstract class ReportElement {
 
 		if (startOfMethod > -1) {
 			originalName = name.substring(0, startOfMethod);
-//			String methodName = name.substring(startOfMethod + 2);
-//			sqlFunction = SqlFunction.valueOf(methodName);
 		}		
 	}
 
 	@Transient
 	public String getFieldNameWithoutMethod() {
-//		return originalName;
 		if (Strings.isEmpty(name)) {
 			return Strings.EMPTY_STRING;
 		}

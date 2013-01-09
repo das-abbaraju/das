@@ -41,6 +41,7 @@ public class ReportJson {
 	public static final String FILTER_OPERATOR = "operator";
 	public static final String FILTER_VALUE = "value";
 	public static final String FILTER_COMPARE_COLUMN = "compare_column_id";
+	public static final String FILTER_SQL_FUNCTION = "sql_function";
 
 	public static final String REPORT_SORTS = "sorts";
 	public static final String SORT_DIRECTION = "direction";
