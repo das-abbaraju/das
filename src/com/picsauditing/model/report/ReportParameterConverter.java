@@ -13,15 +13,19 @@ import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.FilterExpression;
+import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
 // TODO Remove this method after the next release
@@ -33,8 +37,10 @@ public class ReportParameterConverter {
 	// From Report to JSON
 	public static JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
-		// String VERSION = "6.29";
-		// json.put("version", VERSION);
+		
+		// TODO: Ask Trevor or Architect if we need it
+		String VERSION = "6.29";
+		json.put("version", VERSION);
 		
 		convertReportLevelData(report, json);
 		convertColumnsToJson(report, json);
@@ -47,12 +53,15 @@ public class ReportParameterConverter {
 	private static void convertReportLevelData(Report report, JSONObject json) {
 		// json.put("id", report.getId());
 		json.put("name", report.getName());
-		if (report.getModelType() != null)
+		if (report.getModelType() != null) {
 			json.put("modelType", report.getModelType().toString());
+		}
+		
 		json.put("description", report.getDescription());
 
-		if (!Strings.isEmpty(report.getFilterExpression()))
+		if (Strings.isNotEmpty(report.getFilterExpression())) {
 			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
+		}
 	}
 
 	private static void convertColumnsToJson(Report report, JSONObject json) {
@@ -90,8 +99,10 @@ public class ReportParameterConverter {
 
 	private static JSONObject toJSON(Column obj) {
 		JSONObject json = toJSONBase(obj);
-		if (obj.getSqlFunction() != null)
+		if (obj.getSqlFunction() != null) {
 			json.put("method", obj.getSqlFunction().toString());
+		}
+		
 		return json;
 	}
 
@@ -155,20 +166,37 @@ public class ReportParameterConverter {
 
 	// From JSON to Report
 
-	public static void fillParameters(Report dto) {
-		JSONObject json = (JSONObject) JSONValue.parse(dto.getParameters());
+	public static void fillParameters(Report report) throws ReportValidationException {
+		if (report.getParameters() == null) {
+			throw new ReportValidationException("Your parameters should not be null.");
+		}
 		
-		dto.setFilterExpression(parseFilterExpression(json));
+		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
+		
+		report.setFilterExpression(parseFilterExpression(json));
+		setReportModelType(report, json);
+		report.setName((String) json.get(REPORT_NAME));
+		report.setDescription((String) json.get(REPORT_DESCRIPTION));
 
-		addColumns(json, dto);
-		addFilters(json, dto);
-		addSorts(json, dto);
+		addColumns(json, report);
+		addFilters(json, report);
+		addSorts(json, report);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static void setReportModelType(Report report, JSONObject json) {
+		String modelTypeValue = (String) json.get(LEGACY_MODEL_TYPE);
+		if (Strings.isNotEmpty(modelTypeValue)) {
+			report.setModelType(ModelType.valueOf(modelTypeValue));
+		}
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
 		String filterExpressionFromJson = (String) json.get(REPORT_FILTER_EXPRESSION);
-		if (FilterExpression.isValid(filterExpressionFromJson))
+		if (FilterExpression.isValid(filterExpressionFromJson)) {
 			return filterExpressionFromJson;
+		}
+		
 		return null;
 	}
 
@@ -250,8 +278,14 @@ public class ReportParameterConverter {
 		return filter;
 	}
 
-	private static void toElementFromJSON(JSONObject json, ReportElement obj) {
-		obj.setName((String) json.get("name"));
+	@SuppressWarnings("deprecation")
+	private static void toElementFromJSON(JSONObject json, ReportElement reportElement) {
+		reportElement.setName((String) json.get("name"));		
+		
+		String methodName = (String) json.get(LEGACY_METHOD);
+		if (Strings.isNotEmpty(methodName)) {
+			reportElement.setSqlFunction(SqlFunction.valueOf(methodName));
+		}
 	}
 
 	private static QueryFilterOperator parseOperator(JSONObject json) {

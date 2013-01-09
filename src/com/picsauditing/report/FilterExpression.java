@@ -11,8 +11,9 @@ public class FilterExpression {
 		if (expression == null) {
 			return true;
 		}
+		
 		expression = expression.trim();
-		if (expression.equals("")) {
+		if (Strings.EMPTY_STRING.equals(expression)) {
 			return true;
 		}
 
@@ -25,7 +26,7 @@ public class FilterExpression {
 
 	static public String getDefault(int size) {
 		if (size == 0)
-			return "";
+			return Strings.EMPTY_STRING;
 		
 		String expression = "{1}";
 

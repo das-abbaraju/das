@@ -47,6 +47,11 @@ public class ReportJson {
 	public static final String SORT_DIRECTION = "direction";
 
 	public static final String RESULTS_TOTAL = "total";
+	
+	@Deprecated
+	public static final String LEGACY_MODEL_TYPE = "modelType";
+	@Deprecated
+	public static final String LEGACY_METHOD = "method";
 
 	public enum ReportListType {
 		Columns(REPORT_COLUMNS), Filters(REPORT_FILTERS), Sorts(REPORT_SORTS);

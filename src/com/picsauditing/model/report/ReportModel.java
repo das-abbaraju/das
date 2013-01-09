@@ -168,7 +168,7 @@ public class ReportModel {
         reportDao.save(report);
     }
     
-    public static void processReportParameters(Report report) {
+    public static void processReportParameters(Report report) throws ReportValidationException {
     	// TODO Remove this method after the next release
 		 ReportParameterConverter.fillParameters(report);
     }

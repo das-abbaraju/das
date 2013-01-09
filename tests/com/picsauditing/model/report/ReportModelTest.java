@@ -176,13 +176,10 @@ public class ReportModelTest {
 	}
 
 	@Test(expected = ReportValidationException.class)
-	public void testValidate_ValidReportParameters() throws ReportValidationException {
+	public void testProcessReportParameters_NullReportParametersThrowsError() throws ReportValidationException {
 		Report report = new Report();
-		report.setModelType(ModelType.Accounts);
-		report.getColumns().add(new Column("Alex"));
+		report.setParameters(null);
 		ReportModel.processReportParameters(report);
-
-		ReportModel.validate(report);
 	}
 
 	@Test

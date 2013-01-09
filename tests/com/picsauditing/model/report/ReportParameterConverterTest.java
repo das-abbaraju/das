@@ -7,6 +7,7 @@ import org.json.simple.JSONValue;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportParameterConverter;
 import com.picsauditing.report.models.ModelType;
@@ -31,7 +32,7 @@ public class ReportParameterConverterTest {
 	private Report report;
 
 	@Before
-	public void setup() {
+	public void setup() throws ReportValidationException {
 		jsonIn = (JSONObject) JSONValue.parse(SAMPLE_JSON);
 		report = new Report();
 		report.setParameters(SAMPLE_JSON);
@@ -40,8 +41,7 @@ public class ReportParameterConverterTest {
 	}
 
 	@Test
-	public void testBasicReportLevelFields() {
-		// assertEquals(123, report.getId());
+	public void verifyFillParameters_CorrectlyPopulatingBasicReportLevelFields() {
 		assertEquals(ModelType.Contractors, report.getModelType());
 		assertEquals("Report Title", report.getName());
 		assertEquals("1 AND (2 OR 3)", report.getFilterExpression());
@@ -51,7 +51,6 @@ public class ReportParameterConverterTest {
 	@Test
 	public void testFull() {
 		assertEquals(jsonIn, jsonOut);
-		// assertTrue(jsonIn.equals(jsonOut));
 	}
 
 	@Test
