@@ -460,7 +460,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-			// All Other Audits
+			// All AuditGUARD Audits
 
 			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id="
 					+ id + "#auditguard");
@@ -485,6 +485,37 @@ public class ContractorActionSupport extends AccountActionSupport {
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
 						+ ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
+			}
+
+			addSubMenu(menu, subMenu);
+		}
+
+		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
+			// All ClientGUARD Audits
+
+			MenuComponent subMenu = new MenuComponent(getText("global.ClientGUARD"), "ContractorDocuments.action?id="
+					+ id + "#clientGUARD");
+			addMoreMenu = false;
+			for (ContractorAudit audit : auditList) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Client)) {
+					if (subMenu.getChildren().size() < MAX_MENU_ITEM
+							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
+						MenuComponent childMenu = createMenuItem(subMenu, audit);
+
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
+						if (!Strings.isEmpty(audit.getAuditFor()))
+							linkText = audit.getAuditFor() + " " + linkText;
+						childMenu.setName(linkText);
+
+						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
+					}
+				}
+			}
+
+			if (addMoreMenu) {
+				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
+						+ ContractorDocuments.getSafeName(getText("global.ClientGUARD")));
 			}
 
 			addSubMenu(menu, subMenu);
