@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -34,7 +34,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
     public List<BasicDynaBean> runQuery(String sql, JSONObject json) throws SQLException {
         Database database = new Database();
         List<BasicDynaBean> rows = database.selectReadOnly(sql, true);
-        json.put("total", database.getAllRows());
+        json.put(ReportJson.RESULTS_TOTAL, database.getAllRows());
         return rows;
     }
 

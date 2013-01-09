@@ -142,7 +142,8 @@ public class ReportDefinitionToExtJSConverter {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getColumnType());
 		
-		json.put("url", obj.getField().getUrl());
+		if (!Strings.isEmpty(obj.getField().getUrl()))
+			json.put("url", obj.getField().getUrl());
 		if (obj.getSqlFunction() != null)
 			json.put("sql_function", obj.getSqlFunction().toString());
 		if (obj.getWidth() > 0)
@@ -160,7 +161,8 @@ public class ReportDefinitionToExtJSConverter {
 
 		setFilterValue(obj, json);
 
-		json.put(Filter.FIELD_COMPARE, obj.getColumnCompare());
+		if (Strings.isNotEmpty(obj.getColumnCompare()))
+			json.put(Filter.FIELD_COMPARE, obj.getColumnCompare());
 
 		return json;
 	}

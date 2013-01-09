@@ -17,7 +17,7 @@ public class ReportJson {
 
 	public static final String REPORT_FILTER_EXPRESSION = "filterExpression";
 	public static final String REPORT_FAVORITE_COUNT = "num_times_favorited";
-	public static final String REPORT_EDITABLE = " is_editable";
+	public static final String REPORT_EDITABLE = "is_editable";
 	public static final String REPORT_FAVORITE = "is_favorite";
 	public static final String BASE_CREATION_DATE = "creation_date";
 	public static final String BASE_CREATED_BY = "created_by";

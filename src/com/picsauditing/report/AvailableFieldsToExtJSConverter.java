@@ -10,6 +10,7 @@ import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class AvailableFieldsToExtJSConverter {
@@ -41,21 +42,17 @@ public class AvailableFieldsToExtJSConverter {
 	private static JSONObject fieldToColumnJson(Field field) {
 		JSONObject obj = fieldToCommonJson(field);
 		obj.put("type", field.getColumnType());
-		obj.put("url", field.getUrl());
+		if (!Strings.isEmpty(field.getUrl()))
+			obj.put("url", field.getUrl());
 		obj.put("width", field.getWidth());
 		obj.put("is_sortable", field.isSortable());
-		// TODO see if the FE code will fail without this
-		// obj.put("sql_function", "");
 		return obj;
 	}
 
 	private static Object fieldToFilterJson(Field field) {
 		JSONObject obj = fieldToCommonJson(field);
 		obj.put("type", field.getFilterType());
-		obj.put("operator", QueryFilterOperator.Equals);
-		// TODO see if the FE code will fail without these
-		// obj.put("value", "");
-		// obj.put("column_compare_id", "");
+		// obj.put("operator", QueryFilterOperator.Equals);
 		return obj;
 	}
 	

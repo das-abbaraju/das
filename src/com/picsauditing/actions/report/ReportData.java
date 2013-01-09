@@ -62,21 +62,21 @@ public class ReportData extends PicsApiSupport {
 	protected String initialize() throws Exception {
 		logger.debug("initializing report " + report.getId());
 		ReportModel.validate(report);
-		Report reportFromDb = reportDao.find(Report.class, report.getId());
-		reportDao.refresh(reportFromDb);
-		ReportModel.processReportParameters(report);
-		reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
+		
+		// Not sure why were switching to a new copy of reportFromDb
+		// Removing this for now
+		// Report reportFromDb = reportDao.find(Report.class, report.getId());
+		// reportDao.refresh(reportFromDb);
+		reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
+		ReportModel.processReportParameters(report);
 		if (!StringUtils.isEmpty(reportParameters))
-			reportFromDb.setParameters(reportParameters);
+			report.setParameters(reportParameters);
 		
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
-
-		// Not sure if we need this anymore
-		json.put("reportID", report.getId());
 		return SUCCESS;
 	}
 
@@ -98,11 +98,7 @@ public class ReportData extends PicsApiSupport {
 			}
 
 			if (includeData) {
-				json.put(LEVEL_DATA, getData());
-			}
-
-			if (includeSql()) {
-				json.put(ReportUtil.SQL, debugSQL);
+				json.put(LEVEL_RESULTS, getData());
 			}
 
 			json.put(ReportUtil.SUCCESS, true);
@@ -129,6 +125,10 @@ public class ReportData extends PicsApiSupport {
 
 	private JSONObject getData() throws Exception {
 		JSONObject jsonObject = new JSONObject();
+		if (includeSql()) {
+			String debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
+			jsonObject.put(ReportUtil.SQL, debugSQL);
+		}
 		try {
 			sql.setPageNumber(limit, pageNumber);
 			runQuery();
@@ -136,7 +136,8 @@ public class ReportData extends PicsApiSupport {
 			converter.convertForExtJS();
 			ReportResults reportResults = converter.getReportResults();
 			jsonObject.put(LEVEL_DATA, reportResults.toJson());
-			jsonObject.put(RESULTS_TOTAL, reportResults.size());
+			jsonObject.put(RESULTS_TOTAL, json.get(RESULTS_TOTAL));
+			json.remove(RESULTS_TOTAL);
 		} catch (Exception error) {
 			handleErrorForData(error);
 		}
@@ -145,10 +146,10 @@ public class ReportData extends PicsApiSupport {
 	}
 
 	private void handleErrorForData(Exception error) throws Exception {
-		logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
+		logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + sql);
 
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-			throw new Exception(error + " debug SQL: " + debugSQL);
+			throw new Exception(error + " debug SQL: " + sql.toString());
 		} else {
 			throw new Exception("Invalid Query");
 		}
@@ -195,9 +196,7 @@ public class ReportData extends PicsApiSupport {
 	}
 
 	protected void runQuery() throws SQLException {
-		debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
-
-		List<BasicDynaBean> queryResults = reportDao.runQuery(debugSQL, json);
+		List<BasicDynaBean> queryResults = reportDao.runQuery(sql.toString(), json);
 		converter = new ReportDataConverter(report.getColumns(), queryResults);
 		converter.setLocale(permissions.getLocale());
 	}

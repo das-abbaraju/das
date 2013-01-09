@@ -71,6 +71,7 @@ public final class ReportUtil {
 		addTranslationLabelsToSorts(definition, locale);
 	}
 
+	// TODO rename to addTranslationLabelsToColumns
 	private static void addTranslationLabelsToFields(Report definition, Locale locale) {
 		if (CollectionUtils.isEmpty(definition.getColumns()))
 			return;
@@ -82,19 +83,17 @@ public final class ReportUtil {
 				field = new Field(column.getFieldNameWithoutMethod());
 				column.setField(field);
 			}
-			field.setName(column.getFieldNameWithoutMethod());
-			String translateLabel = translateLabel(field, locale);
-			String translateHelp = translateHelp(field, locale);
-			field.setName(column.getName());
-
+			
+			// field.setName(column.getFieldNameWithoutMethod());
+			// field.setName(column.getName());
+			
 			if (column.getSqlFunction() != null) {
-				field.setTranslationPrefixAndSuffix(null, null);
-				translateLabel = getText("Report.Function." + column.getSqlFunction().toString(), locale) + ": "
-						+ translateLabel;
+				// field.setTranslationPrefixAndSuffix(null, null);
+				String functionTranslation = getText("Report.Function." + column.getSqlFunction().toString(), locale);
+				field.setText(functionTranslation + ": " + field.getText());
 			}
-
-			field.setText(translateLabel);
-			field.setHelp(translateHelp);
+			
+			translateField(field, locale);
 		}
 	}
 
