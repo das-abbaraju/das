@@ -129,6 +129,10 @@ public class FlagDataCalculator {
 		if (criteria.isAllowCustomValue() && Strings.isNotEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
+		
+		if ("Statistics".equals(criteria.getCategory()) && !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
+			return null;
+		}
 
 		// Check if we need to match tags
 		if (opCriteria.getTag() != null) {
@@ -365,6 +369,20 @@ public class FlagDataCalculator {
 				return true;
 			}
 		}
+	}
+
+	private boolean isStatisticValidForOperator(OperatorAccount operator,
+			ContractorAccount con) {
+		for (ContractorAudit audit:con.getCurrentAnnualUpdates()) {
+			for (ContractorAuditOperator cao:audit.getOperatorsVisible()) {
+				for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+					if (caop.getOperator().isOrIsDescendantOf(operator.getId())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isAuditVisibleToOperator(ContractorAudit ca, OperatorAccount op) {
