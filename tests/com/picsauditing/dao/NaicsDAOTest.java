@@ -31,23 +31,24 @@ public class NaicsDAOTest {
 		naicsDAO.setEntityManager(em);
 		
 		List<Naics> naicsList = new ArrayList<Naics>();
-		naicsList.add(constructNaics("52", 0.9, 0.8));
-		naicsList.add(constructNaics("52212", 0.0, 0.0));
+		naicsList.add(constructNaics("52", 0.9, 0.8, 0.0));
+		naicsList.add(constructNaics("52212", 0.0, 0.0, 0.0));
 		
-		naicsList.add(constructNaics("541", 0.0, 0.50));
-		naicsList.add(constructNaics("5412", 0.0, 0.0));
-		naicsList.add(constructNaics("54121", 0.0, 0.0));
+		naicsList.add(constructNaics("541", 0.0, 0.50, 0.4));
+		naicsList.add(constructNaics("5412", 0.0, 0.0, 0.0));
+		naicsList.add(constructNaics("54121", 0.0, 0.0, 0.0));
 
 		for (Naics naics : naicsList) {
 			when(em.find(Naics.class, naics.getCode())).thenReturn(naics);
 		}
 	}
 
-	private Naics constructNaics(String code, double trir, double lwcr) {
+	private Naics constructNaics(String code, double trir, double lwcr, double dart) {
 		Naics naics = new Naics();
 		naics.setCode(code);
 		naics.setTrir((float) trir);
 		naics.setLwcr((float) lwcr);
+		naics.setDart((float) dart);
 		return naics;
 	}
 
@@ -104,7 +105,7 @@ public class NaicsDAOTest {
 
 	/*
 	 * The 2008 data has this for DART:
-	 * 541        0.50
+	 * 541        0.40
 	 * 5412       0.00
 	 * 54121      0.00
 	 * So, asking for the DART for 54121 should "walk the tree" through 5412 up to 541, to find the first non-zero value.
@@ -112,15 +113,12 @@ public class NaicsDAOTest {
 	@Test
 	public void testGetBroaderNaicsForDart() throws Exception {
 		Naics naics = naicsDAO.find("54121");
-		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
-		// assertEquals(0.0, naics.getDart(), 0.01);
-		assertEquals(0.0, naics.getLwcr(), 0.01);
+
+		assertEquals(0.0, naics.getDart(), 0.40);
 		naics = Whitebox.invokeMethod(naicsDAO, "getBroaderNaicsForDart", naics);
 		assertEquals("541", naics.getCode());
 		
-		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
-		// assertEquals(0.5, naics.getDart(), 0.01);
-		assertEquals(0.5, naics.getLwcr(), 0.01);
+		assertEquals(0.5, naics.getDart(), 0.40);
 	}
 
 }
