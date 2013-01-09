@@ -1,6 +1,23 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.ReportJson.*;
+import static com.picsauditing.report.ReportJson.BASE_CREATED_BY;
+import static com.picsauditing.report.ReportJson.BASE_CREATION_DATE;
+import static com.picsauditing.report.ReportJson.BASE_UPDATED_BY;
+import static com.picsauditing.report.ReportJson.BASE_UPDATE_DATE;
+import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
+import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
+import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
+import static com.picsauditing.report.ReportJson.REPORT_FAVORITE_COUNT;
+import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
+import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
+import static com.picsauditing.report.ReportJson.REPORT_ID;
+import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
+import static com.picsauditing.report.ReportJson.REPORT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_SORTS;
+import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +36,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.report.ReportJson.ReportListType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
@@ -26,11 +44,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ReportDefinitionToExtJSConverter {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ReportDefinitionToExtJSConverter.class);
 
 	// From Report to JSON
-	
+
 	public static JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
 
@@ -51,13 +69,13 @@ public class ReportDefinitionToExtJSConverter {
 		if (!Strings.isEmpty(report.getFilterExpression()))
 			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 		json.put(REPORT_FAVORITE_COUNT, report.getNumTimesFavorited());
-		
+
 		json.put(REPORT_EDITABLE, report.isEditable());
 		json.put(REPORT_FAVORITE, report.isFavorite());
-		
+
 		setJsonForAuditColumns(report, json);
 	}
-	
+
 	private static void setJsonForAuditColumns(Report report, JSONObject json) {
 		if (report.getCreatedBy() != null && report.getCreationDate() != null) {
 			json.put(BASE_CREATION_DATE, report.getCreationDate().getTime());
@@ -105,43 +123,45 @@ public class ReportDefinitionToExtJSConverter {
 		if (CollectionUtils.isEmpty(columns)) {
 			return columnArray;
 		}
-		
+
 		for (Column column : columns) {
 			JSONObject columnObject = new JSONObject();
 			columnArray.add(columnObject);
 		}
-		
+
 		return columnArray;
 	}
+
 	private static JSONArray convertFiltersForFrontEnd(List<Filter> filters) {
 		JSONArray filterArray = new JSONArray();
 		if (CollectionUtils.isEmpty(filters)) {
 			return filterArray;
 		}
-		
+
 		for (Filter filter : filters) {
 			JSONObject filterObject = new JSONObject();
 			filterArray.add(filterObject);
 		}
-		
+
 		return filterArray;
-	}	
+	}
+
 	private static JSONArray convertSortsForFrontEnd(List<Sort> sorts) {
 		JSONArray sortArray = new JSONArray();
 		if (CollectionUtils.isEmpty(sorts)) {
 			return sortArray;
 		}
-		
+
 		for (Sort sort : sorts) {
 		}
-		
+
 		return sortArray;
 	}
-	
+
 	private static JSONObject toJSON(Column obj) {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getColumnType());
-		
+
 		if (!Strings.isEmpty(obj.getField().getUrl()))
 			json.put("url", obj.getField().getUrl());
 		if (obj.getSqlFunction() != null)
@@ -153,7 +173,7 @@ public class ReportDefinitionToExtJSConverter {
 
 		return json;
 	}
-	
+
 	private static JSONObject toJSON(Filter obj) {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getFilterType());
@@ -171,7 +191,7 @@ public class ReportDefinitionToExtJSConverter {
 		if (obj.getOperator().isValueUsed()) {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(obj.getValues());
-			
+
 			// TODO Make sure the value handshake is correct
 			// http://intranet.picsauditing.com/display/it/Handshake
 			if (obj.getValues().size() == 1) {
@@ -188,7 +208,7 @@ public class ReportDefinitionToExtJSConverter {
 		json.put("direction", obj.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 		return json;
 	}
-	
+
 	private static JSONObject elementToCommonJson(ReportElement obj) {
 		JSONObject json = new JSONObject();
 		json.put("id", obj.getName());
@@ -197,7 +217,7 @@ public class ReportDefinitionToExtJSConverter {
 		json.put("description", obj.getField().getHelp());
 		return json;
 	}
-	
+
 	/**
 	 * From JSON to Report
 	 */

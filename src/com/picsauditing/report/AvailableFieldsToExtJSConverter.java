@@ -8,7 +8,6 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.util.Strings;
 
@@ -55,8 +54,8 @@ public class AvailableFieldsToExtJSConverter {
 		// obj.put("operator", QueryFilterOperator.Equals);
 		return obj;
 	}
-	
-	private static JSONObject fieldToCommonJson(Field field) {
+
+	public static JSONObject fieldToCommonJson(Field field) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", field.getName());
 		obj.put("category", field.getCategoryTranslation());
