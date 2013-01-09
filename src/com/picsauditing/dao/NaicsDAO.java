@@ -55,9 +55,7 @@ public class NaicsDAO extends PicsDAO {
 
 		if (naics == null)
 			return 0;
-		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
-		// return naics.getDart();
-		return naics.getLwcr();
+		return naics.getDart();
 	}
 
 	// FIXME Using a boolean argument here is a bad design -- as proven by a new, third option (getBroaderNaicsForDart, below).
@@ -81,14 +79,10 @@ public class NaicsDAO extends PicsDAO {
 		String code = naics.getCode();
 		if (Strings.isEmpty(code))
 			return null;
-		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
-		// if (naics.getDart() > 0)
-		if (naics.getLwcr() > 0)
+		if (naics.getDart() > 0)
 			return naics;
 		Naics naics2 = findParent(code);
-		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
-		// if (naics2 == null || naics2.getDart() > 0)
-		if (naics2 == null || naics2.getLwcr() > 0)
+		if (naics2 == null || naics2.getDart() > 0)
 			return naics2;
 		
 		return getBroaderNaicsForDart(naics2);
