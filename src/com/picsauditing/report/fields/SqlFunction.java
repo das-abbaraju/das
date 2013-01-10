@@ -2,16 +2,16 @@ package com.picsauditing.report.fields;
 
 public enum SqlFunction {
 	// None,
-	Count(true, DisplayType.Integer),
-	CountDistinct(true, DisplayType.Integer),
+	Count(true, DisplayType.RightAlign),
+	CountDistinct(true, DisplayType.RightAlign),
 	GroupConcat(true, DisplayType.String),
 	Max(true),
 	Min(true),
 	
-	Average(true, DisplayType.Float),
-	Round(false, DisplayType.Integer), // Parameter means decimal place
+	Average(true, DisplayType.RightAlign),
+	Round(false, DisplayType.RightAlign), // Parameter means decimal place
 	Sum(true),
-	StdDev(true, DisplayType.Float),
+	StdDev(true, DisplayType.RightAlign),
 	
 	Left, // Parameter means number of characters
 	Length,
@@ -19,10 +19,10 @@ public enum SqlFunction {
 	UpperCase,
 	
 	Month(false, DisplayType.String), // January TODO translate the 1 into January
-	Year(false, DisplayType.Integer), // 2012
+	Year(false, DisplayType.RightAlign), // 2012
 	YearMonth(false, DisplayType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
-	WeekDay(false, DisplayType.Integer), // Monday TODO translate the 1
-	Hour(false, DisplayType.Integer), // 23 
+	WeekDay(false, DisplayType.RightAlign), // Monday TODO translate the 1
+	Hour(false, DisplayType.RightAlign), // 23 
 	Date // 2012-01-31
 	;
 

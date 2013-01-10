@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,32 +109,38 @@ public class Filter extends ReportElement {
 
 		if (fieldType.equals(DisplayType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
-			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
 			return "'" + dateValue + "'";
 		}
 
 		if (fieldType.equals(DisplayType.Boolean)) {
 			if (filterValue.equals("1"))
-				return true + "";
+				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("true"))
-				return true + "";
+				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("Y"))
-				return true + "";
+				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("Yes"))
-				return true + "";
-			return false + "";
+				return true + Strings.EMPTY_STRING;
+			return false + Strings.EMPTY_STRING;
 		}
 
-		if (fieldType.equals(DisplayType.Float)) {
-			return Float.parseFloat(filterValue) + "";
-		}
+//		if (fieldType.equals(DisplayType.RightAlign)) {
+//			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
+//		}
 
-		if (fieldType.equals(DisplayType.Integer)) {
-			filterValue = Integer.parseInt(filterValue) + "";
+		if (fieldType.equals(DisplayType.RightAlign)) {
+			if (NumberUtils.isDigits(filterValue)) {
+				return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+			}
+			
+			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
+			
+//			filterValue = Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
 			// Make sure we incorporate the filter strategy when using function
 			// dates
 			// return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
-			return filterValue;
+//			return filterValue;
 		}
 
 		if (fieldType.equals(DisplayType.String)) {

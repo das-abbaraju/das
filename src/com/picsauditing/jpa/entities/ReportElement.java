@@ -106,9 +106,9 @@ public abstract class ReportElement {
 		int index = name.indexOf(METHOD_SEPARATOR);
 		if (index == -1) {
 			return name;
-		} else {
-			return name.substring(0, index);
-		}
+		} 
+			
+		return name.substring(0, index);
 	}
 
 	@Enumerated(EnumType.STRING)

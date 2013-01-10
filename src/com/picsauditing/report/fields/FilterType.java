@@ -1,16 +1,16 @@
 package com.picsauditing.report.fields;
 
 public enum FilterType {
-	AccountID(DisplayType.Integer),
+	AccountID(DisplayType.RightAlign),
 	Autocomplete(DisplayType.String),
 	Boolean,
 	Date,
 	DateTime,
-	Float,
-	Integer,
+	Float(DisplayType.RightAlign),
+	Integer(DisplayType.RightAlign),
 	ShortList(DisplayType.String),
 	String,
-	UserID(DisplayType.Integer);
+	UserID(DisplayType.RightAlign);
 
 	private DisplayType displayType;
 	
@@ -21,7 +21,7 @@ public enum FilterType {
 	private FilterType(DisplayType displayType) {
 		this.displayType = displayType;
 	}
-
+	
 	public DisplayType getDisplayType() {
 		return displayType;
 	}

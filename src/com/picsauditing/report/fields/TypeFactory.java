@@ -2,18 +2,19 @@ package com.picsauditing.report.fields;
 
 public class TypeFactory {
 	
-	public static ColumnType lookupColumnType(FieldType fieldType, SqlFunction sqlFunction) {
-		if (sqlFunction == null) {
-			return lookupColumnType(fieldType);
+	public static DisplayType lookupColumnType(FieldType fieldType, SqlFunction sqlFunction) {
+		if (sqlFunction != null && sqlFunction.getDisplayType() != null) {
+			return sqlFunction.getDisplayType();
 		}
-		return ColumnType.RightAlign;
+		
+		return lookupColumnType(fieldType);
 	}
 	
-	public static ColumnType lookupColumnType(FieldType fieldType) {
+	public static DisplayType lookupColumnType(FieldType fieldType) {
 		if (fieldType == FieldType.String) {
-			return ColumnType.LeftAlign;
+			return DisplayType.LeftAlign;
 		} else {
-			return ColumnType.RightAlign;
+			return DisplayType.RightAlign;
 		}
 	}
 	

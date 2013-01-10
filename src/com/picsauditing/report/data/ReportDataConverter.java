@@ -82,11 +82,11 @@ public class ReportDataConverter {
 			}
 			
 			DisplayType displayType = column.getField().getType().getDisplayType();
-			if (displayType == DisplayType.Integer) {
+			if (displayType == DisplayType.RightAlign) {
 				return value;
 			}
 			
-			if (displayType == DisplayType.Float) {
+			if (displayType == DisplayType.RightAlign) {
 				return value;
 			}
 			

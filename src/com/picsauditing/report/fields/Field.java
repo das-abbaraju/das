@@ -66,6 +66,7 @@ public class Field {
 		if (type == null) {
 			throw new RuntimeException("type is required when creating Fields");
 		}
+		
 		this.type = type;
 	}
 
