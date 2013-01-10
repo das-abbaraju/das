@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -150,6 +151,31 @@ public class FlagDataCalculatorTest {
 		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertFalse("if the cao is not visible, the audit should not be visible", isAuditVisible);
 	}
+	
+	@Test
+	public void testStatisticsValid() throws Exception {
+		ContractorAccount con = EntityFactory.makeContractor();
+		ContractorAudit audit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, con, "2012");
+		con.getAudits().add(audit);
+		Calendar date = Calendar.getInstance();
+		audit.setCreationDate(date.getTime());
+		date.add(Calendar.YEAR, 1);
+		audit.setExpiresDate(date.getTime());
+		
+		OperatorAccount op1 = EntityFactory.makeOperator();
+		OperatorAccount op2 = EntityFactory.makeOperator();
+		
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, op1);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setOperator(op1);
+		cao.getCaoPermissions().add(caop);
+		
+		Boolean isValid = Whitebox.invokeMethod(calculator, "isStatisticValidForOperator", op1, con);
+		assertTrue("statistics are valid for operators on annual updates", isValid);
+
+		isValid = Whitebox.invokeMethod(calculator, "isStatisticValidForOperator", op2, con);
+		assertFalse("statistics are not valid for operators not on annual updates", isValid);
+}
 
 	@Test
 	public void testIsAuditVisibleToOperator_caoNoPermissions() throws Exception {

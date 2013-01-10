@@ -3,7 +3,9 @@
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.util.Locale"%>
 <%@page import="com.picsauditing.PICS.I18nCache"%>
+<%@page import="com.picsauditing.PICS.InputValidator"%>
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>
+<!-- FIXME Clean up this validation, possibly moving it into a controller solely for AJAX validation -->
 <%
 	try {
 		String groupName = request.getParameter("groupName".trim());
@@ -12,16 +14,15 @@
 		
 		if (!Strings.isEmpty(groupName)) {
 			String message = null;
-			
-			if (Strings.isEmpty(groupName))
-				message = cache.getText("User.groupname.error.Empty", locale);
-			else if (groupName.length() < 3)
-				message = cache.getText("User.groupname.error.Short", locale);
-			else if (groupName.length() > 100)
-				message = cache.getText("User.groupname.error.Long", locale);
-			else if (!groupName.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
-				message = cache.getText("User.groupname.error.Special", locale);
-			
+
+            InputValidator inputValidator = SpringUtils.getBean("InputValidator");
+            if (inputValidator != null) {
+                String errorMessageKey = inputValidator.validateUsername(groupName);
+                if (Strings.isNotEmpty(errorMessageKey)) {
+                    message = cache.getText(errorMessageKey, locale);
+                }
+            }
+
 			if (!Strings.isEmpty(message)) {
 				%> <%= message %> <%
 				return;

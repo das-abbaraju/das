@@ -146,7 +146,7 @@ public class FacilityChanger {
 			contractor.setRequestedBy(findEarliestAddedOperator());
 		}
 
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -208,7 +208,7 @@ public class FacilityChanger {
 
 				accountLevelAdjuster.setListOnlyIfPossible(contractor);
 
-				billingService.calculateAnnualFees(contractor);
+				billingService.calculateContractorInvoiceFees(contractor);
 
 				// adjusting requested by to earliest added operator
 				if (contractor.getRequestedBy() == null || contractor.getRequestedBy().equals(operator)) {

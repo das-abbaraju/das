@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.report.ReportColumnTooltip', {
+Ext.define('PICS.view.report.report.ColumnTooltip', {
     extend: 'Ext.tip.ToolTip',
-    alias: 'widget.reportcolumntooltip',
+    alias: 'widget.columntooltip',
     
     anchor: 'bottom',
     showDelay: 0,

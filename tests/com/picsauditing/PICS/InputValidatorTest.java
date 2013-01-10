@@ -14,6 +14,7 @@ import org.mockito.internal.util.reflection.Whitebox;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InputValidatorTest {
 
@@ -119,42 +120,42 @@ public class InputValidatorTest {
 	public void testValidateUsername_Null_ReturnsNotEmpty() {
 		String errorMessageKey = inputValidator.validateUsername(null);
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
 	public void testValidateUsername_EmptyString_ReturnsNotEmpty() {
 		String errorMessageKey = inputValidator.validateUsername("");
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
 	public void testValidateUsername_EmailAddress_ReturnsEmpty() {
 		String errorMessageKey = inputValidator.validateUsername("me@here.com");
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
 	public void testValidateUsername_UnderscoreDashAndPlusAreValid() {
 		String errorMessageKey = inputValidator.validateUsername("abc-_+");
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
 	public void testValidateUsername_SingleCharacter_ReturnsEmpty() {
 		String errorMessageKey = inputValidator.validateUsername("1");
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
 	public void testValidateUsername_FiveCharacters_ReturnsEmpty() {
 		String errorMessageKey = inputValidator.validateUsername("12345");
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -173,7 +174,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateUsername(string100CharactersLong);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -192,7 +193,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateUsername(string101CharactersLong);
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -205,7 +206,7 @@ public class InputValidatorTest {
 
 		for (String invalidChar : invalidChars) {
 			String errorMessageKey = inputValidator.validateUsername("abcd" + invalidChar);
-			assertNotSame("", errorMessageKey);
+			assertNotSame(invalidChar + " should be an invalid character for a username.", "", errorMessageKey);
 		}
 	}
 
@@ -215,7 +216,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date, false);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -224,7 +225,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -234,7 +235,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -244,7 +245,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -254,7 +255,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -264,7 +265,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -274,7 +275,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -284,7 +285,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -294,7 +295,7 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertEquals("", errorMessageKey);
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
 	}
 
 	@Test
@@ -304,7 +305,43 @@ public class InputValidatorTest {
 
 		String errorMessageKey = inputValidator.validateDate(date);
 
-		assertNotSame("", errorMessageKey);
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
+	}
+
+	@Test
+	public void testValidateLocale_NullLocaleNotRequired_ReturnsNoError() {
+		Locale locale = null;
+
+		String result = inputValidator.validateLocale(locale, false);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidateLocale_NullLocale_ReturnsRequiredKey() {
+		Locale locale = null;
+
+		String result = inputValidator.validateLocale(locale);
+
+		assertEquals(InputValidator.REQUIRED_KEY, result);
+	}
+
+	@Test
+	public void testValidateLocale_BlankLocale_ReturnsRequiredKey() {
+		Locale locale = new Locale("");
+
+		String result = inputValidator.validateLocale(locale);
+
+		assertEquals(InputValidator.REQUIRED_KEY, result);
+	}
+
+	@Test
+	public void testValidateLocale_EnglishLocale_ReturnsNoError() {
+		Locale locale = Locale.ENGLISH;
+
+		String result = inputValidator.validateLocale(locale);
+
+		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
 	private Date buildValidDate() {

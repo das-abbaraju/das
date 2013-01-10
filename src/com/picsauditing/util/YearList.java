@@ -59,8 +59,7 @@ public class YearList {
 	public Integer getYearForScope(MultiYearScope scope) {
 		int lastYear = referenceYear() - 1;
 
-		if (!yearList.contains(lastYear)) {
-			if (isGracePeriod() && yearList.contains(lastYear - 1))
+		if (!yearList.contains(lastYear) && isGracePeriod()) {
 				lastYear--;
 		}
 

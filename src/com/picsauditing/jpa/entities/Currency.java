@@ -56,18 +56,4 @@ public enum Currency {
 		return isCAD() || isGBP();
 	}
 
-	@Transient
-	public InvoiceFee getTaxFee() {
-		if (isCAD()) {
-			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
-			gst.setFeeClass(FeeClass.GST);
-			return gst;
-		//} else if(isGBP() || isEUR()){
-		} else if(isGBP()){
-			InvoiceFee vat = new InvoiceFee(InvoiceFee.VAT);
-			vat.setFeeClass(FeeClass.VAT);
-			return vat;
-		} else
-			return null;
-	}
 }

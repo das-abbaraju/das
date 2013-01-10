@@ -610,6 +610,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					// that have problems
 				}
 			}
+			
+			List<ContractorAudit> currentAnnualUpdates = co.getContractorAccount().getCurrentAnnualUpdates();
 
 			String where = "t.audit.contractorAccount.id = " + id + " AND t.visible = 1 "
 					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id IN ("
@@ -621,7 +623,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
 				if (!cao.getAudit().isExpired())
-					addCaoToMissingAudits(cao, auditTypeToFlagCriteria);
+					if (cao.getAudit().getAuditType().isAnnualAddendum()) {
+						if (currentAnnualUpdates.contains(cao.getAudit())) {
+							addCaoToMissingAudits(cao, auditTypeToFlagCriteria);
+						}
+					} else {
+						addCaoToMissingAudits(cao, auditTypeToFlagCriteria);
+					}
 			}
 		}
 		return missingAudits;

@@ -5,11 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.InputValidator;
@@ -55,8 +52,6 @@ public class ProfileEdit extends PicsActionSupport {
 
 	private boolean goEmailSub = false;
 	private boolean usingDynamicReports = false;
-
-	public static final String INPUT_ERROR = "inputError";
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -109,7 +104,7 @@ public class ProfileEdit extends PicsActionSupport {
 		errorMessageKey = inputValidator.validateName(u.getDepartment(), false);
 		addFieldErrorIfMessage("u.department", errorMessageKey);
 
-		errorMessageKey = inputValidator.validateEmail(u.getEmail(), false);
+		errorMessageKey = inputValidator.validateEmail(u.getEmail());
 		addFieldErrorIfMessage("u.email", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateUsername(u.getUsername());
@@ -124,15 +119,11 @@ public class ProfileEdit extends PicsActionSupport {
 		errorMessageKey = inputValidator.validatePhoneNumber(u.getFax(), false);
 		addFieldErrorIfMessage("u.fax", errorMessageKey);
 
-		Locale locale = u.getLocale();
-		if (locale == null || StringUtils.isEmpty(locale.toString())) {
-			addFieldErrorIfMessage("u.locale", InputValidator.REQUIRED_KEY);
-			u.setLocale(new Locale("en"));
-		}
+		errorMessageKey = inputValidator.validateLocale(u.getLocale());
+		addFieldErrorIfMessage("u.locale", errorMessageKey);
 
 		if (u.getTimezone() == null) {
 			addFieldErrorIfMessage("u.timezone", InputValidator.REQUIRED_KEY);
-			u.setTimezone(TimeZone.getTimeZone("US/Pacific"));
 		}
 	}
 

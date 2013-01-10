@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -21,9 +24,14 @@ import com.picsauditing.importpqf.ImportPqfIsnUs;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.util.Downloader;
@@ -280,6 +288,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		auditDataDAO.save(auditData);
 		dataID = auditData.getId();
 
+		resetCaoIfNeeded(auditData);
+		
 		try {
 			if (copyDataID > 0) {
 				FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
@@ -328,6 +338,42 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
+	}
+
+	private void resetCaoIfNeeded(AuditData auditData) {
+		ContractorAudit audit = auditData.getAudit();
+		
+		auditCategoryRuleCache.initialize(auditRuleDAO);
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+		boolean updateAudit = false;
+		
+		if (auditData.getQuestion().getId()== AuditQuestion.MANUAL_PQF) {
+			for (ContractorAuditOperator cao : audit.getOperators()) {
+				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
+					operators.add(caop.getOperator());
+				builder.calculate(auditData.getAudit(), operators);
+
+				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
+						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+					ContractorAuditOperatorWorkflow caow = cao
+							.changeStatus(AuditStatus.Incomplete, permissions);
+					caow.setNotes("Due to data change");
+					caowDAO.save(caow);
+					updateAudit = true;
+				}
+			}
+		}
+		
+		if (updateAudit) {
+			AuditData sigQuestion = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), 10217);
+			if (sigQuestion != null) {
+				sigQuestion.setAnswer("");
+				auditDataDAO.save(sigQuestion);
+			}
+			
+			auditDao.save(audit);
+		}
 	}
 
 	public String downloadFile() throws Exception {

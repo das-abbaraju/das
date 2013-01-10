@@ -590,7 +590,7 @@
 			</div>
 		</s:if>
 
-		<s:if test="filter.showPqdType">
+		<s:if test="filter.showPqfType">
 			<div class="filterOption">
 				<a href="#" class="filterBox">
 					<s:text name="Filters.label.PQFType" />

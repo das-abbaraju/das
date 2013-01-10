@@ -149,18 +149,19 @@
 										</s:if>
 									</s:iterator>
 								</table>
-								
-								<s:if test="contractor.country.currency.cad">
+
+								<s:if test="contractor.country.currency.CAD">
 									<li>
-										<label><s:text name="ContractorPaymentOptions.GST"/></label>
+                                        <s:set var="taxFeeKey" value="%{canadianTaxFeeMsgKey}" />
+										<label><s:text name="%{taxFeeKey}"/></label>
 										<s:property value="contractor.country.currency.symbol" />
-										<s:property value="gstFee.amount"/>
+										<s:property value="canadianTaxFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol" />
-										<s:property value="contractor.newMembershipAmount+gstFee.amount"/>
+										<s:property value="contractor.newMembershipAmount+canadianTaxFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
@@ -248,17 +249,18 @@
 									</li>
 								</s:if>
 								
-								<s:if test="contractor.country.currency.cad">
+								<s:if test="contractor.country.currency.CAD">
 									<li>
-										<label><s:text name="ContractorPaymentOptions.GST"/></label>
+                                        <s:set var="taxFeeKey" value="%{canadianTaxFeeMsgKey}" />
+										<label><s:text name="%{taxFeeKey}"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
-										<s:property value="gstFee.amount"/>
+										<s:property value="canadianTaxFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
-										<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+importFee.amount"/>
+										<s:property value="activationFee.amount+contractor.newMembershipAmount+canadianTaxFee.amount+importFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
@@ -303,7 +305,8 @@
 						<li>
 							<label><s:text name="ContractorPaymentOptions.ContractorAgreement" /></label>
 							<s:checkbox name="contractor.agreed" disabled="true" />
-													<s:if test="contractor.agreementDate != null">
+						
+							<s:if test="contractor.agreementDate != null">
 								<s:text name="ContractorPaymentOptions.AgreementDate" >
 									<s:param value="%{contractor.agreementDate}" />
 									<s:param value="%{contractor.agreedBy.name}" />

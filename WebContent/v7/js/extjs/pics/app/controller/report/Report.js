@@ -10,6 +10,9 @@ Ext.define('PICS.controller.report.Report', {
         ref: 'reportAlertMessage',
         selector: 'reportalertmessage'
     }, {
+        ref: 'reportData',
+        selector: 'reportdata'
+    }, {
         ref: 'reportSettingsModal',
         selector: 'reportsettingsmodal'
     }],
@@ -85,8 +88,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     downloadReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -94,8 +97,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     favoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({
@@ -104,8 +107,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     printReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -115,12 +118,29 @@ Ext.define('PICS.controller.report.Report', {
     refreshReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = report.get('name'),
-            report_data_store = this.getReportReportDatasStore();
-        
+            report_data_store = this.getReportReportDatasStore(),
+            report_data = this.getReportData();
+            
+        var report_name = report.get('name'),
+            // TODO: this should be removed
+            limit = report.get('rowsPerPage'),
+            params = report.toRequestParams(),
+            model_fields = report.convertColumnsToModelFields(),
+            grid_columns = report.convertColumnsToGridColumns();
+            
         this.updatePageTitle(report_name);
+
+        // TODO: this should be removed
+        report_data_store.setLimit(limit);
         
-        report_data_store.reload();
+        // update data store proxy
+        report_data_store.updateProxyParameters(params);
+        
+        // update data store model
+        report_data_store.updateReportDataModelFields(model_fields);
+        
+        // update report data grid columns
+        report_data.updateGridColumns(grid_columns);
     },
 
     saveReport: function () {
@@ -197,8 +217,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     unfavoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({

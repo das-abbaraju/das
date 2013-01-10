@@ -14,6 +14,8 @@ function closePage() {
 	try {
 		opener.reloadQuestion('<s:property value="auditData.question.id"/>');
 		opener.triggerDependent('<s:property value="auditData.question.id"/>');
+		if (<s:property value="auditData.question.id"/> == 1331)
+		    opener.reloadQuestion('10217');
 		opener.focus();
 	} catch(err) {}
 	self.close();

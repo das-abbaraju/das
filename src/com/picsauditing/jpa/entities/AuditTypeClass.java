@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum AuditTypeClass implements Translatable {
-	PQF, Audit, Policy, IM, Employee;
+	PQF, Audit, Policy, IM, Employee, Client;
 
 	public boolean isPolicy() {
 		return Policy == this;
@@ -21,6 +21,10 @@ public enum AuditTypeClass implements Translatable {
 		return Employee == this;
 	}
 
+	public boolean isClient() {
+		return Client == this;
+	}
+	
 	public boolean isIm() {
 		return IM == this;
 	}

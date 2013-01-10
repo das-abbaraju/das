@@ -1,13 +1,11 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -26,13 +24,17 @@ public class InvoiceFee extends BaseTable {
 	private TranslatableString fee;
 	private TranslatableString description;
 	private BigDecimal amount = BigDecimal.ZERO;
+	private BigDecimal ratePercent = BigDecimal.ZERO;
 	private boolean visible = true;
 	private FeeClass feeClass;
 	private int minFacilities;
 	private int maxFacilities;
 	private String qbFullName;
+	private Date effectiveDate;
 	private Integer displayOrder = 999;
 	private boolean commissionEligible;
+	private List<InvoiceFeeCountry> invoiceFeeCountries = new ArrayList<InvoiceFeeCountry>();
+	private InvoiceFeeCountry subdivisionFee;
 
 	public InvoiceFee() {
 	}
@@ -66,6 +68,14 @@ public class InvoiceFee extends BaseTable {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public BigDecimal getRatePercent() {
+		return ratePercent;
+	}
+
+	public void setRatePercent(BigDecimal ratePercent) {
+		this.ratePercent = ratePercent;
 	}
 
 	public boolean isVisible() {
@@ -114,6 +124,14 @@ public class InvoiceFee extends BaseTable {
 		this.qbFullName = qbFullName;
 	}
 
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
 	public void setDisplayOrder(Integer displayOrder) {
 		this.displayOrder = displayOrder;
 	}
@@ -128,6 +146,15 @@ public class InvoiceFee extends BaseTable {
 
 	public void setCommissionEligible(boolean commissionEligible) {
 		this.commissionEligible = commissionEligible;
+	}
+
+	@OneToMany(mappedBy = "invoiceFee", cascade = CascadeType.REMOVE)
+	public List<InvoiceFeeCountry> getInvoiceFeeCountries() {
+		return invoiceFeeCountries;
+	}
+
+	public void setInvoiceFeeCountries(List<InvoiceFeeCountry> invoiceFeeCountries) {
+		this.invoiceFeeCountries = invoiceFeeCountries;
 	}
 
 	@Transient
@@ -183,11 +210,14 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Transient
-	public BigDecimal getTax(BigDecimal total) {
-		if (isGST()) {
-			return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
+	public BigDecimal getTax(BigDecimal amountToTax) {
+		if (feeClass.equals(FeeClass.CanadianTax)) {
+			BigDecimal provinceTaxRate = getSubdivisionFee().getRatePercent().divide(new BigDecimal(100));
+			BigDecimal gstTaxRate = getRatePercent().divide(new BigDecimal(100));
+			BigDecimal totalTaxRate = provinceTaxRate.add(gstTaxRate);
+			return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_UP);
 		} else if (isVAT()) {
-			return total.multiply(BigDecimal.valueOf(0.20)).setScale(2, BigDecimal.ROUND_UP);
+			return amountToTax.multiply(BigDecimal.valueOf(0.20)).setScale(2, BigDecimal.ROUND_UP);
 		} else
 			return BigDecimal.ZERO;
 	}
@@ -195,5 +225,14 @@ public class InvoiceFee extends BaseTable {
 	@Transient
 	public boolean isLegacyMembership() {
 		return (this.getId() >= 4 && this.getId() <= 11) || this.getId() == 105;
+	}
+
+	@Transient
+	public InvoiceFeeCountry getSubdivisionFee() {
+		return subdivisionFee;
+	}
+
+	public void setSubdivisionFee(InvoiceFeeCountry subdivisionFee) {
+		this.subdivisionFee = subdivisionFee;
 	}
 }

@@ -309,6 +309,13 @@ public class AuditDataSave extends AuditActionSupport {
 				contractor.setNeedsRecalculation(ContractorAccount.MAX_RECALC);
 			}
 
+			// refresh auditData since it might be not a complete representation
+			// this is okay at this time because auditData has a valid id
+			// and setting the question will not conflict with database key contraints
+			auditData = auditDataDAO.find(auditData.getId());
+			AuditQuestion auditDataQuestion = questionDao.find(auditData.getQuestion().getId());
+			auditData.setQuestion(auditDataQuestion);
+			
 			if (checkDependentQuestions() || checkOtherRules()) {
 				auditBuilder.recalculateCategories(conAudit);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
@@ -547,8 +554,10 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
 			Date creationDate = DateBean.parseDate(auditData.getAnswer());
-			if (!DateBean.isNullDate(creationDate))
+			if (!DateBean.isNullDate(creationDate)) {
 				tempAudit.setCreationDate(creationDate);
+				tempAudit.setEffectiveDate(creationDate);
+			}
 			auditDao.save(tempAudit);
 		}
 		if ("exipireMonths12".equals(auditData.getQuestion().getUniqueCode())
@@ -675,6 +684,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 		if (databaseCopy == null) {
 			databaseCopy = auditData;
+            databaseCopy.setQuestion(questionDao.find(databaseCopy.getQuestion().getId()));
 		}
 
 		String questionType = databaseCopy.getQuestion().getQuestionType();

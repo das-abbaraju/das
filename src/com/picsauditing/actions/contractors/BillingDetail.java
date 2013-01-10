@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,9 +15,10 @@ import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
@@ -40,11 +42,9 @@ public class BillingDetail extends ContractorActionSupport {
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
-	private AccountDAO accountDao;
-	@Autowired
 	private OperatorAccountDAO opAccountDao;
 	@Autowired
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Autowired
 	private TransactionDAO transactionDAO;
 	@Autowired
@@ -67,13 +67,15 @@ public class BillingDetail extends ContractorActionSupport {
 			return LOGIN;
 
 		this.findContractor();
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 
+		// TODO: are we using this outside of invoice creation? 
 		invoiceItems = billingService.createInvoiceItems(contractor, getUser());
-
+		// TODO: are we using this outside of invoice creation? 
 		invoiceTotal = BigDecimal.ZERO.setScale(2);
-		for (InvoiceItem item : invoiceItems)
+		for (InvoiceItem item : invoiceItems) {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
+		}
 
 		if ("Create".equalsIgnoreCase(button)) {
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0 && !permissions.hasPermission(OpPerms.Billing)) {
@@ -81,43 +83,14 @@ public class BillingDetail extends ContractorActionSupport {
 				return SUCCESS;
 			}
 
-			Invoice invoice = new Invoice();
-			invoice.setAccount(contractor);
-			invoice.setCurrency(contractor.getCountry().getCurrency());
-			invoice.setStatus(TransactionStatus.Unpaid);
-			invoice.setItems(invoiceItems);
-			invoice.setTotalAmount(invoiceTotal);
-			invoice.setAuditColumns(permissions);
+			Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems,
+					new User(permissions.getUserId()));
 
-			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
-				invoice.setQbSync(true);
-
-			// Calculate the due date for the invoice
-			calculateDueDateFor(invoice);
-
-			// Add the list of operators if this invoice has a membership level
-			// on it
-			boolean hasMembership = false;
-			for (InvoiceItem item : invoiceItems) {
-				if (item.getInvoiceFee().isMembership())
-					hasMembership = true;
-			}
-
-			if (hasMembership) {
-				invoice.setNotes(billingService.getOperatorsString(contractor));
-			}
-
-			contractor.getInvoices().add(invoice);
-
-			for (InvoiceItem item : invoiceItems) {
-				item.setInvoice(invoice);
-				item.setAuditColumns(permissions);
-			}
-			invoice = invoiceDAO.save(invoice);
+			invoice = invoiceService.saveInvoice(invoice);
 
 			contractor.getInvoices().add(invoice);
 			contractor.syncBalance();
-			accountDao.save(contractor);
+			accountDAO.save(contractor);
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
@@ -154,38 +127,10 @@ public class BillingDetail extends ContractorActionSupport {
 
 		contractor.syncBalance();
 
-		accountDao.save(contractor);
+		accountDAO.save(contractor);
 
 		this.subHeading = getText("BillingDetail.title");
 		return SUCCESS;
-	}
-
-	protected void calculateDueDateFor(Invoice invoice) {
-
-		if (contractor.getBillingStatus().isActivation()) {
-			invoice.setDueDate(new Date());
-		} else if (contractor.getBillingStatus().isReactivation()) {
-			invoice.setDueDate(new Date());
-		} else if (contractor.getBillingStatus().isUpgrade()) {
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		} else if (contractor.getBillingStatus().isRenewal() || contractor.getBillingStatus().isRenewalOverdue()) {
-			invoice.setDueDate(contractor.getPaymentExpires());
-		}
-
-		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-			invoice.setDueDate(contractor.getPaymentExpires());
-			contractor.setRenew(true);
-		}
-
-		if (invoice.getDueDate() == null)
-			// For all other statuses like (Current)
-			invoice.setDueDate(DateBean.addDays(new Date(), 30));
-
-		// Make sure the invoice isn't due within 7 days for active accounts
-		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
-
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
 	}
 
 	public OperatorAccount getRequestedBy() {

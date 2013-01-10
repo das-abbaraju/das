@@ -155,11 +155,16 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 				sql.addJoin("JOIN user_assignment ua ON ua.country = a.country AND ua.userID = "
 						+ permissions.getUserId() + " AND (a.countrySubdivision = ua.countrySubdivision OR a.zip "
 						+ "BETWEEN ua.postal_start AND ua.postal_end)");
+                legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
+                        + permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
+                        + "BETWEEN ua.postal_start AND ua.postal_end)");
 			}
 
 			if (isAmSales() && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN account_user au ON au.accountID = a.requestedByID AND au.startDate < NOW() "
+				sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+                legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
+                        + "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
 		}
 
@@ -168,8 +173,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 				getFilter().setShowOperator(true);
 				sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
+                legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+                        + permissions.getAccountId() + ")");
 			} else {
 				sql.addWhere("gc.genID = " + permissions.getAccountId());
+                legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
 			}
 		}
 

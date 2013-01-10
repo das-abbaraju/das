@@ -7,7 +7,7 @@ public enum OshaRateType implements Translatable {
 	TrirNaics,
 	TrirWIA,
 	Fatalities,
-	Dart,
+	Dart(true),
 	DartNaics,
 	SeverityRate,
 	Cad7,
@@ -41,6 +41,13 @@ public enum OshaRateType implements Translatable {
 	
 	public boolean isTrir() {
 		if (this == TrirAbsolute || this == TrirNaics || this == TrirWIA)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean isDart() {
+		if (this == Dart || this == DartNaics)
 			return true;
 		
 		return false;

@@ -2,13 +2,14 @@ Ext.define('PICS.model.report.Column', {
     extend: 'Ext.data.Model',
     
     requires: [
+        'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
         'PICS.ux.grid.column.Date',
         'PICS.ux.grid.column.Flag',
         'PICS.ux.grid.column.Float',
         'PICS.ux.grid.column.Int',
         'PICS.ux.grid.column.Number',
-        'PICS.ux.grid.column.Column'
+        'PICS.ux.grid.column.String'
     ],
 
     // http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
@@ -30,6 +31,9 @@ Ext.define('PICS.model.report.Column', {
         type: 'string'
     }],
 
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
         var field = this.getAvailableField();
 
@@ -49,6 +53,10 @@ Ext.define('PICS.model.report.Column', {
         return model_field;
     },
 
+    // ALERT: Ext.grid.column.Column is DEFAULT
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
     toGridColumn: function () {
         var field = this.getAvailableField(),
             url = field.get('url'),
@@ -61,9 +69,7 @@ Ext.define('PICS.model.report.Column', {
         var type = field.get('type');
         
         var config = {
-            menuDisabled: true,
-            record: this,
-            sortable: false
+            column: this
         };
 
         switch (type) {
@@ -100,7 +106,7 @@ Ext.define('PICS.model.report.Column', {
             // text
             case 'string':
             default:
-                grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+                grid_column = Ext.create('PICS.ux.grid.column.String', config);
                 
                 break;
         }

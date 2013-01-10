@@ -251,10 +251,16 @@ function loadStatus(caoID, addUserNote){
 	<span class="sub">
 		<s:if test="auditID > 0">
 			<s:if test="conAudit.employee==null" >
-				<s:text name="Audit.auditFor" >					<s:param value="%{conAudit.auditType.name}" />
-					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
-					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
-				</s:text>
+				<s:if test="conAudit.auditType.ClassType.policy  && !conAudit.auditType.isWCB() && conAudit.effectiveDate == null" >
+					<s:property value="%{conAudit.auditType.name}" />
+				</s:if>
+				<s:else>
+					<s:text name="Audit.auditFor" >
+						<s:param value="%{conAudit.auditType.name}" />
+						<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
+						<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
+					</s:text>
+				</s:else>
 			</s:if>
 			<s:else>
 				<s:text name="Audit.auditForEmployee" >

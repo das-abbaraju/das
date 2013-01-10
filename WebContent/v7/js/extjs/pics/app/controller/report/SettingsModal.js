@@ -122,8 +122,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalCopyClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
     
@@ -133,14 +133,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
         report.set('description', report_description);
         
         // form reset
+        // TODO: put this in the view
         cmp.up('form').getForm().reset();
         
         this.application.fireEvent('createreport');
     },
     
     onReportModalEditClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue();
     
@@ -156,20 +157,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalEditBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore(),
+        var report_store = this.getReportReportsStore(),
             report_settings_edit = this.getReportSettingsEdit(),
             report_no_permission_edit = this.getReportSettingsNoPermission();
     
         // if there is no form - do nothing
         if (!report_no_permission_edit) {
-            if (!store.isLoaded()) {
-                store.on('load', function (store, records, successful, eOpts) {
-                    var report = store.first();
+            if (!report_store.isLoaded()) {
+                report_store.on('load', function (store, records, successful, eOpts) {
+                    var report = report_store.first();
     
                     report_settings_edit.update(report);
                 });
             } else {
-                var report = store.first();
+                var report = report_store.first();
     
                 report_settings_edit.update(report);
             }
@@ -192,10 +193,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
-        var modal = this.getReportSettingsModal(),
+        var settings_modal = this.getReportSettingsModal(),
             title = cmp.getActiveTab().modal_title;
     
-        modal.setTitle(title);
+        settings_modal.setTitle(title);
     },
     
     setFavoriteStatus: function (action) {

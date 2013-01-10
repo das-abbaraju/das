@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.*;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,18 +13,12 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.ContractorValidator;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
-import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
@@ -60,7 +55,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationMakePayment.class);
 
 	@Autowired
-	private InvoiceDAO invoiceDAO;
+	private InvoiceService invoiceService;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
@@ -681,13 +676,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 
 		if (invoice == null) {
 			invoice = billingService.createInvoice(contractor, getUser());
 			contractor.getInvoices().add(invoice);
-			invoiceDAO.save(invoice);
+			invoiceService.saveInvoice(invoice);
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));

@@ -53,6 +53,7 @@
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader"/>
     <bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
     <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
+    <bean id="EmailReportRunner" class="com.picsauditing.mail.EmailReportRunner"/>
     <bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
     <bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
     <bean id="EmployeeDAO" class="com.picsauditing.dao.EmployeeDAO"/>
@@ -129,11 +130,13 @@
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
+    <bean id="InvoiceService" class="com.picsauditing.PICS.InvoiceService"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
     <bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper"
           scope="prototype"/>
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
+    <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
 
     <!-- Validators -->
     <bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>

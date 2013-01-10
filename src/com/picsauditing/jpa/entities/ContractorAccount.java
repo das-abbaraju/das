@@ -859,6 +859,31 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return this.oshaAudits;
 	}
+	
+	@Transient 
+	public List<ContractorAudit> getCurrentAnnualUpdates() {
+		List<ContractorAudit> currentAnnualUpdates = getSortedAnnualUpdates();
+		
+		if (currentAnnualUpdates.size() >= 4) {
+			boolean trimBeginning = false;
+			ContractorAudit audit = currentAnnualUpdates
+					.get(currentAnnualUpdates.size() - 1);
+			for (ContractorAuditOperator cao:audit.getOperators()) {
+				if (cao.isVisible() && cao.getStatus().isComplete()) {
+					trimBeginning = true;
+					break;
+				}
+			}
+			
+			if (trimBeginning) {
+				currentAnnualUpdates.remove(0);
+			} else {
+				currentAnnualUpdates.remove(audit);
+			}
+		}
+		
+		return currentAnnualUpdates;
+	}
 
 	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
@@ -1301,7 +1326,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if ((status.isPending() || status.isActive()) && getAccountLevel().isFull() && membershipDate == null) {
+		if (pendingOrActive() && getAccountLevel().isFull() && newMember()) {
 			return BillingStatus.Activation;
 		}
 
@@ -1349,6 +1374,24 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return BillingStatus.Current;
+	}
+
+	private boolean newMember() {
+		return (membershipDate == null || upgradingFromBidOnlyOrListOnlyAccountToFull());
+	}
+
+	private boolean upgradingFromBidOnlyOrListOnlyAccountToFull() {
+		return (getAccountLevel().isFull() && payingBidOnlyOrFeeOnly());
+	}
+
+	private boolean payingBidOnlyOrFeeOnly() {
+		return (!fees.get(FeeClass.BidOnly).getCurrentLevel().isFree()
+		|| !fees.get(FeeClass.ListOnly).getCurrentLevel().isFree());
+
+	}
+
+	private boolean pendingOrActive() {
+		return status.isPending() || status.isActive();
 	}
 
 	@Transient

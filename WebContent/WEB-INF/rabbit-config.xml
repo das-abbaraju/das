@@ -22,17 +22,15 @@
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
 	<queue id="flag-changes" name="flag-changes" />
-	<queue id="email-queue-priority" name="email-queue-priority" />
-	<queue id="email-queue-normal" name="email-queue-normal" />
-	<queue id="email-subscription" name="email-subscription" />
-	<queue id="subscription" name="subscription" />
-		
 	<fanout-exchange name="flag-changes-exchange">
 	  <bindings>
 	    <binding queue="flag-changes"/>
 	  </bindings>
 	</fanout-exchange>	
 	
+	<queue id="email-queue-priority" name="email-queue-priority" />
+	<queue id="email-queue-normal" name="email-queue-normal" />
+	<queue id="email-subscription" name="email-subscription" />
 	<direct-exchange name="email-queue-exchange">
 	  <bindings>
 	    <binding queue="email-queue-priority" key="email-queue-priority"/>
@@ -41,6 +39,7 @@
 	  </bindings>
 	</direct-exchange>
 
+	<queue id="subscription" name="subscription" />
 	<direct-exchange name="subscription-exchange">
 	  <bindings>
 	    <binding queue="subscription" key="subscription"/>
@@ -48,12 +47,18 @@
 	</direct-exchange>
 	
 	<queue id="csr-assignments" name="csr-assignments" />
-	
 	<direct-exchange name="csr-assignments-exchange" xmlns="http://www.springframework.org/schema/rabbit">
 	  <bindings>
 	    <binding queue="csr-assignments"/>
 	  </bindings>
-	</direct-exchange>		
+	</direct-exchange>
+	
+	<queue id="email-requests" name="email-requests" />
+	<direct-exchange name="email-requests-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	  <bindings>
+	    <binding queue="email-requests"/>
+	  </bindings>
+	</direct-exchange>
 	
 	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
@@ -79,6 +84,11 @@
 	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>
 	<beans:bean id="EmailSubscriptionPoller" class="com.picsauditing.messaging.subscription.EmailSubscriptionPoller">
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.SubscriptionEmail" />
+	</beans:bean>
+
+	<template message-converter="messageConverter" id="EmailRequestTemplate" connection-factory="connectionFactory" exchange="email-requests-exchange" queue="email-requests"/>
+	<beans:bean id="EmailRequestPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+		<beans:property name="amqpTemplate" ref="EmailRequestTemplate" />
 	</beans:bean>
 
 	<beans:bean id="defaultJavaTypeMapper" class="org.springframework.amqp.support.converter.DefaultJavaTypeMapper">

@@ -212,63 +212,69 @@
 
 	<div id="user_edit">
 		<s:include value="../actionMessages.jsp" />
-		<fieldset class="form submit">
+
 		<s:if test="user != null">
-			<ul class="manage-users-actions">
-				<li>
-					<a class="btn" href="javascript:;" onclick="showUserList();">
-						<s:text name="UsersManage.BackToUserList" />
-					</a>
-				</li>
-				
-				<s:if test="!user.group  && user.id>0">
-					<li>
-						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>"  id="users_manage_changePassword">
-							<s:text name="button.password" />
-						</a>
-					</li>
-					<s:if test="User.lastLogin==null">
-						<li>
-							<a class="btn" href="UsersManage!reSendActivationEmail.action?user=<s:property value="user.id"/>"  id="users_manage_resendActivation">
-								<s:text name="button.activation" />
-							</a>
-						</li>
-					</s:if>
-					<li>
-						<s:if test="hasProfileEdit">
-							<a class="btn" href="UsersManage!emailPassword.action?user=<s:property value="user.id"/>">
-								<s:text name="UsersManage.SendResetPasswordEmail" />
-							</a>
-						</s:if>
-					</li>
-					 <pics:permission perm="SwitchUser">
-						<li>
-							<a class="btn" id="SwitchUser" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-								<s:text name="UsersManage.SwitchToThisUser" />
-							</a>
-						</li>
-						
-						<s:if test="isBetaEnvironment()">
-							<pics:toggle name="<%= FeatureToggle.TOGGLE_SWITCHUSERSERVER %>">
-								<li>
-									<a class="btn" id="SwitchUser" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
-										<s:text name="UsersManage.SwitchToThisUserStable" />
-									</a>
-								</li>
-							</pics:toggle>
-							<pics:toggleElse>
-								<li>
-									<a class="btn" id="SwitchUser" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-										<s:text name="UsersManage.SwitchToThisUserStable" />
-									</a>
-								</li>
-							</pics:toggleElse>
-						</s:if>
-					</pics:permission>
-				</s:if>
-			</ul>
-		</fieldset>
-	</div>
+
+    		<fieldset class="form submit">
+    			<ul class="manage-users-actions">
+    				<li>
+    					<a class="btn" href="javascript:;" onclick="showUserList();">
+    						<s:text name="UsersManage.BackToUserList" />
+    					</a>
+    				</li>
+
+    				<s:if test="!user.group  && user.id>0">
+                        <s:set var="user_id" value="user.id" />
+
+    					<li>
+    						<a class="btn" href="ChangePassword.action?source=manage&user=${user_id}"  id="users_manage_changePassword">
+    							<s:text name="button.password" />
+    						</a>
+    					</li>
+
+    					<s:if test="User.lastLogin==null">
+    						<li>
+    							<a class="btn" href="UsersManage!reSendActivationEmail.action?user=${user_id}"  id="users_manage_resendActivation">
+    								<s:text name="button.activation" />
+    							</a>
+    						</li>
+    					</s:if>
+
+    					<li>
+    						<s:if test="hasProfileEdit">
+    							<a class="btn" href="UsersManage!emailPassword.action?user=${user_id}">
+    								<s:text name="UsersManage.SendResetPasswordEmail" />
+    							</a>
+    						</s:if>
+    					</li>
+
+                        <pics:permission perm="SwitchUser">
+    						<li>
+    							<a class="btn" id="SwitchUser" href="Login.action?button=login&switchToUser=${user_id}">
+    								<s:text name="UsersManage.SwitchToThisUser" />
+    							</a>
+    						</li>
+
+    						<s:if test="isBetaEnvironment()">
+    							<pics:toggle name="<%= FeatureToggle.TOGGLE_SWITCHUSERSERVER %>">
+    								<li>
+    									<a class="btn" id="SwitchUser" href="UsersManage!switchUserToDifferentServer.action?user=${user_id}" >
+    										<s:text name="UsersManage.SwitchToThisUserStable" />
+    									</a>
+    								</li>
+    							</pics:toggle>
+    							<pics:toggleElse>
+    								<li>
+    									<a class="btn" id="SwitchUser" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=${user_id}">
+    										<s:text name="UsersManage.SwitchToThisUserStable" />
+    									</a>
+    								</li>
+    							</pics:toggleElse>
+    						</s:if>
+    					</pics:permission>
+    				</s:if>
+    			</ul>
+    		</fieldset>
 
 			<s:form id="UserSave">
 				<s:if test="user.locked">
@@ -299,70 +305,96 @@
 					<ol>
 						<s:if test="account.users.size() > 1">
 							<s:if test="user.id > 0">
-								<li><label> <s:text
-											name="UsersManage.UserGroupNumber">
+								<li>
+                                    <label>
+                                        <s:text name="UsersManage.UserGroupNumber">
 											<s:param value="%{user.group ? 1 : 0}" />
 										</s:text>:
-								</label> <s:property value="user.id" /></li>
-								<li><label> <s:text name="UsersManage.DateCreated" />
-								</label> <s:date name="user.creationDate"
-										format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></li>
+								    </label>
+                                    <s:property value="user.id" />
+                                </li>
+
+								<li>
+                                    <label>
+                                        <s:text name="UsersManage.DateCreated" />
+								    </label>
+                                    <s:date name="user.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+                                </li>
 							</s:if>
 						</s:if>
 
-						<li><label> <s:text name="UsersManage.DisplayName" />
-						</label> <s:if test="user.isGroup.toString() == 'No'">
-								<s:textfield name="user.name" size="30" />
-							</s:if> <s:else>
-								<s:textfield name="user.name" size="30"
-									onchange="checkGroupName(this.value);" />
+						<li>
+                            <s:if test="user.isGroup.toString() == 'No'">
+								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" />
+							</s:if>
+                            <s:else>
+								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" onchange="checkGroupName(this.value);" />
 								<span id="groupname_status"></span>
-							</s:else></li>
+							</s:else>
+                        </li>
 
 						<s:if test="user.isGroup.toString() == 'No'">
-							<li><s:textfield id="departmentSuggest"
-									name="user.department" size="15" theme="formhelp" /></li>
+							<li>
+                                <s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
+                            </li>
 
-							<li><s:textfield name="user.email" size="40" theme="form" />
+							<li>
+                                <s:textfield name="user.email" size="40" theme="form" />
 							</li>
+
 							<li>
 								<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);" theme="form" /> 
 								<span id="username_status"></span>
 							</li>
 
 							<s:if test="user.id == 0">
-								<li><label> <s:text name="UsersManage.SendActivationEmail" />
-								</label> <s:checkbox id="sendActivationEmail" name="sendActivationEmail" />
+								<li>
+                                    <label>
+                                        <s:text name="UsersManage.SendActivationEmail" />
+								    </label>
+                                    <s:checkbox id="sendActivationEmail" name="sendActivationEmail" />
 								</li>
 							</s:if>
 
-
-							<li><s:textfield name="user.phone" size="15" theme="form" />
+							<li>
+                                <s:textfield name="user.phone" size="15" theme="form" />
 							</li>
-							<li><s:textfield name="user.fax" size="15" theme="form" />
+
+							<li>
+                                <s:textfield name="user.fax" size="15" theme="form" />
 							</li>
 
 							<s:if test="i18nReady">
-								<li><s:select
-										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+								<li>
+                                    <s:select
 										name="user.locale"
+										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-										theme="form" /></li>
+										theme="form" />
+                                </li>
 							</s:if>
 
-							<li><s:select name="user.timezone" value="user.timezone.iD"
+							<li>
+                                <s:select
+                                    name="user.timezone"
+                                    value="user.timezone.iD"
 									theme="form"
-									list="@com.picsauditing.util.TimeZoneUtil@timeZones()" /></li>
+									list="@com.picsauditing.util.TimeZoneUtil@timeZones()" />
+                            </li>
 
 							<s:if test="user.account.id != 1100">
-								<li><label><s:text name="global.ContactPrimary" />:</label>
+								<li>
+                                    <label>
+                                        <s:text name="global.ContactPrimary" />:
+                                    </label>
 									<s:checkbox id="setPrimaryAccount" name="setPrimaryAccount" />
 
 									<pics:fieldhelp title="Primary Contact">
 										<p>
 											<s:text name="UsersManage.SetUserPrimaryContact" />
 										</p>
-									</pics:fieldhelp></li>
+									</pics:fieldhelp>
+                                </li>
 							</s:if>
 
 							<s:if test="account.contractor">

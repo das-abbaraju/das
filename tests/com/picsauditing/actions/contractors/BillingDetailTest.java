@@ -1,0 +1,248 @@
+package com.picsauditing.actions.contractors;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
+
+import com.opensymphony.xwork2.Action;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorFee;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.PermissionToViewContractor;
+
+public class BillingDetailTest extends PicsActionTest {
+	private BillingDetail billingDetail;
+
+	private static final String NOTE_STRING = "Notes are cool";
+	private static Date twoHundredDaysFromNow = DateBean.addDays(new Date(), 200);
+
+	private List<InvoiceItem> invoiceItems;
+	private List<Invoice> invoices;
+	private Map<FeeClass, ContractorFee> fees;
+	private Country country;
+	private ArgumentCaptor<Note> noteCaptor;
+	private BigDecimal invoiceTotal;
+
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private InvoiceService invoiceService;
+	@Mock
+	private ContractorAccountDAO contractorAccountDao;
+	@Mock
+	private AccountDAO accountDAO;
+	@Mock
+	private NoteDAO noteDao;
+	@Mock
+	private BillingCalculatorSingle billingService;
+	@Mock
+	private User user;
+	@Mock
+	private PermissionToViewContractor permissionToViewContractor;
+	@Mock
+	private Invoice invoice;
+	@Mock
+	private InvoiceItem item;
+	@Mock
+	private InvoiceFee invoiceFee;
+	@Mock
+	private ContractorFee bidOnlyFee;
+	@Mock
+	private ContractorFee listOnlyFee;
+	@Mock
+	private InvoiceFee bidOnlyInvoiceFee;
+	@Mock
+	private InvoiceFee listOnlyinvoiceFee;
+	@Mock
+	private DataObservable saleCommissionDataObservable;
+
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		setupCountry();
+		setupBillingDetail();
+		setupInvoiceItems();
+		setupStandardFees();
+		invoices = new ArrayList<Invoice>();
+		stubMockBehaviors();
+		setupInvoiceServiceToReturnArgumentOnSave();
+		setupCaptors();
+		calculateInvoiceTotal();
+	}
+
+	private void stubMockBehaviors() throws IOException {
+		when(billingService.createInvoiceItems(contractor, user)).thenReturn(invoiceItems);
+		when(permissions.loginRequired((HttpServletResponse) any(), (HttpServletRequest) any())).thenReturn(true);
+		when(permissions.getUserId()).thenReturn(123);
+		when(contractorAccountDao.find(any(int.class))).thenReturn(contractor);
+		when(permissionToViewContractor.check(any(boolean.class))).thenReturn(true);
+		when(item.getAmount()).thenReturn(new BigDecimal(199.00));
+		when(contractor.getId()).thenReturn(123);
+		when(contractor.getCountry()).thenReturn(country);
+		when(contractor.getFees()).thenReturn(fees);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+		when(contractor.getInvoices()).thenReturn(invoices);
+		when(item.getInvoiceFee()).thenReturn(invoiceFee);
+	}
+
+	private void setupInvoiceItems() {
+		invoiceItems = new ArrayList<InvoiceItem>();
+		invoiceItems.add(item);
+	}
+
+	private void setupCountry() {
+		country = new Country();
+		country.setCurrency(Currency.USD);
+	}
+
+	private void setupBillingDetail() throws Exception, InstantiationException, IllegalAccessException {
+		billingDetail = new BillingDetail();
+		super.setUp(billingDetail);
+		setupBillingDetailProperties();
+	}
+
+	@SuppressWarnings("rawtypes")
+	private void setupInvoiceServiceToReturnArgumentOnSave() {
+		when(invoiceService.saveInvoice(any(Invoice.class))).thenAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return args[0];
+			}
+
+		});
+	}
+
+	private void setupCaptors() {
+		noteCaptor = ArgumentCaptor.forClass(Note.class);
+	}
+
+	private void calculateInvoiceTotal() {
+		invoiceTotal = BigDecimal.ZERO.setScale(2);
+		for (InvoiceItem item : invoiceItems) {
+			invoiceTotal = invoiceTotal.add(item.getAmount());
+		}
+	}
+
+	private void setupBillingDetailProperties() throws InstantiationException, IllegalAccessException {
+		billingDetail.setId(123);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(billingDetail, this);
+		Whitebox.setInternalState(billingDetail, "billingService", billingService);
+		Whitebox.setInternalState(billingDetail, "invoiceService", invoiceService);
+		Whitebox.setInternalState(billingDetail, "user", user);
+		Whitebox.setInternalState(billingDetail, "permissionToViewContractor", permissionToViewContractor);
+		Whitebox.setInternalState(billingDetail, "saleCommissionDataObservable", saleCommissionDataObservable);
+	}
+
+	private void setupStandardFees() {
+		fees = new HashMap<FeeClass, ContractorFee>();
+		// all contractors have bid only and list only fees, they may just be hidden and $0
+		fees.put(FeeClass.BidOnly, bidOnlyFee);
+		fees.put(FeeClass.ListOnly, listOnlyFee);
+		when(bidOnlyFee.getCurrentLevel()).thenReturn(bidOnlyInvoiceFee);
+		when(listOnlyFee.getCurrentLevel()).thenReturn(listOnlyinvoiceFee);
+		when(bidOnlyInvoiceFee.isFree()).thenReturn(true);
+		when(listOnlyinvoiceFee.isFree()).thenReturn(true);
+	}
+
+	private void setupForCreate() {
+		billingDetail.setButton("Create");
+		when(invoiceFee.isMembership()).thenReturn(true);
+		when(billingService.getOperatorsString(contractor)).thenReturn(NOTE_STRING);
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
+		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+				.thenReturn(invoice);
+	}
+
+	@Test
+	public void testExecute_Create_HappyPath_NewInvoiceIsAddedToContractorInvoices() throws Exception {
+		setupForCreate();
+
+		billingDetail.execute();
+
+		assertThat(contractor.getInvoices(), hasItem(invoice));
+	}
+
+	@Test
+	public void testExecute_Create_HappyPath_NewInvoiceSyncsBalance() throws Exception {
+		setupForCreate();
+
+		billingDetail.execute();
+
+		verify(contractor).syncBalance();
+	}
+
+	@Test
+	public void testExecute_Create_HappyPath_ContractorIsSaved() throws Exception {
+		setupForCreate();
+
+		billingDetail.execute();
+
+		verify(accountDAO).save(contractor);
+	}
+
+	@Test
+	public void testExecute_Create_PositiveInvoiceTotalAddsNoteToContractor() throws Exception {
+		setupForCreate();
+
+		billingDetail.execute();
+
+		verify(noteDao).save(noteCaptor.capture());
+		Note note = noteCaptor.getValue();
+
+		assertEquals(contractor, note.getAccount());
+	}
+
+	@Test
+	public void testExecute_Create_ZeroDollarInvoiceIsAnActionError() throws Exception {
+		billingDetail.setButton("Create");
+		// no invoice items means no total cost
+		invoiceItems.clear();
+
+		String actionResult = billingDetail.execute();
+
+		assertTrue(billingDetail.getActionErrors().contains("Cannot create an Invoice for zero dollars"));
+		assertEquals(Action.SUCCESS, actionResult);
+	}
+}

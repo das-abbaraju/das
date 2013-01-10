@@ -141,40 +141,6 @@ public class Invoice extends Transaction {
 		this.payments = payments;
 	}
 
-	@PreUpdate
-	@PrePersist
-	public void preSave() {
-		if (getCurrency().isTaxable()) {
-			InvoiceItem taxItem = null;
-			InvoiceFee taxFee = getCurrency().getTaxFee();
-
-			BigDecimal invoiceTotal = BigDecimal.ZERO;
-			invoiceTotal.setScale(2, BigDecimal.ROUND_UP);
-			for (InvoiceItem item : getItems()) {
-				if (item.getInvoiceFee().equals(taxFee)) {
-					taxItem = item;
-				} else {
-					invoiceTotal = invoiceTotal.add(item.getAmount());
-				}
-			}
-
-			// if no tax item found, create tax item
-			if (taxItem == null) {
-				taxItem = new InvoiceItem(taxFee, taxFee.getTax(invoiceTotal), null);
-				taxItem.setInvoice(this);
-				taxItem.setAuditColumns(new User(User.SYSTEM));
-				getItems().add(taxItem);
-				qbSync = true;
-				// else validate tax amount
-			} else if (!taxItem.getAmount().equals(taxFee.getTax(invoiceTotal))) {
-				taxItem.setAmount(taxFee.getTax(invoiceTotal));
-				qbSync = true;
-			}
-
-			updateAmount();
-		}
-	}
-
 	@Transient
 	public void markPaid(User u) {
 		setStatus(TransactionStatus.Paid);

@@ -418,6 +418,39 @@ public class AuditBuilderTest extends PicsTest {
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
 	}
 	
+	@Test 
+	public void testCaoSplit() throws Exception {
+		ContractorAudit conAudit = setupTestAudit();
+		conAudit.getAuditType().setCanOperatorView(true);
+
+		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+//		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, AuditStatus.Pending);
+//		cao2.setOperator(EntityFactory.makeOperator());
+		cao1.setId(52);
+		
+		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
+		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+		
+		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
+		setupCaoCaop(cao1, caop2, AuditStatus.Complete);
+		caop2.setOperator(EntityFactory.makeOperator());
+		cao1.setStatus(AuditStatus.Approved);
+		
+		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
+		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
+		caops.add(cao1.getOperator());
+		caoMap.put(caop1.getOperator(), caops);
+		caops = new HashSet<OperatorAccount>();
+		caops.add(caop2.getOperator());
+		caoMap.put(caop2.getOperator(), caops);
+		
+		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
+		assertEquals(2, conAudit.getOperators().size());
+		for (ContractorAuditOperator cao:conAudit.getOperators()) {
+			assertEquals(AuditStatus.Approved, cao.getStatus());
+		}
+	}
+	
 	@Test
 	public void testNewOperatorPrevAllComplete() throws Exception {
 		ContractorAudit conAudit = setupTestAudit();

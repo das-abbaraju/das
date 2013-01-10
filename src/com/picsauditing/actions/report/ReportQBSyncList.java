@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import com.picsauditing.PICS.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -19,6 +20,8 @@ import com.picsauditing.jpa.entities.Payment;
 
 @SuppressWarnings("serial")
 public class ReportQBSyncList extends PicsActionSupport {
+	@Autowired
+	private InvoiceService invoiceService;
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -61,7 +64,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 				obj.setQbSync(false);
 				if (obj.getQbListID() == null)
 					obj.setQbListID("NOLOAD" + id);
-				invoiceDAO.save(obj);
+				invoiceService.saveInvoice(obj);
 			}
 
 			if (type.equals("P")) {

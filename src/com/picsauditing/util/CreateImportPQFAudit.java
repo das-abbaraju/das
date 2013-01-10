@@ -84,7 +84,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				contractor.getFees().put(fee.getFeeClass(), newConFee);
 
 				contractor.syncBalance();
-				billingService.calculateAnnualFees(contractor);
+				billingService.calculateContractorInvoiceFees(contractor);
 			}
 
 			contractor.setCompetitorMembership(true);
