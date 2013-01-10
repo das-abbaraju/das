@@ -55,7 +55,8 @@ Ext.application({
 
     stores: [
         'report.Columns',
-        'report.Filters'
+        'report.Filters',
+        'report.Reports2'
     ],
 
     init: function () {
