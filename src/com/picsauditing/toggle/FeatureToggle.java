@@ -22,6 +22,7 @@ public interface FeatureToggle {
 	String TOGGLE_TIMEZONE_LOOKUP = "Toggle.TimezoneLookup";
 	String TOGGLE_CSR_SINGLE_ASSIGNMENT = "Toggle.BackgroundProcesses.Csr_SingleAssignment";
 	String TOGGLE_CANONICAL_TIMEZONES = "Toggle.Canonical_Timezone";
+	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
 
 	boolean isFeatureEnabled(String toggleName);
 
