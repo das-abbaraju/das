@@ -32,6 +32,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -39,6 +40,7 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.YearList;
 
@@ -141,6 +143,11 @@ public class OshaDisplayTest {
 	public void testGetStats_TRIRIndustryAverage() throws Exception {
 		Naics contractorNaics = new Naics();
 		contractorNaics.setCode("81");
+		Trade trade = new Trade();
+		trade.setNaicsTRIR(1.2f);
+		ContractorTrade topTrade = new ContractorTrade();
+		topTrade.setTrade(trade);
+		when(contractor.getTopTrade()).thenReturn(topTrade);
 		when(contractor.getNaics()).thenReturn(contractorNaics);
 		when(contractor.getWeightedIndustryAverage()).thenReturn(1.4f);
 		when(operator.getInheritFlagCriteria()).thenReturn(operator);
