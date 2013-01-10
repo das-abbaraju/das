@@ -6,18 +6,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 
 /**
@@ -135,44 +132,15 @@ public class Utilities {
 	//       purpose utility.
 	public static float getIndustryAverage(boolean lwcr, ContractorAccount contractor) {
         float answer = 0f;
-//        ContractorTrade trade = contractor.getTopTrade();
+        ContractorTrade trade = contractor.getTopTrade();
+        
+        if (trade == null)
+        	return answer;
         
         if (!lwcr) {
-// TODO swap this for below               answer = trade.getTrade().getNaicsTRIRI();
-        	Naics naics = contractor.getNaics();
-            answer = naics.getTrir();
-            SelectSQL select = new SelectSQL("ref_trade_alt rta");
-            select.addJoin("join ref_trade rt on rta.tradeID = rt.id");
-
-            select.addField("rt.naicsTRIR");
-            select.addField("rt.naicsLWCR");
-            select.addWhere("rta.category = 'NAICS'");
-            select.addWhere("rta.name=" + naics.getCode());
-
-            try {
-				Database db = new Database();
-
-                    List<BasicDynaBean> results = db.select(select.toString(),
-                                    false);
-                    if (results != null && results.size() > 0) {
-                            BasicDynaBean row = results.get(0);
-                            answer = Database.toFloat(row, "naicsTRIR");
-                    }
-                    if (answer == 0f)
-                    {
-                            NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-                            answer = naicsDAO.getIndustryAverage(lwcr, naics);
-                    }
-            } catch (Exception e) {
-                    NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-                    answer = naicsDAO.getIndustryAverage(lwcr, naics);
-            }
+        	answer = trade.getTrade().getNaicsTRIRI();
         } else {
-//TODO swap this for code below                answer = trade.getTrade().getNaicsLWCRI();
-        	Naics naics = contractor.getNaics();
-            answer = naics.getLwcr();
-            NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-            answer = naicsDAO.getIndustryAverage(lwcr, naics);
+        	answer = trade.getTrade().getNaicsLWCRI();
         }
         return answer;
 }

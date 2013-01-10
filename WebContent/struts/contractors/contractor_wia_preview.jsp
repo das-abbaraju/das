@@ -14,11 +14,13 @@
 			</tr>
 		</thead>
 
-		<s:if test="contractor.hasSelfPerformedTrades()">		
+		<s:if test="contractor.hasSelfPerformedTrades()">
 			<s:iterator value="contractor.trades" var="conTrade" status="rowstatus">
 				<s:if test="#conTrade.isSelfPerformed()">
 					<tr class="<s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
-						<td class="trade-name"><s:property value="#conTrade.trade.name" /></td>
+						<td class="trade-name">
+						<s:if test="contractor.topTrade.id == #conTrade.id">* </s:if>
+						<s:property value="#conTrade.trade.name" /></td>
 						<td class="naics-average"><s:property value="#conTrade.trade.getNaicsTRIRI()" /></td>
 					</tr>
 				</s:if>
@@ -27,7 +29,9 @@
 		<s:else>
 			<s:iterator value="contractor.trades" var="conTrade" status="rowstatus">
 				<tr class="<s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
-					<td class="trade-name"><s:property value="#conTrade.trade.name" /></td>
+					<td class="trade-name">> 
+					<s:if test="contractor.topTrade.id == #conTrade.id">* </s:if>
+					<s:property value="#conTrade.trade.name" /></td>
 					<td class="naics-average"><s:property value="#conTrade.trade.getNaicsTRIRI()" /></td>
 				</tr>
 			</s:iterator>

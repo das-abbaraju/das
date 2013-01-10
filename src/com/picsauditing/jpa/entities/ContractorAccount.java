@@ -710,9 +710,24 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public ContractorTrade getTopTrade() {
 		ContractorTrade topTrade = null;
+		List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
+		
 		for (ContractorTrade trade : getTradesSorted()) {
 			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
 				topTrade = trade;
+				listOfSameTradeActivity.clear();
+				listOfSameTradeActivity.add(trade);
+			} else if (trade.getActivityPercent() == topTrade.getActivityPercent()) {
+				listOfSameTradeActivity.add(trade);
+			}
+		}
+		
+		if (listOfSameTradeActivity.size() > 1) {
+			topTrade = null;
+			for (ContractorTrade trade: listOfSameTradeActivity) {
+				if (topTrade == null || trade.getTrade().getNaicsTRIRI() > topTrade.getTrade().getNaicsTRIRI()) {
+					topTrade = trade;
+				}				
 			}
 		}
 
