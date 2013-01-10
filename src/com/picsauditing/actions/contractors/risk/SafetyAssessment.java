@@ -26,13 +26,13 @@ public enum SafetyAssessment implements RiskAssessment {
 
 	private int questionID;
 	private boolean selfEvaluation = false;
-	private LowMedHigh riskRankingForAnswerYes;
-	private LowMedHigh riskRankingForAnswerNo;
+	private LowMedHigh yes;
+	private LowMedHigh no;
 
-	private SafetyAssessment(int questionID, LowMedHigh riskRankingForAnswerYes, LowMedHigh riskRankingForAnswerNo) {
+	private SafetyAssessment(int questionID, LowMedHigh yes, LowMedHigh no) {
 		this.questionID = questionID;
-		this.riskRankingForAnswerYes = riskRankingForAnswerYes;
-		this.riskRankingForAnswerNo = riskRankingForAnswerNo;
+		this.yes = yes;
+		this.no = no;
 	}
 
 	private SafetyAssessment(int questionID, boolean selfEvaluation) {
@@ -46,44 +46,34 @@ public enum SafetyAssessment implements RiskAssessment {
 	}
 
 	@Override
-	public boolean isQuestionSelfEvaluation() {
+	public boolean isSelfEvaluation() {
 		return selfEvaluation;
 	}
 
 	@Override
-	public LowMedHigh getRiskRankingForAnswerYes() {
-		return riskRankingForAnswerYes;
+	public LowMedHigh getYes() {
+		return yes;
 	}
 
 	@Override
-	public LowMedHigh getRiskRankingForAnswerNo() {
-		return riskRankingForAnswerNo;
+	public LowMedHigh getNo() {
+		return no;
 	}
 
 	@Override
-	public LowMedHigh getRiskLevelBasedOn(String answer) {
+	public LowMedHigh getRiskLevel(String answer) {
 		if (!Strings.isEmpty(answer.trim())) {
-			if (isQuestionSelfEvaluation()) {
+			if (isSelfEvaluation()) {
 				return LowMedHigh.parseLowMedHigh(answer);
 			}
 
 			if (YesNo.valueOf(answer) == YesNo.Yes) {
-				return getRiskRankingForAnswerYes();
+				return getYes();
 			} else if (YesNo.valueOf(answer) == YesNo.No) {
-				return getRiskRankingForAnswerNo();
+				return getNo();
 			}
 		}
 
 		return LowMedHigh.None;
 	}
-
-    public static SafetyAssessment findByQuestionID(int questionID) {
-        for (SafetyAssessment assessment : values()) {
-            if (assessment.getQuestionID() == questionID) {
-                return assessment;
-            }
-        }
-
-        return null;
-    }
 }

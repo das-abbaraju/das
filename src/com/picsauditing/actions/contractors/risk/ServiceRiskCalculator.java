@@ -20,7 +20,7 @@ public class ServiceRiskCalculator {
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		try {
 			RiskAssessment assessment = getAssessment(auditData.getQuestion().getId());
-			return assessment.getRiskLevelBasedOn(auditData.getAnswer());
+			return assessment.getRiskLevel(auditData.getAnswer());
 		} catch (Exception e) {
 			logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
 					new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer(), e });
@@ -55,20 +55,23 @@ public class ServiceRiskCalculator {
 	}
 
 	private RiskAssessment getAssessment(int questionID) throws Exception {
-        SafetyAssessment safetyAssessment = SafetyAssessment.findByQuestionID(questionID);
-        if (safetyAssessment != null) {
-            return safetyAssessment;
-        }
+		for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
+			if (questionID == safetyAssessment.getQuestionID()) {
+				return safetyAssessment;
+			}
+		}
 
-        ProductAssessment productAssessment = ProductAssessment.findByQuestionID(questionID);
-        if (productAssessment != null) {
-            return productAssessment;
-        }
+		for (ProductAssessment productAssessment : ProductAssessment.values()) {
+			if (questionID == productAssessment.getQuestionID()) {
+				return productAssessment;
+			}
+		}
 
-        TransportationAssessment transportationAssessment = TransportationAssessment.findByQuestionID(questionID);
-        if (transportationAssessment != null) {
-            return transportationAssessment;
-        }
+		for (TransportationAssessment transportationAssessment : TransportationAssessment.values()) {
+			if (questionID == transportationAssessment.getQuestionID()) {
+				return transportationAssessment;
+			}
+		}
 
 		throw new IllegalArgumentException();
 	}
@@ -81,7 +84,7 @@ public class ServiceRiskCalculator {
 
 	private RiskCategory getCategory(RiskAssessment assessment) throws Exception {
 		if (assessment != null) {
-			if (assessment.isQuestionSelfEvaluation()) {
+			if (assessment.isSelfEvaluation()) {
 				if (assessment instanceof SafetyAssessment) {
 					return RiskCategory.SELF_SAFETY;
 				} else if (assessment instanceof ProductAssessment) {
