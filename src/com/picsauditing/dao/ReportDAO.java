@@ -27,7 +27,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
     public List<BasicDynaBean> runQuery(String sql, JSONObject json) throws SQLException {
         Database database = new Database();
-        List<BasicDynaBean> rows = database.selectReadOnly(sql, true);
+        List<BasicDynaBean> rows = database.select(sql, true);
         json.put("total", database.getAllRows());
         return rows;
     }
