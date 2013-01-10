@@ -38,6 +38,8 @@ Ext.define('PICS.model.report.Column2', {
         type: 'boolean'
     }],
 
+    mutableFields: ['id'],
+    
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
