@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.report.ReportToExtJSConverter;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,7 +26,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.AvailableFieldsToExtJSConverter;
-import com.picsauditing.report.ReportDefinitionToExtJSConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
@@ -85,7 +85,7 @@ public class ReportData extends PicsApiSupport {
 			initialize();
 
 			if (includeReport) {
-				json.put(LEVEL_REPORT, ReportDefinitionToExtJSConverter.toJSON(report));
+				json.put(LEVEL_REPORT, ReportToExtJSConverter.toJSON(report));
 			}
 
 			AbstractModel model = ModelFactory.build(report.getModelType(), permissions);

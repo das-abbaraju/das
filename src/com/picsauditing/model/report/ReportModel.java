@@ -170,12 +170,12 @@ public class ReportModel {
     
     public static void processReportParameters(Report report) throws ReportValidationException {
     	// TODO Remove this method after the next release
-		 ReportParameterConverter.fillParameters(report);
+		 LegacyReportConverter.fillParameters(report);
     }
     
     private static void setReportParameters(Report report) {
     	// TODO Remove this method after the next release
-		JSONObject json = ReportParameterConverter.toJSON(report);
+		JSONObject json = LegacyReportConverter.toJSON(report);
 		// TODO report.setParameters(json.toString());
     }
 

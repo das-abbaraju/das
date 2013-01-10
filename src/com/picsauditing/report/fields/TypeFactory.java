@@ -6,12 +6,15 @@ public class TypeFactory {
 		if (sqlFunction == null) {
 			return lookupColumnType(fieldType);
 		}
-		
-		return null;
+		return ColumnType.RightAlign;
 	}
 	
 	public static ColumnType lookupColumnType(FieldType fieldType) {
-		return ColumnType.LeftAlign;
+		if (fieldType == FieldType.String) {
+			return ColumnType.LeftAlign;
+		} else {
+			return ColumnType.RightAlign;
+		}
 	}
 	
 	public static FilterType lookupFilterType(FieldType fieldType, SqlFunction sqlFunction) {
