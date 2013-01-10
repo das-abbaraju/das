@@ -1,10 +1,10 @@
 {
-    "projectName": "Project Name",
-    "licenseText": "Copyright(c) 2012 Company Name",
+    "projectName": "PICS - Dynamic Reports",
+    "licenseText": "Copyright(c) 2013 Company Name",
     "builds": [
         {
             "name": "All Classes",
-            "target": "all-classes.js",
+            "target": "extjs/all-classes.js",
             "options": {
                 "debug": true
             },
@@ -1583,12 +1583,12 @@
         },
         {
             "name": "Application - Production",
-            "target": "app-all.js",
+            "target": "extjs/app-all.js",
             "compress": true,
             "files": [
                 {
                     "path": "",
-                    "name": "all-classes.js"
+                    "name": "extjs/all-classes.js"
                 },
                 {
                     "path": "",
