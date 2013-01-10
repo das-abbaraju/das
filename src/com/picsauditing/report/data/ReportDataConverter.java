@@ -90,7 +90,7 @@ public class ReportDataConverter {
 				return value;
 			}
 			
-			if (displayType == DisplayType.Boolean) {
+			if (displayType == DisplayType.CheckMark) {
 				return value;
 			}
 		}
@@ -146,7 +146,7 @@ public class ReportDataConverter {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType().getDisplayType() == DisplayType.Boolean) {
+			if (column.getField().getType().getDisplayType() == DisplayType.CheckMark) {
 				return value;
 			}
 		}

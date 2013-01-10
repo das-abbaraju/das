@@ -33,7 +33,7 @@ public enum FieldType {
 	LowMedHigh(EnumType.ORDINAL),
 	MultiYearScope(EnumType.STRING),
 	NetworkLevel(EnumType.ORDINAL),
-	Number(FilterType.Integer, DisplayType.Number),
+	Number(FilterType.Integer, DisplayType.RightAlign),
 	Operator(FilterType.Autocomplete),
 	OperatorTag(FilterType.Autocomplete), 
 	OptionGroup(FilterType.Autocomplete),

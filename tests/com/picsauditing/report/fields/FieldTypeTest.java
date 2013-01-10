@@ -8,6 +8,6 @@ public class FieldTypeTest {
 	@Test
 	public void testString() throws Exception {
 		Assert.assertEquals(FilterType.String, FieldType.String.getFilterType());
-		Assert.assertEquals(DisplayType.String, FieldType.String.getDisplayType());
+		Assert.assertEquals(DisplayType.LeftAlign, FieldType.String.getDisplayType());
 	}
 }

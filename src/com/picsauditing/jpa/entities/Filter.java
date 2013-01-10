@@ -107,13 +107,13 @@ public class Filter extends ReportElement {
 
 		String filterValue = getValues().get(0);
 
-		if (fieldType.equals(DisplayType.Date)) {
+		if (fieldType.equals(DisplayType.LeftAlign)) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
 			return "'" + dateValue + "'";
 		}
 
-		if (fieldType.equals(DisplayType.Boolean)) {
+		if (fieldType.equals(DisplayType.CheckMark)) {
 			if (filterValue.equals("1"))
 				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("true"))
@@ -143,7 +143,7 @@ public class Filter extends ReportElement {
 //			return filterValue;
 		}
 
-		if (fieldType.equals(DisplayType.String)) {
+		if (fieldType.equals(DisplayType.LeftAlign)) {
 			filterValue = Strings.escapeQuotes(filterValue);
 
 			switch (operator) {

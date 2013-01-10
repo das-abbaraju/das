@@ -4,7 +4,7 @@ public enum SqlFunction {
 	// None,
 	Count(true, DisplayType.RightAlign),
 	CountDistinct(true, DisplayType.RightAlign),
-	GroupConcat(true, DisplayType.String),
+	GroupConcat(true, DisplayType.LeftAlign),
 	Max(true),
 	Min(true),
 	
@@ -18,9 +18,9 @@ public enum SqlFunction {
 	LowerCase,
 	UpperCase,
 	
-	Month(false, DisplayType.String), // January TODO translate the 1 into January
+	Month(false, DisplayType.LeftAlign), // January TODO translate the 1 into January
 	Year(false, DisplayType.RightAlign), // 2012
-	YearMonth(false, DisplayType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
+	YearMonth(false, DisplayType.LeftAlign), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
 	WeekDay(false, DisplayType.RightAlign), // Monday TODO translate the 1
 	Hour(false, DisplayType.RightAlign), // 23 
 	Date // 2012-01-31

@@ -12,14 +12,14 @@ public class DisplayTypeTest {
 
 	@Test
 	public void testBooleanFunctions() {
-		log(DisplayType.Boolean);
-		assertEquals(3, DisplayType.Boolean.getFunctions().size());
+		log(DisplayType.CheckMark);
+		assertEquals(3, DisplayType.CheckMark.getFunctions().size());
 	}
 
 	@Test
 	public void testDateFunctions() {
-		log(DisplayType.Date);
-		assertEquals(9, DisplayType.Date.getFunctions().size());
+		log(DisplayType.LeftAlign);
+		assertEquals(9, DisplayType.LeftAlign.getFunctions().size());
 	}
 
 	@Test

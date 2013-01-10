@@ -11,7 +11,7 @@ public enum DisplayType {
 
 	// Strings are left-align, Numbers are right-align
 
-	String, /* Integer, Float,*/ Number, Boolean, Date, DateTime, Flag, CheckMark, LeftAlign, RightAlign;
+	/*String, Integer, Float, Number, Boolean, Date, DateTime,*/ Flag, CheckMark, LeftAlign, RightAlign;
 
 	private static final Set<SqlFunction> DATE_ONLY_FUNCTIONS = new HashSet<SqlFunction>(Arrays.asList(
 			SqlFunction.Date, SqlFunction.Month, SqlFunction.Hour, SqlFunction.Month, SqlFunction.WeekDay,
@@ -45,11 +45,11 @@ public enum DisplayType {
 		}
 
 		if (isDateOnlyFunction(function)) {
-			return this == Date;
+			return this == LeftAlign;
 		}
 
 		if (isStringOnlyFunction(function)) {
-			return this == String;
+			return this == LeftAlign;
 		}
 
 		if (function == SqlFunction.Round) {
@@ -57,7 +57,7 @@ public enum DisplayType {
 		}
 
 		if (isNumericOnlyFunction(function)) {
-			return (this == RightAlign || this == RightAlign);
+			return this == RightAlign;
 		}
 
 		return false;
