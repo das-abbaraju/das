@@ -1,22 +1,20 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.PICS.*;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.*;
-import com.picsauditing.flags.ContractorScore;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.*;
-import com.picsauditing.messaging.FlagChange;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
@@ -26,8 +24,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.*;
+import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.ContractorFlagETL;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.ExceptionService;
+import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
+import com.picsauditing.flags.ContractorScore;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorTrade;
+import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.LcCorPhase;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAssignment;
+import com.picsauditing.jpa.entities.UserAssignmentType;
+import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.mail.EmailException;
+import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.mail.NoUsersDefinedException;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.messaging.FlagChange;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -128,7 +182,6 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-			runRiskRanking(contractor);
 			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
 					contractor.getAuditor() == null) {
 				runCSRAssignment(contractor);
@@ -215,7 +268,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,
-														Map<Integer, List<Integer>> resultMap) {
+			Map<Integer, List<Integer>> resultMap) {
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
 			for (BasicDynaBean row : resultBDB) {
@@ -429,70 +482,6 @@ public class ContractorCron extends PicsActionSupport {
 		ContractorScore.calculate(contractor);
 	}
 
-	private void runRiskRanking(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.RiskRanking)) {
-			return;
-		}
-
-		if (contractorRequiresSafetyRiskAndSafetyRiskIsVerified(contractor)) {
-			return;
-		}
-
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPqf()) {
-				Set<Integer> riskCategories = determineRiskCategoryIDs();
-				List<AuditData> serviceEvaluationAnswers = determineRiskAnswers(audit, riskCategories);
-
-				ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-				Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels = serviceRiskCalculator.getHighestRiskLevelMap(serviceEvaluationAnswers);
-
-				if (!contractor.isMaterialSupplierOnly()) {
-					contractor.setSafetyRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.SAFETY));
-				}
-
-				if (contractor.isMaterialSupplier()) {
-					contractor.setProductRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.PRODUCT));
-				}
-
-				if (contractor.isTransportationServices()) {
-					contractor.setTransportationRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.TRANSPORTATION));
-				}
-
-				contractorDAO.save(contractor);
-
-				return;
-			}
-		}
-	}
-
-	private boolean contractorRequiresSafetyRiskAndSafetyRiskIsVerified(ContractorAccount contractor) {
-		if (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isTransportationServices()) {
-			if (contractor.getSafetyRiskVerified() != null) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private Set<Integer> determineRiskCategoryIDs() {
-		Set<Integer> riskCategories = new HashSet<Integer>();
-		riskCategories.add(AuditCategory.SERVICE_SAFETY_EVAL);
-		riskCategories.add(AuditCategory.PRODUCT_SAFETY_EVAL);
-		riskCategories.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
-		riskCategories.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
-		return riskCategories;
-	}
-
-	private List<AuditData> determineRiskAnswers(ContractorAudit audit, Set<Integer> riskCategories) {
-		List<AuditData> serviceEvaluationAnswers = new ArrayList<AuditData>();
-		for (AuditData data : audit.getData()) {
-			if (riskCategories.contains(data.getQuestion().getCategory().getId())) {
-				serviceEvaluationAnswers.add(data);
-			}
-		}
-		return serviceEvaluationAnswers;
-	}
-
 	@SuppressWarnings("unchecked")
 	private void runFlag(ContractorOperator co) {
 		if (!runStep(ContractorCronStep.Flag))
@@ -662,7 +651,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	/**
 	 * Calculate and save the recommended flag color for policies
-	 *
+	 * 
 	 * @param contractor
 	 * @throws IOException
 	 * @throws EmailException
@@ -713,7 +702,7 @@ public class ContractorCron extends PicsActionSupport {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 				if (!contractorInsuranceSubscription.getTimePeriod().equals(SubscriptionTimePeriod.None)
 						&& (contractorInsuranceSubscription.getLastSent() == null || contractorInsuranceSubscription
-						.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
+								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
 			}
 		}
@@ -738,7 +727,7 @@ public class ContractorCron extends PicsActionSupport {
 	/**
 	 * Returns a map of Policies, where the key is the Audit Type ID and the
 	 * value is a list of ContractorAudits for that Audit Type ID.
-	 *
+	 * 
 	 * @return
 	 */
 	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
@@ -931,9 +920,10 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	/**
+	 * 
 	 * This is so audits like the HSE Competency Submittal can have an auditor
 	 * automatically assigned
-	 *
+	 * 
 	 * @param contractor
 	 */
 	private void runAssignAudit(ContractorAccount contractor) {
@@ -953,46 +943,46 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments.
+		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments. 
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {
 				switch (audit.getAuditType().getId()) {
-					case (AuditType.WA_STATE_VERIFICATION):
+				case (AuditType.WA_STATE_VERIFICATION):
+					ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+					if (ua != null) {
+						// Assign both auditor and closing auditor
+						audit.setAuditor(ua.getUser());
+						audit.setClosingAuditor(ua.getUser());
+						audit.setAssignedDate(new Date());
+					}
+					break;
+				case (AuditType.DESKTOP):
+					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
+							&& contractor.isFinanciallyReadyForAudits()) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+						if (ua == null) {
+							List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
+							if (uaList != null && uaList.size() > 0) {
+								ua = uaList.get(0);
+							}
+						}
 						if (ua != null) {
-							// Assign both auditor and closing auditor
 							audit.setAuditor(ua.getUser());
-							audit.setClosingAuditor(ua.getUser());
 							audit.setAssignedDate(new Date());
 						}
-						break;
-					case (AuditType.DESKTOP):
-						if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
-								&& contractor.isFinanciallyReadyForAudits()) {
-							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-							if (ua == null) {
-								List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
-								if (uaList != null && uaList.size() > 0) {
-									ua = uaList.get(0);
-								}
-							}
-							if (ua != null) {
-								audit.setAuditor(ua.getUser());
-								audit.setAssignedDate(new Date());
-							}
-						}
-						if (audit.getClosingAuditor() == null && audit.getAuditor() != null
-								&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
-							audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
-						}
-						break;
-					case (AuditType.BPIISNCASEMGMT):
-						audit.setAuditor(userDAO.find(55603));
-						break;
-					case (AuditType.WELCOME):
-						audit.setAuditor(contractor.getAuditor());
-						break;
+					}
+					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
+							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
+					}
+					break;
+				case (AuditType.BPIISNCASEMGMT):
+					audit.setAuditor(userDAO.find(55603));
+					break;
+				case (AuditType.WELCOME):
+					audit.setAuditor(contractor.getAuditor());
+					break;
 				}
 			}
 		}
