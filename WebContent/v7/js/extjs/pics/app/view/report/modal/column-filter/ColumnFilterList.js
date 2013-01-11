@@ -1,13 +1,11 @@
-Ext.define('PICS.view.report.FilterList', {
+Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     extend: 'Ext.grid.Panel',
-    alias: 'widget.filterlist',
-
+    alias: 'columnfilterlist',
+    
     requires: [
         'Ext.grid.column.Template'
     ],
-
-    store: 'report.Filters',
-
+    
     border: 0,
     columns: [{
         xtype: 'templatecolumn',
@@ -21,7 +19,6 @@ Ext.define('PICS.view.report.FilterList', {
         groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} item{[values.rows.length != 1 ? "s" : ""]})</span>'
     }],
     hideHeaders: true,
-    id: 'filter_list',
     listeners: {
         render: function (cmp, eOpts) {
 

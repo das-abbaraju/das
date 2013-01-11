@@ -1,18 +1,19 @@
-Ext.define('PICS.view.report.FilterModal', {
-    extend: 'PICS.view.report.ReportModal',
-    alias: 'widget.filtermodal',
-
+Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
+    extend: 'PICS.view.report.modal.ReportModal',
+    alias: 'columnfiltermodal',
+    
     requires: [
-        'PICS.view.report.FilterList'
+        'PICS.view.report.modal.column-filter.ColumnList',
+        'PICS.view.report.modal.column-filter.FilterList'
     ],
     
     border: 0,
     dockedItems: [{
         xtype: 'toolbar',
         border: 0,
+        cls: 'search',
         dock: 'top',
         height: 45,
-        id: 'filter_search',
         items: [{
             xtype: 'textfield',
             emptyText: 'Search',
@@ -31,12 +32,12 @@ Ext.define('PICS.view.report.FilterModal', {
     }, {
         xtype: 'toolbar',
         border: 0,
+        cls: 'footer',
         defaults: {
             margin: '0 10 0 0'
         },
         dock: 'bottom',
         height: 45,
-        id: 'filter_modal_footer',
         items: [{
             action: 'cancel',
             cls: 'default',
@@ -58,18 +59,8 @@ Ext.define('PICS.view.report.FilterModal', {
         height: 45
     },
     height: 500,
-    id: 'filter_modal',
-    items: [{
-        xtype: 'filterlist'
-    }],
     layout: 'fit',
     modal: true,
     resizable: false,
-    width: 600,
-
-    initComponent: function () {
-        this.setTitle('Add Filter');
-
-        this.callParent(arguments);
-    }
+    width: 600
 });

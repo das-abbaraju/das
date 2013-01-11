@@ -8145,8 +8145,36 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 0px;
   -o-border-radius: 0px;
   border-radius: 0px; }
+  /* line 41, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+  #column_modal .search,
+  #filter_modal .search {
+    background: #eaeaea; }
+    /* line 45, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+    #column_modal .search label,
+    #filter_modal .search label {
+      line-height: 16px;
+      padding: 7px 0px 0px; }
+    /* line 51, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+    #column_modal .search .icon-search,
+    #filter_modal .search .icon-search {
+      color: #cccccc;
+      font-size: 16px; }
+    /* line 57, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+    #column_modal .search .x-form-text,
+    #filter_modal .search .x-form-text {
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      -ms-border-radius: 15px;
+      -o-border-radius: 15px;
+      border-radius: 15px;
+      height: 25px;
+      padding: 0px 7px; }
+  /* line 65, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+  #column_modal .footer,
+  #filter_modal .footer {
+    background: #454545; }
 
-/* line 43, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 72, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_modal_header,
 #filter_modal_header {
   background: #454545;
@@ -8158,103 +8186,75 @@ textarea.x-form-invalid-field {
   border-radius: 0px;
   padding: 10px; }
 
-/* line 52, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 81, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_modal_header span,
 #filter_modal_header span {
   color: white;
   font-size: 18px;
   font-weight: bold; }
 
-/* line 60, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
-#column_search,
-#filter_search {
-  background: #eaeaea; }
-
-/* line 66, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
-#column_search label,
-#filter_search label {
-  line-height: 16px;
-  padding: 7px 0px 0px; }
-
-/* line 73, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
-#column_search .icon-search,
-#filter_search .icon-search {
-  color: #cccccc;
-  font-size: 16px; }
-
-/* line 80, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
-#column_search .x-form-text,
-#filter_search .x-form-text {
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
-  border-radius: 15px;
-  height: 25px;
-  padding: 0px 7px; }
-
-/* line 90, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 91, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_modal-body,
 #filter_modal-body,
 #column_list-body,
 #filter_list-body {
   border: 0px; }
 
-/* line 95, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 96, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 .x-grid-group-hd-collapsible .x-grid-group-title {
   background-image: url("../../app/resources/images/grid/group-expand.gif");
   background-position: 100% 0px;
   padding: 0px; }
 
-/* line 102, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 103, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 .x-grid-group-hd-collapsible.x-over .x-grid-group-title {
   background-position: 100% -14px; }
 
-/* line 107, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 108, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 .x-grid-group-hd-collapsed .x-grid-group-title {
   background-image: url("../../app/resources/images/grid/group-collapse.gif"); }
 
-/* line 112, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 113, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 .x-grid-group-hd-collapsed.x-over .x-grid-group-title {
   background-position: 100% -14px; }
 
-/* line 120, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 121, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-row .x-grid-cell-special,
 #filter_list .x-grid-row .x-grid-cell-special {
   background: white;
   background-image: none !important;
   border-right: 1px solid #dcdcdc; }
-/* line 127, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 128, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-cell-special .x-grid-cell-inner,
 #filter_list .x-grid-cell-special .x-grid-cell-inner {
   padding-left: 6px; }
-/* line 132, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 133, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-row-alt .x-grid-cell-special,
 #filter_list .x-grid-row-alt .x-grid-cell-special {
   background: #f1f1f2; }
-/* line 137, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 138, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-row-over .x-grid-cell-special,
 #filter_list .x-grid-row-over .x-grid-cell-special {
   background: #eaeaea; }
-/* line 143, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 144, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-row-selected .x-grid-cell,
 #column_list .x-grid-row-selected .x-grid-rowwrap-div,
 #filter_list .x-grid-row-selected .x-grid-cell,
 #filter_list .x-grid-row-selected .x-grid-rowwrap-div {
   background: #c3e0f9; }
-/* line 148, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 149, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-cell-inner,
 #filter_list .x-grid-cell-inner {
   color: #333333;
   font-size: 14px;
   padding: 5px; }
-/* line 155, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 156, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .description,
 #filter_list .description {
   color: #999;
   font-size: 12px;
   margin-left: 20px; }
-/* line 162, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 163, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-group-hd .x-grid-cell-inner,
 #filter_list .x-grid-group-hd .x-grid-cell-inner {
   background: #454545;
@@ -8262,20 +8262,15 @@ textarea.x-form-invalid-field {
   border-bottom: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 7px; }
-/* line 171, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 172, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .x-grid-group-title,
 #filter_list .x-grid-group-title {
   color: white; }
-/* line 176, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
+/* line 177, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
 #column_list .number-of-items,
 #filter_list .number-of-items {
   color: #999999;
   margin-left: 5px; }
-
-/* line 185, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/_column-filter-modals.scss */
-#column_modal_footer,
-#filter_modal_footer {
-  background: #454545; }
 
 /* line 24, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/column-function/_column-function-modal.scss */
 #column_function_modal {

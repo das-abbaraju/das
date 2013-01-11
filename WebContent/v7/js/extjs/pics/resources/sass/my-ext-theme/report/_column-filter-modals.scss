@@ -36,6 +36,35 @@ $column_filter_modals_footer_background_color: #454545;
 {
 	border: 1px solid $column_filter_modals_border_color;
 	@include border-radius(0px);
+
+	.search
+	{
+		background: $column_filter_modals_search_background_color;
+
+		label
+		{
+			line-height: 16px;
+			padding: 7px 0px 0px;
+		}
+		
+		.icon-search
+		{
+			color: $column_filter_modals_search_icon_search_text_color;
+			font-size: 16px;
+		}
+		
+		.x-form-text
+		{
+			@include border-radius(15px);
+			height: 25px;
+			padding: 0px 7px;
+		}
+	}
+
+	.footer
+	{
+		background: $column_filter_modals_footer_background_color;
+	}
 }
 
 #column_modal_header,
@@ -53,34 +82,6 @@ $column_filter_modals_footer_background_color: #454545;
 	color: $column_filter_modals_header_text_color;
 	font-size: 18px;
 	font-weight: bold;
-}
-
-#column_search,
-#filter_search
-{
-	background: $column_filter_modals_search_background_color;
-}
-
-#column_search label,
-#filter_search label
-{
-	line-height: 16px;
-	padding: 7px 0px 0px;
-}
-
-#column_search .icon-search,
-#filter_search .icon-search
-{
-	color: $column_filter_modals_search_icon_search_text_color;
-	font-size: 16px;
-}
-
-#column_search .x-form-text,
-#filter_search .x-form-text
-{
-	@include border-radius(15px);
-	height: 25px;
-	padding: 0px 7px;
 }
 
 #column_modal-body,
@@ -177,11 +178,4 @@ $column_filter_modals_footer_background_color: #454545;
 		color: $column_filter_lists_group_num_items_text_color;
 		margin-left: 5px;
 	}
-}
-
-
-#column_modal_footer,
-#filter_modal_footer
-{
-	background: $column_filter_modals_footer_background_color;
 }

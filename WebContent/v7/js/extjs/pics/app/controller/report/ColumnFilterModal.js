@@ -26,8 +26,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     ],
 
     views: [
-        'PICS.view.report.columnModal',
-        'PICS.view.report.filterModal',
+        'PICS.view.report.modal.column-filter.ColumnModal',
+        'PICS.view.report.modal.column-filter.FilterModal',
         // TODO: Move this out of views (e.g., to requires?)
         'PICS.ux.util.ColumnFilterStoreFilter'
     ],
@@ -117,7 +117,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     showColumnModal: function () {
-        var column_modal = Ext.create('PICS.view.report.columnModal', {
+        var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
 
@@ -125,7 +125,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     showFilterModal: function () {
-        var filter_modal = Ext.create('PICS.view.report.filterModal', {
+        var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
 

@@ -1,5 +1,5 @@
 Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
-    extend: 'PICS.view.report.ReportModal',
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: ['widget.reportavailablefieldmodal'],
 
     requires: [

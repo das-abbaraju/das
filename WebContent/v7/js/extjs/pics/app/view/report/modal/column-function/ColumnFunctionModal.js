@@ -1,5 +1,5 @@
-Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
-    extend: 'PICS.view.report.ReportModal',
+Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: 'widget.reportcolumnfunctionmodal',
 
     border: 0,
@@ -17,9 +17,8 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
     width: 300,
 
     initComponent: function () {
-        if (!this.column
-                || this.column.modelName != 'PICS.model.report.Column') {
-            Ext.Error.raise('Invalid column record');
+        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
         }
 
         this.callParent(arguments);
