@@ -32,6 +32,7 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -108,6 +109,8 @@ public class BillingDetailTest extends PicsActionTest {
 		setupInvoiceServiceToReturnArgumentOnSave();
 		setupCaptors();
 		calculateInvoiceTotal();
+		// this has to go after calculateInvoiceTotal which goes after setupInvoiceItems
+		when(billingService.calculateInvoiceTotal(invoiceItems)).thenReturn(invoiceTotal);
 	}
 
 	private void stubMockBehaviors() throws IOException {
@@ -235,14 +238,30 @@ public class BillingDetailTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testExecute_Create_ZeroDollarInvoiceIsAnActionError() throws Exception {
+	public void testExecute_Create_ZeroDollarInvoiceIsAnActionErrorIfNoOpPermBilling() throws Exception {
 		billingDetail.setButton("Create");
-		// no invoice items means no total cost
 		invoiceItems.clear();
+		when(billingService.calculateInvoiceTotal(invoiceItems)).thenReturn(BigDecimal.ZERO);
+		when(permissions.hasPermission(OpPerms.Billing)).thenReturn(false);
 
 		String actionResult = billingDetail.execute();
 
 		assertTrue(billingDetail.getActionErrors().contains("Cannot create an Invoice for zero dollars"));
 		assertEquals(Action.SUCCESS, actionResult);
 	}
+
+	@Test
+	public void testExecute_Create_ZeroDollarInvoiceIsAllowedIfOpPermBilling() throws Exception {
+		setupForCreate();
+		billingDetail.setButton("Create");
+		invoiceItems.clear();
+		when(billingService.calculateInvoiceTotal(invoiceItems)).thenReturn(BigDecimal.ZERO);
+		when(permissions.hasPermission(OpPerms.Billing)).thenReturn(true);
+
+		String actionResult = billingDetail.execute();
+
+		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class));
+		assertEquals(PicsActionSupport.BLANK, actionResult);
+	}
+
 }

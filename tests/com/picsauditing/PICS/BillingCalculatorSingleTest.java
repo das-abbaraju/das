@@ -151,6 +151,16 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
+	public void testCalculateInvoiceTotal() throws Exception {
+		InvoiceItem anotherItem = mock(InvoiceItem.class);
+		when(anotherItem.getAmount()).thenReturn(new BigDecimal(249.00));
+		invoiceItems.add(anotherItem);
+		calculateInvoiceTotal();
+
+		assertTrue(invoiceTotal.equals(billingService.calculateInvoiceTotal(invoiceItems)));
+	}
+
+	@Test
 	public void testExecute_Create_RenewIsSetForBidOnlyAccount() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
 		when(bidOnlyInvoiceFee.isFree()).thenReturn(false);
@@ -304,11 +314,14 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
-	public void testCreateInvoiceWithItems_ZeroDollarInvoiceIsNull() throws Exception {
+	public void testCreateInvoice_ZeroDollarInvoiceIsNull() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
-		when(invoiceItem.getAmount()).thenReturn(new BigDecimal(0.00));
+		// this will skip an activation fee
+		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
+		// currently this will result in zero invoice items which will be a zero dollar invoice
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
 
-		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
+		Invoice invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), user);
 
 		assertTrue(invoice == null);
 	}
