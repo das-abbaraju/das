@@ -42,11 +42,7 @@ Ext.define('PICS.model.report.Report2', {
         name: 'sorts'
     }],
 
-    mutableFields: {
-        columns: ['id'],
-        filters: ['id','operator','value','column_compare_id'],
-        sorts: ['id','direction']
-    },
+    mutableFields: ['id','name','description','filter_expression','is_favorite'],
 
     getFilterExpression: function () {
         var filter_expression = this.get('filter_expression');
