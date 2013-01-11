@@ -140,7 +140,7 @@ public class SqlBuilder {
 		for (Filter filter : definition.getFilters()) {
 			filter.addFieldCopy(availableFields);
 			
-			if (filter.isValid()) {
+			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {
 					havingFilters.add(filter);
