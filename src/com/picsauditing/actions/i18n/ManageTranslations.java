@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.TranslationUtil;
 //import com.picsauditing.util.ReportFilter;
 
 @SuppressWarnings("serial")
@@ -166,8 +167,14 @@ public class ManageTranslations extends ReportActionSupport {
 	@RequiredPermission(value = OpPerms.Translator)
 	public String update() {
 		if (translation != null) {
-			if (translation.getKey()!= null){
+			if (translation.getKey() != null) {
 				translation.setAuditColumns();
+
+				// FIXME KLUDGE this is a temporary solution for PICS-8676
+				// Remove this when we figure out why double double quotes are being added
+				String scrubbedValue = TranslationUtil.scrubValue(translation.getValue());
+				translation.setValue(scrubbedValue);
+
 				dao.save(translation);
 			} else {
 				newTranslation = new AppTranslation();
