@@ -3,14 +3,15 @@ package com.picsauditing.PICS;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ibm.icu.util.Calendar;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -125,6 +126,54 @@ public class OshaOrganizerTest {
 		oshaOrganizer = contractor.getOshaOrganizer();
 	}
 
+	
+	
+	private void setupAudits_InvalidNumericTrirAnswers(ContractorAccount contractor) {
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		contractor.setAudits(audits);
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		for (int i = 0; i < 4; i++) {
+			now.add(Calendar.YEAR, -1);
+			audits.add(EntityFactory.makeAnnualUpdate(11, contractor, format.format(now.getTime())));
+		}
+
+		int trir = 2;
+		for (ContractorAudit audit : audits) {
+			audit.setCategories(new ArrayList<AuditCatData>());
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA_PARENT));
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_UK_HSE_PARENT));
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA));
+			audit.getCategories()
+					.add(
+							EntityFactory.addCategories(audit,
+									OshaAudit.CAT_ID_UK_HSE));
+
+			AuditData trirData = EntityFactory.makeAuditData("blah",
+					OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
+			audit.getData().add(trirData);
+
+			AuditData hourData = EntityFactory.makeAuditData(String
+					.valueOf(12000),
+					OshaStatistics.QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR);
+			audit.getData().add(hourData);
+
+			List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
+			caos.add(EntityFactory.makeContractorAuditOperator(audit));
+			audit.setOperators(caos);
+		}
+
+		oshaOrganizer = contractor.getOshaOrganizer();
+
+	}
+
+	
+	
+	
+	
 	@Test
 	public void testOshaOrganizerInitialization() {
 		setupAudits_FourYearsOshaAndUk(contractor);
@@ -245,5 +294,26 @@ public class OshaOrganizerTest {
 		setupAudits_TwoYearsOsha(contractor);
 		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(lastYear()).setVerified(true);
 		assertTrue(oshaOrganizer.isVerified(OshaType.OSHA, MultiYearScope.LastYearOnly));
+	}
+	@Test
+	public void testGetRateForSpecificYear_ValidNumber() throws Exception {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.YEAR, -1);
+		int lastYear = now.get(Calendar.YEAR);
+
+		setupAudits_FourYearsOshaAndUk(contractor);
+		BigDecimal rate = oshaOrganizer.getRateForSpecificYear(OshaType.OSHA, lastYear, OshaRateType.TrirAbsolute);
+		assertThat(rate.doubleValue(), is(2d));
+	}
+	@Test
+	public void testGetRateForSpecificYear_InvalidNumber() throws Exception {
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.YEAR, -1);
+		int lastYear = now.get(Calendar.YEAR);
+
+		setupAudits_InvalidNumericTrirAnswers(contractor);
+		
+		BigDecimal rate = oshaOrganizer.getRateForSpecificYear(OshaType.OSHA, lastYear, OshaRateType.TrirAbsolute);
+		assertNull(rate);
 	}
 }
