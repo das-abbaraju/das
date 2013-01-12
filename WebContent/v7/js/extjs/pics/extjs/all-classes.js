@@ -66840,7 +66840,7 @@ Ext.define('Ext.grid.ColumnLayout', {
     }
 });
 
-Ext.define('PICS.view.report.ReportModal', {
+Ext.define('PICS.view.report.modal.ReportModal', {
     extend: 'Ext.window.Window',
 
     initComponent: function () {
@@ -66856,7 +66856,6 @@ Ext.define('PICS.view.report.ReportModal', {
         });
     }
 });
-
 /**
  * A feature is a type of plugin that is specific to the {@link Ext.grid.Panel}. It provides several
  * hooks that allows the developer to inject additional functionality at certain points throughout the 
@@ -68799,8 +68798,8 @@ Ext.define('PICS.view.report.header.ReportHeader', {
     }],
     layout: 'border'
 });
-Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
-    extend: 'PICS.view.report.ReportModal',
+Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: 'widget.reportcolumnfunctionmodal',
 
     border: 0,
@@ -68818,9 +68817,8 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
     width: 300,
 
     initComponent: function () {
-        if (!this.column
-                || this.column.modelName != 'PICS.model.report.Column') {
-            Ext.Error.raise('Invalid column record');
+        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
         }
 
         this.callParent(arguments);
@@ -68890,7 +68888,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     }],
 
     views: [
-        'PICS.view.report.column-function.ColumnFunctionModal'
+        'PICS.view.report.modal.column-function.ColumnFunctionModal'
     ],
 
     init: function () {
@@ -68923,7 +68921,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
 
     // show the column function modal , but attach the specific column store - column your modifying
     showColumnFunctionModal: function (column) {
-        var column_function_modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
+        var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
             column: column
         });
 
@@ -93406,87 +93404,6 @@ Ext.define('PICS.view.layout.SearchBox', {
     }
 });
 
-Ext.override(Ext.menu.Menu, {
-    showBy: function(cmp, pos, off) {
-        var me = this,
-            xy,
-            region;
-
-        if (me.floating && cmp) {
-            me.layout.autoSize = true;
-
-            // show off-screen first so that we can calc position without causing a visual jump
-            me.doAutoRender();
-            delete me.needsLayout;
-
-            // Component or Element
-            cmp = cmp.el || cmp;
-
-            // Convert absolute to floatParent-relative coordinates if necessary.
-            xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
-            if (me.floatParent) {
-                region = me.floatParent.getTargetEl().getViewRegion();
-                xy[0] -= region.x;
-                xy[1] -= region.y;
-            }
-
-            // custom menu positioning
-            xy[1] += 3;
-
-            me.showAt(xy);
-        }
-        return me;
-    },
-
-    doConstrain : function() {
-        var me = this,
-            y = me.el.getY(),
-            max, full,
-            vector,
-            returnY = y, normalY, parentEl, scrollTop, viewHeight;
-
-        delete me.height;
-        me.setSize();
-        full = me.getHeight();
-        if (me.floating) {
-            //if our reset css is scoped, there will be a x-reset wrapper on this menu which we need to skip
-            parentEl = Ext.fly(me.el.getScopeParent());
-            scrollTop = parentEl.getScroll().top;
-            viewHeight = parentEl.getViewSize().height;
-            //Normalize y by the scroll position for the parent element.  Need to move it into the coordinate space
-            //of the view.
-            normalY = y - scrollTop;
-            max = me.maxHeight ? me.maxHeight : viewHeight - normalY;
-            if (full > viewHeight) {
-                max = viewHeight;
-                //Set returnY equal to (0,0) in view space by reducing y by the value of normalY
-                returnY = y - normalY;
-            } else if (max < full) {
-                returnY = y - (full - max);
-                max = full;
-            }
-        }else{
-            max = me.getHeight();
-        }
-        // Always respect maxHeight
-        if (me.maxHeight){
-            max = Math.min(me.maxHeight, max);
-        }
-        if (full > max && max > 0){
-            me.layout.autoSize = false;
-            me.setHeight(max);
-            if (me.showSeparator){
-                me.iconSepEl.setHeight(me.layout.getRenderTarget().dom.scrollHeight);
-            }
-        }
-        vector = me.getConstrainVector(me.el.getScopeParent());
-        if (vector) {
-            me.setPosition(me.getPosition()[0] + vector[0]);
-        }
-        me.el.setY(returnY);
-    }
-});
-
 Ext.define('PICS.view.layout.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
@@ -94376,7 +94293,7 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     tabPosition: 'bottom'
 });
 Ext.define('PICS.view.report.settings.SettingsModal', {
-    extend: 'PICS.view.report.ReportModal',
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: ['widget.reportsettingsmodal'],
 
     requires: [
@@ -97236,7 +97153,7 @@ Ext.define('PICS.view.report.available-field.AvailableFieldList', {
     }
 });
 Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
-    extend: 'PICS.view.report.ReportModal',
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: ['widget.reportavailablefieldmodal'],
 
     requires: [
@@ -97393,12 +97310,53 @@ Ext.define('PICS.model.report.AvailableField', {
         return filter;
     }
 });
+Ext.define('PICS.model.report.Filter2', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'operator',
+        type: 'string'
+    }, {
+        name: 'value',
+        type: 'string'
+    }, {
+        name: 'column_compare_id',
+        type: 'string'
+    }]    
+});
 Ext.define('PICS.model.report.ReportData', {
     extend: 'Ext.data.Model',
     
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: []
+});
+Ext.define('PICS.model.report.Sort2', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'id',
+        type: 'string'
+    }, {
+        name: 'direction',
+        type: 'string'
+    }]
 });
 /**
  * @class Ext.data.association.HasOne
@@ -97730,6 +97688,25 @@ Ext.define('PICS.store.report.AvailableFieldsByCategory', {
         direction: 'ASC'
     }]
 });
+Ext.define('PICS.store.report.Filters', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Filter2',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'filters',
+            type: 'json'
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
+    },
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }]
+});
 /**
  * Available Fields Store
  *
@@ -97965,24 +97942,6 @@ Ext.define('PICS.ux.grid.column.Boolean', {
         return this.callParent(arguments);
     }
 });
-Ext.define('PICS.ux.grid.column.Date', {
-    extend: 'PICS.ux.grid.column.Column',
-    
-    format: 'Y-m-d',
-    
-    constructor: function () {
-        this.callParent(arguments);
-    },
-    
-    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            grid_column = grid.columns[colIndex];
-        
-        value = Ext.Date.format(value, grid_column.format);
-        
-        return this.callParent(arguments);
-    }
-});
 Ext.define('PICS.ux.grid.column.Flag', {
     extend: 'PICS.ux.grid.column.Column',
     
@@ -98015,6 +97974,174 @@ Ext.define('PICS.ux.grid.column.Flag', {
         return this.callParent(arguments);
     }
 });
+Ext.define('PICS.ux.grid.column.Number', {
+    extend: 'PICS.ux.grid.column.Column',
+	
+	format: '0,000',
+	
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.String', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.model.report.Column2', {
+    extend: 'Ext.data.Model',
+    
+    requires: [
+        'PICS.ux.grid.column.Column',
+        'PICS.ux.grid.column.Boolean',
+        'PICS.ux.grid.column.Flag',
+        'PICS.ux.grid.column.Number',
+        'PICS.ux.grid.column.String'
+    ],
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'url',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'sql_function',
+        type: 'string'
+    }, {
+        name: 'width',
+        type: 'int'
+    }, {
+        name: 'is_sortable',
+        type: 'boolean',
+        perist: false
+    }],
+
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    toModelField: function () {
+        var id = this.get('id'),
+            type = this.get('type'),
+            data_type;
+        
+        switch (type) {
+            case 'boolean':
+                data_type = 'boolean';
+    
+                break;
+            default:
+                data_type = 'auto';
+                
+                break;
+        }
+        
+        var model_field = {
+            name: id,
+            type: data_type
+        };
+
+        return model_field;
+    },
+
+    // ALERT: Ext.grid.column.Column is DEFAULT
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    toGridColumn: function () {
+        var type = this.get('type'),
+            url = this.get('url'),
+            grid_column;
+        
+        var config = {
+            column: this
+        };
+
+        switch (type) {
+            case 'boolean':
+                grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
+
+                break;
+            case 'flag':
+                grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+
+                break;
+            case 'number':
+                grid_column = Ext.create('PICS.ux.grid.column.Number', config);
+
+                break;
+            case 'date':
+            case 'string':
+            default:
+                grid_column = Ext.create('PICS.ux.grid.column.String', config);
+                
+                break;
+        }
+        
+        return grid_column;
+    }
+});
+Ext.define('PICS.store.report.Columns', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Column2',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'columns',
+            type: 'json'
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
+    },
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }]
+});
+Ext.define('PICS.ux.grid.column.Date', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    format: 'Y-m-d',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        var grid = view.ownerCt,
+            grid_column = grid.columns[colIndex];
+        
+        value = Ext.Date.format(value, grid_column.format);
+        
+        return this.callParent(arguments);
+    }
+});
 Ext.define('PICS.ux.grid.column.Float', {
     extend: 'PICS.ux.grid.column.Column',
     
@@ -98034,30 +98161,6 @@ Ext.define('PICS.ux.grid.column.Int', {
 
     align: 'right',
     format: '0',
-    
-    constructor: function () {
-        this.callParent(arguments);
-    },
-    
-    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        return this.callParent(arguments);
-    }
-});
-Ext.define('PICS.ux.grid.column.Number', {
-    extend: 'PICS.ux.grid.column.Column',
-	
-	format: '0,000',
-	
-    constructor: function () {
-        this.callParent(arguments);
-    },
-    
-    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        return this.callParent(arguments);
-    }
-});
-Ext.define('PICS.ux.grid.column.String', {
-    extend: 'PICS.ux.grid.column.Column',
     
     constructor: function () {
         this.callParent(arguments);
@@ -98767,6 +98870,313 @@ associations: [{
                 items[i][inverse.instanceName] = record;
             }
         }
+    }
+});
+Ext.define('PICS.model.report.Report2', {
+    extend: 'Ext.data.Model',
+    requires: [
+        'PICS.model.report.Column2',
+        'PICS.model.report.Filter2',
+        'PICS.model.report.Sort2'
+    ],
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string'
+    }, {
+        name: 'description',
+        type: 'string'
+    }, {
+        name: 'filter_expression',
+        type: 'string'
+    }, {
+        name: 'num_times_favorited',
+        type: 'int',
+        persist: false
+    }, {
+        name: 'is_editable',
+        type: 'boolean',
+        persist: false
+    }, {
+        name: 'is_favorite',
+        type: 'boolean'
+    }],
+    hasMany: [{
+        model: 'PICS.model.report.Column2',
+        name: 'columns'
+    }, {
+        model: 'PICS.model.report.Filter2',
+        name: 'filters'
+    }, {
+        model: 'PICS.model.report.Sort2',
+        name: 'sorts'
+    }],
+
+    getFilterExpression: function () {
+        var filter_expression = this.get('filter_expression');
+        
+        return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
+            return parseInt(p1);
+        });
+    },
+    
+    // TODO: probably fix this because nichols wrote it
+    setFilterExpression: function (filter_expression) {
+        // Hack: because this is broken
+        if (filter_expression == '') {
+            this.set('filter_expression', filter_expression);
+
+            return false;
+        }
+
+        // TODO write a real grammar and parser for our filter formula DSL
+
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
+
+        var tokens = filter_expression.trim().split(/ +/);
+        filter_expression = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+
+            if (token.search(validTokenRegex) === -1) {
+                return false;
+            }
+
+            if (token === '(') {
+                parenCount += 1;
+                filter_expression += token;
+            } else if (token === ')') {
+                parenCount -= 1;
+                filter_expression += token;
+            } else if (token.toUpperCase() === 'AND') {
+                filter_expression += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                filter_expression += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0') {
+                    return false;
+                }
+
+                // Convert from counting number to index
+                var indexNum = new Number(token);
+                filter_expression += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0) {
+                return false;
+            }
+        }
+
+        if (parenCount !== 0) {
+            return false;
+        }
+
+        this.set('filter_expression', filter_expression);
+    },
+
+    /**
+     * Get Report JSON
+     *
+     * Builds a jsonified version of the report to be sent to the server
+     */
+    toJson: function () {
+        var report = {};
+
+        function getStoreType(store) {
+            var className = store.getName(), // store.self.getName()
+                nameSpaces = className.split("."),
+                storeType = nameSpaces[nameSpaces.length-1];
+
+            return storeType;
+        }
+
+        function convertStoreToDataObject(store) {
+            var data = [],
+                mutableFields = store.mutableFields;
+
+            store.each(function (record) {
+                var item = {};
+                
+                record.fields.each(function (field) {
+
+                    var fieldName = record.get(field.name),
+                        storeType = getStoreType(store);
+                    
+                    //if (fieldname && this.mutableFields[store].indexOf(fieldName) != 1) {
+                    if (fieldName && store.mutableFields.indexOf(fieldName) != -1) {
+                        item[fieldName] = fieldName;
+                    }
+                });
+                
+                data.push(item);
+            });
+
+            return data;
+        }
+
+        report = this.data;
+        report.columns = convertStoreToDataObject(this.columns());
+        report.filters = convertStoreToDataObject(this.filters());
+        report.sorts = convertStoreToDataObject(this.sorts());
+
+        return Ext.encode(report);
+    },
+
+    toRequestParams: function () {
+        var report = {};
+
+        report.report = this.get('id');
+        report['report.description'] = this.get('description');
+        report['report.name'] = this.get('name');
+        report['report.parameters'] = this.toJson();
+        report['report.rowsPerPage'] = this.get('rowsPerPage');
+
+        return report;
+    },
+    
+    
+    
+    
+    addColumn: function (column) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
+        var column_store = this.columns();
+        
+        column_store.add(column);
+    },
+    
+    addColumns: function (columns) {
+        Ext.Array.forEach(columns, function (column) {
+            if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+                Ext.Error.raise('Invalid column');
+            }
+        });
+        
+        var column_store = this.columns();
+        
+        column_store.add(columns);
+    },
+    
+    addFilter: function (filter) {
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter');
+        }
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filter);
+    },
+    
+    addFilters: function (filters) {
+        Ext.Array.forEach(filters, function (filter) {
+            if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+                Ext.Error.raise('Invalid filter');
+            }
+        });
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filters);
+    },
+    
+    addSort: function (column, direction) {
+        var sort_store = this.sorts(),
+            column_name = column.get('name');
+        
+        sort_store.add({
+            name: column_name,
+            direction: direction
+        });
+    },
+    
+    convertColumnsToModelFields: function () {
+        var column_store = this.columns(),
+            model_fields = [];
+        
+        column_store.each(function (column) {
+            var model_field = column.toModelField();
+            
+            model_fields.push(model_field);
+        });
+        
+        return model_fields;
+    },
+    
+    convertColumnsToGridColumns: function () {
+        var column_store = this.columns(),
+            grid_columns = [];
+        
+        column_store.each(function (column) {
+            var grid_column = column.toGridColumn();
+            
+            grid_columns.push(grid_column);
+        });
+        
+        return grid_columns;
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    // reorder columns
+    moveColumnByIndex: function (from_index, to_index) {
+        var column_store = this.columns(),
+            columns = [];
+
+        // generate an array of columns from column store
+        column_store.each(function (column, index) {
+            columns[index] = column;
+        });
+    
+        // splice out the column store - column your moving
+        var spliced_column = columns.splice(from_index, 1);
+    
+        // insert the column store - column to the position you moved it to
+        columns.splice(to_index, 0, spliced_column);
+    
+        // remove all column store records
+        column_store.removeAll();
+        
+        // re-insert column store records in the new position
+        Ext.each(columns, function (column, index) {
+            column_store.add(column);
+        });
+    }
+});
+Ext.define('PICS.store.report.Reports2', {
+    extend : 'PICS.store.report.base.Store',
+    model : 'PICS.model.report.Report2',
+
+    proxy: {
+        reader: {
+            root: 'report',
+            type: 'json'
+        },
+        writer: {
+            root: 'report',
+            type: 'json'            
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
     }
 });
 Ext.define('PICS.model.report.Report', {
@@ -99680,9 +100090,13 @@ Ext.define('PICS.controller.report.Report', {
         selector: 'reportsettingsmodal'
     }],
 
+    // TODO: Try to move these to app.js.
     stores: [
         'report.ReportDatas',
-        'report.Reports'
+        'report.Reports',
+        'report.Columns',
+        'report.Filters',
+        'report.Reports2'
     ],
 
     init: function () {

@@ -7,7 +7,5 @@ Ext.define('PICS.model.report.Sort2', {
     }, {
         name: 'direction',
         type: 'string'
-    }],
-
-    mutableFields: ['id','direction']
+    }]
 });

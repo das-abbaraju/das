@@ -10,23 +10,25 @@ Ext.define('PICS.model.report.Column2', {
     ],
 
     fields: [{
-        name: 'id',
-        type: 'string'
-    }, {
         name: 'type',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'category',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'name',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'description',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'url',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'sql_function',
         type: 'string'
@@ -35,11 +37,10 @@ Ext.define('PICS.model.report.Column2', {
         type: 'int'
     }, {
         name: 'is_sortable',
-        type: 'boolean'
+        type: 'boolean',
+        perist: false
     }],
 
-    mutableFields: ['id','sql_function','width'],
-    
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)

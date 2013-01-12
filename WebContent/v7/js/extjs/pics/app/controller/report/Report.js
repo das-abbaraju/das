@@ -17,9 +17,13 @@ Ext.define('PICS.controller.report.Report', {
         selector: 'reportsettingsmodal'
     }],
 
+    // TODO: Try to move these to app.js.
     stores: [
         'report.ReportDatas',
-        'report.Reports'
+        'report.Reports',
+        'report.Columns',
+        'report.Filters',
+        'report.Reports2'
     ],
 
     init: function () {

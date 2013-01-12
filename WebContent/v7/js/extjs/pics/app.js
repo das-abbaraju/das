@@ -42,7 +42,7 @@ Ext.application({
             ['NotEmpty', 'is not empty']
         ]
     },
-    
+
     controllers: [
         'report.AvailableFieldModal',
         'report.ColumnFunctionModal',
@@ -51,12 +51,6 @@ Ext.application({
         'report.ReportData',
         'report.ReportHeader',
         'report.SettingsModal'
-    ],
-
-    stores: [
-        'report.Columns',
-        'report.Filters',
-        'report.Reports2'
     ],
 
     init: function () {

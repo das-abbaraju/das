@@ -2,20 +2,21 @@ Ext.define('PICS.model.report.Filter2', {
     extend: 'Ext.data.Model',
 
     fields: [{
-        name: 'id',
-        type: 'string'
-    }, {
         name: 'type',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'category',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'name',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'description',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'operator',
         type: 'string'
@@ -25,7 +26,5 @@ Ext.define('PICS.model.report.Filter2', {
     }, {
         name: 'column_compare_id',
         type: 'string'
-    }],
-    
-    mutableFields: ['id','operator','value','column_compare_id']
+    }]    
 });

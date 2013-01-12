@@ -7,11 +7,9 @@ Ext.define('PICS.model.report.Report2', {
     ],
 
     fields: [{
-        name: 'id',
-        type: 'int'
-    }, {
         name: 'type',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
         name: 'name',
         type: 'string'
@@ -23,10 +21,12 @@ Ext.define('PICS.model.report.Report2', {
         type: 'string'
     }, {
         name: 'num_times_favorited',
-        type: 'int'
+        type: 'int',
+        persist: false
     }, {
         name: 'is_editable',
-        type: 'boolean'
+        type: 'boolean',
+        persist: false
     }, {
         name: 'is_favorite',
         type: 'boolean'
@@ -41,8 +41,6 @@ Ext.define('PICS.model.report.Report2', {
         model: 'PICS.model.report.Sort2',
         name: 'sorts'
     }],
-
-    mutableFields: ['id','name','description','filter_expression','is_favorite'],
 
     getFilterExpression: function () {
         var filter_expression = this.get('filter_expression');
@@ -122,7 +120,7 @@ Ext.define('PICS.model.report.Report2', {
         var report = {};
 
         function getStoreType(store) {
-            var className = store.getName(),
+            var className = store.getName(), // store.self.getName()
                 nameSpaces = className.split("."),
                 storeType = nameSpaces[nameSpaces.length-1];
 
