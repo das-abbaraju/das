@@ -10,6 +10,9 @@ Ext.define('PICS.model.report.Column2', {
     ],
 
     fields: [{
+        name: 'report_id',
+        type: 'int'
+    }, {
         name: 'type',
         type: 'string',
         persist: false
@@ -39,6 +42,13 @@ Ext.define('PICS.model.report.Column2', {
         name: 'is_sortable',
         type: 'boolean',
         perist: false
+    }],
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report2',
+        getterName: 'getReport',
+        setterName: 'setReport'
     }],
 
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
