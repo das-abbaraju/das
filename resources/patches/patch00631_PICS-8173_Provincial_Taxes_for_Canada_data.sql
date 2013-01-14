@@ -1,12 +1,3 @@
--- Add an invoice_fee for each type of Canadian province tax.  Do not modify the exising row for GST fee(id=200).
-insert into `invoice_fee`
-(`id`, `fee`, `defaultAmount`, `ratePercent`, `visible`, `feeClass`, `minFacilities`, `maxFacilities`, `qbFullName`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `effectiveDate`, `displayOrder`, `commissionEligible`)
- values
-('210','GST','0','5','1','CanadianTax','-1','-1','GST','79689','79689',now(),now(),'2012-04-01 00:00:00','100','0'),
-('211','GST Plus PST','0','5','1','CanadianTax','-1','-1','GST Plus PST','79689','79689',now(),now(),null,'100','0'),
-('212','GST Plus QST','0','5','1','CanadianTax','-1','-1','GST Plus QST','79689','79689',now(),now(),null,'100','0'),
-('213','HST','0','5','1','CanadianTax','-1','-1','HST','79689','79689',now(),now(),NULL,'100','0');
-
 -- inserts into app_translation have already been run on config
 
 -- Add an invoice_fee_country row for each Canadian province pointing to the applicable invoice_fee.
