@@ -9,10 +9,8 @@ Ext.define('PICS.store.report.Reports2', {
         },
         writer: {
             root: 'report',
-            type: 'json'            
+            type: 'json'
         },
-        timeout: 10000,
-        type: 'ajax',
-        url: '/v7/js/extjs/pics/app/data/report.json'
+        type: 'memory'
     }
 });

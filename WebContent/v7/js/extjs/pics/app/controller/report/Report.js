@@ -68,6 +68,20 @@ Ext.define('PICS.controller.report.Report', {
         });
     },
 
+    loadReport: function () {
+        var that = this;
+
+        Ext.Ajax.request({
+            url: '/v7/js/extjs/pics/app/data/report.json',
+            success: function (response) {
+                var report2_store = that.getReportReports2Store(),
+                    data = response.responseText;
+
+                report2_store.loadRawData(data);
+            }
+        });
+    },
+
     createReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),

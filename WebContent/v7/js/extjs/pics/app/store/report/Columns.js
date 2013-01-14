@@ -8,9 +8,7 @@ Ext.define('PICS.store.report.Columns', {
             root: 'columns',
             type: 'json'
         },
-        timeout: 10000,
-        type: 'ajax',
-        url: '/v7/js/extjs/pics/app/data/report.json'
+        type: 'memory'
     },
     sorters: [{
         property: 'category',
