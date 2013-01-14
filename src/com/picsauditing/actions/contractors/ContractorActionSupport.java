@@ -402,6 +402,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 						if (audit.getEffectiveDate() != null || audit.getAuditType().isWCB()) {
 							String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 							linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
+						} else {
+							linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + getText("ContractorAudit.New");
 						}
 						childMenu.setName(linkText);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
