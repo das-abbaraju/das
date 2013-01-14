@@ -189,11 +189,6 @@ public class FacilitiesEditTest extends PicsTest {
 
 	@Test
 	public void testAddRoleOwnerPercentViolatesBusinessRule() throws ValidationException {
-		// error: account users with same role owner percentage < 100 trigger
-		// action message
-		// error: account users with same role owner percentage > 100 trigger
-		// action message
-
 		FacilitiesEdit facilitiesEditSpy = spy(facilitiesEdit);
 
 		AccountUser accountRep = accountUser();
@@ -213,36 +208,8 @@ public class FacilitiesEditTest extends PicsTest {
 
 		facilitiesEditSpy.addRole();
 
-		verify(facilitiesEditSpy, times(1)).addActionMessage(
+		verify(facilitiesEditSpy, never()).addActionMessage(
 				UserAccountRole.PICSAccountRep.getDescription() + " is not 100 percent");
-	}
-
-	@Test
-	public void testAddRoleOwnerPercentViolatesBusinessRuleRightWay() throws ValidationException {
-		// error: account users with same role owner percentage < 100 trigger
-		// action message
-		// error: account users with same role owner percentage > 100 trigger
-		// action message
-
-		AccountUser accountRep = accountUser();
-		accountRep.setRole(UserAccountRole.PICSAccountRep);
-		facilitiesEdit.setAccountRep(accountRep);
-
-		AccountUser accountRep2 = accountUser();
-		accountRep2.setRole(UserAccountRole.PICSAccountRep);
-
-		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-		accountUsers.add(accountRep2);
-
-		operator.setAccountUsers(accountUsers);
-		doCallRealMethod().when(facilitiesEditModel).addRoleValidation(operator, accountRep);
-
-		facilitiesEdit.addRole();
-
-		assertTrue(
-				"Business rule violation was not noticed",
-				facilitiesEdit.getActionMessages().contains(
-						UserAccountRole.PICSAccountRep.getDescription() + " is not 100 percent"));
 	}
 
 	@Test

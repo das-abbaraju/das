@@ -111,9 +111,6 @@ public class FacilitiesEditModel {
 	// TODO: move this into its own validator
 	public void addRoleValidation(OperatorAccount operator, AccountUser accountUser) throws ValidationException {
 		List<AccountUser> accountUsers = filterForRole(operator.getAccountUsers(), accountUser.getRole());
-		if (CollectionUtils.isEmpty(accountUsers) && accountUser.getOwnerPercent() != 100) {
-			throw new ValidationException(accountUser.getRole().getDescription() + " is not 100 percent");
-		}
 
 		accountUsers.add(accountUser);
 		int completePercent = 0;
@@ -121,8 +118,8 @@ public class FacilitiesEditModel {
 			completePercent += accountUser2.getOwnerPercent();
 		}
 
-		if (completePercent != 100) {
-			throw new ValidationException(accountUser.getRole().getDescription() + " is not 100 percent");
+		if (completePercent <= 0) {
+			throw new ValidationException(accountUser.getRole().getDescription() + " must have ownership greater than 0 percent.");
 		}
 	}
 
@@ -133,7 +130,7 @@ public class FacilitiesEditModel {
 
 		List<AccountUser> accountUsersForRole = new ArrayList<AccountUser>();
 		for (AccountUser accountUser : accountUsers) {
-			if (role == accountUser.getRole()) {
+			if (role == accountUser.getRole() && accountUser.isCurrent()) {
 				accountUsersForRole.add(accountUser);
 			}
 		}
