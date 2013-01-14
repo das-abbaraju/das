@@ -23,7 +23,6 @@ public enum ModelType {
 	ExceptionLogs,
 	InvoiceItems,
 	Invoices,
-	InvoiceCommissions,
 	Operators,
 	PaymentCommissions,
 	RegistrationRequests,

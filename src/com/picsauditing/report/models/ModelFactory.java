@@ -35,8 +35,6 @@ public class ModelFactory {
 			return new ContractorOperatorModel(permissions);
 		if (type.equals(ModelType.Invoices))
 			return new InvoiceModel(permissions);
-		if (type.equals(ModelType.InvoiceCommissions))
-			return new InvoiceCommissionModel(permissions);
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel(permissions);
 		if (type.equals(ModelType.PaymentCommissions))
