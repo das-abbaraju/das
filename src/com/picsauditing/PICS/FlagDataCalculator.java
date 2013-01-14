@@ -11,8 +11,12 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -27,14 +31,22 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.FlagOverrideHistory;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class FlagDataCalculator {
+	private FlagCriteriaDAO flagCriteriaDao;
+	protected FlagDataOverrideDAO flagDataOverrideDAO;
+    protected BasicDAO dao;
 
+	private User systemUser = new User(User.SYSTEM);
+	
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
@@ -615,6 +627,10 @@ public class FlagDataCalculator {
 			operatorCriteria.get(value.getCriteria()).add(value);
 		}
 	}
+	
+	public Map<FlagCriteria, List<FlagDataOverride>> getOverrides() {
+		return overrides;
+	}
 
 	public void setOverrides(Map<FlagCriteria, List<FlagDataOverride>> overridesMap) {
 		this.overrides = overridesMap;
@@ -656,6 +672,7 @@ public class FlagDataCalculator {
 			criteriaIds.add(key.getId());
 		}
 
+		ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
 		for (int id : criteriaIds) {
 			FlagCriteria criteriaKey = new FlagCriteria();
 			criteriaKey.setId(id);
@@ -666,14 +683,132 @@ public class FlagDataCalculator {
 				for (FlagDataOverride flagDataOverride : flList) {
 					if (operator.isApplicableFlagOperator(flagDataOverride.getOperator())
 							&& flagDataOverride.isInForce())
-						if (auditYear == null || Strings.isEqualNullSafe(auditYear, flagDataOverride.getYear())) {
-							if (flagDataOverride.getCriteria().getId() != key.getId())
-								flagDataOverride.setCriteria(key);
-							return flagDataOverride;
-						}
+						fdos.add(flagDataOverride);
 				}
 			}
 		}
+		
+		// if not audit year, then must be plain, no year scope criteria
+		if (auditYear == null) {
+			if (fdos.size() > 0)
+				return fdos.get(0);
+			else
+				return null;
+		}
+		
+		// we have multi-year criteria
+		// we have all related related fdos for operator/criteria
+		FlagDataOverride found = null;
+		// find fdo with same year
+		for (FlagDataOverride fdo:fdos) {
+			if (auditYear.equals(fdo.getYear())) {
+				found = fdo;
+				break;
+			}
+		}
+		
+		if (found == null) return null; // no fdo found for year
+		
+		fdos.remove(found);
+		found.setCriteria(key);
+		   
+		FlagCriteria criteria = found.getCriteria();
+		while (criteria != null && fdos.size() > 0) {
+			FlagDataOverride foundFdo = null;
+			for (FlagDataOverride fdo:fdos) {
+				if (criteria.equals(fdo.getCriteria())) {
+					foundFdo = fdo;
+					break;
+				}
+			}
+			
+			if (foundFdo != null) {
+				fdos.remove(foundFdo);
+				if (criteria.equals(criteria)) {
+					criteria = getNextCriteria(criteria);
+					if (criteria != null)
+						foundFdo.setCriteria(criteria);
+					else {
+						removeFlagOverride(foundFdo);
+					}
+				}
+			} else {
+				criteria = null; // no more processing to do
+			}
+		}
+		
+		return found;
+	}
+	
+//	private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
+//		String auditYear = null;
+//
+//		List<Integer> criteriaIds = new ArrayList<Integer>();
+//		FlagCriteriaContractor fcc = contractorCriteria.get(key);
+//		if (correspondingMultiYearCriteria.containsKey(key.getId())) {
+//			auditYear = extractYear(fcc.getAnswer2());
+//			criteriaIds.addAll(correspondingMultiYearCriteria.get(key.getId()));
+//		} else {
+//			criteriaIds.add(key.getId());
+//		}
+//
+//		for (int id : criteriaIds) {
+//			FlagCriteria criteriaKey = new FlagCriteria();
+//			criteriaKey.setId(id);
+//			List<FlagDataOverride> flList = overrides.get(criteriaKey);
+//			if (flList == null)
+//				continue;
+//			if (flList.size() > 0) {
+//				for (FlagDataOverride flagDataOverride : flList) {
+//					if (operator.isApplicableFlagOperator(flagDataOverride.getOperator())
+//							&& flagDataOverride.isInForce())
+//						if (auditYear == null || Strings.isEqualNullSafe(auditYear, flagDataOverride.getYear())) {
+//							if (flagDataOverride.getCriteria().getId() != key.getId())
+//								flagDataOverride.setCriteria(key);
+//							return flagDataOverride;
+//						}
+//				}
+//			}
+//		}
+//
+//		return null;
+//	}
+
+	private void removeFlagOverride(FlagDataOverride fdo) {
+		overrides.get(fdo.getCriteria()).remove(fdo);
+		
+		// put away
+		FlagOverrideHistory foh = new FlagOverrideHistory();
+		foh.setOverride(fdo);
+		foh.setAuditColumns(systemUser);
+		foh.setDeleted(true);
+		foh.setDeleteReason("Removed because override year was pushed");
+
+		dao = (BasicDAO) SpringUtils.getBean("BasicDAO");
+		dao.save(foh);
+		
+		flagDataOverrideDAO = (FlagDataOverrideDAO) SpringUtils.getBean("FlagDataOverrideDAO");
+		flagDataOverrideDAO.remove(fdo);
+	}
+
+	private FlagCriteria getNextCriteria(FlagCriteria criteria) {
+		MultiYearScope nextYear;
+		
+		if (criteria.getMultiYearScope().equals(MultiYearScope.LastYearOnly))
+			nextYear = MultiYearScope.TwoYearsAgo;
+		else if (criteria.getMultiYearScope().equals(MultiYearScope.TwoYearsAgo))
+			nextYear = MultiYearScope.ThreeYearsAgo;
+		else
+			return null;
+		
+		List<Integer> idList = correspondingMultiYearCriteria.get(criteria.getId());
+
+		flagCriteriaDao =	(FlagCriteriaDAO) SpringUtils.getBean("FlagCriteriaDAO");
+		List<FlagCriteria> criteriaList = flagCriteriaDao.findWhere("id IN (" + Strings.implode(idList) + ")");
+		
+		for (FlagCriteria foundCriteria:criteriaList)
+			if (nextYear.equals(foundCriteria.getMultiYearScope()))
+				return foundCriteria;
 
 		return null;
 	}
