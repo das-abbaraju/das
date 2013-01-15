@@ -8513,7 +8513,21 @@ body {
   font-style: italic;
 }
 
-/* line 109, ../sass/pics/layout/_menu.scss */
+/* line 108, ../sass/pics/layout/_menu.scss */
+
+#user_searchbox .more-results a {
+  font-weight: bold;
+}
+
+/* line 113, ../sass/pics/layout/_menu.scss */
+
+#user_searchbox .more-results p {
+  padding: 0 20px;
+  margin: 0;
+  font-size: 13px;
+}
+
+/* line 124, ../sass/pics/layout/_menu.scss */
 
 #user_menu .icon-cog {
   position: relative;
@@ -8523,9 +8537,9 @@ body {
 
 @media (max-width: 1199px) and (min-width: 980px) {
   {
-    /* line 120, ../sass/pics/layout/_menu.scss */
+    /* line 135, ../sass/pics/layout/_menu.scss */
   
-    /* line 125, ../sass/pics/layout/_menu.scss */
+    /* line 140, ../sass/pics/layout/_menu.scss */
   
   }
   .navbar .brand {

@@ -114,6 +114,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 		JSONArray outputAsJsonArray = convertOutputToJson(output);
 		json.put("results", outputAsJsonArray);
+		json.put("total_results", totalRows);
 
 		return JSON;
 	}

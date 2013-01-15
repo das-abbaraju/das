@@ -2619,17 +2619,17 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 });
 
 
-                search_query_element.data('typeahead').process = function (items) {
+                search_query_element.data('typeahead').process = function (items, total_results) {
                     var that = this;
 
                     if (!items.length) {
                         return this.shown ? this.hide() : this;
                     }
 
-                    return this.render(items.slice(0, this.options.items)).show();
+                    return this.render(items.slice(0, this.options.items), total_results).show();
                 };
 
-                search_query_element.data('typeahead').render = function (items) {
+                search_query_element.data('typeahead').render = function (items, total_results) {
                     var that = this;
 
                     items = $(items).map(function (i, item) {
@@ -2664,8 +2664,11 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     });
 
                     // add custom more results link
-                    more_results = $('<li><a href="#" class="more-results"><i>More Results</i></a></li>');
-                    items.push(more_results[0]);
+                    if (total_results > that.options.items) {
+                        var more_results = $('<li class="more-results"><a href="#">More Results...</a></li>');
+                        more_results.append('<p>Displaying ' + that.options.items + ' of ' + total_results + '</p>');
+                        items.push(more_results[0]);
+                    }
 
                     items.first().addClass('active');
                     this.$menu.html(items);
@@ -2674,12 +2677,13 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 };
 
                 search_query_element.data('typeahead').select = function () {
+                    
                     var item = this.$menu.find('.active'),
                         name = item.attr('data-name'),
                         id = item.attr('data-value'),
                         search = item.attr('data-search');
 
-                    if (item.find('a').hasClass('more-results')) {
+                    if (item.hasClass('more-results')) {
                         window.location.href = 'SearchBox.action?button=search&searchTerm=' + this.$element.val();
                     } else {
                         //TODO Fix backend call to not be ugly
@@ -2715,7 +2719,7 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                                     search: item.search_type,
                                     type: item.result_type
                                 };
-                            }));
+                            }), data.total_results);
                         }
 
                         cls.jqXHR = null;
