@@ -11,18 +11,14 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.report.fields.DisplayType;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.QueryDateParameter;
-import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -99,21 +95,22 @@ public class Filter extends ReportElement {
 	}
 
 	private String buildFilterSingleValue() {
-		DisplayType fieldType = getActualFieldTypeForFilter();
+		FilterType filterType = getFilterType();
 
+		// todo: think about impact of applying sqlfunction to one column and then applying it to another column
 		if (fieldForComparison != null) {
 			return fieldForComparison.getDatabaseColumnName();
 		}
 
 		String filterValue = getValues().get(0);
 
-		if (fieldType.equals(DisplayType.LeftAlign)) {
+		if (filterType == FilterType.Date || filterType == FilterType.DateTime) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
 			return "'" + dateValue + "'";
 		}
 
-		if (fieldType.equals(DisplayType.CheckMark)) {
+		if (filterType == FilterType.Boolean) {
 			if (filterValue.equals("1"))
 				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("true"))
@@ -125,25 +122,37 @@ public class Filter extends ReportElement {
 			return false + Strings.EMPTY_STRING;
 		}
 
-//		if (fieldType.equals(DisplayType.RightAlign)) {
-//			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
-//		}
+		// todo: combine the logic below where possible
+		if (filterType == FilterType.AccountID) {
+			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+		}
 
-		if (fieldType.equals(DisplayType.RightAlign)) {
+		if (filterType == FilterType.UserID) {
+			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+		}
+
+		if (filterType == FilterType.Integer) {
+			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+		}
+
+/*
 			if (NumberUtils.isDigits(filterValue)) {
 				return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
 			}
-			
+*/
+
+		if (filterType == FilterType.Float) {
 			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
+		}
+//		return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 			
 //			filterValue = Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
 			// Make sure we incorporate the filter strategy when using function
 			// dates
 			// return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
 //			return filterValue;
-		}
 
-		if (fieldType.equals(DisplayType.LeftAlign)) {
+		if (filterType == FilterType.String) {
 			filterValue = Strings.escapeQuotes(filterValue);
 
 			switch (operator) {
@@ -168,7 +177,15 @@ public class Filter extends ReportElement {
 			}
 		}
 
-		throw new RuntimeException(fieldType + " has no filter caluculation defined yet");
+		throw new RuntimeException(field.getType().getFilterType() + " has no filter calculation defined yet");
+	}
+
+	@Transient
+	private FilterType getFilterType() {
+		if (sqlFunction != null) {
+			return sqlFunction.getReturnType().getFilterType();
+		}
+		return field.getType().getFilterType();
 	}
 
 	@Transient

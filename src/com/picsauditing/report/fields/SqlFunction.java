@@ -1,8 +1,9 @@
 package com.picsauditing.report.fields;
 
+// todo: Add in all the missing SqlFunctionReturnTypes!
 public enum SqlFunction {
 	// None,
-	Count(true, DisplayType.RightAlign),
+	Count(true, DisplayType.RightAlign, SqlFunctionReturnType.Integer),
 	CountDistinct(true, DisplayType.RightAlign),
 	GroupConcat(true, DisplayType.LeftAlign),
 	Max(true),
@@ -19,7 +20,7 @@ public enum SqlFunction {
 	UpperCase,
 	
 	Month(false, DisplayType.LeftAlign), // January TODO translate the 1 into January
-	Year(false, DisplayType.RightAlign), // 2012
+	Year(false, DisplayType.RightAlign, SqlFunctionReturnType.Year), // 2012
 	YearMonth(false, DisplayType.LeftAlign), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
 	WeekDay(false, DisplayType.RightAlign), // Monday TODO translate the 1
 	Hour(false, DisplayType.RightAlign), // 23 
@@ -28,6 +29,7 @@ public enum SqlFunction {
 
 	private boolean aggregate;
 	private DisplayType displayType = null;
+	private SqlFunctionReturnType sqlFunctionReturnType;
 
 	private SqlFunction() {
 	}
@@ -41,6 +43,14 @@ public enum SqlFunction {
 		this.displayType = type;
 	}
 
+
+
+	SqlFunction(boolean aggregate, DisplayType displayType, SqlFunctionReturnType returnType) {
+		this.aggregate = aggregate;
+		this.displayType = displayType;
+		this.sqlFunctionReturnType = returnType;
+	}
+
 	public DisplayType getDisplayType() {
 		return displayType;
 	}
@@ -48,7 +58,11 @@ public enum SqlFunction {
 	public boolean isAggregate() {
 		return aggregate;
 	}
-	
+
+	public SqlFunctionReturnType getReturnType() {
+		return sqlFunctionReturnType;
+	}
+
 	public boolean isNeedsParameter() {
 		if (this == Left) {
 			return true;

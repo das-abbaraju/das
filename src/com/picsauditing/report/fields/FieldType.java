@@ -5,87 +5,62 @@ import javax.persistence.EnumType;
 import com.picsauditing.actions.autocomplete.AbstractAutocompleteService;
 import com.picsauditing.util.SpringUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public enum FieldType {
-	AccountID,
-	AccountLevel(EnumType.STRING),
-	AccountStatus(EnumType.STRING), 
-	AccountType(EnumType.STRING),
-	AccountUser(FilterType.Autocomplete),
-	ApprovalStatus(EnumType.STRING),
-	AuditStatus(EnumType.STRING),
-	AuditSubStatus(EnumType.STRING),
-	AuditType(FilterType.Autocomplete),
-	AuditTypeClass(EnumType.STRING),
-	AuditQuestion(FilterType.Autocomplete),
-	AuditCategory(FilterType.Autocomplete), 
-	Boolean,
-	Contractor(FilterType.Autocomplete), 
-	ContractorOperatorNumberType(EnumType.STRING),
-	Country(FilterType.Autocomplete),
-	CountrySubdivision(FilterType.Autocomplete),
-	Currency(EnumType.STRING),
-	Date,
-	DateTime,
-	FlagColor(EnumType.STRING, DisplayType.Flag),
-	FlagCriteriaOptionCode(EnumType.STRING),
-	Float,
-	Integer,
-	LowMedHigh(EnumType.ORDINAL),
-	MultiYearScope(EnumType.STRING),
-	NetworkLevel(EnumType.ORDINAL),
-	Number(FilterType.Integer, DisplayType.RightAlign),
-	Operator(FilterType.Autocomplete),
-	OperatorTag(FilterType.Autocomplete), 
-	OptionGroup(FilterType.Autocomplete),
-	OptionValue(FilterType.Autocomplete),
-	OshaRateType(EnumType.STRING),
-	OshaType(EnumType.STRING),
-	PaymentMethod(EnumType.STRING),
-	String,
-	Trade(FilterType.Autocomplete), 
-	TransactionStatus(EnumType.STRING),
-	UserAccountRole(EnumType.STRING),
-	UserID,
-	WaitingOn(EnumType.ORDINAL);
+	AccountID(FilterType.AccountID, DisplayType.RightAlign, SqlFunctionProfile.Boolean, null),
+	AccountLevel(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AccountStatus(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AccountType(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AccountUser(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	ApprovalStatus(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AuditStatus(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AuditSubStatus(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AuditType(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	AuditTypeClass(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	AuditQuestion(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	AuditCategory(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	Boolean(FilterType.Boolean, DisplayType.CheckMark, SqlFunctionProfile.Boolean, null),
+	Contractor(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	ContractorOperatorNumberType(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	Country(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	CountrySubdivision(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	Currency(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	Date(FilterType.Date, DisplayType.LeftAlign, SqlFunctionProfile.Date, null),
+	DateTime(FilterType.DateTime, DisplayType.LeftAlign, SqlFunctionProfile.Date, null),
+	FlagColor(FilterType.ShortList, DisplayType.Flag, SqlFunctionProfile.Boolean, EnumType.STRING),
+	FlagCriteriaOptionCode(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	Float(FilterType.Float, DisplayType.RightAlign, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
+	Integer(FilterType.Integer, DisplayType.RightAlign, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
+	LowMedHigh(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.ORDINAL),
+	MultiYearScope(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	NetworkLevel(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.ORDINAL),
+	Number(FilterType.Integer, DisplayType.RightAlign, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
+	Operator(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	OperatorTag(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	OptionGroup(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	OptionValue(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	OshaRateType(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	OshaType(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	PaymentMethod(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	String(FilterType.String, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	Trade(FilterType.Autocomplete, DisplayType.LeftAlign, SqlFunctionProfile.String, null),
+	TransactionStatus(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	UserAccountRole(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.STRING),
+	UserID(FilterType.UserID, DisplayType.RightAlign, SqlFunctionProfile.Boolean, null),
+	WaitingOn(FilterType.ShortList, DisplayType.LeftAlign, SqlFunctionProfile.String, EnumType.ORDINAL);
 
 	private FilterType filterType;
 	private DisplayType displayType;
 	private EnumType enumType;
+	private SqlFunctionProfile sqlFunctionProfile;
 
-	private FieldType() {
-		setFilterType(FilterType.valueOf(this.toString()));
-	}
-
-	private FieldType(FilterType filterType) {
-		setFilterType(filterType);
-	}
-
-	private FieldType(FilterType filterType, DisplayType displayType) {
-		setFilterType(filterType);
-		this.displayType = displayType;
-	}
-
-	private FieldType(EnumType enumType) {
-		setEnumType(enumType);
-	}
-
-	private FieldType(EnumType enumType, DisplayType displayType) {
-		setEnumType(enumType);
-		this.displayType = displayType;
-	}
-
-	private void setEnumType(EnumType enumType) {
-		this.enumType = enumType;
-		setFilterType(FilterType.ShortList);
-	}
-
-	private void setFilterType(FilterType filterType) {
+	FieldType(FilterType filterType, DisplayType displayType, SqlFunctionProfile sqlFunctionProfile, EnumType enumType) {
 		this.filterType = filterType;
-		this.displayType = filterType.getDisplayType();
-	}
-
-	public void setDisplayType(DisplayType displayType) {
 		this.displayType = displayType;
+		this.sqlFunctionProfile = sqlFunctionProfile;
+		this.enumType = enumType;
 	}
 
 	/**
@@ -113,5 +88,42 @@ public enum FieldType {
 	
 	public EnumType getEnumType() {
 		return enumType;
+	}
+
+	public SqlFunctionProfile getSqlFunctionProfile() {
+		return sqlFunctionProfile;
+	}
+
+	public static Set<FieldType> getAllBySqlFunctionProfile(SqlFunctionProfile sqlFunctionProfile) {
+		Set<FieldType> fieldTypes = new HashSet<FieldType>();
+		for (FieldType fieldType : FieldType.values()) {
+			if (fieldType.sqlFunctionProfile == sqlFunctionProfile) {
+				fieldTypes.add(fieldType);
+			}
+		}
+		return fieldTypes;
+	}
+
+	public Set<SqlFunction> getSqlFunctions() {
+		Set<SqlFunction> sqlFunctions = new HashSet<SqlFunction>();
+		for (SqlFunctionGroup sqlFunctionGroup : sqlFunctionProfile.getSqlFunctionGroups()) {
+			sqlFunctions.addAll(sqlFunctionGroup.getSqlFunctions());
+		}
+		sqlFunctions = processExceptionCases(sqlFunctions);
+		return sqlFunctions;
+	}
+
+	private Set<SqlFunction>  processExceptionCases(Set<SqlFunction> sqlFunctions) {
+		if (sqlFunctionProfile == SqlFunctionProfile.Date) {
+			sqlFunctions.remove(SqlFunction.Length);
+		}
+		if (this == FieldType.Date) {
+			sqlFunctions.remove(SqlFunction.Date);
+		}
+		if (this == FieldType.Integer) {
+			sqlFunctions.remove(SqlFunction.Round);
+		}
+		return sqlFunctions;
+
 	}
 }

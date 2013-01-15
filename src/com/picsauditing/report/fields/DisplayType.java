@@ -9,10 +9,9 @@ import java.util.Set;
 // Maybe rename this to ColumnType
 public enum DisplayType {
 
-	// Strings are left-align, Numbers are right-align
+	Flag, CheckMark, LeftAlign, RightAlign,
 
-	/*String, Integer, Float, Number, Boolean, Date, DateTime,*/ Flag, CheckMark, LeftAlign, RightAlign;
-
+/*
 	private static final Set<SqlFunction> DATE_ONLY_FUNCTIONS = new HashSet<SqlFunction>(Arrays.asList(
 			SqlFunction.Date, SqlFunction.Month, SqlFunction.Hour, SqlFunction.Month, SqlFunction.WeekDay,
 			SqlFunction.Year, SqlFunction.YearMonth));
@@ -84,4 +83,5 @@ public enum DisplayType {
 	private boolean isDateOnlyFunction(SqlFunction sqlFunction) {
 		return DATE_ONLY_FUNCTIONS.contains(sqlFunction);
 	}
+*/
 }

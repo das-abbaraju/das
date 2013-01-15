@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 public class DisplayTypeTest {
 	private final static Logger LOG = LoggerFactory.getLogger(DisplayTypeTest.class);
 
+/*
 	@Test
 	public void testBooleanFunctions() {
 		log(DisplayType.CheckMark);
@@ -39,4 +40,5 @@ public class DisplayTypeTest {
 			LOG.info(type + " " + function);
 		}
 	}
+*/
 }

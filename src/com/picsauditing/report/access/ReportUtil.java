@@ -99,9 +99,11 @@ public final class ReportUtil {
 
 	public static Map<String, String> getTranslatedFunctionsForField(Locale locale, DisplayType type) {
 		Map<String,String> translatedFunctions = new TreeMap<String, String>();
+/*
 		for (SqlFunction function : type.getFunctions()) {
 			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
 		}
+*/
 		return translatedFunctions;
 	}
 	
