@@ -76,6 +76,7 @@
     <bean id="InvoiceCommissionDAO" class="com.picsauditing.dao.InvoiceCommissionDAO"/>
     <bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
     <bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
+    <bean id="InvoiceFeeCountryDAO" class="com.picsauditing.dao.InvoiceFeeCountryDAO"/>
     <bean id="JobCompetencyDAO" class="com.picsauditing.dao.JobCompetencyDAO"/>
     <bean id="JobRoleDAO" class="com.picsauditing.dao.JobRoleDAO"/>
     <bean id="JobSiteDAO" class="com.picsauditing.dao.JobSiteDAO"/>

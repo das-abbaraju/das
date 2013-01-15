@@ -102,16 +102,19 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	}
 
 	public static String convertToCode(String tempCountry) {
-		if (Strings.isEmpty(tempCountry))
+		if (Strings.isEmpty(tempCountry)) {
 			return null;
+		}
 
 		tempCountry = tempCountry.trim();
-		if (tempCountry.length() == 2)
+		if (tempCountry.length() == 2) {
 			return tempCountry;
-		if (tempCountry.equals("Canada"))
+		}
+		if (tempCountry.equals("Canada")) {
 			return "CA";
-		else if (tempCountry.equals("United States"))
+		} else if (tempCountry.equals("United States")) {
 			return "US";
+		}
 
 		return "???";
 	}
@@ -254,11 +257,13 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 		return (isEuroZone() || Arrays.binarySearch(EUROPEAN_UNION_ALSO, isoCode) >= 0);
 	}
 
+	// TODO This is in the wrong class. It should be in a FeeService or similar.
 	@Transient
 	public BigDecimal getAmount(InvoiceFee invoiceFee) {
 		for (InvoiceFeeCountry countryFeeAmountOverride : getAmountOverrides()) {
-			if (countryFeeAmountOverride.getInvoiceFee().equals(invoiceFee))
+			if (countryFeeAmountOverride.getInvoiceFee().equals(invoiceFee)) {
 				return countryFeeAmountOverride.getAmount();
+			}
 		}
 
 		return invoiceFee.getAmount();
