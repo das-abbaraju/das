@@ -4,41 +4,71 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorFee;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 
 @SuppressWarnings("serial")
 public class ContractorPricing extends ContractorActionSupport {
+
 	private ContractorAccount con;
 	private int id;
 	private int employeeGUARDNum;
 	private int docuGUARDNum;
 	private int insureGUARDNum;
 	private int auditGUARDNum;
-	private Map<FeeClass, ContractorFee> fees;
+
+	@Autowired
+	private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
 
 	private Map<String, BigDecimal> prices = new HashMap<String, BigDecimal>();
 
 	@Override
 	@Anonymous
 	public String execute() {
-		if (con != null) {
-			fees = con.getFees();
-			docuGUARDNum = fees.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities();
-			insureGUARDNum = fees.get(FeeClass.InsureGUARD).getNewLevel().getMinFacilities();
-			auditGUARDNum = fees.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities();
-			employeeGUARDNum = fees.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities();
+		if (con == null) {
+			addActionError(getText("RequestNewContractor.error.RequestedContractorNotFound"));
+			return ERROR;
 		}
 
-		@SuppressWarnings("unchecked")
-		List<InvoiceFee> list = (List<InvoiceFee>) dao.findWhere(InvoiceFee.class,
-				"visible=1 and feeClass in ('AuditGUARD','InsureGUARD','DocuGUARD','EmployeeGUARD', 'Activation')", 0);
-		for (InvoiceFee fee : ((List<InvoiceFee>) list)) {
-			prices.put("" + fee.getMinFacilities() + fee.getFeeClass(), con.getCountry().getAmount(fee));
+		Map<FeeClass, ContractorFee> contractorFeeMap = con.getFees();
+		if (contractorFeeMap == null) {
+			addActionError(getText("Error.Contractor.NoFees"));
+			return ERROR;
+		}
+
+		Country country = con.getCountry();
+		if (country == null) {
+			addActionError(getText("Error.Contractor.NoCountry"));
+			return ERROR;
+		}
+
+		docuGUARDNum = contractorFeeMap.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities();
+		insureGUARDNum = contractorFeeMap.get(FeeClass.InsureGUARD).getNewLevel().getMinFacilities();
+		auditGUARDNum = contractorFeeMap.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities();
+		employeeGUARDNum = contractorFeeMap.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities();
+
+		Set<FeeClass> feeTypes = FeeClass.getContractorPriceTableFeeTypes();
+
+		// Look for the specific country
+		List<InvoiceFeeCountry> countryFees = invoiceFeeCountryDAO.findVisibleByCountryAndFeeClassList(country, feeTypes);
+
+		// If that wasn't found, look up US as default
+		if (CollectionUtils.isEmpty(countryFees)) {
+			countryFees = invoiceFeeCountryDAO.findVisibleByCountryAndFeeClassList(new Country("US"), feeTypes);
+		}
+
+		for (InvoiceFeeCountry fee : countryFees) {
+			prices.put("" + fee.getInvoiceFee().getMinFacilities() + fee.getInvoiceFee().getFeeClass(), fee.getAmount());
 		}
 
 		return SUCCESS;
@@ -58,8 +88,9 @@ public class ContractorPricing extends ContractorActionSupport {
 
 	public String getPrice(String priceId) {
 		BigDecimal amount = prices.get(priceId);
-		if (amount == null)
+		if (amount == null) {
 			amount = new BigDecimal(0);
+		}
 
 		return amount.toString();
 	}

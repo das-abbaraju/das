@@ -2,21 +2,20 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-@SuppressWarnings("serial")
 public class InvoiceService {
 
 	@Autowired
 	protected InvoiceDAO invoiceDAO;
 
 	@Autowired
-	protected InvoiceFeeDAO invoiceFeeDAO;
+	protected InvoiceFeeCountryDAO invoiceFeeCountryDAO;
 
 	@Autowired
 	protected TaxService taxService;
@@ -42,7 +41,7 @@ public class InvoiceService {
 	}
 
 	private List<InvoiceFeeCountry> getAllTaxFeesForProvince(CountrySubdivision countrySubdivision) throws RecordNotFoundException {
-		List<InvoiceFeeCountry> invoiceFeeCountries = invoiceFeeDAO.findAllInvoiceFeeCountry(FeeClass.CanadianTax, countrySubdivision);
+		List<InvoiceFeeCountry> invoiceFeeCountries = invoiceFeeCountryDAO.findAllInvoiceFeeCountry(FeeClass.CanadianTax, countrySubdivision);
 		if (invoiceFeeCountries == null) {
 			throw new RecordNotFoundException("InvoiceFeeCountry records for feeClass: "
 					+ FeeClass.CanadianTax  + " and subdivision isoCode: " + countrySubdivision.getIsoCode());

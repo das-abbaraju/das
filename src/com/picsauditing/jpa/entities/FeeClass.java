@@ -6,16 +6,17 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.util.SpringUtils;
-
 import java.math.BigDecimal;
 import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * The business logic in FeeClass needs to be pulled out into a service to make
  * it properly testable.
- * 
+ *
  * @author TJB
- * 
+ *
  */
 public enum FeeClass implements Translatable {
 
@@ -59,22 +60,27 @@ public enum FeeClass implements Translatable {
 
 			for (AuditTypeDetail detail : builder.calculate()) {
 				AuditType auditType = detail.rule.getAuditType();
-				if (auditType == null)
+				if (auditType == null) {
 					continue;
+				}
 				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
-						|| auditType.getClassType().isIm())
+						|| auditType.getClassType().isIm()) {
 					employeeAudits = true;
-				if (auditType.getId() == AuditType.HSE_COMPETENCY)
+				}
+				if (auditType.getId() == AuditType.HSE_COMPETENCY) {
 					hseCompetency = true;
+				}
 			}
 
 			for (ContractorOperator co : contractor.getOperators()) {
-				if (co.getOperatorAccount().isRequiresOQ())
+				if (co.getOperatorAccount().isRequiresOQ()) {
 					oq = true;
+				}
 			}
 
-			if (!hseCompetency && (employeeAudits || oq))
+			if (!hseCompetency && (employeeAudits || oq)) {
 				return BigDecimal.ZERO;
+			}
 
 			return contractor.getCountry().getAmount(fee);
 		}
@@ -99,8 +105,9 @@ public enum FeeClass implements Translatable {
 			// This happens if there are no operators attached to this
 			// contractor.
 			// Unlikely, but if it never happened, I wouldn't be writing this.
-			if (discounts.isEmpty())
+			if (discounts.isEmpty()) {
 				return contractor.getCountry().getAmount(fee);
+			}
 
 			BigDecimal minimumDiscount = Collections.min(discounts);
 			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
@@ -187,5 +194,32 @@ public enum FeeClass implements Translatable {
 		exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 		exclusions.put(OperatorAccount.SUNOCO, Jan2013InsureGUARDPricingEffectiveDate);
 		return exclusions;
+	}
+
+	public static Set<FeeClass> getContractorPriceTableFeeTypes() {
+		Set<FeeClass> feeTypes = new HashSet<FeeClass>();
+
+		feeTypes.add(DocuGUARD);
+		feeTypes.add(AuditGUARD);
+		feeTypes.add(EmployeeGUARD);
+		feeTypes.add(Activation);
+		feeTypes.add(InsureGUARD);
+
+		return feeTypes;
+	}
+
+	public static String getContractorPriceTableFeeTypesForDatabase() {
+		Set<FeeClass> feeClasses = getContractorPriceTableFeeTypes();
+
+		String feeTypesForDatabase = "";
+		for (FeeClass feeClass : feeClasses) {
+			if (StringUtils.isNotEmpty(feeTypesForDatabase)) {
+				feeTypesForDatabase += ",";
+			}
+
+			feeTypesForDatabase += "'" + feeClass.toString() + "'";
+		}
+
+		return feeTypesForDatabase;
 	}
 }

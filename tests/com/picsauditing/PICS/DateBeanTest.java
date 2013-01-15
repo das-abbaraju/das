@@ -650,12 +650,12 @@ public class DateBeanTest {
 		assertTrue(result);
 		
 		// end of grace period
-		now = new Date("1/31/2013"); 
+		now = new Date("1/30/2013"); 
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
 		
 		// after grace period
-		now = new Date("2/1/2013"); 
+		now = new Date("1/31/2013"); 
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertFalse(result);
 	}
@@ -679,11 +679,11 @@ public class DateBeanTest {
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
 		
-		now = new Date("1/31/2013");
+		now = new Date("1/30/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
 		
-		now = new Date("2/1/2013");
+		now = new Date("1/31/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2013, result.intValue());
 	}
