@@ -43,6 +43,6 @@ public abstract class PicsDateFormat {
 			// We don't care
 		}
 
-		return "";
+		return Strings.EMPTY_STRING;
 	}
 }

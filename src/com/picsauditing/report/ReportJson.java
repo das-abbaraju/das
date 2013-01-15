@@ -15,8 +15,7 @@ public class ReportJson {
 	public static final String REPORT_NAME = "name";
 	public static final String REPORT_DESCRIPTION = "description";
 
-	public static final String REPORT_FILTER_EXPRESSION = "filterExpression";
-	public static final String REPORT_FAVORITE_COUNT = "num_times_favorited";
+	public static final String REPORT_FILTER_EXPRESSION = "filter_expression";
 	public static final String REPORT_EDITABLE = "is_editable";
 	public static final String REPORT_FAVORITE = "is_favorite";
 	public static final String BASE_CREATION_DATE = "creation_date";
@@ -52,6 +51,8 @@ public class ReportJson {
 	public static final String LEGACY_MODEL_TYPE = "modelType";
 	@Deprecated
 	public static final String LEGACY_METHOD = "method";
+	@Deprecated
+	public static final String LEGACY_REPORT_FILTER_EXPRESSION = "filterExpression";
 
 	public enum ReportListType {
 		Columns(REPORT_COLUMNS), Filters(REPORT_FILTERS), Sorts(REPORT_SORTS);

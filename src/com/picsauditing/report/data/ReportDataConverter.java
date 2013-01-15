@@ -17,7 +17,6 @@ import com.picsauditing.report.fields.SqlFunction;
 
 public class ReportDataConverter {
 	
-	private final static I18nCache i18nCache = I18nCache.getInstance();
 	private Locale locale;
 	private ReportResults reportResults;
 	
@@ -45,6 +44,7 @@ public class ReportDataConverter {
 		Object value = cell.getValue();
 		if (value == null)
 			return null;
+		
 		Column column = cell.getColumn();
 
 		if (column != null) {
@@ -54,6 +54,7 @@ public class ReportDataConverter {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
+			
 			if (column.getName().contains("StatusSubstatus")) {
 				String[] valueString = ((String) value).split(":");
 
@@ -99,6 +100,7 @@ public class ReportDataConverter {
 			java.sql.Date valueAsDate = (java.sql.Date) value;
 			return valueAsDate.getTime();
 		}
+		
 		if (value instanceof java.sql.Timestamp) {
 			Timestamp valueAsTimestamp = (Timestamp) value;
 			return valueAsTimestamp.getTime();
@@ -155,7 +157,7 @@ public class ReportDataConverter {
 	}
 
 	private static String getText(String key, Locale locale) {
-		return i18nCache.getText(key, locale);
+		return I18nCache.getInstance().getText(key, locale);
 	}
 
 	public void setLocale(Locale locale) {

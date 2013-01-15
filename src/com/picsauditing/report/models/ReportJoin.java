@@ -118,10 +118,11 @@ public class ReportJoin {
 					if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.FromAlias))
 						fieldCopy.setDatabaseColumnName(fieldCopy.getDatabaseColumnName().replace(
 								ReportOnClause.FromAlias, fromAlias));
-				} else
+				} else {
 					fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
+				}
 
-				if (fieldCopy.getUrl() != null && fieldCopy.getUrl().contains(ReportOnClause.ToAlias)) {
+				if (Strings.isNotEmpty(fieldCopy.getUrl()) && fieldCopy.getUrl().contains(ReportOnClause.ToAlias)) {
 					fieldCopy.setUrl(fieldCopy.getUrl().replace(ReportOnClause.ToAlias, alias));
 				}
 

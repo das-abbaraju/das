@@ -21,7 +21,7 @@ import com.picsauditing.access.Api;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.report.ReportData;
+import com.picsauditing.actions.report.ReportApi;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.search.Database;

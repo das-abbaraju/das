@@ -55,7 +55,7 @@ public class LegacyReportConverter {
 		json.put("description", report.getDescription());
 
 		if (Strings.isNotEmpty(report.getFilterExpression())) {
-			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
+			json.put(LEGACY_REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 		}
 	}
 
@@ -187,7 +187,7 @@ public class LegacyReportConverter {
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
-		String filterExpressionFromJson = (String) json.get(REPORT_FILTER_EXPRESSION);
+		String filterExpressionFromJson = (String) json.get(LEGACY_REPORT_FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson)) {
 			return filterExpressionFromJson;
 		}

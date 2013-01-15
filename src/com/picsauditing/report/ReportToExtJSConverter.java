@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
@@ -24,6 +25,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
@@ -49,11 +51,7 @@ public class ReportToExtJSConverter {
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
 		json.put(REPORT_DESCRIPTION, report.getDescription());
-
-		if (!Strings.isEmpty(report.getFilterExpression()))
-			json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		json.put(REPORT_FAVORITE_COUNT, report.getNumTimesFavorited());
-
+		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 		json.put(REPORT_EDITABLE, report.isEditable());
 		json.put(REPORT_FAVORITE, report.isFavorite());
 
@@ -62,11 +60,12 @@ public class ReportToExtJSConverter {
 
 	private static void setJsonForAuditColumns(Report report, JSONObject json) {
 		if (report.getCreatedBy() != null && report.getCreationDate() != null) {
-			json.put(BASE_CREATION_DATE, report.getCreationDate().getTime());
+			json.put(BASE_CREATION_DATE, PicsDateFormat.formatDateIsoOrBlank(report.getCreationDate()));
 			json.put(BASE_CREATED_BY, report.getCreatedBy().getName());
 		}
+		
 		if (report.getUpdatedBy() != null && report.getUpdateDate() != null) {
-			json.put(BASE_UPDATE_DATE, report.getUpdateDate().getTime());
+			json.put(BASE_UPDATE_DATE,  PicsDateFormat.formatDateIsoOrBlank(report.getUpdateDate()));
 			json.put(BASE_UPDATED_BY, report.getUpdatedBy().getName());
 		}
 	}
@@ -79,9 +78,11 @@ public class ReportToExtJSConverter {
 			case Columns:
 				jsonArray.add(toJSON((Column) obj));
 				break;
+			
 			case Filters:
 				jsonArray.add(toJSON((Filter) obj));
 				break;
+			
 			case Sorts:
 				jsonArray.add(toJSON((Sort) obj));
 				break;
@@ -146,12 +147,17 @@ public class ReportToExtJSConverter {
 		JSONObject json = elementToCommonJson(obj);
 		json.put("type", obj.getField().getColumnType());
 
-		if (!Strings.isEmpty(obj.getField().getUrl()))
+//		if (!Strings.isEmpty(obj.getField().getUrl())) {
 			json.put("url", obj.getField().getUrl());
-		if (obj.getSqlFunction() != null)
-			json.put("sql_function", obj.getSqlFunction().toString());
-		if (obj.getWidth() > 0)
+//		}
+		
+//		if (obj.getSqlFunction() != null) {
+			json.put("sql_function", obj.getSqlFunction());
+//		}
+		
+//		if (obj.getWidth() > 0) {
 			json.put("width", obj.getWidth());
+//		}
 
 		json.put("is_sortable", obj.getField().isSortable());
 

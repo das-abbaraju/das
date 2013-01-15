@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.access.Api;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.actions.report.ReportData;
+import com.picsauditing.actions.report.ReportApi;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class DataFeed extends ReportData implements ParameterAware {
+public class DataFeed extends ReportApi implements ParameterAware {
 
     private static final Logger logger = LoggerFactory.getLogger(DataFeed.class);
 

@@ -40,7 +40,13 @@ public class Field {
 	public Field(ReportField annotation) {
 		type = annotation.type();
 		width = annotation.width();
-		url = annotation.url();
+		
+		if (Strings.isEmpty(annotation.url())) {
+			url = null;
+		} else {
+			url = annotation.url();
+		}
+		
 		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
 		visible = annotation.visible();
@@ -58,6 +64,7 @@ public class Field {
 	public Field(String name) {
 		this.name = name;
 		this.databaseColumnName = name;
+//		this.url = Strings.EMPTY_STRING;
 	}
 
 	public Field(String name, String databaseColumnName, FieldType type) {
@@ -68,6 +75,7 @@ public class Field {
 		}
 		
 		this.type = type;
+//		this.url = Strings.EMPTY_STRING;
 	}
 
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
@@ -90,7 +98,7 @@ public class Field {
 
 	public Set<String> getDependentFields() {
 		Set<String> dependent = new HashSet<String>();
-		if (!Strings.isEmpty(url)) {
+		if (Strings.isNotEmpty(url)) {
 			Matcher urlFieldMatcher = FIELD_VARIABLE_PATTERN.matcher(url);
 
 			while (urlFieldMatcher.find()) {
@@ -239,6 +247,7 @@ public class Field {
 		return postTranslation;
 	}
 
+	// TODO: This is very questionable
 	public boolean isVisible() {
 		return visible;
 	}
