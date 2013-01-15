@@ -1,7 +1,9 @@
 package com.picsauditing.PICS;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import com.picsauditing.jpa.entities.QuestionFunction;
 import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class OshaOrganizer implements OshaVisitor {
 	private static final Logger logger = LoggerFactory.getLogger(OshaOrganizer.class);
@@ -38,6 +42,35 @@ public class OshaOrganizer implements OshaVisitor {
 		return yearList;
 	}
 
+	public List<Integer> getAllYears(OshaType type) {
+		List<Integer> yearList = new ArrayList<Integer>();
+
+		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
+			for (int year : safetyStatisticsData.get(type).keySet()) {
+				yearList.add(year);
+			}
+		}
+
+		Collections.sort(yearList);
+		return yearList;
+	}
+	
+	public Integer getOutOfScopeYear(OshaType type) {
+		List<Integer> yearList = new ArrayList<Integer>();
+
+		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
+			for (int year : safetyStatisticsData.get(type).keySet()) {
+				yearList.add(year);
+			}
+		}
+
+		Collections.sort(yearList);
+		
+		if (!mostRecentThreeYears(type).contains(yearList.get(0)))
+			return yearList.get(0);
+		else return null;
+	}
+	
 	/**
 	 * Returns whether or the audit has been verified.
 	 * 
@@ -129,6 +162,14 @@ public class OshaOrganizer implements OshaVisitor {
 		}
 	}
 
+	public double getRate(OshaType type, Integer year, OshaRateType rateType) {
+		BigDecimal rate = getRateForSpecificYear(type, year, rateType);
+		if (rate != null) {
+			return rate.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+		} else 
+			return -1;
+	}
+
 	/* testable */ BigDecimal getRateForSpecificYear(OshaType type, Integer year, OshaRateType rateType) {
 		if (year != null) {
 			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
@@ -154,6 +195,14 @@ public class OshaOrganizer implements OshaVisitor {
 
 	public SafetyStatistics getStatistic(OshaType type, MultiYearScope scope) {
 		Integer year = this.mostRecentThreeYears(type).getYearForScope(scope);
+		if (year == null) {
+			return null;
+		}
+
+		return safetyStatisticsData.get(type).get(year);
+	}
+
+	public SafetyStatistics getStatistic(OshaType type, Integer year) {
 		if (year == null) {
 			return null;
 		}

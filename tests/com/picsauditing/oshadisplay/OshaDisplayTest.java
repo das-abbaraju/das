@@ -176,6 +176,7 @@ public class OshaDisplayTest {
 		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);
 		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(2009);
 
+		when(oshaOrganizer.getOutOfScopeYear(OshaType.OSHA)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.TrirNaics)).thenReturn(0.4);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.TwoYearsAgo, OshaRateType.TrirNaics)).thenReturn(0.3);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearsAgo, OshaRateType.TrirNaics))
@@ -184,6 +185,7 @@ public class OshaDisplayTest {
 				0.3);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearSum, OshaRateType.TrirNaics)).thenReturn(0.9);
 
+		when(oshaOrganizer.getOutOfScopeYear(OshaType.COHS)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.COHS, MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute)).thenReturn(
 				0.4);
 		when(oshaOrganizer.getRate(OshaType.COHS, MultiYearScope.TwoYearsAgo, OshaRateType.TrirAbsolute)).thenReturn(
@@ -247,6 +249,7 @@ public class OshaDisplayTest {
 		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);
 		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(2009);
 
+		when(oshaOrganizer.getOutOfScopeYear(OshaType.OSHA)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.DartNaics)).thenReturn(0.4);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.TwoYearsAgo, OshaRateType.DartNaics)).thenReturn(0.3);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearsAgo, OshaRateType.DartNaics))
@@ -255,6 +258,7 @@ public class OshaDisplayTest {
 				0.3);
 		when(oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearSum, OshaRateType.DartNaics)).thenReturn(0.9);
 
+		when(oshaOrganizer.getOutOfScopeYear(OshaType.COHS)).thenReturn(null);
 		when(oshaOrganizer.getRate(OshaType.COHS, MultiYearScope.LastYearOnly, OshaRateType.Dart)).thenReturn(0.4);
 		when(oshaOrganizer.getRate(OshaType.COHS, MultiYearScope.TwoYearsAgo, OshaRateType.Dart)).thenReturn(0.3);
 		when(oshaOrganizer.getRate(OshaType.COHS, MultiYearScope.ThreeYearsAgo, OshaRateType.Dart)).thenReturn(0.2);

@@ -66,6 +66,10 @@ public class OshaDisplay {
 
 	private List<String> getColumnNames(OshaType oshaType) {
 		columnNames = new ArrayList<String>();
+		
+		if (oshaOrganizer.getOutOfScopeYear(oshaType) != null) {
+			columnNames.add(oshaOrganizer.getOutOfScopeYear(oshaType).toString());
+		}
 		yearList = oshaOrganizer.mostRecentThreeYears(oshaType);
 		StringBuilder yearsForAverageLabel = new StringBuilder();
 		for (MultiYearScope yearScope : YEAR_SCOPES) {
@@ -105,6 +109,15 @@ public class OshaDisplay {
 
 			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
 			rateRow.setOshaRateType(rateType);
+			
+			if (oshaOrganizer.getOutOfScopeYear(oshaType) != null) {
+				Double answer = oshaOrganizer.getRate(oshaType, oshaOrganizer.getOutOfScopeYear(oshaType), rateType);
+				if (answer != null && answer >= 0) {
+					rateRow.addCell(Numbers.printDouble(answer));
+				} else {
+					rateRow.addCell(EMPTY_CELL);
+				}
+			}
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
@@ -182,6 +195,10 @@ public class OshaDisplay {
 				hurdleRow.setOperator(o);
 
 				boolean hasFlagCriteria = false;
+
+				if (oshaOrganizer.getOutOfScopeYear(oshaType) != null) {
+					hurdleRow.addCell(EMPTY_CELL);
+				}
 
 				for (MultiYearScope scope : YEAR_SCOPES) {
 					Set<FlagCriteriaOperator> flagCriteriaForThisYear = flagCriteriaForYear.get(scope);
