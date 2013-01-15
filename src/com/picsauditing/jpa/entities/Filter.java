@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +18,17 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.QueryDateParameter;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 @Entity
 @Table(name = "report_filter")
 public class Filter extends ReportElement {
-
-	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
@@ -35,6 +37,8 @@ public class Filter extends ReportElement {
 	private String columnCompare;
 	private Field fieldForComparison;
 
+	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
+	
 	@Enumerated(EnumType.STRING)
 	public QueryFilterOperator getOperator() {
 		return operator;

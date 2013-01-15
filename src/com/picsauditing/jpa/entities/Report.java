@@ -3,18 +3,22 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 @Entity
@@ -168,10 +172,36 @@ public class Report extends BaseTable {
 	@Deprecated
 	// TODO this should not be used here
 	public ReportUser getReportUser(int userId) {
-		for (ReportUser reportUser : reportUsers)
-			if (userId == reportUser.getUser().getId())
+		for (ReportUser reportUser : reportUsers) {
+			if (userId == reportUser.getUser().getId()) {
 				return reportUser;
+			}
+		}
 
 		return null;
+	}
+	
+	/**
+	 * We assume that we always overwrite the JSON String in the parameters field with the changes 
+	 * made by the user in the columns/filters/sorts
+	 */
+	@PrePersist
+	public void convertOnSave() {
+		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
+			return;
+		}
+	}
+	
+	/** 
+	 * We will assume that every read from the database will involve over-writing the columns, filters
+	 * and sorts from those in the JSON String.
+	 */
+	@PostConstruct
+	public void convertOnRead() {
+		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
+			return;
+		}
 	}
 }

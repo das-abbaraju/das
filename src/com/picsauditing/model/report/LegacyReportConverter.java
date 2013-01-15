@@ -256,14 +256,17 @@ public class LegacyReportConverter {
 
 	private static boolean isAscending(JSONObject json) {
 		String direction = (String) json.get("direction");
-		if (direction != null && direction.equals("DESC"))
+		if (direction != null && direction.equals("DESC")) {
 			return false;
+		}
+		
 		return true;
 	}
 
 	public static Filter toFilter(JSONObject json) {
-		if (json == null)
+		if (json == null) {
 			return null;
+		}
 
 		Filter filter = new Filter();
 		toElementFromJSON(json, filter);

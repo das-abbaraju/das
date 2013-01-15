@@ -197,7 +197,6 @@ public abstract class ReportElement {
 
 	public void addFieldCopy(Map<String, Field> availableFields) {
 		Field field = availableFields.get(originalName.toUpperCase());
-//		Field field = availableFields.get(getFieldNameWithoutMethod());
 
 		if (field == null) {
 			logger.warn("Failed to find " + originalName + " in availableFields");

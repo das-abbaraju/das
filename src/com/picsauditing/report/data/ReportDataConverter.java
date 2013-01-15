@@ -14,6 +14,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.util.PicsDateFormat;
 
 public class ReportDataConverter {
 	
@@ -98,7 +99,7 @@ public class ReportDataConverter {
 
 		if (value instanceof java.sql.Date) {
 			java.sql.Date valueAsDate = (java.sql.Date) value;
-			return valueAsDate.getTime();
+			return PicsDateFormat.formatDateIsoOrBlank(valueAsDate);
 		}
 		
 		if (value instanceof java.sql.Timestamp) {

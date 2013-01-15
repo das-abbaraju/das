@@ -1,6 +1,23 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.ReportJson.*;
+import static com.picsauditing.report.ReportJson.BASE_CREATED_BY;
+import static com.picsauditing.report.ReportJson.BASE_CREATION_DATE;
+import static com.picsauditing.report.ReportJson.BASE_UPDATED_BY;
+import static com.picsauditing.report.ReportJson.BASE_UPDATE_DATE;
+import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
+import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
+import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
+import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
+import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
+import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
+import static com.picsauditing.report.ReportJson.REPORT_ID;
+import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
+import static com.picsauditing.report.ReportJson.REPORT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_SORTS;
+import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
@@ -32,8 +48,6 @@ import com.picsauditing.util.Strings;
 public class ReportToExtJSConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportToExtJSConverter.class);
-
-	// From Report to JSON
 
 	public static JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
@@ -94,11 +108,15 @@ public class ReportToExtJSConverter {
 		switch (type) {
 		case Columns:
 			return report.getColumns();
+			
 		case Filters:
 			return report.getFilters();
+			
 		case Sorts:
 			return report.getSorts();
+			
 		}
+		
 		return null;
 	}
 
@@ -145,20 +163,11 @@ public class ReportToExtJSConverter {
 
 	private static JSONObject toJSON(Column obj) {
 		JSONObject json = elementToCommonJson(obj);
+		
 		json.put("type", obj.getField().getColumnType());
-
-//		if (!Strings.isEmpty(obj.getField().getUrl())) {
-			json.put("url", obj.getField().getUrl());
-//		}
-		
-//		if (obj.getSqlFunction() != null) {
-			json.put("sql_function", obj.getSqlFunction());
-//		}
-		
-//		if (obj.getWidth() > 0) {
-			json.put("width", obj.getWidth());
-//		}
-
+		json.put("url", obj.getField().getUrl());
+		json.put("sql_function", obj.getSqlFunction());
+		json.put("width", obj.getWidth());
 		json.put("is_sortable", obj.getField().isSortable());
 
 		return json;
@@ -293,8 +302,10 @@ public class ReportToExtJSConverter {
 
 	private static boolean isAscending(JSONObject json) {
 		String direction = (String) json.get(SORT_DIRECTION);
-		if (direction != null && direction.equals("DESC"))
+		if (direction != null && direction.equals(Sort.DESCENDING)) {
 			return false;
+		}
+		
 		return true;
 	}
 
@@ -351,8 +362,10 @@ public class ReportToExtJSConverter {
 						+ "Until we phase out the old code, we need this for backwards compatibility");
 
 				String[] valueSplit = value.split(", ");
-				if (valueSplit.length == 1 && value.contains(","))
+				if (valueSplit.length == 1 && value.contains(",")) {
 					valueSplit = value.split(",");
+				}
+				
 				values.addAll(Arrays.asList(valueSplit));
 			} else {
 				values.add(value);
@@ -369,6 +382,4 @@ public class ReportToExtJSConverter {
 
 		return new Field(advancedFilterOption.toString());
 	}
-
-	// END FROM JSON to Filters ///
 }
