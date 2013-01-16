@@ -84,15 +84,11 @@ public class ReportDataConverter {
 			}
 			
 			DisplayType displayType = column.getField().getType().getDisplayType();
-			if (displayType == DisplayType.RightAlign) {
+			if (displayType == DisplayType.Number) {
 				return value;
 			}
 			
-			if (displayType == DisplayType.RightAlign) {
-				return value;
-			}
-			
-			if (displayType == DisplayType.CheckMark) {
+			if (displayType == DisplayType.Boolean) {
 				return value;
 			}
 		}
@@ -149,7 +145,7 @@ public class ReportDataConverter {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType().getDisplayType() == DisplayType.CheckMark) {
+			if (column.getField().getType().getDisplayType() == DisplayType.Boolean) {
 				return value;
 			}
 		}

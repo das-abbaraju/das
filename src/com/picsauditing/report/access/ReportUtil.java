@@ -47,8 +47,6 @@ import com.picsauditing.util.Strings;
 public final class ReportUtil {
 
 	public static final String SQL = "sql";
-	public static final String SUCCESS = "success";
-	public static final String MESSAGE = "message";
 
 	private final static I18nCache i18nCache = I18nCache.getInstance();
 

@@ -47,6 +47,9 @@ public class ReportJson {
 
 	public static final String RESULTS_TOTAL = "total";
 	
+	public static final String EXT_JS_SUCCESS = "success";
+	public static final String EXT_JS_MESSAGE = "message";
+	
 	@Deprecated
 	public static final String LEGACY_MODEL_TYPE = "modelType";
 	@Deprecated

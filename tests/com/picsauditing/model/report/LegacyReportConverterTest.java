@@ -6,6 +6,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
@@ -17,6 +20,9 @@ import com.picsauditing.report.models.ModelType;
  */
 public class LegacyReportConverterTest {
 
+	@Mock
+	private ReportModel reportModel;
+	
 	// TODO: Convert this to use ApprovalTests
 	private static final String SAMPLE_JSON = "{\"modelType\":\"Contractors\","
 			+ "\"name\":\"Report Title\",\"description\":\"Sub title of report\",\"filterExpression\":\"1 AND (2 OR 3)\","
@@ -28,14 +34,20 @@ public class LegacyReportConverterTest {
 	private JSONObject jsonIn;
 	private JSONObject jsonOut;
 	private Report report;
+	private LegacyReportConverter legacyReportConverter;
 
 	@Before
 	public void setup() throws ReportValidationException {
+		MockitoAnnotations.initMocks(this);
+		legacyReportConverter = new LegacyReportConverter();
+		
+		Whitebox.setInternalState(legacyReportConverter, "reportModel", reportModel);
+		
 		jsonIn = (JSONObject) JSONValue.parse(SAMPLE_JSON);
 		report = new Report();
 		report.setParameters(SAMPLE_JSON);
-		LegacyReportConverter.fillParameters(report);
-		jsonOut = LegacyReportConverter.toJSON(report);
+		legacyReportConverter.fillParameters(report);
+		jsonOut = legacyReportConverter.toJSON(report);
 	}
 
 	@Test

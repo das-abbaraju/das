@@ -1,13 +1,12 @@
 package com.picsauditing.model.report;
 
-
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import java.util.HashSet;
@@ -15,13 +14,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
@@ -31,7 +30,6 @@ import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
@@ -39,6 +37,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModelTest {
@@ -63,6 +62,10 @@ public class ReportModelTest {
 	private ReportPermissionUser reportPermissionUser;
 	@Mock
 	private Permissions permissions;
+	@Mock
+	private FeatureToggle featureToggle;
+	@Mock
+	private ReportModel reportModelMock;
 
 	private Pagination<Report> pagination;
 
@@ -70,20 +73,27 @@ public class ReportModelTest {
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
 
+	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		reportModel = new ReportModel();
-
+		
+		LegacyReportConverter legacyReportConverter = new LegacyReportConverter();
+		Whitebox.setInternalState(legacyReportConverter, "reportModel", reportModelMock);
+		
 		setInternalState(reportModel, "reportDao", reportDao);
 		setInternalState(reportModel, "reportUserDao", reportUserDao);
 		setInternalState(reportModel, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportModel, "reportPermissionAccountDao", reportPermissionAccountDao);
+		setInternalState(reportModel, "featureToggle", featureToggle);
+		setInternalState(reportModel, "legacyReportConverter", legacyReportConverter);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(account.getId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
+		when(featureToggle.isFeatureEnabled(anyString())).thenReturn(true);
 	}
 	
 	@Test
@@ -170,7 +180,7 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("{}");
-		ReportModel.processReportParameters(report);
+		reportModel.processReportParameters(report);
 
 		ReportModel.validate(report);
 	}
@@ -179,7 +189,7 @@ public class ReportModelTest {
 	public void testProcessReportParameters_NullReportParametersThrowsError() throws ReportValidationException {
 		Report report = new Report();
 		report.setParameters(null);
-		ReportModel.processReportParameters(report);
+		reportModel.processReportParameters(report);
 	}
 
 	@Test

@@ -30,6 +30,7 @@ import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;
 
 public class ReportDataConverterTest {
+	
 	@Mock
 	Database databaseForTesting;
 
@@ -93,7 +94,6 @@ public class ReportDataConverterTest {
 	@Test
 	public void testConvertQueryResultsToJson_Simple() {
 		queryResults = createAccountQueryList(10);
-
 		JSONArray json = runJsonConverter();
 		assertEquals(10, json.size());
 	}
@@ -131,6 +131,7 @@ public class ReportDataConverterTest {
 				accountID = Math.round(Math.random() * 1000);
 				currentUnitTime = new Date().getTime();
 			}
+			
 			builder.setValue("AccountID", accountID);
 			builder.setValue("AccountName", "Test " + accountID);
 			builder.setValue("AccountCreationDate", new Timestamp(currentUnitTime));
@@ -139,6 +140,7 @@ public class ReportDataConverterTest {
 			builder.setValue("ContractorLastUpgradeDate", null);
 			builder.setValue("AccountZip", "92614");
 		}
+		
 		return builder.getRows();
 	}
 

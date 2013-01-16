@@ -26,6 +26,7 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.AvailableFieldsToExtJSConverter;
+import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
@@ -62,7 +63,7 @@ public class ReportApi extends PicsApiSupport {
 	protected void initialize() throws Exception {
 		logger.debug("initializing report {}", report.getId());
 		
-		ReportModel.processReportParameters(report);
+		reportModel.processReportParameters(report);
 		ReportModel.validate(report);
 		reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
@@ -99,7 +100,7 @@ public class ReportApi extends PicsApiSupport {
 				json.put(LEVEL_RESULTS, getData());
 			}
 
-			json.put(ReportUtil.SUCCESS, true);
+			json.put(ReportJson.EXT_JS_SUCCESS, true);
 		} catch (ReportValidationException rve) {
 			logger.error("Invalid report in ReportDynamic.report()", rve);
 			writeJsonError(rve);
@@ -209,8 +210,8 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	protected void writeJsonError(String message) {
-		json.put(ReportUtil.SUCCESS, false);
-		json.put(ReportUtil.MESSAGE, message);
+		json.put(ReportJson.EXT_JS_SUCCESS, false);
+		json.put(ReportJson.EXT_JS_MESSAGE, message);
 	}
 
 	public Report getReport() {

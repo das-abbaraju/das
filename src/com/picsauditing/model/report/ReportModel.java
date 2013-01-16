@@ -35,7 +35,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -51,6 +50,12 @@ public class ReportModel {
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	
+	@SuppressWarnings("deprecation")
+	@Autowired
+	private LegacyReportConverter legacyReportConverter;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
 
@@ -146,7 +151,7 @@ public class ReportModel {
 		// Allow updating rather than full delete/insert instead
 		removeReportElements(report);
 
-		ReportModel.processReportParameters(report);
+		processReportParameters(report);
 		setReportParameters(report);
 		saveReportElements(report);
 	}
@@ -172,26 +177,27 @@ public class ReportModel {
 	}
 
 	// TODO Remove this method after the next release
-	public static void processReportParameters(Report report) throws ReportValidationException {
+	@SuppressWarnings("deprecation")
+	public void processReportParameters(Report report) throws ReportValidationException {
 		if (!isBackwardsCompatibilityOn()) {
 			return;
 		}
 
-		LegacyReportConverter.fillParameters(report);
+		legacyReportConverter.fillParameters(report);
 	}
 
 	// TODO: Remove this method after the next release
-	private static void setReportParameters(Report report) {
+	@SuppressWarnings("deprecation")
+	private void setReportParameters(Report report) {
 		if (!isBackwardsCompatibilityOn()) {
 			return;
 		}
 
-		JSONObject json = LegacyReportConverter.toJSON(report);
+		JSONObject json = legacyReportConverter.toJSON(report);
 		report.setParameters(json.toString());
 	}
 
-	private static boolean isBackwardsCompatibilityOn() {
-		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+	private boolean isBackwardsCompatibilityOn() {
 		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY);
 	}
 
@@ -247,6 +253,7 @@ public class ReportModel {
 		return reports;
 	}
 
+	@SuppressWarnings("deprecation")
 	public List<ReportUser> getReportUsersForMyReports(String sort, String direction, Permissions permissions)
 			throws IllegalArgumentException {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();

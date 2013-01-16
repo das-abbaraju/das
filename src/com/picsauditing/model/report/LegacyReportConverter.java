@@ -1,6 +1,13 @@
 package com.picsauditing.model.report;
 
-import static com.picsauditing.report.ReportJson.*;
+import static com.picsauditing.report.ReportJson.LEGACY_METHOD;
+import static com.picsauditing.report.ReportJson.LEGACY_MODEL_TYPE;
+import static com.picsauditing.report.ReportJson.LEGACY_REPORT_FILTER_EXPRESSION;
+import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
+import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
+import static com.picsauditing.report.ReportJson.REPORT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_SORTS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Column;
@@ -25,21 +33,22 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 // TODO Remove this method after the next release
 @SuppressWarnings("unchecked")
+@Deprecated
 public class LegacyReportConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(LegacyReportConverter.class);
 
-	private static final ReportModel reportModel = SpringUtils.getBean("ReportModel");
-	
+	@Autowired
+	private ReportModel reportModel;
+
 	// From Report to JSON
-	public static JSONObject toJSON(Report report) {
+	public JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
-		
+
 		convertReportLevelData(report, json);
 		convertColumnsToJson(report, json);
 		convertFiltersToJson(report, json);
@@ -48,13 +57,13 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	private static void convertReportLevelData(Report report, JSONObject json) {
+	private void convertReportLevelData(Report report, JSONObject json) {
 		// json.put("id", report.getId());
 		json.put("name", report.getName());
 		if (report.getModelType() != null) {
 			json.put("modelType", report.getModelType().toString());
 		}
-		
+
 		json.put("description", report.getDescription());
 
 		if (Strings.isNotEmpty(report.getFilterExpression())) {
@@ -62,7 +71,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static void convertColumnsToJson(Report report, JSONObject json) {
+	private void convertColumnsToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
 		json.put(REPORT_COLUMNS, jsonArray);
 		for (Column obj : report.getColumns()) {
@@ -70,7 +79,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static void convertFiltersToJson(Report report, JSONObject json) {
+	private void convertFiltersToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
 		json.put(REPORT_FILTERS, jsonArray);
 		for (Filter obj : report.getFilters()) {
@@ -78,7 +87,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static void convertSortsToJson(Report report, JSONObject json) {
+	private void convertSortsToJson(Report report, JSONObject json) {
 		JSONArray jsonArray = new JSONArray();
 		json.put(REPORT_SORTS, jsonArray);
 		for (Sort obj : report.getSorts()) {
@@ -86,7 +95,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static JSONObject toJSONBase(ReportElement obj) {
+	private JSONObject toJSONBase(ReportElement obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		// This is a legacy feature only used on the old ExtJS
@@ -95,16 +104,16 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	private static JSONObject toJSON(Column obj) {
+	private JSONObject toJSON(Column obj) {
 		JSONObject json = toJSONBase(obj);
 		if (obj.getSqlFunction() != null) {
 			json.put("method", obj.getSqlFunction().toString());
 		}
-		
+
 		return json;
 	}
 
-	public static JSONObject toJSON(Field obj) {
+	public JSONObject toJSON(Field obj) {
 		if (obj == null) {
 			obj = new Field("Missing", "", FieldType.String);
 		}
@@ -128,7 +137,7 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	private static JSONObject toJSON(Filter obj) {
+	private JSONObject toJSON(Filter obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		json.put("operator", obj.getOperator().toString());
@@ -153,7 +162,7 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	private static JSONObject toJSON(Sort obj) {
+	private JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		if (!obj.isAscending())
@@ -164,43 +173,43 @@ public class LegacyReportConverter {
 
 	// From JSON to Report
 
-	public static void fillParameters(Report report) throws ReportValidationException {
+	public void fillParameters(Report report) throws ReportValidationException {
 		if (report.getParameters() == null) {
 			throw new ReportValidationException("Your parameters should not be null.");
 		}
-		
+
 		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
-		
+
 		report.setFilterExpression(parseFilterExpression(json));
 		setReportModelType(report, json);
 		report.setName((String) json.get(REPORT_NAME));
 		report.setDescription((String) json.get(REPORT_DESCRIPTION));
 
+		// should reconsider this, since this is a circular dependency
 		reportModel.removeReportElements(report);
 		addColumns(json, report);
 		addFilters(json, report);
-		addSorts(json, report);		
+		addSorts(json, report);
 		reportModel.saveReportElements(report);
 	}
-	
-	@SuppressWarnings("deprecation")
-	private static void setReportModelType(Report report, JSONObject json) {
+
+	private void setReportModelType(Report report, JSONObject json) {
 		String modelTypeValue = (String) json.get(LEGACY_MODEL_TYPE);
 		if (Strings.isNotEmpty(modelTypeValue)) {
 			report.setModelType(ModelType.valueOf(modelTypeValue));
 		}
 	}
 
-	private static String parseFilterExpression(JSONObject json) {
+	private String parseFilterExpression(JSONObject json) {
 		String filterExpressionFromJson = (String) json.get(LEGACY_REPORT_FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson)) {
 			return filterExpressionFromJson;
 		}
-		
+
 		return null;
 	}
 
-	private static void addColumns(JSONObject json, Report report) {
+	private void addColumns(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_COLUMNS);
 		if (jsonArray == null)
 			return;
@@ -214,7 +223,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static void addFilters(JSONObject json, Report report) {
+	private void addFilters(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_FILTERS);
 		if (jsonArray == null)
 			return;
@@ -228,7 +237,7 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private static void addSorts(JSONObject json, Report report) {
+	private void addSorts(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_SORTS);
 		if (jsonArray == null)
 			return;
@@ -242,13 +251,13 @@ public class LegacyReportConverter {
 		}
 	}
 
-	public static Column toColumn(JSONObject json) {
+	public Column toColumn(JSONObject json) {
 		Column column = new Column();
 		toElementFromJSON(json, column);
 		return column;
 	}
 
-	public static Sort toSort(JSONObject json) {
+	public Sort toSort(JSONObject json) {
 		if (json == null)
 			return null;
 
@@ -259,16 +268,16 @@ public class LegacyReportConverter {
 		return sort;
 	}
 
-	private static boolean isAscending(JSONObject json) {
+	private boolean isAscending(JSONObject json) {
 		String direction = (String) json.get("direction");
 		if (direction != null && direction.equals("DESC")) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
-	public static Filter toFilter(JSONObject json) {
+	public Filter toFilter(JSONObject json) {
 		if (json == null) {
 			return null;
 		}
@@ -281,17 +290,16 @@ public class LegacyReportConverter {
 		return filter;
 	}
 
-	@SuppressWarnings("deprecation")
-	private static void toElementFromJSON(JSONObject json, ReportElement reportElement) {
-		reportElement.setName((String) json.get("name"));		
-		
+	private void toElementFromJSON(JSONObject json, ReportElement reportElement) {
+		reportElement.setName((String) json.get("name"));
+
 		String methodName = (String) json.get(LEGACY_METHOD);
 		if (Strings.isNotEmpty(methodName)) {
 			reportElement.setSqlFunction(SqlFunction.valueOf(methodName));
 		}
 	}
 
-	private static QueryFilterOperator parseOperator(JSONObject json) {
+	private QueryFilterOperator parseOperator(JSONObject json) {
 		String object = (String) json.get("operator");
 		if (Strings.isEmpty(object)) {
 			return QueryFilterOperator.Equals;
@@ -300,7 +308,7 @@ public class LegacyReportConverter {
 		return QueryFilterOperator.valueOf(object.toString());
 	}
 
-	private static List<String> parseValues(JSONObject json) {
+	private List<String> parseValues(JSONObject json) {
 		JSONArray valuesJsonArray = null;
 		List<String> values = new ArrayList<String>();
 
@@ -338,13 +346,12 @@ public class LegacyReportConverter {
 		return values;
 	}
 
-	private static Field parseAdvancedFilter(JSONObject json) {
+	private Field parseAdvancedFilter(JSONObject json) {
 		String advancedFilterOption = (String) json.get(Filter.FIELD_COMPARE);
-		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false"))
+		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false")) {
 			return null;
+		}
 
 		return new Field(advancedFilterOption.toString());
 	}
-
-	// END FROM JSON to Filters ///
 }
