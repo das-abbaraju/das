@@ -2,7 +2,7 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
@@ -25,7 +25,7 @@ public class InvoiceServiceTest {
 	private InvoiceService invoiceService = new InvoiceService();
 	@Mock private TaxService taxService = new TaxService();
 	@Mock private InvoiceDAO invoiceDAO = new InvoiceDAO();
-	@Mock private InvoiceFeeDAO invoiceFeeDAO = new InvoiceFeeDAO();
+	@Mock private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
 	@Mock private Invoice invoice;
 
 	@Before
@@ -33,7 +33,7 @@ public class InvoiceServiceTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(invoiceService, "taxService", taxService);
 		Whitebox.setInternalState(invoiceService, "invoiceDAO", invoiceDAO);
-		Whitebox.setInternalState(invoiceService, "invoiceFeeDAO", invoiceFeeDAO);
+		Whitebox.setInternalState(invoiceService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
 		setupInvoiceFeeCountries();
 	}
 
@@ -85,7 +85,7 @@ public class InvoiceServiceTest {
 	public void testGetCanadianTaxInvoiceFeeForProvince() throws Exception {
 		resetNowTime();
 		CountrySubdivision alberta = new CountrySubdivision("CA-AB");
-		when(invoiceFeeDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(null);
+		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(null);
 
 		invoiceService.getCanadianTaxInvoiceFeeForProvince(alberta);
 	}
@@ -105,7 +105,7 @@ public class InvoiceServiceTest {
 		invoiceFee.setInvoiceFeeCountries(invoiceFeeCountries);
 
 		CountrySubdivision alberta = new CountrySubdivision("CA-AB");
-		when(invoiceFeeDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(invoiceFeeCountriesForAlberta);
+		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(invoiceFeeCountriesForAlberta);
 
 	}
 
