@@ -4,9 +4,6 @@
 <struts>
 	<package name="com.picsauditing.actions.rest.api" extends="com.picsauditing">
 
-		<action name="RestApiContractorList" class="com.picsauditing.actions.rest.api.ContractorList">
-		</action>
-
 		<action name="DataFeed" class="com.picsauditing.actions.rest.api.DataFeed">
 		</action>
 
