@@ -22,12 +22,13 @@ import com.picsauditing.report.tables.FieldImportance;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report")
-//@EntityListeners(value = Report.class)
 public class Report extends BaseTable {
 
 	private ModelType modelType;
 	private String name;
 	private int numTimesFavorited;
+	
+	@Deprecated
 	private String parameters;
 	private String description;
 
@@ -39,8 +40,6 @@ public class Report extends BaseTable {
 	private boolean editable;
 	private boolean favorite;
 	
-	private static final Logger logger = LoggerFactory.getLogger(Report.class);
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@ReportField(importance = FieldImportance.Required, width = 200)
@@ -62,11 +61,13 @@ public class Report extends BaseTable {
 		this.name = name;
 	}
 
+	@Deprecated
 	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getParameters() {
 		return parameters;
 	}
 
+	@Deprecated
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
@@ -81,7 +82,6 @@ public class Report extends BaseTable {
 		this.numTimesFavorited = numTimesFavorited;
 	}
 
-	// TODO Make this transient
 	public String getDescription() {
 		return description;
 	}

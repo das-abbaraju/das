@@ -2,12 +2,14 @@ package com.picsauditing.actions.report;
 
 import static com.picsauditing.report.ReportJson.*;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.report.ReportToExtJSConverter;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,7 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -60,19 +64,20 @@ public class ReportApi extends PicsApiSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
+	@SuppressWarnings("deprecation")
 	protected void initialize() throws Exception {
 		logger.debug("initializing report {}", report.getId());
-		
+
 		reportModel.processReportParameters(report);
 		ReportModel.validate(report);
 		reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
 		// FIXME: This is a problem that will cause a Ninja save that the refresh above
 		//        was fixing
-		if (!StringUtils.isEmpty(reportParameters)) {
+		if (StringUtils.isNotEmpty(reportParameters)) {
 			report.setParameters(reportParameters);
 		}
-		
+
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
@@ -117,7 +122,7 @@ public class ReportApi extends PicsApiSupport {
 		json.put("functions", ReportUtil.convertTranslatedFunctionstoJson(map));
 		return SUCCESS;
 	}
-	
+
 	private boolean includeSql() {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
@@ -212,6 +217,55 @@ public class ReportApi extends PicsApiSupport {
 	protected void writeJsonError(String message) {
 		json.put(ReportJson.EXT_JS_SUCCESS, false);
 		json.put(ReportJson.EXT_JS_MESSAGE, message);
+	}
+
+	private JSONObject getJsonFromRequestPayload() {
+		JSONObject jsonObject = new JSONObject();
+		HttpServletRequest request = getRequest();
+		if (request == null) {
+			return jsonObject;
+		}
+
+		BufferedReader bufferedReader = null;
+		try {
+			jsonObject = parseJsonFromRequest(bufferedReader, request);
+		} catch (Exception e) {
+			logger.error("There was an error parsing the JSON from the request", e);
+		} finally {
+			closeBufferedReader(bufferedReader);
+		}
+
+		return jsonObject;
+	}
+
+	private void closeBufferedReader(BufferedReader bufferedReader) {
+		try {
+			if (bufferedReader != null) {
+				bufferedReader.close();
+			}
+		} catch (Exception e) {
+			logger.error("There was an error closing the bufferedReader", e);
+		}
+	}
+
+	private JSONObject parseJsonFromRequest(BufferedReader bufferedReader, HttpServletRequest request) throws Exception {
+		JSONObject jsonObject = new JSONObject();
+		bufferedReader = request.getReader();
+		if (bufferedReader == null) {
+			return jsonObject;
+		}
+
+		StringBuilder jsonString = new StringBuilder();
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+			jsonString.append(line);
+		}
+
+		if (Strings.isEmpty(jsonString.toString())) {
+			return jsonObject;
+		}
+
+		return (JSONObject) JSONValue.parse(jsonString.toString());
 	}
 
 	public Report getReport() {

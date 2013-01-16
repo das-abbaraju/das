@@ -124,11 +124,13 @@ public class LegacyReportConverter {
 		json.put("text", obj.getText());
 		json.put("help", obj.getHelp());
 
-		if (obj.getWidth() > 0)
+		if (obj.getWidth() > 0) {
 			json.put("width", obj.getWidth());
+		}
 
-		if (!Strings.isEmpty(obj.getUrl()))
+		if (!Strings.isEmpty(obj.getUrl())) {
 			json.put("url", obj.getUrl());
+		}
 
 		json.put("fieldType", obj.getType().toString());
 		json.put("filterType", obj.getType().getFilterType().toString());
@@ -156,8 +158,9 @@ public class LegacyReportConverter {
 			}
 		}
 
-		if (obj.getFieldForComparison() != null)
+		if (obj.getFieldForComparison() != null) {
 			json.put(Filter.FIELD_COMPARE, obj.getFieldForComparison().getName());
+		}
 
 		return json;
 	}
@@ -165,8 +168,9 @@ public class LegacyReportConverter {
 	private JSONObject toJSON(Sort obj) {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
-		if (!obj.isAscending())
+		if (!obj.isAscending()) {
 			json.put("direction", Sort.DESCENDING);
+		}
 
 		return json;
 	}
@@ -211,8 +215,9 @@ public class LegacyReportConverter {
 
 	private void addColumns(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_COLUMNS);
-		if (jsonArray == null)
+		if (jsonArray == null) {
 			return;
+		}
 
 		for (Object object : jsonArray) {
 			if (object != null) {
@@ -225,8 +230,9 @@ public class LegacyReportConverter {
 
 	private void addFilters(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_FILTERS);
-		if (jsonArray == null)
+		if (jsonArray == null) {
 			return;
+		}
 
 		for (Object object : jsonArray) {
 			if (object != null) {
@@ -239,8 +245,9 @@ public class LegacyReportConverter {
 
 	private void addSorts(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_SORTS);
-		if (jsonArray == null)
+		if (jsonArray == null) {
 			return;
+		}
 
 		for (Object object : jsonArray) {
 			if (object != null) {
@@ -258,8 +265,9 @@ public class LegacyReportConverter {
 	}
 
 	public Sort toSort(JSONObject json) {
-		if (json == null)
+		if (json == null) {
 			return null;
+		}
 
 		Sort sort = new Sort();
 		toElementFromJSON(json, sort);
@@ -327,16 +335,19 @@ public class LegacyReportConverter {
 		} else {
 			String value = (String) json.get("value");
 
-			if (Strings.isEmpty(value))
+			if (Strings.isEmpty(value)) {
 				return values;
+			}
 
 			if (value.contains(",")) {
 				logger.warn("Old style filter value found with commas separating multiple values. "
 						+ "Until we phase out the old code, we need this for backwards compatibility");
 
 				String[] valueSplit = value.split(", ");
-				if (valueSplit.length == 1 && value.contains(","))
+				if (valueSplit.length == 1 && value.contains(",")) {
 					valueSplit = value.split(",");
+				}
+
 				values.addAll(Arrays.asList(valueSplit));
 			} else {
 				values.add(value);

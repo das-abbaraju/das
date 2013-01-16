@@ -48,8 +48,8 @@ public class Filter extends ReportElement {
 		this.operator = operator;
 	}
 
-	@Transient
 	// TODO add in a String value field
+	@Transient
 	public List<String> getValues() {
 		return values;
 	}
@@ -88,8 +88,9 @@ public class Filter extends ReportElement {
 	}
 
 	private String toValueSql() throws ReportValidationException {
-		if (operator == null)
+		if (operator == null) {
 			throw new ReportValidationException("missing operator for field " + name);
+		}
 
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();
@@ -123,6 +124,7 @@ public class Filter extends ReportElement {
 				return true + Strings.EMPTY_STRING;
 			if (filterValue.equalsIgnoreCase("Yes"))
 				return true + Strings.EMPTY_STRING;
+			
 			return false + Strings.EMPTY_STRING;
 		}
 
@@ -139,22 +141,9 @@ public class Filter extends ReportElement {
 			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
 		}
 
-/*
-			if (NumberUtils.isDigits(filterValue)) {
-				return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
-			}
-*/
-
 		if (filterType == FilterType.Float) {
 			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 		}
-//		return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
-			
-//			filterValue = Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
-			// Make sure we incorporate the filter strategy when using function
-			// dates
-			// return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
-//			return filterValue;
 
 		if (filterType == FilterType.String) {
 			filterValue = Strings.escapeQuotes(filterValue);
@@ -192,22 +181,23 @@ public class Filter extends ReportElement {
 		return field.getType().getFilterType();
 	}
 
-	@Transient
-	private DisplayType getActualFieldTypeForFilter() {
-		DisplayType fieldType = field.getType().getDisplayType();
-		if (hasMethodWithDifferentFieldType()) {
-			fieldType = sqlFunction.getDisplayType();
-		}
-		return fieldType;
-	}
+//	@Transient
+//	private DisplayType getActualFieldTypeForFilter() {
+//		DisplayType fieldType = field.getType().getDisplayType();
+//		if (hasMethodWithDifferentFieldType()) {
+//			fieldType = sqlFunction.getDisplayType();
+//		}
+//		return fieldType;
+//	}
 
-	private boolean hasMethodWithDifferentFieldType() {
-		if (sqlFunction == null || sqlFunction.getDisplayType() == null)
-			return false;
+//	private boolean hasMethodWithDifferentFieldType() {
+//		if (sqlFunction == null || sqlFunction.getDisplayType() == null)
+//			return false;
+//
+//		return true;
+//	}
 
-		return true;
-	}
-
+	// TODO: Filter should not be validating itself
 	@Transient
 	public boolean isValid() {
 		if (field == null)

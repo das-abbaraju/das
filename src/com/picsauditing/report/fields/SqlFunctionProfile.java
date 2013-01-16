@@ -2,7 +2,9 @@ package com.picsauditing.report.fields;
 
 import java.util.HashSet;
 
+@SuppressWarnings("serial")
 public enum SqlFunctionProfile {
+
 	Boolean(new HashSet<SqlFunctionGroup>(){{
 		add(SqlFunctionGroup.Aggregate);
 	}}),

@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "report_sort")
 public class Sort extends ReportElement {
@@ -26,7 +25,8 @@ public class Sort extends ReportElement {
 	}
 
 	// We might want to consider moving this to QueryField
-	public String toSQL(Map<String, Field> availableFields) {
+	@Deprecated
+	private String toSQL(Map<String, Field> availableFields) {
 		String fieldSQL = availableFields.get(name).getDatabaseColumnName();
 		return fieldSQL;
 	}

@@ -2,6 +2,7 @@ package com.picsauditing.report.fields;
 
 import java.util.HashSet;
 
+@SuppressWarnings("serial")
 public enum SqlFunctionGroup {
 	Aggregate(new HashSet<SqlFunction>(){{
 		add(SqlFunction.Count);
