@@ -23,6 +23,7 @@ public interface FeatureToggle {
 	String TOGGLE_CSR_SINGLE_ASSIGNMENT = "Toggle.BackgroundProcesses.Csr_SingleAssignment";
 	String TOGGLE_CANONICAL_TIMEZONES = "Toggle.Canonical_Timezone";
 	String TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY = "Toggle.DR_Persistence";
+	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
 
 	boolean isFeatureEnabled(String toggleName);
 

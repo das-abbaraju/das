@@ -1,5 +1,5 @@
 /*
-Copyright(c) 2012 PICS, Inc.
+Copyright(c) 2013 Company Name
 */
 /**
  * Base class that provides a common interface for publishing events. Subclasses are expected to to have a property
@@ -66475,33 +66475,6 @@ Ext.define('PICS.ux.util.FilterMultipleColumn', {
         };
     }
 });
-Ext.define('PICS.view.report.filter.FilterToolbar', {
-    extend: 'Ext.toolbar.Toolbar',
-    alias: ['widget.reportfiltertoolbar'],
-
-    border: 0,
-    height: 25,
-    id: 'report_filter_toolbar',
-    items: [{
-        action: 'show-filter-formula',
-        border: 0,
-        cls: 'show-filter-formula',
-        height: 23,
-        text: 'Filter Formula'
-    }],
-    layout: {
-        type: 'vbox',
-        align: 'center'
-    }
-});
-Ext.define('PICS.view.report.report.ReportColumnTooltip', {
-    extend: 'Ext.tip.ToolTip',
-    alias: 'widget.reportcolumntooltip',
-    
-    anchor: 'bottom',
-    showDelay: 0,
-    tpl: '<div><h3>{text}</h3><p>{help}</p></div>'
-});
 Ext.define('PICS.view.report.alert-message.AlertMessage', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportalertmessage'],
@@ -66551,6 +66524,25 @@ Ext.define('PICS.view.report.filter.FilterPlaceholder', {
         width: 20
     }],
     margin: '0 10 0 0'
+});
+Ext.define('PICS.view.report.filter.FilterToolbar', {
+    extend: 'Ext.toolbar.Toolbar',
+    alias: ['widget.reportfiltertoolbar'],
+
+    border: 0,
+    height: 25,
+    id: 'report_filter_toolbar',
+    items: [{
+        action: 'show-filter-formula',
+        border: 0,
+        cls: 'show-filter-formula',
+        height: 23,
+        text: 'Filter Formula'
+    }],
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    }
 });
 Ext.define('PICS.view.report.header.ReportSummary', {
     extend: 'Ext.panel.Panel',
@@ -66848,7 +66840,7 @@ Ext.define('Ext.grid.ColumnLayout', {
     }
 });
 
-Ext.define('PICS.view.report.ReportModal', {
+Ext.define('PICS.view.report.modal.ReportModal', {
     extend: 'Ext.window.Window',
 
     initComponent: function () {
@@ -66864,7 +66856,6 @@ Ext.define('PICS.view.report.ReportModal', {
         });
     }
 });
-
 /**
  * A feature is a type of plugin that is specific to the {@link Ext.grid.Panel}. It provides several
  * hooks that allows the developer to inject additional functionality at certain points throughout the 
@@ -68786,43 +68777,6 @@ Ext.define('Ext.layout.container.Border', {
     Ext.apply(props.vert, methods);
 });
 
-Ext.define('PICS.view.report.filter.FilterOptions', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilteroptions'],
-
-    requires: [
-        'PICS.view.report.filter.FilterHeader',
-        'PICS.view.report.filter.FilterPlaceholder',
-        'PICS.view.report.filter.FilterToolbar'
-    ],
-
-    autoScroll: true,
-    bodyBorder: false,
-    border: 0,
-    collapsed: true,
-    collapsible: true,
-    dockedItems: [{
-        xtype: 'reportfiltertoolbar',
-        dock: 'top'
-    }, {
-        bodyBorder: false,
-        border: 0,
-        dock: 'bottom',
-        height: 10,
-        id: 'report_filter_options_footer'
-    }],
-    floatable: false,
-    header: {
-        xtype: 'reportfilterheader'
-    },
-    id: 'report_filter_options',
-    margin: '0 20 0 0',
-    placeholder: {
-        xtype: 'reportfilterplaceholder'
-    },
-    title: 'Filter',
-    width: 320
-});
 Ext.define('PICS.view.report.header.ReportHeader', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportheader'],
@@ -68844,8 +68798,8 @@ Ext.define('PICS.view.report.header.ReportHeader', {
     }],
     layout: 'border'
 });
-Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
-    extend: 'PICS.view.report.ReportModal',
+Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: 'widget.reportcolumnfunctionmodal',
 
     border: 0,
@@ -68863,9 +68817,8 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
     width: 300,
 
     initComponent: function () {
-        if (!this.column
-                || this.column.modelName != 'PICS.model.report.Column') {
-            Ext.Error.raise('Invalid column record');
+        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
         }
 
         this.callParent(arguments);
@@ -68930,12 +68883,12 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'functionModal',
+        ref: 'columnFunctionModal',
         selector: 'reportcolumnfunctionmodal'
     }],
 
     views: [
-        'PICS.view.report.column-function.ColumnFunctionModal'
+        'PICS.view.report.modal.column-function.ColumnFunctionModal'
     ],
 
     init: function () {
@@ -68952,28 +68905,27 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     },
 
     onButtonClick: function (cmp, event, eOpts) {
-        var modal = this.getFunctionModal(),
-            column = modal.column,
+        var column_function_modal = this.getColumnFunctionModal(),
+            column = column_function_modal.column,
             action = cmp.action;
 
         // set the method on the column store - column
         column.set('method', action);
 
+        // destroy modal for next use (generate with correct column)
+        column_function_modal.destroy();
+        
         // refresh report
         this.application.fireEvent('refreshreport');
-
-        // destroy modal for next use (generate with correct column)
-        modal.destroy();
     },
 
     // show the column function modal , but attach the specific column store - column your modifying
     showColumnFunctionModal: function (column) {
-        var modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
-                column: column
-            }),
-            that = this;
+        var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+            column: column
+        });
 
-        modal.show();
+        column_function_modal.show();
     }
 });
 /**
@@ -71785,215 +71737,13 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
         });
     }
 });
-/**
- * A mixin for {@link Ext.container.Container} components that are likely to have form fields in their
- * items subtree. Adds the following capabilities:
- *
- * - Methods for handling the addition and removal of {@link Ext.form.Labelable} and {@link Ext.form.field.Field}
- *   instances at any depth within the container.
- * - Events ({@link #fieldvaliditychange} and {@link #fielderrorchange}) for handling changes to the state
- *   of individual fields at the container level.
- * - Automatic application of {@link #fieldDefaults} config properties to each field added within the
- *   container, to facilitate uniform configuration of all fields.
- *
- * This mixin is primarily for internal use by {@link Ext.form.Panel} and {@link Ext.form.FieldContainer},
- * and should not normally need to be used directly. @docauthor Jason Johnston <jason@sencha.com>
- */
-Ext.define('Ext.form.FieldAncestor', {
-
-    /**
-     * @cfg {Object} fieldDefaults
-     * If specified, the properties in this object are used as default config values for each {@link Ext.form.Labelable}
-     * instance (e.g. {@link Ext.form.field.Base} or {@link Ext.form.FieldContainer}) that is added as a descendant of
-     * this container. Corresponding values specified in an individual field's own configuration, or from the {@link
-     * Ext.container.Container#defaults defaults config} of its parent container, will take precedence. See the
-     * documentation for {@link Ext.form.Labelable} to see what config options may be specified in the fieldDefaults.
-     *
-     * Example:
-     *
-     *     new Ext.form.Panel({
-     *         fieldDefaults: {
-     *             labelAlign: 'left',
-     *             labelWidth: 100
-     *         },
-     *         items: [{
-     *             xtype: 'fieldset',
-     *             defaults: {
-     *                 labelAlign: 'top'
-     *             },
-     *             items: [{
-     *                 name: 'field1'
-     *             }, {
-     *                 name: 'field2'
-     *             }]
-     *         }, {
-     *             xtype: 'fieldset',
-     *             items: [{
-     *                 name: 'field3',
-     *                 labelWidth: 150
-     *             }, {
-     *                 name: 'field4'
-     *             }]
-     *         }]
-     *     });
-     *
-     * In this example, field1 and field2 will get labelAlign:'top' (from the fieldset's defaults) and labelWidth:100
-     * (from fieldDefaults), field3 and field4 will both get labelAlign:'left' (from fieldDefaults and field3 will use
-     * the labelWidth:150 from its own config.
-     */
-
-
-    /**
-     * Initializes the FieldAncestor's state; this must be called from the initComponent method of any components
-     * importing this mixin.
-     * @protected
-     */
-    initFieldAncestor: function() {
-        var me = this,
-            onSubtreeChange = me.onFieldAncestorSubtreeChange;
-
-        me.addEvents(
-            /**
-             * @event fieldvaliditychange
-             * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
-             * container changes.
-             * @param {Ext.form.FieldAncestor} this
-             * @param {Ext.form.Labelable} The Field instance whose validity changed
-             * @param {String} isValid The field's new validity state
-             */
-            'fieldvaliditychange',
-
-            /**
-             * @event fielderrorchange
-             * Fires when the active error message is changed for any one of the {@link Ext.form.Labelable} instances
-             * within this container.
-             * @param {Ext.form.FieldAncestor} this
-             * @param {Ext.form.Labelable} The Labelable instance whose active error was changed
-             * @param {String} error The active error message
-             */
-            'fielderrorchange'
-        );
-
-        // Catch addition and removal of descendant fields
-        me.on('add', onSubtreeChange, me);
-        me.on('remove', onSubtreeChange, me);
-
-        me.initFieldDefaults();
-    },
-
-    /**
-     * @private Initialize the {@link #fieldDefaults} object
-     */
-    initFieldDefaults: function() {
-        if (!this.fieldDefaults) {
-            this.fieldDefaults = {};
-        }
-    },
-
-    /**
-     * @private
-     * Handle the addition and removal of components in the FieldAncestor component's child tree.
-     */
-    onFieldAncestorSubtreeChange: function(parent, child) {
-        var me = this,
-            isAdding = !!child.ownerCt;
-
-        function handleCmp(cmp) {
-            var isLabelable = cmp.isFieldLabelable,
-                isField = cmp.isFormField;
-            if (isLabelable || isField) {
-                if (isLabelable) {
-                    me['onLabelable' + (isAdding ? 'Added' : 'Removed')](cmp);
-                }
-                if (isField) {
-                    me['onField' + (isAdding ? 'Added' : 'Removed')](cmp);
-                }
-            }
-            else if (cmp.isContainer) {
-                Ext.Array.forEach(cmp.getRefItems(), handleCmp);
-            }
-        }
-        handleCmp(child);
-    },
-
-    /**
-     * Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
-     * @param {Ext.form.Labelable} labelable The instance that was added
-     * @protected
-     */
-    onLabelableAdded: function(labelable) {
-        var me = this;
-
-        // buffer slightly to avoid excessive firing while sub-fields are changing en masse
-        me.mon(labelable, 'errorchange', me.handleFieldErrorChange, me, {buffer: 10});
-
-        labelable.setFieldDefaults(me.fieldDefaults);
-    },
-
-    /**
-     * Called when a {@link Ext.form.field.Field} instance is added to the container's subtree.
-     * @param {Ext.form.field.Field} field The field which was added
-     * @protected
-     */
-    onFieldAdded: function(field) {
-        var me = this;
-        me.mon(field, 'validitychange', me.handleFieldValidityChange, me);
-    },
-
-    /**
-     * Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
-     * @param {Ext.form.Labelable} labelable The instance that was removed
-     * @protected
-     */
-    onLabelableRemoved: function(labelable) {
-        var me = this;
-        me.mun(labelable, 'errorchange', me.handleFieldErrorChange, me);
-    },
-
-    /**
-     * Called when a {@link Ext.form.field.Field} instance is removed from the container's subtree.
-     * @param {Ext.form.field.Field} field The field which was removed
-     * @protected
-     */
-    onFieldRemoved: function(field) {
-        var me = this;
-        me.mun(field, 'validitychange', me.handleFieldValidityChange, me);
-    },
-
-    /**
-     * @private Handle validitychange events on sub-fields; invoke the aggregated event and method
-     */
-    handleFieldValidityChange: function(field, isValid) {
-        var me = this;
-        me.fireEvent('fieldvaliditychange', me, field, isValid);
-        me.onFieldValidityChange(field, isValid);
-    },
-
-    /**
-     * @private Handle errorchange events on sub-fields; invoke the aggregated event and method
-     */
-    handleFieldErrorChange: function(labelable, activeError) {
-        var me = this;
-        me.fireEvent('fielderrorchange', me, labelable, activeError);
-        me.onFieldErrorChange(labelable, activeError);
-    },
-
-    /**
-     * Fired when the validity of any field within the container changes.
-     * @param {Ext.form.field.Field} field The sub-field whose validity changed
-     * @param {Boolean} valid The new validity state
-     * @protected
-     */
-    onFieldValidityChange: Ext.emptyFn,
-
-    /**
-     * Fired when the error message of any field within the container changes.
-     * @param {Ext.form.Labelable} field The sub-field whose active error changed
-     * @param {String} error The new active error message
-     * @protected
-     */
-    onFieldErrorChange: Ext.emptyFn
-
+Ext.define('PICS.view.report.filter.FilterTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.filtertooltip',
+    
+    anchor: 'left',
+    showDelay: 0,
+    tpl: '<div><p>{help}</p></div>'
 });
 /**
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
@@ -72452,6 +72202,216 @@ Ext.define('Ext.toolbar.TextItem', {
             this.text = text;
         }
     }
+});
+/**
+ * A mixin for {@link Ext.container.Container} components that are likely to have form fields in their
+ * items subtree. Adds the following capabilities:
+ *
+ * - Methods for handling the addition and removal of {@link Ext.form.Labelable} and {@link Ext.form.field.Field}
+ *   instances at any depth within the container.
+ * - Events ({@link #fieldvaliditychange} and {@link #fielderrorchange}) for handling changes to the state
+ *   of individual fields at the container level.
+ * - Automatic application of {@link #fieldDefaults} config properties to each field added within the
+ *   container, to facilitate uniform configuration of all fields.
+ *
+ * This mixin is primarily for internal use by {@link Ext.form.Panel} and {@link Ext.form.FieldContainer},
+ * and should not normally need to be used directly. @docauthor Jason Johnston <jason@sencha.com>
+ */
+Ext.define('Ext.form.FieldAncestor', {
+
+    /**
+     * @cfg {Object} fieldDefaults
+     * If specified, the properties in this object are used as default config values for each {@link Ext.form.Labelable}
+     * instance (e.g. {@link Ext.form.field.Base} or {@link Ext.form.FieldContainer}) that is added as a descendant of
+     * this container. Corresponding values specified in an individual field's own configuration, or from the {@link
+     * Ext.container.Container#defaults defaults config} of its parent container, will take precedence. See the
+     * documentation for {@link Ext.form.Labelable} to see what config options may be specified in the fieldDefaults.
+     *
+     * Example:
+     *
+     *     new Ext.form.Panel({
+     *         fieldDefaults: {
+     *             labelAlign: 'left',
+     *             labelWidth: 100
+     *         },
+     *         items: [{
+     *             xtype: 'fieldset',
+     *             defaults: {
+     *                 labelAlign: 'top'
+     *             },
+     *             items: [{
+     *                 name: 'field1'
+     *             }, {
+     *                 name: 'field2'
+     *             }]
+     *         }, {
+     *             xtype: 'fieldset',
+     *             items: [{
+     *                 name: 'field3',
+     *                 labelWidth: 150
+     *             }, {
+     *                 name: 'field4'
+     *             }]
+     *         }]
+     *     });
+     *
+     * In this example, field1 and field2 will get labelAlign:'top' (from the fieldset's defaults) and labelWidth:100
+     * (from fieldDefaults), field3 and field4 will both get labelAlign:'left' (from fieldDefaults and field3 will use
+     * the labelWidth:150 from its own config.
+     */
+
+
+    /**
+     * Initializes the FieldAncestor's state; this must be called from the initComponent method of any components
+     * importing this mixin.
+     * @protected
+     */
+    initFieldAncestor: function() {
+        var me = this,
+            onSubtreeChange = me.onFieldAncestorSubtreeChange;
+
+        me.addEvents(
+            /**
+             * @event fieldvaliditychange
+             * Fires when the validity state of any one of the {@link Ext.form.field.Field} instances within this
+             * container changes.
+             * @param {Ext.form.FieldAncestor} this
+             * @param {Ext.form.Labelable} The Field instance whose validity changed
+             * @param {String} isValid The field's new validity state
+             */
+            'fieldvaliditychange',
+
+            /**
+             * @event fielderrorchange
+             * Fires when the active error message is changed for any one of the {@link Ext.form.Labelable} instances
+             * within this container.
+             * @param {Ext.form.FieldAncestor} this
+             * @param {Ext.form.Labelable} The Labelable instance whose active error was changed
+             * @param {String} error The active error message
+             */
+            'fielderrorchange'
+        );
+
+        // Catch addition and removal of descendant fields
+        me.on('add', onSubtreeChange, me);
+        me.on('remove', onSubtreeChange, me);
+
+        me.initFieldDefaults();
+    },
+
+    /**
+     * @private Initialize the {@link #fieldDefaults} object
+     */
+    initFieldDefaults: function() {
+        if (!this.fieldDefaults) {
+            this.fieldDefaults = {};
+        }
+    },
+
+    /**
+     * @private
+     * Handle the addition and removal of components in the FieldAncestor component's child tree.
+     */
+    onFieldAncestorSubtreeChange: function(parent, child) {
+        var me = this,
+            isAdding = !!child.ownerCt;
+
+        function handleCmp(cmp) {
+            var isLabelable = cmp.isFieldLabelable,
+                isField = cmp.isFormField;
+            if (isLabelable || isField) {
+                if (isLabelable) {
+                    me['onLabelable' + (isAdding ? 'Added' : 'Removed')](cmp);
+                }
+                if (isField) {
+                    me['onField' + (isAdding ? 'Added' : 'Removed')](cmp);
+                }
+            }
+            else if (cmp.isContainer) {
+                Ext.Array.forEach(cmp.getRefItems(), handleCmp);
+            }
+        }
+        handleCmp(child);
+    },
+
+    /**
+     * Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
+     * @param {Ext.form.Labelable} labelable The instance that was added
+     * @protected
+     */
+    onLabelableAdded: function(labelable) {
+        var me = this;
+
+        // buffer slightly to avoid excessive firing while sub-fields are changing en masse
+        me.mon(labelable, 'errorchange', me.handleFieldErrorChange, me, {buffer: 10});
+
+        labelable.setFieldDefaults(me.fieldDefaults);
+    },
+
+    /**
+     * Called when a {@link Ext.form.field.Field} instance is added to the container's subtree.
+     * @param {Ext.form.field.Field} field The field which was added
+     * @protected
+     */
+    onFieldAdded: function(field) {
+        var me = this;
+        me.mon(field, 'validitychange', me.handleFieldValidityChange, me);
+    },
+
+    /**
+     * Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
+     * @param {Ext.form.Labelable} labelable The instance that was removed
+     * @protected
+     */
+    onLabelableRemoved: function(labelable) {
+        var me = this;
+        me.mun(labelable, 'errorchange', me.handleFieldErrorChange, me);
+    },
+
+    /**
+     * Called when a {@link Ext.form.field.Field} instance is removed from the container's subtree.
+     * @param {Ext.form.field.Field} field The field which was removed
+     * @protected
+     */
+    onFieldRemoved: function(field) {
+        var me = this;
+        me.mun(field, 'validitychange', me.handleFieldValidityChange, me);
+    },
+
+    /**
+     * @private Handle validitychange events on sub-fields; invoke the aggregated event and method
+     */
+    handleFieldValidityChange: function(field, isValid) {
+        var me = this;
+        me.fireEvent('fieldvaliditychange', me, field, isValid);
+        me.onFieldValidityChange(field, isValid);
+    },
+
+    /**
+     * @private Handle errorchange events on sub-fields; invoke the aggregated event and method
+     */
+    handleFieldErrorChange: function(labelable, activeError) {
+        var me = this;
+        me.fireEvent('fielderrorchange', me, labelable, activeError);
+        me.onFieldErrorChange(labelable, activeError);
+    },
+
+    /**
+     * Fired when the validity of any field within the container changes.
+     * @param {Ext.form.field.Field} field The sub-field whose validity changed
+     * @param {Boolean} valid The new validity state
+     * @protected
+     */
+    onFieldValidityChange: Ext.emptyFn,
+
+    /**
+     * Fired when the error message of any field within the container changes.
+     * @param {Ext.form.Labelable} field The sub-field whose active error changed
+     * @param {String} error The new active error message
+     * @protected
+     */
+    onFieldErrorChange: Ext.emptyFn
+
 });
 /**
  * The AbstractPlugin class is the base class from which user-implemented plugins should inherit.
@@ -73271,314 +73231,6 @@ Ext.define('Ext.dd.DragZone', {
         if (this.containerScroll) {
             Ext.dd.ScrollManager.unregister(this.el);
         }
-    }
-});
-
-/**
- * The subclasses of this class provide actions to perform upon {@link Ext.form.Basic Form}s.
- *
- * Instances of this class are only created by a {@link Ext.form.Basic Form} when the Form needs to perform an action
- * such as submit or load. The Configuration options listed for this class are set through the Form's action methods:
- * {@link Ext.form.Basic#submit submit}, {@link Ext.form.Basic#load load} and {@link Ext.form.Basic#doAction doAction}
- *
- * The instance of Action which performed the action is passed to the success and failure callbacks of the Form's action
- * methods ({@link Ext.form.Basic#submit submit}, {@link Ext.form.Basic#load load} and
- * {@link Ext.form.Basic#doAction doAction}), and to the {@link Ext.form.Basic#actioncomplete actioncomplete} and
- * {@link Ext.form.Basic#actionfailed actionfailed} event handlers.
- */
-Ext.define('Ext.form.action.Action', {
-    alternateClassName: 'Ext.form.Action',
-
-    /**
-     * @cfg {Ext.form.Basic} form
-     * The {@link Ext.form.Basic BasicForm} instance that is invoking this Action. Required.
-     */
-
-    /**
-     * @cfg {String} url
-     * The URL that the Action is to invoke. Will default to the {@link Ext.form.Basic#url url} configured on the
-     * {@link #form}.
-     */
-
-    /**
-     * @cfg {Boolean} reset
-     * When set to **true**, causes the Form to be {@link Ext.form.Basic#reset reset} on Action success. If specified,
-     * this happens before the {@link #success} callback is called and before the Form's
-     * {@link Ext.form.Basic#actioncomplete actioncomplete} event fires.
-     */
-
-    /**
-     * @cfg {String} method
-     * The HTTP method to use to access the requested URL.
-     * Defaults to the {@link Ext.form.Basic#method BasicForm's method}, or 'POST' if not specified.
-     */
-
-    /**
-     * @cfg {Object/String} params
-     * Extra parameter values to pass. These are added to the Form's {@link Ext.form.Basic#baseParams} and passed to the
-     * specified URL along with the Form's input fields.
-     *
-     * Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode Ext.Object.toQueryString}.
-     */
-
-    /**
-     * @cfg {Object} headers
-     * Extra headers to be sent in the AJAX request for submit and load actions.
-     * See {@link Ext.data.proxy.Ajax#headers}.
-     */
-
-    /**
-     * @cfg {Number} timeout
-     * The number of seconds to wait for a server response before failing with the {@link #failureType} as
-     * {@link Ext.form.action.Action#CONNECT_FAILURE}. If not specified, defaults to the configured
-     * {@link Ext.form.Basic#timeout timeout} of the {@link #form}.
-     */
-
-    /**
-     * @cfg {Function} success
-     * The function to call when a valid success return packet is received.
-     * @cfg {Ext.form.Basic} success.form The form that requested the action
-     * @cfg {Ext.form.action.Action} success.action The Action class. The {@link #result} property of this object may
-     * be examined to perform custom postprocessing.
-     */
-
-    /**
-     * @cfg {Function} failure
-     * The function to call when a failure packet was received, or when an error ocurred in the Ajax communication.
-     * @cfg {Ext.form.Basic} failure.form The form that requested the action
-     * @cfg {Ext.form.action.Action} failure.action The Action class. If an Ajax error ocurred, the failure type will
-     * be in {@link #failureType}. The {@link #result} property of this object may be examined to perform custom
-     * postprocessing.
-     */
-
-    /**
-     * @cfg {Object} scope
-     * The scope in which to call the configured #success and #failure callback functions
-     * (the `this` reference for the callback functions).
-     */
-
-    /**
-     * @cfg {String} waitMsg
-     * The message to be displayed by a call to {@link Ext.window.MessageBox#wait} during the time the action is being
-     * processed.
-     */
-
-    /**
-     * @cfg {String} waitTitle
-     * The title to be displayed by a call to {@link Ext.window.MessageBox#wait} during the time the action is being
-     * processed.
-     */
-
-    /**
-     * @cfg {Boolean} submitEmptyText
-     * If set to true, the emptyText value will be sent with the form when it is submitted.
-     */
-    submitEmptyText : true,
-
-    /**
-     * @property {String} type
-     * The type of action this Action instance performs. Currently only "submit" and "load" are supported.
-     */
-
-    /**
-     * @property {String} failureType
-     * The type of failure detected will be one of these:
-     * {@link #CLIENT_INVALID}, {@link #SERVER_INVALID}, {@link #CONNECT_FAILURE}, or {@link #LOAD_FAILURE}.
-     *
-     * Usage:
-     *
-     *     var fp = new Ext.form.Panel({
-     *     ...
-     *     buttons: [{
-     *         text: 'Save',
-     *         formBind: true,
-     *         handler: function(){
-     *             if(fp.getForm().isValid()){
-     *                 fp.getForm().submit({
-     *                     url: 'form-submit.php',
-     *                     waitMsg: 'Submitting your data...',
-     *                     success: function(form, action){
-     *                         // server responded with success = true
-     *                         var result = action.{@link #result};
-     *                     },
-     *                     failure: function(form, action){
-     *                         if (action.{@link #failureType} === Ext.form.action.Action.CONNECT_FAILURE) {
-     *                             Ext.Msg.alert('Error',
-     *                                 'Status:'+action.{@link #response}.status+': '+
-     *                                 action.{@link #response}.statusText);
-     *                         }
-     *                         if (action.failureType === Ext.form.action.Action.SERVER_INVALID){
-     *                             // server responded with success = false
-     *                             Ext.Msg.alert('Invalid', action.{@link #result}.errormsg);
-     *                         }
-     *                     }
-     *                 });
-     *             }
-     *         }
-     *     },{
-     *         text: 'Reset',
-     *         handler: function(){
-     *             fp.getForm().reset();
-     *         }
-     *     }]
-     */
-
-    /**
-     * @property {Object} response
-     * The raw XMLHttpRequest object used to perform the action.
-     */
-
-    /**
-     * @property {Object} result
-     * The decoded response object containing a boolean `success` property and other, action-specific properties.
-     */
-
-    /**
-     * Creates new Action.
-     * @param {Object} [config] Config object.
-     */
-    constructor: function(config) {
-        if (config) {
-            Ext.apply(this, config);
-        }
-
-        // Normalize the params option to an Object
-        var params = config.params;
-        if (Ext.isString(params)) {
-            this.params = Ext.Object.fromQueryString(params);
-        }
-    },
-
-    /**
-     * @method
-     * Invokes this action using the current configuration.
-     */
-    run: Ext.emptyFn,
-
-    /**
-     * @private
-     * @method onSuccess
-     * Callback method that gets invoked when the action completes successfully. Must be implemented by subclasses.
-     * @param {Object} response
-     */
-
-    /**
-     * @private
-     * @method handleResponse
-     * Handles the raw response and builds a result object from it. Must be implemented by subclasses.
-     * @param {Object} response
-     */
-
-    /**
-     * @private
-     * Handles a failure response.
-     * @param {Object} response
-     */
-    onFailure : function(response){
-        this.response = response;
-        this.failureType = Ext.form.action.Action.CONNECT_FAILURE;
-        this.form.afterAction(this, false);
-    },
-
-    /**
-     * @private
-     * Validates that a response contains either responseText or responseXML and invokes
-     * {@link #handleResponse} to build the result object.
-     * @param {Object} response The raw response object.
-     * @return {Object/Boolean} The result object as built by handleResponse, or `true` if
-     * the response had empty responseText and responseXML.
-     */
-    processResponse : function(response){
-        this.response = response;
-        if (!response.responseText && !response.responseXML) {
-            return true;
-        }
-        return (this.result = this.handleResponse(response));
-    },
-
-    /**
-     * @private
-     * Build the URL for the AJAX request. Used by the standard AJAX submit and load actions.
-     * @return {String} The URL.
-     */
-    getUrl: function() {
-        return this.url || this.form.url;
-    },
-
-    /**
-     * @private
-     * Determine the HTTP method to be used for the request.
-     * @return {String} The HTTP method
-     */
-    getMethod: function() {
-        return (this.method || this.form.method || 'POST').toUpperCase();
-    },
-
-    /**
-     * @private
-     * Get the set of parameters specified in the BasicForm's baseParams and/or the params option.
-     * Items in params override items of the same name in baseParams.
-     * @return {Object} the full set of parameters
-     */
-    getParams: function() {
-        return Ext.apply({}, this.params, this.form.baseParams);
-    },
-
-    /**
-     * @private
-     * Creates a callback object.
-     */
-    createCallback: function() {
-        var me = this,
-            undef,
-            form = me.form;
-        return {
-            success: me.onSuccess,
-            failure: me.onFailure,
-            scope: me,
-            timeout: (this.timeout * 1000) || (form.timeout * 1000),
-            upload: form.fileUpload ? me.onSuccess : undef
-        };
-    },
-
-    statics: {
-        /**
-         * @property
-         * Failure type returned when client side validation of the Form fails thus aborting a submit action. Client
-         * side validation is performed unless {@link Ext.form.action.Submit#clientValidation} is explicitly set to
-         * false.
-         * @static
-         */
-        CLIENT_INVALID: 'client',
-
-        /**
-         * @property
-         * Failure type returned when server side processing fails and the {@link #result}'s `success` property is set to
-         * false.
-         *
-         * In the case of a form submission, field-specific error messages may be returned in the {@link #result}'s
-         * errors property.
-         * @static
-         */
-        SERVER_INVALID: 'server',
-
-        /**
-         * @property
-         * Failure type returned when a communication error happens when attempting to send a request to the remote
-         * server. The {@link #response} may be examined to provide further information.
-         * @static
-         */
-        CONNECT_FAILURE: 'connect',
-
-        /**
-         * @property
-         * Failure type returned when the response's `success` property is set to false, or no field values are returned
-         * in the response's data property.
-         * @static
-         */
-        LOAD_FAILURE: 'load'
-
-
     }
 });
 
@@ -75471,6 +75123,314 @@ Ext.define('Ext.layout.component.field.Trigger', {
 
         owner.triggerCell.setDisplayed(displayed);
         inputEl.dom.readOnly = readOnly;
+    }
+});
+
+/**
+ * The subclasses of this class provide actions to perform upon {@link Ext.form.Basic Form}s.
+ *
+ * Instances of this class are only created by a {@link Ext.form.Basic Form} when the Form needs to perform an action
+ * such as submit or load. The Configuration options listed for this class are set through the Form's action methods:
+ * {@link Ext.form.Basic#submit submit}, {@link Ext.form.Basic#load load} and {@link Ext.form.Basic#doAction doAction}
+ *
+ * The instance of Action which performed the action is passed to the success and failure callbacks of the Form's action
+ * methods ({@link Ext.form.Basic#submit submit}, {@link Ext.form.Basic#load load} and
+ * {@link Ext.form.Basic#doAction doAction}), and to the {@link Ext.form.Basic#actioncomplete actioncomplete} and
+ * {@link Ext.form.Basic#actionfailed actionfailed} event handlers.
+ */
+Ext.define('Ext.form.action.Action', {
+    alternateClassName: 'Ext.form.Action',
+
+    /**
+     * @cfg {Ext.form.Basic} form
+     * The {@link Ext.form.Basic BasicForm} instance that is invoking this Action. Required.
+     */
+
+    /**
+     * @cfg {String} url
+     * The URL that the Action is to invoke. Will default to the {@link Ext.form.Basic#url url} configured on the
+     * {@link #form}.
+     */
+
+    /**
+     * @cfg {Boolean} reset
+     * When set to **true**, causes the Form to be {@link Ext.form.Basic#reset reset} on Action success. If specified,
+     * this happens before the {@link #success} callback is called and before the Form's
+     * {@link Ext.form.Basic#actioncomplete actioncomplete} event fires.
+     */
+
+    /**
+     * @cfg {String} method
+     * The HTTP method to use to access the requested URL.
+     * Defaults to the {@link Ext.form.Basic#method BasicForm's method}, or 'POST' if not specified.
+     */
+
+    /**
+     * @cfg {Object/String} params
+     * Extra parameter values to pass. These are added to the Form's {@link Ext.form.Basic#baseParams} and passed to the
+     * specified URL along with the Form's input fields.
+     *
+     * Parameters are encoded as standard HTTP parameters using {@link Ext#urlEncode Ext.Object.toQueryString}.
+     */
+
+    /**
+     * @cfg {Object} headers
+     * Extra headers to be sent in the AJAX request for submit and load actions.
+     * See {@link Ext.data.proxy.Ajax#headers}.
+     */
+
+    /**
+     * @cfg {Number} timeout
+     * The number of seconds to wait for a server response before failing with the {@link #failureType} as
+     * {@link Ext.form.action.Action#CONNECT_FAILURE}. If not specified, defaults to the configured
+     * {@link Ext.form.Basic#timeout timeout} of the {@link #form}.
+     */
+
+    /**
+     * @cfg {Function} success
+     * The function to call when a valid success return packet is received.
+     * @cfg {Ext.form.Basic} success.form The form that requested the action
+     * @cfg {Ext.form.action.Action} success.action The Action class. The {@link #result} property of this object may
+     * be examined to perform custom postprocessing.
+     */
+
+    /**
+     * @cfg {Function} failure
+     * The function to call when a failure packet was received, or when an error ocurred in the Ajax communication.
+     * @cfg {Ext.form.Basic} failure.form The form that requested the action
+     * @cfg {Ext.form.action.Action} failure.action The Action class. If an Ajax error ocurred, the failure type will
+     * be in {@link #failureType}. The {@link #result} property of this object may be examined to perform custom
+     * postprocessing.
+     */
+
+    /**
+     * @cfg {Object} scope
+     * The scope in which to call the configured #success and #failure callback functions
+     * (the `this` reference for the callback functions).
+     */
+
+    /**
+     * @cfg {String} waitMsg
+     * The message to be displayed by a call to {@link Ext.window.MessageBox#wait} during the time the action is being
+     * processed.
+     */
+
+    /**
+     * @cfg {String} waitTitle
+     * The title to be displayed by a call to {@link Ext.window.MessageBox#wait} during the time the action is being
+     * processed.
+     */
+
+    /**
+     * @cfg {Boolean} submitEmptyText
+     * If set to true, the emptyText value will be sent with the form when it is submitted.
+     */
+    submitEmptyText : true,
+
+    /**
+     * @property {String} type
+     * The type of action this Action instance performs. Currently only "submit" and "load" are supported.
+     */
+
+    /**
+     * @property {String} failureType
+     * The type of failure detected will be one of these:
+     * {@link #CLIENT_INVALID}, {@link #SERVER_INVALID}, {@link #CONNECT_FAILURE}, or {@link #LOAD_FAILURE}.
+     *
+     * Usage:
+     *
+     *     var fp = new Ext.form.Panel({
+     *     ...
+     *     buttons: [{
+     *         text: 'Save',
+     *         formBind: true,
+     *         handler: function(){
+     *             if(fp.getForm().isValid()){
+     *                 fp.getForm().submit({
+     *                     url: 'form-submit.php',
+     *                     waitMsg: 'Submitting your data...',
+     *                     success: function(form, action){
+     *                         // server responded with success = true
+     *                         var result = action.{@link #result};
+     *                     },
+     *                     failure: function(form, action){
+     *                         if (action.{@link #failureType} === Ext.form.action.Action.CONNECT_FAILURE) {
+     *                             Ext.Msg.alert('Error',
+     *                                 'Status:'+action.{@link #response}.status+': '+
+     *                                 action.{@link #response}.statusText);
+     *                         }
+     *                         if (action.failureType === Ext.form.action.Action.SERVER_INVALID){
+     *                             // server responded with success = false
+     *                             Ext.Msg.alert('Invalid', action.{@link #result}.errormsg);
+     *                         }
+     *                     }
+     *                 });
+     *             }
+     *         }
+     *     },{
+     *         text: 'Reset',
+     *         handler: function(){
+     *             fp.getForm().reset();
+     *         }
+     *     }]
+     */
+
+    /**
+     * @property {Object} response
+     * The raw XMLHttpRequest object used to perform the action.
+     */
+
+    /**
+     * @property {Object} result
+     * The decoded response object containing a boolean `success` property and other, action-specific properties.
+     */
+
+    /**
+     * Creates new Action.
+     * @param {Object} [config] Config object.
+     */
+    constructor: function(config) {
+        if (config) {
+            Ext.apply(this, config);
+        }
+
+        // Normalize the params option to an Object
+        var params = config.params;
+        if (Ext.isString(params)) {
+            this.params = Ext.Object.fromQueryString(params);
+        }
+    },
+
+    /**
+     * @method
+     * Invokes this action using the current configuration.
+     */
+    run: Ext.emptyFn,
+
+    /**
+     * @private
+     * @method onSuccess
+     * Callback method that gets invoked when the action completes successfully. Must be implemented by subclasses.
+     * @param {Object} response
+     */
+
+    /**
+     * @private
+     * @method handleResponse
+     * Handles the raw response and builds a result object from it. Must be implemented by subclasses.
+     * @param {Object} response
+     */
+
+    /**
+     * @private
+     * Handles a failure response.
+     * @param {Object} response
+     */
+    onFailure : function(response){
+        this.response = response;
+        this.failureType = Ext.form.action.Action.CONNECT_FAILURE;
+        this.form.afterAction(this, false);
+    },
+
+    /**
+     * @private
+     * Validates that a response contains either responseText or responseXML and invokes
+     * {@link #handleResponse} to build the result object.
+     * @param {Object} response The raw response object.
+     * @return {Object/Boolean} The result object as built by handleResponse, or `true` if
+     * the response had empty responseText and responseXML.
+     */
+    processResponse : function(response){
+        this.response = response;
+        if (!response.responseText && !response.responseXML) {
+            return true;
+        }
+        return (this.result = this.handleResponse(response));
+    },
+
+    /**
+     * @private
+     * Build the URL for the AJAX request. Used by the standard AJAX submit and load actions.
+     * @return {String} The URL.
+     */
+    getUrl: function() {
+        return this.url || this.form.url;
+    },
+
+    /**
+     * @private
+     * Determine the HTTP method to be used for the request.
+     * @return {String} The HTTP method
+     */
+    getMethod: function() {
+        return (this.method || this.form.method || 'POST').toUpperCase();
+    },
+
+    /**
+     * @private
+     * Get the set of parameters specified in the BasicForm's baseParams and/or the params option.
+     * Items in params override items of the same name in baseParams.
+     * @return {Object} the full set of parameters
+     */
+    getParams: function() {
+        return Ext.apply({}, this.params, this.form.baseParams);
+    },
+
+    /**
+     * @private
+     * Creates a callback object.
+     */
+    createCallback: function() {
+        var me = this,
+            undef,
+            form = me.form;
+        return {
+            success: me.onSuccess,
+            failure: me.onFailure,
+            scope: me,
+            timeout: (this.timeout * 1000) || (form.timeout * 1000),
+            upload: form.fileUpload ? me.onSuccess : undef
+        };
+    },
+
+    statics: {
+        /**
+         * @property
+         * Failure type returned when client side validation of the Form fails thus aborting a submit action. Client
+         * side validation is performed unless {@link Ext.form.action.Submit#clientValidation} is explicitly set to
+         * false.
+         * @static
+         */
+        CLIENT_INVALID: 'client',
+
+        /**
+         * @property
+         * Failure type returned when server side processing fails and the {@link #result}'s `success` property is set to
+         * false.
+         *
+         * In the case of a form submission, field-specific error messages may be returned in the {@link #result}'s
+         * errors property.
+         * @static
+         */
+        SERVER_INVALID: 'server',
+
+        /**
+         * @property
+         * Failure type returned when a communication error happens when attempting to send a request to the remote
+         * server. The {@link #response} may be examined to provide further information.
+         * @static
+         */
+        CONNECT_FAILURE: 'connect',
+
+        /**
+         * @property
+         * Failure type returned when the response's `success` property is set to false, or no field values are returned
+         * in the response's data property.
+         * @static
+         */
+        LOAD_FAILURE: 'load'
+
+
     }
 });
 
@@ -77478,389 +77438,6 @@ Ext.define('Ext.grid.header.DragZone', {
     
     enable: function() {
         this.disabled = false;
-    }
-});
-
-/**
- * A class which handles loading of data from a server into the Fields of an {@link Ext.form.Basic}.
- *
- * Instances of this class are only created by a {@link Ext.form.Basic Form} when {@link Ext.form.Basic#load load}ing.
- *
- * ## Response Packet Criteria
- *
- * A response packet **must** contain:
- *
- *   - **`success`** property : Boolean
- *   - **`data`** property : Object
- *
- * The `data` property contains the values of Fields to load. The individual value object for each Field is passed to
- * the Field's {@link Ext.form.field.Field#setValue setValue} method.
- *
- * ## JSON Packets
- *
- * By default, response packets are assumed to be JSON, so for the following form load call:
- *
- *     var myFormPanel = new Ext.form.Panel({
- *         title: 'Client and routing info',
- *         renderTo: Ext.getBody(),
- *         defaults: {
- *             xtype: 'textfield'
- *         },
- *         items: [{
- *             fieldLabel: 'Client',
- *             name: 'clientName'
- *         }, {
- *             fieldLabel: 'Port of loading',
- *             name: 'portOfLoading'
- *         }, {
- *             fieldLabel: 'Port of discharge',
- *             name: 'portOfDischarge'
- *         }]
- *     });
- *     myFormPanel.{@link Ext.form.Panel#getForm getForm}().{@link Ext.form.Basic#load load}({
- *         url: '/getRoutingInfo.php',
- *         params: {
- *             consignmentRef: myConsignmentRef
- *         },
- *         failure: function(form, action) {
- *             Ext.Msg.alert("Load failed", action.result.errorMessage);
- *         }
- *     });
- *
- * a **success response** packet may look like this:
- *
- *     {
- *         success: true,
- *         data: {
- *             clientName: "Fred. Olsen Lines",
- *             portOfLoading: "FXT",
- *             portOfDischarge: "OSL"
- *         }
- *     }
- *
- * while a **failure response** packet may look like this:
- *
- *     {
- *         success: false,
- *         errorMessage: "Consignment reference not found"
- *     }
- *
- * Other data may be placed into the response for processing the {@link Ext.form.Basic Form}'s callback or event handler
- * methods. The object decoded from this JSON is available in the {@link Ext.form.action.Action#result result} property.
- */
-Ext.define('Ext.form.action.Load', {
-    extend:'Ext.form.action.Action',
-    requires: ['Ext.data.Connection'],
-    alternateClassName: 'Ext.form.Action.Load',
-    alias: 'formaction.load',
-
-    type: 'load',
-
-    /**
-     * @private
-     */
-    run: function() {
-        Ext.Ajax.request(Ext.apply(
-            this.createCallback(),
-            {
-                method: this.getMethod(),
-                url: this.getUrl(),
-                headers: this.headers,
-                params: this.getParams()
-            }
-        ));
-    },
-
-    /**
-     * @private
-     */
-    onSuccess: function(response){
-        var result = this.processResponse(response),
-            form = this.form;
-        if (result === true || !result.success || !result.data) {
-            this.failureType = Ext.form.action.Action.LOAD_FAILURE;
-            form.afterAction(this, false);
-            return;
-        }
-        form.clearInvalid();
-        form.setValues(result.data);
-        form.afterAction(this, true);
-    },
-
-    /**
-     * @private
-     */
-    handleResponse: function(response) {
-        var reader = this.form.reader,
-            rs, data;
-        if (reader) {
-            rs = reader.read(response);
-            data = rs.records && rs.records[0] ? rs.records[0].data : null;
-            return {
-                success : rs.success,
-                data : data
-            };
-        }
-        return Ext.decode(response.responseText);
-    }
-});
-
-
-/**
- * A class which handles submission of data from {@link Ext.form.Basic Form}s and processes the returned response.
- *
- * Instances of this class are only created by a {@link Ext.form.Basic Form} when
- * {@link Ext.form.Basic#submit submit}ting.
- *
- * # Response Packet Criteria
- *
- * A response packet may contain:
- *
- *   - **`success`** property : Boolean - required.
- *
- *   - **`errors`** property : Object - optional, contains error messages for invalid fields.
- *
- * # JSON Packets
- *
- * By default, response packets are assumed to be JSON, so a typical response packet may look like this:
- *
- *     {
- *         success: false,
- *         errors: {
- *             clientCode: "Client not found",
- *             portOfLoading: "This field must not be null"
- *         }
- *     }
- *
- * Other data may be placed into the response for processing by the {@link Ext.form.Basic}'s callback or event handler
- * methods. The object decoded from this JSON is available in the {@link Ext.form.action.Action#result result} property.
- *
- * Alternatively, if an {@link Ext.form.Basic#errorReader errorReader} is specified as an
- * {@link Ext.data.reader.Xml XmlReader}:
- *
- *     errorReader: new Ext.data.reader.Xml({
- *             record : 'field',
- *             success: '@success'
- *         }, [
- *             'id', 'msg'
- *         ]
- *     )
- *
- * then the results may be sent back in XML format:
- *
- *     <?xml version="1.0" encoding="UTF-8"?>
- *     <message success="false">
- *     <errors>
- *         <field>
- *             <id>clientCode</id>
- *             <msg><![CDATA[Code not found. <br /><i>This is a test validation message from the server </i>]]></msg>
- *         </field>
- *         <field>
- *             <id>portOfLoading</id>
- *             <msg><![CDATA[Port not found. <br /><i>This is a test validation message from the server </i>]]></msg>
- *         </field>
- *     </errors>
- *     </message>
- *
- * Other elements may be placed into the response XML for processing by the {@link Ext.form.Basic}'s callback or event
- * handler methods. The XML document is available in the {@link Ext.form.Basic#errorReader errorReader}'s
- * {@link Ext.data.reader.Xml#xmlData xmlData} property.
- */
-Ext.define('Ext.form.action.Submit', {
-    extend:'Ext.form.action.Action',
-    alternateClassName: 'Ext.form.Action.Submit',
-    alias: 'formaction.submit',
-
-    type: 'submit',
-
-    /**
-     * @cfg {Boolean} [clientValidation=true]
-     * Determines whether a Form's fields are validated in a final call to {@link Ext.form.Basic#isValid isValid} prior
-     * to submission. Pass false in the Form's submit options to prevent this.
-     */
-
-    // inherit docs
-    run : function(){
-        var form = this.form;
-        if (this.clientValidation === false || form.isValid()) {
-            this.doSubmit();
-        } else {
-            // client validation failed
-            this.failureType = Ext.form.action.Action.CLIENT_INVALID;
-            form.afterAction(this, false);
-        }
-    },
-
-    /**
-     * @private
-     * Performs the submit of the form data.
-     */
-    doSubmit: function() {
-        var formEl,
-            ajaxOptions = Ext.apply(this.createCallback(), {
-                url: this.getUrl(),
-                method: this.getMethod(),
-                headers: this.headers
-            });
-
-        // For uploads we need to create an actual form that contains the file upload fields,
-        // and pass that to the ajax call so it can do its iframe-based submit method.
-        if (this.form.hasUpload()) {
-            formEl = ajaxOptions.form = this.buildForm();
-            ajaxOptions.isUpload = true;
-        } else {
-            ajaxOptions.params = this.getParams();
-        }
-
-        Ext.Ajax.request(ajaxOptions);
-
-        if (formEl) {
-            Ext.removeNode(formEl);
-        }
-    },
-
-    /**
-     * @private
-     * Builds the full set of parameters from the field values plus any additional configured params.
-     */
-    getParams: function() {
-        var nope = false,
-            configParams = this.callParent(),
-            fieldParams = this.form.getValues(nope, nope, this.submitEmptyText !== nope);
-        return Ext.apply({}, fieldParams, configParams);
-    },
-
-    /**
-     * @private
-     * Builds a form element containing fields corresponding to all the parameters to be
-     * submitted (everything returned by {@link #getParams}.
-     *
-     * NOTE: the form element is automatically added to the DOM, so any code that uses
-     * it must remove it from the DOM after finishing with it.
-     *
-     * @return {HTMLElement}
-     */
-    buildForm: function() {
-        var fieldsSpec = [],
-            formSpec,
-            formEl,
-            basicForm = this.form,
-            params = this.getParams(),
-            uploadFields = [],
-            fields = basicForm.getFields().items,
-            f,
-            fLen   = fields.length,
-            field, key, value, v, vLen,
-            u, uLen;
-
-        for (f = 0; f < fLen; f++) {
-            field = fields[f];
-
-            if (field.isFileUpload()) {
-                uploadFields.push(field);
-            }
-        }
-
-        function addField(name, val) {
-            fieldsSpec.push({
-                tag: 'input',
-                type: 'hidden',
-                name: name,
-                value: Ext.String.htmlEncode(val)
-            });
-        }
-
-        for (key in params) {
-            if (params.hasOwnProperty(key)) {
-                value = params[key];
-
-                if (Ext.isArray(value)) {
-                    vLen = value.length;
-                    for (v = 0; v < vLen; v++) {
-                        addField(key, value[v]);
-                    }
-                } else {
-                    addField(key, value);
-                }
-            }
-        }
-
-        formSpec = {
-            tag: 'form',
-            action: this.getUrl(),
-            method: this.getMethod(),
-            target: this.target || '_self',
-            style: 'display:none',
-            cn: fieldsSpec
-        };
-
-        // Set the proper encoding for file uploads
-        if (uploadFields.length) {
-            formSpec.encoding = formSpec.enctype = 'multipart/form-data';
-        }
-
-        // Create the form
-        formEl = Ext.DomHelper.append(Ext.getBody(), formSpec);
-
-        // Special handling for file upload fields: since browser security measures prevent setting
-        // their values programatically, and prevent carrying their selected values over when cloning,
-        // we have to move the actual field instances out of their components and into the form.
-        uLen = uploadFields.length;
-
-        for (u = 0; u < uLen; u++) {
-            field = uploadFields[u];
-            if (field.rendered) { // can only have a selected file value after being rendered
-                formEl.appendChild(field.extractFileInput());
-            }
-        }
-
-        return formEl;
-    },
-
-
-
-    /**
-     * @private
-     */
-    onSuccess: function(response) {
-        var form = this.form,
-            success = true,
-            result = this.processResponse(response);
-        if (result !== true && !result.success) {
-            if (result.errors) {
-                form.markInvalid(result.errors);
-            }
-            this.failureType = Ext.form.action.Action.SERVER_INVALID;
-            success = false;
-        }
-        form.afterAction(this, success);
-    },
-
-    /**
-     * @private
-     */
-    handleResponse: function(response) {
-        var form = this.form,
-            errorReader = form.errorReader,
-            rs, errors, i, len, records;
-        if (errorReader) {
-            rs = errorReader.read(response);
-            records = rs.records;
-            errors = [];
-            if (records) {
-                for(i = 0, len = records.length; i < len; i++) {
-                    errors[i] = records[i].data;
-                }
-            }
-            if (errors.length < 1) {
-                errors = null;
-            }
-            return {
-                success : rs.success,
-                errors : errors
-            };
-        }
-        return Ext.decode(response.responseText);
     }
 });
 
@@ -80896,6 +80473,518 @@ Ext.define('Ext.window.MessageBox', {
      */
     Ext.MessageBox = Ext.Msg = new this();
 });
+Ext.define('PICS.view.report.settings.FavoriteToggle', {
+    extend: 'Ext.form.field.Display',
+    alias: ['widget.favoritetoggle'],
+    
+    fieldLabel: '<i class="favorite icon-star"></i>',
+    labelAlign: 'right',
+    labelSeparator: '',
+    value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
+
+    listeners: {
+        afterrender: function(cmp, eOpts) {
+            var config = PICS.app.configuration;
+
+            if (config.isFavorite()) {
+                this.toggleFavoriteStatus();
+            }
+            
+            this.mon(this.el,'click', this.toggleFavoriteStatus, this, {
+                delegate: '.icon-star'
+            });            
+        }
+    },
+
+    isFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        return favorite_elements.icon.hasCls('selected');
+    },
+
+    getFavoriteElements: function () {
+        var element = this.getEl();
+
+        return {
+            icon: element.down('.icon-star'),
+            text: element.down('.favorite-text')
+        };
+    },
+
+    saveFavoriteStatus: function (status) {
+        var event_name = status ? 'favorite' : 'unfavorite',
+            config = PICS.app.configuration;
+
+        config.setIsFavorite(status);
+
+        this.fireEvent(event_name);
+    },
+
+    toggleFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        favorite_elements.icon.addCls('selected');
+        favorite_elements.text.setHTML('is');
+    },
+
+    toggleFavoriteOff: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        favorite_elements.icon.removeCls('selected');
+        favorite_elements.text.setHTML('is not');
+    },
+
+    toggleFavoriteStatus: function () {
+        var is_favorite_on = this.isFavoriteOn(),
+            config = PICS.app.configuration,
+            is_editable = config && config.isEditable(),
+            duplicating = Ext.getClassName(this) == 'PICS.view.report.settings.CopySettings';
+
+        is_favorite_on ? this.toggleFavoriteOff() : this.toggleFavoriteOn();
+
+        // The Duplicate tab and the Edit tab of editable reports have Apply buttons.
+        // Without an apply button, we need to save immediately.
+        if (!is_editable && !duplicating) {
+            this.saveFavoriteStatus(!is_favorite_on);
+        }
+    }
+});
+/**
+ * Layout class for {@link Ext.form.field.ComboBox} fields. Handles sizing the input field.
+ * @private
+ */
+Ext.define('Ext.layout.component.field.ComboBox', {
+    extend: 'Ext.layout.component.field.Trigger',
+    alias: 'layout.combobox',
+    requires: ['Ext.util.TextMetrics'],
+
+    type: 'combobox',
+
+    startingWidth: null,
+
+    getTextWidth: function () {
+        var me = this,
+            owner = me.owner,
+            store = owner.store,
+            field = owner.displayField,
+            storeLn = store.data.length,
+            value = '',
+            i = 0, n = 0, ln, item, width;
+
+        for (; i < storeLn; i++) {
+            item = store.getAt(i).data[field];
+            ln = item.length;
+            // compare the current item's length with the current longest length and store the value
+            if (ln > n) {
+                n = ln;
+                value = item;
+            }
+        }
+
+        width = Math.max(me.callParent(arguments), owner.inputEl.getTextWidth(value + owner.growAppend));
+
+        // it's important to know the starting width else the inputEl could be resized smaller than the boundlist
+        // NOTE that when removing items from the store that the startingWidth needs to be recalculated
+        if (!me.startingWidth || owner.removingRecords) {
+            me.startingWidth = width;
+
+            // also, if the width is less than growMin reset the default boundlist width
+            // or it will appear wider than the component if the trigger is clicked
+            if (width < owner.growMin) {
+                owner.defaultListConfig.minWidth = owner.growMin;
+            }
+
+            owner.removingRecords = false;
+        }
+ 
+        // only resize if the new width is greater than the starting width
+        return (width < me.startingWidth) ? me.startingWidth : width;
+    }
+});
+
+/**
+ * A class which handles loading of data from a server into the Fields of an {@link Ext.form.Basic}.
+ *
+ * Instances of this class are only created by a {@link Ext.form.Basic Form} when {@link Ext.form.Basic#load load}ing.
+ *
+ * ## Response Packet Criteria
+ *
+ * A response packet **must** contain:
+ *
+ *   - **`success`** property : Boolean
+ *   - **`data`** property : Object
+ *
+ * The `data` property contains the values of Fields to load. The individual value object for each Field is passed to
+ * the Field's {@link Ext.form.field.Field#setValue setValue} method.
+ *
+ * ## JSON Packets
+ *
+ * By default, response packets are assumed to be JSON, so for the following form load call:
+ *
+ *     var myFormPanel = new Ext.form.Panel({
+ *         title: 'Client and routing info',
+ *         renderTo: Ext.getBody(),
+ *         defaults: {
+ *             xtype: 'textfield'
+ *         },
+ *         items: [{
+ *             fieldLabel: 'Client',
+ *             name: 'clientName'
+ *         }, {
+ *             fieldLabel: 'Port of loading',
+ *             name: 'portOfLoading'
+ *         }, {
+ *             fieldLabel: 'Port of discharge',
+ *             name: 'portOfDischarge'
+ *         }]
+ *     });
+ *     myFormPanel.{@link Ext.form.Panel#getForm getForm}().{@link Ext.form.Basic#load load}({
+ *         url: '/getRoutingInfo.php',
+ *         params: {
+ *             consignmentRef: myConsignmentRef
+ *         },
+ *         failure: function(form, action) {
+ *             Ext.Msg.alert("Load failed", action.result.errorMessage);
+ *         }
+ *     });
+ *
+ * a **success response** packet may look like this:
+ *
+ *     {
+ *         success: true,
+ *         data: {
+ *             clientName: "Fred. Olsen Lines",
+ *             portOfLoading: "FXT",
+ *             portOfDischarge: "OSL"
+ *         }
+ *     }
+ *
+ * while a **failure response** packet may look like this:
+ *
+ *     {
+ *         success: false,
+ *         errorMessage: "Consignment reference not found"
+ *     }
+ *
+ * Other data may be placed into the response for processing the {@link Ext.form.Basic Form}'s callback or event handler
+ * methods. The object decoded from this JSON is available in the {@link Ext.form.action.Action#result result} property.
+ */
+Ext.define('Ext.form.action.Load', {
+    extend:'Ext.form.action.Action',
+    requires: ['Ext.data.Connection'],
+    alternateClassName: 'Ext.form.Action.Load',
+    alias: 'formaction.load',
+
+    type: 'load',
+
+    /**
+     * @private
+     */
+    run: function() {
+        Ext.Ajax.request(Ext.apply(
+            this.createCallback(),
+            {
+                method: this.getMethod(),
+                url: this.getUrl(),
+                headers: this.headers,
+                params: this.getParams()
+            }
+        ));
+    },
+
+    /**
+     * @private
+     */
+    onSuccess: function(response){
+        var result = this.processResponse(response),
+            form = this.form;
+        if (result === true || !result.success || !result.data) {
+            this.failureType = Ext.form.action.Action.LOAD_FAILURE;
+            form.afterAction(this, false);
+            return;
+        }
+        form.clearInvalid();
+        form.setValues(result.data);
+        form.afterAction(this, true);
+    },
+
+    /**
+     * @private
+     */
+    handleResponse: function(response) {
+        var reader = this.form.reader,
+            rs, data;
+        if (reader) {
+            rs = reader.read(response);
+            data = rs.records && rs.records[0] ? rs.records[0].data : null;
+            return {
+                success : rs.success,
+                data : data
+            };
+        }
+        return Ext.decode(response.responseText);
+    }
+});
+
+
+/**
+ * A class which handles submission of data from {@link Ext.form.Basic Form}s and processes the returned response.
+ *
+ * Instances of this class are only created by a {@link Ext.form.Basic Form} when
+ * {@link Ext.form.Basic#submit submit}ting.
+ *
+ * # Response Packet Criteria
+ *
+ * A response packet may contain:
+ *
+ *   - **`success`** property : Boolean - required.
+ *
+ *   - **`errors`** property : Object - optional, contains error messages for invalid fields.
+ *
+ * # JSON Packets
+ *
+ * By default, response packets are assumed to be JSON, so a typical response packet may look like this:
+ *
+ *     {
+ *         success: false,
+ *         errors: {
+ *             clientCode: "Client not found",
+ *             portOfLoading: "This field must not be null"
+ *         }
+ *     }
+ *
+ * Other data may be placed into the response for processing by the {@link Ext.form.Basic}'s callback or event handler
+ * methods. The object decoded from this JSON is available in the {@link Ext.form.action.Action#result result} property.
+ *
+ * Alternatively, if an {@link Ext.form.Basic#errorReader errorReader} is specified as an
+ * {@link Ext.data.reader.Xml XmlReader}:
+ *
+ *     errorReader: new Ext.data.reader.Xml({
+ *             record : 'field',
+ *             success: '@success'
+ *         }, [
+ *             'id', 'msg'
+ *         ]
+ *     )
+ *
+ * then the results may be sent back in XML format:
+ *
+ *     <?xml version="1.0" encoding="UTF-8"?>
+ *     <message success="false">
+ *     <errors>
+ *         <field>
+ *             <id>clientCode</id>
+ *             <msg><![CDATA[Code not found. <br /><i>This is a test validation message from the server </i>]]></msg>
+ *         </field>
+ *         <field>
+ *             <id>portOfLoading</id>
+ *             <msg><![CDATA[Port not found. <br /><i>This is a test validation message from the server </i>]]></msg>
+ *         </field>
+ *     </errors>
+ *     </message>
+ *
+ * Other elements may be placed into the response XML for processing by the {@link Ext.form.Basic}'s callback or event
+ * handler methods. The XML document is available in the {@link Ext.form.Basic#errorReader errorReader}'s
+ * {@link Ext.data.reader.Xml#xmlData xmlData} property.
+ */
+Ext.define('Ext.form.action.Submit', {
+    extend:'Ext.form.action.Action',
+    alternateClassName: 'Ext.form.Action.Submit',
+    alias: 'formaction.submit',
+
+    type: 'submit',
+
+    /**
+     * @cfg {Boolean} [clientValidation=true]
+     * Determines whether a Form's fields are validated in a final call to {@link Ext.form.Basic#isValid isValid} prior
+     * to submission. Pass false in the Form's submit options to prevent this.
+     */
+
+    // inherit docs
+    run : function(){
+        var form = this.form;
+        if (this.clientValidation === false || form.isValid()) {
+            this.doSubmit();
+        } else {
+            // client validation failed
+            this.failureType = Ext.form.action.Action.CLIENT_INVALID;
+            form.afterAction(this, false);
+        }
+    },
+
+    /**
+     * @private
+     * Performs the submit of the form data.
+     */
+    doSubmit: function() {
+        var formEl,
+            ajaxOptions = Ext.apply(this.createCallback(), {
+                url: this.getUrl(),
+                method: this.getMethod(),
+                headers: this.headers
+            });
+
+        // For uploads we need to create an actual form that contains the file upload fields,
+        // and pass that to the ajax call so it can do its iframe-based submit method.
+        if (this.form.hasUpload()) {
+            formEl = ajaxOptions.form = this.buildForm();
+            ajaxOptions.isUpload = true;
+        } else {
+            ajaxOptions.params = this.getParams();
+        }
+
+        Ext.Ajax.request(ajaxOptions);
+
+        if (formEl) {
+            Ext.removeNode(formEl);
+        }
+    },
+
+    /**
+     * @private
+     * Builds the full set of parameters from the field values plus any additional configured params.
+     */
+    getParams: function() {
+        var nope = false,
+            configParams = this.callParent(),
+            fieldParams = this.form.getValues(nope, nope, this.submitEmptyText !== nope);
+        return Ext.apply({}, fieldParams, configParams);
+    },
+
+    /**
+     * @private
+     * Builds a form element containing fields corresponding to all the parameters to be
+     * submitted (everything returned by {@link #getParams}.
+     *
+     * NOTE: the form element is automatically added to the DOM, so any code that uses
+     * it must remove it from the DOM after finishing with it.
+     *
+     * @return {HTMLElement}
+     */
+    buildForm: function() {
+        var fieldsSpec = [],
+            formSpec,
+            formEl,
+            basicForm = this.form,
+            params = this.getParams(),
+            uploadFields = [],
+            fields = basicForm.getFields().items,
+            f,
+            fLen   = fields.length,
+            field, key, value, v, vLen,
+            u, uLen;
+
+        for (f = 0; f < fLen; f++) {
+            field = fields[f];
+
+            if (field.isFileUpload()) {
+                uploadFields.push(field);
+            }
+        }
+
+        function addField(name, val) {
+            fieldsSpec.push({
+                tag: 'input',
+                type: 'hidden',
+                name: name,
+                value: Ext.String.htmlEncode(val)
+            });
+        }
+
+        for (key in params) {
+            if (params.hasOwnProperty(key)) {
+                value = params[key];
+
+                if (Ext.isArray(value)) {
+                    vLen = value.length;
+                    for (v = 0; v < vLen; v++) {
+                        addField(key, value[v]);
+                    }
+                } else {
+                    addField(key, value);
+                }
+            }
+        }
+
+        formSpec = {
+            tag: 'form',
+            action: this.getUrl(),
+            method: this.getMethod(),
+            target: this.target || '_self',
+            style: 'display:none',
+            cn: fieldsSpec
+        };
+
+        // Set the proper encoding for file uploads
+        if (uploadFields.length) {
+            formSpec.encoding = formSpec.enctype = 'multipart/form-data';
+        }
+
+        // Create the form
+        formEl = Ext.DomHelper.append(Ext.getBody(), formSpec);
+
+        // Special handling for file upload fields: since browser security measures prevent setting
+        // their values programatically, and prevent carrying their selected values over when cloning,
+        // we have to move the actual field instances out of their components and into the form.
+        uLen = uploadFields.length;
+
+        for (u = 0; u < uLen; u++) {
+            field = uploadFields[u];
+            if (field.rendered) { // can only have a selected file value after being rendered
+                formEl.appendChild(field.extractFileInput());
+            }
+        }
+
+        return formEl;
+    },
+
+
+
+    /**
+     * @private
+     */
+    onSuccess: function(response) {
+        var form = this.form,
+            success = true,
+            result = this.processResponse(response);
+        if (result !== true && !result.success) {
+            if (result.errors) {
+                form.markInvalid(result.errors);
+            }
+            this.failureType = Ext.form.action.Action.SERVER_INVALID;
+            success = false;
+        }
+        form.afterAction(this, success);
+    },
+
+    /**
+     * @private
+     */
+    handleResponse: function(response) {
+        var form = this.form,
+            errorReader = form.errorReader,
+            rs, errors, i, len, records;
+        if (errorReader) {
+            rs = errorReader.read(response);
+            records = rs.records;
+            errors = [];
+            if (records) {
+                for(i = 0, len = records.length; i < len; i++) {
+                    errors[i] = records[i].data;
+                }
+            }
+            if (errors.length < 1) {
+                errors = null;
+            }
+            return {
+                success : rs.success,
+                errors : errors
+            };
+        }
+        return Ext.decode(response.responseText);
+    }
+});
+
 /**
  * Provides input field management, validation, submission, and form loading services for the collection
  * of {@link Ext.form.field.Field Field} instances within a {@link Ext.container.Container}. It is recommended
@@ -82324,6 +82413,118 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
         pack: 'center'
     }
 });
+Ext.define('PICS.view.report.filter.FilterOptions', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilteroptions'],
+
+    requires: [
+        'PICS.view.report.filter.FilterHeader',
+        'PICS.view.report.filter.FilterPlaceholder',
+        'PICS.view.report.filter.FilterFormula',
+        'PICS.view.report.filter.FilterToolbar'
+    ],
+
+    autoScroll: true,
+    bodyBorder: false,
+    border: 0,
+    collapsed: true,
+    collapsible: true,
+    dockedItems: [{
+        xtype: 'reportfiltertoolbar',
+        dock: 'top'
+    }, {
+        bodyBorder: false,
+        border: 0,
+        dock: 'bottom',
+        height: 10,
+        id: 'report_filter_options_footer'
+    }],
+    floatable: false,
+    header: {
+        xtype: 'reportfilterheader'
+    },
+    id: 'report_filter_options',
+    margin: '0 20 0 0',
+    placeholder: {
+        xtype: 'reportfilterplaceholder'
+    },
+    title: 'Filter',
+    width: 320,
+    
+    showFormula: function () {
+        var formula = this.down('reportfilterformula'), 
+            toolbar = this.down('reportfiltertoolbar');
+        
+        if (formula) {
+            return;
+        }
+        
+        if (toolbar) {
+            this.removeDocked(toolbar);
+        }
+        
+        this.addDocked({
+            xtype: 'reportfilterformula',
+            dock: 'top'
+        });
+    },
+    
+    showToolbar: function () {
+        var formula = this.down('reportfilterformula'), 
+            toolbar = this.down('reportfiltertoolbar');
+        
+        if (toolbar) {
+            return;
+        }
+        
+        if (formula) {
+            this.removeDocked(formula);
+        }
+        
+        this.addDocked({
+            xtype: 'reportfiltertoolbar',
+            dock: 'top'
+        });
+    },
+    
+    updateBodyHeight: function () {
+        var body = Ext.getBody(),
+            body_height = body.getHeight(),
+            filters = this.down('#report_filters'),
+            filters_height = filters.getHeight(),
+            filters_element = filters.getEl(),
+            filters_offset_y = filters_element.getY(),
+            filter_options_body_height;
+        
+        // if filters show fully on screen
+        if (body_height > filters_offset_y + filters_height) {
+            filter_options_body_height = filters_height;
+        } else {
+            filter_options_body_height = filters_height - ((filters_offset_y + filters_height) - body_height); 
+        }
+        
+        this.body.setHeight(filter_options_body_height);
+    },
+    
+    updateFooterPosition: function () {
+        var filter_header = this.down('reportfilterheader'),
+            filter_header_height = filter_header.getHeight(),
+            filter_formula = this.down('reportfilterformula'),
+            filter_toolbar = this.down('reportfiltertoolbar'),
+            filters = this.down('#report_filters'),
+            filters_height = filters.getHeight(),
+            filter_footer = this.down('#report_filter_options_footer'),
+            filter_offset = filter_header_height + filters_height;
+        
+        if (filter_formula) {
+            filter_offset += filter_formula.getHeight(); 
+        } else if (filter_toolbar) {
+            filter_offset += filter_toolbar.getHeight();
+        }
+        
+        filter_footer.setPosition(0, filter_offset);
+    }
+});
 Ext.define('PICS.view.report.settings.CopySettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingscopy'],
@@ -82385,140 +82586,6 @@ Ext.define('PICS.view.report.settings.CopySettings', {
     // custom config
     modal_title: 'Duplicate Report',
     title: '<i class="icon-copy icon-large"></i>Duplicate'
-});
-Ext.define('PICS.view.report.settings.ExportSettings', {
-    extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsexport'],
-
-    border: 0,
-    id: 'report_export',
-    /*items: [{
-        text: '<i class="icon-table icon-large"></i>Spread Sheet'
-    }, {
-        text: '<i class="icon-file icon-large"></i>PDF'
-    }, {
-        text: '<i class="icon-home icon-large"></i>To Dashboard'
-    }],*/
-    items: [{
-        xtype: 'button',
-        action: 'export',
-        text : 'Export',
-        cls: 'primary export',
-        id: 'export-button',
-        tooltip: 'Export this report to Excel',
-        margin: '100 0 0 0'
-    }],
-
-    layout: {
-        type: 'vbox',
-        align: 'center'
-    },
-    // custom config
-    modal_title: 'Export Report',
-    title: '<i class="icon-eject icon-large"></i>Export'
-});
-Ext.define('PICS.view.report.settings.PrintSettings', {
-    extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsprint'],
-
-    border: 0,
-    id: 'report_print',
-    /*items: [{
-        text: '<i class="icon-print icon-large"></i>Print'
-    }],*/
-    items: [{
-        xtype: 'button',
-        action: 'print-preview',
-        text : 'Print Preview',
-        cls: 'primary print',
-        id: 'print-button',
-        tooltip: 'Preview a printable version of this report',
-        margin: '100 0 0 0'
-    }],
-
-    layout: {
-        type: 'vbox',
-        align: 'center'
-    },
-    title: '<i class="icon-print icon-large"></i>Print',
-    // custom config
-    modal_title: 'Print Report'
-});
-Ext.define('PICS.view.report.settings.FavoriteToggle', {
-    extend: 'Ext.form.field.Display',
-    alias: ['widget.favoritetoggle'],
-    
-    fieldLabel: '<i class="favorite icon-star"></i>',
-    labelAlign: 'right',
-    labelSeparator: '',
-    value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
-
-    listeners: {
-        afterrender: function(cmp, eOpts) {
-            var config = PICS.app.configuration;
-
-            if (config.isFavorite()) {
-                this.toggleFavoriteStatus();
-            }
-            
-            this.mon(this.el,'click', this.toggleFavoriteStatus, this, {
-                delegate: '.icon-star'
-            });            
-        }
-    },
-
-    isFavoriteOn: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        return favorite_elements.icon.hasCls('selected');
-    },
-
-    getFavoriteElements: function () {
-        var element = this.getEl();
-
-        return {
-            icon: element.down('.icon-star'),
-            text: element.down('.favorite-text')
-        };
-    },
-
-    saveFavoriteStatus: function (status) {
-        var event_name = status ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration;
-
-        config.setIsFavorite(status);
-
-        this.fireEvent(event_name);
-    },
-
-    toggleFavoriteOn: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        favorite_elements.icon.addCls('selected');
-        favorite_elements.text.setHTML('is');
-    },
-
-    toggleFavoriteOff: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        favorite_elements.icon.removeCls('selected');
-        favorite_elements.text.setHTML('is not');
-    },
-
-    toggleFavoriteStatus: function () {
-        var is_favorite_on = this.isFavoriteOn(),
-            config = PICS.app.configuration,
-            is_editable = config && config.isEditable(),
-            duplicating = Ext.getClassName(this) == 'PICS.view.report.settings.CopySettings';
-
-        is_favorite_on ? this.toggleFavoriteOff() : this.toggleFavoriteOn();
-
-        // The Duplicate tab and the Edit tab of editable reports have Apply buttons.
-        // Without an apply button, we need to save immediately.
-        if (!is_editable && !duplicating) {
-            this.saveFavoriteStatus(!is_favorite_on);
-        }
-    }
 });
 Ext.define('PICS.view.report.settings.EditSettings', {
     extend: 'Ext.form.Panel',
@@ -82626,59 +82693,64 @@ Ext.define('PICS.view.report.settings.EditSettings', {
         this.callParent([data]);
     }
 });
-/**
- * Layout class for {@link Ext.form.field.ComboBox} fields. Handles sizing the input field.
- * @private
- */
-Ext.define('Ext.layout.component.field.ComboBox', {
-    extend: 'Ext.layout.component.field.Trigger',
-    alias: 'layout.combobox',
-    requires: ['Ext.util.TextMetrics'],
+Ext.define('PICS.view.report.settings.ExportSettings', {
+    extend: 'Ext.form.Panel',
+    alias: ['widget.reportsettingsexport'],
 
-    type: 'combobox',
+    border: 0,
+    id: 'report_export',
+    /*items: [{
+        text: '<i class="icon-table icon-large"></i>Spread Sheet'
+    }, {
+        text: '<i class="icon-file icon-large"></i>PDF'
+    }, {
+        text: '<i class="icon-home icon-large"></i>To Dashboard'
+    }],*/
+    items: [{
+        xtype: 'button',
+        action: 'export',
+        text : 'Export',
+        cls: 'primary export',
+        id: 'export-button',
+        tooltip: 'Export this report to Excel',
+        margin: '100 0 0 0'
+    }],
 
-    startingWidth: null,
-
-    getTextWidth: function () {
-        var me = this,
-            owner = me.owner,
-            store = owner.store,
-            field = owner.displayField,
-            storeLn = store.data.length,
-            value = '',
-            i = 0, n = 0, ln, item, width;
-
-        for (; i < storeLn; i++) {
-            item = store.getAt(i).data[field];
-            ln = item.length;
-            // compare the current item's length with the current longest length and store the value
-            if (ln > n) {
-                n = ln;
-                value = item;
-            }
-        }
-
-        width = Math.max(me.callParent(arguments), owner.inputEl.getTextWidth(value + owner.growAppend));
-
-        // it's important to know the starting width else the inputEl could be resized smaller than the boundlist
-        // NOTE that when removing items from the store that the startingWidth needs to be recalculated
-        if (!me.startingWidth || owner.removingRecords) {
-            me.startingWidth = width;
-
-            // also, if the width is less than growMin reset the default boundlist width
-            // or it will appear wider than the component if the trigger is clicked
-            if (width < owner.growMin) {
-                owner.defaultListConfig.minWidth = owner.growMin;
-            }
-
-            owner.removingRecords = false;
-        }
- 
-        // only resize if the new width is greater than the starting width
-        return (width < me.startingWidth) ? me.startingWidth : width;
-    }
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
+    // custom config
+    modal_title: 'Export Report',
+    title: '<i class="icon-eject icon-large"></i>Export'
 });
+Ext.define('PICS.view.report.settings.PrintSettings', {
+    extend: 'Ext.form.Panel',
+    alias: ['widget.reportsettingsprint'],
 
+    border: 0,
+    id: 'report_print',
+    /*items: [{
+        text: '<i class="icon-print icon-large"></i>Print'
+    }],*/
+    items: [{
+        xtype: 'button',
+        action: 'print-preview',
+        text : 'Print Preview',
+        cls: 'primary print',
+        id: 'print-button',
+        tooltip: 'Preview a printable version of this report',
+        margin: '100 0 0 0'
+    }],
+
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
+    title: '<i class="icon-print icon-large"></i>Print',
+    // custom config
+    modal_title: 'Print Report'
+});
 /**
  * A date picker. This class is used by the Ext.form.field.Date field to allow browsing and selection of valid
  * dates in a popup next to the field, but may also be used with other components.
@@ -93332,87 +93404,6 @@ Ext.define('PICS.view.layout.SearchBox', {
     }
 });
 
-Ext.override(Ext.menu.Menu, {
-    showBy: function(cmp, pos, off) {
-        var me = this,
-            xy,
-            region;
-
-        if (me.floating && cmp) {
-            me.layout.autoSize = true;
-
-            // show off-screen first so that we can calc position without causing a visual jump
-            me.doAutoRender();
-            delete me.needsLayout;
-
-            // Component or Element
-            cmp = cmp.el || cmp;
-
-            // Convert absolute to floatParent-relative coordinates if necessary.
-            xy = me.el.getAlignToXY(cmp, pos || me.defaultAlign, off);
-            if (me.floatParent) {
-                region = me.floatParent.getTargetEl().getViewRegion();
-                xy[0] -= region.x;
-                xy[1] -= region.y;
-            }
-
-            // custom menu positioning
-            xy[1] += 3;
-
-            me.showAt(xy);
-        }
-        return me;
-    },
-
-    doConstrain : function() {
-        var me = this,
-            y = me.el.getY(),
-            max, full,
-            vector,
-            returnY = y, normalY, parentEl, scrollTop, viewHeight;
-
-        delete me.height;
-        me.setSize();
-        full = me.getHeight();
-        if (me.floating) {
-            //if our reset css is scoped, there will be a x-reset wrapper on this menu which we need to skip
-            parentEl = Ext.fly(me.el.getScopeParent());
-            scrollTop = parentEl.getScroll().top;
-            viewHeight = parentEl.getViewSize().height;
-            //Normalize y by the scroll position for the parent element.  Need to move it into the coordinate space
-            //of the view.
-            normalY = y - scrollTop;
-            max = me.maxHeight ? me.maxHeight : viewHeight - normalY;
-            if (full > viewHeight) {
-                max = viewHeight;
-                //Set returnY equal to (0,0) in view space by reducing y by the value of normalY
-                returnY = y - normalY;
-            } else if (max < full) {
-                returnY = y - (full - max);
-                max = full;
-            }
-        }else{
-            max = me.getHeight();
-        }
-        // Always respect maxHeight
-        if (me.maxHeight){
-            max = Math.min(me.maxHeight, max);
-        }
-        if (full > max && max > 0){
-            me.layout.autoSize = false;
-            me.setHeight(max);
-            if (me.showSeparator){
-                me.iconSepEl.setHeight(me.layout.getRenderTarget().dom.scrollHeight);
-            }
-        }
-        vector = me.getConstrainVector(me.el.getScopeParent());
-        if (vector) {
-            me.setPosition(me.getPosition()[0] + vector[0]);
-        }
-        me.el.setY(returnY);
-    }
-});
-
 Ext.define('PICS.view.layout.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
@@ -93801,7 +93792,8 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
         'PICS.view.report.filter.base.StringFilter',
-        'PICS.view.report.filter.base.UserIDFilter'
+        'PICS.view.report.filter.base.UserIDFilter',
+        'PICS.view.report.filter.FilterTooltip'
     ],
 
     bodyCls: 'filter-body',
@@ -93826,21 +93818,25 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
-        this.addRemoveButton();
-                
-        var filter_number = this.createFilterNumber(this.index);
-        var filter_content = this.createFilterContent(this.record);
+        var filter = this.record,
+            field = filter.getAvailableField();
+        
+        var type = field.get('filterType'),
+            cls = this.getFilterClassByType(type),
+            filter_number = this.createNumber(this.index),
+            filter_content = this.createContent(this.record);
 
         this.add([
             filter_number,
             filter_content
         ]);
         
-        var field = this.record.getAvailableField(),
-            type = field.get('filterType'),
-            cls = this.getFilterClassByType(type);
+        
+        // TODO: update this
+        this.addRemoveButton();
         
         if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
+            // TODO: update this - probably doesn't belong
             this.addEditableButton();
         }
     },
@@ -93891,7 +93887,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         });        
     },
     
-    createFilterNumber: function (index) {
+    createNumber: function (index) {
         return {
             xtype: 'displayfield',
             border: 0,
@@ -93904,9 +93900,9 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterContent: function (record) {
-        var filter_title = this.createFilterTitle(record);
-        var filter_input = this.createFilterInput(record);
+    createContent: function (record) {
+        var filter_title = this.createTitle(record);
+        var filter_input = this.createInput(record);
 
         return {
             border: 0,
@@ -93920,7 +93916,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterTitle: function (record) {
+    createTitle: function (record) {
         var field = record.getAvailableField();
 
         if (!field) {
@@ -93956,7 +93952,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         };
     },
 
-    createFilterInput: function (record) {
+    createInput: function (record) {
         var field = record.getAvailableField(),
             type = field.get('filterType');
 
@@ -93979,6 +93975,26 @@ Ext.define('PICS.view.report.filter.Filter', {
             draggable: false,
             name: 'filter_input',
             record: record
+        });
+    },
+    
+    createTooltip: function () {
+        var filter = this.record;
+        
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter record');
+        }
+        
+        var target = this.el.down('.filter-name'),
+            field = filter.getAvailableField(),
+            help = field.get('help');
+        
+        var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
+            target: target
+        });
+        
+        tooltip.update({
+            help: help
         });
     },
 
@@ -94277,7 +94293,7 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     tabPosition: 'bottom'
 });
 Ext.define('PICS.view.report.settings.SettingsModal', {
-    extend: 'PICS.view.report.ReportModal',
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: ['widget.reportsettingsmodal'],
 
     requires: [
@@ -97137,7 +97153,7 @@ Ext.define('PICS.view.report.available-field.AvailableFieldList', {
     }
 });
 Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
-    extend: 'PICS.view.report.ReportModal',
+    extend: 'PICS.view.report.modal.ReportModal',
     alias: ['widget.reportavailablefieldmodal'],
 
     requires: [
@@ -97294,6 +97310,36 @@ Ext.define('PICS.model.report.AvailableField', {
         return filter;
     }
 });
+Ext.define('PICS.model.report.Filter2', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'operator',
+        type: 'string'
+    }, {
+        name: 'value',
+        type: 'string'
+    }, {
+        name: 'column_compare_id',
+        type: 'string'
+    }]    
+});
 Ext.define('PICS.model.report.ReportData', {
     extend: 'Ext.data.Model',
     
@@ -97301,201 +97347,16 @@ Ext.define('PICS.model.report.ReportData', {
     // we dynamically create / attach Model which has the actual fields
     fields: []
 });
-Ext.define('PICS.ux.grid.column.Float', {
-	extend: 'Ext.grid.column.Number',
-	
-	align: 'right',
-	format: '0,000.00',
-	
-	constructor: function () {
-		this.callParent(arguments);
+Ext.define('PICS.model.report.Sort2', {
+    extend: 'Ext.data.Model',
 
-        if (!this.record) {
-            Ext.Error.raise('Invalid column record');
-        }
-        
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
-        
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
-	
-	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url');
-        
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
-        }
-        
-        return value;
-    },
-    
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
-    }
-});
-Ext.define('PICS.ux.grid.column.Int', {
-	extend: 'Ext.grid.column.Number',
-	
-	align: 'right',
-	format: '0',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid column record');
-        }
-        
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
-        
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
-	
-	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url');
-        
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
-        }
-        
-        return value;
-    },
-    
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
-    }
-});
-Ext.define('PICS.ux.grid.column.Number', {
-	extend: 'Ext.grid.column.Number',
-	
-	format: '0,000',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid column record');
-        }
-        
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
-        
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
-	
-	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url');
-        
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
-        }
-        
-        return value;
-    },
-    
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
-    }
-});
-Ext.define('PICS.ux.grid.column.Column', {
-	extend: 'Ext.grid.column.Column',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid column record');
-        }
-        
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
-        
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
-	
-	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-	    var grid = view.ownerCt,
-	        column = grid.columns[colIndex],
-	        col_record = column.record,
-	        field = col_record.getAvailableField(),
-	        url = field.get('url');
-	    
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + value + '</a>';
-        }
-        
-        return value;
-    },
-    
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
-    }
+    fields: [{
+        name: 'id',
+        type: 'string'
+    }, {
+        name: 'direction',
+        type: 'string'
+    }]
 });
 /**
  * @class Ext.data.association.HasOne
@@ -97801,408 +97662,13 @@ Ext.define('Ext.data.association.HasOne', {
         }
     }
 });
-/**
- * A Grid header type which renders an icon, or a series of icons in a grid cell, and offers a scoped click
- * handler for each icon.
- *
- *     @example
- *     Ext.create('Ext.data.Store', {
- *         storeId:'employeeStore',
- *         fields:['firstname', 'lastname', 'seniority', 'dep', 'hired'],
- *         data:[
- *             {firstname:"Michael", lastname:"Scott"},
- *             {firstname:"Dwight", lastname:"Schrute"},
- *             {firstname:"Jim", lastname:"Halpert"},
- *             {firstname:"Kevin", lastname:"Malone"},
- *             {firstname:"Angela", lastname:"Martin"}
- *         ]
- *     });
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Action Column Demo',
- *         store: Ext.data.StoreManager.lookup('employeeStore'),
- *         columns: [
- *             {text: 'First Name',  dataIndex:'firstname'},
- *             {text: 'Last Name',  dataIndex:'lastname'},
- *             {
- *                 xtype:'actioncolumn',
- *                 width:50,
- *                 items: [{
- *                     icon: 'extjs/examples/shared/icons/fam/cog_edit.png',  // Use a URL in the icon config
- *                     tooltip: 'Edit',
- *                     handler: function(grid, rowIndex, colIndex) {
- *                         var rec = grid.getStore().getAt(rowIndex);
- *                         alert("Edit " + rec.get('firstname'));
- *                     }
- *                 },{
- *                     icon: 'extjs/examples/restful/images/delete.png',
- *                     tooltip: 'Delete',
- *                     handler: function(grid, rowIndex, colIndex) {
- *                         var rec = grid.getStore().getAt(rowIndex);
- *                         alert("Terminate " + rec.get('firstname'));
- *                     }
- *                 }]
- *             }
- *         ],
- *         width: 250,
- *         renderTo: Ext.getBody()
- *     });
- *
- * The action column can be at any index in the columns array, and a grid can have any number of
- * action columns.
- */
-Ext.define('Ext.grid.column.Action', {
-    extend: 'Ext.grid.column.Column',
-    alias: ['widget.actioncolumn'],
-    alternateClassName: 'Ext.grid.ActionColumn',
-
-    /**
-     * @cfg {String} icon
-     * The URL of an image to display as the clickable element in the column.
-     *
-     * Defaults to `{@link Ext#BLANK_IMAGE_URL}`.
-     */
-    /**
-     * @cfg {String} iconCls
-     * A CSS class to apply to the icon image. To determine the class dynamically, configure the Column with
-     * a `{@link #getClass}` function.
-     */
-    /**
-     * @cfg {Function} handler
-     * A function called when the icon is clicked.
-     * @cfg {Ext.view.Table} handler.view The owning TableView.
-     * @cfg {Number} handler.rowIndex The row index clicked on.
-     * @cfg {Number} handler.colIndex The column index clicked on.
-     * @cfg {Object} handler.item The clicked item (or this Column if multiple {@link #cfg-items} were not configured).
-     * @cfg {Event} handler.e The click event.
-     * @cfg {Ext.data.Model} handler.record The Record underlying the clicked row.
-     * @cfg {HtmlElement} row The table row clicked upon.
-     */
-    /**
-     * @cfg {Object} scope
-     * The scope (**this** reference) in which the `{@link #handler}` and `{@link #getClass}` fuctions are executed.
-     * Defaults to this Column.
-     */
-    /**
-     * @cfg {String} tooltip
-     * A tooltip message to be displayed on hover. {@link Ext.tip.QuickTipManager#init Ext.tip.QuickTipManager} must
-     * have been initialized.
-     */
-    /**
-     * @cfg {Boolean} disabled
-     * If true, the action will not respond to click events, and will be displayed semi-opaque.
-     */
-    /**
-     * @cfg {Boolean} [stopSelection=true]
-     * Prevent grid selection upon mousedown.
-     */
-    /**
-     * @cfg {Function} getClass
-     * A function which returns the CSS class to apply to the icon image.
-     *
-     * @cfg {Object} getClass.v The value of the column's configured field (if any).
-     *
-     * @cfg {Object} getClass.metadata An object in which you may set the following attributes:
-     * @cfg {String} getClass.metadata.css A CSS class name to add to the cell's TD element.
-     * @cfg {String} getClass.metadata.attr An HTML attribute definition string to apply to the data container
-     * element *within* the table cell (e.g. 'style="color:red;"').
-     *
-     * @cfg {Ext.data.Model} getClass.r The Record providing the data.
-     *
-     * @cfg {Number} getClass.rowIndex The row index..
-     *
-     * @cfg {Number} getClass.colIndex The column index.
-     *
-     * @cfg {Ext.data.Store} getClass.store The Store which is providing the data Model.
-     */
-    /**
-     * @cfg {Object[]} items
-     * An Array which may contain multiple icon definitions, each element of which may contain:
-     *
-     * @cfg {String} items.icon The url of an image to display as the clickable element in the column.
-     *
-     * @cfg {String} items.iconCls A CSS class to apply to the icon image. To determine the class dynamically,
-     * configure the item with a `getClass` function.
-     *
-     * @cfg {Function} items.getClass A function which returns the CSS class to apply to the icon image.
-     * @cfg {Object} items.getClass.v The value of the column's configured field (if any).
-     * @cfg {Object} items.getClass.metadata An object in which you may set the following attributes:
-     * @cfg {String} items.getClass.metadata.css A CSS class name to add to the cell's TD element.
-     * @cfg {String} items.getClass.metadata.attr An HTML attribute definition string to apply to the data
-     * container element _within_ the table cell (e.g. 'style="color:red;"').
-     * @cfg {Ext.data.Model} items.getClass.r The Record providing the data.
-     * @cfg {Number} items.getClass.rowIndex The row index..
-     * @cfg {Number} items.getClass.colIndex The column index.
-     * @cfg {Ext.data.Store} items.getClass.store The Store which is providing the data Model.
-     *
-     * @cfg {Function} items.handler A function called when the icon is clicked.
-     *
-     * @cfg {Object} items.scope The scope (`this` reference) in which the `handler` and `getClass` functions
-     * are executed. Fallback defaults are this Column's configured scope, then this Column.
-     *
-     * @cfg {String} items.tooltip A tooltip message to be displayed on hover.
-     * @cfg {Boolean} items.disabled If true, the action will not respond to click events, and will be displayed semi-opaque.
-     * {@link Ext.tip.QuickTipManager#init Ext.tip.QuickTipManager} must have been initialized.
-     */
-    /**
-     * @property {Array} items
-     * An array of action items copied from the configured {@link #cfg-items items} configuration. Each will have
-     * an `enable` and `disable` method added which will enable and disable the associated action, and
-     * update the displayed icon accordingly.
-     */
-
-    actionIdRe: new RegExp(Ext.baseCSSPrefix + 'action-col-(\\d+)'),
-
-    /**
-     * @cfg {String} altText
-     * The alt text to use for the image element.
-     */
-    altText: '',
-
-    /**
-     * @cfg {String} menuText=[<i>Actions</i>]
-     * Text to display in this column's menu item if no {@link #text} was specified as a header.
-     */
-    menuText: '<i>Actions</i>',
-
-    sortable: false,
-
-    constructor: function(config) {
-        var me = this,
-            cfg = Ext.apply({}, config),
-            items = cfg.items || [me],
-            hasGetClass,
-            i,
-            len;
-
-
-        me.origRenderer = cfg.renderer || me.renderer;
-        me.origScope = cfg.scope || me.scope;
-        
-        delete me.renderer;
-        delete me.scope;
-        delete cfg.renderer;
-        delete cfg.scope;
-        
-        // This is a Container. Delete the items config to be reinstated after construction.
-        delete cfg.items;
-        me.callParent([cfg]);
-
-        // Items is an array property of ActionColumns
-        me.items = items;
-        
-        for (i = 0, len = items.length; i < len; ++i) {
-            if (items[i].getClass) {
-                hasGetClass = true;
-                break;
-            }
-        }
-        
-        // Also need to check for getClass, since it changes how the cell renders
-        if (me.origRenderer || hasGetClass) {
-            me.hasCustomRenderer = true;
-        }
-    },
+Ext.define('PICS.view.report.report.ColumnTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.columntooltip',
     
-    // Renderer closure iterates through items creating an <img> element for each and tagging with an identifying
-    // class name x-action-col-{n}
-    defaultRenderer: function(v, meta){
-        var me = this,
-            prefix = Ext.baseCSSPrefix,
-            scope = me.origScope || me,
-            items = me.items,
-            len = items.length,
-            i = 0,
-            item;
-            
-        // Allow a configured renderer to create initial value (And set the other values in the "metadata" argument!)
-        v = Ext.isFunction(me.origRenderer) ? me.origRenderer.apply(scope, arguments) || '' : '';
-
-        meta.tdCls += ' ' + Ext.baseCSSPrefix + 'action-col-cell';
-        for (; i < len; i++) {
-            item = items[i];
-            
-            // Only process the item action setup once.
-            if (!item.hasActionConfiguration) {
-                
-                // Apply our documented default to all items
-                item.stopSelection = me.stopSelection;
-                item.disable = Ext.Function.bind(me.disableAction, me, [i], 0);
-                item.enable = Ext.Function.bind(me.enableAction, me, [i], 0);
-                item.hasActionConfiguration = true;
-            }
-            
-            v += '<img alt="' + (item.altText || me.altText) + '" src="' + (item.icon || Ext.BLANK_IMAGE_URL) +
-                '" class="' + prefix + 'action-col-icon ' + prefix + 'action-col-' + String(i) + ' ' + (item.disabled ? prefix + 'item-disabled' : ' ') +
-                ' ' + (Ext.isFunction(item.getClass) ? item.getClass.apply(item.scope || scope, arguments) : (item.iconCls || me.iconCls || '')) + '"' +
-                ((item.tooltip) ? ' data-qtip="' + item.tooltip + '"' : '') + ' />';
-        }
-        return v;    
-    },
-
-    /**
-     * Enables this ActionColumn's action at the specified index.
-     * @param {Number/Ext.grid.column.Action} index
-     * @param {Boolean} [silent=false]
-     */
-    enableAction: function(index, silent) {
-        var me = this;
-
-        if (!index) {
-            index = 0;
-        } else if (!Ext.isNumber(index)) {
-            index = Ext.Array.indexOf(me.items, index);
-        }
-        me.items[index].disabled = false;
-        me.up('tablepanel').el.select('.' + Ext.baseCSSPrefix + 'action-col-' + index).removeCls(me.disabledCls);
-        if (!silent) {
-            me.fireEvent('enable', me);
-        }
-    },
-
-    /**
-     * Disables this ActionColumn's action at the specified index.
-     * @param {Number/Ext.grid.column.Action} index
-     * @param {Boolean} [silent=false]
-     */
-    disableAction: function(index, silent) {
-        var me = this;
-
-        if (!index) {
-            index = 0;
-        } else if (!Ext.isNumber(index)) {
-            index = Ext.Array.indexOf(me.items, index);
-        }
-        me.items[index].disabled = true;
-        me.up('tablepanel').el.select('.' + Ext.baseCSSPrefix + 'action-col-' + index).addCls(me.disabledCls);
-        if (!silent) {
-            me.fireEvent('disable', me);
-        }
-    },
-
-    destroy: function() {
-        delete this.items;
-        delete this.renderer;
-        return this.callParent(arguments);
-    },
-
-    /**
-     * @private
-     * Process and refire events routed from the GridView's processEvent method.
-     * Also fires any configured click handlers. By default, cancels the mousedown event to prevent selection.
-     * Returns the event handler's status to allow canceling of GridView's bubbling process.
-     */
-    processEvent : function(type, view, cell, recordIndex, cellIndex, e, record, row){
-        var me = this,
-            target = e.getTarget(),
-            match,
-            item, fn,
-            key = type == 'keydown' && e.getKey();
-
-        // If the target was not within a cell (ie it's a keydown event from the View), then
-        // rely on the selection data injected by View.processUIEvent to grab the
-        // first action icon from the selected cell.
-        if (key && !Ext.fly(target).findParent(view.cellSelector)) {
-            target = Ext.fly(cell).down('.' + Ext.baseCSSPrefix + 'action-col-icon', true);
-        }
-
-        // NOTE: The statement below tests the truthiness of an assignment.
-        if (target && (match = target.className.match(me.actionIdRe))) {
-            item = me.items[parseInt(match[1], 10)];
-            if (item) {
-                if (type == 'click' || (key == e.ENTER || key == e.SPACE)) {
-                    fn = item.handler || me.handler;
-                    if (fn && !item.disabled) {
-                        fn.call(item.scope || me.origScope || me, view, recordIndex, cellIndex, item, e, record, row);
-                    }
-                } else if (type == 'mousedown' && item.stopSelection !== false) {
-                    return false;
-                }
-            }
-        }
-        return me.callParent(arguments);
-    },
-
-    cascade: function(fn, scope) {
-        fn.call(scope||this, this);
-    },
-
-    // Private override because this cannot function as a Container, and it has an items property which is an Array, NOT a MixedCollection.
-    getRefItems: function() {
-        return [];
-    }
-});
-
-/**
- * A Column definition class which renders a passed date according to the default locale, or a configured
- * {@link #format}.
- *
- *     @example
- *     Ext.create('Ext.data.Store', {
- *         storeId:'sampleStore',
- *         fields:[
- *             { name: 'symbol', type: 'string' },
- *             { name: 'date',   type: 'date' },
- *             { name: 'change', type: 'number' },
- *             { name: 'volume', type: 'number' },
- *             { name: 'topday', type: 'date' }                        
- *         ],
- *         data:[
- *             { symbol: "msft",   date: '2011/04/22', change: 2.43, volume: 61606325, topday: '04/01/2010' },
- *             { symbol: "goog",   date: '2011/04/22', change: 0.81, volume: 3053782,  topday: '04/11/2010' },
- *             { symbol: "apple",  date: '2011/04/22', change: 1.35, volume: 24484858, topday: '04/28/2010' },            
- *             { symbol: "sencha", date: '2011/04/22', change: 8.85, volume: 5556351,  topday: '04/22/2010' }            
- *         ]
- *     });
- *     
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Date Column Demo',
- *         store: Ext.data.StoreManager.lookup('sampleStore'),
- *         columns: [
- *             { text: 'Symbol',   dataIndex: 'symbol', flex: 1 },
- *             { text: 'Date',     dataIndex: 'date',   xtype: 'datecolumn',   format:'Y-m-d' },
- *             { text: 'Change',   dataIndex: 'change', xtype: 'numbercolumn', format:'0.00' },
- *             { text: 'Volume',   dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000' },
- *             { text: 'Top Day',  dataIndex: 'topday', xtype: 'datecolumn',   format:'l' }            
- *         ],
- *         height: 200,
- *         width: 450,
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('Ext.grid.column.Date', {
-    extend: 'Ext.grid.column.Column',
-    alias: ['widget.datecolumn'],
-    requires: ['Ext.Date'],
-    alternateClassName: 'Ext.grid.DateColumn',
-
-    /**
-     * @cfg {String} format
-     * A formatting string as used by {@link Ext.Date#format} to format a Date for this Column.
-     *
-     * Defaults to the default date from {@link Ext.Date#defaultFormat} which itself my be overridden
-     * in a locale file.
-     */
-    /**
-     * @cfg renderer
-     * @hide
-     */
-    /**
-     * @cfg scope
-     * @hide
-     */
-
-    initComponent: function(){
-        if (!this.format) {
-            this.format = Ext.Date.defaultFormat;
-        }
-        
-        this.callParent(arguments);
-    },
-    
-    defaultRenderer: function(value){
-        return Ext.util.Format.date(value, this.format);
-    }
+    anchor: 'bottom',
+    showDelay: 0,
+    tpl: '<div><h3>{text}</h3><p>{help}</p></div>'
 });
 /**
  * Available Fields By Category Store
@@ -98217,6 +97683,25 @@ Ext.define('PICS.store.report.AvailableFieldsByCategory', {
 
 	autoLoad: false,
     groupField: 'category',
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }]
+});
+Ext.define('PICS.store.report.Filters', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Filter2',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'filters',
+            type: 'json'
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
+    },
     sorters: [{
         property: 'category',
         direction: 'ASC'
@@ -98368,93 +97853,45 @@ Ext.define('PICS.model.report.Sort', {
         defaultValue: 'ASC'
     }]
 });
-Ext.define('PICS.ux.grid.column.Boolean', {
-	extend: 'Ext.grid.column.Action',
-	
-	align: 'center',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid column record');
-        }
-        
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width') ? field.get('width') : 50;
-        
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
-	
-	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url'),
-            icon = value ? '<i class="icon-ok"></i>' : '';
-        
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + icon + '</a>';
-        }
-        
-        return icon;
-    },
+Ext.define('PICS.ux.grid.column.Column', {
+    extend: 'Ext.grid.column.Column',
     
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
-    }
-});
-Ext.define('PICS.ux.grid.column.Date', {
-	extend: 'Ext.grid.column.Date',
-	
-	format: 'Y-m-d',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
+    requires: [
+        'PICS.view.report.report.ColumnTooltip'
+    ],
+    
+    menuDisabled: true,
+    sortable: false,
+    
+    constructor: function (args) {
+        this.column = args.column;
+        
+        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column record');
         }
         
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
+        var field = this.column.getAvailableField(),
+            name = field.get('name'),
+            text = field.get('text'),
+            width = field.get('width');
         
         this.dataIndex = name;
-        this.text = text;
-        this.width = width;
-	},
+        
+        this.setText(text);
+        this.setWidth(width);
+        
+        this.callParent(arguments);
+    },
     
     renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
         var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url'),
-            value = Ext.Date.format(value, column.format);
+            grid_column = grid.columns[colIndex],
+            column = grid_column.column,
+            field = column.getAvailableField(),
+            url = field.get('url');
         
         if (url) {
-            var href = column.getHref(url, record);
+            var href = grid_column.getHref(url, record);
             
             return '<a href="' + href + '" target="_blank">' + value + '</a>';
         }
@@ -98464,90 +97901,287 @@ Ext.define('PICS.ux.grid.column.Date', {
     
     getHref: function (url, record) {
         return url.replace(/\{(.*?)\}/g, function (match, p1) {
+            // raw attribute is to get data from the record that is not observed in the model
             return record.raw[p1];
         });
-    }
-});
-Ext.define('PICS.ux.grid.column.Flag', {
-	extend: 'Ext.grid.column.Action',
-	
-	align: 'center',
-	
-	constructor: function () {
-		this.callParent(arguments);
-
-        if (!this.record) {
+    },
+    
+    createTooltip: function () {
+        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column record');
         }
         
-        var field = this.record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
+        var target = this.el,
+            field = this.column.getAvailableField(),
+            text = field.get('text'),
+            help = field.get('help');
         
-        var name = field.get('name'),
-	    	text = field.get('text'),
-	    	width = field.get('width');
+        var tooltip = Ext.create('PICS.view.report.report.ColumnTooltip', {
+            target: target
+        });
         
-        this.dataIndex = name;
-        this.text = text;
-        this.width = width;
+        tooltip.update({
+            text: text,
+            help: help
+        });
+    }
+});
+Ext.define('PICS.ux.grid.column.Boolean', {
+	extend: 'PICS.ux.grid.column.Column',
+	
+	align: 'center',
+	width: 50,
+	
+	constructor: function () {
+		this.callParent(arguments);
 	},
 	
 	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
-        var grid = view.ownerCt,
-            column = grid.columns[colIndex],
-            col_record = column.record,
-            field = col_record.getAvailableField(),
-            url = field.get('url'),
-            icon;
+	    value = value ? '<i class="icon-ok"></i>' : '';
         
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.Flag', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    align: 'center',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
         switch (value) {
             case 'Green':
-                icon = '<i class="icon-flag green"></i>';
+                value = '<i class="icon-flag green"></i>';
                 
                 break;
             case 'Red':
-                icon = '<i class="icon-flag red"></i>';
+                value = '<i class="icon-flag red"></i>';
                 
                 break;
             case 'Yellow':
             case 'Amber':
-                icon = '<i class="icon-flag amber"></i>';
+                value = '<i class="icon-flag amber"></i>';
                 
                 break;
             default:
-                icon = '<i class="icon-flag clear"></i>';
+                value = '<i class="icon-flag clear"></i>';
                 break;
         }
         
-        if (url) {
-            var href = column.getHref(url, record);
-            
-            return '<a href="' + href + '" target="_blank">' + icon + '</a>';
-        }
-        
-        return icon;
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.Number', {
+    extend: 'PICS.ux.grid.column.Column',
+	
+	format: '0,000',
+	
+    constructor: function () {
+        this.callParent(arguments);
     },
     
-    getHref: function (url, record) {
-        return url.replace(/\{(.*?)\}/g, function (match, p1) {
-            return record.raw[p1];
-        });
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.String', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.model.report.Column2', {
+    extend: 'Ext.data.Model',
+    
+    requires: [
+        'PICS.ux.grid.column.Column',
+        'PICS.ux.grid.column.Boolean',
+        'PICS.ux.grid.column.Flag',
+        'PICS.ux.grid.column.Number',
+        'PICS.ux.grid.column.String'
+    ],
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'url',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'sql_function',
+        type: 'string'
+    }, {
+        name: 'width',
+        type: 'int'
+    }, {
+        name: 'is_sortable',
+        type: 'boolean',
+        perist: false
+    }],
+
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    toModelField: function () {
+        var id = this.get('id'),
+            type = this.get('type'),
+            data_type;
+        
+        switch (type) {
+            case 'boolean':
+                data_type = 'boolean';
+    
+                break;
+            default:
+                data_type = 'auto';
+                
+                break;
+        }
+        
+        var model_field = {
+            name: id,
+            type: data_type
+        };
+
+        return model_field;
+    },
+
+    // ALERT: Ext.grid.column.Column is DEFAULT
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    toGridColumn: function () {
+        var type = this.get('type'),
+            url = this.get('url'),
+            grid_column;
+        
+        var config = {
+            column: this
+        };
+
+        switch (type) {
+            case 'boolean':
+                grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
+
+                break;
+            case 'flag':
+                grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+
+                break;
+            case 'number':
+                grid_column = Ext.create('PICS.ux.grid.column.Number', config);
+
+                break;
+            case 'date':
+            case 'string':
+            default:
+                grid_column = Ext.create('PICS.ux.grid.column.String', config);
+                
+                break;
+        }
+        
+        return grid_column;
+    }
+});
+Ext.define('PICS.store.report.Columns', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Column2',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'columns',
+            type: 'json'
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
+    },
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }]
+});
+Ext.define('PICS.ux.grid.column.Date', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    format: 'Y-m-d',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        var grid = view.ownerCt,
+            grid_column = grid.columns[colIndex];
+        
+        value = Ext.Date.format(value, grid_column.format);
+        
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.Float', {
+    extend: 'PICS.ux.grid.column.Column',
+    
+    align: 'right',
+    format: '0,000.00',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
+    }
+});
+Ext.define('PICS.ux.grid.column.Int', {
+    extend: 'PICS.ux.grid.column.Column',
+
+    align: 'right',
+    format: '0',
+    
+    constructor: function () {
+        this.callParent(arguments);
+    },
+    
+    renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        return this.callParent(arguments);
     }
 });
 Ext.define('PICS.model.report.Column', {
     extend: 'Ext.data.Model',
     
     requires: [
+        'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
         'PICS.ux.grid.column.Date',
         'PICS.ux.grid.column.Flag',
         'PICS.ux.grid.column.Float',
         'PICS.ux.grid.column.Int',
         'PICS.ux.grid.column.Number',
-        'PICS.ux.grid.column.Column'
+        'PICS.ux.grid.column.String'
     ],
 
     // http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
@@ -98607,9 +98241,7 @@ Ext.define('PICS.model.report.Column', {
         var type = field.get('type');
         
         var config = {
-            menuDisabled: true,
-            record: this,
-            sortable: false
+            column: this
         };
 
         switch (type) {
@@ -98646,7 +98278,7 @@ Ext.define('PICS.model.report.Column', {
             // text
             case 'string':
             default:
-                grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+                grid_column = Ext.create('PICS.ux.grid.column.String', config);
                 
                 break;
         }
@@ -99240,6 +98872,313 @@ associations: [{
         }
     }
 });
+Ext.define('PICS.model.report.Report2', {
+    extend: 'Ext.data.Model',
+    requires: [
+        'PICS.model.report.Column2',
+        'PICS.model.report.Filter2',
+        'PICS.model.report.Sort2'
+    ],
+
+    fields: [{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string'
+    }, {
+        name: 'description',
+        type: 'string'
+    }, {
+        name: 'filter_expression',
+        type: 'string'
+    }, {
+        name: 'num_times_favorited',
+        type: 'int',
+        persist: false
+    }, {
+        name: 'is_editable',
+        type: 'boolean',
+        persist: false
+    }, {
+        name: 'is_favorite',
+        type: 'boolean'
+    }],
+    hasMany: [{
+        model: 'PICS.model.report.Column2',
+        name: 'columns'
+    }, {
+        model: 'PICS.model.report.Filter2',
+        name: 'filters'
+    }, {
+        model: 'PICS.model.report.Sort2',
+        name: 'sorts'
+    }],
+
+    getFilterExpression: function () {
+        var filter_expression = this.get('filter_expression');
+        
+        return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
+            return parseInt(p1);
+        });
+    },
+    
+    // TODO: probably fix this because nichols wrote it
+    setFilterExpression: function (filter_expression) {
+        // Hack: because this is broken
+        if (filter_expression == '') {
+            this.set('filter_expression', filter_expression);
+
+            return false;
+        }
+
+        // TODO write a real grammar and parser for our filter formula DSL
+
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
+
+        var tokens = filter_expression.trim().split(/ +/);
+        filter_expression = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+
+            if (token.search(validTokenRegex) === -1) {
+                return false;
+            }
+
+            if (token === '(') {
+                parenCount += 1;
+                filter_expression += token;
+            } else if (token === ')') {
+                parenCount -= 1;
+                filter_expression += token;
+            } else if (token.toUpperCase() === 'AND') {
+                filter_expression += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                filter_expression += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0') {
+                    return false;
+                }
+
+                // Convert from counting number to index
+                var indexNum = new Number(token);
+                filter_expression += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0) {
+                return false;
+            }
+        }
+
+        if (parenCount !== 0) {
+            return false;
+        }
+
+        this.set('filter_expression', filter_expression);
+    },
+
+    /**
+     * Get Report JSON
+     *
+     * Builds a jsonified version of the report to be sent to the server
+     */
+    toJson: function () {
+        var report = {};
+
+        function getStoreType(store) {
+            var className = store.getName(), // store.self.getName()
+                nameSpaces = className.split("."),
+                storeType = nameSpaces[nameSpaces.length-1];
+
+            return storeType;
+        }
+
+        function convertStoreToDataObject(store) {
+            var data = [],
+                mutableFields = store.mutableFields;
+
+            store.each(function (record) {
+                var item = {};
+                
+                record.fields.each(function (field) {
+
+                    var fieldName = record.get(field.name),
+                        storeType = getStoreType(store);
+                    
+                    //if (fieldname && this.mutableFields[store].indexOf(fieldName) != 1) {
+                    if (fieldName && store.mutableFields.indexOf(fieldName) != -1) {
+                        item[fieldName] = fieldName;
+                    }
+                });
+                
+                data.push(item);
+            });
+
+            return data;
+        }
+
+        report = this.data;
+        report.columns = convertStoreToDataObject(this.columns());
+        report.filters = convertStoreToDataObject(this.filters());
+        report.sorts = convertStoreToDataObject(this.sorts());
+
+        return Ext.encode(report);
+    },
+
+    toRequestParams: function () {
+        var report = {};
+
+        report.report = this.get('id');
+        report['report.description'] = this.get('description');
+        report['report.name'] = this.get('name');
+        report['report.parameters'] = this.toJson();
+        report['report.rowsPerPage'] = this.get('rowsPerPage');
+
+        return report;
+    },
+    
+    
+    
+    
+    addColumn: function (column) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
+        var column_store = this.columns();
+        
+        column_store.add(column);
+    },
+    
+    addColumns: function (columns) {
+        Ext.Array.forEach(columns, function (column) {
+            if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+                Ext.Error.raise('Invalid column');
+            }
+        });
+        
+        var column_store = this.columns();
+        
+        column_store.add(columns);
+    },
+    
+    addFilter: function (filter) {
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter');
+        }
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filter);
+    },
+    
+    addFilters: function (filters) {
+        Ext.Array.forEach(filters, function (filter) {
+            if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+                Ext.Error.raise('Invalid filter');
+            }
+        });
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filters);
+    },
+    
+    addSort: function (column, direction) {
+        var sort_store = this.sorts(),
+            column_name = column.get('name');
+        
+        sort_store.add({
+            name: column_name,
+            direction: direction
+        });
+    },
+    
+    convertColumnsToModelFields: function () {
+        var column_store = this.columns(),
+            model_fields = [];
+        
+        column_store.each(function (column) {
+            var model_field = column.toModelField();
+            
+            model_fields.push(model_field);
+        });
+        
+        return model_fields;
+    },
+    
+    convertColumnsToGridColumns: function () {
+        var column_store = this.columns(),
+            grid_columns = [];
+        
+        column_store.each(function (column) {
+            var grid_column = column.toGridColumn();
+            
+            grid_columns.push(grid_column);
+        });
+        
+        return grid_columns;
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    // reorder columns
+    moveColumnByIndex: function (from_index, to_index) {
+        var column_store = this.columns(),
+            columns = [];
+
+        // generate an array of columns from column store
+        column_store.each(function (column, index) {
+            columns[index] = column;
+        });
+    
+        // splice out the column store - column your moving
+        var spliced_column = columns.splice(from_index, 1);
+    
+        // insert the column store - column to the position you moved it to
+        columns.splice(to_index, 0, spliced_column);
+    
+        // remove all column store records
+        column_store.removeAll();
+        
+        // re-insert column store records in the new position
+        Ext.each(columns, function (column, index) {
+            column_store.add(column);
+        });
+    }
+});
+Ext.define('PICS.store.report.Reports2', {
+    extend : 'PICS.store.report.base.Store',
+    model : 'PICS.model.report.Report2',
+
+    proxy: {
+        reader: {
+            root: 'report',
+            type: 'json'
+        },
+        writer: {
+            root: 'report',
+            type: 'json'            
+        },
+        timeout: 10000,
+        type: 'ajax',
+        url: '/v7/js/extjs/pics/app/data/report.json'
+    }
+});
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
     requires: [
@@ -99284,6 +99223,75 @@ Ext.define('PICS.model.report.Report', {
         model: 'PICS.model.report.Sort',
         name: 'sorts'
     }],
+    
+    getFilterExpression: function () {
+        var filter_expression = this.get('filterExpression');
+        
+        return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
+            return parseInt(p1);
+        });
+    },
+    
+    // TODO: probably fix this because nichols wrote it
+    setFilterExpression: function (filter_expression) {
+        // Hack: because this is broken
+        if (filter_expression == '') {
+            this.set('filterExpression', filter_expression);
+
+            return false;
+        }
+
+        // TODO write a real grammar and parser for our filter formula DSL
+
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
+
+        var tokens = filter_expression.trim().split(/ +/);
+        filter_expression = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+
+            if (token.search(validTokenRegex) === -1) {
+                return false;
+            }
+
+            if (token === '(') {
+                parenCount += 1;
+                filter_expression += token;
+            } else if (token === ')') {
+                parenCount -= 1;
+                filter_expression += token;
+            } else if (token.toUpperCase() === 'AND') {
+                filter_expression += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                filter_expression += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0') {
+                    return false;
+                }
+
+                // Convert from counting number to index
+                var indexNum = new Number(token);
+                filter_expression += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0) {
+                return false;
+            }
+        }
+
+        if (parenCount !== 0) {
+            return false;
+        }
+
+        this.set('filterExpression', filter_expression);
+    },
 
     /**
      * Get Report JSON
@@ -99527,9 +99535,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             available_field_checkbox_model = available_field_list.getSelectionModel();
 
         if (available_field_checkbox_model.getCount() > 0) {
-            var available_fields = available_field_checkbox_model.getSelection(),
-                report_store = this.getReportReportsStore(),
+            var report_store = this.getReportReportsStore(),
                 report = report_store.first(),
+                available_fields = available_field_checkbox_model.getSelection(),
                 columns = [];
             
             Ext.Array.forEach(available_fields, function (available_field) {
@@ -99549,9 +99557,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             available_field_checkbox_model = available_field_list.getSelectionModel();
     
         if (available_field_checkbox_model.getCount() > 0) {
-            var available_fields = available_field_checkbox_model.getSelection(),
-                report_store = this.getReportReportsStore(),
+            var report_store = this.getReportReportsStore(),
                 report = report_store.first(),
+                available_fields = available_field_checkbox_model.getSelection(),
                 filters = [];
 
             Ext.Array.forEach(available_fields, function (available_field) {
@@ -99589,7 +99597,9 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     onAvailableFieldCancel: function (cmp, event, eOpts) {
-        this.getAvailableFieldModal().close();
+        var available_field_modal = this.getAvailableFieldModal();
+        
+        available_field_modal.close();
     },
 
     onAvailableFieldSearch: function (cmp, event, eOpts) {
@@ -99630,8 +99640,8 @@ Ext.define('PICS.controller.report.Filter', {
         ref: 'filterFormula',
         selector: 'reportfilteroptions reportfilterformula'
     }, {
-        ref: 'filterFormulaExpression',
-        selector: 'repogrtfilteroptions reportfilterformula textfield[name=filter_formula]'
+        ref: 'filterFormulaTextfield',
+        selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
         ref: 'filterHeader',
         selector: 'reportfilterheader'
@@ -99651,9 +99661,7 @@ Ext.define('PICS.controller.report.Filter', {
     ],
 
     views: [
-        'PICS.view.report.filter.Filters',
-        'PICS.view.report.filter.FilterFormula',
-        'PICS.view.report.filter.FilterToolbar'
+        'PICS.view.report.filter.Filters'
     ],
 
     init: function() {
@@ -99767,32 +99775,35 @@ Ext.define('PICS.controller.report.Filter', {
             refreshfilters: this.refreshFilters,
             scope: this
         });
-
-        var that = this;
-        Ext.EventManager.onWindowResize(that.positionRemoveButtons, that);
     },
 
     /**
      * Filter Options
      */
 
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
+    // TODO: This should be removed or refactored - pencil advanced filter is a hack
     onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
-        // Toggle the pencil icon's color.
-        var el = cmp.getEl(),
+        var filter_panel = cmp.up('reportfilter'),
+            filter_content = filter_panel.down('reportfilterbaseuseridfilter'),
+            filter = filter_panel.record,
+            el = cmp.getEl(),
             advanced_button = el.down('.icon-pencil'),
             advanced_on = el.down('.icon-pencil.selected');
 
-        var filter = this.findParentFilter(cmp),
-            filter_content = filter.down('reportfilterbaseuseridfilter');
-
         if (advanced_on) {
-            filter.record.set('fieldCompare', null);
-            filter_content.createNumberfield(filter.record);
+            filter.set('fieldCompare', null);
+            
+            filter_content.createNumberfield(filter);
+            
             advanced_button.removeCls('selected');
         } else {
-            filter.record.set('value', null);
+            filter.set('value', null);
+            
             advanced_button.addCls('selected');
-            filter_content.createFieldSelect(filter.record);
+            
+            filter_content.createFieldSelect(filter);
         }
     },
     
@@ -99802,57 +99813,35 @@ Ext.define('PICS.controller.report.Filter', {
         if (!filters) {
             return;
         }
-
-        var body = Ext.getBody(),
-            filter_footer = this.getFilterFooter(),
-            filter_formula = this.getFilterFormula(),
-            filter_header = this.getFilterHeader(),
-            filter_toolbar = this.getFilterToolbar(),
-            filter_offset;
-
-        // if filters show fully on screen
-        if (body.getHeight() > (filters.el.getY() + filters.getHeight())) {
-            cmp.body.setHeight(filters.getHeight());
-
-        // if filters bleed off screen
-        } else {
-            cmp.body.setHeight(filters.getHeight() - ((filters.el.getY() + filters.getHeight()) - body.getHeight()));
-        }
-
-        if (filter_toolbar) {
-            filter_offset = filter_header.getHeight() + filter_toolbar.getHeight() + filters.getHeight();
-        } else if (filter_formula) {
-            filter_offset = filter_header.getHeight() + filter_formula.getHeight() + filters.getHeight();
-        }
-
-        if (filter_offset) {
-            filter_footer.setPosition(0, filter_offset);
-        }
-
-        this.positionRemoveButtons();
+        
+        cmp.updateBodyHeight();
+        
+        cmp.updateFooterPosition();
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore();
+    
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
+                var report = report_store.first(),
+                    filter_expression = report.get('filterExpression');
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                var report = store.first();
-
-                this.application.fireEvent('refreshfilters');
-
-                if (report && report.get('filterExpression') != '') {
-                    this.showFilterFormula();
+                if (filter_expression != '') {
+                    cmp.showFormula();
                 }
+                
+                this.application.fireEvent('refreshfilters');
             }, this);
         } else {
-            var report = store.first();
+            var report = report_store.first(),
+                filter_expression = report.get('filterExpression');
 
-            this.application.fireEvent('refreshfilters');
-
-            if (report && report.get('filterExpression') != '') {
-                this.showFilterFormula();
+            if (filter_expression != '') {
+                cmp.showFormula();
             }
+            
+            this.application.fireEvent('refreshfilters');
         }
     },
 
@@ -99869,21 +99858,8 @@ Ext.define('PICS.controller.report.Filter', {
     },
     
     onFilterRender: function (cmp, eOpts) {
-        var record = cmp.record,
-            field = record.getAvailableField();
-        
-        Ext.create('Ext.tip.ToolTip', {
-            anchor: 'left',
-            showDelay: 0,
-            target: cmp.el.down('.filter-name'),
-            html: [
-                '<div>',
-                    '<p>' + field.get('help') + '</p>',
-                '</div>'
-            ].join('')
-        });
-            
-        Ext.QuickTips.init();
+        // attach tooltip on the name of each filter
+        cmp.createTooltip();
     },
 
     /**
@@ -99899,52 +99875,29 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onFilterFormulaShow: function (cmp, event, eOpts) {
-        this.showFilterFormula();
-    },
-
-    showFilterFormula: function () {
-        var filter_options = this.getFilterOptions(),
-        filter_toolbar = this.getFilterToolbar();
-
-        if (!filter_options) {
-            return false;
-        }
-
-        var filter_formula = {
-            xtype: 'reportfilterformula',
-            dock: 'top'
-        };
-
-        filter_options.removeDocked(filter_toolbar);
-        filter_options.addDocked(filter_formula);
+        var filter_options = cmp.up('reportfilteroptions');
+        
+        filter_options.showFormula();
     },
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
-        var filter_options = this.getFilterOptions(),
-            filter_formula = this.getFilterFormula();
-
-        var filter_toolbar = {
-            xtype: 'reportfiltertoolbar',
-            dock: 'top'
-        };
-
-        filter_options.removeDocked(filter_formula);
-        filter_options.addDocked(filter_toolbar);
-
-        this.getFilters().removeCls('x-active');
+        var filter_options = cmp.up('reportfilteroptions'),
+            filters = this.getFilters();
+        
+        filter_options.showToolbar();
+        
+        filters.removeCls('x-active');
     },
 
     onFilterFormulaBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            filter_formula = report.get('filterExpression'),
-            filter_formula_expression = this.getFilterFormulaExpression(),
-            filters = this.getFilters();
-
-        if (filter_formula != '') {
-            filter_formula = this.formatFilterFormula(filter_formula);
-
-            filter_formula_expression.setValue(filter_formula);
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filters = this.getFilters(),
+            filter_expression = report.get('filterExpression');
+            
+        if (filter_expression != '') {
+            filter_formula_textfield.setValue(report.getFilterExpression());
         }
 
         if (filters) {
@@ -99952,92 +99905,28 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    formatFilterFormula: function (formula) {
-        var formatted = formula.replace(/[{}]/g, '');
-
-        formatted = formatted.replace(/\d+/g, function(val) {
-            return parseInt(val);
-        });
-
-        return formatted;
-    },
-
     onFilterFormulaBlur: function (cmp, event, eOpts) {
-        this.saveFilterFormula();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filter_expression = filter_formula_textfield.getValue();
+        
+        report.setFilterExpression(filter_expression);
     },
 
     onFilterFormulaInputSpecialKey: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
-
-        this.saveFilterFormula();
+        
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filter_expression = filter_formula_textfield.getValue();
+        
+        report.setFilterExpression(filter_expression);
 
         this.application.fireEvent('refreshreport');
-    },
-
-    saveFilterFormula: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            filter_formula = this.getFilterFormulaExpression().getValue();
-
-        // Hack: because this is broken
-        if (filter_formula == '') {
-            report.set('filterExpression', filter_formula);
-
-            return false;
-        }
-
-        // TODO write a real grammar and parser for our filter formula DSL
-
-        // Split into tokens
-        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
-        filter_formula = filter_formula.replace(validTokenRegex, ' $& ');
-
-        var tokens = filter_formula.trim().split(/ +/);
-        filter_formula = '';
-
-        // Check for invalid tokens and make sure parens are balanced
-        var parenCount = 0;
-        for (var i = 0; i < tokens.length; i += 1) {
-            var token = tokens[i];
-
-            if (token.search(validTokenRegex) === -1) {
-                return false;
-            }
-
-            if (token === '(') {
-                parenCount += 1;
-                filter_formula += token;
-            } else if (token === ')') {
-                parenCount -= 1;
-                filter_formula += token;
-            } else if (token.toUpperCase() === 'AND') {
-                filter_formula += ' AND ';
-            } else if (token.toUpperCase() === 'OR') {
-                filter_formula += ' OR ';
-            } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
-                    return false;
-                }
-
-                // Convert from counting number to index
-                var indexNum = new Number(token);
-                filter_formula += '{' + indexNum + '}';
-            } else {
-                return false;
-            }
-
-            if (parenCount < 0) {
-                return false;
-            }
-        }
-
-        if (parenCount !== 0) {
-            return false;
-        }
-
-        report.set('filterExpression', filter_formula);
     },
 
     /**
@@ -100045,7 +99934,7 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     refreshFilters: function () {
-        var report_store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
             filter_options = this.getFilterOptions();
@@ -100060,8 +99949,6 @@ Ext.define('PICS.controller.report.Filter', {
 
         // add new filters
         filter_options.add(filters);
-
-        this.positionRemoveButtons();
     },
 
     /**
@@ -100069,141 +99956,121 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onFilterBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-
-        if (filter) {
-            filter.removeCls('x-form-focus');
-        }
+        var filter_panel = cmp.up('reportfilter');
+        
+        filter_panel.removeCls('x-form-focus');
     },
 
     onFilterFocus: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
+        var filter_panel = cmp.up('reportfilter');
 
-        if (filter) {
-            filter.addCls('x-form-focus');
-        }
+        filter_panel.addCls('x-form-focus');
     },
 
     onFilterOperatorSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp),
-            filter_value = cmp.next('textfield, inputfield, numberfield');
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            filter_value_textfield = cmp.next('textfield, inputfield, numberfield'),
+            operator_value = cmp.getSubmitValue();
         
-        filter.record.set('operator', cmp.getSubmitValue());
+        filter.set('operator', operator_value);
         
-        if (cmp.getSubmitValue() == 'Empty') {
-            filter_value.setValue('');
-            filter_value.disable();
+        if (operator_value == 'Empty') {
+            filter_value_textfield.setValue('');
+            filter_value_textfield.disable();
         } else {
-            filter_value.enable();
+            filter_value_textfield.enable();
         }
 
-        if (filter.record.get('value') != '') {
+        if (filter.get('value') != '') {
             this.application.fireEvent('refreshreport');
         }
     },
 
     onFilterRemove: function (cmp, event, eOpts) {
-        var filter_store = this.getReportReportsStore().first().filters(),
-            filter = this.findParentFilter(cmp),
-            record = filter.record;
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_store = report.filters(),
+            filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record;
 
-        if (record) {
-            filter_store.remove(record);
+        filter_store.remove(filter);
 
-            this.application.fireEvent('refreshfilters');
+        this.application.fireEvent('refreshfilters');
 
-            if (record.get('value') != '') {
-                this.application.fireEvent('refreshreport');
-            }
+        if (filter.get('value') != '') {
+            this.application.fireEvent('refreshreport');
         }
     },
 
     onFilterValueDateBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp),
-            date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getValue(),
+            // TODO: weird may need some unified date format
+            date = Ext.Date.format(value, 'Y-m-d') || value;
         
-        filter.record.set('value', date);
+        filter.set('value', date);
     },
 
     onFilterValueDateSpecialKey: function (cmp, event) {
-        if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp),
-                date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
-            
-            filter.record.set('value', date);
-
-            this.application.fireEvent('refreshreport');
+        if (event.getKey() != event.ENTER) {
+            return false;
         }
+        
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            // TODO: weird may need some unified date format
+            date = Ext.Date.format(value, 'Y-m-d') || value;
+        
+        filter.set('value', date);
+
+        this.application.fireEvent('refreshreport');
     },
     
     onFilterValueInputBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getSubmitValue());
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('value', value);
     },
 
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
+    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
     onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('fieldCompare', cmp.getSubmitValue());
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('fieldCompare', value);
     },
     
     onFilterValueInputSpecialKey: function (cmp, event) {
-        if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp);
-            filter.record.set('value', cmp.getSubmitValue());
-
-            this.application.fireEvent('refreshreport');
+        if (event.getKey() != event.ENTER) {
+            return false;
         }
-    },
-
-    onFilterValueSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getSubmitValue());
+        
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
+        
+        filter.set('value', value);
 
         this.application.fireEvent('refreshreport');
     },
 
-    /**
-     * MISC
-     */
-
-    positionRemoveButtons: function () {
-        var remove_filter_elements = Ext.select('.remove-filter').elements;
-
-        if (remove_filter_elements.length) {
-            var filter_options = this.getFilterOptions(),
-                scrollbar_width = Ext.getScrollbarSize().width,
-                scrollbar_left = filter_options.width - scrollbar_width,
-                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
-                button_left = parseInt(remove_filter_elements[0].style.left),
-                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
-
-            if (scrollbar_visible && button_obscured) {
-                button_left = button_left - scrollbar_width;
-                for (var i = 0; i < remove_filter_elements.length; i++) {
-                    remove_filter_elements[i].style.left = button_left + 'px';
-                }
-
-                // Do the same thing to any advanced filter buttons.
-                var advanced_button_elements = Ext.select('.advanced-filter-button').elements;
-                if (advanced_button_elements.length) {
-                    for (var i = 0; i < advanced_button_elements.length; i++) {
-                        advanced_button_elements[i].style.left = button_left + 'px';
-                    }
-                }
-
-            }
-        }
+    onFilterValueSelect: function (cmp, records, eOpts) {
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            value = cmp.getSubmitValue();
         
-        var remove_filter_elements = Ext.select('.remove-filter').elements;
-    },
+        filter.set('value', value);
 
-    findParentFilter: function (cmp) {
-        return cmp.findParentBy(function (cmp) {
-            return cmp.cls == 'filter';
-        });
+        this.application.fireEvent('refreshreport');
     }
 });
-
 /**
  * Report Controller
  *
@@ -100223,9 +100090,13 @@ Ext.define('PICS.controller.report.Report', {
         selector: 'reportsettingsmodal'
     }],
 
+    // TODO: Try to move these to app.js.
     stores: [
         'report.ReportDatas',
-        'report.Reports'
+        'report.Reports',
+        'report.Columns',
+        'report.Filters',
+        'report.Reports2'
     ],
 
     init: function () {
@@ -100294,8 +100165,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     downloadReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -100303,8 +100174,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     favoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({
@@ -100313,8 +100184,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     printReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
     
         //TODO: Change this to a post and include parameters.
@@ -100324,16 +100195,19 @@ Ext.define('PICS.controller.report.Report', {
     refreshReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = report.get('name'),
             report_data_store = this.getReportReportDatasStore(),
-            report_data = this.getReportData(),
+            report_data = this.getReportData();
+            
+        var report_name = report.get('name'),
+            // TODO: this should be removed
+            limit = report.get('rowsPerPage'),
             params = report.toRequestParams(),
             model_fields = report.convertColumnsToModelFields(),
-            grid_columns = report.convertColumnsToGridColumns(),
-            limit = report.get('rowsPerPage');
-        
+            grid_columns = report.convertColumnsToGridColumns();
+            
         this.updatePageTitle(report_name);
-        
+
+        // TODO: this should be removed
         report_data_store.setLimit(limit);
         
         // update data store proxy
@@ -100420,8 +100294,8 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     unfavoriteReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_id = report.get('id');
         
         Ext.Ajax.request({
@@ -100450,10 +100324,6 @@ Ext.define('PICS.controller.report.ReportData', {
         'report.ReportDatas'
     ],
     
-    views: [
-        'PICS.view.report.report.ReportColumnTooltip'
-    ],
-
     init: function () {
         this.control({
             'reportdata': {
@@ -100542,26 +100412,10 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onColumnRender: function (cmp, eOpts) {
-        var column = cmp.record;
-        
-        // do not apply any tooltips on rownumberers, etc
-        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
-            return;
+        // only create tooltips for PICS.ux.grid.column.Column(s)
+        if (typeof cmp.createTooltip == 'function') {
+            cmp.createTooltip();
         }
-        
-        var target = cmp.el,
-            field = column.getAvailableField(),
-            text = field.get('text'),
-            help = field.get('help');
-        
-        var tooltip = Ext.create('PICS.view.report.report.ReportColumnTooltip', {
-            target: target
-        });
-        
-        tooltip.update({
-            text: text,
-            help: help
-        });
     },
 
     onColumnSortAsc: function (cmp, event, eOpts) {
@@ -100732,7 +100586,7 @@ Ext.define('PICS.controller.report.ReportHeader', {
 
         if (!report_store.isLoaded()) {
             report_store.on('load', function (store, records, successful, eOpts) {
-                var report = store.first();
+                var report = report_store.first();
 
                 report_header_summary.update(report);
             });
@@ -100867,8 +100721,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalCopyClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
     
@@ -100885,8 +100739,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalEditClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue();
     
@@ -100902,20 +100756,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalEditBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore(),
+        var report_store = this.getReportReportsStore(),
             report_settings_edit = this.getReportSettingsEdit(),
             report_no_permission_edit = this.getReportSettingsNoPermission();
     
         // if there is no form - do nothing
         if (!report_no_permission_edit) {
-            if (!store.isLoaded()) {
-                store.on('load', function (store, records, successful, eOpts) {
-                    var report = store.first();
+            if (!report_store.isLoaded()) {
+                report_store.on('load', function (store, records, successful, eOpts) {
+                    var report = report_store.first();
     
                     report_settings_edit.update(report);
                 });
             } else {
-                var report = store.first();
+                var report = report_store.first();
     
                 report_settings_edit.update(report);
             }
@@ -100938,10 +100792,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
-        var modal = this.getReportSettingsModal(),
+        var settings_modal = this.getReportSettingsModal(),
             title = cmp.getActiveTab().modal_title;
     
-        modal.setTitle(title);
+        settings_modal.setTitle(title);
     },
     
     setFavoriteStatus: function (action) {

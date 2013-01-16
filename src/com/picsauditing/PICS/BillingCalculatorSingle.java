@@ -347,22 +347,19 @@ public class BillingCalculatorSingle {
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
+		Invoice invoice = null;
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
-		Invoice invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
-		taxService.applyTax(invoice);
-
+		// disallow zero dollar invoices (preserving existing behavior in a refactor)
+		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
+		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
+			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
+			taxService.applyTax(invoice);
+		}
 		return invoice;
 	}
 
 	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser) {
-		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
-		for (InvoiceItem item : invoiceItems) {
-			invoiceTotal = invoiceTotal.add(item.getAmount());
-		}
-
-		if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0) {
-			return null;
-		}
+		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 
 		Invoice invoice = new Invoice();
 		invoice.setAccount(contractor);
@@ -397,6 +394,14 @@ public class BillingCalculatorSingle {
 		}
 
 		return invoice;
+	}
+
+	public BigDecimal calculateInvoiceTotal(List<InvoiceItem> invoiceItems) {
+		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+		for (InvoiceItem item : invoiceItems) {
+			invoiceTotal = invoiceTotal.add(item.getAmount());
+		}
+		return invoiceTotal;
 	}
 
 	private void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {

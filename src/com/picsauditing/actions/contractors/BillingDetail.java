@@ -69,13 +69,8 @@ public class BillingDetail extends ContractorActionSupport {
 		this.findContractor();
 		billingService.calculateContractorInvoiceFees(contractor);
 
-		// TODO: are we using this outside of invoice creation? 
 		invoiceItems = billingService.createInvoiceItems(contractor, getUser());
-		// TODO: are we using this outside of invoice creation? 
-		invoiceTotal = BigDecimal.ZERO.setScale(2);
-		for (InvoiceItem item : invoiceItems) {
-			invoiceTotal = invoiceTotal.add(item.getAmount());
-		}
+		invoiceTotal = billingService.calculateInvoiceTotal(invoiceItems);
 
 		if ("Create".equalsIgnoreCase(button)) {
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0 && !permissions.hasPermission(OpPerms.Billing)) {

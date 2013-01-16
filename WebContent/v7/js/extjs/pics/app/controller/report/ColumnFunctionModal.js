@@ -7,7 +7,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     }],
 
     views: [
-        'PICS.view.report.column-function.ColumnFunctionModal'
+        'PICS.view.report.modal.column-function.ColumnFunctionModal'
     ],
 
     init: function () {
@@ -40,7 +40,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
 
     // show the column function modal , but attach the specific column store - column your modifying
     showColumnFunctionModal: function (column) {
-        var column_function_modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
+        var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
             column: column
         });
 

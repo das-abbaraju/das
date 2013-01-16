@@ -1,10 +1,10 @@
 {
-    "projectName": "Project Name",
-    "licenseText": "Copyright(c) 2012 Company Name",
+    "projectName": "PICS - Dynamic Reports",
+    "licenseText": "Copyright(c) 2013 Company Name",
     "builds": [
         {
             "name": "All Classes",
-            "target": "all-classes.js",
+            "target": "extjs/all-classes.js",
             "options": {
                 "debug": true
             },
@@ -870,9 +870,9 @@
                     "path": "extjs/src/grid/"
                 },
                 {
-                    "clsName": "PICS.view.report.ReportModal",
+                    "clsName": "PICS.view.report.modal.ReportModal",
                     "name": "ReportModal.js",
-                    "path": "app/view/report/"
+                    "path": "app/view/report/modal/"
                 },
                 {
                     "clsName": "Ext.grid.feature.Feature",
@@ -895,9 +895,9 @@
                     "path": "app/view/report/header/"
                 },
                 {
-                    "clsName": "PICS.view.report.column-function.ColumnFunctionModal",
+                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionModal",
                     "name": "ColumnFunctionModal.js",
-                    "path": "app/view/report/column-function/"
+                    "path": "app/view/report/modal/column-function/"
                 },
                 {
                     "clsName": "PICS.controller.report.ColumnFunctionModal",
@@ -1405,8 +1405,18 @@
                     "path": "app/model/report/"
                 },
                 {
+                    "clsName": "PICS.model.report.Filter2",
+                    "name": "Filter2.js",
+                    "path": "app/model/report/"
+                },
+                {
                     "clsName": "PICS.model.report.ReportData",
                     "name": "ReportData.js",
+                    "path": "app/model/report/"
+                },
+                {
+                    "clsName": "PICS.model.report.Sort2",
+                    "name": "Sort2.js",
                     "path": "app/model/report/"
                 },
                 {
@@ -1422,6 +1432,11 @@
                 {
                     "clsName": "PICS.store.report.AvailableFieldsByCategory",
                     "name": "AvailableFieldsByCategory.js",
+                    "path": "app/store/report/"
+                },
+                {
+                    "clsName": "PICS.store.report.Filters",
+                    "name": "Filters.js",
                     "path": "app/store/report/"
                 },
                 {
@@ -1455,23 +1470,8 @@
                     "path": "app/ux/grid/column/"
                 },
                 {
-                    "clsName": "PICS.ux.grid.column.Date",
-                    "name": "Date.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
                     "clsName": "PICS.ux.grid.column.Flag",
                     "name": "Flag.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
-                    "clsName": "PICS.ux.grid.column.Float",
-                    "name": "Float.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
-                    "clsName": "PICS.ux.grid.column.Int",
-                    "name": "Int.js",
                     "path": "app/ux/grid/column/"
                 },
                 {
@@ -1482,6 +1482,31 @@
                 {
                     "clsName": "PICS.ux.grid.column.String",
                     "name": "String.js",
+                    "path": "app/ux/grid/column/"
+                },
+                {
+                    "clsName": "PICS.model.report.Column2",
+                    "name": "Column2.js",
+                    "path": "app/model/report/"
+                },
+                {
+                    "clsName": "PICS.store.report.Columns",
+                    "name": "Columns.js",
+                    "path": "app/store/report/"
+                },
+                {
+                    "clsName": "PICS.ux.grid.column.Date",
+                    "name": "Date.js",
+                    "path": "app/ux/grid/column/"
+                },
+                {
+                    "clsName": "PICS.ux.grid.column.Float",
+                    "name": "Float.js",
+                    "path": "app/ux/grid/column/"
+                },
+                {
+                    "clsName": "PICS.ux.grid.column.Int",
+                    "name": "Int.js",
                     "path": "app/ux/grid/column/"
                 },
                 {
@@ -1498,6 +1523,16 @@
                     "clsName": "Ext.data.association.HasMany",
                     "name": "HasMany.js",
                     "path": "extjs/src/data/association/"
+                },
+                {
+                    "clsName": "PICS.model.report.Report2",
+                    "name": "Report2.js",
+                    "path": "app/model/report/"
+                },
+                {
+                    "clsName": "PICS.store.report.Reports2",
+                    "name": "Reports2.js",
+                    "path": "app/store/report/"
                 },
                 {
                     "clsName": "PICS.model.report.Report",
@@ -1583,12 +1618,16 @@
         },
         {
             "name": "Application - Production",
-            "target": "app-all.js",
+            "target": "extjs/app-all.js",
             "compress": true,
             "files": [
                 {
                     "path": "",
-                    "name": "all-classes.js"
+                    "name": "ext-overrides.js"
+                },
+                {
+                    "path": "",
+                    "name": "extjs/all-classes.js"
                 },
                 {
                     "path": "",

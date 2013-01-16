@@ -104,6 +104,7 @@
 		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
+        <script type="text/javascript" src="v7\js\extjs\pics\ext-overrides.js"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
 
 		<script type="text/javascript">
@@ -183,6 +184,7 @@
         <nav id="site_navigation"></nav>
         <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
         <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="v7/js/extjs/pics/ext-overrides.js"></script>        
         <script type="text/javascript" src="js/layout/menu.js"></script>
         
         <% } %>

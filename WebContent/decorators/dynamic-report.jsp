@@ -21,6 +21,7 @@
         <s:if test="#is_development_mode == true">
             <script type="text/javascript" src="${extjs_dir}/ext-debug.js"></script>
             <script type="text/javascript" src="${extjs_dir}/ext-debug-override.js"></script>
+            <script type="text/javascript" src="${app_dir}/ext-overrides.js"></script>
             <script type="text/javascript" src="${app_dir}/app.js?v=${version}"></script>
         </s:if>
         <s:else>

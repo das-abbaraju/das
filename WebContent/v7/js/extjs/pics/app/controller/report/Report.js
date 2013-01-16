@@ -17,9 +17,13 @@ Ext.define('PICS.controller.report.Report', {
         selector: 'reportsettingsmodal'
     }],
 
+    // TODO: Try to move these to app.js.
     stores: [
         'report.ReportDatas',
-        'report.Reports'
+        'report.Reports',
+        'report.Columns',
+        'report.Filters',
+        'report.Reports2'
     ],
 
     init: function () {
@@ -61,6 +65,20 @@ Ext.define('PICS.controller.report.Report', {
         this.application.on({
             unfavoritereport: this.unfavoriteReport,
             scope: this
+        });
+    },
+
+    loadReport: function () {
+        var that = this;
+
+        Ext.Ajax.request({
+            url: '/v7/js/extjs/pics/app/data/report.json',
+            success: function (response) {
+                var report2_store = that.getReportReports2Store(),
+                    data = response.responseText;
+
+                report2_store.loadRawData(data);
+            }
         });
     },
 

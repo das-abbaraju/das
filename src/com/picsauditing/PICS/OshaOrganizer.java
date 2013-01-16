@@ -129,7 +129,7 @@ public class OshaOrganizer implements OshaVisitor {
 		}
 	}
 
-	public BigDecimal getRateForSpecificYear(OshaType type, Integer year, OshaRateType rateType) {
+	/* testable */ BigDecimal getRateForSpecificYear(OshaType type, Integer year, OshaRateType rateType) {
 		if (year != null) {
 			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
 			SafetyStatistics stats = typeMap.get(year);
@@ -143,9 +143,8 @@ public class OshaOrganizer implements OshaVisitor {
 						return null;
 					}
 
-					logger.error("NumberFormatException for value {} with OSHA type {}, rate type {}, and year {}",
+					logger.warn("NumberFormatException for value {} with OSHA type {}, rate type {}, and year {}",
 							new Object[] { value, type, rateType, year });
-					throw valueIsNotAValidNumberSoJustReturnNull;
 				}
 			}
 		}

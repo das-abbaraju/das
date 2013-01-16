@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.ReportModal', {
+Ext.define('PICS.view.report.modal.ReportModal', {
     extend: 'Ext.window.Window',
 
     initComponent: function () {

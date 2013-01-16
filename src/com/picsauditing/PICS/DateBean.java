@@ -225,7 +225,7 @@ public class DateBean {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(now);
 		
-		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 15) {
+		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
 			return calendar.get(Calendar.YEAR) - 1;
 		}
 		
@@ -250,7 +250,7 @@ public class DateBean {
 			return true;
 		}
 		
-		if (month == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 15) {
+		if (month == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
 			return true;
 		}
 

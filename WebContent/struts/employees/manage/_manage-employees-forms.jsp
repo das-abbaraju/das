@@ -27,7 +27,7 @@
 	<s:textfield
 		name="employee.hireDate"
 		label="Employee.hireDate"
-		value="%{@com.picsauditing.util.PicsDateFormat@formatDateOrBlank(employee.hireDate)}"
+		value="%{@com.picsauditing.util.PicsDateFormat@formatDateIsoOrBlank(employee.hireDate)}"
 		cssClass="datepicker"
 		theme="formhelp" />
 	<s:property value="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
@@ -37,7 +37,7 @@
 	<s:textfield
 		name="employee.fireDate"
 		label="Employee.fireDate"
-		value="%{@com.picsauditing.util.PicsDateFormat@formatDateOrBlank(employee.fireDate)}"
+		value="%{@com.picsauditing.util.PicsDateFormat@formatDateIsoOrBlank(employee.fireDate)}"
 		cssClass="datepicker"
 		theme="formhelp" />
 	<s:property value="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
@@ -55,7 +55,7 @@
 	<s:textfield
 		name="employee.twicExpiration"
 		label="Employee.twicExpiration"
-		value="%{@com.picsauditing.util.PicsDateFormat@formatDateOrBlank(employee.twicExpiration)}"
+		value="%{@com.picsauditing.util.PicsDateFormat@formatDateIsoOrBlank(employee.twicExpiration)}"
 		cssClass="datepicker"
 		theme="formhelp" />
 	<s:property value="%{@com.picsauditing.util.PicsDateFormat@Iso}" />

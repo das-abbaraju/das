@@ -143,7 +143,6 @@ public class SqlBuilder {
 
 		for (Filter filter : definition.getFilters()) {
 			filter.addFieldCopy(availableFields);
-
 			if (filter.isValid()) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {

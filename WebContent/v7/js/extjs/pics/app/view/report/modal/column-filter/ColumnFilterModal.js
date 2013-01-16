@@ -1,18 +1,19 @@
-Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
+Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.view.report.modal.ReportModal',
-    alias: ['widget.reportavailablefieldmodal'],
-
+    alias: 'columnfiltermodal',
+    
     requires: [
-        'PICS.view.report.available-field.AvailableFieldList'
+        'PICS.view.report.modal.column-filter.ColumnList',
+        'PICS.view.report.modal.column-filter.FilterList'
     ],
-
+    
     border: 0,
     dockedItems: [{
         xtype: 'toolbar',
         border: 0,
+        cls: 'search',
         dock: 'top',
         height: 45,
-        id: 'available_field_search',
         items: [{
             xtype: 'textfield',
             emptyText: 'Search',
@@ -31,12 +32,12 @@ Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
     }, {
         xtype: 'toolbar',
         border: 0,
+        cls: 'footer',
         defaults: {
             margin: '0 10 0 0'
         },
         dock: 'bottom',
         height: 45,
-        id: 'available_field_modal_footer',
         items: [{
             action: 'cancel',
             cls: 'default',
@@ -58,31 +59,8 @@ Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
         height: 45
     },
     height: 500,
-    id: 'available_field_modal',
-    items: [{
-        xtype: 'reportavailablefieldlist'
-    }],
     layout: 'fit',
     modal: true,
     resizable: false,
-    width: 600,
-
-    initComponent: function () {
-        // type is used to determine context of modal - will add fields to filter or column store
-        if (this.type != 'filter' && this.type != 'column') {
-            Ext.Error.raise('Invalid type:' + this.type + ' - must be (filter|column)');
-        }
-
-        this.title = this.getTitle(this.type);
-
-        this.callParent();
-    },
-
-    getTitle: function (type) {
-        if (type == 'column') {
-            return 'Add Column';
-        } else if (type == 'filter') {
-            return 'Add Filter';
-        }
-    }
+    width: 600
 });

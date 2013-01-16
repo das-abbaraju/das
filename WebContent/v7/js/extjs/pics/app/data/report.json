@@ -1,0 +1,170 @@
+﻿{
+	"report": {
+		"id": 1,
+		"type": "Contractors",
+		"name": "Contractor List",
+		"description": "Default Contractor List for PICS Employees",
+		"columns": [{
+			"id": "AccountName",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Company",
+			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+			"url": "ContractorView.action?id={AccountID}",
+			"sql_function": "",
+			"width": 250,
+			"is_sortable": true
+		},
+		{
+			"id": "ContractorMembershipDate1",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Member Since",
+			"description": "Date the Company became a member of PICS",
+			"url": "",
+			"sql_function": "",
+			"width": 100,
+			"is_sortable": true
+		},
+		{
+			"id": "ContractorMembershipDate2",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Member Since",
+			"description": "Date the Company became a member of PICS",
+			"url": "",
+			"sql_function": "",
+			"width": 100,
+			"is_sortable": true
+		},
+		{
+			"id": "ContractorMembershipDate3",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Member Since",
+			"description": "Date the Company became a member of PICS",
+			"url": "",
+			"sql_function": "",
+			"width": 100,
+			"is_sortable": true
+		},
+		{
+			"id": "ContractorMembershipDate4",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Member Since",
+			"description": "Date the Company became a member of PICS",
+			"url": "",
+			"sql_function": "",
+			"width": 100,
+			"is_sortable": true
+		},
+		{
+			"id": "ContractorMembershipDate5",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Member Since",
+			"description": "Date the Company became a member of PICS",
+			"url": "",
+			"sql_function": "",
+			"width": 100,
+			"is_sortable": true
+		}],
+		"filters": [{
+			"id": "AccountName",
+			"type": "string",
+			"category": "Account Information",
+			"name": "Company",
+			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+			"operator": "contains",
+			"value": "ancon",
+			"column_compare_id": ""
+		}],
+		"sorts": [{
+			"id": "AccountName",
+			"direction": "ASC"
+		}],
+		"filter_expression": "1 and 2",
+		"num_times_favorited": 1,
+		"is_editable": true,
+		"is_favorite": true,
+		"creation_date": 1323375938000,
+		"created_by": "PICS",
+		"update_date": 1352516167000,
+		"updated_by": "PICS"
+	},
+	"columns": [{
+		"id": "ContractorSafetyRiskVerified",
+		"type": "string",
+		"category": "Classification",
+		"name": "Safety Risk Verified",
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Safety Risk",
+		"url": "",
+		"sql_function": "",
+		"width": 100,
+		"is_sortable": true
+	},
+	{
+		"id": "ContractorPQFID",
+		"type": "number",
+		"category": "Audits",
+		"name": "PQF PICS ID",
+		"description": "PQF\u2019s PICS ID",
+		"url": "",
+		"sql_function": "",
+		"width": 200,
+		"is_sortable": true
+	},
+	{
+		"id": "AccountName",
+		"type": "string",
+		"category": "Account Information",
+		"name": "Company",
+		"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+		"url": "ContractorView.action?id={AccountID}",
+		"sql_function": "",
+		"width": 250,
+		"is_sortable": true
+	},
+	{
+		"id": "ContractorMembershipDate",
+		"type": "string",
+		"category": "Account Information",
+		"name": "Member Since",
+		"description": "Date the Company became a member of PICS",
+		"url": "",
+		"sql_function": "",
+		"width": 100,
+		"is_sortable": true
+	}],
+	"filters": [{
+		"id": "ContractorSafetyRiskVerified",
+		"type": "string",
+		"category": "Classification",
+		"name": "Safety Risk Verified",
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Safety Risk",
+		"operator": "contains",
+		"value": "",
+		"column_compare_id": ""
+	},
+	{
+		"id": "ContractorPQFID",
+		"type": "number",
+		"category": "Audits",
+		"name": "PQF PICS ID",
+		"description": "PQF\u2019s PICS ID",
+		"operator": "=",
+		"value": "",
+		"column_compare_id": ""
+	},
+	{
+		"id": "ContractorMembershipDate",
+		"type": "string",
+		"category": "Account Information",
+		"name": "Member Since",
+		"description": "Date the Company became a member of PICS",
+		"operator": "before",
+		"value": "",
+		"column_compare_id": ""
+	}]
+}

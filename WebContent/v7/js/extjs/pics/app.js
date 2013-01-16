@@ -42,7 +42,7 @@ Ext.application({
             ['NotEmpty', 'is not empty']
         ]
     },
-    
+
     controllers: [
         'report.AvailableFieldModal',
         'report.ColumnFunctionModal',
