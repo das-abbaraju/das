@@ -104,7 +104,7 @@ public class ReportDataConverter {
 		
 		if (value instanceof java.sql.Timestamp) {
 			Timestamp valueAsTimestamp = (Timestamp) value;
-			return valueAsTimestamp.getTime();
+			return PicsDateFormat.formatDateOrBlank(valueAsTimestamp, PicsDateFormat.DateAndTime);
 		}
 
 		return value.toString();

@@ -26,6 +26,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
@@ -33,168 +34,183 @@ import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModel {
 
-    private static final int REPORT_DEVELOPER_GROUP = 77375;
+	private static final int REPORT_DEVELOPER_GROUP = 77375;
 
-    @Autowired
-    private ReportDAO reportDao;
-    @Autowired
-    private ReportUserDAO reportUserDao;
-    @Autowired
-    private ReportPermissionUserDAO reportPermissionUserDao;
-    @Autowired
-    private ReportPermissionAccountDAO reportPermissionAccountDao;
+	@Autowired
+	private ReportDAO reportDao;
+	@Autowired
+	private ReportUserDAO reportUserDao;
+	@Autowired
+	private ReportPermissionUserDAO reportPermissionUserDao;
+	@Autowired
+	private ReportPermissionAccountDAO reportPermissionAccountDao;
 
-    private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
 
-    public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
+	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 
-        try {
-            reportPermissionUserDao.findOneByPermissions(permissions, reportId);
-        } catch (NoResultException nre) {
-            try {
-                reportPermissionAccountDao.findOne(permissions.getAccountId(), reportId);
-            } catch (NoResultException nr) {
-                return isReportDevelopmentGroup(permissions);
-            }
-        }
-
-        return true;
-    }
-
-    public boolean canUserEdit(Permissions permissions, Report report) {
-        boolean editable = false;
-
-        try {
-            editable = reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
-        } catch (NoResultException nre) {
-            logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
-        }
-
-        return editable || isReportDevelopmentGroup(permissions);
-    }
-
-    private boolean isReportDevelopmentGroup(Permissions permissions) {
-        try {
-            int userID = permissions.getUserId();
-
-            if (permissions.getAdminID() > 0)
-                userID = permissions.getAdminID();
-
-            String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
-
-            reportDao.findOne(UserGroup.class, where);
-        } catch (NoResultException nre) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable)
-            throws NoResultException, NonUniqueResultException, SQLException, Exception {
-        ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, id, reportId, editable);
-
-        reportPermissionUserDao.save(reportPermissionUser);
-    }
-
-    public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException, NonUniqueResultException, SQLException, Exception {
-        if (!canUserViewAndCopy(permissions, sourceReport.getId()))
-            throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
-                    + sourceReport.getId());
-
-        boolean editable = true;
-
-        Report newReport = copyReportWithoutPermissions(sourceReport);
-
-        // TODO the front end is passing new report data in the current report,
-        // so we need to change sourceReport to it's old state.
-        // Is this is the desired behavior?
-        reportDao.refresh(sourceReport);
-
-        ReportModel.validate(newReport);
-        setReportParameters(newReport);
-        newReport.setAuditColumns(permissions);
-        reportDao.save(newReport);
-
-        if (favorite) {
-        	favoriteReport(permissions.getUserId(), newReport.getId());
-        }
-        
-        // This is a new report owned by the user, unconditionally give them
-        // edit permission
-        connectReportUser(permissions.getUserId(), newReport.getId());
-        connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), editable);
-
-        return newReport;
-    }
-
-    public void edit(Report report, Permissions permissions) throws Exception {
-        if (!canUserEdit(permissions, report))
-            throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
-
-        // TODO Consider adding a "save" column to the ReportElement class to store Delete/Update/Insert flags
-        // Allow updating rather than full delete/insert instead
-		for (Column c : report.getColumns()) {
-			reportDao.remove(c);
+		try {
+			reportPermissionUserDao.findOneByPermissions(permissions, reportId);
+		} catch (NoResultException nre) {
+			try {
+				reportPermissionAccountDao.findOne(permissions.getAccountId(), reportId);
+			} catch (NoResultException nr) {
+				return isReportDevelopmentGroup(permissions);
+			}
 		}
-		report.getColumns().clear();
-		for (Filter f : report.getFilters()) {
-			reportDao.remove(f);
+
+		return true;
+	}
+
+	public boolean canUserEdit(Permissions permissions, Report report) {
+		boolean editable = false;
+
+		try {
+			editable = reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
+		} catch (NoResultException nre) {
+			logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
 		}
-		report.getFilters().clear();
-		for (Sort s : report.getSorts()) {
-			reportDao.remove(s);
+
+		return editable || isReportDevelopmentGroup(permissions);
+	}
+
+	private boolean isReportDevelopmentGroup(Permissions permissions) {
+		try {
+			int userID = permissions.getUserId();
+
+			if (permissions.getAdminID() > 0)
+				userID = permissions.getAdminID();
+
+			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
+
+			reportDao.findOne(UserGroup.class, where);
+		} catch (NoResultException nre) {
+			return false;
 		}
-		report.getSorts().clear();
-		
+
+		return true;
+	}
+
+	public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable)
+			throws NoResultException, NonUniqueResultException, SQLException, Exception {
+		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, id, reportId, editable);
+
+		reportPermissionUserDao.save(reportPermissionUser);
+	}
+
+	public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException,
+			NonUniqueResultException, SQLException, Exception {
+		if (!canUserViewAndCopy(permissions, sourceReport.getId()))
+			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
+					+ sourceReport.getId());
+
+		boolean editable = true;
+
+		Report newReport = copyReportWithoutPermissions(sourceReport);
+
+		// TODO the front end is passing new report data in the current report,
+		// so we need to change sourceReport to it's old state.
+		// Is this is the desired behavior?
+		reportDao.refresh(sourceReport);
+
+		ReportModel.validate(newReport);
+		// setReportParameters(newReport);
+		newReport.setAuditColumns(permissions);
+		reportDao.save(newReport);
+
+		if (favorite) {
+			favoriteReport(permissions.getUserId(), newReport.getId());
+		}
+
+		// This is a new report owned by the user, unconditionally give them
+		// edit permission
+		connectReportUser(permissions.getUserId(), newReport.getId());
+		connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), editable);
+
+		return newReport;
+	}
+
+	public void edit(Report report, Permissions permissions) throws Exception {
+		if (!canUserEdit(permissions, report))
+			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
+
+		// TODO Consider adding a "save" column to the ReportElement class to
+		// store Delete/Update/Insert flags
+		// Allow updating rather than full delete/insert instead
+		removeReportElements(report);
+
 		ReportModel.processReportParameters(report);
-		
-        setReportParameters(report);
-        report.setAuditColumns(permissions);
-        for (Column column : report.getColumns()) {
-            reportDao.save(column);
+		setReportParameters(report);
+		saveReportElements(report);
+	}
+	
+	public void saveReportElements(Report report) {
+		reportDao.save(report.getColumns());
+		reportDao.save(report.getFilters());
+		reportDao.save(report.getSorts());
+		reportDao.save(report);
+	}
+	
+	public void removeReportElements(Report report) {
+		removeAllReportElements(report.getId(), Column.class);
+		report.getColumns().clear();
+		removeAllReportElements(report.getId(), Filter.class);
+		report.getFilters().clear();
+		removeAllReportElements(report.getId(), Sort.class);
+		report.getSorts().clear();
+	}
+	
+	private <E extends ReportElement> void removeAllReportElements(int reportId, Class<E> type) {
+		reportDao.remove(type, "t.report.id = " + reportId);
+	}
+
+	// TODO Remove this method after the next release
+	public static void processReportParameters(Report report) throws ReportValidationException {
+		if (!isBackwardsCompatibilityOn()) {
+			return;
 		}
-        for (Filter filter : report.getFilters()) {
-            reportDao.save(filter);
+
+		LegacyReportConverter.fillParameters(report);
+	}
+
+	// TODO: Remove this method after the next release
+	private static void setReportParameters(Report report) {
+		if (!isBackwardsCompatibilityOn()) {
+			return;
 		}
-        for (Sort sort : report.getSorts()) {
-            reportDao.save(sort);
-		}
-        reportDao.save(report);
-    }
-    
-    public static void processReportParameters(Report report) throws ReportValidationException {
-    	// TODO Remove this method after the next release
-		 LegacyReportConverter.fillParameters(report);
-    }
-    
-    private static void setReportParameters(Report report) {
-    	// TODO Remove this method after the next release
+
 		JSONObject json = LegacyReportConverter.toJSON(report);
-		// TODO report.setParameters(json.toString());
-    }
+		report.setParameters(json.toString());
+	}
 
-    private Report copyReportWithoutPermissions(Report sourceReport) {
-        Report newReport = new Report();
+	private static boolean isBackwardsCompatibilityOn() {
+		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY);
+	}
 
-        newReport.setModelType(sourceReport.getModelType());
-        newReport.setName(sourceReport.getName());
-        newReport.setDescription(sourceReport.getDescription());
-        newReport.setParameters(sourceReport.getParameters());
+	private Report copyReportWithoutPermissions(Report sourceReport) {
+		Report newReport = new Report();
 
-        return newReport;
-    }
+		newReport.setModelType(sourceReport.getModelType());
+		newReport.setName(sourceReport.getName());
+		newReport.setDescription(sourceReport.getDescription());
+		newReport.setParameters(sourceReport.getParameters());
 
-    /**
-     * Rudimentary validation of a report object. Currently, this only means
-     * that the model type is set and that the report-spec is parsable as valid
-     * JSON.
-     */
+		return newReport;
+	}
+
+	/**
+	 * Rudimentary validation of a report object. Currently, this only means
+	 * that the model type is set and that the report-spec is parsable as valid
+	 * JSON.
+	 */
 	public static void validate(Report report) throws ReportValidationException {
 		if (report == null)
 			throw new ReportValidationException("Report object is null. (Possible security concern.)");
@@ -212,220 +228,222 @@ public class ReportModel {
 		}
 	}
 
-    public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {
-        List<Report> reports = new ArrayList<Report>();
+	public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {
+		List<Report> reports = new ArrayList<Report>();
 
-        if (Strings.isEmpty(searchTerm)) {
-            // By default, show the top ten most favorited reports sorted by
-            // number of favorites
-            List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions);
-            for (ReportUser reportUser : reportUsers) {
-                reports.add(reportUser.getReport());
-            }
-        } else {
-            ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
-            pagination.Initialize(parameters, reportDao);
-            reports = pagination.getResults();
-        }
+		if (Strings.isEmpty(searchTerm)) {
+			// By default, show the top ten most favorited reports sorted by
+			// number of favorites
+			List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions);
+			for (ReportUser reportUser : reportUsers) {
+				reports.add(reportUser.getReport());
+			}
+		} else {
+			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
+			pagination.Initialize(parameters, reportDao);
+			reports = pagination.getResults();
+		}
 
-        return reports;
-    }
+		return reports;
+	}
 
-    public List<ReportUser> getReportUsersForMyReports(String sort, String direction, Permissions permissions)
-            throws IllegalArgumentException {
-        List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+	public List<ReportUser> getReportUsersForMyReports(String sort, String direction, Permissions permissions)
+			throws IllegalArgumentException {
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
-        if (Strings.isEmpty(sort)) {
-            sort = ManageReports.ALPHA_SORT;
-            direction = "ASC";
-        }
+		if (Strings.isEmpty(sort)) {
+			sort = ManageReports.ALPHA_SORT;
+			direction = "ASC";
+		}
 
-        List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction);
+		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction);
 
-        for (Report report : reports) {
-            ReportUser reportUser = report.getReportUser(permissions.getUserId());
-            if (reportUser == null) {
-                reportUser = new ReportUser();
+		for (Report report : reports) {
+			ReportUser reportUser = report.getReportUser(permissions.getUserId());
+			if (reportUser == null) {
+				reportUser = new ReportUser();
 
-                User user = new User();
-                user.setId(permissions.getUserId());
-                reportUser.setUser(user);
-                reportUser.setReport(report);
+				User user = new User();
+				user.setId(permissions.getUserId());
+				reportUser.setUser(user);
+				reportUser.setReport(report);
 
-                reportUser.setFavorite(false);
-                reportUserDao.save(reportUser);
-            }
-            reportUsers.add(reportUser);
-        }
+				reportUser.setFavorite(false);
+				reportUserDao.save(reportUser);
+			}
+			reportUsers.add(reportUser);
+		}
 
-        return reportUsers;
-    }
+		return reportUsers;
+	}
 
-    public void updateLastViewedDate(int userID, Report report) {
-        ReportUser reportUser = new ReportUser();
+	public void updateLastViewedDate(int userID, Report report) {
+		ReportUser reportUser = new ReportUser();
 
-        try {
-            reportUser = reportUserDao.findOne(userID, report.getId());
-        } catch (NoResultException nre) {
-            User user = new User();
-            user.setId(userID);
+		try {
+			reportUser = reportUserDao.findOne(userID, report.getId());
+		} catch (NoResultException nre) {
+			User user = new User();
+			user.setId(userID);
 
-            reportUser.setUser(user);
-            reportUser.setReport(report);
-        }
+			reportUser.setUser(user);
+			reportUser.setReport(report);
+		}
 
-        reportUser.setLastViewedDate(new Date());
-        reportUser.setViewCount(reportUser.getViewCount() + 1);
-        reportUserDao.save(reportUser);
-    }
+		reportUser.setLastViewedDate(new Date());
+		reportUser.setViewCount(reportUser.getViewCount() + 1);
+		reportUserDao.save(reportUser);
+	}
 
-    public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
-            SQLException, Exception {
-        ReportUser reportUser = connectReportUser(userId, reportId);
+	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
+			SQLException, Exception {
+		ReportUser reportUser = connectReportUser(userId, reportId);
 
-        reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, Integer.MAX_VALUE);
+		reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, Integer.MAX_VALUE);
 
-        reportUser.setSortOrder(1);
-        reportUser.setFavorite(true);
-        reportUserDao.save(reportUser);
-    }
+		reportUser.setSortOrder(1);
+		reportUser.setFavorite(true);
+		reportUserDao.save(reportUser);
+	}
 
-    public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
-            SQLException, Exception {
-        ReportUser unfavoritedReportUser = connectReportUser(userId, reportId);
-        int removedSortIndex = unfavoritedReportUser.getSortOrder();
+	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
+			SQLException, Exception {
+		ReportUser unfavoritedReportUser = connectReportUser(userId, reportId);
+		int removedSortIndex = unfavoritedReportUser.getSortOrder();
 
-        reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, Integer.MAX_VALUE);
+		reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, Integer.MAX_VALUE);
 
-        unfavoritedReportUser.setSortOrder(0);
-        unfavoritedReportUser.setFavorite(false);
-        reportUserDao.save(unfavoritedReportUser);
-    }
+		unfavoritedReportUser.setSortOrder(0);
+		unfavoritedReportUser.setFavorite(false);
+		reportUserDao.save(unfavoritedReportUser);
+	}
 
-    public void moveReportUser(int userId, int reportId, int magnitude) throws Exception {
-        reportUserDao.resetSortOrder(userId);
+	public void moveReportUser(int userId, int reportId, int magnitude) throws Exception {
+		reportUserDao.resetSortOrder(userId);
 
-        ReportUser reportUser = reportUserDao.findOne(userId, reportId);
-        int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
-        int currentPosition = reportUser.getSortOrder();
-        int newPosition = currentPosition + magnitude;
+		ReportUser reportUser = reportUserDao.findOne(userId, reportId);
+		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
+		int currentPosition = reportUser.getSortOrder();
+		int newPosition = currentPosition + magnitude;
 
-        if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites)
-            return;
+		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites)
+			return;
 
-        int offsetPosition;
-        int topPositionToMove;
-        int bottomPositionToMove;
+		int offsetPosition;
+		int topPositionToMove;
+		int bottomPositionToMove;
 
-        if (currentPosition < newPosition) {
-            // Moving down in list, other reports move up
-            offsetPosition = -1;
-            topPositionToMove = currentPosition + 1;
-            bottomPositionToMove = newPosition;
-        } else {
-            // Moving up in list, other reports move down
-            offsetPosition = 1;
-            topPositionToMove = newPosition;
-            bottomPositionToMove = currentPosition - 1;
-        }
+		if (currentPosition < newPosition) {
+			// Moving down in list, other reports move up
+			offsetPosition = -1;
+			topPositionToMove = currentPosition + 1;
+			bottomPositionToMove = newPosition;
+		} else {
+			// Moving up in list, other reports move down
+			offsetPosition = 1;
+			topPositionToMove = newPosition;
+			bottomPositionToMove = currentPosition - 1;
+		}
 
-        reportUserDao.cascadeFavoriteReportSorting(userId, offsetPosition, topPositionToMove, bottomPositionToMove);
+		reportUserDao.cascadeFavoriteReportSorting(userId, offsetPosition, topPositionToMove, bottomPositionToMove);
 
-        reportUser.setSortOrder(newPosition);
-        reportUserDao.save(reportUser);
-    }
+		reportUser.setSortOrder(newPosition);
+		reportUserDao.save(reportUser);
+	}
 
-    public ReportUser connectReportUser(int userId, int reportId) {
-        ReportUser reportUser;
+	public ReportUser connectReportUser(int userId, int reportId) {
+		ReportUser reportUser;
 
-        try {
-            reportUser = reportUserDao.findOne(userId, reportId);
-        } catch (NoResultException nre) {
-            // Need to connect user to report first
-            Report report = reportDao.find(Report.class, reportId);
-            reportUser = new ReportUser(userId, report);
-            reportUser.setAuditColumns(new User(userId));
-            reportUser.setFavorite(false);
-            reportUserDao.save(reportUser);
-        }
+		try {
+			reportUser = reportUserDao.findOne(userId, reportId);
+		} catch (NoResultException nre) {
+			// Need to connect user to report first
+			Report report = reportDao.find(Report.class, reportId);
+			reportUser = new ReportUser(userId, report);
+			reportUser.setAuditColumns(new User(userId));
+			reportUser.setFavorite(false);
+			reportUserDao.save(reportUser);
+		}
 
-        return reportUser;
-    }
+		return reportUser;
+	}
 
-    /**
-     * Create permissions to access the report permissions.
-     *
-     * @param permissions Permissions object from request
-     * @param userId      Could be either the User ID or Group ID to share with
-     * @param reportId
-     * @param editable
-     * @return
-     */
-    public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int userId, int reportId,
-                                                            boolean editable) {
-        ReportPermissionUser reportPermissionUser;
+	/**
+	 * Create permissions to access the report permissions.
+	 * 
+	 * @param permissions
+	 *            Permissions object from request
+	 * @param userId
+	 *            Could be either the User ID or Group ID to share with
+	 * @param reportId
+	 * @param editable
+	 * @return
+	 */
+	public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int userId, int reportId,
+			boolean editable) {
+		ReportPermissionUser reportPermissionUser;
 
-        try {
-            reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
-        } catch (NoResultException nre) {
-            // Need to connect user to report first
-            Report report = reportDao.find(Report.class, reportId);
-            reportPermissionUser = new ReportPermissionUser(userId, report);
-            reportPermissionUser.setAuditColumns(new User(permissions.getUserId()));
-        }
+		try {
+			reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
+		} catch (NoResultException nre) {
+			// Need to connect user to report first
+			Report report = reportDao.find(Report.class, reportId);
+			reportPermissionUser = new ReportPermissionUser(userId, report);
+			reportPermissionUser.setAuditColumns(new User(permissions.getUserId()));
+		}
 
-        reportPermissionUser.setEditable(editable);
-        reportPermissionUserDao.save(reportPermissionUser);
+		reportPermissionUser.setEditable(editable);
+		reportPermissionUserDao.save(reportPermissionUser);
 
-        return reportPermissionUser;
-    }
+		return reportPermissionUser;
+	}
 
-    public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
-        ReportPermissionAccount reportPermissionAccount;
+	public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
+		ReportPermissionAccount reportPermissionAccount;
 
-        try {
-            reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-        } catch (NoResultException nre) {
-            // Need to connect user to report first
-            Report report = reportDao.find(Report.class, reportId);
-            reportPermissionAccount = new ReportPermissionAccount(accountId, report);
-            reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
-        }
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+		} catch (NoResultException nre) {
+			// Need to connect user to report first
+			Report report = reportDao.find(Report.class, reportId);
+			reportPermissionAccount = new ReportPermissionAccount(accountId, report);
+			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
+		}
 
-        reportPermissionAccountDao.save(reportPermissionAccount);
+		reportPermissionAccountDao.save(reportPermissionAccount);
 
-        return reportPermissionAccount;
-    }
+		return reportPermissionAccount;
+	}
 
-    public void disconnectReportPermissionUser(int id, int reportId) {
-        try {
-            reportPermissionUserDao.revokePermissions(id, reportId);
-        } catch (NoResultException nre) {
+	public void disconnectReportPermissionUser(int id, int reportId) {
+		try {
+			reportPermissionUserDao.revokePermissions(id, reportId);
+		} catch (NoResultException nre) {
 
-        }
-    }
+		}
+	}
 
-    public void disconnectReportPermissionAccount(int accountId, int reportId) {
-        ReportPermissionAccount reportPermissionAccount;
+	public void disconnectReportPermissionAccount(int accountId, int reportId) {
+		ReportPermissionAccount reportPermissionAccount;
 
-        try {
-            reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-            reportPermissionAccountDao.remove(reportPermissionAccount);
-        } catch (NoResultException nre) {
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		} catch (NoResultException nre) {
 
-        }
-    }
+		}
+	}
 
-    public void removeAndCascade(Report report) {
-        List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllByReportId(report.getId());
-        for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
-            reportPermissionUserDao.remove(reportPermissionUser);
-        }
+	public void removeAndCascade(Report report) {
+		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllByReportId(report.getId());
+		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
+			reportPermissionUserDao.remove(reportPermissionUser);
+		}
 
-        List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report
-                .getId());
-        for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
-            reportPermissionAccountDao.remove(reportPermissionAccount);
-        }
-    }
+		List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report
+				.getId());
+		for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		}
+	}
 }

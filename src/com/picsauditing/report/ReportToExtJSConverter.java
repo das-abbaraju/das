@@ -29,7 +29,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -118,47 +117,6 @@ public class ReportToExtJSConverter {
 		}
 		
 		return null;
-	}
-
-	// TODO Figure out the cleanest way to do this
-	private static JSONArray convertColumnsForFrontEnd(List<Column> columns) {
-		JSONArray columnArray = new JSONArray();
-		if (CollectionUtils.isEmpty(columns)) {
-			return columnArray;
-		}
-
-		for (Column column : columns) {
-			JSONObject columnObject = new JSONObject();
-			columnArray.add(columnObject);
-		}
-
-		return columnArray;
-	}
-
-	private static JSONArray convertFiltersForFrontEnd(List<Filter> filters) {
-		JSONArray filterArray = new JSONArray();
-		if (CollectionUtils.isEmpty(filters)) {
-			return filterArray;
-		}
-
-		for (Filter filter : filters) {
-			JSONObject filterObject = new JSONObject();
-			filterArray.add(filterObject);
-		}
-
-		return filterArray;
-	}
-
-	private static JSONArray convertSortsForFrontEnd(List<Sort> sorts) {
-		JSONArray sortArray = new JSONArray();
-		if (CollectionUtils.isEmpty(sorts)) {
-			return sortArray;
-		}
-
-		for (Sort sort : sorts) {
-		}
-
-		return sortArray;
 	}
 
 	private static JSONObject toJSON(Column obj) {

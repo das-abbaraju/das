@@ -14,8 +14,6 @@ import java.util.TreeMap;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;

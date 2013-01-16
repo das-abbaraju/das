@@ -3,26 +3,26 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report")
+//@EntityListeners(value = Report.class)
 public class Report extends BaseTable {
 
 	private ModelType modelType;
@@ -38,6 +38,8 @@ public class Report extends BaseTable {
 	private String filterExpression;
 	private boolean editable;
 	private boolean favorite;
+	
+	private static final Logger logger = LoggerFactory.getLogger(Report.class);
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -182,26 +184,49 @@ public class Report extends BaseTable {
 	}
 	
 	/**
+	 * TODO: Remove after the next release
+	 * 
 	 * We assume that we always overwrite the JSON String in the parameters field with the changes 
 	 * made by the user in the columns/filters/sorts
+	 * @throws Exception 
 	 */
-	@PrePersist
-	public void convertOnSave() {
-		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
-			return;
-		}
-	}
+//	@PrePersist
+//	public void convertOnSave() throws Exception {
+//		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+//		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
+//			return;
+//		}
+//		
+//		try {
+//			JSONObject json = LegacyReportConverter.toJSON(this);
+//			if (json != null) {
+//				this.parameters = json.toString();
+//			}
+//		} catch (Exception e) {
+//			logger.error("An error occurred while converting the report to a JSON String for report id = {}", id, e);
+//			throw new Exception(e);
+//		}
+//	}
 	
 	/** 
+	 * TODO: Remove after the next release
+	 * 
 	 * We will assume that every read from the database will involve over-writing the columns, filters
 	 * and sorts from those in the JSON String.
+	 * @throws Exception 
 	 */
-	@PostConstruct
-	public void convertOnRead() {
-		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
-			return;
-		}
-	}
+//	@PostLoad	
+//	public void convertOnRead() throws Exception {
+//		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+//		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
+//			return;
+//		}
+//		
+//		try {
+//			LegacyReportConverter.fillParameters(this);
+//		} catch (ReportValidationException rve) {
+//			logger.error("Error converting from the Legacy JSON into the report object for reportId = {}", id, rve);
+//			throw new Exception(rve.getMessage());
+//		}		
+//	}
 }

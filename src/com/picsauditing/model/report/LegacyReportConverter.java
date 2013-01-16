@@ -25,6 +25,7 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 // TODO Remove this method after the next release
@@ -33,6 +34,8 @@ public class LegacyReportConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(LegacyReportConverter.class);
 
+	private static final ReportModel reportModel = SpringUtils.getBean("ReportModel");
+	
 	// From Report to JSON
 	public static JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
@@ -154,7 +157,7 @@ public class LegacyReportConverter {
 		JSONObject json = new JSONObject();
 		json.put("name", obj.getName());
 		if (!obj.isAscending())
-			json.put("direction", "DESC");
+			json.put("direction", Sort.DESCENDING);
 
 		return json;
 	}
@@ -173,9 +176,11 @@ public class LegacyReportConverter {
 		report.setName((String) json.get(REPORT_NAME));
 		report.setDescription((String) json.get(REPORT_DESCRIPTION));
 
+		reportModel.removeReportElements(report);
 		addColumns(json, report);
 		addFilters(json, report);
-		addSorts(json, report);
+		addSorts(json, report);		
+		reportModel.saveReportElements(report);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -195,7 +200,7 @@ public class LegacyReportConverter {
 		return null;
 	}
 
-	private static void addColumns(JSONObject json, Report dto) {
+	private static void addColumns(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_COLUMNS);
 		if (jsonArray == null)
 			return;
@@ -203,13 +208,13 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Column column = toColumn((JSONObject) object);
-				column.setReport(dto);
-				dto.getColumns().add(column);
+				column.setReport(report);
+				report.getColumns().add(column);
 			}
 		}
 	}
 
-	private static void addFilters(JSONObject json, Report dto) {
+	private static void addFilters(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_FILTERS);
 		if (jsonArray == null)
 			return;
@@ -217,13 +222,13 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Filter filter = toFilter((JSONObject) object);
-				filter.setReport(dto);
-				dto.getFilters().add(filter);
+				filter.setReport(report);
+				report.getFilters().add(filter);
 			}
 		}
 	}
 
-	private static void addSorts(JSONObject json, Report dto) {
+	private static void addSorts(JSONObject json, Report report) {
 		JSONArray jsonArray = (JSONArray) json.get(REPORT_SORTS);
 		if (jsonArray == null)
 			return;
@@ -231,8 +236,8 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Sort sort = toSort((JSONObject) object);
-				sort.setReport(dto);
-				dto.getSorts().add(sort);
+				sort.setReport(report);
+				report.getSorts().add(sort);
 			}
 		}
 	}

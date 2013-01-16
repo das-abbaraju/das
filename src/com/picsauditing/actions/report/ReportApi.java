@@ -60,18 +60,17 @@ public class ReportApi extends PicsApiSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
 	protected void initialize() throws Exception {
-		logger.debug("initializing report " + report.getId());
-		ReportModel.validate(report);
+		logger.debug("initializing report {}", report.getId());
 		
-		// Not sure why were switching to a new copy of reportFromDb
-		// Removing this for now
-		// Report reportFromDb = reportDao.find(Report.class, report.getId());
-		// reportDao.refresh(reportFromDb);
+		ReportModel.processReportParameters(report);
+		ReportModel.validate(report);
 		reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
-		ReportModel.processReportParameters(report);
-		if (!StringUtils.isEmpty(reportParameters))
+		// FIXME: This is a problem that will cause a Ninja save that the refresh above
+		//        was fixing
+		if (!StringUtils.isEmpty(reportParameters)) {
 			report.setParameters(reportParameters);
+		}
 		
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
@@ -102,7 +101,7 @@ public class ReportApi extends PicsApiSupport {
 
 			json.put(ReportUtil.SUCCESS, true);
 		} catch (ReportValidationException rve) {
-			logger.warn("Invalid report in ReportDynamic.report()", rve);
+			logger.error("Invalid report in ReportDynamic.report()", rve);
 			writeJsonError(rve);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
@@ -201,9 +200,6 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	protected void writeJsonError(Exception e) {
-		// TODO decide if this should be logged, but it shouldn't be rather than
-		// output to STDOUT
-		// e.printStackTrace();
 		String message = e.getMessage();
 		if (message == null) {
 			message = e.toString();
