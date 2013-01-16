@@ -228,6 +228,7 @@ public class ReportApi extends PicsApiSupport {
 
 		BufferedReader bufferedReader = null;
 		try {
+			bufferedReader = request.getReader();
 			jsonObject = parseJsonFromRequest(bufferedReader, request);
 		} catch (Exception e) {
 			logger.error("There was an error parsing the JSON from the request", e);
@@ -250,7 +251,6 @@ public class ReportApi extends PicsApiSupport {
 
 	private JSONObject parseJsonFromRequest(BufferedReader bufferedReader, HttpServletRequest request) throws Exception {
 		JSONObject jsonObject = new JSONObject();
-		bufferedReader = request.getReader();
 		if (bufferedReader == null) {
 			return jsonObject;
 		}
