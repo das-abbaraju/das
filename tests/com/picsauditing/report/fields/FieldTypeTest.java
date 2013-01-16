@@ -16,7 +16,7 @@ public class FieldTypeTest {
 		assertEquals(4, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
-			System.out.println("Testing fieldType: " + fieldType);
+//			System.out.println("Testing fieldType: " + fieldType);
 			Set<SqlFunction> sqlFunctionsResult = fieldType.getSqlFunctions();
 
 			assertEquals(4, sqlFunctionsResult.size());
@@ -34,7 +34,7 @@ public class FieldTypeTest {
 		assertEquals(32, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
-			System.out.println("Testing fieldType: " + fieldType);
+//			System.out.println("Testing fieldType: " + fieldType);
 			Set<SqlFunction> sqlFunctionsResult = fieldType.getSqlFunctions();
 
 			assertEquals(8, sqlFunctionsResult.size());
@@ -57,7 +57,7 @@ public class FieldTypeTest {
 		assertEquals(2, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
-			System.out.println("Testing fieldType: " + fieldType);
+//			System.out.println("Testing fieldType: " + fieldType);
 			Set<SqlFunction> sqlFunctionsResult = fieldType.getSqlFunctions();
 
 			if (fieldType == FieldType.Date) {
@@ -94,7 +94,7 @@ public class FieldTypeTest {
 		assertEquals(3, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
-			System.out.println("Testing fieldType: " + fieldType);
+//			System.out.println("Testing fieldType: " + fieldType);
 			Set<SqlFunction> sqlFunctionsResult = fieldType.getSqlFunctions();
 
 			if (fieldType == FieldType.Integer) {
