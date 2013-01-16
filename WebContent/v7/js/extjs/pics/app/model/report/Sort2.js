@@ -9,7 +9,8 @@ Ext.define('PICS.model.report.Sort2', {
         type: 'string'
     }, {
         name: 'direction',
-        type: 'string'
+        type: 'string',
+        defaultValue: 'ASC'
     }],
 
     associations: [{

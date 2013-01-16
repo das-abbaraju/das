@@ -1,50 +1,46 @@
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
     requires: [
-        'PICS.model.report.Column',
-        'PICS.model.report.Filter',
-        'PICS.model.report.Sort'
+        'PICS.model.report.Column2',
+        'PICS.model.report.Filter2',
+        'PICS.model.report.Sort2'
     ],
 
     fields: [{
-        // report id
-        name: 'id',
-        type: 'int'
+        name: 'type',
+        type: 'string',
+        persist: false
     }, {
-        // report base (aka mysql view)
-        name: 'modelType',
-        type: 'string'
-    }, {
-        // report name
         name: 'name',
         type: 'string'
     }, {
-        // report description
         name: 'description',
         type: 'string'
     }, {
-        // query expression used to generate report data aka (1 AND 2) OR 3
-        name: 'filterExpression',
-        type: 'string'
+        name: 'filter_expression',
+        type: 'string',
+        useNull: true
     }, {
-        // report limit
-        name: 'rowsPerPage',
-        type: 'int',
-        defaultValue: 50
+        name: 'is_editable',
+        type: 'boolean',
+        persist: false
+    }, {
+        name: 'is_favorite',
+        type: 'boolean'
     }],
     hasMany: [{
-        model: 'PICS.model.report.Column',
+        model: 'PICS.model.report.Column2',
         name: 'columns'
     }, {
-        model: 'PICS.model.report.Filter',
+        model: 'PICS.model.report.Filter2',
         name: 'filters'
     }, {
-        model: 'PICS.model.report.Sort',
+        model: 'PICS.model.report.Sort2',
         name: 'sorts'
     }],
-    
+
     getFilterExpression: function () {
-        var filter_expression = this.get('filterExpression');
+        var filter_expression = this.get('filter_expression');
         
         return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
             return parseInt(p1);
@@ -55,7 +51,7 @@ Ext.define('PICS.model.report.Report', {
     setFilterExpression: function (filter_expression) {
         // Hack: because this is broken
         if (filter_expression == '') {
-            this.set('filterExpression', filter_expression);
+            this.set('filter_expression', filter_expression);
 
             return false;
         }
@@ -109,7 +105,7 @@ Ext.define('PICS.model.report.Report', {
             return false;
         }
 
-        this.set('filterExpression', filter_expression);
+        this.set('filter_expression', filter_expression);
     },
 
     /**
@@ -120,17 +116,29 @@ Ext.define('PICS.model.report.Report', {
     toJson: function () {
         var report = {};
 
+        function getStoreType(store) {
+            var className = store.getName(), // store.self.getName()
+                nameSpaces = className.split("."),
+                storeType = nameSpaces[nameSpaces.length-1];
+
+            return storeType;
+        }
+
         function convertStoreToDataObject(store) {
-            var data = [];
+            var data = [],
+                mutableFields = store.mutableFields;
 
             store.each(function (record) {
                 var item = {};
                 
                 record.fields.each(function (field) {
-                    // block to prevent extraneous id from being inject into request parameters
-                    // ???
-                    if (record.get(field.name)) {
-                        item[field.name] = record.get(field.name);
+
+                    var fieldName = record.get(field.name),
+                        storeType = getStoreType(store);
+                    
+                    //if (fieldname && this.mutableFields[store].indexOf(fieldName) != 1) {
+                    if (fieldName && store.mutableFields.indexOf(fieldName) != -1) {
+                        item[fieldName] = fieldName;
                     }
                 });
                 
@@ -209,8 +217,7 @@ Ext.define('PICS.model.report.Report', {
     
     addSort: function (column, direction) {
         var sort_store = this.sorts(),
-            available_field = column.getAvailableField(),
-            column_name = available_field.get('name');
+            column_name = column.get('name');
         
         sort_store.add({
             name: column_name,

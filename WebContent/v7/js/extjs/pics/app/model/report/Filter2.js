@@ -22,13 +22,16 @@ Ext.define('PICS.model.report.Filter2', {
         persist: false
     }, {
         name: 'operator',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }, {
         name: 'value',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }, {
         name: 'column_compare_id',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }],
 
     associations: [{

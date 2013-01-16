@@ -188,12 +188,17 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore();
+        // TODO: SOME RACE CONDITION EXISTS WITH MISSING "DOM" ???
+        // GOOD START
+        // SOMETHING IN HERE IS PREVENTING THE PAGE FROM RENDERING
+        // BUT BY COMMENTING IT OUT IT AT LEAST LOADS THE PAGE WITH NO ERRORS
+        
+        /*var report_store = this.getReportReportsStore();
     
         if (!report_store.isLoaded()) {
             report_store.on('load', function (store, records, successful, eOpts) {
                 var report = report_store.first(),
-                    filter_expression = report.get('filterExpression');
+                    filter_expression = report.get('filter_expression');
 
                 if (filter_expression != '') {
                     cmp.showFormula();
@@ -203,14 +208,14 @@ Ext.define('PICS.controller.report.Filter', {
             }, this);
         } else {
             var report = report_store.first(),
-                filter_expression = report.get('filterExpression');
+                filter_expression = report.get('filter_expression');
 
             if (filter_expression != '') {
                 cmp.showFormula();
             }
             
             this.application.fireEvent('refreshfilters');
-        }
+        }*/
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {

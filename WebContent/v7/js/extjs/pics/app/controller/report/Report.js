@@ -22,8 +22,7 @@ Ext.define('PICS.controller.report.Report', {
         'report.ReportDatas',
         'report.Reports',
         'report.Columns',
-        'report.Filters',
-        'report.Reports2'
+        'report.Filters'
     ],
 
     init: function () {
@@ -65,20 +64,6 @@ Ext.define('PICS.controller.report.Report', {
         this.application.on({
             unfavoritereport: this.unfavoriteReport,
             scope: this
-        });
-    },
-
-    loadReport: function () {
-        var that = this;
-
-        Ext.Ajax.request({
-            url: '/v7/js/extjs/pics/app/data/report.json',
-            success: function (response) {
-                var report2_store = that.getReportReports2Store(),
-                    data = response.responseText;
-
-                report2_store.loadRawData(data);
-            }
         });
     },
 
@@ -134,6 +119,10 @@ Ext.define('PICS.controller.report.Report', {
     },
     
     refreshReport: function () {
+        // TODO: not what we want anymore
+        // need to hook into new load
+        return false;
+        
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_data_store = this.getReportReportDatasStore(),

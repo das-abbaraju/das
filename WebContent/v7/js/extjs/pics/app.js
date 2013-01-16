@@ -66,9 +66,28 @@ Ext.application({
 
         // save reference to application
         PICS.app = this;
-
-        this.getConfiguration({
-            success: function () {
+        PICS.app.configuration = {
+            isEditable: function () { return true; },
+            isFavorite: function () { return true; },
+            setIsFavorite: function (bool) {
+                return true;
+            }
+        };
+        
+        Ext.Ajax.request({
+            url: '/ReportApi.action?report=1',
+            params: {
+                includeReport: true,
+                includeColumns: true,
+                includeFilters: true,
+                includeData: true
+            },
+            success: function (response) {
+                var data = response.responseText,
+                    json = Ext.JSON.decode(data);
+                
+                Ext.StoreManager.get('report.Reports').loadRawData(json);
+                
                 that.createViewport.apply(that);
             }
         });

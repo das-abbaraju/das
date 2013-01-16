@@ -31,10 +31,12 @@ Ext.define('PICS.model.report.Column2', {
     }, {
         name: 'url',
         type: 'string',
-        persist: false
+        persist: false,
+        useNull: true
     }, {
         name: 'sql_function',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }, {
         name: 'width',
         type: 'int'
