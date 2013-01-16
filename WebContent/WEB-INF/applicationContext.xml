@@ -207,6 +207,7 @@
     <bean id="OptionValueAutocompleteService"
           class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
     <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
+    <bean id="LegacyReportConverter" class="com.picsauditing.model.report.LegacyReportConverter" />
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
