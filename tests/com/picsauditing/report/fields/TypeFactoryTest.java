@@ -2,14 +2,12 @@ package com.picsauditing.report.fields;
 
 import static org.junit.Assert.assertEquals;
 
-import com.picsauditing.util.Strings;
-import org.approvaltests.Approvals;
-import org.approvaltests.reporters.DiffReporter;
-import org.approvaltests.reporters.UseReporter;
-import org.junit.Test;
-
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.junit.Test;
+
+import com.picsauditing.util.Strings;
 
 public class TypeFactoryTest {
 
