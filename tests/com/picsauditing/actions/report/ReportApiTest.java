@@ -24,6 +24,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.ReportJson;
 
 public class ReportApiTest extends PicsActionTest {
 
@@ -54,7 +55,7 @@ public class ReportApiTest extends PicsActionTest {
 		String strutsResult = reportAction.execute();
 
 		JSONObject json = reportAction.getJson();
-		assertThat((Boolean) json.get("success"), is(equalTo(Boolean.FALSE)));
+		assertThat((Boolean) json.get(ReportJson.EXT_JS_SUCCESS), is(equalTo(Boolean.FALSE)));
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
 
