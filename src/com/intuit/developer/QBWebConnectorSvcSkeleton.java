@@ -36,6 +36,7 @@ public class QBWebConnectorSvcSkeleton {
 	
 	private final Logger LOG = LoggerFactory.getLogger(QBWebConnectorSvcSkeleton.class);
 
+	@SuppressWarnings({ "unused", "deprecation" })
 	public AuthenticateResponse authenticate(Authenticate authenticate) {
 
 		AuthenticateResponse response = new AuthenticateResponse();
@@ -204,6 +205,7 @@ public class QBWebConnectorSvcSkeleton {
 		return response;
 	}
 
+	@SuppressWarnings("unused")
 	public SendRequestXMLResponse sendRequestXML(SendRequestXML sendRequestXML) throws Exception {
 		SendRequestXMLResponse response = new SendRequestXMLResponse();
 
@@ -249,6 +251,7 @@ public class QBWebConnectorSvcSkeleton {
 		return response;
 	}
 
+	@SuppressWarnings({ "unused", "deprecation" })
 	public ConnectionErrorResponse connectionError(ConnectionError connectionError) {
 
 		ConnectionErrorResponse response = new ConnectionErrorResponse();
