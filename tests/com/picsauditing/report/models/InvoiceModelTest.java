@@ -24,8 +24,9 @@ public class InvoiceModelTest extends ModelTest {
 		includedFields.add("AccountContactEmail");
 		includedFields.add("ContractorBalance");
 		includedFields.add("InvoicePoNumber");
-
-		excludedFields.add("AccountCountry");
+		includedFields.add("AccountCountry");
+		
+		excludedFields.add("AccountReason");
 
 		checkFields();
 	}
