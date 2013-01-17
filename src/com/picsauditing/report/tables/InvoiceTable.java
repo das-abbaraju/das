@@ -12,6 +12,26 @@ public class InvoiceTable extends AbstractTable {
 		super("invoice");
 		addFields(Invoice.class);
 		addCurrency();
+		
+		Field invoiceStatus = new Field("Status", "status", FieldType.TransactionStatus);
+		invoiceStatus.setCategory(FieldCategory.Invoicing);
+		invoiceStatus.setWidth(100);
+		addField(invoiceStatus);
+
+		Field invoiceTotalAmount = new Field("TotalAmount", "totalAmount", FieldType.Float);
+		invoiceTotalAmount.setCategory(FieldCategory.Invoicing);
+		invoiceTotalAmount.setWidth(100);
+		addField(invoiceTotalAmount);
+
+		Field invoiceAmountApplied = new Field("AmountApplied", "amountApplied", FieldType.Float);
+		invoiceAmountApplied.setCategory(FieldCategory.Invoicing);
+		invoiceAmountApplied.setWidth(100);
+		addField(invoiceAmountApplied);
+
+		Field daysLeft = new Field("DaysLeft", "DATEDIFF(ADDDATE(" + ReportOnClause.ToAlias + ".dueDate, 90),NOW())", FieldType.Integer);
+		daysLeft.setCategory(FieldCategory.Invoicing);
+		daysLeft.setWidth(100);
+		addField(daysLeft);
 	}
 
 	private void addCurrency() {
@@ -28,6 +48,6 @@ public class InvoiceTable extends AbstractTable {
 		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(),
 				new ReportOnClause("accountID"));
 		addRequiredKey(accountJoin);
-		accountJoin.setMinimumImportance(FieldImportance.Required);
+		accountJoin.setMinimumImportance(FieldImportance.Average);
 	}
 }
