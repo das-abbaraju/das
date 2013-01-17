@@ -93298,6 +93298,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     cls: 'site-menu-search',
     displayField: 'name',
     emptyText: 'Search',
+    id: 'asdf',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
     labelSeparator: '',
@@ -93308,7 +93309,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         listeners: {
             el: {
                 click: {
-                    delegate: '.more-results',
+                    delegate: '.results-footer',
                     fn: function (e, t, eOpts) {
                         var cmp = Ext.ComponentQuery.query('searchbox')[0];
                         var term = cmp.inputEl.getValue();
@@ -93337,18 +93338,35 @@ Ext.define('PICS.view.layout.SearchBox', {
                             '</div>',
                         '</div>',
                     '</li>',
-                    '<tpl if="xindex == xcount">',
-                        '<li>',
-                            '<div class="search-item">',
-                                '<a href="#" class="more-results">',
-                                    'More Results...',
-                                '</a>',
-                            '</div>',
-                        '</li>',
-                    '</tpl>',
                 '</tpl>',
-            '</ul>'
-        )
+                '{[this.setTotalResults()]}',
+                    '<li class="results-footer search-item {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
+                '<tpl if="this.total_results &gt; 0">',
+                        '<tpl if="this.total_results &gt; 10">',
+                            '<a href="#">',
+                                'More Results...',
+                            '</a>',
+                        '</tpl>',
+                        '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',
+                '</tpl>',
+                '<tpl if="this.total_results == 0">',
+                    '<p>No results found</p>',
+                '</tpl>',
+                '</li>',
+            '</ul>',
+            {
+                total_results: 0,
+                getTotalRecords: function () {
+                    var combo_store = Ext.ComponentQuery.query('searchbox')[0].getStore();
+
+                    return combo_store.getCount();
+                },
+                setTotalResults: function () {
+                    var combo_store = Ext.ComponentQuery.query('searchbox')[0].getStore();
+
+                    this.total_results = combo_store.getTotalCount();
+                }
+        })
     },
 
     listeners: {
@@ -93393,6 +93411,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
+                totalProperty: 'total_results',
                 type: 'json'
             }
         }
