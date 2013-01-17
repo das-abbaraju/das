@@ -1,25 +1,19 @@
 package com.picsauditing.actions.contractors;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorSearch extends PicsActionSupport {
 	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorSearch.class);
-
 	private Database database = new Database();
 	private String term;
 	private String type;
@@ -40,10 +34,14 @@ public class RequestNewContractorSearch extends PicsActionSupport {
 		Hashtable<Integer, Integer> workingForOperator = searchEngine.getConIds(permissions);
 
 		for (BasicDynaBean contractor : data) {
-			String name = contractor.get("name").toString();
-			int id = Integer.parseInt(contractor.get("id").toString());
+			try {
+				String name = contractor.get("name").toString();
+				int id = Integer.parseInt(contractor.get("id").toString());
 
-			results.add(new SearchResult(id, name, workingForOperator.contains(id)));
+				results.add(new SearchResult(id, name, workingForOperator.contains(id)));
+			} catch (Exception e) {
+				logger.error("Error reading contractor name or parsing ID", e);
+			}
 		}
 
 		return SUCCESS;

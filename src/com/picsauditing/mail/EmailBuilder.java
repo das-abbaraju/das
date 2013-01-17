@@ -286,8 +286,14 @@ public class EmailBuilder {
 			locale = user.getLocale();
 		}
 
-		if (locale == null)
+		if (tokens.containsKey("primaryContact") && tokens.get("primaryContact") != null && tokens.get("primaryContact") instanceof User) {
+			User user = (User) tokens.get("primaryContact");
+			locale = user.getLocale();
+		}
+
+		if (locale == null) {
 			locale = Locale.ENGLISH;
+		}
 
 		return locale;
 	}
