@@ -19,8 +19,11 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "p.account."+currentSession.getQbID()+" is not null AND p.qbListID is not null" +
-				" AND p.account."+currentSession.getQbID()+" not like 'NOLOAD%' AND p.qbSync = true and p.status != 'Demo' AND p.currency like '"+currentSession.getCurrencyCode()+"'";
+		String where = "p.account." + currentSession.getQbID() + " IS NOT NULL AND p.qbListID IS NOT NULL"
+				+ " AND p.account." + currentSession.getQbID()
+				+ " NOT LIKE 'NOLOAD%' AND p.qbListID NOT LIKE 'NOLOAD%'"
+				+ " AND p.account.status != 'Demo' AND p.qbSync = true AND p.currency LIKE '"
+				+ currentSession.getCurrencyCode() + "'";
 		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
 		if (payments.size() > 0) {
@@ -64,17 +67,20 @@ public class GetPaymentsForUpdate extends PaymentAdaptor {
 			ReceivePaymentRet qbPayment = parsedResponses.get(listId);
 			currentSession.getToUpdatePayment().put(listId, qbPayment);
 		}
-		
-		// It's possible that we may have a Payment that was deleted in QB but not in PICS
-		// We should notify someone so we can remove it from PICS or insert it in QB again
-		if(currentSession.getPossiblePaymentUpdates().size() != parsedResponses.size()) {
+
+		// It's possible that we may have a Payment that was deleted in QB but
+		// not in PICS
+		// We should notify someone so we can remove it from PICS or insert it
+		// in QB again
+		if (currentSession.getPossiblePaymentUpdates().size() != parsedResponses.size()) {
 			StringBuffer paymentIDs = new StringBuffer();
-			for(Payment payment : currentSession.getPossiblePaymentUpdates())
+			for (Payment payment : currentSession.getPossiblePaymentUpdates())
 				paymentIDs.append(payment.getId()).append(",");
-			
-			currentSession.getErrors().add("A PICS Payment was deleted from QuickBooks. Check these Payment IDS: " + paymentIDs.toString());
+
+			currentSession.getErrors().add(
+					"A PICS Payment was deleted from QuickBooks. Check these Payment IDS: " + paymentIDs.toString());
 		}
-		
+
 		currentSession.getPossiblePaymentUpdates().clear();
 		PicsLogger.log("populated " + currentSession.getToUpdatePayment().size() + " getToUpdatePayment()");
 
