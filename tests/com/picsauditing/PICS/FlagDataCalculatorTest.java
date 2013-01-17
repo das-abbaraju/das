@@ -118,7 +118,7 @@ public class FlagDataCalculatorTest {
 		nullCriteria = createFlagCriteria(5, null);
 	}
 	
-	@Ignore		
+	@Test		
 	public void testFlagDataOverrideAdjustment() throws Exception {
 		Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<FlagCriteria, List<FlagDataOverride>>();
 		FlagDataOverride override = null;
@@ -127,7 +127,6 @@ public class FlagDataCalculatorTest {
 		createContractorAnswers();
 		
 		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
-		Whitebox.setInternalState(calculator, "flagDataOverrideDAO", flagDataOverrideDAO);
 		Whitebox.setInternalState(calculator, "dao", dao);
 		
 		ArrayList<FlagCriteria> criteriaList = new ArrayList<FlagCriteria>();
