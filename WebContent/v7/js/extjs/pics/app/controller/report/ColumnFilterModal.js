@@ -55,7 +55,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
 
         this.application.on({
-            showavailablefieldmodal: this.showAvailableFieldModal,
+            showcolumnmodal: this.showColumnModal,
+            scope: this
+        });
+        
+        this.application.on({
+            showfiltermodal: this.showFilterModal,
             scope: this
         });
     },

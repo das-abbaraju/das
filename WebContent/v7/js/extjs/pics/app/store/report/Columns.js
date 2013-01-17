@@ -1,6 +1,6 @@
 Ext.define('PICS.store.report.Columns', {
     extend: 'PICS.store.report.base.Store',
-    model: 'PICS.model.report.Column2',
+    model: 'PICS.model.report.Column',
 
     groupField: 'category',
     proxy: {

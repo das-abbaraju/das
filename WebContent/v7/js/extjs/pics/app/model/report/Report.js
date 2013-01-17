@@ -1,9 +1,9 @@
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
     requires: [
-        'PICS.model.report.Column2',
-        'PICS.model.report.Filter2',
-        'PICS.model.report.Sort2'
+        'PICS.model.report.Column',
+        'PICS.model.report.Filter',
+        'PICS.model.report.Sort'
     ],
 
     fields: [{
@@ -29,13 +29,13 @@ Ext.define('PICS.model.report.Report', {
         type: 'boolean'
     }],
     hasMany: [{
-        model: 'PICS.model.report.Column2',
+        model: 'PICS.model.report.Column',
         name: 'columns'
     }, {
-        model: 'PICS.model.report.Filter2',
+        model: 'PICS.model.report.Filter',
         name: 'filters'
     }, {
-        model: 'PICS.model.report.Sort2',
+        model: 'PICS.model.report.Sort',
         name: 'sorts'
     }],
 

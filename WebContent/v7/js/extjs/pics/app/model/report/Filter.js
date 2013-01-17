@@ -1,29 +1,43 @@
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
-    // TODO: change to 'Field'
-    associations: [{
-        type: 'hasOne',
-        model: 'PICS.model.report.AvailableField',
-        associationKey: 'field',
-        getterName: 'getAvailableField',
-        setterName: 'setAvailableField'
-    }],
-    fields: [{
-        // filter name
+    fields: [/*{
+        name: 'report_id',
+        type: 'int'
+    }, */{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
         name: 'name',
-        type: 'string'
+        type: 'string',
+        persist: false
     }, {
-        // filter operator aka contains, starts with, =, !=, etc.
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
         name: 'operator',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }, {
-        // filter value
         name: 'value',
-        type: 'string'
+        type: 'string',
+        useNull: true
     }, {
-        // filter value
-        name: 'fieldCompare',
-        type: 'string'
+        name: 'column_compare_id',
+        type: 'string',
+        useNull: true
+    }],
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        setterName: 'setReport'
     }]
 });

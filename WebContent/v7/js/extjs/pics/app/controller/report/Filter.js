@@ -240,7 +240,7 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onAddFilter: function (cmp, event, eOpts) {
-        this.application.fireEvent('showavailablefieldmodal', 'filter');
+        this.application.fireEvent('showfiltermodal');
     },
 
     /**

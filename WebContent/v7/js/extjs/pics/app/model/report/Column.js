@@ -4,51 +4,78 @@ Ext.define('PICS.model.report.Column', {
     requires: [
         'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
-        'PICS.ux.grid.column.Date',
         'PICS.ux.grid.column.Flag',
-        'PICS.ux.grid.column.Float',
-        'PICS.ux.grid.column.Int',
         'PICS.ux.grid.column.Number',
         'PICS.ux.grid.column.String'
     ],
 
-    // http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
-    associations: [{
-        type: 'hasOne',
-        model: 'PICS.model.report.AvailableField',
-        associationKey: 'field',
-        getterName: 'getAvailableField',
-        setterName: 'setAvailableField'
+    fields: [/*{
+        name: 'report_id',
+        type: 'int'
+    }, */{
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'url',
+        type: 'string',
+        persist: false,
+        useNull: true
+    }, {
+        name: 'sql_function',
+        type: 'string',
+        useNull: true
+    }, {
+        name: 'width',
+        type: 'int'
+    }, {
+        name: 'is_sortable',
+        type: 'boolean',
+        perist: false
     }],
 
-    fields: [{
-        // column name
-        name: 'name',
-        type: 'string'
-    }, {
-        // column aggragate function aka Count, Min, Max, Year, etc.
-        name: 'method',
-        type: 'string'
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        setterName: 'setReport'
     }],
 
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
-        var field = this.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
+        var id = this.get('id'),
+            type = this.get('type'),
+            data_type;
+        
+        switch (type) {
+            case 'boolean':
+                data_type = 'boolean';
+    
+                break;
+            default:
+                data_type = 'auto';
+                
+                break;
         }
-
+        
         var model_field = {
-            name: field.get('name'),
-            type: field.get('type')
+            name: id,
+            type: data_type
         };
-
-        if (field.get('type') == 'date') {
-            model_field.dateFormat = 'time';
-        }
 
         return model_field;
     },
@@ -58,52 +85,28 @@ Ext.define('PICS.model.report.Column', {
     // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
     // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
     toGridColumn: function () {
-        var field = this.getAvailableField(),
-            url = field.get('url'),
+        var type = this.get('type'),
+            url = this.get('url'),
             grid_column;
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        var type = field.get('type');
         
         var config = {
             column: this
         };
 
         switch (type) {
-            // <i class="icon-ok"></i>
             case 'boolean':
                 grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
-            // Y-m-d
-            case 'date':
-                grid_column = Ext.create('PICS.ux.grid.column.Date', config);
+            case 'flag':
+                grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
                 break;
-            // <i class="icon-flag"></i>
-            case 'flagcolor':
-            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
-
-                break;
-            // 1,234.00
-            case 'float':
-                grid_column = Ext.create('PICS.ux.grid.column.Float', config);
-
-                break;
-            // 1234
-            case 'integer':
-                grid_column = Ext.create('PICS.ux.grid.column.Int', config);
-
-                break;
-            // 1,234
             case 'number':
                 grid_column = Ext.create('PICS.ux.grid.column.Number', config);
 
                 break;
-            // text
+            case 'date':
             case 'string':
             default:
                 grid_column = Ext.create('PICS.ux.grid.column.String', config);

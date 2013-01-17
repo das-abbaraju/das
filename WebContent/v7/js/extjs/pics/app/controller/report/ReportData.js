@@ -10,7 +10,6 @@ Ext.define('PICS.controller.report.ReportData', {
     }],
 
     stores: [
-        'report.AvailableFields',
         'report.Reports',
         'report.ReportDatas'
     ],
@@ -61,7 +60,7 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onAddColumn: function (cmp, event, eOpts) {
-        this.application.fireEvent('showavailablefieldmodal', 'column');
+        this.application.fireEvent('showcolumnmodal');
     },
 
     onColumnFunction: function (cmp, event, eOpts) {

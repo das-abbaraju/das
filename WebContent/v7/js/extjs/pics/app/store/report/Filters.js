@@ -1,6 +1,6 @@
 Ext.define('PICS.store.report.Filters', {
     extend: 'PICS.store.report.base.Store',
-    model: 'PICS.model.report.Filter2',
+    model: 'PICS.model.report.Filter',
 
     groupField: 'category',
     proxy: {
