@@ -31,57 +31,60 @@
 
 
                 search_query_element.data('typeahead').process = function (items, total_results) {
-                    var that = this;
-
-                    if (!items.length) {
-                        return this.shown ? this.hide() : this;
-                    }
-
-                    return this.render(items.slice(0, this.options.items), total_results).show();
+                    return this.render(items.slice(0, this.options.items), total_results).show();                    
                 };
 
                 search_query_element.data('typeahead').render = function (items, total_results) {
-                    var that = this;
+                    var that = this,
+                        result_footer = $('<li class="results-footer">');
 
-                    items = $(items).map(function (i, item) {
-                        i = $(that.options.item).attr({
-                            'data-name': item.name,
-                            'data-value': item.id,
-                            'data-search': item.search
+                    //format items
+                    if (!items.length) {
+                      items = $('<li class="results-footer no-results">No results found</li>');
+                    } else {
+                        items = $(items).map(function (i, item) {
+                            i = $(that.options.item).attr({
+                                'data-name': item.name,
+                                'data-value': item.id,
+                                'data-search': item.search
+                            });
+
+                            i.addClass(item.search);
+
+                            i.find('a').html([
+                                '<div class="clearfix">',
+                                    '<div class="name">',
+                                        item.name,
+                                    '</div>',
+                                    '<div class="id">',
+                                        item.id,
+                                    '</div>',
+                                '</div>',
+                                '<div class="clearfix">',
+                                    '<div class="location">',
+                                        item.location,
+                                    '</div>',
+                                    '<div class="type">',
+                                        item.type,
+                                    '</div>',
+                                '</div>',
+                            ].join(''));
+
+                            return i[0];
                         });
+                    }
 
-                        i.addClass(item.search);
-
-                        i.find('a').html([
-                            '<div class="clearfix">',
-                                '<div class="name">',
-                                    item.name,
-                                '</div>',
-                                '<div class="id">',
-                                    item.id,
-                                '</div>',
-                            '</div>',
-                            '<div class="clearfix">',
-                                '<div class="location">',
-                                    item.location,
-                                '</div>',
-                                '<div class="type">',
-                                    item.type,
-                                '</div>',
-                            '</div>',
-                        ].join(''));
-
-                        return i[0];
-                    });
-
-                    // add custom more results link
-                    if (total_results > that.options.items) {
-                        var more_results = $('<li class="more-results"><a href="#">More Results...</a></li>');
-                        more_results.append('<p>Displaying ' + that.options.items + ' of ' + total_results + '</p>');
-                        items.push(more_results[0]);
+                    // add result footer
+                    if (total_results > 0) {
+                        if (total_results > that.options.items) {
+                            result_footer.append('<a href="#">More Results...</a>');
+                        }
+                        result_footer.append('<p>Displaying ' + items.length + ' of ' + total_results + '</p>');
+                        items.push(result_footer[0]);
                     }
 
                     items.first().addClass('active');
+
                     this.$menu.html(items);
 
                     return this;
@@ -89,12 +92,12 @@
 
                 search_query_element.data('typeahead').select = function () {
                     
-                    var item = this.$menu.find('.active'),
+                    var item = this.$menu.find('.active, .no-results'),
                         name = item.attr('data-name'),
                         id = item.attr('data-value'),
                         search = item.attr('data-search');
 
-                    if (item.hasClass('more-results')) {
+                    if (item.hasClass('results-footer')) {
                         window.location.href = 'SearchBox.action?button=search&searchTerm=' + this.$element.val();
                     } else {
                         //TODO Fix backend call to not be ugly
@@ -121,7 +124,6 @@
                     },
                     success: function (data, textStatus, jqXHR) {
                         if (that.$element.val().length > 0) {
-
                             process($.map(data.results, function (item) {
                                 return {
                                     id: item.result_id,
