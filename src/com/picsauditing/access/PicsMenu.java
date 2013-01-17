@@ -191,8 +191,8 @@ public class PicsMenu {
 		}
 		if (permissions.isCorporate())
 			addChildAction(subMenu, "ReportContractorOperatorFlag");
-		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
-			addChildAction(subMenu, "ReportContractorOperatorFlagMatrix");
+		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity() && !permissions.isGeneralContractorFree())
+				addChildAction(subMenu, "ReportContractorOperatorFlagMatrix");
 		if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
 			addChildAction(subMenu, "OperatorFlagMatrix");
 		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
