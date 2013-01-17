@@ -60,9 +60,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return report;
 	}
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+//	public void setReport(Report report) {
+//		this.report = report;
+//	}
 
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;
