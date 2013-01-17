@@ -68,47 +68,20 @@ public class ReportApi extends PicsApiSupport {
 	protected void initialize() throws Exception {
 		logger.debug("initializing report {}", report.getId());
 
-/*
-		if data is based on report in database then lookup from db (no json paramters present)
-		if modified report(incoming json is present) then build report from json
-		validate
-		update last viewed
-*/
-		JSONObject json = getJsonFromRequestPayload();
-		JSONObject reportJson = null;
-		if (!json.isEmpty()) {
-			reportJson = (JSONObject) json.get(ReportJson.LEVEL_REPORT);
-		}
-		if (isModifiedReport(reportJson)) {
-			buildReportFromJson();
-		} else {
-			buildReportFromDatabase();
-		}
-
-
-//		reportModel.processReportParameters(report);
+		reportModel.processReportParameters(report);
 		ReportModel.validate(report);
 		reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
 		// FIXME: This is a problem that will cause a Ninja save that the refresh above
 		//        was fixing
-//		if (StringUtils.isNotEmpty(reportParameters)) {
-//			report.setParameters(reportParameters);
-//		}
+		if (StringUtils.isNotEmpty(reportParameters)) {
+			report.setParameters(reportParameters);
+		}
 
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
-	}
-
-	private Report buildReportFromJson() {
-		//To change body of created methods use File | Settings | File Templates.
-		return null;
-	}
-
-	private boolean isModifiedReport(JSONObject reportJson) {
-		return reportJson != null && !reportJson.isEmpty() && includeData;
 	}
 
 	public String execute() {
@@ -299,9 +272,9 @@ public class ReportApi extends PicsApiSupport {
 		return report;
 	}
 
-//	public void setReport(Report report) {
-//		this.report = report;
-//	}
+	public void setReport(Report report) {
+		this.report = report;
+	}
 
 	public ReportResults getResults() {
 		return converter.getReportResults();

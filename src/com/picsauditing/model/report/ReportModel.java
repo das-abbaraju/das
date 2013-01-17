@@ -453,12 +453,4 @@ public class ReportModel {
 			reportPermissionAccountDao.remove(reportPermissionAccount);
 		}
 	}
-
-	public Report findById(int reportId) {
-		try {
-			return reportDao.find(Report.class, reportId);
-		} catch (Exception e) {
-			return null;
-		}
-	}
 }
