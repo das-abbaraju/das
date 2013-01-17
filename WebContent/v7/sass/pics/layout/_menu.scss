@@ -102,19 +102,22 @@
 		}
 	}
 
-	.more-results
+	.results-footer
 	{
-	   a
-	   {
-	       font-weight: bold;
-	   }
+        padding: 5px 20px;
 
-	   p
-	   {
+        a
+        {
+            font-weight: bold;
+            padding: 3px 0px;
+        }
+
+        p
+        {
+            color: #999;
             font-size: 13px;
             margin: 0px;
-            padding: 0px 20px;
-	   }
+        }
     }
 }
 
