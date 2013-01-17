@@ -22,14 +22,14 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     }],
 
     stores: [
-        'report.Reports2'
+        'report.Reports',
+        'report.Columns',
+        'report.Filters'
     ],
 
     views: [
         'PICS.view.report.modal.column-filter.ColumnModal',
-        'PICS.view.report.modal.column-filter.FilterModal',
-        // TODO: Move this out of views (e.g., to requires?)
-        'PICS.ux.util.ColumnFilterStoreFilter'
+        'PICS.view.report.modal.column-filter.FilterModal'
     ],
 
     init: function () {
@@ -66,7 +66,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     onColumnModalAddClick: function (cmp, event, eOpts) {
-        var report_store = this.getReports2Store(),
+        var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
@@ -82,19 +82,19 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     onColumnModalSearch: function (cmp, event, eOpts) {
-        var columns_store = this.getColumnsStore(),
-            columns_search_box = this.getColumnsSearchBox(),
+        var columns_store = this.getReportColumnsStore(),
+            columns_search_box = this.getColumnModalSearchBox(),
             search_query = columns_search_box.getValue();
 
         columns_store.clearFilter();
 
-        columns_store.filter(Ext.create('PICS.ux.util.ColumnFilterStoreFilter'), {
+        columns_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
-        })
+        }));
     },
 
     onFilterModalAddClick: function (cmp, event, eOpts) {
-        var report_store = this.getReports2Store(),
+        var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_list = this.getFilterList(),
             filter_modal_checkbox_model = filter_list.getSelectionModel(),
@@ -110,15 +110,15 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     },
 
     onFilterModalSearch: function (cmp, event, eOpts) {
-        var filters_store = this.getFiltersStore(),
-            filters_search_box = this.getFiltersSearchBox(),
+        var filters_store = this.getReportFiltersStore(),
+            filters_search_box = this.getFilterModalSearchBox(),
             search_query = columns_search_box.getValue();
 
         filters_store.clearFilter();
 
-        filters_store.filter(Ext.create('PICS.ux.util.ColumnFilterStoreFilter'), {
+        filters_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
-        })
+        }));
     },
 
     showColumnModal: function () {

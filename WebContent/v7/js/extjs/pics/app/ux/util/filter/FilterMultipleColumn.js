@@ -1,11 +1,7 @@
-Ext.define('PICS.ux.util.ColumnFilterStoreFilter', {
+Ext.define('PICS.ux.util.filter.FilterMultipleColumn', {
     extend: 'Ext.util.Filter',
     
     anyMatch: true,
-    property: [
-        'category',
-        'description'
-    ],
     root: 'data',
     
     createFilterFn: function () {

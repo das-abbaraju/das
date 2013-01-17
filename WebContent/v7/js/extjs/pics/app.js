@@ -11,7 +11,8 @@ Ext.application({
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
         'Ext.grid.RowNumberer',
-        'Ext.grid.column.Number'
+        'Ext.grid.column.Number',
+        'PICS.ux.util.filter.FilterMultipleColumn'
     ],
 
     constants: {
@@ -44,6 +45,7 @@ Ext.application({
     },
 
     controllers: [
+        'report.ColumnFilterModal',
         'report.ColumnFunctionModal',
         'report.Filter',
         'report.Report',
@@ -83,9 +85,14 @@ Ext.application({
             },
             success: function (response) {
                 var data = response.responseText,
-                    json = Ext.JSON.decode(data);
-                
-                Ext.StoreManager.get('report.Reports').loadRawData(json);
+                    json = Ext.JSON.decode(data),
+                    report_store = Ext.StoreManager.get('report.Reports'),
+                    column_store = Ext.StoreManager.get('report.Columns'),
+                    filter_store = Ext.StoreManager.get('report.Filters');
+
+                report_store.loadRawData(json);
+                column_store.loadRawData(json);
+                filter_store.loadRawData(json);
                 
                 that.createViewport.apply(that);
             }
