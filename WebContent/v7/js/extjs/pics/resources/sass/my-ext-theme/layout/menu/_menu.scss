@@ -213,11 +213,23 @@ $site_menu_search_more_results_text_color: #333;
 	    }
 	}
 	
-	.more-results
-	{
-		color: $site_menu_search_more_results_text_color;
-		font-weight: bold;
-	}
+    .results-footer
+    {
+        a
+        {
+            color: $site_menu_search_more_results_text_color;
+            display: block;
+            font-weight: bold;
+            padding: 3px 0px;
+        }
+
+        p
+        {
+            color: #999;
+            font-size: 13px;
+            margin: 0px;
+        }
+    }
 }
 
 .x-menu-overflow .icon-cog
