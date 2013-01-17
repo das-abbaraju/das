@@ -29,8 +29,6 @@ public class InvoiceFeeCountryDAO extends PicsDAO {
 		query.setParameter("country", country);
 		query.setParameter("feeClassList", feeClassList);
 
-		System.out.println("query: " + query.toString());
-
 		return query.getResultList();
 	}
 }
