@@ -137,32 +137,25 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            grid_columns = report.convertColumnsToGridColumns(),
+            report_data_view = this.getReportData();
 
-        if (!report_store.isLoaded()) {
-            report_store.on('load', function (store, records, successful, eOpts) {
-                this.application.fireEvent('refreshreport');
-            }, this);
-        } else {
-            this.application.fireEvent('refreshreport');
-        }
+        report_data_view.updateGridColumns(grid_columns);
     },
     
     onReportDataReconfigure: function (cmp, eOpts) {
         var report_data = cmp,
             report_data_store = cmp.getStore(),
+            total = report_data_store.getTotalCount(),
             report_paging_toolbar = this.getReportPagingToolbar();
         
-        // load new data
-        report_data_store.loadPage(1, {
-            callback: function (records, operation, success) {
-                // remove no results message if one exists
-                report_data.updateNoResultsMessage();
-                
-                // update display count
-                report_paging_toolbar.updateDisplayInfo(this.getTotalCount());
-            }
-        });
+        // remove no results message if one exists
+        report_data.updateNoResultsMessage();
+        
+        // update display count
+        report_paging_toolbar.updateDisplayInfo(total);
     },
 
     onReportRefreshClick: function (cmp, event, eOpts) {

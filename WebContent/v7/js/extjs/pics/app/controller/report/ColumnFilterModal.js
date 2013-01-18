@@ -18,7 +18,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         selector: 'columnmodal textfield[name=search_box]'
     }, {
         ref: 'filterModalSearchBox',
-        selection: 'filtermodal textfield[name=search_box]'
+        selector: 'filtermodal textfield[name=search_box]'
     }],
 
     stores: [
@@ -68,11 +68,14 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     onColumnModalAddClick: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
+            column_modal = this.getColumnModal(),
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
             selected_columns = column_modal_checkbox_model.getSelection();
-
+            
         report.addColumns(selected_columns);
+        
+        column_modal.close();
     },
 
     onColumnModalCancelClick: function (cmp, event, eOpts) {
@@ -96,11 +99,14 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     onFilterModalAddClick: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
+            filter_modal = this.getFilterModal(),
             filter_list = this.getFilterList(),
             filter_modal_checkbox_model = filter_list.getSelectionModel(),
             selected_filters = filter_modal_checkbox_model.getSelection();
     
-        report.addColumns(selected_filters);
+        report.addFilters(selected_filters);
+        
+        filter_modal.close();
     },
 
     onFilterModalCancelClick: function (cmp, event, eOpts) {
@@ -112,7 +118,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     onFilterModalSearch: function (cmp, event, eOpts) {
         var filters_store = this.getReportFiltersStore(),
             filters_search_box = this.getFilterModalSearchBox(),
-            search_query = columns_search_box.getValue();
+            search_query = filters_search_box.getValue();
 
         filters_store.clearFilter();
 
@@ -125,15 +131,23 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
+        
+        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
+        var column_list = this.getColumnList();
 
         column_modal.show();
+        column_list.getSelectionModel().deselectAll();
     },
 
     showFilterModal: function () {
         var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
-
+        
+        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
+        var filter_list = this.getFilterList();
+        
         filter_modal.show();
+        filter_list.getSelectionModel().deselectAll();
     }
 });

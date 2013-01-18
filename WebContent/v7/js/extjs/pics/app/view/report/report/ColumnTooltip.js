@@ -4,5 +4,5 @@ Ext.define('PICS.view.report.report.ColumnTooltip', {
     
     anchor: 'bottom',
     showDelay: 0,
-    tpl: '<div><h3>{text}</h3><p>{help}</p></div>'
+    tpl: '<div><h3>{name}</h3><p>{description}</p></div>'
 });

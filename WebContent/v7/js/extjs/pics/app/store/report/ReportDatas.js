@@ -12,27 +12,12 @@ Ext.define('PICS.store.report.ReportDatas', {
     ],
 
     proxy: {
-        actionMethods: {
-            create: 'POST',
-            read: 'POST',
-            update: 'POST',
-            destroy: 'POST'
-        },
-        listeners: {
-            exception: function (proxy, response, operation, eOpts) {
-                if (operation.success == false) {
-                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-                }
-            }
-        },
         reader: {
-            messageProperty: 'message',
-            root: 'data',
+            root: 'results.data',
+            totalProperty: 'results.total',
             type: 'json'
         },
-        timeout: 60000,
-        type: 'ajax',
-        url: '/ReportData!extjs.action'
+        type: 'memory'
     },
 
     setLimit: function (limit) {

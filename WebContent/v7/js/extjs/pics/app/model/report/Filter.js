@@ -1,10 +1,10 @@
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
-    fields: [/*{
-        name: 'report_id',
-        type: 'int'
-    }, */{
+    fields: [{
+        name: 'field_id',
+        type: 'string'
+    }, {
         name: 'type',
         type: 'string',
         persist: false
@@ -32,12 +32,5 @@ Ext.define('PICS.model.report.Filter', {
         name: 'column_compare_id',
         type: 'string',
         useNull: true
-    }],
-
-    associations: [{
-        type: 'belongsTo',
-        model: 'PICS.model.report.Report',
-        getterName: 'getReport',
-        setterName: 'setReport'
     }]
 });

@@ -12,7 +12,8 @@ Ext.application({
         'Ext.resizer.Splitter',
         'Ext.grid.RowNumberer',
         'Ext.grid.column.Number',
-        'PICS.ux.util.filter.FilterMultipleColumn'
+        'PICS.ux.util.filter.FilterMultipleColumn',
+        'PICS.data.ServerCommunication'
     ],
 
     constants: {
@@ -75,27 +76,11 @@ Ext.application({
             }
         };
         
-        Ext.Ajax.request({
-            url: '/ReportApi.action?report=1',
-            params: {
-                includeReport: true,
-                includeColumns: true,
-                includeFilters: true,
-                includeData: true
+        PICS.data.ServerCommunication.loadAll({
+            callback: function () {
+                this.createViewport();
             },
-            success: function (response) {
-                var data = response.responseText,
-                    json = Ext.JSON.decode(data),
-                    report_store = Ext.StoreManager.get('report.Reports'),
-                    column_store = Ext.StoreManager.get('report.Columns'),
-                    filter_store = Ext.StoreManager.get('report.Filters');
-
-                report_store.loadRawData(json);
-                column_store.loadRawData(json);
-                filter_store.loadRawData(json);
-                
-                that.createViewport.apply(that);
-            }
+            scope: this
         });
     },
 

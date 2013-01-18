@@ -15,14 +15,14 @@ Ext.define('PICS.ux.grid.column.Column', {
             Ext.Error.raise('Invalid column record');
         }
         
-        var field = this.column.getAvailableField(),
-            name = field.get('name'),
-            text = field.get('text'),
-            width = field.get('width');
+        var column = this.column,
+            id = column.get('id'),
+            name = column.get('name'),
+            width = column.get('width');
         
-        this.dataIndex = name;
+        this.dataIndex = id;
         
-        this.setText(text);
+        this.setText(name);
         this.setWidth(width);
         
         this.callParent(arguments);
@@ -32,8 +32,7 @@ Ext.define('PICS.ux.grid.column.Column', {
         var grid = view.ownerCt,
             grid_column = grid.columns[colIndex],
             column = grid_column.column,
-            field = column.getAvailableField(),
-            url = field.get('url');
+            url = column.get('url');
         
         if (url) {
             var href = grid_column.getHref(url, record);
@@ -57,17 +56,17 @@ Ext.define('PICS.ux.grid.column.Column', {
         }
         
         var target = this.el,
-            field = this.column.getAvailableField(),
-            text = field.get('text'),
-            help = field.get('help');
+            column = this.column,
+            name = column.get('name'),
+            description = column.get('description');
         
         var tooltip = Ext.create('PICS.view.report.report.ColumnTooltip', {
             target: target
         });
         
         tooltip.update({
-            text: text,
-            help: help
+            name: name,
+            description: description
         });
     }
 });
