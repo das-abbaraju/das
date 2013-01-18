@@ -11,9 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.report.ReportToExtJSConverter;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
@@ -23,20 +21,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportModel;
-import com.picsauditing.report.AvailableFieldsToExtJSConverter;
 import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
+import com.picsauditing.report.converter.ExtJSToReportConverter;
+import com.picsauditing.report.converter.ReportToExtJSConverter;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
@@ -50,13 +52,13 @@ public class ReportApi extends PicsApiSupport {
 	@Autowired
 	private ReportModel reportModel;
 
+	private int reportId;
 	protected Report report;
 	protected String debugSQL = "";
 	private SelectSQL sql = null;
 	protected ReportDataConverter converter;
 	private int limit = 100;
 	private int pageNumber = 1;
-	private String reportParameters;
 	private boolean includeReport;
 	private boolean includeColumns;
 	private boolean includeFilters;
@@ -64,24 +66,62 @@ public class ReportApi extends PicsApiSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
-	@SuppressWarnings("deprecation")
 	protected void initialize() throws Exception {
-		logger.debug("initializing report {}", report.getId());
+		// if data is based on report in database then lookup from db (no json paramters present)
+		// if modified report(incoming json is present) then build report from json
+		// validate
+		// update last viewed
 
-		reportModel.processReportParameters(report);
+		JSONObject jsonReport = attemptToGetReportDataFromRequest();
+		if (shouldLoadReportFromJson(jsonReport)) {
+			buildReportFromJson(jsonReport);
+		} else {
+			loadReportFromDatabase(reportId);
+		}
+
 		ReportModel.validate(report);
-		reportModel.updateLastViewedDate(permissions.getUserId(), report);
+		reportModel.updateLastViewedDate(getUser(), report);
 
 		// FIXME: This is a problem that will cause a Ninja save that the refresh above
 		//        was fixing
-		if (StringUtils.isNotEmpty(reportParameters)) {
-			report.setParameters(reportParameters);
-		}
+//		if (StringUtils.isNotEmpty(reportParameters)) {
+//			report.setParameters(reportParameters);
+//		}
 
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
+	}
+
+	private JSONObject attemptToGetReportDataFromRequest() {
+		JSONObject json = getJsonFromRequestPayload();
+		JSONObject jsonReport = null;
+
+		if (JSONUtilities.isNotEmpty(json)) {
+			jsonReport = (JSONObject) json.get(ReportJson.LEVEL_REPORT);
+		}
+
+		return jsonReport;
+	}
+
+	private void loadReportFromDatabase(int reportId) throws Exception {
+		report = reportDao.find(Report.class, reportId);
+
+		if (report == null) {
+			throw new RecordNotFoundException("Report " + reportId + " was not found in the database");
+		}
+
+		reportModel.legacyConvertParametersToReport(report);
+	}
+
+	private void buildReportFromJson(JSONObject jsonReport) {
+		report = ExtJSToReportConverter.convertToReport(jsonReport);
+		report.setId(reportId);
+	}
+
+	private boolean shouldLoadReportFromJson(JSONObject reportJson) {
+		return JSONUtilities.isNotEmpty(reportJson) && includeData;
 	}
 
 	public String execute() {
@@ -133,10 +173,12 @@ public class ReportApi extends PicsApiSupport {
 			String debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
 			jsonObject.put(ReportUtil.SQL, debugSQL);
 		}
+
 		try {
 			sql.setPageNumber(limit, pageNumber);
 			runQuery();
 
+			// TODO have this take something or return something
 			converter.convertForExtJS();
 			ReportResults reportResults = converter.getReportResults();
 			jsonObject.put(LEVEL_DATA, reportResults.toJson());
@@ -272,9 +314,9 @@ public class ReportApi extends PicsApiSupport {
 		return report;
 	}
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+//	public void setReport(Report report) {
+//		this.report = report;
+//	}
 
 	public ReportResults getResults() {
 		return converter.getReportResults();
@@ -286,10 +328,6 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-
-	public void setReportParameters(String reportParameters) {
-		this.reportParameters = reportParameters;
 	}
 
 	public void setIncludeReport(boolean includeReport) {
@@ -306,5 +344,9 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setIncludeData(boolean includeData) {
 		this.includeData = includeData;
+	}
+
+	public void setReportId(int reportId) {
+		this.reportId = reportId;
 	}
 }

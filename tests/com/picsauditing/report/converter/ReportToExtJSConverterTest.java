@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.converter;
 
 import static com.picsauditing.util.Assert.assertContains;
 
@@ -6,10 +6,10 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.converter.ReportToExtJSConverter;
 import com.picsauditing.report.models.ModelType;
 
 public class ReportToExtJSConverterTest {
-
 
 	@Test
 	public void testSimpleNameToJson() {
@@ -26,12 +26,4 @@ public class ReportToExtJSConverterTest {
 		assertContains("\"description\":\"This is a test report\"", jsonString);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testBadMethodName() throws Exception {
-		String BAD_JSON = "{\"type\":\"Accounts\""
-				+ "\"columns\":[{\"name\":\"ContractorPayingFacilities__BadSqlFunction\",\"sql_function\":\"BadSqlFunction\"}]}";
-		Report report = new Report();
-		report.setParameters(BAD_JSON);
-		ReportToExtJSConverter.fillParameters(report);
-	}
 }

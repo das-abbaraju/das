@@ -2,9 +2,7 @@ package com.picsauditing.actions.report;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,8 +27,9 @@ import com.picsauditing.report.ReportJson;
 public class ReportApiTest extends PicsActionTest {
 
 	private ReportApi reportAction;
-	private Report report;
 
+	@Mock
+	private Report report;
 	@Mock
 	private BufferedReader bufferedReader;
 
@@ -42,15 +41,24 @@ public class ReportApiTest extends PicsActionTest {
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(reportAction, this);
 
-		report = new Report();
-		report.setId(123);
+		when(report.getId()).thenReturn(123);
 
-		reportAction.setReport(report);
+		Whitebox.setInternalState(reportAction, "report", report);
 	}
+
+//	@Test
+//	public void testExecute() {
+//		reportAction.execute();
+//		JSONObject json = reportAction.getJson();
+//
+//		assertNotNull(json);
+//		boolean value = (Boolean)json.get(ReportJson.EXT_JS_SUCCESS);
+//		assertEquals(true, value);
+//	}
 
 	@Test
 	public void testReport_NullModelTypeFailsValidationSetsSuccessToFalse() throws Exception {
-		report.setModelType(null);
+		when(report.getModelType()).thenReturn(null);
 
 		String strutsResult = reportAction.execute();
 

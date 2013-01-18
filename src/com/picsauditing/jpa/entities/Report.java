@@ -12,8 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
@@ -27,7 +26,7 @@ public class Report extends BaseTable {
 	private ModelType modelType;
 	private String name;
 	private int numTimesFavorited;
-	
+
 	@Deprecated
 	private String parameters;
 	private String description;
@@ -39,7 +38,9 @@ public class Report extends BaseTable {
 	private String filterExpression;
 	private boolean editable;
 	private boolean favorite;
-	
+
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@ReportField(importance = FieldImportance.Required, width = 200)
@@ -157,8 +158,6 @@ public class Report extends BaseTable {
 		return name;
 	}
 
-	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-
 	@Deprecated
 	// TODO this should not be used here
 	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
@@ -182,13 +181,30 @@ public class Report extends BaseTable {
 
 		return null;
 	}
-	
+
+	public void addColumn(com.picsauditing.jpa.entities.Column column) {
+		columns.add(column);
+	}
+
+	public boolean hasNoColumns() {
+		return CollectionUtils.isEmpty(columns);
+	}
+
+	public boolean hasNoModelType() {
+		return modelType == null;
+	}
+
+	@Deprecated
+	public boolean hasParameters() {
+		return parameters != null;
+	}
+
 	/**
 	 * TODO: Remove after the next release
-	 * 
-	 * We assume that we always overwrite the JSON String in the parameters field with the changes 
+	 *
+	 * We assume that we always overwrite the JSON String in the parameters field with the changes
 	 * made by the user in the columns/filters/sorts
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 //	@PrePersist
 //	public void convertOnSave() throws Exception {
@@ -196,7 +212,7 @@ public class Report extends BaseTable {
 //		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
 //			return;
 //		}
-//		
+//
 //		try {
 //			JSONObject json = LegacyReportConverter.toJSON(this);
 //			if (json != null) {
@@ -207,26 +223,26 @@ public class Report extends BaseTable {
 //			throw new Exception(e);
 //		}
 //	}
-	
-	/** 
+
+	/**
 	 * TODO: Remove after the next release
-	 * 
+	 *
 	 * We will assume that every read from the database will involve over-writing the columns, filters
 	 * and sorts from those in the JSON String.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-//	@PostLoad	
+//	@PostLoad
 //	public void convertOnRead() throws Exception {
 //		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
 //		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
 //			return;
 //		}
-//		
+//
 //		try {
 //			LegacyReportConverter.fillParameters(this);
 //		} catch (ReportValidationException rve) {
 //			logger.error("Error converting from the Legacy JSON into the report object for reportId = {}", id, rve);
 //			throw new Exception(rve.getMessage());
-//		}		
+//		}
 //	}
 }

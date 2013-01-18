@@ -11,7 +11,7 @@ import com.picsauditing.model.report.ReportModel;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
-	
+
 	@Autowired
 	private ReportModel reportModel;
 
@@ -30,10 +30,11 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String save(boolean copy) {
 		try {
-			if (copy)
+			if (copy) {
 				report = reportModel.copy(report, permissions, favorite);
-			else
+			} else {
 				reportModel.edit(report, permissions);
+			}
 
 			json.put("success", true);
 			json.put("reportID", report.getId());
@@ -41,10 +42,11 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			if (report == null)
+			if (report == null) {
 				logger.error("Report was not able to load from DB");
-			else
+			} else {
 				logger.error("An error occurred saving report id = {} for user {}", report.getId(), permissions.getUserId());
+			}
 			writeJsonError(e);
 		}
 
@@ -60,9 +62,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return report;
 	}
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+//	public void setReport(Report report) {
+//		this.report = report;
+//	}
 
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;

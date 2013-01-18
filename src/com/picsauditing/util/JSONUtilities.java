@@ -2,6 +2,7 @@ package com.picsauditing.util;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -12,26 +13,29 @@ public class JSONUtilities {
 	@SuppressWarnings("unchecked")
 	static public JSONArray convertFromList(List<? extends JSONable> list) {
 		JSONArray jsonArray = new JSONArray();
-		for (JSONable obj : list)
+		for (JSONable obj : list) {
 			jsonArray.add(obj.toJSON(false));
+		}
 
 		return jsonArray;
 	}
 
 	static public int convertToInteger(JSONObject json, String key) {
 		Object obj = json.get(key);
-		if (obj == null)
+		if (obj == null) {
 			return 0;
+		}
 		return Integer.parseInt(obj.toString());
 	}
 
 	static public boolean convertToBoolean(JSONObject json, String key) {
 		Object obj = json.get(key);
-		if (obj == null)
+		if (obj == null) {
 			return false;
+		}
 		return (Boolean) obj;
 	}
-	
+
 	public static boolean mayBeJSON(String string) {
 		if (Strings.isEmpty(string)) {
 			return false;
@@ -40,10 +44,10 @@ public class JSONUtilities {
 		} else if (string.startsWith("[") && string.endsWith("]")) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public static String prettyPrint(String string) {
 		string = string.replace("{", "\t{");
 		string = string.replace("}", "}\n");
@@ -51,7 +55,23 @@ public class JSONUtilities {
 		string = string.replace("]", "]\n");
 		string = string.replace(",\t{", ",\n{");
 		string = string.replace(",\t[", ",\n[");
-		
+
 		return string;
+	}
+
+	public static boolean isEmpty(JSONObject json) {
+		if (json == null) {
+			return true;
+		}
+
+		if (StringUtils.isEmpty(json.toJSONString())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isNotEmpty(JSONObject json) {
+		return !isEmpty(json);
 	}
 }

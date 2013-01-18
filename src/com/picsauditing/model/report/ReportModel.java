@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
+import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -50,7 +51,7 @@ public class ReportModel {
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
-	
+
 	@SuppressWarnings("deprecation")
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
@@ -90,8 +91,9 @@ public class ReportModel {
 		try {
 			int userID = permissions.getUserId();
 
-			if (permissions.getAdminID() > 0)
+			if (permissions.getAdminID() > 0) {
 				userID = permissions.getAdminID();
+			}
 
 			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
 
@@ -112,9 +114,10 @@ public class ReportModel {
 
 	public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException,
 			NonUniqueResultException, SQLException, Exception {
-		if (!canUserViewAndCopy(permissions, sourceReport.getId()))
+		if (!canUserViewAndCopy(permissions, sourceReport.getId())) {
 			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
 					+ sourceReport.getId());
+		}
 
 		boolean editable = true;
 
@@ -143,26 +146,27 @@ public class ReportModel {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		if (!canUserEdit(permissions, report))
+		if (!canUserEdit(permissions, report)) {
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
+		}
 
 		// TODO Consider adding a "save" column to the ReportElement class to
 		// store Delete/Update/Insert flags
 		// Allow updating rather than full delete/insert instead
 		removeReportElements(report);
 
-		processReportParameters(report);
+		legacyConvertParametersToReport(report);
 		setReportParameters(report);
 		saveReportElements(report);
 	}
-	
+
 	public void saveReportElements(Report report) {
 		reportDao.save(report.getColumns());
 		reportDao.save(report.getFilters());
 		reportDao.save(report.getSorts());
 		reportDao.save(report);
 	}
-	
+
 	public void removeReportElements(Report report) {
 		removeAllReportElements(report.getId(), Column.class);
 		report.getColumns().clear();
@@ -171,14 +175,18 @@ public class ReportModel {
 		removeAllReportElements(report.getId(), Sort.class);
 		report.getSorts().clear();
 	}
-	
+
 	private <E extends ReportElement> void removeAllReportElements(int reportId, Class<E> type) {
 		reportDao.remove(type, "t.report.id = " + reportId);
 	}
 
 	// TODO Remove this method after the next release
 	@SuppressWarnings("deprecation")
-	public void processReportParameters(Report report) throws ReportValidationException {
+	public void legacyConvertParametersToReport(Report report) throws Exception {
+		if (report == null) {
+			throw new IllegalArgumentException("Report should not be null");
+		}
+
 		if (!isBackwardsCompatibilityOn()) {
 			return;
 		}
@@ -218,19 +226,25 @@ public class ReportModel {
 	 * JSON.
 	 */
 	public static void validate(Report report) throws ReportValidationException {
-		if (report == null)
+		if (report == null) {
 			throw new ReportValidationException("Report object is null. (Possible security concern.)");
+		}
 
-		if (report.getModelType() == null)
+		if (report.hasNoModelType()) {
 			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
+		}
 
-		if (report.getColumns().size() == 0)
+		if (report.hasNoColumns()) {
 			throw new ReportValidationException("Report contained no columns");
+		}
 
-		try {
-			new JSONParser().parse(report.getParameters());
-		} catch (ParseException e) {
-			throw new ReportValidationException(e, report);
+		if (report.hasParameters()) {
+			try {
+				JSONParser parser = new JSONParser();
+				parser.parse(report.getParameters());
+			} catch (ParseException e) {
+				throw new ReportValidationException(e, report);
+			}
 		}
 	}
 
@@ -284,15 +298,13 @@ public class ReportModel {
 		return reportUsers;
 	}
 
-	public void updateLastViewedDate(int userID, Report report) {
+	// TODO this function is doing more than it claims
+	public void updateLastViewedDate(User user, Report report) {
 		ReportUser reportUser = new ReportUser();
 
 		try {
-			reportUser = reportUserDao.findOne(userID, report.getId());
+			reportUser = reportUserDao.findOne(user.getId(), report.getId());
 		} catch (NoResultException nre) {
-			User user = new User();
-			user.setId(userID);
-
 			reportUser.setUser(user);
 			reportUser.setReport(report);
 		}
@@ -333,8 +345,9 @@ public class ReportModel {
 		int currentPosition = reportUser.getSortOrder();
 		int newPosition = currentPosition + magnitude;
 
-		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites)
+		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites) {
 			return;
+		}
 
 		int offsetPosition;
 		int topPositionToMove;
@@ -377,7 +390,7 @@ public class ReportModel {
 
 	/**
 	 * Create permissions to access the report permissions.
-	 * 
+	 *
 	 * @param permissions
 	 *            Permissions object from request
 	 * @param userId
