@@ -84,37 +84,6 @@ Ext.application({
         });
     },
 
-    getConfiguration: function (options) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-
-        Ext.Ajax.request({
-           url: '/ReportData!configuration.action?report=' + url.report,
-           success: function (result) {
-               var result = Ext.decode(result.responseText);
-
-               // configuration closure
-               PICS.app.configuration = (function config() {
-                   return {
-                       isEditable: function () {
-                           return result.editable;
-                       },
-                       isFavorite: function () {
-                           return result.favorite
-                       },
-                       setIsFavorite: function (bool) {
-                           result.favorite = bool;
-                       }
-                   };
-               }());
-
-               // success callback
-               if (options && options.success && typeof options.success == 'function') {
-                   options.success();
-               }
-           }
-        });
-    },
-
     createViewport: function () {
         Ext.create('PICS.view.report.Viewport', {
             listeners: {

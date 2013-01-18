@@ -267,7 +267,7 @@ Ext.define('PICS.controller.report.Filter', {
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
             filters = this.getFilters(),
-            filter_expression = report.get('filterExpression');
+            filter_expression = report.get('filter_expression');
             
         if (filter_expression != '') {
             filter_formula_textfield.setValue(report.getFilterExpression());

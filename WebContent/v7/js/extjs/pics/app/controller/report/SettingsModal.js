@@ -59,6 +59,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal favoritetoggle': {
+                afterrender: this.onReportModalFavoriteToggleAfterRender,
                 favorite: this.onReportFavorite,
                 unfavorite: this.onReportUnFavorite
             },
@@ -100,19 +101,28 @@ Ext.define('PICS.controller.report.SettingsModal', {
         });
     },
 
-    getReportId: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first();
-
-        return report.get('id');
+    onReportFavorite: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
+            report.set('is_favorite', true);
+        } else {
+            this.application.fireEvent('favoritereport');
+        }
     },
-   
-    onReportFavorite: function () {
-        this.application.fireEvent('favoritereport');
-    },
 
-    onReportUnFavorite: function () {
-        this.application.fireEvent('unfavoritereport');
+    onReportUnFavorite: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
+            report.set('is_favorite', false);
+        } else {
+            this.application.fireEvent('unfavoritereport');
+        }
     },
     
     onReportModalCancelClick: function (cmp, e, eOpts) {
@@ -177,11 +187,21 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
     
+    onReportModalFavoriteToggleAfterRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_favorite = report.get('is_favorite');
+        
+        if (is_favorite) {
+            cmp.toggleFavorite();
+        }
+    },
+    
     onReportModalTabClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
     
-        modal.setTitle(title);        
+        modal.setTitle(title);
     },
     
     onReportModalExportClick: function (cmp, e, eOpts) {
@@ -228,7 +248,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
      */
     
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
-        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_id = report.get('id');
+        
+        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + report_id;
         cmp.store.load();
     },
     

@@ -11,11 +11,11 @@ Ext.define('PICS.view.report.settings.EditSettings', {
     title: '<i class="icon-cog icon-large"></i>Settings',
 
     initComponent: function () {
-        this.callParent(arguments);
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
 
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
+        if (is_editable) {
             this.generateEditableSettings();
         } else {
             this.generateNonEditableSettings();
@@ -23,11 +23,12 @@ Ext.define('PICS.view.report.settings.EditSettings', {
 
         this.addEvents('favorite');
         this.addEvents('unfavorite');
-
+        
+        this.callParent(arguments);
     },
 
     generateEditableSettings: function () {
-        this.addDocked({
+        this.dockedItems = [{
             xtype: 'toolbar',
             defaults: {
                 margin: '0 0 0 5'
@@ -49,9 +50,9 @@ Ext.define('PICS.view.report.settings.EditSettings', {
                 pack: 'end'
             },
             ui: 'footer'
-        });
+        }];
 
-        this.add({
+        this.items = [{
             xtype: 'textfield',
             allowBlank: false,
             fieldLabel: 'Report Name',
@@ -65,21 +66,21 @@ Ext.define('PICS.view.report.settings.EditSettings', {
             name: 'report_description'
         }, {
             xtype: 'favoritetoggle'
-        });
+        }];
 
         this.layout = 'form';
     },
 
     generateNonEditableSettings: function () {
-        this.add({
+        this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
                 "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
                 "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
-            ]),
-        },{
+            ])
+        }, {
             xtype: 'favoritetoggle'
-        });
+        }];
 
         this.id = 'settings_no_permission';
     },

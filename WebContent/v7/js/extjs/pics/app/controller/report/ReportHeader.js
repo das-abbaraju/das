@@ -68,9 +68,11 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     onReportSaveClick: function (cmp, e, eOpts) {
-        var config = PICS.app.configuration;
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
 
-        if (config.isEditable()) {
+        if (is_editable) {
             this.application.fireEvent('savereport');
         } else {
             this.application.fireEvent('showsettingsmodal', 'copy');
