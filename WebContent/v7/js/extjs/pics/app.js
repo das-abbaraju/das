@@ -64,8 +64,6 @@ Ext.application({
     },
 
     launch: function () {
-        var that = this;
-
         // save reference to application
         PICS.app = this;
         PICS.app.configuration = {
@@ -77,9 +75,7 @@ Ext.application({
         };
         
         PICS.data.ServerCommunication.loadAll({
-            callback: function () {
-                this.createViewport();
-            },
+            callback: this.createViewport,
             scope: this
         });
     },

@@ -32,7 +32,7 @@ Ext.define('PICS.data.ServerCommunication', {
         }
             
         function updateReportDataView(report) {
-            var report_data_view = Ext.ComponentQuery.query('reportdata'),
+            var report_data_view = Ext.ComponentQuery.query('reportdata')[0],
                 new_grid_columns = report.convertColumnsToGridColumns();
             
             report_data_view.updateGridColumns(new_grid_columns);
@@ -42,7 +42,7 @@ Ext.define('PICS.data.ServerCommunication', {
             getLoadAllUrl: function () {
                 return '/v7/js/extjs/pics/app/data/report.json';
                 
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
 
@@ -58,7 +58,7 @@ Ext.define('PICS.data.ServerCommunication', {
             },
             
             getLoadReportAndDataUrl: function () {
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
                 
@@ -72,7 +72,7 @@ Ext.define('PICS.data.ServerCommunication', {
             },
             
             getLoadDataUrl: function (page, limit) {
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
                 
@@ -87,9 +87,7 @@ Ext.define('PICS.data.ServerCommunication', {
             },
             
             loadAll: function (options) {
-                var params = Ext.urlDecode(window.location.search);
-                    report_id = params.report,
-                    url = this.getLoadAllUrl(),
+                 var url = this.getLoadAllUrl(),
                     callback = typeof options.callback == 'function' ? options.callback : function () {},
                     scope = options.scope ? options.scope : this;
                     
@@ -149,7 +147,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    url = this.getLoadDataUrl();
+                    url = this.getLoadDataUrl(page, limit);
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();

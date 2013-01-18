@@ -1,6 +1,10 @@
 Ext.define('PICS.controller.report.ReportData', {
     extend: 'Ext.app.Controller',
 
+    requires: [
+       'PICS.data.ServerCommunication'               
+    ],
+
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
@@ -111,21 +115,21 @@ Ext.define('PICS.controller.report.ReportData', {
     onColumnSortAsc: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
-        
+            column = cmp.up('menu').activeHeader.column;
+
         // clear sorts
         report.removeSorts();
         
         // add sort
         report.addSort(column, 'ASC');
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     onColumnSortDesc: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
+            column = cmp.up('menu').activeHeader.column;
         
         // clear sorts
         report.removeSorts();
@@ -133,7 +137,7 @@ Ext.define('PICS.controller.report.ReportData', {
         // add sort
         report.addSort(column, 'DESC');
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {

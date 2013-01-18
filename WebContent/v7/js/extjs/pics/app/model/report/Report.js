@@ -217,10 +217,11 @@ Ext.define('PICS.model.report.Report', {
     
     addSort: function (column, direction) {
         var sort_store = this.sorts(),
-            column_name = column.get('name');
+            // TODO: Change to column.get('field_id')
+            field_id = column.get('id');
         
         sort_store.add({
-            name: column_name,
+            field_id: field_id,
             direction: direction
         });
     },
