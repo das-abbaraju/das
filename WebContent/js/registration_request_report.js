@@ -4,7 +4,6 @@
 			init: function () {
 			    function performDelegation(element, reportRegistrationRequests) {
 			        if (element.length) {
-			            console.log('performing delegation on ' + element.attr('class'));
 			            element.delegate('a.excel', 'click', reportRegistrationRequests.downloadExcelFile);
 			            element.delegate('a.excelUpload', 'click', reportRegistrationRequests.uploadExcelFile);
 			        }
