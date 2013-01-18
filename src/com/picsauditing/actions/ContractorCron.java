@@ -81,9 +81,8 @@ public class ContractorCron extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (steps == null)
 			return SUCCESS;
-
-		// PicsLogger.start("ContractorCron");
-
+		
+		logger.trace("Starting ContractorCron for {}", conID);
 		try {
 			if (conID > 0) {
 				run(conID, opID);
@@ -91,19 +90,19 @@ public class ContractorCron extends PicsActionSupport {
 				addActionError("You must supply a contractor id.");
 			}
 
-			// PicsLogger.stop();
-
 			if (!Strings.isEmpty(redirectUrl)) {
 				return setUrlForRedirect(redirectUrl);
 			}
 		} catch (Exception e) {
-			if (!Strings.isEmpty(redirectUrl)) {
+			logger.trace("ContractorCron failed for conID {} because: {}", conID, e.getMessage());
+			if (Strings.isNotEmpty(redirectUrl)) {
 				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #"
 						+ conID);
 				return setUrlForRedirect(redirectUrl);
 			}
 			throw e;
 		}
+		logger.trace("Finished ContractorCron");
 
 		return SUCCESS;
 	}
@@ -259,6 +258,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runBilling(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Billing))
 			return;
+		logger.trace("ContractorCron starting Billing");
 		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 	}
@@ -266,6 +266,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
+		logger.trace("ContractorCron starting AuditBuilder");
 		auditBuilder.buildAudits(contractor);
 
 		checkLcCor(contractor);
@@ -347,6 +348,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditCategory(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
+		logger.trace("ContractorCron starting AuditCategory");
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			final Date lastRecalculation = cAudit.getLastRecalculation();
 			if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -14) {
@@ -362,6 +364,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
 
+		logger.trace("ContractorCron starting TradeETL");
 		Set<ContractorTrade> trades = contractor.getTrades();
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
@@ -421,6 +424,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runContractorETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.ContractorETL))
 			return;
+		logger.trace("ContractorCron starting ContractorETL");
 		contractorFlagETL.calculate(contractor);
 	}
 
@@ -428,6 +432,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.PICSScore))
 			return;
 
+		logger.trace("ContractorCron starting PicsScore");
 		ContractorScore.calculate(contractor);
 	}
 
@@ -516,6 +521,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
 
+		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
 		flagDataCalculator.setOperator(co.getOperatorAccount());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
 
@@ -640,7 +646,8 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.WaitingOn))
 			return;
 
-		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
+		logger.trace("ContractorCron starting WaitingOn for {}", co.getOperatorAccount().getName());
+		WaitingOn waitingOn = null;
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
 		waitingOn = flagDataCalculator.calculateWaitingOn(co);
 
@@ -690,6 +697,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
 
+		logger.trace("ContractorCron starting Policies");
 		// TODO we might be able to move this to the new FlagCalculator method
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
@@ -833,6 +841,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CorporateRollup))
 			return;
 
+		logger.trace("ContractorCron starting CorporateRollup");
 		// // rolls up every flag color to root
 		Map<OperatorAccount, FlagColor> corporateRollupData = new HashMap<OperatorAccount, FlagColor>();
 		// existingCorpCOs is really two related, but separate sets mashed
@@ -941,6 +950,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
+		logger.trace("ContractorCron starting CsrAssignment");
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
 			if (!assignment.getUser().equals(contractor.getAuditor()))
@@ -957,6 +967,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAssignAudit(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
+		logger.trace("ContractorCron starting AssignAudit");
 		// See if the PQF is complete for manual audit auditor assignment
 		boolean pqfCompleteSafetyManualVerified = false;
 		// Save auditor for manual audit for HSE Competency Review
