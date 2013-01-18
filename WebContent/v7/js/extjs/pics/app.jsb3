@@ -815,6 +815,16 @@
                     "path": "extjs/src/resizer/"
                 },
                 {
+                    "clsName": "PICS.ux.util.filter.FilterMultipleColumn",
+                    "name": "FilterMultipleColumn.js",
+                    "path": "app/ux/util/filter/"
+                },
+                {
+                    "clsName": "PICS.data.ServerCommunication",
+                    "name": "ServerCommunication.js",
+                    "path": "app/data/"
+                },
+                {
                     "clsName": "Ext.container.Viewport",
                     "name": "Viewport.js",
                     "path": "extjs/src/container/"
@@ -823,11 +833,6 @@
                     "clsName": "Ext.resizer.BorderSplitter",
                     "name": "BorderSplitter.js",
                     "path": "extjs/src/resizer/"
-                },
-                {
-                    "clsName": "PICS.ux.util.FilterMultipleColumn",
-                    "name": "FilterMultipleColumn.js",
-                    "path": "app/ux/util/"
                 },
                 {
                     "clsName": "PICS.view.report.alert-message.AlertMessage",
@@ -870,59 +875,14 @@
                     "path": "extjs/src/grid/"
                 },
                 {
-                    "clsName": "PICS.view.report.modal.ReportModal",
-                    "name": "ReportModal.js",
-                    "path": "app/view/report/modal/"
-                },
-                {
-                    "clsName": "Ext.grid.feature.Feature",
-                    "name": "Feature.js",
-                    "path": "extjs/src/grid/feature/"
-                },
-                {
-                    "clsName": "Ext.grid.feature.Grouping",
-                    "name": "Grouping.js",
-                    "path": "extjs/src/grid/feature/"
-                },
-                {
-                    "clsName": "Ext.layout.container.Border",
-                    "name": "Border.js",
-                    "path": "extjs/src/layout/container/"
-                },
-                {
-                    "clsName": "PICS.view.report.header.ReportHeader",
-                    "name": "ReportHeader.js",
-                    "path": "app/view/report/header/"
-                },
-                {
-                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/view/report/modal/column-function/"
-                },
-                {
-                    "clsName": "PICS.controller.report.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/controller/report/"
-                },
-                {
-                    "clsName": "Ext.selection.Model",
-                    "name": "Model.js",
-                    "path": "extjs/src/selection/"
-                },
-                {
-                    "clsName": "Ext.selection.RowModel",
-                    "name": "RowModel.js",
-                    "path": "extjs/src/selection/"
-                },
-                {
-                    "clsName": "Ext.selection.CheckboxModel",
-                    "name": "CheckboxModel.js",
-                    "path": "extjs/src/selection/"
-                },
-                {
                     "clsName": "PICS.store.report.base.Store",
                     "name": "Store.js",
                     "path": "app/store/report/base/"
+                },
+                {
+                    "clsName": "PICS.view.report.modal.ReportModal",
+                    "name": "ReportModal.js",
+                    "path": "app/view/report/modal/"
                 },
                 {
                     "clsName": "Ext.panel.Table",
@@ -985,6 +945,46 @@
                     "path": "extjs/src/"
                 },
                 {
+                    "clsName": "Ext.selection.Model",
+                    "name": "Model.js",
+                    "path": "extjs/src/selection/"
+                },
+                {
+                    "clsName": "Ext.selection.RowModel",
+                    "name": "RowModel.js",
+                    "path": "extjs/src/selection/"
+                },
+                {
+                    "clsName": "Ext.selection.CheckboxModel",
+                    "name": "CheckboxModel.js",
+                    "path": "extjs/src/selection/"
+                },
+                {
+                    "clsName": "Ext.layout.container.Border",
+                    "name": "Border.js",
+                    "path": "extjs/src/layout/container/"
+                },
+                {
+                    "clsName": "PICS.view.report.header.ReportHeader",
+                    "name": "ReportHeader.js",
+                    "path": "app/view/report/header/"
+                },
+                {
+                    "clsName": "PICS.view.report.modal.column-function.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
+                    "path": "app/view/report/modal/column-function/"
+                },
+                {
+                    "clsName": "PICS.controller.report.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
+                    "path": "app/controller/report/"
+                },
+                {
+                    "clsName": "Ext.grid.plugin.HeaderResizer",
+                    "name": "HeaderResizer.js",
+                    "path": "extjs/src/grid/plugin/"
+                },
+                {
                     "clsName": "Ext.form.field.VTypes",
                     "name": "VTypes.js",
                     "path": "extjs/src/form/field/"
@@ -1003,6 +1003,11 @@
                     "clsName": "Ext.dd.DragZone",
                     "name": "DragZone.js",
                     "path": "extjs/src/dd/"
+                },
+                {
+                    "clsName": "PICS.model.report.Filter",
+                    "name": "Filter.js",
+                    "path": "app/model/report/"
                 },
                 {
                     "clsName": "Ext.form.Labelable",
@@ -1040,6 +1045,11 @@
                     "path": "extjs/src/dd/"
                 },
                 {
+                    "clsName": "PICS.model.report.Sort",
+                    "name": "Sort.js",
+                    "path": "app/model/report/"
+                },
+                {
                     "clsName": "Ext.button.Split",
                     "name": "Split.js",
                     "path": "extjs/src/button/"
@@ -1070,9 +1080,9 @@
                     "path": "extjs/src/dd/"
                 },
                 {
-                    "clsName": "Ext.grid.plugin.HeaderResizer",
-                    "name": "HeaderResizer.js",
-                    "path": "extjs/src/grid/plugin/"
+                    "clsName": "PICS.view.report.report.ColumnTooltip",
+                    "name": "ColumnTooltip.js",
+                    "path": "app/view/report/report/"
                 },
                 {
                     "clsName": "Ext.ProgressBar",
@@ -1083,6 +1093,11 @@
                     "clsName": "Ext.grid.header.DragZone",
                     "name": "DragZone.js",
                     "path": "extjs/src/grid/header/"
+                },
+                {
+                    "clsName": "PICS.store.report.Filters",
+                    "name": "Filters.js",
+                    "path": "app/store/report/"
                 },
                 {
                     "clsName": "Ext.form.field.Base",
@@ -1390,74 +1405,34 @@
                     "path": "extjs/src/grid/column/"
                 },
                 {
-                    "clsName": "PICS.view.report.available-field.AvailableFieldList",
-                    "name": "AvailableFieldList.js",
-                    "path": "app/view/report/available-field/"
+                    "clsName": "PICS.view.report.modal.column-filter.ColumnFilterList",
+                    "name": "ColumnFilterList.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
-                    "clsName": "PICS.view.report.available-field.AvailableFieldModal",
-                    "name": "AvailableFieldModal.js",
-                    "path": "app/view/report/available-field/"
+                    "clsName": "PICS.view.report.modal.column-filter.ColumnList",
+                    "name": "ColumnList.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
-                    "clsName": "PICS.model.report.AvailableField",
-                    "name": "AvailableField.js",
-                    "path": "app/model/report/"
+                    "clsName": "PICS.view.report.modal.column-filter.FilterList",
+                    "name": "FilterList.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
-                    "clsName": "PICS.model.report.Filter2",
-                    "name": "Filter2.js",
-                    "path": "app/model/report/"
+                    "clsName": "PICS.view.report.modal.column-filter.ColumnFilterModal",
+                    "name": "ColumnFilterModal.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
-                    "clsName": "PICS.model.report.ReportData",
-                    "name": "ReportData.js",
-                    "path": "app/model/report/"
+                    "clsName": "PICS.view.report.modal.column-filter.ColumnModal",
+                    "name": "ColumnModal.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
-                    "clsName": "PICS.model.report.Sort2",
-                    "name": "Sort2.js",
-                    "path": "app/model/report/"
-                },
-                {
-                    "clsName": "Ext.data.association.HasOne",
-                    "name": "HasOne.js",
-                    "path": "extjs/src/data/association/"
-                },
-                {
-                    "clsName": "PICS.view.report.report.ColumnTooltip",
-                    "name": "ColumnTooltip.js",
-                    "path": "app/view/report/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.AvailableFieldsByCategory",
-                    "name": "AvailableFieldsByCategory.js",
-                    "path": "app/store/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.Filters",
-                    "name": "Filters.js",
-                    "path": "app/store/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.AvailableFields",
-                    "name": "AvailableFields.js",
-                    "path": "app/store/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.ReportDatas",
-                    "name": "ReportDatas.js",
-                    "path": "app/store/report/"
-                },
-                {
-                    "clsName": "PICS.model.report.Filter",
-                    "name": "Filter.js",
-                    "path": "app/model/report/"
-                },
-                {
-                    "clsName": "PICS.model.report.Sort",
-                    "name": "Sort.js",
-                    "path": "app/model/report/"
+                    "clsName": "PICS.view.report.modal.column-filter.FilterModal",
+                    "name": "FilterModal.js",
+                    "path": "app/view/report/modal/column-filter/"
                 },
                 {
                     "clsName": "PICS.ux.grid.column.Column",
@@ -1485,8 +1460,8 @@
                     "path": "app/ux/grid/column/"
                 },
                 {
-                    "clsName": "PICS.model.report.Column2",
-                    "name": "Column2.js",
+                    "clsName": "PICS.model.report.Column",
+                    "name": "Column.js",
                     "path": "app/model/report/"
                 },
                 {
@@ -1495,23 +1470,8 @@
                     "path": "app/store/report/"
                 },
                 {
-                    "clsName": "PICS.ux.grid.column.Date",
-                    "name": "Date.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
-                    "clsName": "PICS.ux.grid.column.Float",
-                    "name": "Float.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
-                    "clsName": "PICS.ux.grid.column.Int",
-                    "name": "Int.js",
-                    "path": "app/ux/grid/column/"
-                },
-                {
-                    "clsName": "PICS.model.report.Column",
-                    "name": "Column.js",
+                    "clsName": "PICS.model.report.ReportData",
+                    "name": "ReportData.js",
                     "path": "app/model/report/"
                 },
                 {
@@ -1520,19 +1480,14 @@
                     "path": "extjs/src/util/"
                 },
                 {
+                    "clsName": "PICS.store.report.ReportDatas",
+                    "name": "ReportDatas.js",
+                    "path": "app/store/report/"
+                },
+                {
                     "clsName": "Ext.data.association.HasMany",
                     "name": "HasMany.js",
                     "path": "extjs/src/data/association/"
-                },
-                {
-                    "clsName": "PICS.model.report.Report2",
-                    "name": "Report2.js",
-                    "path": "app/model/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.Reports2",
-                    "name": "Reports2.js",
-                    "path": "app/store/report/"
                 },
                 {
                     "clsName": "PICS.model.report.Report",
@@ -1545,8 +1500,8 @@
                     "path": "app/store/report/"
                 },
                 {
-                    "clsName": "PICS.controller.report.AvailableFieldModal",
-                    "name": "AvailableFieldModal.js",
+                    "clsName": "PICS.controller.report.ColumnFilterModal",
+                    "name": "ColumnFilterModal.js",
                     "path": "app/controller/report/"
                 },
                 {
