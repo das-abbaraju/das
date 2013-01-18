@@ -254,15 +254,8 @@ public class ContractorAccountDAO extends PicsDAO {
 		}
 	}
 
-	/**
-	 * Find ids for all active contractors who either need recalculation but
-	 * haven't been calculated in the past 15 minutes or haven't been calculated
-	 * in the past week
-	 * 
-	 * @return
-	 */
 	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
-		String hql = "SELECT c.id FROM ContractorAccount c WHERE c.status IN ('Active','Pending','Demo') AND ("
+		String hql = "SELECT c.id FROM ContractorAccount c WHERE (c.status IN ('Active','Pending','Demo') OR c.balance > 0) AND ("
 				+ "c.lastRecalculation < :lastRunDate OR c.lastRecalculation IS NULL)";
 		if (contractorsToIgnore.size() > 0)
 			hql += " AND c.id NOT IN (" + Strings.implode(contractorsToIgnore) + ")";
@@ -279,7 +272,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public long findNumberOfContractorsNeedingRecalculation() {
 		String hql = "SELECT COUNT(*) FROM ContractorAccount c "
-				+ "WHERE c.status IN ('Active','Pending','Demo') AND c.needsRecalculation > 0";
+				+ "WHERE (c.status IN ('Active','Pending','Demo') OR c.balance > 0) AND c.needsRecalculation > 0";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();
@@ -458,5 +451,16 @@ public class ContractorAccountDAO extends PicsDAO {
 		}
 
 		return accounts;
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public int updateRecalculationForDeadAccountsWithBalances() {
+		String sql = "UPDATE accounts a JOIN contractor_info c ON a.id = c.id"
+				+ " SET needsRecalculation = needsRecalculation + 1"
+				+ " WHERE a.status IN ('Deactivated','Declined','Deleted')" +
+				" AND c.balance > 0 AND c.needsRecalculation < 100";
+
+		Query query = em.createNativeQuery(sql);
+		return query.executeUpdate();
 	}
 }
