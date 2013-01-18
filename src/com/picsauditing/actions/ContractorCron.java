@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -32,6 +33,9 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
 
+	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
+	final private Date startTime = new Date();
+	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
@@ -56,24 +60,22 @@ public class ContractorCron extends PicsActionSupport {
 	private ExceptionService exceptionService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
 	// on the variable declaration; only on the method (I think this is a Spring
 	// bug)
 	private Publisher flagChangePublisher;
-
-	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
-
 	private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
 	private int limit = 10;
-	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
-	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
+
+	public static Set<ContractorCron> getManager() {
+		return manager;
+	}
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -429,43 +431,20 @@ public class ContractorCron extends PicsActionSupport {
 		ContractorScore.calculate(contractor);
 	}
 
-	private void runRiskRanking(ContractorAccount contractor) {
+	private void runRiskRanking(ContractorAccount contractor) throws Exception {
 		if (!runStep(ContractorCronStep.RiskRanking)) {
 			return;
 		}
 
-		if (contractorRequiresSafetyRiskAndSafetyRiskIsVerified(contractor)) {
+		if (contractorSafetyRiskIsVerifiedByAuditor(contractor)) {
 			return;
 		}
 
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPqf()) {
-				Set<Integer> riskCategories = determineRiskCategoryIDs();
-				List<AuditData> serviceEvaluationAnswers = determineRiskAnswers(audit, riskCategories);
-
-				ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-				Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels = serviceRiskCalculator.getHighestRiskLevelMap(serviceEvaluationAnswers);
-
-				if (!contractor.isMaterialSupplierOnly()) {
-					contractor.setSafetyRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.SAFETY));
-				}
-
-				if (contractor.isMaterialSupplier()) {
-					contractor.setProductRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.PRODUCT));
-				}
-
-				if (contractor.isTransportationServices()) {
-					contractor.setTransportationRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.TRANSPORTATION));
-				}
-
-				contractorDAO.save(contractor);
-
-				return;
-			}
-		}
+		Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels = determineRiskLevelsBasedOnServiceEvaluationAnswers(contractor);
+		applyCalculatedRiskRankings(contractor, calculatedRiskLevels);
 	}
 
-	private boolean contractorRequiresSafetyRiskAndSafetyRiskIsVerified(ContractorAccount contractor) {
+	private boolean contractorSafetyRiskIsVerifiedByAuditor(ContractorAccount contractor) {
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isTransportationServices()) {
 			if (contractor.getSafetyRiskVerified() != null) {
 				return true;
@@ -491,6 +470,45 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 		return serviceEvaluationAnswers;
+	}
+
+	private ContractorAudit findPQF(ContractorAccount contractor) throws Exception {
+		if (contractor == null) {
+			return null;
+		}
+
+		for (ContractorAudit contractorAudit : contractor.getAudits()) {
+			if (contractorAudit.getAuditType().isPqf()) {
+				return contractorAudit;
+			}
+		}
+
+		logger.error("Could not find PQF for contractor " + contractor.getId());
+		throw new RecordNotFoundException("Missing PQF for contractor " + contractor.getId());
+	}
+
+	private Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> determineRiskLevelsBasedOnServiceEvaluationAnswers(ContractorAccount contractor) throws Exception {
+		ContractorAudit pqf = findPQF(contractor);
+
+		Set<Integer> riskCategories = determineRiskCategoryIDs();
+		List<AuditData> serviceEvaluationAnswers = determineRiskAnswers(pqf, riskCategories);
+
+		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
+		return serviceRiskCalculator.getHighestRiskLevelMap(serviceEvaluationAnswers);
+	}
+
+	private void applyCalculatedRiskRankings(ContractorAccount contractor, Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels) {
+		if (!contractor.isMaterialSupplierOnly()) {
+			contractor.setSafetyRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.SAFETY));
+		}
+
+		if (contractor.isMaterialSupplier()) {
+			contractor.setProductRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.PRODUCT));
+		}
+
+		if (contractor.isTransportationServices()) {
+			contractor.setTransportationRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.TRANSPORTATION));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1063,10 +1081,6 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-
-	public static Set<ContractorCron> getManager() {
-		return manager;
 	}
 
 	public Date getStartTime() {
