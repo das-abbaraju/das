@@ -52,6 +52,7 @@ public class AmBest {
 			put(41, "D");
 			put(46, "E");
 			put(48, "F");
+			put(75, "NR");
 			put(90, "S");
 		}
 	};
@@ -113,7 +114,7 @@ public class AmBest {
 	 */
 	@Transient
 	public String getRatingAlpha() {
-		return ratingMap.get(ratingCode);
+		return ratingMap.get(ratingCode/10000);
 	}
 
 	/**
