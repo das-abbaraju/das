@@ -65,9 +65,25 @@ public class FlagDataCalculator {
 		operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
 	}
 
+	private FlagCriteriaDAO flagCriteriaDao() {
+		if (flagCriteriaDao == null) {
+			return (FlagCriteriaDAO) SpringUtils.getBean("FlagCriteriaDAO");
+		} else {
+			return flagCriteriaDao;
+		}
+	}
+
+	private BasicDAO basicDAO() {
+		if (dao == null) {
+			return (BasicDAO) SpringUtils.getBean("BasicDAO");
+		} else {
+			return dao;
+		}
+	}
+
 	public List<FlagData> calculate() {
-		flagCriteriaDao =	(FlagCriteriaDAO) SpringUtils.getBean("FlagCriteriaDAO");
-		dao = (BasicDAO) SpringUtils.getBean("BasicDAO");
+		flagCriteriaDao = flagCriteriaDao();
+		dao = basicDAO();
 
 		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
 
