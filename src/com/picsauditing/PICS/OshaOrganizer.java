@@ -65,10 +65,17 @@ public class OshaOrganizer implements OshaVisitor {
 		}
 
 		Collections.sort(yearList);
+		Integer earliestYear = yearList.get(0);
 		
-		if (!mostRecentThreeYears(type).contains(yearList.get(0)))
-			return yearList.get(0);
-		else return null;
+		YearList scopedYears = mostRecentThreeYears(type);
+		Integer lastYear = scopedYears.getYearForScope(MultiYearScope.LastYearOnly);
+		Integer secondYear = scopedYears.getYearForScope(MultiYearScope.TwoYearsAgo);
+		Integer thirdYear = scopedYears.getYearForScope(MultiYearScope.ThreeYearsAgo);
+
+		if (earliestYear.equals(lastYear) || earliestYear.equals(secondYear) || earliestYear.equals(thirdYear)) {
+			return null;
+		}
+		else return earliestYear;
 	}
 	
 	/**
