@@ -164,6 +164,12 @@ public class ReportContractorAudits extends ReportAccount {
 			setFiltered(true);
 		}
 
+		String anyAuditorIdList = Strings.implode(f.getAnyAuditorId(), ",");
+		if (filterOn(anyAuditorIdList)) {
+			sql.addWhere("ca.auditorID IN (" + anyAuditorIdList + ") OR ca.closingAuditorID IN (" + anyAuditorIdList + ")");
+			setFiltered(true);
+		}
+
 		String auditIDList = Strings.implode(f.getAuditID(), ",");
 		if (filterOn(auditIDList)) {
 			sql.addWhere("ca.id IN (" + auditIDList + ")");
