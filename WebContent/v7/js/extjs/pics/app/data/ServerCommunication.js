@@ -40,6 +40,8 @@ Ext.define('PICS.data.ServerCommunication', {
         
         return {
             getLoadAllUrl: function () {
+                return '/v7/js/extjs/pics/app/data/report.json';
+                
                 var params = Ext.urlDecode(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';

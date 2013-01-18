@@ -16,11 +16,11 @@ Ext.define('PICS.ux.grid.column.Column', {
         }
         
         var column = this.column,
-            id = column.get('id'),
+            field_id = column.get('field_id'),
             name = column.get('name'),
             width = column.get('width');
         
-        this.dataIndex = id;
+        this.dataIndex = field_id;
         
         this.setText(name);
         this.setWidth(width);

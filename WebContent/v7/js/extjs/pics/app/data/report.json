@@ -1,0 +1,2274 @@
+{
+	"results": {
+		"total": 24345,
+		"sql": "SELECT TRIM(Account.name) AS `AccountName`, Account.id AS `AccountID`, Account.status AS `AccountStatus`, Contractor.membershipdate AS `ContractorMembershipDate`, Account.city AS `AccountCity`, Account.countrysubdivision AS `AccountCountrySubdivision`, Account.country AS `AccountCountry` FROM contractor_info AS Contractor JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor' WHERE ((Account.status IN ('Active','Pending'))) ORDER BY AccountName",
+		"data": [{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3748",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Taylor",
+			"ContractorMembershipDate": "2007-12-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3776",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Gary",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3777",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Warren",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3778",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Englewood",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3780",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Elmhurst",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3782",
+			"AccountCountrySubdivision": "Minnesota",
+			"AccountCity": "St Paul",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3783",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Greenwood Village",
+			"ContractorMembershipDate": "2007-12-26"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3785",
+			"AccountCountrySubdivision": "Utah",
+			"AccountCity": "Salt Lake City",
+			"ContractorMembershipDate": "2007-12-27"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3786",
+			"AccountCountrySubdivision": "Louisiana",
+			"AccountCity": "Lake Charles",
+			"ContractorMembershipDate": "2007-12-27"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3787",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Midland",
+			"ContractorMembershipDate": "2007-12-27"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3790",
+			"AccountCountrySubdivision": "Washington",
+			"AccountCity": "TUKWILA",
+			"ContractorMembershipDate": "2007-12-28"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3791",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "whiting",
+			"ContractorMembershipDate": "2007-12-28"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3793",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Oregon",
+			"ContractorMembershipDate": "2007-12-28"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3796",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "CLEVELAND",
+			"ContractorMembershipDate": "2007-12-28"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3797",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Chicago",
+			"ContractorMembershipDate": "2007-12-28"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3801",
+			"AccountCountrySubdivision": "Tennessee",
+			"AccountCity": "Knoxville",
+			"ContractorMembershipDate": "2008-01-02"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3802",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Houston",
+			"ContractorMembershipDate": "2008-01-02"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3804",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Oregon",
+			"ContractorMembershipDate": "2008-01-03"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3775",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Holland",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3774",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Toledo",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3750",
+			"AccountCountrySubdivision": "California",
+			"AccountCity": "San Carlos",
+			"ContractorMembershipDate": "2009-11-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3751",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Alvin",
+			"ContractorMembershipDate": "2007-12-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3752",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Romulus",
+			"ContractorMembershipDate": "2007-12-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3753",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Schaumburg",
+			"ContractorMembershipDate": "2007-12-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3756",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "East Chicago",
+			"ContractorMembershipDate": "2007-12-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3758",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Worthington",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3759",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Valparaiso",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3761",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Brownsburg",
+			"ContractorMembershipDate": "2007-12-18"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3763",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Hammond",
+			"ContractorMembershipDate": "2007-12-18"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3764",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Highland",
+			"ContractorMembershipDate": "2007-12-18"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3765",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Livonia",
+			"ContractorMembershipDate": "2007-12-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3766",
+			"AccountCountrySubdivision": "Montana",
+			"AccountCity": "Billings",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3767",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Griffith",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3768",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Belleville",
+			"ContractorMembershipDate": "2007-12-21"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3770",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Michigan City",
+			"ContractorMembershipDate": "2007-12-20"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3771",
+			"AccountCountrySubdivision": "Missouri",
+			"AccountCity": "Pevely",
+			"ContractorMembershipDate": "2007-12-20"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3773",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Littleton",
+			"ContractorMembershipDate": "2010-09-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3805",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Arvada",
+			"ContractorMembershipDate": "2009-05-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3807",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Commerce City",
+			"ContractorMembershipDate": "2008-01-03"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3834",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Maumee",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3837",
+			"AccountCountrySubdivision": "Louisiana",
+			"AccountCity": "NEW ORLEANS",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3838",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Deer Park",
+			"ContractorMembershipDate": "2011-02-02"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3839",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Centennial",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3841",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Lumberton",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3845",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Downers Grove",
+			"ContractorMembershipDate": "2008-01-18"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3846",
+			"AccountCountrySubdivision": "Arizona",
+			"AccountCity": "Phoenix",
+			"ContractorMembershipDate": "2008-01-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3847",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Toledo",
+			"ContractorMembershipDate": "2008-01-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3862",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Oregon",
+			"ContractorMembershipDate": "2008-01-15"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3863",
+			"AccountCountrySubdivision": "California",
+			"AccountCity": "Torrance",
+			"ContractorMembershipDate": "2008-01-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3864",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Roselle",
+			"ContractorMembershipDate": "2008-01-15"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3866",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Crown Point",
+			"ContractorMembershipDate": "2008-01-16"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3868",
+			"AccountCountrySubdivision": "Florida",
+			"AccountCity": "Medley",
+			"ContractorMembershipDate": "2008-01-16"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3871",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Walbridge",
+			"ContractorMembershipDate": "2008-01-16"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3874",
+			"AccountCountrySubdivision": "Washington",
+			"AccountCity": "Bellevue",
+			"ContractorMembershipDate": "2008-01-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3875",
+			"AccountCountrySubdivision": "Pennsylvania",
+			"AccountCity": "Philadelphia",
+			"ContractorMembershipDate": "2008-01-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3876",
+			"AccountCountrySubdivision": "Tennessee",
+			"AccountCity": "Nashville",
+			"ContractorMembershipDate": "2008-01-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3833",
+			"AccountCountrySubdivision": "Washington",
+			"AccountCity": "Vancouver",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3832",
+			"AccountCountrySubdivision": "Wyoming",
+			"AccountCity": "Casper",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3808",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Denver",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3809",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Westminster",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3810",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Hammond",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3811",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Hammond",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3813",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "La Porte",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3814",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "chicago",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3816",
+			"AccountCountrySubdivision": "Kansas",
+			"AccountCity": "Wichita",
+			"ContractorMembershipDate": "2008-01-04"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3818",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "LaMarque",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3819",
+			"AccountCountrySubdivision": "Kansas",
+			"AccountCity": "Olathe",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3820",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "FORT WAYNE",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3821",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Lakewood",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3823",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Walbridge",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3824",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Griffith",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3825",
+			"AccountCountrySubdivision": "Hawaii",
+			"AccountCity": "Honolulu",
+			"ContractorMembershipDate": "2008-01-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3827",
+			"AccountCountrySubdivision": "Wyoming",
+			"AccountCity": "Casper",
+			"ContractorMembershipDate": "2008-01-09"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3829",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Berthoud",
+			"ContractorMembershipDate": "2008-01-09"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3831",
+			"AccountCountrySubdivision": "Colorado",
+			"AccountCity": "Lakewood",
+			"ContractorMembershipDate": "2008-01-11"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3877",
+			"AccountCountrySubdivision": "New Mexico",
+			"AccountCity": "Aztec",
+			"ContractorMembershipDate": "2008-01-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3579",
+			"AccountCountrySubdivision": "California",
+			"AccountCity": "Bakersfield",
+			"ContractorMembershipDate": "2007-11-07"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3622",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Westmont",
+			"ContractorMembershipDate": "2007-11-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3624",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Hammond",
+			"ContractorMembershipDate": "2007-11-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3626",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Lincolnshire",
+			"ContractorMembershipDate": "2007-11-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3627",
+			"AccountCountrySubdivision": "Ohio",
+			"AccountCity": "Harrison",
+			"ContractorMembershipDate": "2007-11-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3628",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Crown Point",
+			"ContractorMembershipDate": "2007-11-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3629",
+			"AccountCountrySubdivision": "Michigan",
+			"AccountCity": "Kimball",
+			"ContractorMembershipDate": "2011-06-01"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3632",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "San Antonio",
+			"ContractorMembershipDate": "2011-11-17"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3633",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Chicago",
+			"ContractorMembershipDate": "2010-06-29"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3634",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Naperville",
+			"ContractorMembershipDate": "2007-11-14"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3642",
+			"AccountCountrySubdivision": "Florida",
+			"AccountCity": "Pompano Beach",
+			"ContractorMembershipDate": "2007-11-15"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3648",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Freeport",
+			"ContractorMembershipDate": "2007-11-16"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3650",
+			"AccountCountrySubdivision": "Missouri",
+			"AccountCity": "Maryland Heights",
+			"ContractorMembershipDate": "2007-11-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "Canada",
+			"AccountID": "3651",
+			"AccountCountrySubdivision": "Alberta",
+			"AccountCity": "Calgary",
+			"ContractorMembershipDate": "2007-11-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3653",
+			"AccountCountrySubdivision": "New Jersey",
+			"AccountCity": "Pennsville",
+			"ContractorMembershipDate": "2007-11-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3654",
+			"AccountCountrySubdivision": "Louisiana",
+			"AccountCity": "Houma",
+			"ContractorMembershipDate": "2009-02-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3655",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Indianapolis",
+			"ContractorMembershipDate": "2007-11-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3656",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "La Porte",
+			"ContractorMembershipDate": "2008-03-31"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3621",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Gary",
+			"ContractorMembershipDate": "2007-11-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3619",
+			"AccountCountrySubdivision": "Illinois",
+			"AccountCity": "Chicago",
+			"ContractorMembershipDate": "2007-11-13"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3583",
+			"AccountCountrySubdivision": "Texas",
+			"AccountCity": "Houston",
+			"ContractorMembershipDate": "2007-11-07"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3586",
+			"AccountCountrySubdivision": "Florida",
+			"AccountCity": "HIALEAH",
+			"ContractorMembershipDate": "2009-02-19"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3587",
+			"AccountCountrySubdivision": "Massachusetts",
+			"AccountCity": "Lowell",
+			"ContractorMembershipDate": "2007-11-08"
+		},
+		{
+			"AccountStatus": "Active",
+			"AccountCountry": "United States",
+			"AccountID": "3589",
+			"AccountCountrySubdivision": "Indiana",
+			"AccountCity": "Valparaiso",
+			"ContractorMembershipDate": "2007-11-08"
+		}]
+	},
+	"columns": [{
+		"field_id": "ContractorSafetyRiskVerified",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Safety Risk",
+		"width": 100,
+		"name": "Safety Risk Verified",
+		"type": "Date",
+		"url": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallTypeName",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "Report.ContractorWelcomeCallTypeName.help",
+		"width": 200,
+		"name": "Report.ContractorWelcomeCallTypeName",
+		"type": "AuditType",
+		"url": "Audit.action?auditID={ContractorWelcomeCallID}"
+	},
+	{
+		"field_id": "ContractorTransportationRiskVerified",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Transportation Risk",
+		"width": 100,
+		"name": "Transportation Risk Verified",
+		"type": "Date",
+		"url": null
+	},
+	{
+		"field_id": "AccountNaicsTrir",
+		"sql_function": null,
+		"category": "Company Statistics",
+		"is_sortable": true,
+		"description": "Contractor\u2019s Total Recordable Incident Rate **CHECK DATA: AVERAGE, INDIVIDUAL YEAR, BOTH OPTIONS?**",
+		"width": 100,
+		"name": "TRIR",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountFax",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Account's fax number",
+		"width": 100,
+		"name": "Fax",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountLegalName",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Account\u2019s registered business name (\"Doing Business As\")",
+		"width": 200,
+		"name": "Legal Name",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountCreationDate",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Date the account was created",
+		"width": 200,
+		"name": "Created",
+		"type": "Date",
+		"url": null
+	},
+	{
+		"field_id": "ContractorProductRiskVerified",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Product Risk",
+		"width": 100,
+		"name": "Product Risk Verified",
+		"type": "Date",
+		"url": null
+	},
+	{
+		"field_id": "ContractorSafetyRisk",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Risk level of a Company that supplies a service",
+		"width": 100,
+		"name": "Safety Risk",
+		"type": "LowMedHigh",
+		"url": null
+	},
+	{
+		"field_id": "ContractorRecommendedCSRID",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "CSR ID recommended based on calculated criteria",
+		"width": 200,
+		"name": "Recommended CSR ID",
+		"type": "UserID",
+		"url": null
+	},
+	{
+		"field_id": "AccountReason",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Reason the account was deactivated",
+		"width": 200,
+		"name": "Deactivation Reason",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorPQFTypeName",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "PQF",
+		"width": 200,
+		"name": "PQF",
+		"type": "AuditType",
+		"url": "Audit.action?auditID={ContractorPQFID}"
+	},
+	{
+		"field_id": "AccountMaterialSupplier",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company offers products instead of services \/ Client Site accepts Companies who are material suppliers",
+		"width": 100,
+		"name": "Material Supplier",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorCustomerServicePhone",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "Customer Service Representative's phone number",
+		"width": 125,
+		"name": "CSR Phone",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceID",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "Customer Service Representative's PICS ID",
+		"width": 200,
+		"name": "CSR PICS ID",
+		"type": "UserID",
+		"url": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallID",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "Report.ContractorWelcomeCallID.help",
+		"width": 200,
+		"name": "Report.ContractorWelcomeCallID",
+		"type": "Integer",
+		"url": null
+	},
+	{
+		"field_id": "AccountNaicsCode",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company\u2019s North American Industry Classification code",
+		"width": 100,
+		"name": "NAICS",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorInsureGUARD",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Contractor subscribes to InsureGUARD",
+		"width": 100,
+		"name": "InsureGUARD",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorSoleProprietor",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company works as a sole proprietor",
+		"width": 100,
+		"name": "Sole Proprietor",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorRenew",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "PICS Membership will automatically renew at the end of the membership period",
+		"width": 100,
+		"name": "Auto-Renew",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorPQFID",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "PQF\u2019s PICS ID",
+		"width": 200,
+		"name": "PQF PICS ID",
+		"type": "Integer",
+		"url": null
+	},
+	{
+		"field_id": "ContractorEmployeeGUARD",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Contractor subscribes to EmployeeGUARD",
+		"width": 100,
+		"name": "EmployeeGUARD",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorTagTag",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Company's Tag",
+		"width": 200,
+		"name": "Company Tag",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorProductRisk",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Risk level of a Company that supplies products",
+		"width": 100,
+		"name": "Product Risk",
+		"type": "LowMedHigh",
+		"url": null
+	},
+	{
+		"field_id": "AccountPhone",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Account\u2019s phone number",
+		"width": 100,
+		"name": "Phone",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountNaicsLwcr",
+		"sql_function": null,
+		"category": "Company Statistics",
+		"is_sortable": true,
+		"description": "Contractor\u2019s Loss Work Case Rate **CHECK DATA: AVERAGE, INDIVIDUAL YEAR, BOTH OPTIONS?**",
+		"width": 100,
+		"name": "LWCR",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountCountry",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Country of the account\u2019s primary address",
+		"width": 150,
+		"name": "Country",
+		"type": "Country",
+		"url": null
+	},
+	{
+		"field_id": "AccountName",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+		"width": 250,
+		"name": "Company",
+		"type": "String",
+		"url": "ContractorView.action?id={AccountID}"
+	},
+	{
+		"field_id": "AccountContactName",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Primary contact's name",
+		"width": 150,
+		"name": "Contact",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountID",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Account\u2019s PICS ID",
+		"width": 200,
+		"name": "PICS ID",
+		"type": "AccountID",
+		"url": null
+	},
+	{
+		"field_id": "AccountContactFax",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Primary contact's fax number",
+		"width": 125,
+		"name": "Contact Fax",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorTradesSub",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Trades a Company sub-contracts out",
+		"width": 300,
+		"name": "Trades Sub-Contracted",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountContactPhone",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Primary contact's phone number",
+		"width": 125,
+		"name": "Contact Phone",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountWebUrl",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Account\u2019s website address",
+		"width": 100,
+		"name": "Website",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorTransportationRisk",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Risk level of a Company that transports items",
+		"width": 100,
+		"name": "Transportation Risk",
+		"type": "LowMedHigh",
+		"url": null
+	},
+	{
+		"field_id": "AccountStatus",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "PICS account status",
+		"width": 100,
+		"name": "PICS Status",
+		"type": "AccountStatus",
+		"url": null
+	},
+	{
+		"field_id": "AccountOnsiteServices",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company provides services at their office site \/ Client Site accepts Companies that provide services at their office site",
+		"width": 100,
+		"name": "On-site Services",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceFax",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "Customer Service Representative's fax number",
+		"width": 125,
+		"name": "CSR Fax",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorRecommendedCSRName",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "CSR recommended based on calculated criteria",
+		"width": 150,
+		"name": "Recommended CSR",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountFullAddress",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Account\u2019s primary address",
+		"width": 100,
+		"name": "Address",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorDocuGUARD",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Contractor subscribes to DocuGUARD",
+		"width": 100,
+		"name": "DocuGUARD",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorTaxId",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Company\u2019s tax identification number",
+		"width": 100,
+		"name": "Tax ID",
+		"type": "Integer",
+		"url": null
+	},
+	{
+		"field_id": "AccountOffsiteServices",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company provides services off-site of their office \/ Client Site accepts Companies that provide off-site services",
+		"width": 100,
+		"name": "Off-site Services",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorWatchwatch",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Contractor you are watching",
+		"width": 200,
+		"name": "Watched",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "AccountAddress2",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Extra field for further account address information (i.e. apartment, suite, P.O. Box\u2026)",
+		"width": 100,
+		"name": "Address 2",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountAddress3",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Extra field for further account address information",
+		"width": 100,
+		"name": "Address 3",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorTradesSelf",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Trades a Company performs themselves",
+		"width": 300,
+		"name": "Trades Self-Performed",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallCaoID",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "Report.ContractorWelcomeCallCaoID.help",
+		"width": 200,
+		"name": "Report.ContractorWelcomeCallCaoID",
+		"type": "Integer",
+		"url": null
+	},
+	{
+		"field_id": "AccountZip",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Postal code of the account\u2019s primary address",
+		"width": 100,
+		"name": "Postal",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorScore",
+		"sql_function": null,
+		"category": "Company Statistics",
+		"is_sortable": true,
+		"description": "Calculated score assigned to a Company based on their Green Flag status performance",
+		"width": 100,
+		"name": "Confidence Rating",
+		"type": "Integer",
+		"url": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallCaoStatus",
+		"sql_function": null,
+		"category": "Audits",
+		"is_sortable": true,
+		"description": "Report.ContractorWelcomeCallCaoStatus.help",
+		"width": 100,
+		"name": "Report.ContractorWelcomeCallCaoStatus",
+		"type": "AuditStatus",
+		"url": null
+	},
+	{
+		"field_id": "AccountCountrySubdivision",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "State \/ Province \/ localized area of the country of the account\u2019s primary address",
+		"width": 100,
+		"name": "State \/ Province",
+		"type": "CountrySubdivision",
+		"url": null
+	},
+	{
+		"field_id": "AccountRequiresCompetencyReview",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Client Site requires Companies to have a Competency Review",
+		"width": 100,
+		"name": "Competency Review Required",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorMembershipDate",
+		"sql_function": null,
+		"category": "Account Information",
+		"is_sortable": true,
+		"description": "Date the Company became a member of PICS",
+		"width": 100,
+		"name": "Member Since",
+		"type": "Date",
+		"url": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceName",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "Name of the PICS Customer Service Representative",
+		"width": 150,
+		"name": "CSR",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorAccountLevel",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Company\u2019s billing level",
+		"width": 100,
+		"name": "Billing Level",
+		"type": "AccountLevel",
+		"url": null
+	},
+	{
+		"field_id": "AccountRequiresOQ",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Client Site requires Companies to undergo Operator Qualification",
+		"width": 100,
+		"name": "OQ Required",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "AccountTransportationServices",
+		"sql_function": null,
+		"category": "Classification",
+		"is_sortable": true,
+		"description": "Company transports items \/ Client Site accepts Companies that transport items",
+		"width": 100,
+		"name": "Transportation Services",
+		"type": "Boolean",
+		"url": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceEmail",
+		"sql_function": null,
+		"category": "Customer Service Representatives",
+		"is_sortable": true,
+		"description": "Customer Service Representative's Email",
+		"width": 150,
+		"name": "CSR Email",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountContactEmail",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Email address of the account\u2019s primary contact",
+		"width": 150,
+		"name": "Contact Email",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountNaicsDart",
+		"sql_function": null,
+		"category": "Company Statistics",
+		"is_sortable": true,
+		"description": "Report.AccountNaicsDart.help",
+		"width": 100,
+		"name": "Report.AccountNaicsDart",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountCity",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "City of the account\u2019s primary address",
+		"width": 100,
+		"name": "City",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "AccountContactID",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "PICS ID of the account\u2019s primary contact",
+		"width": 200,
+		"name": "Contact PICS ID",
+		"type": "UserID",
+		"url": null
+	},
+	{
+		"field_id": "AccountAddress",
+		"sql_function": null,
+		"category": "Contact Information",
+		"is_sortable": true,
+		"description": "Street of the account\u2019s primary address",
+		"width": 100,
+		"name": "Street Address",
+		"type": "String",
+		"url": null
+	},
+	{
+		"field_id": "ContractorAuditGUARD",
+		"sql_function": null,
+		"category": "Billing",
+		"is_sortable": true,
+		"description": "Contractor subscribes to AuditGUARD",
+		"width": 100,
+		"name": "AuditGUARD",
+		"type": "Boolean",
+		"url": null
+	}],
+	"report": {
+		"created_by": "PICS",
+		"filter_expression": "",
+		"columns": [{
+			"field_id": "AccountName",
+			"sql_function": null,
+			"category": "Account Information",
+			"is_sortable": true,
+			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+			"width": 100,
+			"name": "Company",
+			"type": "String",
+			"url": "ContractorView.action?id={AccountID}"
+		},
+		{
+			"field_id": "AccountStatus",
+			"sql_function": null,
+			"category": "Account Information",
+			"is_sortable": true,
+			"description": "PICS account status",
+			"width": 100,
+			"name": "PICS Status",
+			"type": "AccountStatus",
+			"url": null
+		},
+		{
+			"field_id": "ContractorMembershipDate",
+			"sql_function": null,
+			"category": "Account Information",
+			"is_sortable": true,
+			"description": "Date the Company became a member of PICS",
+			"width": 100,
+			"name": "Member Since",
+			"type": "Date",
+			"url": null
+		},
+		{
+			"field_id": "AccountCity",
+			"sql_function": null,
+			"category": "Contact Information",
+			"is_sortable": true,
+			"description": "City of the account\u2019s primary address",
+			"width": 100,
+			"name": "City",
+			"type": "String",
+			"url": null
+		},
+		{
+			"field_id": "ContractorPayingFacilities",
+			"sql_function": null,
+			"category": "Miscellaneous",
+			"is_sortable": true,
+			"description": "Total number of billable Client Sites",
+			"width": 100,
+			"name": "Billable Sites",
+			"type": "String",
+			"url": null
+		},
+		{
+			"field_id": "AccountCountrySubdivision",
+			"sql_function": null,
+			"category": "Contact Information",
+			"is_sortable": true,
+			"description": "State \/ Province \/ localized area of the country of the account\u2019s primary address",
+			"width": 100,
+			"name": "State \/ Province",
+			"type": "CountrySubdivision",
+			"url": null
+		},
+		{
+			"field_id": "AccountCountry",
+			"sql_function": null,
+			"category": "Contact Information",
+			"is_sortable": true,
+			"description": "Country of the account\u2019s primary address",
+			"width": 100,
+			"name": "Country",
+			"type": "Country",
+			"url": null
+		}],
+		"type": "Contractors",
+		"is_favorite": false,
+		"id": 1,
+		"creation_date": "2011-12-08",
+		"description": "Default Contractor List for PICS Employees",
+		"name": "Contractor List",
+		"is_editable": false,
+		"update_date": "2012-11-09",
+		"updated_by": "PICS",
+		"sorts": [{
+			"field_id": "AccountName",
+			"direction": "ASC"
+		}],
+		"filters": [{
+			"field_id": "AccountName",
+			"category": null,
+			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+			"name": "Company",
+			"value": "",
+			"type": "String",
+			"operator": "Contains"
+		},
+		{
+			"field_id": "AccountStatus",
+			"category": null,
+			"description": "PICS account status",
+			"name": "PICS Status",
+			"value": "Active, Pending",
+			"type": "AccountStatus",
+			"operator": "In"
+		}]
+	},
+	"success": true,
+	"filters": [{
+		"field_id": "ContractorSafetyRiskVerified",
+		"category": "Classification",
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Safety Risk",
+		"name": "Safety Risk Verified",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Date",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallTypeName",
+		"category": "Audits",
+		"description": "Report.ContractorWelcomeCallTypeName.help",
+		"name": "Report.ContractorWelcomeCallTypeName",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AuditType",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTransportationRiskVerified",
+		"category": "Classification",
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Transportation Risk",
+		"name": "Transportation Risk Verified",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Date",
+		"operator": null
+	},
+	{
+		"field_id": "AccountNaicsTrir",
+		"category": "Company Statistics",
+		"description": "Contractor\u2019s Total Recordable Incident Rate **CHECK DATA: AVERAGE, INDIVIDUAL YEAR, BOTH OPTIONS?**",
+		"name": "TRIR",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountFax",
+		"category": "Contact Information",
+		"description": "Account's fax number",
+		"name": "Fax",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountLegalName",
+		"category": "Account Information",
+		"description": "Account\u2019s registered business name (\"Doing Business As\")",
+		"name": "Legal Name",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountCreationDate",
+		"category": "Account Information",
+		"description": "Date the account was created",
+		"name": "Created",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Date",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorProductRiskVerified",
+		"category": "Classification",
+		"description": "Date that a CSR or Auditor verified the Company\u2019s Product Risk",
+		"name": "Product Risk Verified",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Date",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorSafetyRisk",
+		"category": "Classification",
+		"description": "Risk level of a Company that supplies a service",
+		"name": "Safety Risk",
+		"value": null,
+		"column_compare_id": null,
+		"type": "LowMedHigh",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorRecommendedCSRID",
+		"category": "Customer Service Representatives",
+		"description": "CSR ID recommended based on calculated criteria",
+		"name": "Recommended CSR ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "UserID",
+		"operator": null
+	},
+	{
+		"field_id": "AccountReason",
+		"category": "Account Information",
+		"description": "Reason the account was deactivated",
+		"name": "Deactivation Reason",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorPQFTypeName",
+		"category": "Audits",
+		"description": "PQF",
+		"name": "PQF",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AuditType",
+		"operator": null
+	},
+	{
+		"field_id": "AccountMaterialSupplier",
+		"category": "Classification",
+		"description": "Company offers products instead of services \/ Client Site accepts Companies who are material suppliers",
+		"name": "Material Supplier",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorCustomerServicePhone",
+		"category": "Customer Service Representatives",
+		"description": "Customer Service Representative's phone number",
+		"name": "CSR Phone",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceID",
+		"category": "Customer Service Representatives",
+		"description": "Customer Service Representative's PICS ID",
+		"name": "CSR PICS ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "UserID",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallID",
+		"category": "Audits",
+		"description": "Report.ContractorWelcomeCallID.help",
+		"name": "Report.ContractorWelcomeCallID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Integer",
+		"operator": null
+	},
+	{
+		"field_id": "AccountNaicsCode",
+		"category": "Classification",
+		"description": "Company\u2019s North American Industry Classification code",
+		"name": "NAICS",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorInsureGUARD",
+		"category": "Billing",
+		"description": "Contractor subscribes to InsureGUARD",
+		"name": "InsureGUARD",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorSoleProprietor",
+		"category": "Classification",
+		"description": "Company works as a sole proprietor",
+		"name": "Sole Proprietor",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorRenew",
+		"category": "Billing",
+		"description": "PICS Membership will automatically renew at the end of the membership period",
+		"name": "Auto-Renew",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorPQFID",
+		"category": "Audits",
+		"description": "PQF\u2019s PICS ID",
+		"name": "PQF PICS ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Integer",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorEmployeeGUARD",
+		"category": "Billing",
+		"description": "Contractor subscribes to EmployeeGUARD",
+		"name": "EmployeeGUARD",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorProductRisk",
+		"category": "Classification",
+		"description": "Risk level of a Company that supplies products",
+		"name": "Product Risk",
+		"value": null,
+		"column_compare_id": null,
+		"type": "LowMedHigh",
+		"operator": null
+	},
+	{
+		"field_id": "AccountPhone",
+		"category": "Contact Information",
+		"description": "Account\u2019s phone number",
+		"name": "Phone",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountNaicsLwcr",
+		"category": "Company Statistics",
+		"description": "Contractor\u2019s Loss Work Case Rate **CHECK DATA: AVERAGE, INDIVIDUAL YEAR, BOTH OPTIONS?**",
+		"name": "LWCR",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountCountry",
+		"category": "Contact Information",
+		"description": "Country of the account\u2019s primary address",
+		"name": "Country",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Country",
+		"operator": null
+	},
+	{
+		"field_id": "AccountName",
+		"category": "Account Information",
+		"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
+		"name": "Company",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountContactName",
+		"category": "Contact Information",
+		"description": "Primary contact's name",
+		"name": "Contact",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountID",
+		"category": "Account Information",
+		"description": "Account\u2019s PICS ID",
+		"name": "PICS ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AccountID",
+		"operator": null
+	},
+	{
+		"field_id": "AccountContactFax",
+		"category": "Contact Information",
+		"description": "Primary contact's fax number",
+		"name": "Contact Fax",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTradesSub",
+		"category": "Classification",
+		"description": "Trades a Company sub-contracts out",
+		"name": "Trades Sub-Contracted",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountContactPhone",
+		"category": "Contact Information",
+		"description": "Primary contact's phone number",
+		"name": "Contact Phone",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountWebUrl",
+		"category": "Contact Information",
+		"description": "Account\u2019s website address",
+		"name": "Website",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTransportationRisk",
+		"category": "Classification",
+		"description": "Risk level of a Company that transports items",
+		"name": "Transportation Risk",
+		"value": null,
+		"column_compare_id": null,
+		"type": "LowMedHigh",
+		"operator": null
+	},
+	{
+		"field_id": "AccountStatus",
+		"category": "Account Information",
+		"description": "PICS account status",
+		"name": "PICS Status",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AccountStatus",
+		"operator": null
+	},
+	{
+		"field_id": "AccountOnsiteServices",
+		"category": "Classification",
+		"description": "Company provides services at their office site \/ Client Site accepts Companies that provide services at their office site",
+		"name": "On-site Services",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceFax",
+		"category": "Customer Service Representatives",
+		"description": "Customer Service Representative's fax number",
+		"name": "CSR Fax",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTagTagID",
+		"category": "Account Information",
+		"description": "Company's Tag ID",
+		"name": "Company Tag ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "OperatorTag",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorRecommendedCSRName",
+		"category": "Customer Service Representatives",
+		"description": "CSR recommended based on calculated criteria",
+		"name": "Recommended CSR",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorDocuGUARD",
+		"category": "Billing",
+		"description": "Contractor subscribes to DocuGUARD",
+		"name": "DocuGUARD",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTaxId",
+		"category": "Billing",
+		"description": "Company\u2019s tax identification number",
+		"name": "Tax ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Integer",
+		"operator": null
+	},
+	{
+		"field_id": "AccountOffsiteServices",
+		"category": "Classification",
+		"description": "Company provides services off-site of their office \/ Client Site accepts Companies that provide off-site services",
+		"name": "Off-site Services",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorWatchwatch",
+		"category": "Account Information",
+		"description": "Contractor you are watching",
+		"name": "Watched",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "AccountAddress2",
+		"category": "Contact Information",
+		"description": "Extra field for further account address information (i.e. apartment, suite, P.O. Box\u2026)",
+		"name": "Address 2",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountAddress3",
+		"category": "Contact Information",
+		"description": "Extra field for further account address information",
+		"name": "Address 3",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorTradesSelf",
+		"category": "Classification",
+		"description": "Trades a Company performs themselves",
+		"name": "Trades Self-Performed",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallCaoID",
+		"category": "Audits",
+		"description": "Report.ContractorWelcomeCallCaoID.help",
+		"name": "Report.ContractorWelcomeCallCaoID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Integer",
+		"operator": null
+	},
+	{
+		"field_id": "AccountZip",
+		"category": "Contact Information",
+		"description": "Postal code of the account\u2019s primary address",
+		"name": "Postal",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorScore",
+		"category": "Company Statistics",
+		"description": "Calculated score assigned to a Company based on their Green Flag status performance",
+		"name": "Confidence Rating",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Integer",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorWelcomeCallCaoStatus",
+		"category": "Audits",
+		"description": "Report.ContractorWelcomeCallCaoStatus.help",
+		"name": "Report.ContractorWelcomeCallCaoStatus",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AuditStatus",
+		"operator": null
+	},
+	{
+		"field_id": "AccountCountrySubdivision",
+		"category": "Contact Information",
+		"description": "State \/ Province \/ localized area of the country of the account\u2019s primary address",
+		"name": "State \/ Province",
+		"value": null,
+		"column_compare_id": null,
+		"type": "CountrySubdivision",
+		"operator": null
+	},
+	{
+		"field_id": "AccountRequiresCompetencyReview",
+		"category": "Classification",
+		"description": "Client Site requires Companies to have a Competency Review",
+		"name": "Competency Review Required",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorMembershipDate",
+		"category": "Account Information",
+		"description": "Date the Company became a member of PICS",
+		"name": "Member Since",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Date",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceName",
+		"category": "Customer Service Representatives",
+		"description": "Name of the PICS Customer Service Representative",
+		"name": "CSR",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorAccountLevel",
+		"category": "Billing",
+		"description": "Company\u2019s billing level",
+		"name": "Billing Level",
+		"value": null,
+		"column_compare_id": null,
+		"type": "AccountLevel",
+		"operator": null
+	},
+	{
+		"field_id": "AccountRequiresOQ",
+		"category": "Classification",
+		"description": "Client Site requires Companies to undergo Operator Qualification",
+		"name": "OQ Required",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "AccountTransportationServices",
+		"category": "Classification",
+		"description": "Company transports items \/ Client Site accepts Companies that transport items",
+		"name": "Transportation Services",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorCustomerServiceEmail",
+		"category": "Customer Service Representatives",
+		"description": "Customer Service Representative's Email",
+		"name": "CSR Email",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountContactEmail",
+		"category": "Contact Information",
+		"description": "Email address of the account\u2019s primary contact",
+		"name": "Contact Email",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountNaicsDart",
+		"category": "Company Statistics",
+		"description": "Report.AccountNaicsDart.help",
+		"name": "Report.AccountNaicsDart",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountCity",
+		"category": "Contact Information",
+		"description": "City of the account\u2019s primary address",
+		"name": "City",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "AccountContactID",
+		"category": "Contact Information",
+		"description": "PICS ID of the account\u2019s primary contact",
+		"name": "Contact PICS ID",
+		"value": null,
+		"column_compare_id": null,
+		"type": "UserID",
+		"operator": null
+	},
+	{
+		"field_id": "AccountAddress",
+		"category": "Contact Information",
+		"description": "Street of the account\u2019s primary address",
+		"name": "Street Address",
+		"value": null,
+		"column_compare_id": null,
+		"type": "String",
+		"operator": null
+	},
+	{
+		"field_id": "ContractorAuditGUARD",
+		"category": "Billing",
+		"description": "Contractor subscribes to AuditGUARD",
+		"name": "AuditGUARD",
+		"value": null,
+		"column_compare_id": null,
+		"type": "Boolean",
+		"operator": null
+	}]
+}

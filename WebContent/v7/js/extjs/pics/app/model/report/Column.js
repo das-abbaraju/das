@@ -50,11 +50,11 @@ Ext.define('PICS.model.report.Column', {
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
-        var id = this.get('id'),
+        var field_id = this.get('field_id'),
             type = this.get('type'),
             data_type;
         
-        switch (type) {
+        switch (type.toLowerCase()) {
             case 'boolean':
                 data_type = 'boolean';
     
@@ -66,7 +66,7 @@ Ext.define('PICS.model.report.Column', {
         }
         
         var model_field = {
-            name: id,
+            name: field_id,
             type: data_type
         };
 
@@ -86,7 +86,7 @@ Ext.define('PICS.model.report.Column', {
             column: this
         };
 
-        switch (type) {
+        switch (type.toLowerCase()) {
             case 'boolean':
                 grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
