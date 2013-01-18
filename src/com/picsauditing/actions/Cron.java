@@ -162,117 +162,117 @@ public class Cron extends PicsActionSupport {
 		report.append("Starting Cron Job at: " + new Date().toString());
 		report.append("\n\n\n");
 
-//		if (!flagsOnly) {
-//
-//			startTask("Running auditBuilder.addAuditRenewals...");
-//			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
-//			for (ContractorAccount contractor : contractors) {
-//				try {
-//					auditBuilder.buildAudits(contractor);
-//					contractorAuditDAO.save(contractor);
-//				} catch (Exception e) {
-//					logger.error("ERROR!! AuditBuiler.addAuditRenewals() {}", e.getMessage());
-//				}
-//			}
-//			endTask();
-//
-//			try {
-//				// TODO - Move this to the db.picsauditing.com cron bash script
-//				/*
-//				 * OPTIMIZE TABLE
-//				 * OSHA,accounts,auditCategories,auditData,auditQuestions
-//				 * ,certificates,contractor_info," +
-//				 * "forms,generalContractors,loginLog,users;
-//				 */
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
-//
-//			try {
-//				startTask("Running Huntsman EBIX Support...");
-//				processEbixData();
-//				endTask();
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
-//
-//			try {
-//				startTask("Resetting Renewable Audits and cao and stamping notes...");
-//				contractorAuditOperatorDAO.resetRenewableAudits();
-//				endTask();
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
-//
-//			try {
-//				// TODO we shouldn't recacluate audits, but only categories.
-//				// This shouldn't be needed at all anymore
-//				startTask("Recalculating all the categories for Audits...");
-//				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
-//				for (ContractorAudit cAudit : conList) {
-//					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-//					cAudit.setLastRecalculation(new Date());
-//					cAudit.setAuditColumns(system);
-//					contractorAuditDAO.save(cAudit);
-//				}
-//				endTask();
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
-//			try {
-//				startTask("Starting Indexer...");
-//				runIndexer();
-//				endTask();
-//			} catch (Throwable t) {
-//				handleException(t);
-//			}
-//		}
-//
-//		try {
-//			startTask("Sending emails to contractors pending...");
-//
-//			getEmailExclusions();
-//
-//			sendEmailPendingAccounts();
-//
-//			emailExclusionList.clear();
-//
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Sending emails to registration requests...");
-//
-//			getEmailExclusions();
-//
-//			sendEmailContractorRegistrationRequest();
-//
-//			emailExclusionList.clear();
-//
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Sending email about upcoming implementation audits...");
-//
-//			sendUpcomingImplementationAuditEmail();
-//
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
-//			addLateFeeToDelinquentInvoices();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
+		if (!flagsOnly) {
+
+			startTask("Running auditBuilder.addAuditRenewals...");
+			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
+			for (ContractorAccount contractor : contractors) {
+				try {
+					auditBuilder.buildAudits(contractor);
+					contractorAuditDAO.save(contractor);
+				} catch (Exception e) {
+					logger.error("ERROR!! AuditBuiler.addAuditRenewals() {}", e.getMessage());
+				}
+			}
+			endTask();
+
+			try {
+				// TODO - Move this to the db.picsauditing.com cron bash script
+				/*
+				 * OPTIMIZE TABLE
+				 * OSHA,accounts,auditCategories,auditData,auditQuestions
+				 * ,certificates,contractor_info," +
+				 * "forms,generalContractors,loginLog,users;
+				 */
+			} catch (Throwable t) {
+				handleException(t);
+			}
+
+			try {
+				startTask("Running Huntsman EBIX Support...");
+				processEbixData();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+
+			try {
+				startTask("Resetting Renewable Audits and cao and stamping notes...");
+				contractorAuditOperatorDAO.resetRenewableAudits();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+
+			try {
+				// TODO we shouldn't recacluate audits, but only categories.
+				// This shouldn't be needed at all anymore
+				startTask("Recalculating all the categories for Audits...");
+				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
+				for (ContractorAudit cAudit : conList) {
+					auditPercentCalculator.percentCalculateComplete(cAudit, true);
+					cAudit.setLastRecalculation(new Date());
+					cAudit.setAuditColumns(system);
+					contractorAuditDAO.save(cAudit);
+				}
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+			try {
+				startTask("Starting Indexer...");
+				runIndexer();
+				endTask();
+			} catch (Throwable t) {
+				handleException(t);
+			}
+		}
+
+		try {
+			startTask("Sending emails to contractors pending...");
+
+			getEmailExclusions();
+
+			sendEmailPendingAccounts();
+
+			emailExclusionList.clear();
+
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Sending emails to registration requests...");
+
+			getEmailExclusions();
+
+			sendEmailContractorRegistrationRequest();
+
+			emailExclusionList.clear();
+
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Sending email about upcoming implementation audits...");
+
+			sendUpcomingImplementationAuditEmail();
+
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
+			addLateFeeToDelinquentInvoices();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
 
 		try {
 			startTask("Bump Dead Accounts that still have balances...");
@@ -282,92 +282,92 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
-//		try {
-//			startTask("Inactivating Accounts via Billing Status...");
-//			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
-//			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
-//			for (ContractorAccount contractor : conAcctList) {
-//				contractor.setRenew(false);
-//				contractor.setStatus(AccountStatus.Deactivated);
-//				// Setting a deactivation reason
-//				if (contractor.getAccountLevel().isBidOnly()) {
-//					contractor.setReason("Bid Only Account");
-//				}
-//				// Leave the PaymentExpires in the past
-//				// conAcct.setPaymentExpires(null);
-//				contractor.syncBalance();
-//				contractor.setAuditColumns(system);
-//				contractorAccountDAO.save(contractor);
-//
-//				stampNote(contractor, "Automatically inactivating account based on expired membership",
-//						NoteCategory.Billing);
-//			}
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Sending Email to Delinquent Contractors ...");
-//			sendDelinquentContractorsEmail();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Sending No Action Email to Bid Only Accounts ...");
-//			sendNoActionEmailToTrialAccounts();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//		try {
-//			startTask("Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
-//			clearForceFlags();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Expiring Flag Changes...");
-//			expireFlagChanges();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Emailing Flag Change Reports...");
-//			sendFlagChangesEmails();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("Checking System Status...");
-//			checkSystemStatus();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//		try {
-//			startTask("Checking Registration Requests Hold Dates...");
-//			checkRegistrationRequestsHoldDates();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
-//
-//		try {
-//			startTask("deactivating pending accounts pass 90 days");
-//			deactivatePendingAccounts();
-//			endTask();
-//		} catch (Throwable t) {
-//			handleException(t);
-//		}
+		try {
+			startTask("Inactivating Accounts via Billing Status...");
+			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
+			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
+			for (ContractorAccount contractor : conAcctList) {
+				contractor.setRenew(false);
+				contractor.setStatus(AccountStatus.Deactivated);
+				// Setting a deactivation reason
+				if (contractor.getAccountLevel().isBidOnly()) {
+					contractor.setReason("Bid Only Account");
+				}
+				// Leave the PaymentExpires in the past
+				// conAcct.setPaymentExpires(null);
+				contractor.syncBalance();
+				contractor.setAuditColumns(system);
+				contractorAccountDAO.save(contractor);
+
+				stampNote(contractor, "Automatically inactivating account based on expired membership",
+						NoteCategory.Billing);
+			}
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Sending Email to Delinquent Contractors ...");
+			sendDelinquentContractorsEmail();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Sending No Action Email to Bid Only Accounts ...");
+			sendNoActionEmailToTrialAccounts();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		try {
+			startTask("Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
+			clearForceFlags();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Expiring Flag Changes...");
+			expireFlagChanges();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Emailing Flag Change Reports...");
+			sendFlagChangesEmails();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("Checking System Status...");
+			checkSystemStatus();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		try {
+			startTask("Checking Registration Requests Hold Dates...");
+			checkRegistrationRequestsHoldDates();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("deactivating pending accounts pass 90 days");
+			deactivatePendingAccounts();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
 
 		report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
 				.append("Completed Cron Job at: ");
