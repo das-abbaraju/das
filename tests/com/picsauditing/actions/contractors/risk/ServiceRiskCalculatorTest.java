@@ -341,7 +341,7 @@ public class ServiceRiskCalculatorTest {
 		}
 
 		for (RiskAssessment assessment : assessments) {
-			if (!assessment.isSelfEvaluation()) {
+			if (!assessment.isQuestionSelfEvaluation()) {
 				AuditData auditData = createAuditData(assessment.getQuestionID());
 				when(auditData.getAnswer()).thenReturn(answer);
 				auditDatas.add(auditData);

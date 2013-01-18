@@ -5,11 +5,11 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 public interface RiskAssessment {
 	public abstract int getQuestionID();
 
-	public abstract boolean isSelfEvaluation();
+	public abstract boolean isQuestionSelfEvaluation();
 
-	public abstract LowMedHigh getYes();
+	public abstract LowMedHigh getRiskRankingForAnswerYes();
 
-	public abstract LowMedHigh getNo();
+	public abstract LowMedHigh getRiskRankingForAnswerNo();
 
-	public abstract LowMedHigh getRiskLevel(String answer);
+	public abstract LowMedHigh getRiskLevelBasedOn(String answer);
 }
