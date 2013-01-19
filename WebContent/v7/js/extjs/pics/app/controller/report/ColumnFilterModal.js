@@ -72,10 +72,15 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
             selected_columns = column_modal_checkbox_model.getSelection();
-            
+
+        // Add the selected column to the report model.
         report.addColumns(selected_columns);
         
+        // Close the column modal.
         column_modal.close();
+
+        // Get new data for the modified report model.
+        PICS.data.ServerCommunication.loadData();
     },
 
     onColumnModalCancelClick: function (cmp, event, eOpts) {
@@ -104,8 +109,10 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             filter_modal_checkbox_model = filter_list.getSelectionModel(),
             selected_filters = filter_modal_checkbox_model.getSelection();
     
+        // Add the selected filter to the report model.
         report.addFilters(selected_filters);
-        
+
+        // Close the filter modal.
         filter_modal.close();
     },
 
