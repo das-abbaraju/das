@@ -40,14 +40,12 @@ Ext.define('PICS.data.ServerCommunication', {
         
         return {
             getLoadAllUrl: function () {
-                return '/v7/js/extjs/pics/app/data/report.json';
-                
                 var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeReport: true,
                     includeColumns: true,
                     includeFilters: true,
@@ -63,7 +61,7 @@ Ext.define('PICS.data.ServerCommunication', {
                     path = 'ReportApi.action?';
                 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeReport: true,
                     includeData: true
                 };
@@ -77,7 +75,7 @@ Ext.define('PICS.data.ServerCommunication', {
                     path = 'ReportApi.action?';
                 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeData: true,
                     page: page ? page : 1,
                     limit: limit ? limit : 50
