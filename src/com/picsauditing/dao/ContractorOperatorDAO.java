@@ -178,8 +178,12 @@ public class ContractorOperatorDAO extends PicsDAO {
 
 	public Set<ContractorOperator> findForOperators(int contractorId, Set<Integer> operatorIds) {
 		try {
-			Query query = em.createQuery("FROM ContractorOperator co WHERE co.contractorAccount.id = ? " 
-				+ " AND co.operatorAccount.id IN (" + Strings.implode(operatorIds, ",") + ")");
+			String where = "";
+			if (operatorIds.size() > 0) {
+				where = " AND co.operatorAccount.id IN (" + Strings.implode(operatorIds, ",") + ")";
+			}
+
+			Query query = em.createQuery("FROM ContractorOperator co WHERE co.contractorAccount.id = ? " + where);
 			query.setParameter(1, contractorId);
 			Set<ContractorOperator> results = new HashSet<ContractorOperator>(query.getResultList());
 			return results;
