@@ -27,6 +27,7 @@ public class ReportJson {
 	public static final String REPORT_ELEMENT_CATEGORY = "category";
 	public static final String REPORT_ELEMENT_NAME = "name";
 	public static final String REPORT_ELEMENT_DESCRIPTION = "description";
+	public static final String REPORT_ELEMENT_FIELD_ID = "field_id";
 
 	public static final String REPORT_COLUMNS = "columns";
 	public static final String COLUMN_TYPE = "type";
@@ -46,10 +47,10 @@ public class ReportJson {
 	public static final String SORT_DIRECTION = "direction";
 
 	public static final String RESULTS_TOTAL = "total";
-	
+
 	public static final String EXT_JS_SUCCESS = "success";
 	public static final String EXT_JS_MESSAGE = "message";
-	
+
 	@Deprecated
 	public static final String LEGACY_MODEL_TYPE = "modelType";
 	@Deprecated

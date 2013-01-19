@@ -29,7 +29,7 @@ public class ReportDynamicTest extends PicsActionTest {
 
 		when(request.getParameter("report")).thenReturn("123");
 
-		reportDynamic.setReport(report);
+		Whitebox.setInternalState(reportDynamic, "report", report);
 		when(permissions.getUserId()).thenReturn(941);
 		Whitebox.setInternalState(reportDynamic, "reportModel", reportModel);
 	}

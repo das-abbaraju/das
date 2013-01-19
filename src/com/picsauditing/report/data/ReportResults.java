@@ -8,15 +8,13 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.jpa.entities.Column;
-
 public class ReportResults {
 	private List<ReportRow> rows = new ArrayList<ReportRow>();
 
 	public ReportResults() {
 	}
 
-	public ReportResults(Collection<Column> columns, List<BasicDynaBean> results) {
+	public ReportResults(Collection<com.picsauditing.jpa.entities.Column> columns, List<BasicDynaBean> results) {
 		for (BasicDynaBean dynaBean : results) {
 			ReportRow row = new ReportRow(columns, dynaBean);
 			rows.add(row);
@@ -30,12 +28,12 @@ public class ReportResults {
 	public List<ReportRow> getRows() {
 		return rows;
 	}
-	
+
 	public int size() {
 		if (CollectionUtils.isEmpty(rows)) {
 			return 0;
 		}
-		
+
 		return rows.size();
 	}
 
@@ -44,7 +42,7 @@ public class ReportResults {
 		for (ReportRow row : rows) {
 			cells.addAll(row.getCells());
 		}
-		
+
 		return cells;
 	}
 
@@ -54,7 +52,7 @@ public class ReportResults {
 		for (ReportRow row : rows) {
 			jsonRows.add(row.toJson());
 		}
-		
+
 		return jsonRows;
 	}
 }

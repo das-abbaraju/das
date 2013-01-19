@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.pagination.Pagination;
@@ -78,10 +79,10 @@ public class ReportModelTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		reportModel = new ReportModel();
-		
+
 		LegacyReportConverter legacyReportConverter = new LegacyReportConverter();
 		Whitebox.setInternalState(legacyReportConverter, "reportModel", reportModelMock);
-		
+
 		setInternalState(reportModel, "reportDao", reportDao);
 		setInternalState(reportModel, "reportUserDao", reportUserDao);
 		setInternalState(reportModel, "reportPermissionUserDao", reportPermissionUserDao);
@@ -95,7 +96,7 @@ public class ReportModelTest {
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(featureToggle.isFeatureEnabled(anyString())).thenReturn(true);
 	}
-	
+
 	@Test
 	public void mockUserIsMockedWithUserId() {
 		assertEquals(USER_ID, user.getId());
@@ -139,7 +140,7 @@ public class ReportModelTest {
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
-		
+
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
@@ -171,26 +172,26 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
-		
-		ReportModel.validate(report);
-	}
-
-	@Test(expected = ReportValidationException.class)
-	public void testValidate_MissingColumns() throws ReportValidationException {
-		Report report = new Report();
-		report.setModelType(ModelType.Accounts);
-		report.setParameters("{}");
-		reportModel.processReportParameters(report);
 
 		ReportModel.validate(report);
 	}
 
-	@Test(expected = ReportValidationException.class)
-	public void testProcessReportParameters_NullReportParametersThrowsError() throws ReportValidationException {
-		Report report = new Report();
-		report.setParameters(null);
-		reportModel.processReportParameters(report);
-	}
+//	@Test(expected = ReportValidationException.class)
+//	public void testValidate_MissingColumns() throws ReportValidationException {
+//		Report report = new Report();
+//		report.setModelType(ModelType.Accounts);
+//		report.setParameters("{}");
+//		reportModel.legacyConvertParametersToReport(report);
+//
+//		ReportModel.validate(report);
+//	}
+//
+//	@Test(expected = ReportValidationException.class)
+//	public void testLegacyConvertParametersToReport_NullReportParametersThrowsError() throws ReportValidationException {
+//		Report report = new Report();
+//		report.setParameters(null);
+//		reportModel.legacyConvertParametersToReport(report);
+//	}
 
 	@Test
 	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {

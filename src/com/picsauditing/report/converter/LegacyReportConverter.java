@@ -1,4 +1,4 @@
-package com.picsauditing.model.report;
+package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.LEGACY_METHOD;
 import static com.picsauditing.report.ReportJson.LEGACY_MODEL_TYPE;
@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.FilterExpression;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -176,7 +177,6 @@ public class LegacyReportConverter {
 	}
 
 	// From JSON to Report
-
 	public void fillParameters(Report report) throws ReportValidationException {
 		if (report.getParameters() == null) {
 			throw new ReportValidationException("Your parameters should not be null.");

@@ -11,7 +11,7 @@ import com.picsauditing.model.report.ReportModel;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportSharing extends PicsActionSupport {
-	
+
 	@Autowired
 	private ReportModel reportModel;
 
@@ -50,7 +50,7 @@ public class ReportSharing extends PicsActionSupport {
 				} else {
 					throw new IllegalArgumentException("Invalid type for sharing.");
 				}
-				
+
 				json.put("success", true);
 			} else {
 				json.put("success", false);
@@ -76,14 +76,14 @@ public class ReportSharing extends PicsActionSupport {
 			id = Integer.parseInt(dirtyParameter);
 
 			if (reportModel.canUserEdit(permissions, report) && id != permissions.getUserId()) {
-				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type))
+				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type)) {
 					reportModel.disconnectReportPermissionUser(id, report.getId());
-				else if ("account".equalsIgnoreCase(type)) {
+				} else if ("account".equalsIgnoreCase(type)) {
 					reportModel.disconnectReportPermissionAccount(id, report.getId());
 				} else {
 					throw new IllegalArgumentException("Invalid type for unsharing.");
 				}
-				
+
 				json.put("success", true);
 			} else {
 				json.put("success", false);
@@ -137,7 +137,7 @@ public class ReportSharing extends PicsActionSupport {
 		return report;
 	}
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+//	public void setReport(Report report) {
+//		this.report = report;
+//	}
 }
