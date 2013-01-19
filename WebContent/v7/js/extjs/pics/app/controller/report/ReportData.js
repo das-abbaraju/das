@@ -102,7 +102,7 @@ Ext.define('PICS.controller.report.ReportData', {
 
         column_store.removeAt(column_index);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     onColumnRender: function (cmp, eOpts) {
