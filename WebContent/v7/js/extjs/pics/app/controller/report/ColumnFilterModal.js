@@ -114,6 +114,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
         // Close the filter modal.
         filter_modal.close();
+        
+        this.application.fireEvent('refreshfilters');
     },
 
     onFilterModalCancelClick: function (cmp, event, eOpts) {

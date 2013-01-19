@@ -291,10 +291,10 @@ Ext.define('PICS.controller.report.Filter', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
-            filter_options = this.getFilterOptions();
+            filter_options_view = this.getFilterOptions();
 
-        // remove all filters
-        filter_options.removeAll();
+        // remove all filter items from the filter options view
+        filter_options_view.removeAll();
 
         // create new list of filters
         var filters = Ext.create('PICS.view.report.filter.Filters', {
@@ -302,7 +302,7 @@ Ext.define('PICS.controller.report.Filter', {
         });
 
         // add new filters
-        filter_options.add(filters);
+        filter_options_view.add(filters);
     },
 
     /**
