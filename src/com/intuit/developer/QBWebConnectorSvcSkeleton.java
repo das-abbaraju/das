@@ -6,6 +6,8 @@
  */
 package com.intuit.developer;
 
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -240,6 +242,14 @@ public class QBWebConnectorSvcSkeleton {
 					PicsLogger.log("currentAdaptor = " + qbXml);
 					e.printStackTrace();
 					throw e;
+				}
+
+				try {
+					String decomposed = Normalizer.normalize(qbXml, Form.NFKD);
+					String accentsGone = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+					qbXml = accentsGone;
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 
 				PicsLogger.log(sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
