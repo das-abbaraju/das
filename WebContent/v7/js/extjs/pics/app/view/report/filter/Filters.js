@@ -11,15 +11,13 @@ Ext.define('PICS.view.report.filter.Filters', {
     id: 'report_filters',
 
     initComponent: function () {
-        this.callParent(arguments);
-
-        // filter store
-        if (!this.store) {
+        if (Ext.getClassName(this.store) != 'Ext.data.Store') {
             Ext.Error.raise('Invalid Filter Store');
         }
 
-        var that = this;
-        var index = 1;
+        var index = 1,
+            items = [],
+            that = this;
 
         this.store.each(function (record) {
             var filter = Ext.create('PICS.view.report.filter.Filter', {
@@ -27,9 +25,13 @@ Ext.define('PICS.view.report.filter.Filters', {
                 record: record
             });
 
-            that.add(filter);
+            items.push(filter);
 
             index += 1;
         });
+        
+        this.items = items;
+        
+        this.callParent(arguments);
     }
 });
