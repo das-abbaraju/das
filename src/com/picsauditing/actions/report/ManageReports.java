@@ -18,7 +18,7 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.model.report.ReportService;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -39,7 +39,7 @@ public class ManageReports extends PicsActionSupport {
 	public static final int MAX_REPORTS_IN_MENU = 10;
 
 	@Autowired
-	private ReportModel reportModel;
+	private ReportService reportService;
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -97,7 +97,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportUsers = reportModel.getReportUsersForMyReports(sort, direction, permissions);
+			reportUsers = reportService.getReportUsersForMyReports(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -118,7 +118,7 @@ public class ManageReports extends PicsActionSupport {
 	public String searchList() {
 		reports = new ArrayList<Report>();
 		try {
-			reports = reportModel.getReportsForSearch(searchTerm, permissions, getPagination());
+			reports = reportService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 			if (permissions.has(OpPerms.Debug)) {
@@ -165,7 +165,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorite() {
 		try {
-			reportModel.favoriteReport(permissions.getUserId(), reportId);
+			reportService.favoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -177,7 +177,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String unfavorite() {
 		try {
-			reportModel.unfavoriteReport(permissions.getUserId(), reportId);
+			reportService.unfavoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -190,7 +190,7 @@ public class ManageReports extends PicsActionSupport {
 	public String moveUp() {
 		int positionChange = -1;
 		try {
-			reportModel.moveReportUser(permissions.getUserId(), reportId, positionChange);
+			reportService.moveReportUser(permissions.getUserId(), reportId, positionChange);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ManageReports.moveUp()", nre);
 		} catch (Exception e) {
@@ -203,7 +203,7 @@ public class ManageReports extends PicsActionSupport {
 	public String moveDown() {
 		int positionChange = 1;
 		try {
-			reportModel.moveReportUser(permissions.getUserId(), reportId, positionChange);
+			reportService.moveReportUser(permissions.getUserId(), reportId, positionChange);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ManageReports.moveDown()", nre);
 		} catch (Exception e) {
@@ -269,12 +269,12 @@ public class ManageReports extends PicsActionSupport {
 		this.reports = reports;
 	}
 
-	public ReportModel getReportModel() {
-		return reportModel;
+	public ReportService getReportService() {
+		return reportService;
 	}
 
-	public void setReportModel(ReportModel reportModel) {
-		this.reportModel = reportModel;
+	public void setReportService(ReportService reportService) {
+		this.reportService = reportService;
 	}
 
 	public int getReportId() {

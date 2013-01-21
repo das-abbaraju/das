@@ -43,7 +43,7 @@ import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModelTest {
 
-	private ReportModel reportModel;
+	private ReportService reportService;
 
 	@Mock
 	private ReportDAO reportDao;
@@ -66,7 +66,7 @@ public class ReportModelTest {
 	@Mock
 	private FeatureToggle featureToggle;
 	@Mock
-	private ReportModel reportModelMock;
+	private ReportService reportServiceMock;
 
 	private Pagination<Report> pagination;
 
@@ -78,17 +78,17 @@ public class ReportModelTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		reportModel = new ReportModel();
+		reportService = new ReportService();
 
 		LegacyReportConverter legacyReportConverter = new LegacyReportConverter();
-		Whitebox.setInternalState(legacyReportConverter, "reportModel", reportModelMock);
+		Whitebox.setInternalState(legacyReportConverter, "reportService", reportServiceMock);
 
-		setInternalState(reportModel, "reportDao", reportDao);
-		setInternalState(reportModel, "reportUserDao", reportUserDao);
-		setInternalState(reportModel, "reportPermissionUserDao", reportPermissionUserDao);
-		setInternalState(reportModel, "reportPermissionAccountDao", reportPermissionAccountDao);
-		setInternalState(reportModel, "featureToggle", featureToggle);
-		setInternalState(reportModel, "legacyReportConverter", legacyReportConverter);
+		setInternalState(reportService, "reportDao", reportDao);
+		setInternalState(reportService, "reportUserDao", reportUserDao);
+		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
+		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
+		setInternalState(reportService, "featureToggle", featureToggle);
+		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
@@ -115,14 +115,14 @@ public class ReportModelTest {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(
 				new ReportPermissionUser());
 
-		assertTrue(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
+		assertTrue(reportService.canUserViewAndCopy(permissions, REPORT_ID));
 	}
 
 	@Ignore
 	public void canUserViewAndCopy_FalseIfNoResultException() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
+		assertFalse(reportService.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class ReportModelTest {
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserEdit(permissions, report));
+		assertFalse(reportService.canUserEdit(permissions, report));
 	}
 
 	@Test
@@ -141,7 +141,7 @@ public class ReportModelTest {
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserEdit(permissions, report));
+		assertFalse(reportService.canUserEdit(permissions, report));
 	}
 
 	@Test
@@ -149,14 +149,14 @@ public class ReportModelTest {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		assertTrue(reportModel.canUserEdit(permissions, report));
+		assertTrue(reportService.canUserEdit(permissions, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
 	public void testValidate_ThrowsExceptionIfNullReport() throws ReportValidationException {
 		Report report = null;
 
-		ReportModel.validate(report);
+		ReportService.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -164,7 +164,7 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(null);
 
-		ReportModel.validate(report);
+		ReportService.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -173,7 +173,7 @@ public class ReportModelTest {
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
 
-		ReportModel.validate(report);
+		ReportService.validate(report);
 	}
 
 //	@Test(expected = ReportValidationException.class)
@@ -181,21 +181,21 @@ public class ReportModelTest {
 //		Report report = new Report();
 //		report.setModelType(ModelType.Accounts);
 //		report.setParameters("{}");
-//		reportModel.legacyConvertParametersToReport(report);
+//		reportService.legacyConvertParametersToReport(report);
 //
-//		ReportModel.validate(report);
+//		ReportService.validate(report);
 //	}
 //
 //	@Test(expected = ReportValidationException.class)
 //	public void testLegacyConvertParametersToReport_NullReportParametersThrowsError() throws ReportValidationException {
 //		Report report = new Report();
 //		report.setParameters(null);
-//		reportModel.legacyConvertParametersToReport(report);
+//		reportService.legacyConvertParametersToReport(report);
 //	}
 
 	@Test
 	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportModel.getReportsForSearch(null, permissions, pagination);
+		List<Report> reports = reportService.getReportsForSearch(null, permissions, pagination);
 		Set<Integer> set = new HashSet<Integer>();
 		set.add(1294);
 
@@ -205,7 +205,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportModel.getReportsForSearch("", permissions, pagination);
+		List<Report> reports = reportService.getReportsForSearch("", permissions, pagination);
 		Set<Integer> set = new HashSet<Integer>();
 		set.add(1294);
 
@@ -219,7 +219,7 @@ public class ReportModelTest {
 	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
 	// {
 	// List<ReportUser> reportUsers =
-	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	// reportService.getReportUsersForSearch("SEARCH_TERM", 0);
 	//
 	// assertNotNull(reportUsers);
 	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
@@ -231,7 +231,7 @@ public class ReportModelTest {
 	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
 	// {
 	// List<ReportUser> reportUsers =
-	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	// reportService.getReportUsersForSearch("SEARCH_TERM", 0);
 	//
 	// assertNotNull(reportUsers);
 	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
@@ -243,7 +243,7 @@ public class ReportModelTest {
 	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
 	// {
 	// List<ReportUser> reportUsers =
-	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	// reportService.getReportUsersForSearch("SEARCH_TERM", 0);
 	//
 	// assertNotNull(reportUsers);
 	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
@@ -255,7 +255,7 @@ public class ReportModelTest {
 	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
 	// {
 	// List<ReportUser> reportUsers =
-	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	// reportService.getReportUsersForSearch("SEARCH_TERM", 0);
 	//
 	// assertNotNull(reportUsers);
 	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
@@ -277,7 +277,7 @@ public class ReportModelTest {
 	public void testConnectReportUser() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportUser reportUser = reportModel.connectReportUser(USER_ID, REPORT_ID);
+		ReportUser reportUser = reportService.connectReportUser(USER_ID, REPORT_ID);
 
 		verify(reportUserDao).save(reportUser);
 		assertEquals(REPORT_ID, reportUser.getReport().getId());
@@ -289,7 +289,7 @@ public class ReportModelTest {
 	public void testConnectReportPermissionUser() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, false);
+		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, false);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -301,7 +301,7 @@ public class ReportModelTest {
 	public void testConnectReportPermissionUserEditable() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, true);
+		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, true);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -313,7 +313,7 @@ public class ReportModelTest {
 	public void testConnectReportPermissionAccount() {
 		when(reportPermissionAccountDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportPermissionAccount reportPermissionAccount = reportModel.connectReportPermissionAccount(ACCOUNT_ID, REPORT_ID, EntityFactory.makePermission());
+		ReportPermissionAccount reportPermissionAccount = reportService.connectReportPermissionAccount(ACCOUNT_ID, REPORT_ID, EntityFactory.makePermission());
 
 		verify(reportPermissionAccountDao).save(reportPermissionAccount);
 		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());

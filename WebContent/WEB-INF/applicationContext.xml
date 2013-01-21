@@ -206,7 +206,7 @@
           class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
     <bean id="OptionValueAutocompleteService"
           class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
+    <bean id="ReportService" class="com.picsauditing.model.report.ReportService" />
     <bean id="LegacyReportConverter" class="com.picsauditing.report.converter.LegacyReportConverter" />
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />

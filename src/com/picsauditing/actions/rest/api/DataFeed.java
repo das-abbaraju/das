@@ -2,7 +2,9 @@ package com.picsauditing.actions.rest.api;
 
 import java.util.Map;
 
+import com.picsauditing.model.report.ReportContext;
 import org.apache.struts2.interceptor.ParameterAware;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,16 +55,20 @@ public class DataFeed extends ReportApi implements ParameterAware {
     @Api
     public String execute() {
         try {
-            initialize();
-            if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
-				runQuery();
+	        JSONObject payloadJson = getJsonFromRequestPayload();
+	        ReportContext reportContext = buildReportContext(payloadJson);
+	        report = reportService.createReport(reportContext);
 
-				converter.convertForExtJS();
+	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
+		        json = reportService.buildJsonResponse(reportContext);
+
+		        converter.convertForExtJS();
 				json.put("data", converter.getReportResults().toJson());
 
 				if (permissions.isAdmin() || permissions.getAdminID() > 0) {
 					json.put("sql", debugSQL);
 				}
+
 				json.put("success", true);
 			} else {
 				writeJsonError("Invalid format. Choices are: "+Strings.implodeForDB(DATAFEED_FORMATS, ", ")+".");

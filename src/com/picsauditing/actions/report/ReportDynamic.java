@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.model.report.ReportService;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
-	private ReportModel reportModel;
+	private ReportService reportService;
 
 	private Report report;
 	private boolean favorite;
@@ -31,9 +31,9 @@ public class ReportDynamic extends PicsActionSupport {
 	private String save(boolean copy) {
 		try {
 			if (copy) {
-				report = reportModel.copy(report, permissions, favorite);
+				report = reportService.copy(report, permissions, favorite);
 			} else {
-				reportModel.edit(report, permissions);
+				reportService.edit(report, permissions);
 			}
 
 			json.put("success", true);

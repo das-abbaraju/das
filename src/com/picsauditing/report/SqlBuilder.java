@@ -22,7 +22,7 @@ import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
-	private Report definition;
+	private Report report;
 	private SelectSQL sql;
 	private Map<String, Field> availableFields;
 
@@ -30,14 +30,14 @@ public class SqlBuilder {
 
 	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
 		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
-		definition = report;
-		return initializeSql(model, definition, permissions);
+		this.report = report;
+		return initializeSql(model, this.report, permissions);
 	}
 
 	public SelectSQL initializeSql(AbstractModel model, Report definition, Permissions permissions)
 			throws ReportValidationException {
 		logger.info("Starting SqlBuilder for " + model);
-		this.definition = definition;
+		this.report = definition;
 
 		sql = new SelectSQL();
 
@@ -60,7 +60,7 @@ public class SqlBuilder {
 
 	private void addJoins(ReportJoin parentJoin) {
 		for (ReportJoin join : parentJoin.getJoins()) {
-			if (join.isNeeded(definition)) {
+			if (join.isNeeded(report)) {
 				sql.addJoin(join.toJoinClause());
 				addJoins(join);
 			}
@@ -111,7 +111,7 @@ public class SqlBuilder {
 	}
 
 	private boolean isFieldIncluded(String fieldName) {
-		for (Column column : definition.getColumns()) {
+		for (Column column : report.getColumns()) {
 			if (column.getFieldNameWithoutMethod().equals(fieldName))
 				return true;
 		}
@@ -119,7 +119,7 @@ public class SqlBuilder {
 	}
 
 	private boolean usesGroupBy() {
-		for (Column column : definition.getColumns()) {
+		for (Column column : report.getColumns()) {
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 			if (fieldNameWithoutMethod == null)
 				continue;
@@ -135,13 +135,13 @@ public class SqlBuilder {
 	}
 
 	private void addRuntimeFilters(Permissions permissions) throws ReportValidationException {
-		if (definition.getFilters().isEmpty())
+		if (report.getFilters().isEmpty())
 			return;
 
 		List<Filter> whereFilters = new ArrayList<Filter>();
 		List<Filter> havingFilters = new ArrayList<Filter>();
 
-		for (Filter filter : definition.getFilters()) {
+		for (Filter filter : report.getFilters()) {
 			filter.addFieldCopy(availableFields);
 			if (filter.isValid()) {
 				filter.updateCurrentUser(permissions);
@@ -153,7 +153,7 @@ public class SqlBuilder {
 			}
 		}
 
-		sql.addWhere(FilterExpression.parseWhereClause(definition.getFilterExpression(), whereFilters));
+		sql.addWhere(FilterExpression.parseWhereClause(report.getFilterExpression(), whereFilters));
 
 		for (Filter filter : havingFilters) {
 			String filterExp = filter.getSqlForFilter();
@@ -162,11 +162,11 @@ public class SqlBuilder {
 	}
 
 	private void addOrderByClauses(AbstractModel model) {
-		if (definition.getSorts().isEmpty()) {
+		if (report.getSorts().isEmpty()) {
 			return;
 		}
 
-		for (Sort sort : definition.getSorts()) {
+		for (Sort sort : report.getSorts()) {
 			sort.addFieldCopy(availableFields);
 
 			String fieldName;
@@ -190,7 +190,7 @@ public class SqlBuilder {
 	}
 
 	private Column getColumnFromFieldName(String fieldName) {
-		for (Column column : definition.getColumns()) {
+		for (Column column : report.getColumns()) {
 			if (column.getName().equals(fieldName))
 				return column;
 		}

@@ -27,7 +27,7 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.model.report.ReportService;
 import com.picsauditing.report.FilterExpression;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -44,7 +44,7 @@ public class LegacyReportConverter {
 	private static final Logger logger = LoggerFactory.getLogger(LegacyReportConverter.class);
 
 	@Autowired
-	private ReportModel reportModel;
+	private ReportService reportService;
 
 	// From Report to JSON
 	public JSONObject toJSON(Report report) {
@@ -190,11 +190,11 @@ public class LegacyReportConverter {
 		report.setDescription((String) json.get(REPORT_DESCRIPTION));
 
 		// should reconsider this, since this is a circular dependency
-		reportModel.removeReportElements(report);
+		reportService.removeReportElements(report);
 		addColumns(json, report);
 		addFilters(json, report);
 		addSorts(json, report);
-		reportModel.saveReportElements(report);
+		reportService.saveReportElements(report);
 	}
 
 	private void setReportModelType(Report report, JSONObject json) {

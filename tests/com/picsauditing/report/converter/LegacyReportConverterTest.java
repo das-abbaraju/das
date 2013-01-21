@@ -12,8 +12,7 @@ import org.mockito.internal.util.reflection.Whitebox;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportModel;
-import com.picsauditing.report.converter.LegacyReportConverter;
+import com.picsauditing.model.report.ReportService;
 import com.picsauditing.report.models.ModelType;
 
 /**
@@ -23,7 +22,7 @@ import com.picsauditing.report.models.ModelType;
 public class LegacyReportConverterTest {
 
 	@Mock
-	private ReportModel reportModel;
+	private ReportService reportService;
 	
 	// TODO: Convert this to use ApprovalTests
 	private static final String SAMPLE_JSON = "{\"modelType\":\"Contractors\","
@@ -43,7 +42,7 @@ public class LegacyReportConverterTest {
 		MockitoAnnotations.initMocks(this);
 		legacyReportConverter = new LegacyReportConverter();
 		
-		Whitebox.setInternalState(legacyReportConverter, "reportModel", reportModel);
+		Whitebox.setInternalState(legacyReportConverter, "reportService", reportService);
 		
 		jsonIn = (JSONObject) JSONValue.parse(SAMPLE_JSON);
 		report = new Report();

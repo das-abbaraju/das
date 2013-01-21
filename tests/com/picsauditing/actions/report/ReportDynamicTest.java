@@ -11,7 +11,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.model.report.ReportService;
 
 public class ReportDynamicTest extends PicsActionTest {
 	private ReportDynamic reportDynamic;
@@ -19,7 +19,7 @@ public class ReportDynamicTest extends PicsActionTest {
 	@Mock
 	private Report report;
 	@Mock
-	private ReportModel reportModel;
+	private ReportService reportService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -31,22 +31,22 @@ public class ReportDynamicTest extends PicsActionTest {
 
 		Whitebox.setInternalState(reportDynamic, "report", report);
 		when(permissions.getUserId()).thenReturn(941);
-		Whitebox.setInternalState(reportDynamic, "reportModel", reportModel);
+		Whitebox.setInternalState(reportDynamic, "reportService", reportService);
 	}
 
 	@Test
 	public void testCopy_ProxiesToReportModelCopy() throws Exception {
-		when(reportModel.copy(report, permissions, false)).thenReturn(report);
+		when(reportService.copy(report, permissions, false)).thenReturn(report);
 
 		reportDynamic.copy();
 
-		verify(reportModel).copy(report, permissions, false);
+		verify(reportService).copy(report, permissions, false);
 	}
 
 	@Test
 	public void testSave_ProxiesToReportModelEdit() throws Exception {
 		reportDynamic.save();
 
-		verify(reportModel).edit(report, permissions);
+		verify(reportService).edit(report, permissions);
 	}
 }
