@@ -344,6 +344,25 @@ public class InputValidatorTest {
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
+	@Test
+	public void testValidatePhoneNumber_ExtensionWorks() {
+		String phoneNumber = "1-800-123-1234 x1234";
+
+		String result = inputValidator.validatePhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	// FIXME This is a test to verify a kludge for PICS-8838
+	@Test
+	public void testValidatePhoneNumber_AsteriskOk() {
+		String phoneNumber = "1-800-123-1234 *1234";
+
+		String result = inputValidator.validatePhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
 	private Date buildValidDate() {
 		Date date = new Date();
 		date.setDate(1);
