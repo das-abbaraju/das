@@ -53,16 +53,17 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
-	
+
 	public static final int DAYS_FOR_PAST_DUE_STATUS = 30;
 	public static final int DAYS_BEFORE_CONSIDERED_RENEWAL = 45;
 	public static final int DAYS_FOR_CONSIDERED_FOR_DEACTIVATION = 90;
-	
+
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
@@ -97,6 +98,8 @@ public class BillingCalculatorSingle {
 	private PaymentObserver paymentObserver;
 	@Autowired
 	private TaxService taxService;
+	@Autowired
+	private InvoiceModel invoiceModel;
 
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
@@ -109,8 +112,9 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
-			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay()))
+			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay())) {
 				payingOperators.add(operator);
+			}
 		}
 
 		if (payingOperators.size() == 1) {
@@ -123,7 +127,7 @@ public class BillingCalculatorSingle {
 
 		contractor.setPayingFacilities(payingOperators.size());
 	}
-	
+
 	public void calculateContractorInvoiceFees (ContractorAccount contractor) {
 		if (contractor.getStatus().isRequested()) {
 			return;
@@ -135,8 +139,9 @@ public class BillingCalculatorSingle {
 		if (payingFacilities == 0) {
 			// Contractors with no paying facilities are free
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
-				if (feeClass.isMembership())
+				if (feeClass.isMembership()) {
 					contractor.clearNewFee(feeClass, feeDAO);
+				}
 			}
 
 			return;
@@ -150,28 +155,34 @@ public class BillingCalculatorSingle {
 		boolean hasHseCompetency = false;
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
-		
+
 		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
 		Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
 		for (AuditTypeDetail detail : builder.calculate()) {
 			AuditType auditType = detail.rule.getAuditType();
-			if (auditType == null)
+			if (auditType == null) {
 				continue;
-			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
+			}
+			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE) {
 				hasAuditGUARD = true;
+			}
 			if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
 				operatorsRequiringInsureGUARD.addAll(detail.operators);
-				if (!hasInsureGUARD)
+				if (!hasInsureGUARD) {
 					hasInsureGUARD = qualifiesForInsureGuard(operatorsRequiringInsureGUARD);
+				}
 			}
-			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
+			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()) {
 				hasEmployeeAudits = true;
-			if (auditType.getId() == AuditType.HSE_COMPETENCY)
+			}
+			if (auditType.getId() == AuditType.HSE_COMPETENCY) {
 				hasHseCompetency = true;
-			if (auditType.getId() == AuditType.COR || auditType.getId() == AuditType.IEC_AUDIT)
+			}
+			if (auditType.getId() == AuditType.COR || auditType.getId() == AuditType.IEC_AUDIT) {
 				hasCorOrIec = true;
+			}
 		}
 
 		for (ContractorAudit ca : contractor.getAudits()) {
@@ -182,10 +193,12 @@ public class BillingCalculatorSingle {
 		}
 
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isRequiresOQ())
+			if (co.getOperatorAccount().isRequiresOQ()) {
 				hasOq = true;
-			if (!hasAuditGUARD && hasCorOrIec && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
+			}
+			if (!hasAuditGUARD && hasCorOrIec && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR)) {
 				hasAuditGUARD = true;
+			}
 		}
 
 		if (hasAuditGUARD) {
@@ -200,10 +213,11 @@ public class BillingCalculatorSingle {
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
 			BigDecimal newAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 
-			if (!FeeClass.InsureGUARD.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD))
+			if (!FeeClass.InsureGUARD.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD)) {
 				contractor.setNewFee(newLevel, newAmount);
-			else
+			} else {
 				contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
+			}
 		} else {
 			contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		}
@@ -213,8 +227,9 @@ public class BillingCalculatorSingle {
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
 			BigDecimal newAmount = contractor.getCountry().getAmount(newLevel);
 
-			if (!hasHseCompetency && (hasEmployeeAudits || hasOq))
+			if (!hasHseCompetency && (hasEmployeeAudits || hasOq)) {
 				newAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+			}
 
 			contractor.setNewFee(newLevel, newAmount);
 		} else {
@@ -276,7 +291,7 @@ public class BillingCalculatorSingle {
 		}
 
 	}
-	
+
 	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
 		return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
 	}
@@ -284,10 +299,12 @@ public class BillingCalculatorSingle {
 	private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
 		for (OperatorAccount oa : operators) {
 			int id = oa.getId();
-			if (id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
+			if (id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA) {
 				continue;
-			if (oa.isDescendantOf(OperatorAccount.AI))
+			}
+			if (oa.isDescendantOf(OperatorAccount.AI)) {
 				continue;
+			}
 			return false;
 		}
 		return true;
@@ -296,17 +313,19 @@ public class BillingCalculatorSingle {
 	/**
 	 * This can only be used on invoices which are in Unpaid status to prevent
 	 * Syncing errors w/ Quickbooks.
-	 * 
+	 *
 	 * @param toUpdate
 	 * @param updateWith
 	 * @param permissions
 	 */
 	public void updateInvoice(Invoice toUpdate, Invoice updateWith, User user) throws Exception {
-		if (!toUpdate.getStatus().equals(TransactionStatus.Unpaid))
+		if (!toUpdate.getStatus().equals(TransactionStatus.Unpaid)) {
 			throw new Exception("Cannot update Invoice which is in " + toUpdate.getStatus() + " status.");
+		}
 
-		if (toUpdate.getPayments().size() > 0)
+		if (toUpdate.getPayments().size() > 0) {
 			throw new Exception("Cannot update Invoices that already have payments applied.");
+		}
 
 		BigDecimal oldTotal = toUpdate.getTotalAmount();
 		Currency oldCurrency = toUpdate.getCurrency();
@@ -380,12 +399,13 @@ public class BillingCalculatorSingle {
 		// on it
 		boolean hasMembership = false;
 		for (InvoiceItem item : invoiceItems) {
-			if (item.getInvoiceFee().isMembership())
+			if (item.getInvoiceFee().isMembership()) {
 				hasMembership = true;
+			}
 		}
 
 		if (hasMembership) {
-			invoice.setNotes(getOperatorsString(contractor));
+			invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
 		}
 
 		for (InvoiceItem item : invoiceItems) {
@@ -443,7 +463,7 @@ public class BillingCalculatorSingle {
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param contractor
 	 * @return
 	 */
@@ -455,8 +475,9 @@ public class BillingCalculatorSingle {
 	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, BillingStatus billingStatus, User user) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
-		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
+		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current")) {
 			return items;
+		}
 
 		addActivationFeeIfApplies(contractor, billingStatus, items);
 
@@ -478,7 +499,7 @@ public class BillingCalculatorSingle {
 	/**
 	 * Calculate a prorated amount depending on when the upgrade happens and
 	 * when the membership expires.
-	 * 
+	 *
 	 * @param contractor
 	 * @param items
 	 * @param upgrades
@@ -490,8 +511,9 @@ public class BillingCalculatorSingle {
 		// Actual prorated Upgrade
 		Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor.getLastUpgradeDate();
 		double daysUntilExpiration = DateBean.getDateDifference(upgradeDate, contractor.getPaymentExpires());
-		if (daysUntilExpiration > 365)
+		if (daysUntilExpiration > 365) {
 			daysUntilExpiration = 365.0;
+		}
 
 		BigDecimal upgradeTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (ContractorFee upgrade : upgrades) {
@@ -517,8 +539,9 @@ public class BillingCalculatorSingle {
 								: Locale.ENGLISH, upgrade.getFeeClass(), contractor.getCountry().getCurrency()
 								.getSymbol(), upgradeAmount);
 					}
-				} else
+				} else {
 					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+				}
 
 				// If not membership fee, don't pro-rate amount
 			} else {
@@ -540,8 +563,9 @@ public class BillingCalculatorSingle {
 			// Bid-only should not be an upgrade
 			// Just a safety check
 			if (fee.isHasChanged() && !fee.getNewLevel().isFree()
-					&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().isListonly()))
+					&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().isListonly())) {
 				upgrades.add(fee);
+			}
 		}
 		return upgrades;
 	}
@@ -552,7 +576,7 @@ public class BillingCalculatorSingle {
 
 	private void addYearlyItems(List<InvoiceItem> items, ContractorAccount contractor, Date paymentExpires,
 			BillingStatus billingStatus) {
-		for (FeeClass feeClass : contractor.getFees().keySet())
+		for (FeeClass feeClass : contractor.getFees().keySet()) {
 			if (!contractor.getFees().get(feeClass).getNewLevel().isFree()
 					&& (feeClass.isMembership() || (!billingStatus.isRenewal() && !billingStatus.isRenewalOverdue()))) {
 				InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
@@ -560,6 +584,7 @@ public class BillingCalculatorSingle {
 						: null);
 				items.add(newItem);
 			}
+		}
 	}
 
 	private void addActivationFeeIfApplies(ContractorAccount contractor, BillingStatus billingStatus,
@@ -598,21 +623,6 @@ public class BillingCalculatorSingle {
 			}
 		}
 		return false;
-	}
-
-	public String getOperatorsString(ContractorAccount contractor) {
-		List<String> operatorsString = new ArrayList<String>();
-
-		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-			String doContractorsPay = co.getOperatorAccount().getDoContractorsPay();
-
-			if (doContractorsPay.equals("Yes") || !doContractorsPay.equals("Multiple"))
-				operatorsString.add(co.getOperatorAccount().getName());
-		}
-
-		Collections.sort(operatorsString);
-
-		return Strings.implode(operatorsString, ", ");
 	}
 
 	public void performInvoiceStatusChangeActions(Invoice invoice, TransactionStatus newStatus) {
@@ -692,8 +702,9 @@ public class BillingCalculatorSingle {
 
 	private boolean hasActiveImportPQF(List<ContractorAudit> importPQFs) {
 		for (ContractorAudit importPQF : importPQFs) {
-			if (!importPQF.isExpired())
+			if (!importPQF.isExpired()) {
 				return true;
+			}
 		}
 
 		return false;

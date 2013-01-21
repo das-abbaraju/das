@@ -49,6 +49,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.PermissionToViewContractor;
 
 public class BillingDetailTest extends PicsActionTest {
@@ -96,6 +97,8 @@ public class BillingDetailTest extends PicsActionTest {
 	private InvoiceFee listOnlyinvoiceFee;
 	@Mock
 	private DataObservable saleCommissionDataObservable;
+	@Mock
+	private InvoiceModel invoiceModel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -191,7 +194,7 @@ public class BillingDetailTest extends PicsActionTest {
 	private void setupForCreate() {
 		billingDetail.setButton("Create");
 		when(invoiceFee.isMembership()).thenReturn(true);
-		when(billingService.getOperatorsString(contractor)).thenReturn(NOTE_STRING);
+		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
 		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
 		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))

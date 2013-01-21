@@ -13,8 +13,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -45,14 +43,17 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public boolean isOverdue() {
-		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0)
+		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
 			return false;
+		}
 
-		if (getStatus().isPaid() || getStatus().isVoid())
+		if (getStatus().isPaid() || getStatus().isVoid()) {
 			return false;
+		}
 
-		if (dueDate == null)
+		if (dueDate == null) {
 			return false;
+		}
 
 		return dueDate.before(new Date());
 	}
@@ -113,7 +114,7 @@ public class Invoice extends Transaction {
 	/**
 	 * This is used by the QBWebConnector Adaptor to ensure that all Tax items
 	 * come before any other Fee item in an invoice for proper tax handling.
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -151,8 +152,9 @@ public class Invoice extends Transaction {
 	@Transient
 	public void updateAmount() {
 		totalAmount = BigDecimal.ZERO;
-		for (InvoiceItem item : items)
+		for (InvoiceItem item : items) {
 			totalAmount = totalAmount.add(item.getAmount());
+		}
 	}
 
 	@Transient
@@ -169,8 +171,9 @@ public class Invoice extends Transaction {
 		if (getAccount() instanceof ContractorAccount) {
 			ContractorAccount contractor = (ContractorAccount) getAccount();
 			return !getStatus().isPaid() && contractor.getPaymentMethod().isCreditCard() && contractor.isCcValid();
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@Transient
@@ -181,8 +184,9 @@ public class Invoice extends Transaction {
 
 	public boolean containsATaxLineItem() {
 		for (InvoiceItem item : getItems()) {
-			if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT())
+			if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT()) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -196,7 +200,7 @@ public class Invoice extends Transaction {
 		if (CollectionUtils.isEmpty(this.getItems())) {
 			return Collections.emptyMap();
 		}
-		
+
 		this.totalCommissionEligibleFees = new BigDecimal(0.00);
 
 		this.commissionEligibleFeeMap = new HashMap<FeeClass, BigDecimal>();
