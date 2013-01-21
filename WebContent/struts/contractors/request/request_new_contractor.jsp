@@ -148,8 +148,8 @@
                         <li class="match-found contact-email"></li>
                         <li>
                             <s:select
-                                    list="%{@com.picsauditing.actions.TranslationActionSupport@getSupportedLocales()}"
-                                    listValue="displayLanguage"
+                                    list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+                                    listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
                                     listKey="language"
                                     name="primaryContact.locale"
                                     theme="formhelp"
