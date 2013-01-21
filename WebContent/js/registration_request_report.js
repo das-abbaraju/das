@@ -31,7 +31,7 @@
 				
 				if (confirmed) {
 					newurl = url + '?' + $('#form1').serialize();
-					popupWin = window.open(newurl, url, '');
+					popupWin = window.open(newurl, 'ReportNewRequestedContractorCSV', '');
 				}
 			},
 			
