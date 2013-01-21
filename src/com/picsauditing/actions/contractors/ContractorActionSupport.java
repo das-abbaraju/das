@@ -493,13 +493,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-			// All ClientGUARD Audits
+			// All Reviews Audits
 
-			MenuComponent subMenu = new MenuComponent(getText("global.ClientGUARD"), "ContractorDocuments.action?id="
-					+ id + "#clientGUARD");
+			MenuComponent subMenu = new MenuComponent(getText("global.Reviews"), "ContractorDocuments.action?id="
+					+ id + "#reviews");
 			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Client)) {
+				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review)) {
 					if (subMenu.getChildren().size() < MAX_MENU_ITEM
 							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
@@ -517,7 +517,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.ClientGUARD")));
+						+ ContractorDocuments.getSafeName(getText("global.Reviews")));
 			}
 
 			addSubMenu(menu, subMenu);
