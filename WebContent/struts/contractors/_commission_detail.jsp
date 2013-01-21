@@ -76,7 +76,7 @@
 			<s:param name="invoiceId" value="invoice.id" />
 		</s:url>
 		
-		<div align="right">
+		<div id="download_commission">
 			<a href="${download_commission}">Download Breakdown Calculation</a>
 		</div>
 		
