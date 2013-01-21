@@ -23,11 +23,10 @@ public class ReportJson {
 	public static final String BASE_UPDATE_DATE = "update_date";
 	public static final String BASE_UPDATED_BY = "updated_by";
 
-	public static final String REPORT_ELEMENT_ID = "id";
+	public static final String REPORT_ELEMENT_FIELD_ID = "field_id";
 	public static final String REPORT_ELEMENT_CATEGORY = "category";
 	public static final String REPORT_ELEMENT_NAME = "name";
 	public static final String REPORT_ELEMENT_DESCRIPTION = "description";
-	public static final String REPORT_ELEMENT_FIELD_ID = "field_id";
 
 	public static final String REPORT_COLUMNS = "columns";
 	public static final String COLUMN_TYPE = "type";
@@ -40,7 +39,7 @@ public class ReportJson {
 	public static final String FILTER_TYPE = "type";
 	public static final String FILTER_OPERATOR = "operator";
 	public static final String FILTER_VALUE = "value";
-	public static final String FILTER_COMPARE_COLUMN = "compare_column_id";
+	public static final String FILTER_COLUMN_COMPARE = "column_compare_id";
 	public static final String FILTER_SQL_FUNCTION = "sql_function";
 
 	public static final String REPORT_SORTS = "sorts";
