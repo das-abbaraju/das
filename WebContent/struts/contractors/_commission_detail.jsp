@@ -71,5 +71,14 @@
 				</tr>
 			</s:iterator>
 		</table>
+		
+		<s:url var="download_commission" action="DownloadCommissionAudit">
+			<s:param name="invoiceId" value="invoice.id" />
+		</s:url>
+		
+		<div align="right">
+			<a href="${download_commission}">Download Breakdown Calculation</a>
+		</div>
+		
 	</s:else>
 </s:if>
