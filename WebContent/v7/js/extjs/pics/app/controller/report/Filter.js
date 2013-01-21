@@ -41,6 +41,7 @@ Ext.define('PICS.controller.report.Filter', {
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.onFilterOptionsAfterLayout,
+                afterrender: this.onFilterOptionsAfterRender,
                 beforerender: this.onFilterOptionsBeforeRender
             },
 
@@ -175,28 +176,27 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
+    // customizes the filter options view after it gets placed by the layout manager
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
-        var filters = this.getFilters();
-
-        if (!filters) {
-            return;
-        }
-        
         cmp.updateBodyHeight();
         
         cmp.updateFooterPosition();
     },
 
+    // add filters to the filter options panel before its rendered
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
+        this.application.fireEvent('refreshfilters');
+    },
+    
+    // add the filter formula view after the filter options have been generated
+    onFilterOptionsAfterRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_expression = report.get('filter_expression');
 
-        if (filter_expression != '') {
+        if (filter_expression) {
             cmp.showFormula();
         }
-        
-        this.application.fireEvent('refreshfilters');
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {
@@ -250,7 +250,7 @@ Ext.define('PICS.controller.report.Filter', {
             filters = this.getFilters(),
             filter_expression = report.get('filter_expression');
             
-        if (filter_expression != '') {
+        if (filter_expression) {
             filter_formula_textfield.setValue(report.getFilterExpression());
         }
 
