@@ -176,8 +176,7 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	// From JSON to Report
-	public void fillParameters(Report report) throws ReportValidationException {
+	public void convertParametersToEntities(Report report) throws ReportValidationException {
 		if (report.getParameters() == null) {
 			throw new ReportValidationException("Your parameters should not be null.");
 		}

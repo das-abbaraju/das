@@ -22,6 +22,7 @@ import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
+
 	private Report report;
 	private SelectSQL sql;
 	private Map<String, Field> availableFields;
@@ -29,29 +30,34 @@ public class SqlBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
 	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
+		// FIXME this has nothing to do with building SQL
 		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
 		this.report = report;
 		return initializeSql(model, this.report, permissions);
 	}
 
-	public SelectSQL initializeSql(AbstractModel model, Report definition, Permissions permissions)
+	public SelectSQL initializeSql(AbstractModel model, Report report, Permissions permissions)
 			throws ReportValidationException {
 		logger.info("Starting SqlBuilder for " + model);
-		this.report = definition;
+		this.report = report;
 
 		sql = new SelectSQL();
 
 		sql.setFromTable(model.getStartingJoin().getTableClause());
 
+		// FIXME this has nothing to do with building SQL
 		availableFields = model.getAvailableFields();
 
-		addFieldsAndGroupBy(definition.getColumns());
+		// FIXME this does a lot of extra column stuff not to do with building SQL
+		addFieldsAndGroupBy(report.getColumns());
+		// FIXME this does a lot of extra filter stuff not to do with building SQL
 		addRuntimeFilters(permissions);
+		// FIXME this does a lot of extra sort stuff not to do with building SQL
 		addOrderByClauses(model);
 
 		addJoins(model.getStartingJoin());
 
-		sql.addWhere(model.getWhereClause(definition.getFilters()));
+		sql.addWhere(model.getWhereClause(report.getFilters()));
 
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");
@@ -68,8 +74,6 @@ public class SqlBuilder {
 	}
 
 	private void addFieldsAndGroupBy(List<Column> columns) {
-		boolean usesGroupBy = usesGroupBy();
-
 		// Make sure column has a field(?)
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
@@ -78,8 +82,9 @@ public class SqlBuilder {
 
 			column.addFieldCopy(availableFields);
 
-			if (column.getField() == null)
+			if (column.getField() == null) {
 				continue;
+			}
 
 			if (!column.isHasAggregateMethod()) {
 				// For example: Don't add in accountID automatically if
@@ -88,7 +93,7 @@ public class SqlBuilder {
 			}
 
 			String columnSql = column.getSql();
-			if (usesGroupBy && !column.isHasAggregateMethod()) {
+			if (usesGroupBy() && !column.isHasAggregateMethod()) {
 				sql.addGroupBy(columnSql);
 			}
 
@@ -100,8 +105,9 @@ public class SqlBuilder {
 
 	private void addDependentFields(Set<String> dependentFields) {
 		for (String fieldName : dependentFields) {
-			if (isFieldIncluded(fieldName))
+			if (isFieldIncluded(fieldName)) {
 				continue;
+			}
 
 			Column column = new Column(fieldName);
 			column.addFieldCopy(availableFields);
@@ -112,8 +118,9 @@ public class SqlBuilder {
 
 	private boolean isFieldIncluded(String fieldName) {
 		for (Column column : report.getColumns()) {
-			if (column.getFieldNameWithoutMethod().equals(fieldName))
+			if (column.getFieldNameWithoutMethod().equals(fieldName)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -121,8 +128,9 @@ public class SqlBuilder {
 	private boolean usesGroupBy() {
 		for (Column column : report.getColumns()) {
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
-			if (fieldNameWithoutMethod == null)
+			if (fieldNameWithoutMethod == null) {
 				continue;
+			}
 
 			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
 			if (field != null) {
@@ -135,8 +143,9 @@ public class SqlBuilder {
 	}
 
 	private void addRuntimeFilters(Permissions permissions) throws ReportValidationException {
-		if (report.getFilters().isEmpty())
+		if (report.getFilters().isEmpty()) {
 			return;
+		}
 
 		List<Filter> whereFilters = new ArrayList<Filter>();
 		List<Filter> havingFilters = new ArrayList<Filter>();
@@ -173,17 +182,19 @@ public class SqlBuilder {
 			Column column = getColumnFromFieldName(sort.getName());
 			if (column == null) {
 				Field field = sort.getField();
-				if (field != null && field.getDatabaseColumnName() != null)
+				if (field != null && field.getDatabaseColumnName() != null) {
 					fieldName = field.getDatabaseColumnName();
-				else
+				} else {
 					continue;
+				}
 				sort.setField(field);
 			} else {
 				fieldName = column.getName();
 			}
 
-			if (!sort.isAscending())
+			if (!sort.isAscending()) {
 				fieldName += " DESC";
+			}
 
 			sql.addOrderBy(fieldName);
 		}
@@ -191,8 +202,9 @@ public class SqlBuilder {
 
 	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : report.getColumns()) {
-			if (column.getName().equals(fieldName))
+			if (column.getName().equals(fieldName)) {
 				return column;
+			}
 		}
 
 		return null;

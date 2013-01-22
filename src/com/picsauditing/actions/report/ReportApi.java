@@ -58,8 +58,9 @@ public class ReportApi extends PicsApiSupport {
 		} catch (PicsSqlException pse) {
 			handleSqlException(pse);
 		} catch (Exception e) {
-			e.printStackTrace();
+			writeJsonError(e);
 		}
+
 		return JSON;
 	}
 

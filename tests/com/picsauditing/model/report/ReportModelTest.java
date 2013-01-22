@@ -156,7 +156,7 @@ public class ReportModelTest {
 	public void testValidate_ThrowsExceptionIfNullReport() throws ReportValidationException {
 		Report report = null;
 
-		ReportService.validate(report);
+		reportService.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -164,7 +164,7 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(null);
 
-		ReportService.validate(report);
+		reportService.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -173,7 +173,7 @@ public class ReportModelTest {
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
 
-		ReportService.validate(report);
+		reportService.validate(report);
 	}
 
 //	@Test(expected = ReportValidationException.class)

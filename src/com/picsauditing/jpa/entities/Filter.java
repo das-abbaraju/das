@@ -18,14 +18,12 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
-//@SuppressWarnings("serial")
 @Entity
 @Table(name = "report_filter")
 public class Filter extends ReportElement {
@@ -38,7 +36,7 @@ public class Filter extends ReportElement {
 	private Field fieldForComparison;
 
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
-	
+
 	@Enumerated(EnumType.STRING)
 	public QueryFilterOperator getOperator() {
 		return operator;
@@ -67,8 +65,9 @@ public class Filter extends ReportElement {
 
 	@Transient
 	public String getSqlForFilter() throws ReportValidationException {
-		if (!isValid())
+		if (!isValid()) {
 			return "true";
+		}
 
 		String columnSql = getSql();
 
@@ -116,15 +115,19 @@ public class Filter extends ReportElement {
 		}
 
 		if (filterType == FilterType.Boolean) {
-			if (filterValue.equals("1"))
+			if (filterValue.equals("1")) {
 				return true + Strings.EMPTY_STRING;
-			if (filterValue.equalsIgnoreCase("true"))
+			}
+			if (filterValue.equalsIgnoreCase("true")) {
 				return true + Strings.EMPTY_STRING;
-			if (filterValue.equalsIgnoreCase("Y"))
+			}
+			if (filterValue.equalsIgnoreCase("Y")) {
 				return true + Strings.EMPTY_STRING;
-			if (filterValue.equalsIgnoreCase("Yes"))
+			}
+			if (filterValue.equalsIgnoreCase("Yes")) {
 				return true + Strings.EMPTY_STRING;
-			
+			}
+
 			return false + Strings.EMPTY_STRING;
 		}
 
@@ -200,14 +203,17 @@ public class Filter extends ReportElement {
 	// TODO: Filter should not be validating itself
 	@Transient
 	public boolean isValid() {
-		if (field == null)
+		if (field == null) {
 			return false;
+		}
 
-		if (!operator.isValueUsed())
+		if (!operator.isValueUsed()) {
 			return true;
+		}
 
-		if (values.isEmpty() && fieldForComparison == null)
+		if (values.isEmpty() && fieldForComparison == null) {
 			return false;
+		}
 
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
@@ -243,7 +249,7 @@ public class Filter extends ReportElement {
 
 	public void setFieldForComparison(Field fieldForComparison) {
 		this.fieldForComparison = fieldForComparison;
-		setColumnCompare(fieldForComparison.getName()); 
+		setColumnCompare(fieldForComparison.getName());
 	}
 
 	@Override
@@ -269,8 +275,9 @@ public class Filter extends ReportElement {
 
 	public String toString() {
 		String display = values.toString();
-		if (fieldForComparison != null)
+		if (fieldForComparison != null) {
 			display = fieldForComparison.toString();
+		}
 
 		return super.toString() + " " + operator + " " + display;
 	}

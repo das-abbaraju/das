@@ -202,7 +202,7 @@ public class ReportService {
 			return;
 		}
 
-		legacyReportConverter.fillParameters(report);
+		legacyReportConverter.convertParametersToEntities(report);
 	}
 
 	// TODO: Remove this method after the next release
@@ -495,23 +495,22 @@ public class ReportService {
 		ReportUser reportUser = loadOrCreateReportUser(reportContext.user, report);
 		reportUserDao.save(reportUser);
 
-
 		// FIXME: This is a problem that will cause a Ninja save that the refresh above
 		//        was fixing
 //		if (StringUtils.isNotEmpty(reportParameters)) {
 //			report.setParameters(reportParameters);
 //		}
 
-		// todo: should this be here?
-//		buildSqlForReport(reportContext.permissions, report);
+		// FIXME this basically initializes a report as well as building SQL
+		buildSqlForReport(reportContext.permissions, report);
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+
 		return report;
 	}
 
 	private JSONObject getReportJsonFromPayload(JSONObject payloadJson) {
-		JSONObject reportJson;
-		reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
+		JSONObject reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
 		return reportJson;
 	}
 
@@ -533,6 +532,7 @@ public class ReportService {
 		}
 
 		legacyConvertParametersToReport(report);
+
 		return report;
 	}
 
@@ -543,7 +543,6 @@ public class ReportService {
 	}
 
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
-
 		Report report = createReport(reportContext);
 
 		JSONObject json = new JSONObject();

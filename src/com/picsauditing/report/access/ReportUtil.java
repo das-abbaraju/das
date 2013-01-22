@@ -71,8 +71,9 @@ public final class ReportUtil {
 
 	// TODO rename to addTranslationLabelsToColumns
 	private static void addTranslationLabelsToFields(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getColumns()))
+		if (CollectionUtils.isEmpty(definition.getColumns())) {
 			return;
+		}
 
 		for (Column column : definition.getColumns()) {
 			Field field = column.getField();
@@ -81,16 +82,16 @@ public final class ReportUtil {
 				field = new Field(column.getFieldNameWithoutMethod());
 				column.setField(field);
 			}
-			
+
 			// field.setName(column.getFieldNameWithoutMethod());
 			// field.setName(column.getName());
-			
+
 			if (column.getSqlFunction() != null) {
 				// field.setTranslationPrefixAndSuffix(null, null);
 				String functionTranslation = getText("Report.Function." + column.getSqlFunction().toString(), locale);
 				field.setText(functionTranslation + ": " + field.getText());
 			}
-			
+
 			translateField(field, locale);
 		}
 	}
@@ -104,7 +105,7 @@ public final class ReportUtil {
 */
 		return translatedFunctions;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static JSONArray convertTranslatedFunctionstoJson(Map<String, String> map) {
 		JSONArray functionsArray = new JSONArray();
@@ -118,8 +119,9 @@ public final class ReportUtil {
 	}
 
 	private static void addTranslationLabelsToFilters(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getFilters()))
+		if (CollectionUtils.isEmpty(definition.getFilters())) {
 			return;
+		}
 
 		for (Filter filter : definition.getFilters()) {
 			Field field = filter.getField();
@@ -133,8 +135,9 @@ public final class ReportUtil {
 	}
 
 	private static void addTranslationLabelsToSorts(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getSorts()))
+		if (CollectionUtils.isEmpty(definition.getSorts())) {
 			return;
+		}
 
 		for (Sort sort : definition.getSorts()) {
 			Field field = sort.getField();
@@ -332,13 +335,13 @@ public final class ReportUtil {
 
 		return json;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private static Class getEnumClassForName(FieldType fieldType) throws ClassNotFoundException {
 		if (fieldType == FieldType.UserAccountRole) {
 			return Class.forName("com.picsauditing.actions.users." + fieldType.name());
 		}
-		
+
 		return Class.forName("com.picsauditing.jpa.entities." + fieldType.toString());
 	}
 
