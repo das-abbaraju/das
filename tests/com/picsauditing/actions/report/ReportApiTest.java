@@ -22,28 +22,32 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.model.report.ReportService;
 import com.picsauditing.report.ReportJson;
 
 public class ReportApiTest extends PicsActionTest {
 
-	private ReportApi reportAction;
+	private ReportApi reportApi;
 
 	@Mock
 	private Report report;
+	@Mock
+	private ReportService reportService;
 	@Mock
 	private BufferedReader bufferedReader;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		reportAction = new ReportApi();
-		super.setUp(reportAction);
+		reportApi = new ReportApi();
+		super.setUp(reportApi);
 
-		PicsTestUtil.autowireDAOsFromDeclaredMocks(reportAction, this);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(reportApi, this);
 
 		when(report.getId()).thenReturn(123);
 
-		Whitebox.setInternalState(reportAction, "report", report);
+		Whitebox.setInternalState(reportApi, "report", report);
+		Whitebox.setInternalState(reportApi, "reportService", reportService);
 	}
 
 //	@Test
@@ -60,9 +64,9 @@ public class ReportApiTest extends PicsActionTest {
 	public void testReport_NullModelTypeFailsValidationSetsSuccessToFalse() throws Exception {
 		when(report.getModelType()).thenReturn(null);
 
-		String strutsResult = reportAction.execute();
+		String strutsResult = reportApi.execute();
 
-		JSONObject json = reportAction.getJson();
+		JSONObject json = reportApi.getJson();
 		assertThat((Boolean) json.get(ReportJson.EXT_JS_SUCCESS), is(equalTo(Boolean.FALSE)));
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
@@ -71,7 +75,7 @@ public class ReportApiTest extends PicsActionTest {
 	public void testGetJsonFromRequestPayload_NullReaderReturnsEmptyJSON() throws Exception {
 		when(request.getReader()).thenReturn(null);
 
-		JSONObject result = Whitebox.invokeMethod(reportAction, "getJsonFromRequestPayload");
+		JSONObject result = Whitebox.invokeMethod(reportApi, "getJsonFromRequestPayload");
 
 		verify(bufferedReader, never()).close();
 		assertTrue(result.isEmpty());
@@ -82,7 +86,7 @@ public class ReportApiTest extends PicsActionTest {
 		when(bufferedReader.readLine()).thenReturn(null);
 		when(request.getReader()).thenReturn(bufferedReader);
 
-		JSONObject result = Whitebox.invokeMethod(reportAction, "getJsonFromRequestPayload");
+		JSONObject result = Whitebox.invokeMethod(reportApi, "getJsonFromRequestPayload");
 
 		verify(bufferedReader, times(1)).close();
 		assertTrue(result.isEmpty());
@@ -95,7 +99,7 @@ public class ReportApiTest extends PicsActionTest {
 
 		when(request.getReader()).thenReturn(spy);
 
-		JSONObject actual = Whitebox.invokeMethod(reportAction, "getJsonFromRequestPayload");
+		JSONObject actual = Whitebox.invokeMethod(reportApi, "getJsonFromRequestPayload");
 
 		verify(spy, times(1)).close();
 		assertEquals(json, actual.toJSONString());

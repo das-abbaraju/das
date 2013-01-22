@@ -19,6 +19,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -45,7 +46,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			rows = database.select(sql, true);
 		}
 
-		json.put("total", database.getAllRows());
+		json.put(ReportJson.RESULTS_TOTAL, database.getAllRows());
 		return rows;
 	}
 

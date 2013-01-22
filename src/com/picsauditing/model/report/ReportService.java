@@ -68,11 +68,12 @@ public class ReportService {
 	@Autowired
 	private FeatureToggle featureToggle;
 
-	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
+	// TODO make this autowired
 	private ReportDataConverter converter;
 
-	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
+	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
+	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 		try {
 			reportPermissionUserDao.findOneByPermissions(permissions, reportId);
 		} catch (NoResultException nre) {
@@ -501,11 +502,6 @@ public class ReportService {
 //			report.setParameters(reportParameters);
 //		}
 
-		// FIXME this basically initializes a report as well as building SQL
-		buildSqlForReport(reportContext.permissions, report);
-
-		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
-
 		return report;
 	}
 
@@ -536,85 +532,81 @@ public class ReportService {
 		return report;
 	}
 
-	private SelectSQL buildSqlForReport(Permissions permissions, Report report) throws ReportValidationException {
-		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
-		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
-		return sql;
-	}
-
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
 		Report report = createReport(reportContext);
 
-		JSONObject json = new JSONObject();
+		// FIXME this basically initializes a report as well as building SQL
+		SelectSQL sql = new SqlBuilder().initializeSql(report, reportContext.permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+
+		// TODO see if this can go before the initializeSql() call into the createReport() function
+		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+
+		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			json.put(LEVEL_REPORT, ReportToExtJSConverter.toJSON(report));
+			responseJson.put(LEVEL_REPORT, ReportToExtJSConverter.toJSON(report));
 		}
 
 		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
 		if (reportContext.includeColumns) {
-			json.put(LEVEL_COLUMNS, AvailableFieldsToExtJSConverter.getColumns(reportModel, reportContext.permissions));
+			responseJson.put(LEVEL_COLUMNS, AvailableFieldsToExtJSConverter.getColumns(reportModel, reportContext.permissions));
 		}
 
 		if (reportContext.includeFilters) {
-			json.put(LEVEL_FILTERS, AvailableFieldsToExtJSConverter.getFilters(reportModel, reportContext.permissions));
+			responseJson.put(LEVEL_FILTERS, AvailableFieldsToExtJSConverter.getFilters(reportModel, reportContext.permissions));
 		}
 
 		if (reportContext.includeData) {
-			json.put(LEVEL_RESULTS, getData(reportContext, report, json));
+			JSONObject dataJson = buildDataJson(report, reportContext, sql);
+			responseJson.put(LEVEL_RESULTS, dataJson);
 		}
 
-		json.put(ReportJson.EXT_JS_SUCCESS, true);
+		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
 
-		return json;
+		return responseJson;
 	}
 
-	private JSONObject getData(ReportContext reportContext, Report report, JSONObject json) throws ReportValidationException, PicsSqlException {
-		JSONObject jsonObject = new JSONObject();
-		SelectSQL sql = buildSqlForReport(reportContext.permissions, report);
+	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql) throws ReportValidationException, PicsSqlException {
+		JSONObject dataJson = new JSONObject();
+
 		if (shouldIncludeSql(reportContext.permissions)) {
 			String debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
-			jsonObject.put(ReportUtil.SQL, debugSQL);
+			dataJson.put(ReportUtil.SQL, debugSQL);
 		}
 
 		sql.setPageNumber(reportContext.limit, reportContext.pageNumber);
-		runQuery(sql, json, reportContext.permissions, report);
+		List<BasicDynaBean> queryResults = runQuery(sql, dataJson);
 
-		// TODO have this take something or return something
-		converter.convertForExtJS();
-		ReportResults reportResults = converter.getReportResults();
-		jsonObject.put(LEVEL_DATA, reportResults.toJson());
-		jsonObject.put(RESULTS_TOTAL, json.get(RESULTS_TOTAL));
-		json.remove(RESULTS_TOTAL);
+		ReportResults reportResults = buildReportResults(report, reportContext, queryResults);
 
-		return jsonObject;
+		dataJson.put(LEVEL_DATA, reportResults.toJson());
+
+		return dataJson;
 	}
 
-
+	protected ReportResults buildReportResults(Report report, ReportContext reportContext,
+			List<BasicDynaBean> queryResults) {
+		converter = new ReportDataConverter(report.getColumns(), queryResults);
+		converter.setLocale(reportContext.permissions.getLocale());
+		converter.convertForExtJS();
+		return converter.getReportResults();
+	}
 
 	private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
-	protected void runQuery(SelectSQL sql, JSONObject json, Permissions permissions, Report report) throws PicsSqlException {
+	protected List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws PicsSqlException {
 		List<BasicDynaBean> queryResults = null;
+
 		try {
 			queryResults = reportDao.runQuery(sql.toString(), json);
 		} catch (SQLException se) {
 			throw new PicsSqlException(se, sql.toString());
 		}
-		converter = new ReportDataConverter(report.getColumns(), queryResults);
-		converter.setLocale(permissions.getLocale());
-	}
 
-	private void handleErrorForData(Exception error, Report report, SelectSQL sql, Permissions permissions) throws Exception {
-		logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + sql);
-
-		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-			throw new Exception(error + " debug SQL: " + sql.toString());
-		} else {
-			throw new Exception("Invalid Query");
-		}
+		return queryResults;
 	}
 
 	public void convertForPrinting() {
@@ -644,6 +636,5 @@ public class ReportService {
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 	}
-
 
 }

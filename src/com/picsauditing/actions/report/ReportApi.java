@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -35,7 +34,6 @@ public class ReportApi extends PicsApiSupport {
 	protected int reportId;
 	protected Report report;
 	protected String debugSQL = "";
-	private SelectSQL sql = null;
 	protected ReportDataConverter converter;
 	protected int limit = 100;
 	protected int pageNumber = 1;
@@ -58,6 +56,8 @@ public class ReportApi extends PicsApiSupport {
 		} catch (PicsSqlException pse) {
 			handleSqlException(pse);
 		} catch (Exception e) {
+			// TODO remove this
+			e.printStackTrace();
 			writeJsonError(e);
 		}
 
@@ -191,12 +191,10 @@ public class ReportApi extends PicsApiSupport {
 	 }
  */
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
-		logger.error("Report:" + report.getId() + " " + sqlException.getMessage() + " SQL: " + sql);
+		writeJsonError(sqlException);
 
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-			throw new Exception(sqlException + " debug SQL: " + sql.toString());
-		} else {
-			throw new Exception("Invalid Query");
+			logger.error("Report:" + report.getId() + " " + sqlException.getMessage() + " SQL: " + sqlException.getSql());
 		}
 	}
 
