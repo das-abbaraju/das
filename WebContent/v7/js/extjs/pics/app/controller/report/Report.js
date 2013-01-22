@@ -46,11 +46,11 @@ Ext.define('PICS.controller.report.Report', {
             scope: this
         });
 
-        this.application.on({
+/*        this.application.on({
             refreshreport: this.refreshReport,
             scope: this
         });
-
+*/
         this.application.on({
             savereport: this.saveReport,
             scope: this
@@ -115,7 +115,7 @@ Ext.define('PICS.controller.report.Report', {
         window.open('ReportData!print.action?report=' + report_id);
     },
     
-    refreshReport: function () {
+/*    refreshReport: function () {
         // TODO: not what we want anymore
         // need to hook into new load
         return false;
@@ -147,7 +147,7 @@ Ext.define('PICS.controller.report.Report', {
         report_data.updateGridColumns(grid_columns);
     },
 
-    saveReport: function () {
+*/    saveReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             params = report.toRequestParams(),
