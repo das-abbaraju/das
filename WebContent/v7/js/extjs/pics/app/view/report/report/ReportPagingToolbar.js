@@ -12,10 +12,10 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
     id: 'paging_toolbar',
     items: [{
         xtype: 'combobox',
-        cls: 'rows-per-page',
+        cls: 'limit',
         editable: false,
         height: 25,
-        name: 'rows_per_page',
+        name: 'limit',
         store: [
             ['10', '10'],
             ['50', '50'],
@@ -38,6 +38,12 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         height: 26,
         text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
+    
+    initComponent: function () {
+        this.addEvents('changepage');
+        
+        this.callParent(arguments);
+    },
 
     getPagingItems: function() {
         var me = this;
@@ -59,7 +65,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveFirst,
             height: 22,
             itemId: 'first',
             overCls: 'paging-icon-over',
@@ -72,7 +77,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.movePrevious,
             height: 22,
             itemId: 'prev',
             overCls: 'paging-icon-over',
@@ -118,7 +122,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveNext,
             height: 22,
             itemId: 'next',
             overCls: 'paging-icon-over',
@@ -131,7 +134,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveLast,
             height: 22,
             itemId: 'last',
             overCls: 'paging-icon-over',
@@ -145,6 +147,45 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }];
+    },
+    
+    // override Ext.toolbar.Paging.onPagingKeyDown to throw custom event
+    onPagingKeyDown : function(field, e) {
+        var me = this,
+            k = e.getKey(),
+            pageData = me.getPageData(),
+            increment = e.shiftKey ? 10 : 1,
+            pageNum;
+
+        if (k == e.RETURN) {
+            e.stopEvent();
+            pageNum = me.readPageFromInput(pageData);
+            if (pageNum !== false) {
+                pageNum = Math.min(Math.max(1, pageNum), pageData.pageCount);
+                if(me.fireEvent('beforechange', me, pageNum) !== false){
+                    // prevent store from manually loading
+                    // me.store.loadPage(pageNum);
+                    
+                    me.fireEvent('changepage', me, pageNum);
+                }
+            }
+        } else if (k == e.HOME || k == e.END) {
+            e.stopEvent();
+            pageNum = k == e.HOME ? 1 : pageData.pageCount;
+            field.setValue(pageNum);
+        } else if (k == e.UP || k == e.PAGE_UP || k == e.DOWN || k == e.PAGE_DOWN) {
+            e.stopEvent();
+            pageNum = me.readPageFromInput(pageData);
+            if (pageNum) {
+                if (k == e.DOWN || k == e.PAGE_DOWN) {
+                    increment *= -1;
+                }
+                pageNum += increment;
+                if (pageNum >= 1 && pageNum <= pageData.pageCount) {
+                    field.setValue(pageNum);
+                }
+            }
+        }
     },
 
     updateDisplayInfo: function (count) {

@@ -77,8 +77,8 @@ Ext.define('PICS.data.ServerCommunication', {
                 var params = {
                     reportId: report_id,
                     includeData: true,
-                    page: page ? page : 1,
-                    limit: limit ? limit : 50
+                    page: page,
+                    limit: limit
                 };
     
                 return path + Ext.Object.toQueryString(params);
@@ -145,7 +145,16 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
+                    report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                    page = page ? page : 1,
+                    limit = limit ? limit : report_data_store.pageSize,
                     url = this.getLoadDataUrl(page, limit);
+
+                // updates the stores limit tracker
+                report_data_store.setLimit(limit);
+                
+                // updates the stores page tracker
+                report_data_store.setPage(page);
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();

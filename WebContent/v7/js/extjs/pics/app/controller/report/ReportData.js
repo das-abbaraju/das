@@ -1,10 +1,6 @@
 Ext.define('PICS.controller.report.ReportData', {
     extend: 'Ext.app.Controller',
 
-    requires: [
-       'PICS.data.ServerCommunication'               
-    ],
-
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
@@ -26,114 +22,70 @@ Ext.define('PICS.controller.report.ReportData', {
             },
 
             'reportdata headercontainer': {
-            	columnmove: this.onColumnMove
+            	columnmove: this.moveColumn
             },
 
             'reportdata gridcolumn': {
-                render: this.onColumnRender
+                render: this.onGridColumnRender
+            },
+            
+            'reportpagingtoolbar': {
+                changepage: this.moveToPage
             },
 
             'reportpagingtoolbar button[itemId=refresh]': {
-                click: this.onReportRefreshClick
+                click: this.refreshReport
+            },
+            
+            'reportpagingtoolbar button[itemId=first]': {
+                click: this.moveToFirstPage
+            },
+            
+            'reportpagingtoolbar button[itemId=prev]': {
+                click: this.moveToPreviousPage
+            },
+            
+            'reportpagingtoolbar button[itemId=next]': {
+                click: this.moveToNextPage
+            },
+            
+            'reportpagingtoolbar button[itemId=last]': {
+                click: this.moveToLastPage
             },
 
-            'reportpagingtoolbar combo[name=rows_per_page]': {
-                select: this.onRowsPerPageSelect
+            'reportpagingtoolbar combo[name=limit]': {
+                select: this.changeLimit
             },
 
             'reportpagingtoolbar button[action=add-column]': {
-                click: this.onAddColumn
+                click: this.showColumnModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=function]': {
-                click: this.onColumnFunction
+                click: this.showColumnFunctionModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
-                click: this.onColumnRemove
+                click: this.removeColumn
             },
 
             'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
-                click: this.onColumnSortAsc
+                click: this.sortColumnAsc
             },
 
             'menu[name=report_data_header_menu] menuitem[name=sort_desc]': {
-                click: this.onColumnSortDesc
+                click: this.sortColumnDesc
             }
         });
     },
-
-    onAddColumn: function (cmp, event, eOpts) {
-        this.application.fireEvent('showcolumnmodal');
-    },
-
-    onColumnFunction: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-
-        this.application.fireEvent('showcolumnfunctionmodal', column);
-    },
-
-    onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {
-		var report_store = this.getReportReportsStore(),
-			report = report_store.first(),
-			// off by one due to rownumberer
-			from_index = fromIdx - 1,
-			// off by one due to rownumberer
-			to_index = toIdx - 1;
-		
-		report.moveColumnByIndex(from_index, to_index);
-	},
-
-    onColumnRemove: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader,
-            // off by one due to rownumberer
-            column_index = column.getIndex() - 1;
-
-        column_store.removeAt(column_index);
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    onColumnRender: function (cmp, eOpts) {
+    
+    onGridColumnRender: function (cmp, eOpts) {
         // only create tooltips for PICS.ux.grid.column.Column(s)
         if (typeof cmp.createTooltip == 'function') {
             cmp.createTooltip();
         }
     },
-
-    onColumnSortAsc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'ASC');
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    onColumnSortDesc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-        
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'DESC');
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
+    
     onReportDataBeforeRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -155,29 +107,108 @@ Ext.define('PICS.controller.report.ReportData', {
         // update display count
         report_paging_toolbar.updateDisplayInfo(total);
     },
+    
+    changeLimit: function (cmp, records, options) {
+        var value = cmp.getValue();
 
-    onReportRefreshClick: function (cmp, event, eOpts) {
-        var report_data = this.getReportData(),
-            report_data_store = report_data.store;
-        
-        report_data_store.loadPage(1);
+        PICS.data.ServerCommunication.loadData(1, value);
     },
-
-    onRowsPerPageSelect: function (cmp, records, options) {
+    
+    moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_data = this.getReportData(),
-            report_data_store = report_data.store,
-            value = cmp.getValue();
+            // off by one due to rownumberer
+            from_index = fromIdx - 1,
+            // off by one due to rownumberer
+            to_index = toIdx - 1;
+        
+        report.moveColumnByIndex(from_index, to_index);
+    },
+    
+    moveToPage: function (cmp, page, eOpts) {
+        PICS.data.ServerCommunication.loadData(page);
+    },
+    
+    moveToFirstPage: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
+    },
+    
+    moveToPreviousPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            current_page = report_data_store.currentPage,
+            previous_page = current_page - 1;
+        
+        PICS.data.ServerCommunication.loadData(previous_page);
+    },
+    
+    moveToNextPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            current_page = report_data_store.currentPage,
+            next_page = current_page + 1;
+        
+        PICS.data.ServerCommunication.loadData(next_page);
+    },
+    
+    moveToLastPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            report_paging_toolbar_view = this.getReportPagingToolbar();
+            last_page = report_paging_toolbar_view.getPageData().pageCount;
+        
+        PICS.data.ServerCommunication.loadData(last_page);
+    },
+    
+    removeColumn: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            column = cmp.up('menu').activeHeader.column;
 
-        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
-        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
-        report.set('rowsPerPage', value);
-        report_data_store.updateProxyParameters(report.toRequestParams());
+        column_store.remove(column);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    showColumnFunctionModal: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        this.application.fireEvent('showcolumnfunctionmodal', column);
+    },
+    
+    showColumnModal: function (cmp, event, eOpts) {
+        this.application.fireEvent('showcolumnmodal');
+    },
+
+    sortColumnAsc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        // clear sorts
+        report.removeSorts();
         
-        report_data_store.setLimit(value);
+        // add sort
+        report.addSort(column, 'ASC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+
+    sortColumnDesc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
         
-        // load new data
-        report_data_store.loadPage(1);
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'DESC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    refreshReport: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
     }
 });

@@ -8,8 +8,7 @@ Ext.define('PICS.model.report.Report', {
 
     fields: [{
         name: 'type',
-        type: 'string',
-        persist: false
+        type: 'string'
     }, {
         name: 'name',
         type: 'string'

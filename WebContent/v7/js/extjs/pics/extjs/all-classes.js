@@ -66312,7 +66312,7 @@ Ext.define('PICS.data.ServerCommunication', {
         }
             
         function updateReportDataView(report) {
-            var report_data_view = Ext.ComponentQuery.query('reportdata'),
+            var report_data_view = Ext.ComponentQuery.query('reportdata')[0],
                 new_grid_columns = report.convertColumnsToGridColumns();
             
             report_data_view.updateGridColumns(new_grid_columns);
@@ -66320,12 +66320,12 @@ Ext.define('PICS.data.ServerCommunication', {
         
         return {
             getLoadAllUrl: function () {
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeReport: true,
                     includeColumns: true,
                     includeFilters: true,
@@ -66336,12 +66336,12 @@ Ext.define('PICS.data.ServerCommunication', {
             },
             
             getLoadReportAndDataUrl: function () {
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
                 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeReport: true,
                     includeData: true
                 };
@@ -66350,24 +66350,22 @@ Ext.define('PICS.data.ServerCommunication', {
             },
             
             getLoadDataUrl: function (page, limit) {
-                var params = Ext.urlDecode(window.location.search),
+                var params = Ext.Object.fromQueryString(window.location.search),
                     report_id = params.report,
                     path = 'ReportApi.action?';
                 
                 var params = {
-                    report: report_id,
+                    reportId: report_id,
                     includeData: true,
-                    page: page ? page : 1,
-                    limit: limit ? limit : 50
+                    page: page,
+                    limit: limit
                 };
     
                 return path + Ext.Object.toQueryString(params);
             },
             
             loadAll: function (options) {
-                var params = Ext.urlDecode(window.location.search);
-                    report_id = params.report,
-                    url = this.getLoadAllUrl(),
+                 var url = this.getLoadAllUrl(),
                     callback = typeof options.callback == 'function' ? options.callback : function () {},
                     scope = options.scope ? options.scope : this;
                     
@@ -66427,7 +66425,16 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    url = this.getLoadDataUrl();
+                    report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                    page = page ? page : 1,
+                    limit = limit ? limit : report_data_store.pageSize,
+                    url = this.getLoadDataUrl(page, limit);
+
+                // updates the stores limit tracker
+                report_data_store.setLimit(limit);
+                
+                // updates the stores page tracker
+                report_data_store.setPage(page);
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
@@ -68418,7 +68425,7 @@ Ext.define('PICS.view.report.filter.FilterTooltip', {
     
     anchor: 'left',
     showDelay: 0,
-    tpl: '<div><p>{help}</p></div>'
+    tpl: '<div><p>{description}</p></div>'
 });
 /**
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
@@ -71483,25 +71490,33 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
     shadow: 'frame',
     title: 'Column Functions',
     width: 300,
-
+    dockedItems: [{
+        xtype: 'panel',
+        border: 0,
+        dock: 'bottom',
+        height: 10,
+        id: 'column_function_modal_footer'
+    }],
+        
     initComponent: function () {
         if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column');
         }
 
+        var field = this.column,
+            sql_functions = [{key: 'Sum', value: 'Count'}], // TODO: Temporary. Replace with server request.
+            sql_function_items = this.createSqlFunctionItems(sql_functions),
+            sql_function_list_view = this.createSqlFunctionListView(sql_function_items);
+
+        this.dockedItems.push(sql_function_list_view);
+
+        this.height = (40 * sql_functions.length) + 95;
+
         this.callParent(arguments);
-
-        var field = this.column.getAvailableField(),
-            column_functions = field.get('functions'),
-            column_function_items = this.getColumnFunctionItems(column_functions);
-
-        this.addDockedItems(column_function_items);
-
-        this.height = (40 * column_functions.length) + 95;
     },
 
-    addDockedItems: function (column_function_items) {
-        this.addDocked({
+    createSqlFunctionListView: function (sql_function_items) {
+        return {
             xtype: 'toolbar',
             border: 0,
             defaults: {
@@ -71509,29 +71524,21 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
             },
             dock: 'top',
             id: 'column_function_list',
-            items: column_function_items,
+            items: sql_function_items,
             layout: 'vbox'
-        });
-
-        this.addDocked({
-            xtype: 'panel',
-            border: 0,
-            dock: 'bottom',
-            height: 10,
-            id: 'column_function_modal_footer'
-        });
+        };
     },
 
-    getColumnFunctionItem: function (column_function) {
+    createSqlFunctionItem: function (sql_function) {
         return {
-            action: column_function.key,
+            action: sql_function.key,
             height: 40,
-            text: column_function.value,
+            text: sql_function.value,
             textAlign: 'left'
         };
     },
 
-    getColumnFunctionItems: function (column_functions) {
+    createSqlFunctionItems: function (sql_functions) {
         var items = [{
             action: '',
             height: 40,
@@ -71540,8 +71547,8 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
         }];
 
         var that = this;
-        Ext.each(column_functions, function (column_function) {
-            items.push(that.getColumnFunctionItem(column_function));
+        Ext.each(sql_functions, function (sql_function) {
+            items.push(that.createSqlFunctionItem(sql_function));
         });
 
         return items;
@@ -71578,13 +71585,13 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
             action = cmp.action;
 
         // set the method on the column store - column
-        column.set('method', action);
+        column.set('sql_function', action);
 
         // destroy modal for next use (generate with correct column)
         column_function_modal.destroy();
         
         // refresh report
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     // show the column function modal , but attach the specific column store - column your modifying
@@ -79648,72 +79655,47 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     labelAlign: 'right',
     labelSeparator: '',
     value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
-
+    
     listeners: {
         afterrender: function(cmp, eOpts) {
-            var config = PICS.app.configuration;
-
-            if (config.isFavorite()) {
-                this.toggleFavoriteStatus();
-            }
-            
-            this.mon(this.el,'click', this.toggleFavoriteStatus, this, {
+            this.mon(this.getEl(), 'click', this.toggleFavoriteStatus, this, {
                 delegate: '.icon-star'
-            });            
+            });
         }
     },
-
-    isFavoriteOn: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        return favorite_elements.icon.hasCls('selected');
-    },
-
-    getFavoriteElements: function () {
-        var element = this.getEl();
-
-        return {
-            icon: element.down('.icon-star'),
-            text: element.down('.favorite-text')
-        };
-    },
-
-    saveFavoriteStatus: function (status) {
-        var event_name = status ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration;
-
-        config.setIsFavorite(status);
-
-        this.fireEvent(event_name);
-    },
-
-    toggleFavoriteOn: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        favorite_elements.icon.addCls('selected');
-        favorite_elements.text.setHTML('is');
-    },
-
-    toggleFavoriteOff: function () {
-        var favorite_elements = this.getFavoriteElements();
-
-        favorite_elements.icon.removeCls('selected');
-        favorite_elements.text.setHTML('is not');
-    },
-
+    
     toggleFavoriteStatus: function () {
-        var is_favorite_on = this.isFavoriteOn(),
-            config = PICS.app.configuration,
-            is_editable = config && config.isEditable(),
-            duplicating = Ext.getClassName(this) == 'PICS.view.report.settings.CopySettings';
-
-        is_favorite_on ? this.toggleFavoriteOff() : this.toggleFavoriteOn();
-
-        // The Duplicate tab and the Edit tab of editable reports have Apply buttons.
-        // Without an apply button, we need to save immediately.
-        if (!is_editable && !duplicating) {
-            this.saveFavoriteStatus(!is_favorite_on);
+        var element = this.getEl(),
+            icon = element.down('.icon-star'),
+            is_favorite = icon.hasCls('selected');
+        
+        if (is_favorite) {
+            this.toggleUnfavorite();
+        } else {
+            this.toggleFavorite();
         }
+    },
+    
+    toggleFavorite: function () {
+        var element = this.getEl(),
+            icon = element.down('.icon-star'),
+            text = element.down('.favorite-text');
+        
+        icon.addCls('selected');
+        text.setHTML('is');
+        
+        this.fireEvent('favorite', this);
+    },
+    
+    toggleUnfavorite: function () {
+        var element = this.getEl(),
+            icon = element.down('.icon-star'),
+            text = element.down('.favorite-text');
+        
+        icon.removeCls('selected');
+        text.setHTML('is not');
+        
+        this.fireEvent('unfavorite', this);
     }
 });
 /**
@@ -81735,20 +81717,7 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         name: 'report_description'
     }, {
         xtype: 'favoritetoggle'
-    }
-/*, {
-        xtype: 'displayfield',
-        fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
-        labelAlign: 'right',
-        labelSeparator: '',
-        value: 'Report <strong>is not</strong> a Favorite'
-    }, {
-        xtype: 'displayfield',
-        fieldLabel: '<a href="javascript:;" class="private"><i class="icon-eye-open"></i></a>',
-        labelAlign: 'right',
-        labelSeparator: '',
-        value: 'Report <strong>is not</strong> Private'
-    }*/],
+    }],
     layout: 'form',
     // custom config
     modal_title: 'Duplicate Report',
@@ -81767,11 +81736,11 @@ Ext.define('PICS.view.report.settings.EditSettings', {
     title: '<i class="icon-cog icon-large"></i>Settings',
 
     initComponent: function () {
-        this.callParent(arguments);
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
 
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
+        if (is_editable) {
             this.generateEditableSettings();
         } else {
             this.generateNonEditableSettings();
@@ -81779,11 +81748,12 @@ Ext.define('PICS.view.report.settings.EditSettings', {
 
         this.addEvents('favorite');
         this.addEvents('unfavorite');
-
+        
+        this.callParent(arguments);
     },
 
     generateEditableSettings: function () {
-        this.addDocked({
+        this.dockedItems = [{
             xtype: 'toolbar',
             defaults: {
                 margin: '0 0 0 5'
@@ -81805,9 +81775,9 @@ Ext.define('PICS.view.report.settings.EditSettings', {
                 pack: 'end'
             },
             ui: 'footer'
-        });
+        }];
 
-        this.add({
+        this.items = [{
             xtype: 'textfield',
             allowBlank: false,
             fieldLabel: 'Report Name',
@@ -81821,21 +81791,21 @@ Ext.define('PICS.view.report.settings.EditSettings', {
             name: 'report_description'
         }, {
             xtype: 'favoritetoggle'
-        });
+        }];
 
         this.layout = 'form';
     },
 
     generateNonEditableSettings: function () {
-        this.add({
+        this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
                 "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
                 "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
-            ]),
-        },{
+            ])
+        }, {
             xtype: 'favoritetoggle'
-        });
+        }];
 
         this.id = 'settings_no_permission';
     },
@@ -87107,10 +87077,10 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
     id: 'paging_toolbar',
     items: [{
         xtype: 'combobox',
-        cls: 'rows-per-page',
+        cls: 'limit',
         editable: false,
         height: 25,
-        name: 'rows_per_page',
+        name: 'limit',
         store: [
             ['10', '10'],
             ['50', '50'],
@@ -87133,6 +87103,12 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         height: 26,
         text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
+    
+    initComponent: function () {
+        this.addEvents('changepage');
+        
+        this.callParent(arguments);
+    },
 
     getPagingItems: function() {
         var me = this;
@@ -87154,7 +87130,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveFirst,
             height: 22,
             itemId: 'first',
             overCls: 'paging-icon-over',
@@ -87167,7 +87142,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.movePrevious,
             height: 22,
             itemId: 'prev',
             overCls: 'paging-icon-over',
@@ -87213,7 +87187,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveNext,
             height: 22,
             itemId: 'next',
             overCls: 'paging-icon-over',
@@ -87226,7 +87199,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         }, {
             cls: 'paging-icon',
             disabled: true,
-            handler: me.moveLast,
             height: 22,
             itemId: 'last',
             overCls: 'paging-icon-over',
@@ -87240,6 +87212,45 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }];
+    },
+    
+    // override Ext.toolbar.Paging.onPagingKeyDown to throw custom event
+    onPagingKeyDown : function(field, e) {
+        var me = this,
+            k = e.getKey(),
+            pageData = me.getPageData(),
+            increment = e.shiftKey ? 10 : 1,
+            pageNum;
+
+        if (k == e.RETURN) {
+            e.stopEvent();
+            pageNum = me.readPageFromInput(pageData);
+            if (pageNum !== false) {
+                pageNum = Math.min(Math.max(1, pageNum), pageData.pageCount);
+                if(me.fireEvent('beforechange', me, pageNum) !== false){
+                    // prevent store from manually loading
+                    // me.store.loadPage(pageNum);
+                    
+                    me.fireEvent('changepage', me, pageNum);
+                }
+            }
+        } else if (k == e.HOME || k == e.END) {
+            e.stopEvent();
+            pageNum = k == e.HOME ? 1 : pageData.pageCount;
+            field.setValue(pageNum);
+        } else if (k == e.UP || k == e.PAGE_UP || k == e.DOWN || k == e.PAGE_DOWN) {
+            e.stopEvent();
+            pageNum = me.readPageFromInput(pageData);
+            if (pageNum) {
+                if (k == e.DOWN || k == e.PAGE_DOWN) {
+                    increment *= -1;
+                }
+                pageNum += increment;
+                if (pageNum >= 1 && pageNum <= pageData.pageCount) {
+                    field.setValue(pageNum);
+                }
+            }
+        }
     },
 
     updateDisplayInfo: function (count) {
@@ -92975,85 +92986,43 @@ Ext.define('PICS.view.report.filter.Filter', {
     width: 320,
 
     initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
+        var filter = this.record,
+            index = this.index;
+        
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
             Ext.Error.raise('Invalid filter record');
         }
 
-        if (!this.index) {
+        if (!index) {
             Ext.Error.raise('Invalid filter index');
         }
 
-        var filter = this.record,
-            field = filter.getAvailableField();
-        
-        var type = field.get('filterType'),
+        var type = filter.get('type'),
             cls = this.getFilterClassByType(type),
             filter_number = this.createNumber(this.index),
-            filter_content = this.createContent(this.record);
+            filter_content = this.createContent(this.record),
+            remove_button = this.createRemoveButton();
 
-        this.add([
+        this.items = [
             filter_number,
             filter_content
-        ]);
+        ];
         
+        this.dockedItems = [
+            remove_button
+        ];
         
-        // TODO: update this
-        this.addRemoveButton();
-        
+        // TODO: update this - probably doesn't belong
+        // TODO: THIS IS CRAP
         if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
-            // TODO: update this - probably doesn't belong
-            this.addEditableButton();
+            var editable_button = this.creatEditableButton();
+
+            this.dockedItems.push(editable_button);
         }
+        
+        this.callParent(arguments);
     },
 
-    addEditableButton: function () {
-        this.addDocked({
-            xtype: 'toolbar',
-            defaults: {
-                margin: '0 5 5 0'
-            },
-            dock: 'bottom',
-            items: [{
-                xtype: 'button',
-                action: 'show-advanced-filter',
-                cls: 'advanced-filter-button',
-                height: 22,
-                text: '<i class="icon-pencil"></i>',
-                tooltip: 'Advanced Filter',
-                width: 20
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        });
-    },
-    
-    addRemoveButton: function () {
-        this.addDocked({
-            xtype: 'toolbar',
-            defaults: {
-                margin: '2 4 0 0'
-            },
-            dock: 'top',
-            items: [{
-                xtype: 'button',
-                action: 'remove-filter',
-                cls: 'remove-filter',
-                height: 20,
-                text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
-                width: 20
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        });        
-    },
-    
     createNumber: function (index) {
         return {
             xtype: 'displayfield',
@@ -93084,17 +93053,8 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createTitle: function (record) {
-        var field = record.getAvailableField();
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-
-        var text = field && field.get('text');
-
-        if (!text) {
-            Ext.Error.raise('Invalid filter text');
-        }
+        var filter = record,
+            text = filter.get('name');
 
         if (text.length >= 29) {
             text = text.substring(0, 29) + '...';
@@ -93120,22 +93080,9 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createInput: function (record) {
-        var field = record.getAvailableField(),
-            type = field.get('filterType');
-
-        if (!field) {
-            Ext.Error.raise('Invalid available field');
-        }
-        
-        if (!type) {
-            Ext.Error.raise('Invalid filter type');
-        }
-
-        var cls = this.getFilterClassByType(type);
-
-        if (!cls) {
-            Ext.Error.raise('Invalid filter cls');
-        }
+        var filter = record,
+            type = filter.get('type'),
+            cls = this.getFilterClassByType(type);
 
         return Ext.create(cls, {
             border: 0,
@@ -93143,6 +93090,52 @@ Ext.define('PICS.view.report.filter.Filter', {
             name: 'filter_input',
             record: record
         });
+    },
+    
+    createRemoveButton: function () {
+        return {
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 4 0 0'
+            },
+            dock: 'top',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'remove-filter',
+                height: 20,
+                text: '<i class="icon-remove-sign"></i>',
+                tooltip: 'Remove',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        };
+    },
+    
+    creatEditableButton: function () {
+        return {
+            xtype: 'toolbar',
+            defaults: {
+                margin: '0 5 5 0'
+            },
+            dock: 'bottom',
+            items: [{
+                xtype: 'button',
+                action: 'show-advanced-filter',
+                cls: 'advanced-filter-button',
+                height: 22,
+                text: '<i class="icon-pencil"></i>',
+                tooltip: 'Advanced Filter',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        };
     },
     
     createTooltip: function () {
@@ -93153,18 +93146,18 @@ Ext.define('PICS.view.report.filter.Filter', {
         }
         
         var target = this.el.down('.filter-name'),
-            field = filter.getAvailableField(),
-            help = field.get('help');
+            description = filter.get('description');
         
         var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
             target: target
         });
         
         tooltip.update({
-            help: help
+            description: description
         });
     },
 
+    // TODO: FISH BY CRAY FISH FILLET
     getFilterClassByType: function (type) {
         var cls;
         
@@ -93208,15 +93201,13 @@ Ext.define('PICS.view.report.filter.Filters', {
     id: 'report_filters',
 
     initComponent: function () {
-        this.callParent(arguments);
-
-        // filter store
-        if (!this.store) {
+        if (Ext.getClassName(this.store) != 'Ext.data.Store') {
             Ext.Error.raise('Invalid Filter Store');
         }
 
-        var that = this;
-        var index = 1;
+        var index = 1,
+            items = [],
+            that = this;
 
         this.store.each(function (record) {
             var filter = Ext.create('PICS.view.report.filter.Filter', {
@@ -93224,10 +93215,14 @@ Ext.define('PICS.view.report.filter.Filters', {
                 record: record
             });
 
-            that.add(filter);
+            items.push(filter);
 
             index += 1;
         });
+        
+        this.items = items;
+        
+        this.callParent(arguments);
     }
 });
 Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
@@ -96450,11 +96445,11 @@ Ext.define('PICS.ux.grid.column.Column', {
         }
         
         var column = this.column,
-            id = column.get('id'),
+            field_id = column.get('field_id'),
             name = column.get('name'),
             width = column.get('width');
         
-        this.dataIndex = id;
+        this.dataIndex = field_id;
         
         this.setText(name);
         this.setWidth(width);
@@ -96628,11 +96623,11 @@ Ext.define('PICS.model.report.Column', {
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
-        var id = this.get('id'),
+        var field_id = this.get('field_id'),
             type = this.get('type'),
             data_type;
         
-        switch (type) {
+        switch (type.toLowerCase()) {
             case 'boolean':
                 data_type = 'boolean';
     
@@ -96644,7 +96639,7 @@ Ext.define('PICS.model.report.Column', {
         }
         
         var model_field = {
-            name: id,
+            name: field_id,
             type: data_type
         };
 
@@ -96664,7 +96659,7 @@ Ext.define('PICS.model.report.Column', {
             column: this
         };
 
-        switch (type) {
+        switch (type.toLowerCase()) {
             case 'boolean':
                 grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
@@ -97022,6 +97017,7 @@ Ext.define('PICS.store.report.ReportDatas', {
         'Ext.window.MessageBox'
     ],
 
+    pageSize: 50,
     proxy: {
         reader: {
             root: 'results.data',
@@ -97030,9 +97026,32 @@ Ext.define('PICS.store.report.ReportDatas', {
         },
         type: 'memory'
     },
+    
+    // overriding to include start for buffered store
+    // see Ext.data.Store.loadRecords
+    loadRawData : function(data, append) {
+        var me      = this,
+            result  = me.proxy.reader.read(data),
+            records = result.records,
+            options = append ? me.addRecordsOptions : {};
+
+        options.start = (me.currentPage - 1) * me.pageSize;
+
+        if (result.success) {
+            me.totalCount = result.total;
+            
+            me.loadRecords(records, options);
+            
+            me.fireEvent('load', me, records, true);
+        }
+    },
 
     setLimit: function (limit) {
         this.pageSize = limit;
+    },
+    
+    setPage: function (page) {
+        this.currentPage = page;
     },
     
     updateProxyParameters: function (params) {
@@ -97345,8 +97364,7 @@ Ext.define('PICS.model.report.Report', {
 
     fields: [{
         name: 'type',
-        type: 'string',
-        persist: false
+        type: 'string'
     }, {
         name: 'name',
         type: 'string'
@@ -97513,21 +97531,26 @@ Ext.define('PICS.model.report.Report', {
             Ext.Error.raise('Invalid column');
         }
         
-        var column_store = this.columns();
+        var column_store = this.columns(),
+            new_column = column.getData();
         
-        column_store.add(column);
+        column_store.add(new_column);
     },
     
     addColumns: function (columns) {
+        var new_columns = [];
+        
         Ext.Array.forEach(columns, function (column) {
             if (Ext.getClassName(column) != 'PICS.model.report.Column') {
                 Ext.Error.raise('Invalid column');
             }
+            
+            new_columns.push(column.getData());
         });
         
         var column_store = this.columns();
         
-        column_store.add(columns);
+        column_store.add(new_columns);
     },
     
     addFilter: function (filter) {
@@ -97535,29 +97558,38 @@ Ext.define('PICS.model.report.Report', {
             Ext.Error.raise('Invalid filter');
         }
         
-        var filter_store = this.filters();
+        var filter_store = this.filters(),
+            new_filter = filter.getData();
         
-        filter_store.add(filter);
+        filter_store.add(new_filter);
     },
     
     addFilters: function (filters) {
+        var new_filters = [];
+        
         Ext.Array.forEach(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
+            
+            new_filters.push(filter.getData());
         });
         
         var filter_store = this.filters();
         
-        filter_store.add(filters);
+        filter_store.add(new_filters);
     },
     
     addSort: function (column, direction) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
         var sort_store = this.sorts(),
-            column_name = column.get('name');
+            field_id = column.get('field_id');
         
         sort_store.add({
-            name: column_name,
+            field_id: field_id,
             direction: direction
         });
     },
@@ -97730,10 +97762,15 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
             selected_columns = column_modal_checkbox_model.getSelection();
-            
+
+        // Add the selected column to the report model.
         report.addColumns(selected_columns);
         
+        // Close the column modal.
         column_modal.close();
+
+        // Get new data for the modified report model.
+        PICS.data.ServerCommunication.loadData();
     },
 
     onColumnModalCancelClick: function (cmp, event, eOpts) {
@@ -97762,9 +97799,13 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             filter_modal_checkbox_model = filter_list.getSelectionModel(),
             selected_filters = filter_modal_checkbox_model.getSelection();
     
+        // Add the selected filter to the report model.
         report.addFilters(selected_filters);
-        
+
+        // Close the filter modal.
         filter_modal.close();
+        
+        this.application.fireEvent('refreshfilters');
     },
 
     onFilterModalCancelClick: function (cmp, event, eOpts) {
@@ -97852,6 +97893,7 @@ Ext.define('PICS.controller.report.Filter', {
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.onFilterOptionsAfterLayout,
+                afterrender: this.onFilterOptionsAfterRender,
                 beforerender: this.onFilterOptionsBeforeRender
             },
 
@@ -97986,47 +98028,34 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
+    // customizes the filter options view after it gets placed by the layout manager
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
+        // TODO: This is a workaround. Two afterlayouts get called. In the first of them, the view has no filters. Why?
         var filters = this.getFilters();
 
         if (!filters) {
             return;
         }
-        
+
         cmp.updateBodyHeight();
         
         cmp.updateFooterPosition();
     },
 
+    // add filters to the filter options panel before its rendered
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        // TODO: SOME RACE CONDITION EXISTS WITH MISSING "DOM" ???
-        // GOOD START
-        // SOMETHING IN HERE IS PREVENTING THE PAGE FROM RENDERING
-        // BUT BY COMMENTING IT OUT IT AT LEAST LOADS THE PAGE WITH NO ERRORS
-        
-        /*var report_store = this.getReportReportsStore();
+        this.application.fireEvent('refreshfilters');
+    },
     
-        if (!report_store.isLoaded()) {
-            report_store.on('load', function (store, records, successful, eOpts) {
-                var report = report_store.first(),
-                    filter_expression = report.get('filter_expression');
+    // add the filter formula view after the filter options have been generated
+    onFilterOptionsAfterRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_expression = report.get('filter_expression');
 
-                if (filter_expression != '') {
-                    cmp.showFormula();
-                }
-                
-                this.application.fireEvent('refreshfilters');
-            }, this);
-        } else {
-            var report = report_store.first(),
-                filter_expression = report.get('filter_expression');
-
-            if (filter_expression != '') {
-                cmp.showFormula();
-            }
-            
-            this.application.fireEvent('refreshfilters');
-        }*/
+        if (filter_expression) {
+            cmp.showFormula();
+        }
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {
@@ -98078,9 +98107,9 @@ Ext.define('PICS.controller.report.Filter', {
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
             filters = this.getFilters(),
-            filter_expression = report.get('filterExpression');
+            filter_expression = report.get('filter_expression');
             
-        if (filter_expression != '') {
+        if (filter_expression) {
             filter_formula_textfield.setValue(report.getFilterExpression());
         }
 
@@ -98110,7 +98139,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         report.setFilterExpression(filter_expression);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     /**
@@ -98121,10 +98150,10 @@ Ext.define('PICS.controller.report.Filter', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
-            filter_options = this.getFilterOptions();
+            filter_options_view = this.getFilterOptions();
 
-        // remove all filters
-        filter_options.removeAll();
+        // remove all filter items from the filter options view
+        filter_options_view.removeAll();
 
         // create new list of filters
         var filters = Ext.create('PICS.view.report.filter.Filters', {
@@ -98132,7 +98161,7 @@ Ext.define('PICS.controller.report.Filter', {
         });
 
         // add new filters
-        filter_options.add(filters);
+        filter_options_view.add(filters);
     },
 
     /**
@@ -98167,7 +98196,7 @@ Ext.define('PICS.controller.report.Filter', {
         }
 
         if (filter.get('value') != '') {
-            this.application.fireEvent('refreshreport');
+            PICS.data.ServerCommunication.loadData();
         }
     },
 
@@ -98183,7 +98212,7 @@ Ext.define('PICS.controller.report.Filter', {
         this.application.fireEvent('refreshfilters');
 
         if (filter.get('value') != '') {
-            this.application.fireEvent('refreshreport');
+            PICS.data.ServerCommunication.loadData();
         }
     },
 
@@ -98209,7 +98238,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', date);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
     
     onFilterValueInputBlur: function (cmp, event, eOpts) {
@@ -98242,7 +98271,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', value);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     onFilterValueSelect: function (cmp, records, eOpts) {
@@ -98252,7 +98281,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', value);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     }
 });
 /**
@@ -98303,11 +98332,11 @@ Ext.define('PICS.controller.report.Report', {
             scope: this
         });
 
-        this.application.on({
+/*        this.application.on({
             refreshreport: this.refreshReport,
             scope: this
         });
-
+*/
         this.application.on({
             savereport: this.saveReport,
             scope: this
@@ -98327,11 +98356,8 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            config = PICS.app.configuration,
             params = report.toRequestParams();
         
-        params['favorite'] = config.isFavorite();
-
         Ext.Ajax.request({
             url: 'ReportDynamic!copy.action',
             params: params,
@@ -98375,7 +98401,7 @@ Ext.define('PICS.controller.report.Report', {
         window.open('ReportData!print.action?report=' + report_id);
     },
     
-    refreshReport: function () {
+/*    refreshReport: function () {
         // TODO: not what we want anymore
         // need to hook into new load
         return false;
@@ -98407,7 +98433,7 @@ Ext.define('PICS.controller.report.Report', {
         report_data.updateGridColumns(grid_columns);
     },
 
-    saveReport: function () {
+*/    saveReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             params = report.toRequestParams(),
@@ -98518,120 +98544,70 @@ Ext.define('PICS.controller.report.ReportData', {
             },
 
             'reportdata headercontainer': {
-            	columnmove: this.onColumnMove
+            	columnmove: this.moveColumn
             },
 
             'reportdata gridcolumn': {
-                render: this.onColumnRender
+                render: this.onGridColumnRender
+            },
+            
+            'reportpagingtoolbar': {
+                changepage: this.moveToPage
             },
 
             'reportpagingtoolbar button[itemId=refresh]': {
-                click: this.onReportRefreshClick
+                click: this.refreshReport
+            },
+            
+            'reportpagingtoolbar button[itemId=first]': {
+                click: this.moveToFirstPage
+            },
+            
+            'reportpagingtoolbar button[itemId=prev]': {
+                click: this.moveToPreviousPage
+            },
+            
+            'reportpagingtoolbar button[itemId=next]': {
+                click: this.moveToNextPage
+            },
+            
+            'reportpagingtoolbar button[itemId=last]': {
+                click: this.moveToLastPage
             },
 
-            'reportpagingtoolbar combo[name=rows_per_page]': {
-                select: this.onRowsPerPageSelect
+            'reportpagingtoolbar combo[name=limit]': {
+                select: this.changeLimit
             },
 
             'reportpagingtoolbar button[action=add-column]': {
-                click: this.onAddColumn
+                click: this.showColumnModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=function]': {
-                click: this.onColumnFunction
+                click: this.showColumnFunctionModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
-                click: this.onColumnRemove
+                click: this.removeColumn
             },
 
             'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
-                click: this.onColumnSortAsc
+                click: this.sortColumnAsc
             },
 
             'menu[name=report_data_header_menu] menuitem[name=sort_desc]': {
-                click: this.onColumnSortDesc
+                click: this.sortColumnDesc
             }
         });
     },
-
-    onAddColumn: function (cmp, event, eOpts) {
-        this.application.fireEvent('showcolumnmodal');
-    },
-
-    onColumnFunction: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader,
-            // off by one due to rownumberer
-            column_index = column.getIndex() - 1,
-            selected_column;
-        
-        selected_column = column_store.getAt(column_index);
-
-        this.application.fireEvent('showcolumnfunctionmodal', selected_column);
-    },
-
-    onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {
-		var report_store = this.getReportReportsStore(),
-			report = report_store.first(),
-			// off by one due to rownumberer
-			from_index = fromIdx - 1,
-			// off by one due to rownumberer
-			to_index = toIdx - 1;
-		
-		report.moveColumnByIndex(from_index, to_index);
-	},
-
-    onColumnRemove: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader,
-            // off by one due to rownumberer
-            column_index = column.getIndex() - 1;
-
-        column_store.removeAt(column_index);
-
-        this.application.fireEvent('refreshreport');
-    },
-
-    onColumnRender: function (cmp, eOpts) {
+    
+    onGridColumnRender: function (cmp, eOpts) {
         // only create tooltips for PICS.ux.grid.column.Column(s)
         if (typeof cmp.createTooltip == 'function') {
             cmp.createTooltip();
         }
     },
-
-    onColumnSortAsc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
-        
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'ASC');
-
-        this.application.fireEvent('refreshreport');
-    },
-
-    onColumnSortDesc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
-        
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'DESC');
-
-        this.application.fireEvent('refreshreport');
-    },
-
+    
     onReportDataBeforeRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -98653,30 +98629,109 @@ Ext.define('PICS.controller.report.ReportData', {
         // update display count
         report_paging_toolbar.updateDisplayInfo(total);
     },
+    
+    changeLimit: function (cmp, records, options) {
+        var value = cmp.getValue();
 
-    onReportRefreshClick: function (cmp, event, eOpts) {
-        var report_data = this.getReportData(),
-            report_data_store = report_data.store;
-        
-        report_data_store.loadPage(1);
+        PICS.data.ServerCommunication.loadData(1, value);
     },
-
-    onRowsPerPageSelect: function (cmp, records, options) {
+    
+    moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_data = this.getReportData(),
-            report_data_store = report_data.store,
-            value = cmp.getValue();
+            // off by one due to rownumberer
+            from_index = fromIdx - 1,
+            // off by one due to rownumberer
+            to_index = toIdx - 1;
+        
+        report.moveColumnByIndex(from_index, to_index);
+    },
+    
+    moveToPage: function (cmp, page, eOpts) {
+        PICS.data.ServerCommunication.loadData(page);
+    },
+    
+    moveToFirstPage: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
+    },
+    
+    moveToPreviousPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            current_page = report_data_store.currentPage,
+            previous_page = current_page - 1;
+        
+        PICS.data.ServerCommunication.loadData(previous_page);
+    },
+    
+    moveToNextPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            current_page = report_data_store.currentPage,
+            next_page = current_page + 1;
+        
+        PICS.data.ServerCommunication.loadData(next_page);
+    },
+    
+    moveToLastPage: function (cmp, event, eOpts) {
+        var report_data_store = this.getReportReportDatasStore(),
+            report_paging_toolbar_view = this.getReportPagingToolbar();
+            last_page = report_paging_toolbar_view.getPageData().pageCount;
+        
+        PICS.data.ServerCommunication.loadData(last_page);
+    },
+    
+    removeColumn: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            column = cmp.up('menu').activeHeader.column;
 
-        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
-        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
-        report.set('rowsPerPage', value);
-        report_data_store.updateProxyParameters(report.toRequestParams());
+        column_store.remove(column);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    showColumnFunctionModal: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        this.application.fireEvent('showcolumnfunctionmodal', column);
+    },
+    
+    showColumnModal: function (cmp, event, eOpts) {
+        this.application.fireEvent('showcolumnmodal');
+    },
+
+    sortColumnAsc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        // clear sorts
+        report.removeSorts();
         
-        report_data_store.setLimit(value);
+        // add sort
+        report.addSort(column, 'ASC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+
+    sortColumnDesc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
         
-        // load new data
-        report_data_store.loadPage(1);
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'DESC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    refreshReport: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
     }
 });
 
@@ -98750,9 +98805,11 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     onReportSaveClick: function (cmp, e, eOpts) {
-        var config = PICS.app.configuration;
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
 
-        if (config.isEditable()) {
+        if (is_editable) {
             this.application.fireEvent('savereport');
         } else {
             this.application.fireEvent('showsettingsmodal', 'copy');
@@ -98837,6 +98894,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal favoritetoggle': {
+                afterrender: this.onReportModalFavoriteToggleAfterRender,
                 favorite: this.onReportFavorite,
                 unfavorite: this.onReportUnFavorite
             },
@@ -98878,19 +98936,28 @@ Ext.define('PICS.controller.report.SettingsModal', {
         });
     },
 
-    getReportId: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first();
-
-        return report.get('id');
+    onReportFavorite: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
+            report.set('is_favorite', true);
+        } else {
+            this.application.fireEvent('favoritereport');
+        }
     },
-   
-    onReportFavorite: function () {
-        this.application.fireEvent('favoritereport');
-    },
 
-    onReportUnFavorite: function () {
-        this.application.fireEvent('unfavoritereport');
+    onReportUnFavorite: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
+            report.set('is_favorite', false);
+        } else {
+            this.application.fireEvent('unfavoritereport');
+        }
     },
     
     onReportModalCancelClick: function (cmp, e, eOpts) {
@@ -98955,11 +99022,21 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
     
+    onReportModalFavoriteToggleAfterRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_favorite = report.get('is_favorite');
+        
+        if (is_favorite) {
+            cmp.toggleFavorite();
+        }
+    },
+    
     onReportModalTabClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
     
-        modal.setTitle(title);        
+        modal.setTitle(title);
     },
     
     onReportModalExportClick: function (cmp, e, eOpts) {
@@ -99006,7 +99083,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
      */
     
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
-        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_id = report.get('id');
+        
+        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + report_id;
         cmp.store.load();
     },
     

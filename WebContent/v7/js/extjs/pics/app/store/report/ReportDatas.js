@@ -11,6 +11,7 @@ Ext.define('PICS.store.report.ReportDatas', {
         'Ext.window.MessageBox'
     ],
 
+    pageSize: 50,
     proxy: {
         reader: {
             root: 'results.data',
@@ -19,9 +20,32 @@ Ext.define('PICS.store.report.ReportDatas', {
         },
         type: 'memory'
     },
+    
+    // overriding to include start for buffered store
+    // see Ext.data.Store.loadRecords
+    loadRawData : function(data, append) {
+        var me      = this,
+            result  = me.proxy.reader.read(data),
+            records = result.records,
+            options = append ? me.addRecordsOptions : {};
+
+        options.start = (me.currentPage - 1) * me.pageSize;
+
+        if (result.success) {
+            me.totalCount = result.total;
+            
+            me.loadRecords(records, options);
+            
+            me.fireEvent('load', me, records, true);
+        }
+    },
 
     setLimit: function (limit) {
         this.pageSize = limit;
+    },
+    
+    setPage: function (page) {
+        this.currentPage = page;
     },
     
     updateProxyParameters: function (params) {
