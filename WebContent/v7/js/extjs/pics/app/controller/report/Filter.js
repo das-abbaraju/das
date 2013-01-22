@@ -178,6 +178,13 @@ Ext.define('PICS.controller.report.Filter', {
     
     // customizes the filter options view after it gets placed by the layout manager
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
+        // TODO: This is a workaround. Two afterlayouts get called. In the first of them, the view has no filters. Why?
+        var filters = this.getFilters();
+
+        if (!filters) {
+            return;
+        }
+
         cmp.updateBodyHeight();
         
         cmp.updateFooterPosition();
@@ -280,7 +287,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         report.setFilterExpression(filter_expression);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     /**
@@ -337,7 +344,7 @@ Ext.define('PICS.controller.report.Filter', {
         }
 
         if (filter.get('value') != '') {
-            this.application.fireEvent('refreshreport');
+            PICS.data.ServerCommunication.loadData();
         }
     },
 
@@ -353,7 +360,7 @@ Ext.define('PICS.controller.report.Filter', {
         this.application.fireEvent('refreshfilters');
 
         if (filter.get('value') != '') {
-            this.application.fireEvent('refreshreport');
+            PICS.data.ServerCommunication.loadData();
         }
     },
 
@@ -379,7 +386,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', date);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
     
     onFilterValueInputBlur: function (cmp, event, eOpts) {
@@ -412,7 +419,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', value);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     onFilterValueSelect: function (cmp, records, eOpts) {
@@ -422,6 +429,6 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('value', value);
 
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     }
 });
