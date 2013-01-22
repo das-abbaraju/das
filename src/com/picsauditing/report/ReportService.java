@@ -1,4 +1,4 @@
-package com.picsauditing.model.report;
+package com.picsauditing.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,12 +12,6 @@ import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.access.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.PicsSqlException;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportJson;
-import com.picsauditing.report.ReportUtil;
-import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
 import com.picsauditing.report.converter.ExtJSToReportConverter;
 import com.picsauditing.report.converter.ReportToExtJSConverter;
@@ -43,7 +37,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;

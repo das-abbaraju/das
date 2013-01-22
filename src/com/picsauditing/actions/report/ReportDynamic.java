@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportService;
+import com.picsauditing.report.ReportService;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {

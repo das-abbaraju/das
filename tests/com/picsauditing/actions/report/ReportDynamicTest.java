@@ -11,7 +11,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportService;
+import com.picsauditing.report.ReportService;
 
 public class ReportDynamicTest extends PicsActionTest {
 	private ReportDynamic reportDynamic;

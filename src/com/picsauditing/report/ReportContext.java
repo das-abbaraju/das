@@ -1,4 +1,4 @@
-package com.picsauditing.model.report;
+package com.picsauditing.report;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;

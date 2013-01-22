@@ -3,7 +3,6 @@ package com.picsauditing.actions.rest.api;
 import java.util.Map;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.report.ReportContext;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.access.Api;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportApi;
+import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.util.Strings;
 

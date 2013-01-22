@@ -1,4 +1,4 @@
-package com.picsauditing.model.report;
+package com.picsauditing.report;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,13 +35,14 @@ import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.pagination.Pagination;
 
-public class ReportModelTest {
+public class ReportServiceTest {
 
 	private ReportService reportService;
 

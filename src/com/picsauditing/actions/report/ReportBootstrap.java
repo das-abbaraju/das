@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.model.report.ReportService;
+import com.picsauditing.report.ReportService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
