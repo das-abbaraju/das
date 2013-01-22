@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -436,7 +435,7 @@ public class FlagDataCalculator {
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)
 			return WaitingOn.Contractor;
 
-		if (!contractor.getStatus().isActiveDemo())
+		if (!contractor.getStatus().isActiveOrDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
 		// If Bid Only Account

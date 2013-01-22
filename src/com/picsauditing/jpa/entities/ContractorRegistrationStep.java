@@ -23,7 +23,7 @@ public enum ContractorRegistrationStep {
 			return Risk;
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))
 			return Risk;
-		if (!contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated())
+		if (!contractor.isHasFreeMembership() && contractor.getStatus().isPendingOrDeactivated())
 			return Payment;
 
 		return Done;

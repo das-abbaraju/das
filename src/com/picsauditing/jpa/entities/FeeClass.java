@@ -166,7 +166,7 @@ public enum FeeClass implements Translatable {
 				// is it time to start charging this operator for insureguard?
 			} else if (!isUpgrade && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if ((isUpgrade || !contractor.getStatus().isActiveDemo())
+			} else if ((isUpgrade || !contractor.getStatus().isActiveOrDemo())
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
 				return false;

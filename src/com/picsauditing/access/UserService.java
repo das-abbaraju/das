@@ -34,7 +34,7 @@ public class UserService {
 
 		Account account = user.getAccount();
 		if (account.isOperatorCorporate()) {
-			if (!account.getStatus().isActiveDemo()) {
+			if (!account.getStatus().isActiveOrDemo()) {
 				return false;
 			}
 		}

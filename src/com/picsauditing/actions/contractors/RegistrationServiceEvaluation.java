@@ -167,7 +167,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 
 		// Free accounts should just be activated
-		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
+		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingOrDeactivated()) {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
 			contractor.setMembershipDate(new Date());

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -188,6 +189,7 @@ public class FacilitiesEditTest extends PicsTest {
 	}
 
 	@Test
+    @Ignore("This test will be redone")
 	public void testAddRoleOwnerPercentViolatesBusinessRule() throws ValidationException {
 		FacilitiesEdit facilitiesEditSpy = spy(facilitiesEdit);
 

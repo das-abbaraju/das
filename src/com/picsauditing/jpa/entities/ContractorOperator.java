@@ -168,7 +168,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private Set<Integer> getFacilityOperatorIds() {
 		Set<Integer> idList = new HashSet<Integer>();
 		for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
-			if (facility.getOperator().getStatus().isActiveDemo()
+			if (facility.getOperator().getStatus().isActiveOrDemo()
 					&& !facility.getOperator().isAutoApproveRelationships()) {
 				idList.add(facility.getOperator().getId());
 			}

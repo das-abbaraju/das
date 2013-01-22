@@ -164,32 +164,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public String copyToChildAccounts() throws Exception {
-        for (Facility facility : operator.getOperatorFacilities()) {
-            if (facility.getOperator().getStatus().isActiveDemo()) {
-                boolean hasAccountRep = false;
-                int percent = 0;
-                for (AccountUser accountUser2 : facility.getOperator().getAccountUsers()) {
-                    if (accountUser2.isCurrent() && accountUser2.getRole().equals(accountUser.getRole())) {
-                        percent += accountUser2.getOwnerPercent();
-                        if (accountUser2.getUser().equals(accountUser.getUser()) || percent >= 100) {
-                            hasAccountRep = true;
-                            break;
-                        }
-                    }
-                }
-                
-                if (!hasAccountRep) {
-                    AccountUser au = new AccountUser();
-                    au.setUser(accountUser.getUser());
-                    au.setOwnerPercent(accountUser.getOwnerPercent());
-                    au.setRole(accountUser.getRole());
-                    au.setStartDate(accountUser.getStartDate());
-                    au.setEndDate(accountUser.getEndDate());
-                    au.setAccount(facility.getOperator());
-                    accountUserDAO.save(au);
-                }
-            }
-        }
+        facilitiesEditModel.copyToChildAccounts(operator,accountUser);
 
         addActionMessage("Successfully Copied to all child operators");
         // Redirecting because we don't want to hit this same method over and
@@ -481,6 +456,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
         return UserAccountRole.values();
     }
 
+    /**
+     * This is the account user that is used when a user clicks on the "Remove"
+     * button, or when copying a specific AccountUser to all the Children of the 
+     * parent Operator.
+     */
     public AccountUser getAccountUser() {
         return accountUser;
     }
@@ -497,6 +477,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
         this.salesRep = salesRep;
     }
 
+    /**
+     * This represents either the Sales Representative or the Account Manager
+     * that is being added to the Operator (for commissions).
+     */
     public AccountUser getAccountRep() {
         return accountRep;
     }

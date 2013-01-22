@@ -113,7 +113,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			// Activate the contractor if an activation invoice is fully applied
 			// (this will occur on the redirect)
-			if (contractor.getStatus().isPendingDeactivated()) {
+			if (contractor.getStatus().isPendingOrDeactivated()) {
 				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
 					if (billingService.activateContractor(contractor, ip.getInvoice())) {
 						contractorAccountDao.save(contractor);

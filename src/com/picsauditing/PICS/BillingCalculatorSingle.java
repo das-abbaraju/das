@@ -3,7 +3,6 @@ package com.picsauditing.PICS;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
@@ -56,7 +54,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
-import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
 
@@ -611,7 +608,7 @@ public class BillingCalculatorSingle {
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
-		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
+		if (contractor.getStatus().isPendingOrDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {

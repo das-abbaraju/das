@@ -1,66 +1,79 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Transient;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 
+import javax.persistence.Transient;
+
 public enum AccountStatus implements Translatable, PermissionAware {
-	Active, Pending, Requested, Demo, Deleted, Deactivated, Declined;
+    Active, Pending, Requested, Demo, Deleted, Deactivated, Declined;
 
-	public boolean isRequested() {
-		return this.equals(Requested);
-	}
+    public boolean isRequested() {
+        return this == Requested;
+    }
 
-	public boolean isActive() {
-		return this.equals(Active);
-	}
+    public boolean isActive() {
+        return this == Active;
+    }
 
-	public boolean isPending() {
-		return this.equals(Pending);
-	}
+    public boolean isPending() {
+        return this == Pending;
+    }
 
-	public boolean isDemo() {
-		return this.equals(Demo);
-	}
+    public boolean isDemo() {
+        return this == Demo;
+    }
 
-	public boolean isDeleted() {
-		return this.equals(Deleted);
-	}
+    public boolean isDeleted() {
+        return this == Deleted;
+    }
 
-	public boolean isDeactivated() {
-		return this.equals(Deactivated);
-	}
+    public boolean isDeactivated() {
+        return this == Deactivated;
+    }
 
-	public boolean isPendingDeactivated() {
-		return this.equals(Pending) || this.equals(Deactivated);
-	}
+    @Deprecated
+    // TODO find any usages within JSPs and rename them
+    public boolean isPendingDeactivated() {
+        return isPendingOrDeactivated();
+    }
 
-	public boolean isActiveDemo() {
-		return this.equals(Active) || this.equals(Demo);
-	}
+    public boolean isPendingOrDeactivated() {
+        return this == Pending || this == Deactivated;
+    }
 
-	public boolean isDeclined() {
-		return this.equals(Declined);
-	}
+    @Deprecated
+    // TODO find any usages within JSPs and rename them
+    public boolean isActiveDemo() {
+        return isActiveOrDemo();
+    }
 
-	@Transient
-	@Override
-	public String getI18nKey() {
-		return this.getClass().getSimpleName() + "." + this.name();
-	}
+    public boolean isActiveOrDemo() {
+        return this == Active || this == Demo;
+    }
 
-	@Transient
-	@Override
-	public String getI18nKey(String property) {
-		return getI18nKey() + "." + property;
-	}
 
-	public boolean isVisibleTo(Permissions permissions) {
-		if (this == Deleted || this == Demo)
-			return permissions.hasPermission(OpPerms.AllContractors);
+    public boolean isDeclined() {
+        return this == Declined;
+    }
 
-		return true;
-	}
+    @Transient
+    @Override
+    public String getI18nKey() {
+        return this.getClass().getSimpleName() + "." + this.name();
+    }
+
+    @Transient
+    @Override
+    public String getI18nKey(String property) {
+        return getI18nKey() + "." + property;
+    }
+
+    public boolean isVisibleTo(Permissions permissions) {
+        if (this == Deleted || this == Demo)
+            return permissions.hasPermission(OpPerms.AllContractors);
+
+        return true;
+    }
 }
