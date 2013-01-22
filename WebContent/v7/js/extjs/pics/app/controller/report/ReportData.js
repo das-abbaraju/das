@@ -70,15 +70,9 @@ Ext.define('PICS.controller.report.ReportData', {
     onColumnFunction: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader,
-            // off by one due to rownumberer
-            column_index = column.getIndex() - 1,
-            selected_column;
-        
-        selected_column = column_store.getAt(column_index);
+            column = cmp.up('menu').activeHeader.column;
 
-        this.application.fireEvent('showcolumnfunctionmodal', selected_column);
+        this.application.fireEvent('showcolumnfunctionmodal', column);
     },
 
     onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {

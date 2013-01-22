@@ -29,13 +29,13 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
             action = cmp.action;
 
         // set the method on the column store - column
-        column.set('method', action);
+        column.set('sql_function', action);
 
         // destroy modal for next use (generate with correct column)
         column_function_modal.destroy();
         
         // refresh report
-        this.application.fireEvent('refreshreport');
+        PICS.data.ServerCommunication.loadData();
     },
 
     // show the column function modal , but attach the specific column store - column your modifying
