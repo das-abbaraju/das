@@ -4,5 +4,5 @@ Ext.define('PICS.view.report.filter.FilterTooltip', {
     
     anchor: 'left',
     showDelay: 0,
-    tpl: '<div><p>{help}</p></div>'
+    tpl: '<div><p>{description}</p></div>'
 });

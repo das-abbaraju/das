@@ -187,14 +187,14 @@ Ext.define('PICS.view.report.filter.Filter', {
         }
         
         var target = this.el.down('.filter-name'),
-            help = filter.get('help');
+            description = filter.get('description');
         
         var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
             target: target
         });
         
         tooltip.update({
-            help: help
+            description: description
         });
     },
 
