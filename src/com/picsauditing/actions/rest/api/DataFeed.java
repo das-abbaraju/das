@@ -2,6 +2,7 @@ package com.picsauditing.actions.rest.api;
 
 import java.util.Map;
 
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportContext;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
@@ -54,6 +55,8 @@ public class DataFeed extends ReportApi implements ParameterAware {
     @Override
     @Api
     public String execute() {
+    	Report report = null;
+
         try {
 	        JSONObject payloadJson = getJsonFromRequestPayload();
 	        ReportContext reportContext = buildReportContext(payloadJson);

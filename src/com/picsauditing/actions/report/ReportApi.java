@@ -32,7 +32,6 @@ public class ReportApi extends PicsApiSupport {
 	protected ReportService reportService;
 
 	protected int reportId;
-	protected Report report;
 	protected String debugSQL = "";
 	protected ReportDataConverter converter;
 	protected int limit = 100;
@@ -194,7 +193,7 @@ public class ReportApi extends PicsApiSupport {
 		writeJsonError(sqlException);
 
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-			logger.error("Report:" + report.getId() + " " + sqlException.getMessage() + " SQL: " + sqlException.getSql());
+			logger.error("Report:" + reportId + " " + sqlException.getMessage() + " SQL: " + sqlException.getSql());
 		}
 	}
 
@@ -232,14 +231,6 @@ public class ReportApi extends PicsApiSupport {
 				includeData, includeColumns, includeFilters, limit, pageNumber );
 		return reportContext;
 	}
-
-	public Report getReport() {
-		return report;
-	}
-
-//	public void setReport(Report report) {
-//		this.report = report;
-//	}
 
 	public ReportResults getResults() {
 		return converter.getReportResults();
