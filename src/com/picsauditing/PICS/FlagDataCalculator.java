@@ -754,8 +754,9 @@ public class FlagDataCalculator {
 		if (nextCriteria == null) {
 			removeFlagDataOverride(fdo1);
 			removeFlagDataOverride(fdo2);
-			copyFlagDataOverridePayload(fdo1, fdo2);
-			dao.save(fdo2);
+
+            fdo2.copyPayloadFrom(fdo1);
+            dao.save(fdo2);
 			dao.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
 			addFlagDataOverride(fdo2);
 			return fdo2;
@@ -769,26 +770,24 @@ public class FlagDataCalculator {
 		}
 		
 		if (fdo3 == null) {
-			fdo3 = new FlagDataOverride();
+			fdo3 = (FlagDataOverride)fdo2.clone();
 			fdo3.setCriteria(nextCriteria);
-			fdo3.setContractor(fdo2.getContractor());
-			fdo3.setContractorOperator(fdo2.getContractorOperator());
-			fdo3.setOperator(fdo2.getOperator());
-			fdo3.setAuditColumns(fdo2.getCreatedBy());
 		} else {
 			removeFlagDataOverride(fdo3);
 		}
 		
 		removeFlagDataOverride(fdo1);
 		removeFlagDataOverride(fdo2);
-		copyFlagDataOverridePayload(fdo2, fdo3);
-		try {
+
+        fdo3.copyPayloadFrom(fdo2);
+        try {
 		dao.save(fdo3);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		copyFlagDataOverridePayload(fdo1, fdo2);
-		dao.save(fdo2);
+
+        fdo2.copyPayloadFrom(fdo1);
+        dao.save(fdo2);
 		dao.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
 		addFlagDataOverride(fdo3);
 		addFlagDataOverride(fdo2);
@@ -796,18 +795,7 @@ public class FlagDataCalculator {
 		return fdo2;
 	}
 
-	private void copyFlagDataOverridePayload(FlagDataOverride fromFdo,
-			FlagDataOverride toFdo) {
-		toFdo.setCreatedBy(fromFdo.getCreatedBy());
-		toFdo.setCreationDate(fromFdo.getCreationDate());
-		toFdo.setForceEnd(fromFdo.getForceEnd());
-		toFdo.setForceflag(fromFdo.getForceflag());
-		toFdo.setUpdateDate(fromFdo.getUpdateDate());
-		toFdo.setUpdatedBy(fromFdo.getUpdatedBy());
-		toFdo.setYear(fromFdo.getYear());
-	}
-
-	private void addFlagDataOverride(FlagDataOverride fdo) {
+    private void addFlagDataOverride(FlagDataOverride fdo) {
 		List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
 		if (list == null) {
 			list = new ArrayList<FlagDataOverride>();
