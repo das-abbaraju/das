@@ -64,65 +64,6 @@ public class ReportApi extends PicsApiSupport {
 		return JSON;
 	}
 
-	protected JSONObject getJsonFromRequestPayload() {
-		JSONObject jsonObject = new JSONObject();
-		HttpServletRequest request = getRequest();
-		if (request == null) {
-			return jsonObject;
-		}
-
-		BufferedReader bufferedReader = null;
-		try {
-			bufferedReader = request.getReader();
-			jsonObject = parseJsonFromInput(bufferedReader);
-		} catch (Exception e) {
-			logger.error("There was an sqlException parsing the JSON from the request", e);
-		} finally {
-			closeBufferedReader(bufferedReader);
-		}
-
-		return jsonObject;
-	}
-
-/*
-	protected void createReport(JSONObject payloadJson) throws Exception {
-		JSONObject jsonReport = null;
-
-		if (JSONUtilities.isNotEmpty(payloadJson)) {
-			jsonReport = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
-		}
-
-		if (shouldLoadReportFromJson(jsonReport)) {
-			buildReportFromJson(jsonReport);
-		} else {
-			loadReportFromDatabase(reportId);
-		}
-
-		ReportService.validate(report);
-		reportService.loadOrCreateReportUser(getUser(), report);
-
-		// FIXME: This is a problem that will cause a Ninja save that the refresh above
-		//        was fixing
-//		if (StringUtils.isNotEmpty(reportParameters)) {
-//			report.setParameters(reportParameters);
-//		}
-
-		sql = new SqlBuilder().initializeSql(report, permissions);
-		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
-
-		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
-	}
-*/
-
-
-/*
-	public String sqlFunctions() {
-		Map<String, String> map = ReportUtil.getTranslatedFunctionsForField(permissions.getLocale(), null);
-		json.put("functions", ReportUtil.convertTranslatedFunctionstoJson(map));
-		return SUCCESS;
-	}
-*/
-
 	public String print() throws Exception {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
@@ -146,25 +87,6 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
-/*
-	private HSSFWorkbook buildWorkbook() {
-		logger.info("Building XLS File");
-		ExcelBuilder builder = new ExcelBuilder();
-		builder.addColumns(report.getColumns());
-		builder.addSheet(report.getName(), converter.getReportResults());
-		return builder.getWorkbook();
-	}
-
-*/
-
-/*
-	protected void runQuery() throws SQLException {
-		List<BasicDynaBean> queryResults = reportDao.runQuery(sql.toString(), json);
-		converter = new ReportDataConverter(report.getColumns(), queryResults);
-		converter.setLocale(permissions.getLocale());
-	}
-
-*/
 	protected void writeJsonError(Exception e) {
 		String message = e.getMessage();
 		if (message == null) {
@@ -179,17 +101,26 @@ public class ReportApi extends PicsApiSupport {
 		json.put(ReportJson.EXT_JS_MESSAGE, message);
 	}
 
-	/*
-	 private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
-		 logger.info("Streaming XLS File to response");
-		 ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		 ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-		 ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		 workbook.write(outstream);
-		 outstream.flush();
-		 ServletActionContext.getResponse().flushBuffer();
-	 }
- */
+	protected JSONObject getJsonFromRequestPayload() {
+		JSONObject jsonObject = new JSONObject();
+		HttpServletRequest request = getRequest();
+		if (request == null) {
+			return jsonObject;
+		}
+
+		BufferedReader bufferedReader = null;
+		try {
+			bufferedReader = request.getReader();
+			jsonObject = parseJsonFromInput(bufferedReader);
+		} catch (Exception e) {
+			logger.error("There was an sqlException parsing the JSON from the request", e);
+		} finally {
+			closeBufferedReader(bufferedReader);
+		}
+
+		return jsonObject;
+	}
+
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
 		writeJsonError(sqlException);
 

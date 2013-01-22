@@ -136,7 +136,7 @@ public class ReportService {
 		reportDao.refresh(sourceReport);
 
 		validate(newReport);
-		// setReportParameters(newReport);
+
 		newReport.setAuditColumns(permissions);
 		reportDao.save(newReport);
 
@@ -441,9 +441,9 @@ public class ReportService {
 		return reportPermissionAccount;
 	}
 
-	public void disconnectReportPermissionUser(int id, int reportId) {
+	public void disconnectReportPermissionUser(int userId, int reportId) {
 		try {
-			reportPermissionUserDao.revokePermissions(id, reportId);
+			reportPermissionUserDao.revokePermissions(userId, reportId);
 		} catch (NoResultException nre) {
 
 		}
