@@ -1,4 +1,4 @@
-package com.picsauditing.access;
+package com.picsauditing.report;
 
 import com.picsauditing.jpa.entities.Report;
 

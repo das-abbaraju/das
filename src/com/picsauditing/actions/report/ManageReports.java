@@ -19,7 +19,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.report.ReportService;
-import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;

@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;

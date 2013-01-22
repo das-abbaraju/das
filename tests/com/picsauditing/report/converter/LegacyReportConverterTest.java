@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportService;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.models.ModelType;
 
 /**

@@ -2,7 +2,6 @@ package com.picsauditing.report;
 
 import java.util.List;
 
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.util.Strings;
 

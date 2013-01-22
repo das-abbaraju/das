@@ -1,4 +1,4 @@
-package com.picsauditing.report.access;
+package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
@@ -19,6 +19,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.search.Database;

@@ -9,13 +9,13 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.report.RecordNotFoundException;
 
 @SuppressWarnings("serial")
 public class ReportEmployeeTraining extends ReportEmployee {

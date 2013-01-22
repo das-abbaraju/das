@@ -17,7 +17,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.Account;
@@ -41,6 +40,7 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.models.audits.CaoSaveModel;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 

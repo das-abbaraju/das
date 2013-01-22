@@ -1,9 +1,10 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeCountryDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.RecordNotFoundException;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 

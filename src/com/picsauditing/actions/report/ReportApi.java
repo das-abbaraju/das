@@ -12,11 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.util.Strings;

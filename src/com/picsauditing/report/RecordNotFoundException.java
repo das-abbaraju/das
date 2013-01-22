@@ -1,4 +1,4 @@
-package com.picsauditing.access;
+package com.picsauditing.report;
 
 public class RecordNotFoundException extends Exception {
 	

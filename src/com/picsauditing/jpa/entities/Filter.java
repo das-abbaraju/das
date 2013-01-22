@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;

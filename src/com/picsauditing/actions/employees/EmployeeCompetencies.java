@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
@@ -34,6 +33,7 @@ import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.DoubleMap;

@@ -11,11 +11,13 @@ import javax.persistence.NonUniqueResultException;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.access.*;
-import com.picsauditing.actions.report.PicsSqlException;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.PicsSqlException;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
 import com.picsauditing.report.converter.ExtJSToReportConverter;
 import com.picsauditing.report.converter.ReportToExtJSConverter;
@@ -117,9 +119,9 @@ public class ReportService {
 		return true;
 	}
 
-	public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable)
+	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
-		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, id, reportId, editable);
+		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, userId, reportId, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
 	}

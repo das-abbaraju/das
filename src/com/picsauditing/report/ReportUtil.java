@@ -1,4 +1,4 @@
-package com.picsauditing.report.access;
+package com.picsauditing.report;
 
 import java.io.IOException;
 import java.util.List;

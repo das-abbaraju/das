@@ -24,7 +24,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
@@ -36,6 +35,7 @@ import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.toggle.FeatureToggle;

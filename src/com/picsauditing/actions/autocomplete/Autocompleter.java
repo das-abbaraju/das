@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.model.general.Autocomplete;
-import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.FieldType;
 
 @SuppressWarnings({ "unchecked", "serial" })

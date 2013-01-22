@@ -17,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;

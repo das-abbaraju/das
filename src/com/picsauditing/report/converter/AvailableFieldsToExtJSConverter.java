@@ -8,7 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 
