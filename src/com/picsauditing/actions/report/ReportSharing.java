@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportService;
+import com.picsauditing.service.PermissionService;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportSharing extends PicsActionSupport {
 
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private PermissionService permissionService;
 
 	private Report report;
 
@@ -33,7 +36,7 @@ public class ReportSharing extends PicsActionSupport {
 
 			editable = Boolean.parseBoolean(ServletActionContext.getRequest().getParameter("editable"));
 
-			if (type != null && reportService.canUserEdit(permissions, report)
+			if (type != null && permissionService.canUserEditReport(permissions, report)
 					&& id != permissions.getUserId()) {
 
 				json.put("title", "Report Shared");
@@ -75,7 +78,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
 			id = Integer.parseInt(dirtyParameter);
 
-			if (reportService.canUserEdit(permissions, report) && id != permissions.getUserId()) {
+			if (permissionService.canUserEditReport(permissions, report) && id != permissions.getUserId()) {
 				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type)) {
 					reportService.disconnectReportPermissionUser(id, report.getId());
 				} else if ("account".equalsIgnoreCase(type)) {
@@ -111,7 +114,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("editable");
 			editable = Boolean.parseBoolean(dirtyParameter);
 
-			if (reportService.canUserEdit(permissions, report)) {
+			if (permissionService.canUserEditReport(permissions, report)) {
 				reportService.setEditPermissions(permissions, id, report.getId(), editable);
 				json.put("success", true);
 			} else {

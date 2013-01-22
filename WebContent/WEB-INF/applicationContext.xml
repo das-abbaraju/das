@@ -186,6 +186,7 @@
 	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
 	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
 	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
+	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
 
     <bean id="AccountUserAutocompleteService" class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService" />
     <bean id="AuditCategoryAutocompleteService"

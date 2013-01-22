@@ -20,6 +20,7 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.PermissionService;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -46,8 +47,6 @@ import static com.picsauditing.report.ReportJson.*;
 
 public class ReportService {
 
-	private static final int REPORT_DEVELOPER_GROUP = 77375;
-
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -56,6 +55,8 @@ public class ReportService {
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	@Autowired
+	private PermissionService permissionService;
 
 	@SuppressWarnings("deprecation")
 	@Autowired
@@ -68,50 +69,6 @@ public class ReportService {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
-	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
-		try {
-			reportPermissionUserDao.findOneByPermissions(permissions, reportId);
-		} catch (NoResultException nre) {
-			try {
-				reportPermissionAccountDao.findOne(permissions.getAccountId(), reportId);
-			} catch (NoResultException nr) {
-				return isReportDevelopmentGroup(permissions);
-			}
-		}
-
-		return true;
-	}
-
-	public boolean canUserEdit(Permissions permissions, Report report) {
-		boolean editable = false;
-
-		try {
-			editable = reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
-		} catch (NoResultException nre) {
-			logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
-		}
-
-		return editable || isReportDevelopmentGroup(permissions);
-	}
-
-	private boolean isReportDevelopmentGroup(Permissions permissions) {
-		try {
-			int userID = permissions.getUserId();
-
-			if (permissions.getAdminID() > 0) {
-				userID = permissions.getAdminID();
-			}
-
-			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
-
-			reportDao.findOne(UserGroup.class, where);
-		} catch (NoResultException nre) {
-			return false;
-		}
-
-		return true;
-	}
-
 	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
 		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, userId, reportId, editable);
@@ -121,7 +78,7 @@ public class ReportService {
 
 	public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException,
 			NonUniqueResultException, SQLException, Exception {
-		if (!canUserViewAndCopy(permissions, sourceReport.getId())) {
+		if (!permissionService.canUserViewAndCopyReport(permissions, sourceReport.getId())) {
 			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
 					+ sourceReport.getId());
 		}
@@ -153,7 +110,7 @@ public class ReportService {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		if (!canUserEdit(permissions, report)) {
+		if (!permissionService.canUserEditReport(permissions, report)) {
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 		}
 

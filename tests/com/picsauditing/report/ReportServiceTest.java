@@ -34,7 +34,6 @@ import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.converter.LegacyReportConverter;
@@ -75,7 +74,6 @@ public class ReportServiceTest {
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
 
-	@SuppressWarnings("deprecation")
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -96,61 +94,6 @@ public class ReportServiceTest {
 		when(account.getId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(featureToggle.isFeatureEnabled(anyString())).thenReturn(true);
-	}
-
-	@Test
-	public void mockUserIsMockedWithUserId() {
-		assertEquals(USER_ID, user.getId());
-	}
-
-	@Test
-	public void mockReportIsMockedWithReportId() {
-		assertEquals(REPORT_ID, report.getId());
-	}
-
-	@Test
-	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
-		// use make user so that it has an account
-		User user = EntityFactory.makeUser();
-		user.setId(USER_ID);
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(
-				new ReportPermissionUser());
-
-		assertTrue(reportService.canUserViewAndCopy(permissions, REPORT_ID));
-	}
-
-	@Ignore
-	public void canUserViewAndCopy_FalseIfNoResultException() {
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-
-		assertFalse(reportService.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
-	}
-
-	@Test
-	public void canUserEdit_FalseIfNoResultException() {
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
-		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
-		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
-
-		assertFalse(reportService.canUserEdit(permissions, report));
-	}
-
-	@Test
-	public void canUserEdit_FalseIfNoEditPermission() {
-		when(reportPermissionUser.isEditable()).thenReturn(false);
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
-		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
-		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
-
-		assertFalse(reportService.canUserEdit(permissions, report));
-	}
-
-	@Test
-	public void canUserEdit_TrueIfEditPermission() {
-		when(reportPermissionUser.isEditable()).thenReturn(true);
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
-
-		assertTrue(reportService.canUserEdit(permissions, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
