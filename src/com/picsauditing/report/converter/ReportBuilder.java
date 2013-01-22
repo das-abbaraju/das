@@ -24,11 +24,11 @@ import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
-public class ExtJSToReportConverter {
+public class ReportBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(ExtJSToReportConverter.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReportBuilder.class);
 
-	public static Report convertToReport(JSONObject reportJson) throws ReportValidationException {
+	public static Report fromJson(JSONObject reportJson) throws ReportValidationException {
 		Report report = new Report();
 
 		report.setName((String) reportJson.get(REPORT_NAME));

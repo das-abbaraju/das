@@ -6,10 +6,10 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.converter.ReportToExtJSConverter;
+import com.picsauditing.report.converter.JsonBuilder;
 import com.picsauditing.report.models.ModelType;
 
-public class ReportToExtJSConverterTest {
+public class JsonBuilderTest {
 
 	@Test
 	public void testSimpleNameToJson() {
@@ -18,7 +18,7 @@ public class ReportToExtJSConverterTest {
 		report.setModelType(ModelType.Contractors);
 		report.setDescription("This is a test report");
 
-		JSONObject json = ReportToExtJSConverter.toJSON(report);
+		JSONObject json = JsonBuilder.fromReport(report);
 		String jsonString = json.toString();
 
 		assertContains("\"name\":\"Test Report\"", jsonString);

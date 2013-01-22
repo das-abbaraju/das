@@ -13,8 +13,8 @@ import javax.servlet.ServletOutputStream;
 import com.picsauditing.access.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
-import com.picsauditing.report.converter.ExtJSToReportConverter;
-import com.picsauditing.report.converter.ReportToExtJSConverter;
+import com.picsauditing.report.converter.ReportBuilder;
+import com.picsauditing.report.converter.JsonBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
@@ -511,7 +511,7 @@ public class ReportService {
 	}
 
 	private Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
-		Report report = ExtJSToReportConverter.convertToReport(jsonReport);
+		Report report = ReportBuilder.fromJson(jsonReport);
 		report.setId(reportId);
 		return report;
 	}
@@ -541,7 +541,7 @@ public class ReportService {
 		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			responseJson.put(LEVEL_REPORT, ReportToExtJSConverter.toJSON(report));
+			responseJson.put(LEVEL_REPORT, JsonBuilder.fromReport(report));
 		}
 
 		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
