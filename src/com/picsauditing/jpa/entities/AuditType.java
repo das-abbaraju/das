@@ -418,7 +418,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 *         Used for implementing audit score.
 	 */
 	@Transient
-	@ReportField(type = FieldType.String, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.Audits)
 	public boolean isScoreable() {
 		return scoreType != null;
 	}
