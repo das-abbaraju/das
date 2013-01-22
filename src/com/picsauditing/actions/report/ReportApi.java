@@ -34,7 +34,7 @@ public class ReportApi extends PicsApiSupport {
 	protected int reportId;
 	protected String debugSQL = "";
 	protected ReportDataConverter converter;
-	protected int limit = 100;
+	protected int limit = 50;
 	protected int pageNumber = 1;
 	protected boolean includeReport;
 	protected boolean includeColumns;
