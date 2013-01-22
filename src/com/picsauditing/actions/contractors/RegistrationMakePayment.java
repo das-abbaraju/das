@@ -49,6 +49,7 @@ import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
 import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.validator.ContractorValidator;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {

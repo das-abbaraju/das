@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;

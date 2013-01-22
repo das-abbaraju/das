@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionBuilder;
@@ -52,6 +51,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.VATValidator;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {

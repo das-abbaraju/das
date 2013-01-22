@@ -1,11 +1,15 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.PasswordDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.PasswordHistory;
 import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.validator.PasswordValidator;
+
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

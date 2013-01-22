@@ -4,7 +4,7 @@
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.util.Locale"%>
 <%@page import="com.picsauditing.PICS.I18nCache"%>
-<%@page import="com.picsauditing.PICS.InputValidator"%>
+<%@page import="com.picsauditing.validator.InputValidator"%>
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>
 <!-- FIXME Clean up this validation, possibly moving it into a controller solely for AJAX validation -->
 <%

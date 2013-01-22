@@ -1,10 +1,12 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.validator.InputValidator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

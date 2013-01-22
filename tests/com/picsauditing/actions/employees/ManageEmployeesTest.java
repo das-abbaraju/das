@@ -26,7 +26,6 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -53,6 +52,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.jpa.entities.UserStatus;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.validator.InputValidator;
 
 public class ManageEmployeesTest extends PicsActionTest {
 	private ManageEmployees manageEmployees;

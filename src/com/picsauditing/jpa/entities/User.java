@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
@@ -51,6 +50,7 @@ import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
+import com.picsauditing.validator.InputValidator;
 
 @SuppressWarnings("serial")
 @Entity

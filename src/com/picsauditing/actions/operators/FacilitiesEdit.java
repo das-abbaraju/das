@@ -43,6 +43,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.FacilitiesEditValidator;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
@@ -61,6 +62,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private FacilitiesEditModel facilitiesEditModel;
     @Autowired
     protected CountrySubdivisionDAO countrySubdivisionDAO;
+    @Autowired
+    private FacilitiesEditValidator facilitiesEditValidator;
 
     private String createType;
     private List<Integer> facilities;
@@ -100,8 +103,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         subHeading = getText("FacilitiesEdit.Edit", new Object[]{getText("global." + operator.getType())});
 
-        if (operator.getPrimaryContact() == null)
-            addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
+        if (operator.getPrimaryContact() == null) {
+			addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
+		}
 
         notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
         childOperatorList = operator.getChildOperators();
@@ -131,9 +135,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public String remove() {
-        if (accountUser != null) {
-            accountUserDAO.remove(accountUser);
+        String validationMessage = facilitiesEditValidator.validateRemoveAccountUser(operator.getAccountUsers(), accountUser);
+        if (Strings.isNotEmpty(validationMessage)) {
+        	addActionMessage(validationMessage);
+        	return REDIRECT;
         }
+
+        accountUserDAO.remove(accountUser);
 
         return REDIRECT;
     }
@@ -147,32 +155,33 @@ public class FacilitiesEdit extends OperatorActionSupport {
     	} else {
         	newAccountUser = salesRep;
     	}
-    	
-    	try {
-			facilitiesEditModel.addRoleValidation(operator, newAccountUser);
-		} catch (com.opensymphony.xwork2.validator.ValidationException e) {
-			addActionMessage(e.getMessage());
-			return REDIRECT;
-		}
-    	
+
+    	String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(operator.getAccountUsers(), newAccountUser);
+        if (Strings.isNotEmpty(validationMessage)) {
+        	addActionMessage(validationMessage);
+        	return REDIRECT;
+        }
+
     	facilitiesEditModel.addRole(permissions, operator, newAccountUser);
-    	
-    	// TODO: Fix tests and remove because this will be null after the redirect
-    	accountRep = null;
-    	
+
     	return REDIRECT;
     }
 
     public String copyToChildAccounts() throws Exception {
-        facilitiesEditModel.copyToChildAccounts(operator,accountUser);
+        facilitiesEditModel.copyToChildAccounts(operator, accountUser);
 
         addActionMessage("Successfully Copied to all child operators");
-        // Redirecting because we don't want to hit this same method over and
-        // over again.
+
         return REDIRECT;
     }
 
     public String saveRole() {
+    	String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(operator.getAccountUsers());
+        if (Strings.isNotEmpty(validationMessage)) {
+        	addActionMessage(validationMessage);
+        	return REDIRECT;
+        }
+
         operatorDao.save(operator);
 
         return REDIRECT;
@@ -224,8 +233,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
                 }
             }
 
-            for (String error : errors)
-                addActionError(error);
+            for (String error : errors) {
+				addActionError(error);
+			}
 
             return REDIRECT;
         }
@@ -431,13 +441,16 @@ public class FacilitiesEdit extends OperatorActionSupport {
             if (operator.getId() > 0) {
                 // Add all my parents
                 if (operator.getCorporateFacilities() != null) {
-                    for (Facility parent : operator.getCorporateFacilities())
-                        relatedFacilities.add(parent.getCorporate());
+                    for (Facility parent : operator.getCorporateFacilities()) {
+						relatedFacilities.add(parent.getCorporate());
+					}
                 }
-                if (operator.getInheritFlagCriteria() != null)
-                    relatedFacilities.add(operator.getInheritFlagCriteria());
-                if (operator.getInheritInsuranceCriteria() != null)
-                    relatedFacilities.add(operator.getInheritInsuranceCriteria());
+                if (operator.getInheritFlagCriteria() != null) {
+					relatedFacilities.add(operator.getInheritFlagCriteria());
+				}
+                if (operator.getInheritInsuranceCriteria() != null) {
+					relatedFacilities.add(operator.getInheritInsuranceCriteria());
+				}
             }
         }
 
@@ -458,7 +471,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
     /**
      * This is the account user that is used when a user clicks on the "Remove"
-     * button, or when copying a specific AccountUser to all the Children of the 
+     * button, or when copying a specific AccountUser to all the Children of the
      * parent Operator.
      */
     public AccountUser getAccountUser() {
@@ -516,11 +529,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         Set<User> switchToSet = new HashSet<User>();
         // Adding users that can switch to users on account
-        for (User u : primaryContactSet)
-            switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+        for (User u : primaryContactSet) {
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		}
         // Adding users that can switch to groups on account
-        for (User u : groupSet)
-            switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+        for (User u : groupSet) {
+			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		}
 
         // Adding all SwitchTo users to primary contacts
         try {
@@ -569,8 +584,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
      * @throws RecordNotFoundException
      */
     public boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
-        if (operator == null)
-            findOperator();
+        if (operator == null) {
+			findOperator();
+		}
 
         return operator.isAutoApproveRelationships();
     }
@@ -607,18 +623,21 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
             for (AccountUser au : aus) {
                 if (au.getEndDate().before(new Date())) {
-                    if (au.getRole().equals(UserAccountRole.PICSAccountRep))
-                        ams.add(au);
-                    else
-                        srs.add(au);
+                    if (au.getRole().equals(UserAccountRole.PICSAccountRep)) {
+						ams.add(au);
+					} else {
+						srs.add(au);
+					}
                 }
             }
 
             managers = new HashMap<UserAccountRole, List<AccountUser>>();
-            if (ams.size() > 0)
-                managers.put(UserAccountRole.PICSAccountRep, ams);
-            if (srs.size() > 0)
-                managers.put(UserAccountRole.PICSSalesRep, srs);
+            if (ams.size() > 0) {
+				managers.put(UserAccountRole.PICSAccountRep, ams);
+			}
+            if (srs.size() > 0) {
+				managers.put(UserAccountRole.PICSSalesRep, srs);
+			}
         }
 
         return managers;
@@ -657,8 +676,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public int getPendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
-        if (operator == null)
-            findOperator();
+        if (operator == null) {
+			findOperator();
+		}
 
         int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
                 "operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
@@ -677,10 +697,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
     // TODO: This should be converted to Struts2 Validation
     private List<String> validateAccount(OperatorAccount operator) {
         List<String> errorMessages = new ArrayList<String>();
-        if (Strings.isEmpty(operator.getName()))
-            errorMessages.add(getText("FacilitiesEdit.PleaseFillInCompanyName"));
-        else if (operator.getName().length() < 2)
-            errorMessages.add(getText("FacilitiesEdit.NameAtLeast2Chars"));
+        if (Strings.isEmpty(operator.getName())) {
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCompanyName"));
+		} else if (operator.getName().length() < 2) {
+			errorMessages.add(getText("FacilitiesEdit.NameAtLeast2Chars"));
+		}
 
         if (operator.getCountry() == null) {
             errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
@@ -791,5 +812,5 @@ public class FacilitiesEdit extends OperatorActionSupport {
         childOperatorList = operator.getChildOperators();
         return childOperatorList;
     }
-    
+
 }

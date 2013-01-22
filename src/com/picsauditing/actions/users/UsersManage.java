@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -59,6 +58,7 @@ import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.InputValidator;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {

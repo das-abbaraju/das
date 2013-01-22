@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -50,6 +49,7 @@ import com.picsauditing.jpa.entities.UserStatus;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.validator.InputValidator;
 
 @SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {

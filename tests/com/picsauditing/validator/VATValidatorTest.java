@@ -1,14 +1,19 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
-import com.picsauditing.jpa.entities.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.Currency;
 
 public class VATValidatorTest {
     private static final String GREAT_BRITAIN_ISO = "GB";
