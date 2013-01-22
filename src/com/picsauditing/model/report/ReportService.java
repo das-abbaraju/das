@@ -479,11 +479,7 @@ public class ReportService {
 	}
 
 	public Report createReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
-		JSONObject reportJson = null;
-
-		if (JSONUtilities.isNotEmpty(reportContext.payloadJson)) {
-			reportJson = getReportJsonFromPayload(reportContext.payloadJson);
-		}
+		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
 
 		Report report = null;
 		if (shouldLoadReportFromJson(reportJson, reportContext.includeData)) {
@@ -506,7 +502,12 @@ public class ReportService {
 	}
 
 	private JSONObject getReportJsonFromPayload(JSONObject payloadJson) {
-		JSONObject reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
+		JSONObject reportJson = new JSONObject();
+
+		if (JSONUtilities.isNotEmpty(payloadJson)) {
+			reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
+		}
+
 		return reportJson;
 	}
 
@@ -514,7 +515,7 @@ public class ReportService {
 		return JSONUtilities.isNotEmpty(reportJson) && includeData;
 	}
 
-	private Report buildReportFromJson(JSONObject jsonReport, int reportId) {
+	private Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
 		Report report = ExtJSToReportConverter.convertToReport(jsonReport);
 		report.setId(reportId);
 		return report;

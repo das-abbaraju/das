@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
@@ -27,7 +28,7 @@ public class ExtJSToReportConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExtJSToReportConverter.class);
 
-	public static Report convertToReport(JSONObject reportJson) {
+	public static Report convertToReport(JSONObject reportJson) throws ReportValidationException {
 		Report report = new Report();
 
 		report.setName((String) reportJson.get(REPORT_NAME));
@@ -43,9 +44,14 @@ public class ExtJSToReportConverter {
 		return report;
 	}
 
-	private static ModelType parseModelType(JSONObject json) {
-		// We may need to consider error handling if the modelType doesn't exist
-		return ModelType.valueOf((String) json.get(REPORT_MODEL_TYPE));
+	private static ModelType parseModelType(JSONObject json) throws ReportValidationException {
+		String modelTypeString = (String) json.get(REPORT_MODEL_TYPE);
+
+		if (modelTypeString == null) {
+			throw new ReportValidationException("Report does not have a valid model type defined");
+		}
+
+		return ModelType.valueOf(modelTypeString);
 	}
 
 	private static String parseFilterExpression(JSONObject json) {
