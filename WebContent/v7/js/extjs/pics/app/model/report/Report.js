@@ -176,21 +176,26 @@ Ext.define('PICS.model.report.Report', {
             Ext.Error.raise('Invalid column');
         }
         
-        var column_store = this.columns();
+        var column_store = this.columns(),
+            new_column = column.getData();
         
-        column_store.add(column);
+        column_store.add(new_column);
     },
     
     addColumns: function (columns) {
+        var new_columns = [];
+        
         Ext.Array.forEach(columns, function (column) {
             if (Ext.getClassName(column) != 'PICS.model.report.Column') {
                 Ext.Error.raise('Invalid column');
             }
+            
+            new_columns.push(column.getData());
         });
         
         var column_store = this.columns();
         
-        column_store.add(columns);
+        column_store.add(new_columns);
     },
     
     addFilter: function (filter) {
@@ -216,6 +221,10 @@ Ext.define('PICS.model.report.Report', {
     },
     
     addSort: function (column, direction) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
         var sort_store = this.sorts(),
             field_id = column.get('field_id');
         
