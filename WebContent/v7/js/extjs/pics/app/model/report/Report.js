@@ -203,21 +203,26 @@ Ext.define('PICS.model.report.Report', {
             Ext.Error.raise('Invalid filter');
         }
         
-        var filter_store = this.filters();
+        var filter_store = this.filters(),
+            new_filter = filter.getData();
         
-        filter_store.add(filter);
+        filter_store.add(new_filter);
     },
     
     addFilters: function (filters) {
+        var new_filters = [];
+        
         Ext.Array.forEach(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
+            
+            new_filters.push(filter.getData());
         });
         
         var filter_store = this.filters();
         
-        filter_store.add(filters);
+        filter_store.add(new_filters);
     },
     
     addSort: function (column, direction) {
