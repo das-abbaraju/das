@@ -96,22 +96,22 @@ Ext.define('PICS.controller.report.ReportData', {
     },
     
     onReportDataReconfigure: function (cmp, eOpts) {
-        var report_data = cmp,
-            report_data_store = cmp.getStore(),
-            total = report_data_store.getTotalCount(),
+        var report_data_view = cmp,
+            report_data_store = report_data_view.getStore(),
+            results_total = report_data_store.getTotalCount(),
             report_paging_toolbar = this.getReportPagingToolbar();
         
         // remove no results message if one exists
-        report_data.updateNoResultsMessage();
+        report_data_view.updateNoResultsMessage();
         
         // update display count
-        report_paging_toolbar.updateDisplayInfo(total);
+        report_paging_toolbar.updateDisplayInfo(results_total);
     },
     
     changeLimit: function (cmp, records, options) {
-        var value = cmp.getValue();
+        var limit = cmp.getValue();
 
-        PICS.data.ServerCommunication.loadData(1, value);
+        PICS.data.ServerCommunication.loadData(1, limit);
     },
     
     moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
