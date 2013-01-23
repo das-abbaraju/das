@@ -119,6 +119,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
 	private List<Report> reports = new ArrayList<Report>();
 	private List<Locale> spokenLanguages = new ArrayList<Locale>();
+	private List<String> countriesServiced = new ArrayList<String>();
 
 	@Autowired
 	private InputValidator inputValidator;
@@ -454,6 +455,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setSpokenLanguages(List<Locale> spokenLanguages) {
 		this.spokenLanguages = spokenLanguages;
+	}
+
+	@ElementCollection
+	@CollectionTable(name="user_country", joinColumns = @JoinColumn(name = "userID"))
+	@Column(name = "isoCode")
+	public List<String> getCountriesServiced() {
+		return countriesServiced;
+	}
+
+	public void setCountriesServiced(List<String> countriesServiced) {
+		this.countriesServiced = countriesServiced;
 	}
 
 	@Transient

@@ -284,7 +284,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
 
-		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
+		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate, this.getContractor().getCountry()
+				.getIsoCode());
 
 		availableSet = new AvailableSet();
 		for (AuditorAvailability timeslot : timeslots) {

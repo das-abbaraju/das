@@ -1,35 +1,34 @@
 package com.picsauditing.actions.users;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import com.picsauditing.PICS.InputValidator;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserGroup;
-import com.picsauditing.validator.InputValidator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class UsersManageTest extends PicsActionTest {
 
-	private UsersManage usersManage;
-
 	private static int NOT_GROUP_CSR = User.GROUP_CSR++;
 	private static int INVALID_USER_ID = 0;
+	private UsersManage usersManage;
 	private List<UserGroup> userGroups;
 	private List<UserGroup> members;
-
 	@Mock
 	private User user;
 	@Mock
@@ -121,6 +120,56 @@ public class UsersManageTest extends PicsActionTest {
 		verify(inputValidator).validateUsernameAvailable(anyString(), anyInt());
 		verify(inputValidator, times(2)).validatePhoneNumber(anyString(), anyBoolean());
 		verify(inputValidator).validateLocale((Locale) any());
+	}
+
+	@Test
+	public void testAddCountry_Duplicated() {
+		List<String> countriesServiced = new ArrayList<String>();
+		countriesServiced.add("US");
+
+		when(user.getCountriesServiced()).thenReturn(countriesServiced);
+
+		usersManage.setUser(user);
+		usersManage.setSelectedCountry("US");
+
+		assertEquals(PicsActionSupport.SUCCESS, usersManage.addCountry());
+		assertFalse(usersManage.hasActionMessages());
+		assertTrue(usersManage.hasActionErrors());
+
+		verify(userDAO, never()).save(user);
+	}
+
+	@Test
+	public void testAddCountry_NotDuplicated() {
+		usersManage.setUser(user);
+		usersManage.setSelectedCountry("US");
+
+		assertEquals(PicsActionSupport.SUCCESS, usersManage.addCountry());
+		assertFalse(usersManage.hasActionErrors());
+		assertTrue(usersManage.hasActionMessages());
+
+		verify(userDAO).save(user);
+	}
+
+	@Test
+	public void testRemoveCountry() throws Exception {
+		when(user.getCountriesServiced()).thenReturn(new ArrayList<String>() {{
+			add("US");
+		}});
+
+		Account account = new Account();
+		account.setId(1);
+
+		when(user.getAccount()).thenReturn(account);
+		when(permissions.getAccountId()).thenReturn(1);
+
+		usersManage.setAccount(account);
+		usersManage.setUser(user);
+		usersManage.setRemoveCountry("US");
+
+		assertEquals(PicsActionSupport.REDIRECT, usersManage.removeCountry());
+
+		assertEquals(0, user.getCountriesServiced().size());
 	}
 
 	private void setUpUserAndAccount() {
