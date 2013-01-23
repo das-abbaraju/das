@@ -96,7 +96,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
       
         column_list.reset();
 
-        column_modal.close();
+        column_modal.destroy();
 
         // Get new data for the modified report model (which will update the view, as well).
         PICS.data.ServerCommunication.loadData();
