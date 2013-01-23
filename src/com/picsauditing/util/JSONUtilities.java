@@ -10,6 +10,8 @@ import com.picsauditing.jpa.entities.JSONable;
 
 public class JSONUtilities {
 
+	public static final String EMPTY_JSON = "{}";
+
 	@SuppressWarnings("unchecked")
 	static public JSONArray convertFromList(List<? extends JSONable> list) {
 		JSONArray jsonArray = new JSONArray();
@@ -64,7 +66,7 @@ public class JSONUtilities {
 			return true;
 		}
 
-		if (StringUtils.isEmpty(json.toJSONString())) {
+		if (StringUtils.equals(json.toString(), EMPTY_JSON)) {
 			return true;
 		}
 
