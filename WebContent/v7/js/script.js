@@ -2637,7 +2637,7 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                                 'data-search': item.search
                             });
 
-                            i.addClass(item.search);
+                            i.addClass(item.search + ' ' + item.status);
 
                             i.find('a').html([
                                 '<div class="clearfix">',
@@ -2709,12 +2709,17 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     success: function (data, textStatus, jqXHR) {
                         if (that.$element.val().length > 0) {
                             process($.map(data.results, function (item) {
+                                var account_status = 'account-';
+
+                                account_status += item.account_status.toLowerCase();
+
                                 return {
                                     id: item.result_id,
                                     name: item.result_name,
                                     location: item.result_at,
                                     search: item.search_type,
-                                    type: item.result_type
+                                    type: item.result_type,
+                                    status: account_status
                                 };
                             }), data.total_results);
                         }

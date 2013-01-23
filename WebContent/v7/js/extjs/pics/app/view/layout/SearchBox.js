@@ -35,7 +35,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             '<ul>',
                 '<tpl for=".">',
                     '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
-                        '<div class="search-item">',
+                        '<div class="search-item asd {account_status}">',
                             '<div>',
                                 '<span class="name"><em>{result_name}</em></span>',
                                 '<span class="id"><em>ID {result_id}</em></span>',
@@ -112,7 +112,8 @@ Ext.define('PICS.view.layout.SearchBox', {
             'result_id',
             'result_name',
             'result_at',
-            'search_type'
+            'search_type',
+            'account_status'
         ],
         proxy: {
             type: 'ajax',

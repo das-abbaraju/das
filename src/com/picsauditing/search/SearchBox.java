@@ -152,6 +152,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 			jsonResult.put("result_id", fields[2]);
 			jsonResult.put("result_name", fields[3]);
 			jsonResult.put("result_at", fields[4]);
+			jsonResult.put("account_status", fields[5]);
 
 			jsonArray.add(jsonResult);
 		}
