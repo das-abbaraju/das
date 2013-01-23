@@ -59,5 +59,14 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
         }
 
         return new_class_names;
+    },
+
+    reset: function () {
+        var store = this.getStore(),
+            selection_model = this.getSelectionModel();
+
+        store.clearFilter();
+
+        selection_model.deselectAll();
     }
 });

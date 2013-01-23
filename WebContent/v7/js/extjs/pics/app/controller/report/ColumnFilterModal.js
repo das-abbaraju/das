@@ -34,6 +34,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     init: function () {
         this.control({
+            'columnmodal': {
+                beforeclose: this.beforeColumnModalClose
+            },
+            'filtermodal': {
+                beforeclose: this.beforeFilterModalClose
+            },
             'columnmodal textfield[name=search_box]': {
                 keyup: this.onColumnModalSearch
             },
@@ -51,7 +57,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             },
             'filtermodal button[action=cancel]':  {
                 click: this.onFilterModalCancelClick
-            }            
+            }
         });
 
         this.application.on({
@@ -65,36 +71,50 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
     },
 
+    beforeColumnModalClose: function (cmp, event, eOpts) {
+        var column_list = this.getColumnList();
+
+        column_list.reset();
+    },
+
+    beforeFilterModalClose: function (cmp, event, eOpts) {
+        var filter_list = this.getFilterList();
+
+        filter_list.reset();
+    },
+
     onColumnModalAddClick: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column_modal = this.getColumnModal(),
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
-            selected_columns = column_modal_checkbox_model.getSelection();
+            selected_columns = column_modal_checkbox_model.getSelection(),
+            column_modal = this.getColumnModal();
 
-        // Add the selected column to the report model.
+        // Add the selected columns to the report model.
         report.addColumns(selected_columns);
-        
-        // Close the column modal.
+      
+        column_list.reset();
+
         column_modal.close();
 
-        // Get new data for the modified report model.
+        // Get new data for the modified report model (which will update the view, as well).
         PICS.data.ServerCommunication.loadData();
     },
 
     onColumnModalCancelClick: function (cmp, event, eOpts) {
-        var column_modal = this.getColumnModal();
+        var column_list = this.getColumnList(),
+            column_modal = this.getColumnModal();
+
+        column_list.reset();
         
-        column_modal.close();
+        column_modal.destroy();
     },
 
     onColumnModalSearch: function (cmp, event, eOpts) {
         var columns_store = this.getReportColumnsStore(),
             columns_search_box = this.getColumnModalSearchBox(),
             search_query = columns_search_box.getValue();
-
-        columns_store.clearFilter();
 
         columns_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
@@ -104,24 +124,32 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
     onFilterModalAddClick: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            filter_modal = this.getFilterModal(),
             filter_list = this.getFilterList(),
             filter_modal_checkbox_model = filter_list.getSelectionModel(),
-            selected_filters = filter_modal_checkbox_model.getSelection();
+            selected_filters = filter_modal_checkbox_model.getSelection(),
+            filter_modal = this.getFilterModal();
     
-        // Add the selected filter to the report model.
+        // Add the selected filters to the report model.
         report.addFilters(selected_filters);
 
-        // Close the filter modal.
-        filter_modal.close();
-        
+        // Add the selected filters to the FilterOptions view.
         this.application.fireEvent('refreshfilters');
+
+        filter_list.reset();
+
+        filter_modal.destroy();
+
+        // Get new data for the modified report.
+        PICS.data.ServerCommunication.loadData();
     },
 
     onFilterModalCancelClick: function (cmp, event, eOpts) {
-        var filter_modal = this.getFilterModal();
-        
-        filter_modal.close();
+        var filter_list = this.getFilterList(),
+            filter_modal = this.getFilterModal();
+
+        filter_list.reset();
+
+        filter_modal.destroy();
     },
 
     onFilterModalSearch: function (cmp, event, eOpts) {
@@ -129,34 +157,28 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             filters_search_box = this.getFilterModalSearchBox(),
             search_query = filters_search_box.getValue();
 
-        filters_store.clearFilter();
-
         filters_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
         }));
     },
-
+    
     showColumnModal: function () {
+        // Create the modal.
         var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
-        
-        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
-        var column_list = this.getColumnList();
 
+        // Display the modal.
         column_modal.show();
-        column_list.getSelectionModel().deselectAll();
     },
 
     showFilterModal: function () {
+        // Create the modal.
         var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
-        
-        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
-        var filter_list = this.getFilterList();
-        
+
+        // Display the modal.
         filter_modal.show();
-        filter_list.getSelectionModel().deselectAll();
     }
 });
