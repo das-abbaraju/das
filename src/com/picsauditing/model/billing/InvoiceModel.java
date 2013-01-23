@@ -46,6 +46,10 @@ public class InvoiceModel {
 	}
 
 	public List<CommissionDetail> getCommissionDetails(Invoice invoice) {
+		if (invoice == null) {
+			return Collections.emptyList();
+		}
+
 		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
 		if (CollectionUtils.isEmpty(invoiceCommissions)) {
 			return Collections.emptyList();
@@ -109,12 +113,11 @@ public class InvoiceModel {
 	}
 
 	public Map<Integer, List<FeeClass>> getClientSiteServiceLevels(List<CommissionAudit> commissionAudits) {
-		Map<Integer, List<FeeClass>> clientSiteServiceLevels = new HashMap<Integer, List<FeeClass>>();
-
 		if (CollectionUtils.isEmpty(commissionAudits)) {
-			return clientSiteServiceLevels;
+			return Collections.emptyMap();
 		}
 
+		Map<Integer, List<FeeClass>> clientSiteServiceLevels = new HashMap<Integer, List<FeeClass>>();
 		for (CommissionAudit commissionAudit : commissionAudits) {
 			Integer key = commissionAudit.getClientSiteId();
 			List<FeeClass> feeClasses = clientSiteServiceLevels.get(key);
@@ -130,11 +133,11 @@ public class InvoiceModel {
 	}
 
 	public Map<FeeClass, Integer> getNumberOfSitesUsingService(List<CommissionAudit> commissionAudits) {
-		Map<FeeClass, Integer> sitesUsingService = new HashMap<FeeClass, Integer>();
 		if (CollectionUtils.isEmpty(commissionAudits)) {
-			return sitesUsingService;
+			return Collections.emptyMap();
 		}
 
+		Map<FeeClass, Integer> sitesUsingService = new HashMap<FeeClass, Integer>();
 		for (CommissionAudit commissionAudit : commissionAudits) {
 			FeeClass feeClass = commissionAudit.getFeeClass();
 			if (sitesUsingService.containsKey(feeClass)) {
@@ -149,7 +152,7 @@ public class InvoiceModel {
 	}
 
 	public List<CommissionAudit> findCommissionAudits(int invoiceId) {
-		List<CommissionAudit> commissionAudits = null;
+		List<CommissionAudit> commissionAudits =  Collections.emptyList();
 		try {
 			commissionAudits = Database.select("SELECT * FROM commission_audit ca WHERE ca.invoiceID = ?", invoiceId,
 					new IntegerQueryMapper(), new CommissionAuditRowMapper());
@@ -177,8 +180,11 @@ public class InvoiceModel {
 	}
 
 	public String getSortedClientSiteList(ContractorAccount contractor) {
-		List<String> operatorsString = new ArrayList<String>();
+		if (contractor == null || CollectionUtils.isEmpty(contractor.getNonCorporateOperators())) {
+			return Strings.EMPTY_STRING;
+		}
 
+		List<String> operatorsString = new ArrayList<String>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			String doContractorsPay = contractorOperator.getOperatorAccount().getDoContractorsPay();
 
