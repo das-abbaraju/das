@@ -8515,18 +8515,34 @@ body {
 
 /* line 107, ../sass/pics/layout/_menu.scss */
 
+#user_searchbox .account-deactivated a,
+#user_searchbox .account-inactive a {
+  color: #AEAEAE;
+}
+
+/* line 117, ../sass/pics/layout/_menu.scss */
+
+#user_searchbox .account-deleted .name,
+#user_searchbox .account-deleted .id,
+#user_searchbox .account-deleted .location,
+#user_searchbox .account-deleted .type {
+  text-decoration: line-through;
+}
+
+/* line 124, ../sass/pics/layout/_menu.scss */
+
 #user_searchbox .no-results,
 #user_searchbox .total-results {
   padding: 5px 20px;
 }
 
-/* line 114, ../sass/pics/layout/_menu.scss */
+/* line 131, ../sass/pics/layout/_menu.scss */
 
 #user_searchbox .more-results a {
   font-weight: bold;
 }
 
-/* line 122, ../sass/pics/layout/_menu.scss */
+/* line 139, ../sass/pics/layout/_menu.scss */
 
 #user_searchbox .total-results p {
   margin: 0;
@@ -8534,7 +8550,7 @@ body {
   color: #999;
 }
 
-/* line 133, ../sass/pics/layout/_menu.scss */
+/* line 150, ../sass/pics/layout/_menu.scss */
 
 #user_menu .icon-cog {
   position: relative;
@@ -8544,9 +8560,9 @@ body {
 
 @media (max-width: 1199px) and (min-width: 980px) {
   {
-    /* line 144, ../sass/pics/layout/_menu.scss */
+    /* line 161, ../sass/pics/layout/_menu.scss */
   
-    /* line 149, ../sass/pics/layout/_menu.scss */
+    /* line 166, ../sass/pics/layout/_menu.scss */
   
   }
   .navbar .brand {

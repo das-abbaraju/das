@@ -102,6 +102,23 @@
 		}
 	}
 
+    .account-deactivated a,
+    .account-inactive a
+    {
+       color: #AEAEAE;
+    }
+
+    .account-deleted
+    {
+        .name,
+        .id,
+        .location,
+        .type
+        {
+            text-decoration:line-through;
+        }
+    }
+
 	.no-results,
 	.total-results
 	{
