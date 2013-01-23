@@ -8258,18 +8258,18 @@ textarea.x-form-invalid-field {
 #column_function_modal_footer-body {
   background: #454545; }
 
-/* line 7, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_summary.scss */
-#report_summary {
+/* line 7, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_page-header.scss */
+#report_page_header {
   padding: 18px 30px; }
 
-/* line 12, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_summary.scss */
-#report_summary .name {
+/* line 12, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_page-header.scss */
+#report_page_header .name {
   color: #73bbe8;
   font-size: 30px;
   font-weight: normal; }
 
-/* line 19, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_summary.scss */
-#report_summary .description {
+/* line 19, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_page-header.scss */
+#report_page_header .description {
   color: #808285;
   font-size: 14px;
   font-weight: normal; }

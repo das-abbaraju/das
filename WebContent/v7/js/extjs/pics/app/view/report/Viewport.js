@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.layout.Header',
         'PICS.view.report.report.ReportData',
         'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.ReportHeader'
+        'PICS.view.report.header.Header'
     ],
 
     items: [{

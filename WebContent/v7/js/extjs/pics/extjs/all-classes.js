@@ -66723,17 +66723,17 @@ Ext.define('PICS.view.report.filter.FilterToolbar', {
         align: 'center'
     }
 });
-Ext.define('PICS.view.report.header.ReportSummary', {
+Ext.define('PICS.view.report.header.PageHeader', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportheadersummary'],
+    alias: 'widget.reportpageheader',
 
     border: false,
     height: 90,
-    id: 'report_summary',
+    id: 'report_page_header',
     tpl: '<h1 class="name">{name}</h1><h2 class="description">{description}</h2>',
 
     update: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
+        if (Ext.getClassName(report) != 'PICS.model.report.Report') {
             Ext.Error.raise('Invalid report record');
         }
 
@@ -66742,9 +66742,9 @@ Ext.define('PICS.view.report.header.ReportSummary', {
         this.callParent([data]);
     }
 });
-Ext.define('PICS.view.report.header.ReportActions', {
+Ext.define('PICS.view.report.header.Actions', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportheaderactions'],
+    alias: 'widget.reportactions',
 
     border: 0,
     id: 'report_actions',
@@ -71452,23 +71452,23 @@ Ext.define('Ext.layout.container.Border', {
     Ext.apply(props.vert, methods);
 });
 
-Ext.define('PICS.view.report.header.ReportHeader', {
+Ext.define('PICS.view.report.header.Header', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportheader'],
+    alias: 'widget.reportheader',
 
     requires: [
-        'PICS.view.report.header.ReportSummary',
-        'PICS.view.report.header.ReportActions'
+        'PICS.view.report.header.PageHeader',
+        'PICS.view.report.header.Actions'
     ],
 
     border: 0,
     height: 90,
     id: 'report_header',
     items: [{
-        xtype: 'reportheadersummary',
+        xtype: 'reportpageheader',
         region: 'center'
     }, {
-        xtype: 'reportheaderactions',
+        xtype: 'reportactions',
         region: 'east'
     }],
     layout: 'border'
@@ -92804,7 +92804,7 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.layout.Header',
         'PICS.view.report.report.ReportData',
         'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.ReportHeader'
+        'PICS.view.report.header.Header'
     ],
 
     items: [{
@@ -98284,6 +98284,71 @@ Ext.define('PICS.controller.report.Filter', {
         PICS.data.ServerCommunication.loadData();
     }
 });
+Ext.define('PICS.controller.report.Header', {
+    extend: 'Ext.app.Controller',
+
+    refs: [{
+        ref: 'pageHeader',
+        selector: 'reportpageheader'
+    }],
+
+    stores: [
+        'report.Reports'
+    ],
+             
+    views: [
+        'PICS.view.report.alert-message.AlertMessage'
+    ],
+             
+    init: function () {
+        this.control({
+            'reportheader': {
+                beforerender: this.beforeHeaderRender
+            },
+
+            'reportheader button[action=save]': {
+                click: this.saveReport
+            },
+
+            'reportheader button[action=edit]': {
+                click: this.showSettingsModal
+            }
+        });
+
+        this.application.on({
+            updatepageheader: this.updatePageHeader,
+            scope: this
+        });
+    },
+    
+    beforeHeaderRender: function (cmp, eOpts) {
+        this.application.fireEvent('updatepageheader');
+    },
+
+    showSettingsModal: function (cmp, e, eOpts) {
+        this.application.fireEvent('showsettingsmodal', 'edit');
+    },
+
+    saveReport: function (cmp, e, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
+
+        if (is_editable) {
+            this.application.fireEvent('savereport');
+        } else {
+            this.application.fireEvent('showsettingsmodal', 'copy');
+        }
+    },
+
+    updatePageHeader: function () {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            page_header = this.getPageHeader();
+        
+        page_header.update(report);
+    }
+});
 /**
  * Report Controller
  *
@@ -98735,104 +98800,6 @@ Ext.define('PICS.controller.report.ReportData', {
     }
 });
 
-Ext.define('PICS.controller.report.ReportHeader', {
-    extend: 'Ext.app.Controller',
-
-    refs: [{
-        ref: 'reportHeader',
-        selector: 'reportheader'
-    }, {
-        ref: 'reportHeaderSummary',
-        selector: 'reportheadersummary'
-    }, {
-        ref: 'reportSettingsEdit',
-        selector: 'reportsettingsedit'
-    }, {
-        ref: 'reportSettingsModal',
-        selector: 'reportsettingsmodal'
-    }, {
-        ref: 'reportSettingsTabs',
-        selector: 'reportsettingstabs'
-    }, {
-        ref: 'reportNameEdit',
-        selector: 'reportsettingsedit [name=report_name]'
-    }, {
-        ref: 'reportDescriptionEdit',
-        selector: 'reportsettingsedit [name=report_description]'
-    }, {
-        ref: 'reportNameCopy',
-        selector: 'reportsettingscopy [name=report_name]'
-    }, {
-        ref: 'reportDescriptionCopy',
-        selector: 'reportsettingscopy [name=report_description]'
-    }],
-
-    stores: [
-        'report.Reports'
-    ],
-             
-    views: [
-        'PICS.view.report.alert-message.AlertMessage'
-    ],
-             
-    init: function () {
-        this.control({
-            'reportheader': {
-                beforerender: this.onReportHeaderBeforeRender
-            },
-
-            'reportheader button[action=save]': {
-                click: this.onReportSaveClick
-            },
-
-            'reportheader button[action=edit]': {
-                click: this.onReportEditClick
-            }
-        });
-
-        this.application.on({
-            updatereportsummary: this.onUpdateReportSummary,
-            scope: this
-        });
-    },
-
-    onReportEditClick: function (cmp, e, eOpts) {
-        this.application.fireEvent('showsettingsmodal', 'edit');
-    },
-
-    onReportHeaderBeforeRender: function (cmp, eOpts) {
-        this.application.fireEvent('updatereportsummary');
-    },
-
-    onReportSaveClick: function (cmp, e, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            is_editable = report.get('is_editable');
-
-        if (is_editable) {
-            this.application.fireEvent('savereport');
-        } else {
-            this.application.fireEvent('showsettingsmodal', 'copy');
-        }
-    },
-
-    onUpdateReportSummary: function () {
-        var report_store = this.getReportReportsStore(),
-            report_header_summary = this.getReportHeaderSummary();
-
-        if (!report_store.isLoaded()) {
-            report_store.on('load', function (store, records, successful, eOpts) {
-                var report = report_store.first();
-
-                report_header_summary.update(report);
-            });
-        } else {
-            var report = report_store.first();
-
-            report_header_summary.update(report);
-        }
-    }
-});
 Ext.define('PICS.controller.report.SettingsModal', {
     extend: 'Ext.app.Controller',
 
@@ -98997,7 +98964,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         this.getReportSettingsModal().close();
         
-        this.application.fireEvent('updatereportsummary');
+        this.application.fireEvent('updatepageheader');
         this.application.fireEvent('savereport');
     },
     

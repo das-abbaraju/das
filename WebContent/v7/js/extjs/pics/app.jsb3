@@ -855,13 +855,13 @@
                     "path": "app/view/report/filter/"
                 },
                 {
-                    "clsName": "PICS.view.report.header.ReportSummary",
-                    "name": "ReportSummary.js",
+                    "clsName": "PICS.view.report.header.PageHeader",
+                    "name": "PageHeader.js",
                     "path": "app/view/report/header/"
                 },
                 {
-                    "clsName": "PICS.view.report.header.ReportActions",
-                    "name": "ReportActions.js",
+                    "clsName": "PICS.view.report.header.Actions",
+                    "name": "Actions.js",
                     "path": "app/view/report/header/"
                 },
                 {
@@ -965,8 +965,8 @@
                     "path": "extjs/src/layout/container/"
                 },
                 {
-                    "clsName": "PICS.view.report.header.ReportHeader",
-                    "name": "ReportHeader.js",
+                    "clsName": "PICS.view.report.header.Header",
+                    "name": "Header.js",
                     "path": "app/view/report/header/"
                 },
                 {
@@ -1510,6 +1510,11 @@
                     "path": "app/controller/report/"
                 },
                 {
+                    "clsName": "PICS.controller.report.Header",
+                    "name": "Header.js",
+                    "path": "app/controller/report/"
+                },
+                {
                     "clsName": "PICS.controller.report.Report",
                     "name": "Report.js",
                     "path": "app/controller/report/"
@@ -1517,11 +1522,6 @@
                 {
                     "clsName": "PICS.controller.report.ReportData",
                     "name": "ReportData.js",
-                    "path": "app/controller/report/"
-                },
-                {
-                    "clsName": "PICS.controller.report.ReportHeader",
-                    "name": "ReportHeader.js",
                     "path": "app/controller/report/"
                 },
                 {

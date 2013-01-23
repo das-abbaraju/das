@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.header.ReportActions', {
+Ext.define('PICS.view.report.header.Actions', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportheaderactions'],
+    alias: 'widget.reportactions',
 
     border: 0,
     id: 'report_actions',

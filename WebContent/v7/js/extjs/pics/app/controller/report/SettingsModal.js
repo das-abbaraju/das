@@ -162,7 +162,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         this.getReportSettingsModal().close();
         
-        this.application.fireEvent('updatereportsummary');
+        this.application.fireEvent('updatepageheader');
         this.application.fireEvent('savereport');
     },
     

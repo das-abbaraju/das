@@ -1,14 +1,14 @@
-Ext.define('PICS.view.report.header.ReportSummary', {
+Ext.define('PICS.view.report.header.PageHeader', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportheadersummary'],
+    alias: 'widget.reportpageheader',
 
     border: false,
     height: 90,
-    id: 'report_summary',
+    id: 'report_page_header',
     tpl: '<h1 class="name">{name}</h1><h2 class="description">{description}</h2>',
 
     update: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
+        if (Ext.getClassName(report) != 'PICS.model.report.Report') {
             Ext.Error.raise('Invalid report record');
         }
 

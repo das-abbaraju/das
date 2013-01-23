@@ -49,9 +49,9 @@ Ext.application({
         'report.ColumnFilterModal',
         'report.ColumnFunctionModal',
         'report.Filter',
+        'report.Header',
         'report.Report',
         'report.ReportData',
-        'report.ReportHeader',
         'report.SettingsModal'
     ],
 
