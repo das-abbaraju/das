@@ -1,5 +1,5 @@
 Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
+    extend: 'PICS.ux.window.Window',
     alias: 'widget.reportcolumnfunctionmodal',
 
     border: 0,

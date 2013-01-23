@@ -1,5 +1,5 @@
 Ext.define('PICS.view.report.settings.SettingsModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
+    extend: 'PICS.ux.window.Window',
     alias: ['widget.reportsettingsmodal'],
 
     requires: [

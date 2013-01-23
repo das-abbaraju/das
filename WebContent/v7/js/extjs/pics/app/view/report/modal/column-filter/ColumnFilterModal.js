@@ -1,5 +1,5 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
+    extend: 'PICS.ux.window.Window',
     alias: 'columnfiltermodal',
     
     requires: [
