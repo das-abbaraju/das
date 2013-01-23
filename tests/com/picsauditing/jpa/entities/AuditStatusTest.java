@@ -8,9 +8,9 @@ public class AuditStatusTest extends TestCase {
 	@Test
 	public void testStatusArray() {
 		AuditStatus[] statuses = AuditStatus.activeStatusesBeyondPending();
-		assertEquals(6, statuses.length);
+		assertEquals(7, statuses.length);
 		assertEquals(AuditStatus.Incomplete, statuses[0]);
-		assertEquals(AuditStatus.Approved, statuses[5]);
+		assertEquals(AuditStatus.Approved, statuses[6]);
 	}
 
 }
