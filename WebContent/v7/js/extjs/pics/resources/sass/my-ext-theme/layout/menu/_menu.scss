@@ -213,6 +213,23 @@ $site_menu_search_more_results_text_color: #333;
 	    }
 	}
 
+    .account-deactivated,
+    .account-inactive
+    {
+       color: #AEAEAE;
+    }
+
+    .account-deleted
+    {
+        .name,
+        .id,
+        .location,
+        .type
+        {
+            text-decoration:line-through;
+        }
+    }
+    
 	.more-results,
 	.no-results
 	{

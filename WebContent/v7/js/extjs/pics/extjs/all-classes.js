@@ -93325,7 +93325,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         tpl: Ext.create('Ext.XTemplate',
             '<ul>',
                 '<tpl for=".">',
-                    '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
+                    '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]} account-{account_status}">',
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{result_name}</em></span>',
@@ -93403,7 +93403,8 @@ Ext.define('PICS.view.layout.SearchBox', {
             'result_id',
             'result_name',
             'result_at',
-            'search_type'
+            'search_type',
+            'account_status'
         ],
         proxy: {
             type: 'ajax',
