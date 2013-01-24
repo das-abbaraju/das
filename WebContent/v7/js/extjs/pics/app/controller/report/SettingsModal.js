@@ -57,7 +57,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 afterrender: this.afterCopySettingRender
             },
             
-            'reportsettingsmodal reportfavorite': {
+            'reportsettingsmodal reportfavoritetoggle': {
                 favorite: this.favoriteReport,
                 unfavorite: this.unfavoriteReport
             },
@@ -91,7 +91,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             is_favorite = report.get('is_favorite'),
-            edit_favorite = cmp.down('reportfavorite');
+            edit_favorite = cmp.down('reportfavoritetoggle');
         
         if (is_favorite) {
             edit_favorite.toggleFavorite();
@@ -103,7 +103,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             is_favorite = report.get('is_favorite'),
-            copy_favorite = cmp.down('reportfavorite');
+            copy_favorite = cmp.down('reportfavoritetoggle');
         
         if (is_favorite) {
             copy_favorite.toggleFavorite();
@@ -132,7 +132,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             is_favorite = report.get('is_favorite'),
-            copy_favorite = active_tab.down('reportfavorite');
+            copy_favorite = active_tab.down('reportfavoritetoggle');
         
         if (is_favorite) {
             copy_favorite.toggleFavorite();
@@ -147,9 +147,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         settings_modal_view.close();
     },
     
-    changeSettingModalTab: function (cmp, nextCard, oldCard, eOpts) {
+    changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
         if (Ext.getClassName(nextCard) == 'PICS.view.report.settings.CopySetting') {
-            var favorite_element = nextCard.down('reportfavorite'), 
+            var favorite_element = nextCard.down('reportfavoritetoggle'), 
                 has_favorite_element = favorite_element.getEl();
             
             if (has_favorite_element) {
