@@ -150,7 +150,7 @@
                             <s:select
                                     list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
                                     listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-                                    listKey="language"
+                                    listKey="%{toLanguageTag().replace('-', '_')}"
                                     name="primaryContact.locale"
                                     theme="formhelp"
                             />
