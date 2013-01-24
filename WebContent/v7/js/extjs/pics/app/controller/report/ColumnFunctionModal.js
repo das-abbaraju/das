@@ -32,7 +32,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         column.set('sql_function', action);
 
         // destroy modal for next use (generate with correct column)
-        column_function_modal.destroy();
+        column_function_modal.close();
         
         // refresh report
         PICS.data.ServerCommunication.loadData();

@@ -48,7 +48,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
                 height: 35
             },
             dock: 'top',
-            id: 'column_function_list',
+            cls: 'column_function_list',
             items: sql_function_items,
             layout: 'vbox'
         };
