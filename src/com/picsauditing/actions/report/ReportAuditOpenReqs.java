@@ -13,14 +13,8 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 	public void buildQuery() {
 		super.buildQuery();
 
-		int userID = (getFilter().getClosingAuditorId() != null && getFilter().getClosingAuditorId().length > 0) ? getFilter()
-				.getClosingAuditorId()[0] : permissions.getUserId();
-
 		sql.addJoin("JOIN contractor_audit_file caf on caf.auditID = ca.id");
 		sql.addJoin("JOIN workflow wf ON wf.id = atype.workflowID");
-
-		sql.addWhere("ca.closingAuditorID=" + userID + " OR (ca.closingAuditorID IS NULL AND ca.auditorID=" + userID
-				+ ")");
 
 		sql.addWhere("cao.status IN ('Submitted', 'Resubmitted')");
 		sql.addWhere("wf.hasRequirements");
@@ -32,6 +26,9 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 
 		orderByDefault = "ca.assignedDate DESC";
 
+		getFilter().setShowAnyAuditor(true);
+		getFilter().setShowAuditor(false);
+		getFilter().setShowClosingAuditor(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);

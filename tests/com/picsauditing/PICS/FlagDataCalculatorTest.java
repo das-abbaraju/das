@@ -116,19 +116,18 @@ public class FlagDataCalculatorTest {
 		twoYearCriteria = createFlagCriteria(2, MultiYearScope.TwoYearsAgo);
 		threeYearCriteria = createFlagCriteria(3, MultiYearScope.ThreeYearsAgo);
 		nullCriteria = createFlagCriteria(5, null);
+
+		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+		Whitebox.setInternalState(calculator, "dao", dao);
 	}
 	
-	@Ignore		
+	@Test		
 	public void testFlagDataOverrideAdjustment() throws Exception {
 		Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<FlagCriteria, List<FlagDataOverride>>();
 		FlagDataOverride override = null;
 		
 		createCorrespondingCriteriaLists();
 		createContractorAnswers();
-		
-		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
-		Whitebox.setInternalState(calculator, "flagDataOverrideDAO", flagDataOverrideDAO);
-		Whitebox.setInternalState(calculator, "dao", dao);
 		
 		ArrayList<FlagCriteria> criteriaList = new ArrayList<FlagCriteria>();
 		criteriaList.add(lastYearCriteria);
@@ -442,7 +441,11 @@ public class FlagDataCalculatorTest {
 	@Test
 	public void testInsuranceCriteria() {
 		FlagDataCalculator calculator =setupInsuranceCriteria();
+		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+		Whitebox.setInternalState(calculator, "dao", dao);
+
 		List<FlagData> list = calculator.calculate();
+
 		assertTrue(list.size() == 1);
 		assertTrue(list.get(0).getFlag().equals(FlagColor.Red));
 	}
@@ -674,7 +677,13 @@ public class FlagDataCalculatorTest {
 	private FlagData getSingle() {
 		conCrits.set(0, fcCon);
 		opCrits.set(0, fcOp);
-		calculator = new FlagDataCalculator(conCrits);
+		// FIXME: it is a badly designed test if you need to create a new item under test 
+		// outside the test class setup method - and confusing. I'm at least making it LOCAL
+		// to this one test and not redefining the instance variable here in some random place
+		FlagDataCalculator calculator = new FlagDataCalculator(conCrits);
+		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+		Whitebox.setInternalState(calculator, "dao", dao);
+
 		// calculator.setCaoMap(caoMap);
 		calculator.setOperator(fcOp.getOperator());
 		calculator.setOperatorCriteria(opCrits);

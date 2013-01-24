@@ -19,6 +19,11 @@ import com.picsauditing.report.tables.FieldImportance;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "account_user")
+/**
+ * The name implies that this generically shows a relationship between an account and a user.  But, in practice,
+ * this object is only used to show the relationship between an Operator account, and either an Account Manager or a
+ * Sales Representative, i.e. a person who is representing the account currently, or did at some point in the past.
+ */
 public class AccountUser extends BaseTable {
 	private Account account;
 	private User user;
@@ -82,15 +87,15 @@ public class AccountUser extends BaseTable {
 	public void setOwnerPercent(int ownerPercent) {
 		this.ownerPercent = ownerPercent;
 	}
-	
+
 	public String getServiceLevel() {
 		return serviceLevel;
 	}
-	
+
 	public void setServiceLevel(String serviceLevel) {
 		this.serviceLevel = serviceLevel;
 	}
-	
+
 	@Transient
 	public boolean isCurrent() {
 		Date now = new Date();
@@ -98,12 +103,68 @@ public class AccountUser extends BaseTable {
 			// This hasn't started yet
 			return false;
 		}
-		
+
 		if (endDate != null && endDate.before(now)) {
 			// This already ended
 			return false;
 		}
-		
+
 		return true;
 	}
+
+    @Override
+    public Object clone() {
+        AccountUser accountUser = new AccountUser();
+        // purposefully NOT copying the ID across
+        accountUser.setUser(this.getUser());
+        accountUser.setOwnerPercent(this.getOwnerPercent());
+        accountUser.setRole(this.getRole());
+        accountUser.setStartDate(this.getStartDate());
+        accountUser.setEndDate(this.getEndDate());
+        accountUser.setAccount(this.getAccount());
+        return accountUser;
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        if (!(that instanceof AccountUser)) {
+			return false;
+		}
+
+        AccountUser accountUser = (AccountUser) that;
+
+        // See if we are missing key information that prevents from even knowing what this object represents,
+        // much less that the two objects represent the same thing.
+        if (accountUser.getAccount() == null || this.getAccount() == null || accountUser.getUser() == null || this
+                .getUser() == null ) {
+			return false;
+		}
+
+        // Note: We are purposefully NOT caring if the ID is the same or not
+        if (this.getAccount().getId() != accountUser.getAccount().getId()) {
+			return false;
+		}
+
+        if (this.getUser().getId() != accountUser.getUser().getId()) {
+			return false;
+		}
+
+        if (this.getRole() != accountUser.getRole()) {
+			return false;
+		}
+
+        if (this.getStartDate() != accountUser.getStartDate()) {
+			return false;
+		}
+
+        if (this.getEndDate() != accountUser.getEndDate()) {
+			return false;
+		}
+
+        if (this.getOwnerPercent() != accountUser.getOwnerPercent()) {
+			return false;
+		}
+
+        return true;
+    }
 }

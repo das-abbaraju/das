@@ -1,5 +1,6 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.User;
 
 import java.util.Locale;
@@ -20,6 +21,7 @@ public class BasicTranslationSupport {
 		if (user != null) {
 			return user.getLocale();
 		}
+
 		return Locale.ENGLISH;
 	}
 }

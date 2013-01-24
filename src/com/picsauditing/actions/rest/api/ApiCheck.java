@@ -1,13 +1,10 @@
 package com.picsauditing.actions.rest.api;
 
-import java.util.Map;
-
-import com.picsauditing.actions.PicsApiSupport;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Api;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.PicsApiSupport;
 
 public class ApiCheck extends PicsApiSupport implements ParameterAware {
 	private static final long serialVersionUID = 1L;

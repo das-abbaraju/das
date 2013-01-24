@@ -114,6 +114,9 @@ public class ChartFlagCountCorp extends ChartMSAction {
 					}
 					count++;
 				}
+				if (opIds.size() > 1) {
+					newLink.append("%26filter.showAnyOperator=true");
+				}
 				row.setLink(newLink.toString());
 			}
 		}

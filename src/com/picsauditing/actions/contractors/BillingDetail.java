@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.InvoiceService;
@@ -10,15 +9,11 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
@@ -26,7 +21,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -34,7 +28,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Transaction;
-import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
@@ -165,7 +158,7 @@ public class BillingDetail extends ContractorActionSupport {
 				public boolean check(ContractorOperator t) {
 					return !t.getOperatorAccount().isCorporate()
 							&& !t.getOperatorAccount().getDoContractorsPay().equals("No")
-							&& t.getOperatorAccount().getStatus().isActiveDemo();
+							&& t.getOperatorAccount().getStatus().isActiveOrDemo();
 				}
 			}.grep(contractor.getOperators());
 		}
@@ -184,7 +177,7 @@ public class BillingDetail extends ContractorActionSupport {
 				public boolean check(ContractorOperator t) {
 					return !t.getOperatorAccount().isCorporate()
 							&& t.getOperatorAccount().getDoContractorsPay().equals("No")
-							&& t.getOperatorAccount().getStatus().isActiveDemo();
+							&& t.getOperatorAccount().getStatus().isActiveOrDemo();
 				}
 			}.grep(contractor.getOperators());
 		}

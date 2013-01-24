@@ -20,50 +20,64 @@ public enum ProductAssessment implements RiskAssessment {
 
 	private int questionID;
 	private boolean selfEvaluation = false;
-	private LowMedHigh yes;
-	private LowMedHigh no;
+	private LowMedHigh riskRankingForAnswerYes;
+	private LowMedHigh riskRankingForAnswerNo;
 
-	ProductAssessment(int questionID, LowMedHigh yes, LowMedHigh no) {
+	private ProductAssessment(int questionID, LowMedHigh riskRankingForAnswerYes, LowMedHigh riskRankingForAnswerNo) {
 		this.questionID = questionID;
-		this.yes = yes;
-		this.no = no;
+		this.riskRankingForAnswerYes = riskRankingForAnswerYes;
+		this.riskRankingForAnswerNo = riskRankingForAnswerNo;
 	}
 
-	ProductAssessment(int questionID, boolean selfEvaluation) {
+	private ProductAssessment(int questionID, boolean selfEvaluation) {
 		this.questionID = questionID;
 		this.selfEvaluation = selfEvaluation;
 	}
 
+    @Override
 	public int getQuestionID() {
 		return questionID;
 	}
 
-	public boolean isSelfEvaluation() {
+    @Override
+	public boolean isQuestionSelfEvaluation() {
 		return selfEvaluation;
 	}
 
-	public LowMedHigh getYes() {
-		return yes;
+    @Override
+	public LowMedHigh getRiskRankingForAnswerYes() {
+		return riskRankingForAnswerYes;
 	}
 
-	public LowMedHigh getNo() {
-		return no;
+    @Override
+	public LowMedHigh getRiskRankingForAnswerNo() {
+		return riskRankingForAnswerNo;
 	}
 
 	@Override
-	public LowMedHigh getRiskLevel(String answer) {
+	public LowMedHigh getRiskLevelBasedOn(String answer) {
 		if (!Strings.isEmpty(answer.trim())) {
-			if (isSelfEvaluation()) {
+			if (isQuestionSelfEvaluation()) {
 				return LowMedHigh.parseLowMedHigh(answer);
 			}
 
 			if (YesNo.valueOf(answer) == YesNo.Yes) {
-				return getYes();
+				return getRiskRankingForAnswerYes();
 			} else if (YesNo.valueOf(answer) == YesNo.No) {
-				return getNo();
+				return getRiskRankingForAnswerNo();
 			}
 		}
 
 		return LowMedHigh.None;
 	}
+
+    public static ProductAssessment findByQuestionID(int questionID) {
+        for (ProductAssessment assessment : values()) {
+            if (assessment.getQuestionID() == questionID) {
+                return assessment;
+            }
+        }
+
+        return null;
+    }
 }

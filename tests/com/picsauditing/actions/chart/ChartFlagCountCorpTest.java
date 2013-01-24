@@ -80,7 +80,7 @@ public class ChartFlagCountCorpTest extends PicsActionTest {
 		String newLink = row.getLink();
 
 		assertEquals(
-				"ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=Red%26filter.operator=37822%26filter.operator=37823%26filter.operator=37824%26filter.operator=37825",
+				"ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=Red%26filter.operator=37822%26filter.operator=37823%26filter.operator=37824%26filter.operator=37825%26filter.showAnyOperator=true",
 				newLink);
 	}
 

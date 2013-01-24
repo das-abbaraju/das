@@ -38,6 +38,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.search.Database;
 
 public class BillingCalculatorSingleTest {
@@ -77,6 +78,8 @@ public class BillingCalculatorSingleTest {
 	private ContractorOperator contractorOperator;
 	@Mock
 	private OperatorAccount operator;
+	@Mock
+	private InvoiceModel invoiceModel;
 
 	@AfterClass
 	public static void classTearDown() {
@@ -91,6 +94,7 @@ public class BillingCalculatorSingleTest {
 		billingService = new BillingCalculatorSingle();
 		Whitebox.setInternalState(billingService, "taxService", taxService);
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
+		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 
 		assert(OAMocksSet.isEmpty());
 
@@ -293,6 +297,7 @@ public class BillingCalculatorSingleTest {
 	@Test
 	public void testCreateInvoiceWithItems_InvoicePropertiesAreSetAsExpected() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
+		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
 
 		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
 
@@ -307,6 +312,7 @@ public class BillingCalculatorSingleTest {
 	@Test
 	public void testCreateInvoiceWithItems_MembershipTrueResultsInInvoiceNotesBeingSet() throws Exception {
 		setupCreateInvoiceWithItemsTestsCommon();
+		doCallRealMethod().when(invoiceModel).getSortedClientSiteList(any(ContractorAccount.class));
 
 		Invoice invoice = billingService.createInvoiceWithItems(contractor, invoiceItems, user);
 

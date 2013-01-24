@@ -64,6 +64,11 @@ table.allborder th.right, table.allborder td.right {
 	text-align: right;
 }
 
+#download_commission
+{
+    text-align: right;
+}
+
 /**
  Help text for ContractorPaymentOptions
 */

@@ -8,7 +8,9 @@ import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -92,6 +94,8 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 					operatorIdOfInheritedFlagCriteria, fc.getId());
 			answer = getText("Insurance.RequiredLimit") + Strings.formatDecimalComma(fco.getHurdle()) + " "
 					+ getText("Insurance.YourLimit") + Strings.formatDecimalComma(answer);
+		} else if (fc.getAuditType() != null && fc.getAuditType().isScoreable()) {
+			answer = getScoredAnswer(fc.getAuditType());
 		} else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getOption() != null)
@@ -132,6 +136,15 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 		return answer;
 	}
 
+	private String getScoredAnswer(AuditType type) {
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().equals(type)) {
+				return "" + audit.getScore();
+			}
+		}
+		return "";
+	}
+	
 	private String getAmBestRating(String value) {
 		int rating = (int) Float.parseFloat(value);
 		return AmBest.ratingMap.get(rating);

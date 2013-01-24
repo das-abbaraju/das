@@ -738,6 +738,27 @@
 			</div>
 		</s:if>
 
+		<s:if test="filter.showAnyAuditor">
+			<div class="filterOption">
+				<a href="#" class="filterBox">
+					<s:text name="global.AnySafetyProfessionals" />
+				</a>
+				=
+				<span class="q_status">
+					<s:text name="JS.Filters.status.All" />
+				</span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:select name="filter.anyAuditorId" cssClass="forms" list="safetyList"
+						listKey="id" listValue="name" multiple="false" size="5"
+						id="form1_auditorId" />
+					<a href="#" class="clearLink">
+						<s:text name="Filters.status.Clear" />
+					</a>
+				</span>
+			</div>
+		</s:if>
+
 		<s:if test="filter.showAccountManager">
 			<div class="filterOption">
 				<a href="#" class="filterBox">

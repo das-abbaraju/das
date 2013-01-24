@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Country;

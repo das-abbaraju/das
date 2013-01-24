@@ -1,10 +1,12 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.validator.InputValidator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -340,6 +342,25 @@ public class InputValidatorTest {
 		Locale locale = Locale.ENGLISH;
 
 		String result = inputValidator.validateLocale(locale);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	@Test
+	public void testValidatePhoneNumber_ExtensionWorks() {
+		String phoneNumber = "1-800-123-1234 x1234";
+
+		String result = inputValidator.validatePhoneNumber(phoneNumber);
+
+		assertEquals(InputValidator.NO_ERROR, result);
+	}
+
+	// FIXME This is a test to verify a kludge for PICS-8838
+	@Test
+	public void testValidatePhoneNumber_AsteriskOk() {
+		String phoneNumber = "1-800-123-1234 *1234";
+
+		String result = inputValidator.validatePhoneNumber(phoneNumber);
 
 		assertEquals(InputValidator.NO_ERROR, result);
 	}

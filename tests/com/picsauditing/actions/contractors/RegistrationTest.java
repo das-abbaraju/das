@@ -3,13 +3,14 @@ package com.picsauditing.actions.contractors;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
+import com.picsauditing.validator.VATValidator;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;

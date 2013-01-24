@@ -140,10 +140,11 @@
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
 
     <!-- Validators -->
-    <bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
-    <bean id="InputValidator" class="com.picsauditing.PICS.InputValidator" scope="prototype"/>
-    <bean id="PasswordValidator" class="com.picsauditing.PICS.PasswordValidator" scope="prototype"/>
-    <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
+    <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>
+    <bean id="FacilitiesEditValidator" class="com.picsauditing.validator.FacilitiesEditValidator" />
+    <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
+    <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
+    <bean id="VATValidator" class="com.picsauditing.validator.VATValidator" scope="prototype"/>
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>

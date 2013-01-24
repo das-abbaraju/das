@@ -27,7 +27,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.BasicDAO;
@@ -46,6 +45,7 @@ import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.validator.ContractorValidator;
 
 public class ContractorEditTest extends PicsActionTest {
 	private ContractorEdit classUnderTest;

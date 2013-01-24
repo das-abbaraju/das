@@ -451,7 +451,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (activationFee == null) {
 			activationFee = new InvoiceFee();
 
-			if (contractor.getStatus().isPendingDeactivated() && contractor.getAccountLevel().isFull()) {
+			if (contractor.getStatus().isPendingOrDeactivated() && contractor.getAccountLevel().isFull()) {
 				if (contractor.getMembershipDate() == null) {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,

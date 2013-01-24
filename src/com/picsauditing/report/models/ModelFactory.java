@@ -17,6 +17,8 @@ public class ModelFactory {
 
 		if (type.equals(ModelType.Accounts))
 			return new AccountsModel(permissions);
+		if (type.equals(ModelType.AuditTypes))
+			return new AuditTypeModel(permissions);
 		if (type.equals(ModelType.Contractors))
 			return new AccountContractorModel(permissions);
 		if (type.equals(ModelType.ContractorSearch))

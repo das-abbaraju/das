@@ -1,13 +1,14 @@
 package com.picsauditing.actions.dev;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.validator.VATValidator;
+
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;

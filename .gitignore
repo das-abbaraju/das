@@ -5,6 +5,7 @@
 
 /target
 /bin
+*.iml
 *.log
 *.log.1
 *.tmp

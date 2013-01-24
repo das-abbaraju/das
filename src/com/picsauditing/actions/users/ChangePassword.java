@@ -12,7 +12,6 @@ import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -21,6 +20,7 @@ import com.picsauditing.dao.PasswordDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.PasswordValidator;
 
 @SuppressWarnings("serial")
 public class ChangePassword extends PicsActionSupport {

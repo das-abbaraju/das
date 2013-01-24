@@ -145,7 +145,16 @@
 								data-class="contact-email"
 							/>
 						</li>
-						<li class="match-found contact-email"></li>
+                        <li class="match-found contact-email"></li>
+                        <li>
+                            <s:select
+                                    list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+                                    listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
+                                    listKey="language"
+                                    name="primaryContact.locale"
+                                    theme="formhelp"
+                            />
+                        </li>
 					</s:if>
 					<s:else>
 						<li>

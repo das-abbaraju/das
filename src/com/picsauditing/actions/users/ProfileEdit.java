@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -31,6 +30,7 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.InputValidator;
 
 @SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport {

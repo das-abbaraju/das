@@ -70,7 +70,7 @@
 	
 								<!-- Value -->
 								<td>
-									<s:if test="#data.criteria.auditType != null">
+									<s:if test="#data.criteria.auditType != null && !#data.criteria.auditType.scoreable">
 										<s:iterator value="missingAudits.get(#data.criteria.auditType)" var="cao">
 											<s:text name="ContractorFlag.ProblemValue">
 												<s:param>

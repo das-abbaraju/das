@@ -10,17 +10,21 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Transaction;
 
 @SuppressWarnings("serial")
 public class QBSyncEdit extends PicsActionSupport {
+
+	private static final String ACCOUNT = "Account";
+	private static final String INVOICE = "Invoice";
+
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 
 	private String ids = null;
-	private String type = "Account";
+	private String type = ACCOUNT;
 	private boolean needSync = false;
 	private boolean clearListID = false;
 
@@ -32,35 +36,35 @@ public class QBSyncEdit extends PicsActionSupport {
 				save();
 			}
 		}
-		
+
 		return SUCCESS;
 	}
-		
+
 	public String save() throws NoRightsException {
 		String[] idList = Strings.split(ids, ',');
 
 		if (type != null && ids != null) {
-			if (type.equals("Account")) {
+			if (type.equals(ACCOUNT)) {
 				saveContractor(idList);
 			}
 
-			else if (type.equals("Invoice")) {
-				saveInvoice(idList);
+			else if (type.equals(INVOICE)) {
+				saveTransaction(idList);
 			}
 		}
-		
 
 		return SUCCESS;
 	}
 
 	private void saveContractor(String[] idList) {
-		List<ContractorAccount> contractors = contractorAccountDAO.findWhere(ContractorAccount.class, "t.id IN (" + ids + ")");
-		
+		List<ContractorAccount> contractors = contractorAccountDAO.findWhere(ContractorAccount.class, "t.id IN (" + ids
+				+ ")");
+
 		if (contractors.isEmpty())
 			addActionError("We could not find any account you were looking for");
 		else if (contractors.size() != idList.length)
 			addActionError("We could not find all of the accounts you were looking for");
-			
+
 		if (!hasActionErrors()) {
 			for (ContractorAccount contractor : contractors) {
 				editContractor(contractor);
@@ -71,36 +75,37 @@ public class QBSyncEdit extends PicsActionSupport {
 
 	private void editContractor(ContractorAccount contractor) {
 		contractor.setQbSync(needSync);
-		if (clearListID)
-		{
+		if (clearListID) {
 			contractor.setQbListID(null);
+			contractor.setQbListCAID(null);
+			contractor.setQbListUKID(null);
+			contractor.setQbListEUID(null);
 		}
 		contractorAccountDAO.save(contractor);
 	}
 
-	private void saveInvoice(String[] idList) {
-		List<Invoice> invoices = invoiceDAO.findWhere(Invoice.class, "t.id IN (" + ids + ")");
+	private void saveTransaction(String[] idList) {
+		List<Transaction> transactions = invoiceDAO.findWhere(Transaction.class, "t.id IN (" + ids + ")");
 
-		if (invoices.isEmpty())
+		if (transactions.isEmpty())
 			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
-		else if (invoices.size() != idList.length)
-			addActionError("We could not find all of the invoices you were looking for");
+		else if (transactions.size() != idList.length)
+			addActionError("We could not find all of the invoice you were looking for");
 
 		if (!hasActionErrors()) {
-			for (Invoice invoice : invoices) {
-				editInvoice(invoice);
-				addActionMessage(getText("InvoiceDetail.message.SavedInvoice") + " #" + invoice.getId());
+			for (Transaction transaction : transactions) {
+				editTranaction(transaction);
+				addActionMessage(getText("InvoiceDetail.message.SavedInvoice") + " #" + transaction.getId());
 			}
 		}
 	}
 
-	private void editInvoice(Invoice invoice) {
-		invoice.setQbSync(needSync);
-		if (clearListID)
-		{
-			invoice.setQbListID(null);
+	private void editTranaction(Transaction transaction) {
+		transaction.setQbSync(needSync);
+		if (clearListID) {
+			transaction.setQbListID(null);
 		}
-		invoiceDAO.save(invoice);
+		invoiceDAO.save(transaction);
 	}
 
 	public String getIds() {

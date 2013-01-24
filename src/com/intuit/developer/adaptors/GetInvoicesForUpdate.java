@@ -11,8 +11,8 @@ public class GetInvoicesForUpdate extends InvoiceAdaptor {
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "i.account."+currentSession.getQbID()+" is not null AND i.qbListID is not null " +
-				" AND i.qbListID not like 'NOLOAD%' and i.account.status != 'Demo' AND i.qbSync = true AND i.currency like '"+currentSession.getCurrencyCode()+"'";
+		String where = "i.account."+currentSession.getQbID()+" IS NOT NULL AND i.qbListID IS NOT NULL" +
+				" AND i.account."+currentSession.getQbID()+" NOT LIKE 'NOLOAD%' AND i.qbListID NOT LIKE 'NOLOAD%' AND i.account.status != 'Demo' AND i.qbSync = true AND i.currency LIKE '"+currentSession.getCurrencyCode()+"'";
 		List<Invoice> invoices = getInvoiceDao().findWhere(where, 10);
 
 		if (invoices.size() > 0) {

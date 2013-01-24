@@ -85,7 +85,7 @@ public enum FeeClass implements Translatable {
 			return contractor.getCountry().getAmount(fee);
 		}
 	},
-	ClientGUARD, Activation {
+	Reviews, Activation {
 		@Override
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			Set<BigDecimal> discounts = new HashSet<BigDecimal>();
@@ -166,7 +166,7 @@ public enum FeeClass implements Translatable {
 				// is it time to start charging this operator for insureguard?
 			} else if (!isUpgrade && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if ((isUpgrade || !contractor.getStatus().isActiveDemo())
+			} else if ((isUpgrade || !contractor.getStatus().isActiveOrDemo())
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
 				return false;

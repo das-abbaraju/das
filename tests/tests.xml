@@ -103,7 +103,7 @@
 		scope="prototype" />
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"
 		scope="prototype" />
-	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator"
+	<bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator"
 		scope="prototype" />
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder"
 		scope="prototype" />

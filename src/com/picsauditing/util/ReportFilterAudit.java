@@ -25,6 +25,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean showRecommendedFlag = false;
 	protected boolean showAuditor = true;
 	protected boolean showClosingAuditor = false;
+	protected boolean showAnyAuditor = false;
 	protected boolean showCreatedDate = true;
 	protected boolean showUnConfirmedAudits = false;
 	protected boolean showConLicense = false;
@@ -51,6 +52,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected String recommendedFlag;
 	protected int[] auditorId;
 	protected int[] closingAuditorId;
+	protected int[] anyAuditorId;
 	protected Date createdDate1;
 	protected Date createdDate2;
 	protected boolean unScheduledAudits = false;
@@ -158,6 +160,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowClosingAuditor(boolean showClosingAuditor) {
 		this.showClosingAuditor = showClosingAuditor;
+	}
+
+	public boolean isShowAnyAuditor() {
+		return showAnyAuditor;
+	}
+
+	public void setShowAnyAuditor(boolean showAnyAuditor) {
+		this.showAnyAuditor = showAnyAuditor;
 	}
 
 	public boolean isShowAMBest() {
@@ -484,6 +494,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setClosingAuditorId(int[] closingAuditorId) {
 		this.closingAuditorId = closingAuditorId;
+	}
+
+	public int[] getAnyAuditorId() {
+		return anyAuditorId;
+	}
+
+	public void setAnyAuditorId(int[] anyAuditorId) {
+		this.anyAuditorId = anyAuditorId;
 	}
 
 	public int getAmBestRating() {

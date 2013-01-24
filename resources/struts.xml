@@ -1158,10 +1158,6 @@
 		<action name="AccountTimezonePopulator" class="com.picsauditing.actions.dev.AccountTimezonePopulatorController">
 			<result>struts/dev/account_timezone_populator.jsp</result>
         </action>
-		
-		<action name="DownloadCommissionAudit" class="com.picsauditing.actions.DownloadCommissionAudit">
-            <result type="file" />
-        </action>
     </package>
 
     <!-- Reports & API -->

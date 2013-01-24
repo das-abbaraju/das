@@ -76,7 +76,7 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
 
 		for (ContractorOperator contractorOperator : contractor.getOperators()) {
-			if (contractorOperator.getOperatorAccount().getStatus().isActiveDemo()) {
+			if (contractorOperator.getOperatorAccount().getStatus().isActiveOrDemo()) {
 				if (isViewableByPermissions(contractorOperator)) {
 					operators.add(contractorOperator.getOperatorAccount());
 				}
@@ -120,7 +120,7 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 	private void addErrorIfNonActiveDemoOperator() {
 		if (number.getOperator() == null && !permissions.isOperatorCorporate())
 			addActionError(getText("ManageContractorOperatorNumber.MissingOperator"));
-		if (number.getOperator() != null && !number.getOperator().getStatus().isActiveDemo())
+		if (number.getOperator() != null && !number.getOperator().getStatus().isActiveOrDemo())
 			addActionError(getText("ManageContractorOperatorNumber.ActiveDemoOperator"));
 	}
 

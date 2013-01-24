@@ -113,6 +113,8 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getId() == 0 && databaseCopy != null) {
 					auditData = databaseCopy;
 				}
+				// question might not be fully reloaded with related records
+				auditData.setQuestion(dao.find(AuditQuestion.class, auditData.getQuestion().getId()));
 				loadAnswerMap();
 
 				return SUCCESS;
@@ -121,12 +123,6 @@ public class AuditDataSave extends AuditActionSupport {
 			boolean verifyButton = ("verify".equals(button));
 			boolean commentChanged = false;
 			boolean answerChanged = false;
-			// TODO kirk
-			// AuditQuestion dataQuestion =
-			// questionDao.find(auditData.getQuestion().getId());
-			// get by lazy load
-			// dataQuestion.setCategory(dataQuestion.getCategory());
-			// auditData.setQuestion(dataQuestion);
 
 			/*
 			 * If the `databaseCopy` is not set, then this is the first time the

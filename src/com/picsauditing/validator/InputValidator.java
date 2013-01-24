@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.validator;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
@@ -43,6 +43,7 @@ public class InputValidator {
     // formatted phone numbers. Modified from http://blog.stevenlevithan.com/archives/validate-phone-number
     // and shown in the Regular Expressions Cookbook (O'Reilly, 2009)
     public static final String PHONE_NUMBER_REGEX = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}((?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
+    public static final String PHONE_NUMBER_REGEX_WITH_ASTERISK = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}(\\*|(?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 
     public boolean isUsernameTaken(String username, int currentUserId) {
         return userDao.duplicateUsername(username, currentUserId);
@@ -214,7 +215,7 @@ public class InputValidator {
     		return INVALID_EMAIL_FORMAT_KEY;
     	}
 
-    	if (phoneFormatCheck && !str.matches(PHONE_NUMBER_REGEX)) {
+    	if (phoneFormatCheck && !str.matches(PHONE_NUMBER_REGEX_WITH_ASTERISK)) {
     		return INVALID_PHONE_FORMAT_KEY;
     	}
 

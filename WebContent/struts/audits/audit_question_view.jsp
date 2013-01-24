@@ -43,8 +43,8 @@
 			<s:text name="AmBest.NAIC" /><s:property value="#a.comment" />
 			
 			<s:if test="#ambest.amBestId > 0">
-				<s:text name="AuditQuestionEdit.label.AMBestRating" /><s:property value="#ambest.ratingAlpha" /> /
-				<s:text name="AmBest.financialCode" /><s:property value="#ambest.financialAlpha" />
+				<s:text name="AuditQuestionEdit.label.AMBestRating" />: <s:property value="#ambest.ratingAlpha" /> /
+				<s:text name="AmBest.financialCode" /> <s:property value="#ambest.financialAlpha" />
 			</s:if>
 			
 			<br />

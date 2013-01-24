@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-01-03
+/*! Picsorganizer - v0.1.0 - 2013-01-18
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -2109,6 +2109,19 @@ if (typeof Object.create !== 'function') {
         return new F();
     };
 }
+
+/**
+ * Define console.log if doesn't exist
+ * Add a wrapper around console.log
+ *
+ * usage: log('inside coolFunc',this,arguments);
+ * http://paulirish.com/2009/log-a-lightweight-wrapper-for-consolelog/
+ */
+if (typeof console === "undefined"){
+    window.console = {};
+    window.console.log = function(){};
+}
+window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(Array.prototype.slice.call(arguments))}};
 
 (function ($) {
     /**

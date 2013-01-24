@@ -41,9 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
@@ -59,6 +57,8 @@ import com.picsauditing.util.YearList;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
+import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.VATValidator;
 
 @SuppressWarnings("serial")
 @Entity

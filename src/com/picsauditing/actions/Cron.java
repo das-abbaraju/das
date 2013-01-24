@@ -275,6 +275,14 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
+			startTask("Bump Dead Accounts that still have balances...");
+			contractorAccountDAO.updateRecalculationForDeadAccountsWithBalances();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
 			startTask("Inactivating Accounts via Billing Status...");
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);

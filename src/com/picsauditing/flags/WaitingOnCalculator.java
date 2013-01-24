@@ -38,7 +38,7 @@ public class WaitingOnCalculator {
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk() == null)
 			return WaitingOn.Contractor;
 
-		if (!contractor.getStatus().isActiveDemo())
+		if (!contractor.getStatus().isActiveOrDemo())
 			return WaitingOn.Contractor; // This contractor is delinquent
 
 		// If Bid Only Account

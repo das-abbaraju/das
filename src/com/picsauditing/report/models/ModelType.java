@@ -2,6 +2,7 @@ package com.picsauditing.report.models;
 
 public enum ModelType {
 	Accounts,
+	AuditTypes,
 	ContractorAudits,
 	ContractorAuditData,
 	ContractorAuditOperators,

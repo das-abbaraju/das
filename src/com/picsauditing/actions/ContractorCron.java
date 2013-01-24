@@ -1,20 +1,23 @@
 package com.picsauditing.actions;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
+import com.picsauditing.PICS.*;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.*;
+import com.picsauditing.flags.ContractorScore;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.*;
+import com.picsauditing.messaging.FlagChange;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
@@ -24,68 +27,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.ContractorFlagETL;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.ExceptionService;
-import com.picsauditing.PICS.FlagDataCalculator;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
-import com.picsauditing.flags.ContractorScore;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.LcCorPhase;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAssignment;
-import com.picsauditing.jpa.entities.UserAssignmentType;
-import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.mail.NoUsersDefinedException;
-import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.messaging.FlagChange;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
 
+	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
+	final private Date startTime = new Date();
+	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
@@ -110,32 +60,29 @@ public class ContractorCron extends PicsActionSupport {
 	private ExceptionService exceptionService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
 	// on the variable declaration; only on the method (I think this is a Spring
 	// bug)
 	private Publisher flagChangePublisher;
-
-	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
-
 	private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
 	private int limit = 10;
-	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
-	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
+
+	public static Set<ContractorCron> getManager() {
+		return manager;
+	}
 
 	@Anonymous
 	public String execute() throws Exception {
 		if (steps == null)
 			return SUCCESS;
-
-		// PicsLogger.start("ContractorCron");
-
+		
+		logger.trace("Starting ContractorCron for {}", conID);
 		try {
 			if (conID > 0) {
 				run(conID, opID);
@@ -143,19 +90,19 @@ public class ContractorCron extends PicsActionSupport {
 				addActionError("You must supply a contractor id.");
 			}
 
-			// PicsLogger.stop();
-
 			if (!Strings.isEmpty(redirectUrl)) {
 				return setUrlForRedirect(redirectUrl);
 			}
 		} catch (Exception e) {
-			if (!Strings.isEmpty(redirectUrl)) {
+			logger.trace("ContractorCron failed for conID {} because: {}", conID, e.getMessage());
+			if (Strings.isNotEmpty(redirectUrl)) {
 				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #"
 						+ conID);
 				return setUrlForRedirect(redirectUrl);
 			}
 			throw e;
 		}
+		logger.trace("Finished ContractorCron");
 
 		return SUCCESS;
 	}
@@ -182,6 +129,7 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+			runRiskRanking(contractor);
 			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
 					contractor.getAuditor() == null) {
 				runCSRAssignment(contractor);
@@ -268,7 +216,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,
-			Map<Integer, List<Integer>> resultMap) {
+														Map<Integer, List<Integer>> resultMap) {
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
 			for (BasicDynaBean row : resultBDB) {
@@ -310,6 +258,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runBilling(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Billing))
 			return;
+		logger.trace("ContractorCron starting Billing");
 		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 	}
@@ -317,6 +266,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
+		logger.trace("ContractorCron starting AuditBuilder");
 		auditBuilder.buildAudits(contractor);
 
 		checkLcCor(contractor);
@@ -398,6 +348,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditCategory(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditCategory))
 			return;
+		logger.trace("ContractorCron starting AuditCategory");
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			final Date lastRecalculation = cAudit.getLastRecalculation();
 			if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -14) {
@@ -413,6 +364,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.TradeETL))
 			return;
 
+		logger.trace("ContractorCron starting TradeETL");
 		Set<ContractorTrade> trades = contractor.getTrades();
 		List<String> selfPerform = new ArrayList<String>();
 		List<String> subContract = new ArrayList<String>();
@@ -472,6 +424,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runContractorETL(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.ContractorETL))
 			return;
+		logger.trace("ContractorCron starting ContractorETL");
 		contractorFlagETL.calculate(contractor);
 	}
 
@@ -479,7 +432,89 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.PICSScore))
 			return;
 
+		logger.trace("ContractorCron starting PicsScore");
 		ContractorScore.calculate(contractor);
+	}
+
+	private void runRiskRanking(ContractorAccount contractor) throws Exception {
+		if (!runStep(ContractorCronStep.RiskRanking)) {
+			return;
+		}
+
+		if (contractor == null) {
+			return;
+		}
+
+		if (contractorSafetyRiskIsVerifiedByAuditor(contractor)) {
+			return;
+		}
+
+		logger.trace("ContractorCron starting RiskRanking");
+		Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels = determineRiskLevelsBasedOnServiceEvaluationAnswers(contractor);
+		applyCalculatedRiskRankings(contractor, calculatedRiskLevels);
+	}
+
+	private boolean contractorSafetyRiskIsVerifiedByAuditor(ContractorAccount contractor) {
+		if (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isTransportationServices()) {
+			if (contractor.getSafetyRiskVerified() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Set<Integer> determineRiskCategoryIDs() {
+		Set<Integer> riskCategories = new HashSet<Integer>();
+		riskCategories.add(AuditCategory.SERVICE_SAFETY_EVAL);
+		riskCategories.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+		riskCategories.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+		riskCategories.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
+		return riskCategories;
+	}
+
+	private List<AuditData> determineRiskAnswers(ContractorAudit audit, Set<Integer> riskCategories) {
+		List<AuditData> serviceEvaluationAnswers = new ArrayList<AuditData>();
+		for (AuditData data : audit.getData()) {
+			if (riskCategories.contains(data.getQuestion().getCategory().getId()) && data.getQuestion().isCurrent()) {
+				serviceEvaluationAnswers.add(data);
+			}
+		}
+		return serviceEvaluationAnswers;
+	}
+
+	private ContractorAudit findPQF(ContractorAccount contractor) throws Exception {
+		for (ContractorAudit contractorAudit : contractor.getAudits()) {
+			if (contractorAudit.getAuditType().isPqf()) {
+				return contractorAudit;
+			}
+		}
+
+		logger.error("Could not find PQF for contractor " + contractor.getId());
+		throw new RecordNotFoundException("Missing PQF for contractor " + contractor.getId());
+	}
+
+	private Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> determineRiskLevelsBasedOnServiceEvaluationAnswers(ContractorAccount contractor) throws Exception {
+		ContractorAudit pqf = findPQF(contractor);
+
+		Set<Integer> riskCategories = determineRiskCategoryIDs();
+		List<AuditData> serviceEvaluationAnswers = determineRiskAnswers(pqf, riskCategories);
+
+		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
+		return serviceRiskCalculator.getHighestRiskLevelMap(serviceEvaluationAnswers);
+	}
+
+	private void applyCalculatedRiskRankings(ContractorAccount contractor, Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels) {
+		if (!contractor.isMaterialSupplierOnly()) {
+			contractor.setSafetyRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.SAFETY));
+		}
+
+		if (contractor.isMaterialSupplier()) {
+			contractor.setProductRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.PRODUCT));
+		}
+
+		if (contractor.isTransportationServices()) {
+			contractor.setTransportationRisk(calculatedRiskLevels.get(ServiceRiskCalculator.RiskCategory.TRANSPORTATION));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -487,6 +522,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.Flag))
 			return;
 
+		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
 		flagDataCalculator.setOperator(co.getOperatorAccount());
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
 
@@ -611,7 +647,8 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.WaitingOn))
 			return;
 
-		WaitingOn waitingOn = null; // calcSingle.calculateWaitingOn();
+		logger.trace("ContractorCron starting WaitingOn for {}", co.getOperatorAccount().getName());
+		WaitingOn waitingOn = null;
 		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
 		waitingOn = flagDataCalculator.calculateWaitingOn(co);
 
@@ -651,7 +688,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	/**
 	 * Calculate and save the recommended flag color for policies
-	 * 
+	 *
 	 * @param contractor
 	 * @throws IOException
 	 * @throws EmailException
@@ -661,6 +698,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
 
+		logger.trace("ContractorCron starting Policies");
 		// TODO we might be able to move this to the new FlagCalculator method
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 			for (ContractorAudit audit : co.getContractorAccount().getAudits()) {
@@ -702,7 +740,7 @@ public class ContractorCron extends PicsActionSupport {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 				if (!contractorInsuranceSubscription.getTimePeriod().equals(SubscriptionTimePeriod.None)
 						&& (contractorInsuranceSubscription.getLastSent() == null || contractorInsuranceSubscription
-								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
+						.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
 			}
 		}
@@ -727,7 +765,7 @@ public class ContractorCron extends PicsActionSupport {
 	/**
 	 * Returns a map of Policies, where the key is the Audit Type ID and the
 	 * value is a list of ContractorAudits for that Audit Type ID.
-	 * 
+	 *
 	 * @return
 	 */
 	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
@@ -804,6 +842,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CorporateRollup))
 			return;
 
+		logger.trace("ContractorCron starting CorporateRollup");
 		// // rolls up every flag color to root
 		Map<OperatorAccount, FlagColor> corporateRollupData = new HashMap<OperatorAccount, FlagColor>();
 		// existingCorpCOs is really two related, but separate sets mashed
@@ -912,6 +951,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.CSRAssignment))
 			return;
 
+		logger.trace("ContractorCron starting CsrAssignment");
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
 			if (!assignment.getUser().equals(contractor.getAuditor()))
@@ -920,15 +960,15 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	/**
-	 * 
 	 * This is so audits like the HSE Competency Submittal can have an auditor
 	 * automatically assigned
-	 * 
+	 *
 	 * @param contractor
 	 */
 	private void runAssignAudit(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AssignAudit))
 			return;
+		logger.trace("ContractorCron starting AssignAudit");
 		// See if the PQF is complete for manual audit auditor assignment
 		boolean pqfCompleteSafetyManualVerified = false;
 		// Save auditor for manual audit for HSE Competency Review
@@ -943,46 +983,46 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments. 
+		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments.
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {
 				switch (audit.getAuditType().getId()) {
-				case (AuditType.WA_STATE_VERIFICATION):
-					ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-					if (ua != null) {
-						// Assign both auditor and closing auditor
-						audit.setAuditor(ua.getUser());
-						audit.setClosingAuditor(ua.getUser());
-						audit.setAssignedDate(new Date());
-					}
-					break;
-				case (AuditType.DESKTOP):
-					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
-							&& contractor.isFinanciallyReadyForAudits()) {
+					case (AuditType.WA_STATE_VERIFICATION):
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-						if (ua == null) {
-							List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
-							if (uaList != null && uaList.size() > 0) {
-								ua = uaList.get(0);
-							}
-						}
 						if (ua != null) {
+							// Assign both auditor and closing auditor
 							audit.setAuditor(ua.getUser());
+							audit.setClosingAuditor(ua.getUser());
 							audit.setAssignedDate(new Date());
 						}
-					}
-					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
-							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
-						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
-					}
-					break;
-				case (AuditType.BPIISNCASEMGMT):
-					audit.setAuditor(userDAO.find(55603));
-					break;
-				case (AuditType.WELCOME):
-					audit.setAuditor(contractor.getAuditor());
-					break;
+						break;
+					case (AuditType.DESKTOP):
+						if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
+								&& contractor.isFinanciallyReadyForAudits()) {
+							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+							if (ua == null) {
+								List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
+								if (uaList != null && uaList.size() > 0) {
+									ua = uaList.get(0);
+								}
+							}
+							if (ua != null) {
+								audit.setAuditor(ua.getUser());
+								audit.setAssignedDate(new Date());
+							}
+						}
+						if (audit.getClosingAuditor() == null && audit.getAuditor() != null
+								&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+							audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
+						}
+						break;
+					case (AuditType.BPIISNCASEMGMT):
+						audit.setAuditor(userDAO.find(55603));
+						break;
+					case (AuditType.WELCOME):
+						audit.setAuditor(contractor.getAuditor());
+						break;
 				}
 			}
 		}
@@ -1053,10 +1093,6 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-
-	public static Set<ContractorCron> getManager() {
-		return manager;
 	}
 
 	public Date getStartTime() {

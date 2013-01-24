@@ -22,7 +22,6 @@ import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceDAO;
@@ -88,7 +87,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private Invoice invoice;
 	private List<InvoiceFee> feeList = null;
 	private String country;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ContractorActionSupport.class);
 
 	@Override
@@ -118,8 +117,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		country = invoice.getAccount().getCountry().toString();
 		invoice.updateAmountApplied();
 
-		for (PaymentApplied ip : invoice.getPayments())
+		for (PaymentApplied ip : invoice.getPayments()) {
 			ip.getPayment().updateAmountApplied();
+		}
 
 		if (button != null) {
 			String message = null;
@@ -183,9 +183,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
 				message = getText("InvoiceDetail.message.ChangedLevel");
 
-				invoice.setNotes(billingService.getOperatorsString(contractor));
+				invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
 				contractor.syncBalance();
-				
+
 				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
 			}
 
@@ -193,14 +193,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				try {
 					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 					String note = "";
-					if (invoice.getStatus().isPaid())
+					if (invoice.getStatus().isPaid()) {
 						note += "Payment Receipt for Invoice";
-					else
+					} else {
 						note += "Invoice";
+					}
 
 					note += " emailed to " + email.getToAddresses();
-					if (!Strings.isEmpty(email.getCcAddresses()))
+					if (!Strings.isEmpty(email.getCcAddresses())) {
 						note += " and cc'd " + email.getCcAddresses();
+					}
 					addNote(note, getUser());
 					message = getText("InvoiceDetail.message.SentEmail");
 
@@ -227,8 +229,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						&& (status.isRenewalOverdue() || status.isReactivation())) {
 					contractor.setStatus(AccountStatus.Deactivated);
 					contractor.setRenew(false);
-					if (contractor.getAccountLevel().isBidOnly())
+					if (contractor.getAccountLevel().isBidOnly()) {
 						contractor.setReason("Bid Only Account");
+					}
 					Note note = new Note(contractor, new User(User.SYSTEM),
 							"Automatically inactivating account based on expired membership");
 					note.setNoteCategory(NoteCategory.Billing);
@@ -244,7 +247,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				message = getText("InvoiceDetail.message.CanceledInvoice");
 				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.VOID));
-				
+
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
 						+ contractor.getCountry().getCurrency().getSymbol() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
@@ -274,7 +277,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							contractorAccountDao.save(contractor);
 
 							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
-							
+
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
 						} catch (NoBrainTreeServiceResponseException re) {
@@ -314,7 +317,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							paymentDAO.save(payment);
 
 							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
-							
+
 							return SUCCESS;
 						} catch (Exception e) {
 							addNote("Credit Card transaction failed: " + e.getMessage(), getUser());
@@ -340,7 +343,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			if ("save".equals(button) && !invoice.getStatus().isPaid()) {
 				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
 			}
-			
+
 			return this.setUrlForRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
 		}
 
@@ -359,8 +362,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private void updateTotals() {
 		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
-			for (InvoiceItem item : invoice.getItems())
+			for (InvoiceItem item : invoice.getItems()) {
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
+			}
 		}
 	}
 
@@ -420,7 +424,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		if (feeList == null) {
 			feeList = invoiceModel.getFeeList();
 		}
-		
+
 		return feeList;
 	}
 
@@ -456,8 +460,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				if (item.getInvoiceFee().isMembership()
 						&& item.getInvoiceFee().getFeeClass()
 								.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
-						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel()))
+						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel())) {
 					return true;
+				}
 			}
 		}
 
@@ -467,11 +472,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public String getCountry() {
 		return country;
 	}
-	
+
 	public List<CommissionDetail> getCommissionDetails() {
 		return invoiceModel.getCommissionDetails(invoice);
 	}
-	
+
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
 		salesCommissionDataObservable.setChanged();
 		salesCommissionDataObservable.notifyObservers(dataEvent);

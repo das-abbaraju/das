@@ -11,6 +11,7 @@ public enum AuditStatus implements Translatable {
 	Resubmit("Resubmit","yellow"),
 	Resubmitted("Resubmit", "bluegreen"),
 	Complete("Complete", "green"),
+	PendingClientApproval("Reviewed", "green"),
 	Approved("Approve", "purple"),
 	NotApplicable("N/A", "gray"),
 	Expired("Expire", "gray");
@@ -100,6 +101,10 @@ public enum AuditStatus implements Translatable {
 
 	public boolean isComplete() {
 		return this.equals(Complete);
+	}
+
+	public boolean isPendingClientApproval() {
+		return this.equals(PendingClientApproval);
 	}
 
 	/**

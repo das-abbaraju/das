@@ -49,6 +49,7 @@ import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
 import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.validator.ContractorValidator;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
@@ -435,7 +436,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	@Override
 	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (permissions.isContractor() && contractor.getStatus().isPendingDeactivated()
+		if (permissions.isContractor() && contractor.getStatus().isPendingOrDeactivated()
 				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB()))
 			return ContractorRegistrationStep.Done;
 
