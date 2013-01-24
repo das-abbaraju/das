@@ -311,9 +311,10 @@ public class EmailBuilder {
 				notVariantTranslation = translation.getValue();
 			}
 
-			String variantSpecific = locale.toLanguageTag().replace("-", "_");
-			if (translation.getLocale().equals(variantSpecific)) {
-				return translation.getValue();
+			if (Strings.isNotEmpty(locale.getCountry())) {
+				if (translation.getLocale().equals(locale.getLanguage() + "_" + locale.getCountry())) {
+					return translation.getValue();
+				}
 			}
 		}
 
