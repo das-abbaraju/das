@@ -2,7 +2,7 @@ package com.picsauditing.actions;
 
 import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;

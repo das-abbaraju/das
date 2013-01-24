@@ -9,18 +9,20 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.util.JSONUtilities;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
@@ -28,14 +30,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionAccount;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.ReportService;
-import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.toggle.FeatureToggle;
@@ -67,8 +61,11 @@ public class ReportServiceTest {
 	private FeatureToggle featureToggle;
 	@Mock
 	private ReportService reportServiceMock;
+	@Mock
+	private ReportContext reportContext;
 
 	private Pagination<Report> pagination;
+	private LegacyReportConverter legacyReportConverter;
 
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
@@ -78,9 +75,7 @@ public class ReportServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		reportService = new ReportService();
-
-		LegacyReportConverter legacyReportConverter = new LegacyReportConverter();
-		Whitebox.setInternalState(legacyReportConverter, "reportService", reportServiceMock);
+		legacyReportConverter = new LegacyReportConverter();
 
 		setInternalState(reportService, "reportDao", reportDao);
 		setInternalState(reportService, "reportUserDao", reportUserDao);
@@ -263,4 +258,193 @@ public class ReportServiceTest {
 		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
 		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
 	}
+
+	@Test
+	public void testCreateReport_ReportShouldAlwaysValidate() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		ReportService reportServiceSpy = spy(reportService);
+		when(reportDao.findById(anyInt())).thenReturn(report);
+
+		Report report = reportServiceSpy.createReport(reportContext);
+
+		verify(reportServiceSpy).validate(report);
+	}
+
+	@Test
+	public void testCreateReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		assertEquals(REPORT_ID, resultReport.getId());
+	}
+
+	@Test
+	public void testCreateReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, false, false, false, 0, 0);
+		when(reportDao.findById(anyInt())).thenReturn(report);
+		legacyReportConverter = mock(LegacyReportConverter.class);
+		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		assertEquals(report, resultReport);
+	}
+
+	@Test
+	public void testCreateReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = new JSONObject();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		when(reportDao.findById(anyInt())).thenReturn(report);
+		legacyReportConverter = mock(LegacyReportConverter.class);
+		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		assertEquals(report, resultReport);
+	}
+
+	@Test
+	public void testCreateReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = new JSONObject();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		Report report = buildBasicLegacyReport();
+		when(reportDao.findById(anyInt())).thenReturn(report);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		assertEquals(report.getId(), resultReport.getId());
+		assertEquals(report.getModelType(), resultReport.getModelType());
+		assertEquals(report.getName(), resultReport.getName());
+		assertEquals(report.getNumTimesFavorited(), resultReport.getNumTimesFavorited());
+		assertEquals(report.getParameters(), resultReport.getParameters());
+		assertEquals(report.getDescription(), resultReport.getDescription());
+		assertEquals(report.getSql(), resultReport.getSql());
+		assertEquals(report.getFilterExpression(), resultReport.getFilterExpression());
+		assertEquals(report.isEditable(), resultReport.isEditable());
+		assertEquals(report.isFavorite(), resultReport.isFavorite());
+	}
+
+	@Test
+	public void testCreateReport_WhenReportIsLoadedFromDb_ReportElementsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = new JSONObject();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		Report report = buildBasicLegacyReport();
+		when(reportDao.findById(anyInt())).thenReturn(report);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		List<Column> columns = resultReport.getColumns();
+		assertEquals(7, columns.size());
+		Map<String, Column> resultReportElementMap = createReportElementMap(columns);
+
+		verifyColumn("AccountName", resultReportElementMap);
+		verifyColumn("ContractorMembershipDate", resultReportElementMap);
+		verifyColumn("AccountCity", resultReportElementMap);
+		verifyColumn("ContractorPayingFacilities", resultReportElementMap);
+		verifyColumn("AccountCountrySubdivision", resultReportElementMap);
+		verifyColumn("AccountCountry", resultReportElementMap);
+	}
+
+	@Test
+	public void testCreateReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+		JSONObject payloadJson = new JSONObject();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		Report report = buildBasicLegacyReport();
+		when(reportDao.findById(anyInt())).thenReturn(report);
+
+		Report resultReport = reportService.createReport(reportContext);
+
+		List<Filter> filters = resultReport.getFilters();
+		assertEquals(2, filters.size());
+		Map<String, Filter> resultFilterMap = createReportElementMap(filters);
+
+		verifyFilter("AccountName", QueryFilterOperator.Contains, JSONUtilities.EMPTY_JSON_ARRAY, resultFilterMap);
+		verifyFilter("AccountStatus", QueryFilterOperator.In, "[Active, Pending]", resultFilterMap);
+	}
+
+	private void verifyColumn(String columnName, Map<String, Column> columnMap) {
+		Column column = columnMap.get(columnName);
+		assertNotNull(column);
+		assertEquals(columnName, column.getName());
+	}
+
+	private void verifyFilter(String filterName, QueryFilterOperator operator, String value, Map<String, Filter> filterMap) {
+
+		Filter filter = filterMap.get(filterName);
+		assertNotNull(filter);
+		assertEquals(filterName, filter.getName());
+		assertEquals(operator, filter.getOperator());
+		assertEquals(value, filter.getValues().toString());
+	}
+
+	private <T extends ReportElement> Map<String, T> createReportElementMap(List<T> reportElements) {
+		Map<String, T> elementMap = new HashMap<String, T>();
+		for (T reportElement : reportElements) {
+			elementMap.put(reportElement.getName(), reportElement);
+		}
+		return elementMap;
+	}
+
+	// A legacy report contains parameters(json), which are used to load reportElements, filters, and sorts.
+	private Report buildBasicLegacyReport() {
+		Report report = new Report();
+		report.setId(100);
+		report.setModelType(ModelType.Contractors);
+		report.setName("fooReport");
+		report.setNumTimesFavorited(5);
+		report.setParameters(getParameterJson());
+		report.setDescription("A basic report for testing");
+		report.setSql("select * from dual");
+		report.setFilterExpression("where somecolumn is 'foo'");
+		report.setEditable(false);
+		report.setFavorite(false);
+		return report;
+	}
+
+	private String getParameterJson() {
+		return "{\"id\":1,\"modelType\":\"Contractors\",\"name\":\"Contractor List\",\"description\":\"Default Contractor List for PICS Employees\",\"filterExpression\":\"\",\"rowsPerPage\":50,\"columns\":[{\"name\":\"AccountName\"},{\"name\":\"AccountStatus\"},{\"name\":\"ContractorMembershipDate\"},{\"name\":\"AccountCity\"},{\"name\":\"ContractorPayingFacilities\"},{\"name\":\"AccountCountrySubdivision\"},{\"name\":\"AccountCountry\"}],\"filters\":[{\"name\":\"AccountName\",\"operator\":\"Contains\"},{\"name\":\"AccountStatus\",\"operator\":\"In\",\"value\":\"Active, Pending\"}],\"sorts\":[{\"name\":\"AccountName\",\"direction\":\"ASC\"}]}";
+	}
+
+	private Report buildBasicReport() {
+		Report report = new Report();
+		report.setId(100);
+		report.setModelType(ModelType.Contractors);
+		report.setName("fooReport");
+		report.setNumTimesFavorited(5);
+		report.setParameters("{\"randomjson\":\"this is some json\"}");
+		report.setDescription("A basic report for testing");
+		report.setSql("select * from dual");
+		report.setFilterExpression("where somecolumn is 'foo'");
+		report.setEditable(false);
+		report.setFavorite(false);
+
+		Column column = new Column();
+		List<Column> columns = new ArrayList<Column>();
+		columns.add(column);
+		report.setColumns(columns);
+		return report;
+	}
+
+	private JSONObject buildMinimalPayloadJson() {
+		JSONObject reportJson = new JSONObject();
+		reportJson.put(ReportJson.REPORT_ID, REPORT_ID);
+		reportJson.put(ReportJson.REPORT_MODEL_TYPE, ModelType.Contractors.toString());
+
+		JSONObject column = new JSONObject();
+		column.put(ReportJson.REPORT_ELEMENT_NAME, "foo");
+
+		JSONArray columns = new JSONArray();
+		columns.add(column);
+		reportJson.put(ReportJson.REPORT_COLUMNS, columns);
+
+		JSONObject payloadJson = new JSONObject();
+		payloadJson.put(ReportJson.LEVEL_REPORT, reportJson);
+
+		return payloadJson;
+	}
+
 }

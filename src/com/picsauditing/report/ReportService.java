@@ -117,7 +117,7 @@ public class ReportService {
 		// TODO Consider adding a "save" column to the ReportElement class to
 		// store Delete/Update/Insert flags
 		// Allow updating rather than full delete/insert instead
-		removeReportElements(report);
+		clearColumnsFiltersAndSorts(report);
 
 		legacyConvertParametersToReport(report);
 		setReportParameters(report);
@@ -131,7 +131,7 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public void removeReportElements(Report report) {
+	public void clearColumnsFiltersAndSorts(Report report) {
 		removeAllReportElements(report.getId(), Column.class);
 		report.getColumns().clear();
 		removeAllReportElements(report.getId(), Filter.class);
@@ -146,16 +146,16 @@ public class ReportService {
 
 	// TODO Remove this method after the next release
 	@SuppressWarnings("deprecation")
-	public void legacyConvertParametersToReport(Report report) throws ReportValidationException {
+	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
 		if (report == null) {
 			throw new IllegalArgumentException("Report should not be null");
 		}
 
-		if (!isBackwardsCompatibilityOn()) {
-			return;
+		if (isBackwardsCompatibilityOn()) {
+			clearColumnsFiltersAndSorts(report);
+			legacyReportConverter.setReportPropertiesFromJsonParameters(report);
+			saveReportElements(report);
 		}
-
-		legacyReportConverter.convertParametersToEntities(report);
 	}
 
 	// TODO: Remove this method after the next release
@@ -189,7 +189,7 @@ public class ReportService {
 	 * that the model type is set and that the report-spec is parsable as valid
 	 * JSON.
 	 */
-	public void validate(Report report) throws ReportValidationException {
+	void validate(Report report) throws ReportValidationException {
 		if (report == null) {
 			throw new ReportValidationException("Report object is null. (Possible security concern.)");
 		}
@@ -433,22 +433,20 @@ public class ReportService {
 	public Report createReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
 		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
 
-		Report report = null;
+		Report report;
 		if (shouldLoadReportFromJson(reportJson, reportContext.includeData)) {
 			report = buildReportFromJson(reportJson, reportContext.reportId);
 		} else {
 			report = loadReportFromDatabase(reportContext.reportId);
+			legacyConvertParametersToReport(report);
 		}
 
 		validate(report);
+
+/*      todo: why is this here??
 		ReportUser reportUser = loadOrCreateReportUser(reportContext.user, report);
 		reportUserDao.save(reportUser);
-
-		// FIXME: This is a problem that will cause a Ninja save that the refresh above
-		//        was fixing
-//		if (StringUtils.isNotEmpty(reportParameters)) {
-//			report.setParameters(reportParameters);
-//		}
+*/
 
 		return report;
 	}
@@ -474,13 +472,11 @@ public class ReportService {
 	}
 
 	private Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {
-		Report report = reportDao.find(Report.class, reportId);
+		Report report = reportDao.findById(reportId);
 
 		if (report == null) {
 			throw new RecordNotFoundException("Report " + reportId + " was not found in the database");
 		}
-
-		legacyConvertParametersToReport(report);
 
 		return report;
 	}

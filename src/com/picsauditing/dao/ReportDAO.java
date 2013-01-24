@@ -167,4 +167,8 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			save(reportElement);
 		}
 	}
+
+	public Report findById(int reportId) {
+		return find(Report.class, reportId);
+	}
 }

@@ -154,13 +154,17 @@ public class ReportJoin {
 				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
-				for (String dependentField : column.getField().getDependentFields()) {
-					if (dependentField.equalsIgnoreCase(fieldName))
-						return true;
+				if ((column.getField()) == null) {
+					logger.error("ReportJoin.isNeeded() - Column: "  + column + " has a null field");
+				} else {
+					for (String dependentField : column.getField().getDependentFields()) {
+						if (dependentField.equalsIgnoreCase(fieldName))
+							return true;
+					}
 				}
 			}
 
-			for (Column column : definition.getColumns()) {
+			for (Column column : report.getColumns()) {
 				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;

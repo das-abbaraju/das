@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.actions.contractors.risk.SafetyAssessment;
 import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;

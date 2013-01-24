@@ -11,6 +11,7 @@ import com.picsauditing.jpa.entities.JSONable;
 public class JSONUtilities {
 
 	public static final String EMPTY_JSON = "{}";
+	public static final String EMPTY_JSON_ARRAY = "[]";
 
 	@SuppressWarnings("unchecked")
 	static public JSONArray convertFromList(List<? extends JSONable> list) {

@@ -176,7 +176,7 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	public void convertParametersToEntities(Report report) throws ReportValidationException {
+	public void setReportPropertiesFromJsonParameters(Report report) throws ReportValidationException {
 		if (report.getParameters() == null) {
 			throw new ReportValidationException("Your parameters should not be null.");
 		}
@@ -184,16 +184,13 @@ public class LegacyReportConverter {
 		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
 
 		report.setFilterExpression(parseFilterExpression(json));
-		setReportModelType(report, json);
+		setReportModelType(report, json);   // todo: call a method and use setter here
 		report.setName((String) json.get(REPORT_NAME));
 		report.setDescription((String) json.get(REPORT_DESCRIPTION));
 
-		// should reconsider this, since this is a circular dependency
-		reportService.removeReportElements(report);
 		addColumns(json, report);
 		addFilters(json, report);
 		addSorts(json, report);
-		reportService.saveReportElements(report);
 	}
 
 	private void setReportModelType(Report report, JSONObject json) {

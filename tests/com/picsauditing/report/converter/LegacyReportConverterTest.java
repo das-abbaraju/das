@@ -47,7 +47,7 @@ public class LegacyReportConverterTest {
 		jsonIn = (JSONObject) JSONValue.parse(SAMPLE_JSON);
 		report = new Report();
 		report.setParameters(SAMPLE_JSON);
-		legacyReportConverter.convertParametersToEntities(report);
+		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
 		jsonOut = legacyReportConverter.toJSON(report);
 	}
 
