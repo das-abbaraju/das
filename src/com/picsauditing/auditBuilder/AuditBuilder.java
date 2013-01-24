@@ -285,11 +285,21 @@ public class AuditBuilder {
 	
 	private boolean isValidAudit(ContractorAudit conAudit) {
 		if (conAudit.getAuditType().getId() != AuditType.COR
-				&& conAudit.getAuditType().getId() != AuditType.IEC_AUDIT)
+				&& conAudit.getAuditType().getId() != AuditType.IEC_AUDIT
+				&& conAudit.getAuditType().getId() != AuditType.WELCOME)
 			return false;
 
 		if (conAudit.isExpired())
 			return false;
+		
+		if (conAudit.getAuditType().getId() == AuditType.WELCOME) {
+			Calendar date = Calendar.getInstance();
+			date.add(Calendar.DATE, -6 * 7); //6 weeks
+			if (date.getTime().getTime() > conAudit.getCreationDate().getTime()) {
+				conAudit.setExpiresDate(new Date());
+			}
+			return true;
+		}
 
 		int auditQuestionID = (conAudit.getAuditType().getId() == AuditType.COR) ? AuditQuestion.COR
 				: AuditQuestion.IEC;
