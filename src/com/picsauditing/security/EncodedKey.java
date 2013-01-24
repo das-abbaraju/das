@@ -3,7 +3,9 @@ package com.picsauditing.security;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -19,7 +21,10 @@ import com.picsauditing.util.Base64;
  * 
  */
 public class EncodedKey {
-	private int maxCharLength = 32;
+    private static final int DEFAULT_RADIX = 36;
+    private static final int MIN_SUFFICIENT_KEY_LENGTH = 20;
+    private static final int MIN_UNIQUE_PERCENT = 75;
+    private int maxCharLength = 32;
 	private SecureRandom random = new SecureRandom();
 	private String key;
 	
@@ -28,7 +33,7 @@ public class EncodedKey {
 
 	}
 	public String generateRandom() {
-		return generateRandom(36);
+        return generateRandom(DEFAULT_RADIX);
 	}
 
 	public String generateRandom(int radix) {
@@ -43,7 +48,7 @@ public class EncodedKey {
 	 */
 	public static String randomApiKey() {
 		EncodedKey encodedKey = new EncodedKey(32);
-		return encodedKey.generateRandom(36);
+		return encodedKey.generateRandom();
 	}
 	
 	/**
@@ -67,4 +72,17 @@ public class EncodedKey {
 		}
 		return null;
 	}
+
+    public static void verifySufficientlyComplex(String key) throws SecurityException {
+        if (key == null || key.length() < MIN_SUFFICIENT_KEY_LENGTH) {
+            throw new SecurityException("Invalid attempt to use an insufficiently complex key.");
+        }
+        Set uniqueChars = new HashSet();
+        for (int pos = 0; pos < key.length();pos++ ) {
+            uniqueChars.add(key.charAt(pos));
+        }
+        if ((uniqueChars.size()*100/key.length()) <  MIN_UNIQUE_PERCENT) {
+            throw new SecurityException("Invalid attempt to use an insufficiently complex key.");
+        }
+    }
 }

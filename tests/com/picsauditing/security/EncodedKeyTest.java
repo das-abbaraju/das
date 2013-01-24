@@ -46,4 +46,44 @@ public class EncodedKeyTest {
 		}
 		assertEquals(TEST_SIZE, passwords.size());
 	}
+
+    @Test
+    /**
+     * For the moment, any string of at least 20 characters is considered sufficiently complex and will not throw an
+     * exception
+     */
+    public void testVerifySufficientlyComplex_good() throws Exception {
+        EncodedKey.verifySufficientlyComplex("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    }
+
+    @Test
+    public void testVerifySufficientlyComplex_exactly75percentUnique() throws Exception {
+        EncodedKey.verifySufficientlyComplex("0123456789ABCDEABCDE"); // 15 unique chars out of 20 (75% unique)
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testVerifySufficientlyComplex_null() throws Exception {
+        EncodedKey.verifySufficientlyComplex(null);
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testVerifySufficientlyComplex_neitherUniqueNorLongEnough() throws Exception {
+        EncodedKey.verifySufficientlyComplex("123");
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testVerifySufficientlyComplex_nothingUniqueAtAll() throws Exception {
+        EncodedKey.verifySufficientlyComplex("00000000000000000000");
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testVerifySufficientlyComplex_notUniqueEnough() throws Exception {
+        EncodedKey.verifySufficientlyComplex("0123456789ABCD0123456789ABCD"); // long enough,
+        // but only 14 unique chars out of 28 (50% unique)
+    }
+
+    @Test(expected = SecurityException.class)
+    public void testVerifySufficientlyComplex_uniqueButTooShort() throws Exception {
+        EncodedKey.verifySufficientlyComplex("ABCDEFGHIJKLMNOPQRS"); // unique, but only 19 chars
+    }
 }

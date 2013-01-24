@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.picsauditing.security.EncodedKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -184,10 +185,11 @@ where grp.groupID = atype.editAudit;
 		return query.getResultList();
 	}
 
-	public User findByApiKey(String apiKey) {
+	public User findByApiKey(String apiKey) throws SecurityException {
 		if (apiKey == null) {
 			return null;
 		}
+        EncodedKey.verifySufficientlyComplex(apiKey);
 
 		try {
 			Query query = em.createQuery("SELECT u FROM User u WHERE apiKey = ?");
