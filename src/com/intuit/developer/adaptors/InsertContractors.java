@@ -20,13 +20,15 @@ import java.util.List;
 public class InsertContractors extends CustomerAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(InsertContractors.class);
-	
-	// FIXME This is practically identical to the same method in UpdateContractors.java
+
+	// FIXME This is practically identical to the same method in
+	// UpdateContractors.java
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.status != 'Demo' and a.country.currency = '"
+				"a.qbSync = true AND a." + currentSession.getQbID()
+						+ " IS NULL AND a.status = 'Active' AND a.country.currency = '"
 						+ currentSession.getCurrencyCode() + "'");
 
 		// no work to do
@@ -57,8 +59,9 @@ public class InsertContractors extends CustomerAdaptor {
 				CustomerAddRqType customerAddRequest = factory.createCustomerAddRqType();
 				String requestID = "insert_customer_" + contractor.getId();
 				/**
-				 * Euros and GBP are stored in the same quickbooks server which doesn't allow for multiple currencies
-				 * per account. Have to name each account differently.
+				 * Euros and GBP are stored in the same quickbooks server which
+				 * doesn't allow for multiple currencies per account. Have to
+				 * name each account differently.
 				 **/
 				if (currentSession.isEUR())
 					requestID += "EU";
@@ -72,7 +75,7 @@ public class InsertContractors extends CustomerAdaptor {
 				String customerName = contractor.getIdString();
 				if (currentSession.isEUR())
 					customerName += "EU";
-				
+
 				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
 						.toString());
@@ -80,7 +83,7 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
 				List<User> billingUsersInContractorAccount = contractor.getUsersByRole(OpPerms.ContractorBilling);
-				
+
 				User primary = null;
 				if (contractor.getPrimaryContact() != null)
 					primary = contractor.getPrimaryContact();
@@ -89,7 +92,7 @@ public class InsertContractors extends CustomerAdaptor {
 						logger.warn("Invalid data for contractor ID = {}", contractor.getId());
 						continue;
 					}
-					
+
 					primary = billingUsersInContractorAccount.get(0);
 				}
 
@@ -108,8 +111,8 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
-				
-				if (CollectionUtils.isEmpty(billingUsersInContractorAccount)) {       // PICS-8332
+
+				if (CollectionUtils.isEmpty(billingUsersInContractorAccount)) { // PICS-8332
 					customer.setAltContact(customer.getContact());
 					customer.setAltPhone(customer.getPhone());
 				} else {
@@ -131,7 +134,7 @@ public class InsertContractors extends CustomerAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
-//		logger.error("XML after marshalling: " + writer.toString());
+		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
 
 	}

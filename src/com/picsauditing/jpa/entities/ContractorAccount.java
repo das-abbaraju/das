@@ -711,7 +711,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public ContractorTrade getTopTrade() {
 		ContractorTrade topTrade = null;
 		List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
-		
+
 		for (ContractorTrade trade : getTradesSorted()) {
 			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
 				topTrade = trade;
@@ -721,13 +721,13 @@ public class ContractorAccount extends Account implements JSONable {
 				listOfSameTradeActivity.add(trade);
 			}
 		}
-		
+
 		if (listOfSameTradeActivity.size() > 1) {
 			topTrade = null;
-			for (ContractorTrade trade: listOfSameTradeActivity) {
+			for (ContractorTrade trade : listOfSameTradeActivity) {
 				if (topTrade == null || trade.getTrade().getNaicsTRIRI() > topTrade.getTrade().getNaicsTRIRI()) {
 					topTrade = trade;
-				}				
+				}
 			}
 		}
 
@@ -874,29 +874,28 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return this.oshaAudits;
 	}
-	
-	@Transient 
+
+	@Transient
 	public List<ContractorAudit> getCurrentAnnualUpdates() {
 		List<ContractorAudit> currentAnnualUpdates = getSortedAnnualUpdates();
-		
+
 		if (currentAnnualUpdates.size() >= 4) {
 			boolean trimBeginning = false;
-			ContractorAudit audit = currentAnnualUpdates
-					.get(currentAnnualUpdates.size() - 1);
-			for (ContractorAuditOperator cao:audit.getOperators()) {
+			ContractorAudit audit = currentAnnualUpdates.get(currentAnnualUpdates.size() - 1);
+			for (ContractorAuditOperator cao : audit.getOperators()) {
 				if (cao.isVisible() && cao.getStatus().isComplete()) {
 					trimBeginning = true;
 					break;
 				}
 			}
-			
+
 			if (trimBeginning) {
 				currentAnnualUpdates.remove(0);
 			} else {
 				currentAnnualUpdates.remove(audit);
 			}
 		}
-		
+
 		return currentAnnualUpdates;
 	}
 
@@ -1141,11 +1140,19 @@ public class ContractorAccount extends Account implements JSONable {
 					if (!foundMembershipDate
 							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
 									.isReactivation())) {
-						if (invoiceItem.getPaymentExpires() != null)
-							membershipDate = invoiceItem.getPaymentExpires();
-						else
-							membershipDate = invoice.getCreationDate();
-						foundMembershipDate = true;
+						if (invoice.getPayments().size() > 0) {
+							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(invoice.getPayments());
+							Collections.sort(invoice.getPayments(), new Comparator<PaymentApplied>() {
+								public int compare(PaymentApplied paymentOne, PaymentApplied paymentTwo) {
+									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
+								}
+							});
+							
+							PaymentApplied payment = sortedPaymentList.get(0);
+
+							membershipDate = payment.getCreationDate();
+							foundMembershipDate = true;
+						}
 					}
 					// Checking for ImportPQF fee and potentially others
 					if (!foundImportPQFFee && invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)
@@ -1400,8 +1407,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	private boolean payingBidOnlyOrFeeOnly() {
-		return (!fees.get(FeeClass.BidOnly).getCurrentLevel().isFree()
-		|| !fees.get(FeeClass.ListOnly).getCurrentLevel().isFree());
+		return (!fees.get(FeeClass.BidOnly).getCurrentLevel().isFree() || !fees.get(FeeClass.ListOnly)
+				.getCurrentLevel().isFree());
 
 	}
 
