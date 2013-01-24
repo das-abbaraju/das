@@ -1,12 +1,12 @@
 package com.picsauditing.actions.users;
 
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.validator.InputValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
