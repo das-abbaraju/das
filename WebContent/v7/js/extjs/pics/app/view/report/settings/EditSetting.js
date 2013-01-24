@@ -85,5 +85,19 @@ Ext.define('PICS.view.report.settings.EditSetting', {
         }];
 
         this.id = 'report_edit_no_permission';
+    },
+
+    loadFormRecord: function (report) {
+        var form = this.getForm();
+        
+        form.loadRecord(report);    
+    },
+
+    updateFormRecord: function () {
+        var form = this.getForm();
+
+        if (form.isValid()) {
+            form.updateRecord();
+        }
     }
 });

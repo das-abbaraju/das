@@ -45,5 +45,15 @@ Ext.define('PICS.view.report.settings.CopySetting', {
     layout: 'form',
     // custom config
     modal_title: 'Duplicate Report',
-    title: '<i class="icon-copy icon-large"></i>Duplicate'
+    title: '<i class="icon-copy icon-large"></i>Duplicate',
+
+    updateFormRecord: function (report) {
+        var form = this.getForm();
+
+        if (form.isValid()) {
+            form.updateRecord(report);
+        }
+
+        form.reset();
+    }
 });
