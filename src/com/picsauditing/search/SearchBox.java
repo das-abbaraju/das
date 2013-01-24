@@ -119,14 +119,14 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 				String value1 = (String) o1.get("account_status");
 				String value2 = (String) o2.get("account_status");
 
-				if (value1.equals("active")) {
-					return -1;
+				if (value1.equals("deactivated")) {
+					return 1;
 				}
 				if (value1.equals(value2)) {
 					return 0;
 				}
-				if (value2.equals("active")) {
-					return 1;
+				if (value2.equals("deactivated")) {
+					return -1;
 				}
 
 				return 0;
