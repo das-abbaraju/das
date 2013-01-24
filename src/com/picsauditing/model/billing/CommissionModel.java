@@ -68,7 +68,6 @@ public class CommissionModel {
 
 	private void processInvoiceCommission(Invoice invoice) {
 		DataEvent<Invoice> dataEvent = new InvoiceDataEvent(invoice, InvoiceEventType.NEW);
-		dataEvent.setFromApiForForceReload(true);
 		salesCommissionDataObservable.setChanged();
 		salesCommissionDataObservable.notifyObservers(dataEvent);
 	}
@@ -85,7 +84,6 @@ public class CommissionModel {
 			}
 
 			DataEvent<Payment> dataEvent = new PaymentDataEvent(paymentToInvoice.getPayment(), PaymentEventType.PAYMENT);
-			dataEvent.setFromApiForForceReload(true);
 			salesCommissionDataObservable.setChanged();
 			salesCommissionDataObservable.notifyObservers(dataEvent);
 		}
