@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.settings.CopySettings', {
+Ext.define('PICS.view.report.settings.CopySetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingscopy'],
+    alias: 'widget.reportcopysetting',
 
     border: 0,
     dockedItems: [{
@@ -32,15 +32,15 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         allowBlank: false,
         fieldLabel: 'Report Name',
         labelAlign: 'right',
-        name: 'report_name'
+        name: 'name'
     }, {
         xtype: 'textarea',
         allowBlank: false,
         fieldLabel: 'Description',
         labelAlign: 'right',
-        name: 'report_description'
+        name: 'description'
     }, {
-        xtype: 'favoritetoggle'
+        xtype: 'reportfavoritetoggle'
     }],
     layout: 'form',
     // custom config

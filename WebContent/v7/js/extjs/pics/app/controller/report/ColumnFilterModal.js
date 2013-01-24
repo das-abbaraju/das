@@ -61,12 +61,12 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         });
 
         this.application.on({
-            showcolumnmodal: this.showColumnModal,
+            opencolumnmodal: this.openColumnModal,
             scope: this
         });
         
         this.application.on({
-            showfiltermodal: this.showFilterModal,
+            openfiltermodal: this.openFilterModal,
             scope: this
         });
     },
@@ -154,7 +154,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         }));
     },
     
-    showColumnModal: function () {
+    openColumnModal: function () {
         // Create the modal.
         var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
             defaultFocus: 'textfield[name=search_box]'
@@ -164,7 +164,7 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         column_modal.show();
     },
 
-    showFilterModal: function () {
+    openFilterModal: function () {
         // Create the modal.
         var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
             defaultFocus: 'textfield[name=search_box]'

@@ -58,11 +58,11 @@ Ext.define('PICS.controller.report.ReportData', {
             },
 
             'reportpagingtoolbar button[action=add-column]': {
-                click: this.showColumnModal
+                click: this.openColumnModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=function]': {
-                click: this.showColumnFunctionModal
+                click: this.openColumnFunctionModal
             },
 
             'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
@@ -168,16 +168,16 @@ Ext.define('PICS.controller.report.ReportData', {
         PICS.data.ServerCommunication.loadData();
     },
     
-    showColumnFunctionModal: function (cmp, event, eOpts) {
+    openColumnFunctionModal: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             column = cmp.up('menu').activeHeader.column;
 
-        this.application.fireEvent('showcolumnfunctionmodal', column);
+        this.application.fireEvent('opencolumnfunctionmodal', column);
     },
     
-    showColumnModal: function (cmp, event, eOpts) {
-        this.application.fireEvent('showcolumnmodal');
+    openColumnModal: function (cmp, event, eOpts) {
+        this.application.fireEvent('opencolumnmodal');
     },
 
     sortColumnAsc: function (cmp, event, eOpts) {

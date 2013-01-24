@@ -2,38 +2,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'reportSettingsModal',
+        ref: 'settingsModal',
         selector: 'reportsettingsmodal'
     }, {
-        ref: 'reportSettingsTabs',
-        selector: 'reportsettingstabs'
+        ref: 'settingsModalTabs',
+        selector: 'reportsettingsmodaltabs'
     }, {
-        ref: 'reportSettingsEdit',
-        selector: 'reportsettingsedit'
+        ref: 'editSetting',
+        selector: 'reporteditsetting'
     }, {
-        ref: 'reportSettingsShare',
-        selector: 'reportsettingsshare'
+        ref: 'copySetting',
+        selector: 'reportcopysetting'
     }, {
-        ref: 'reportSettingsNoPermission',
-        selector: 'reportsettingsmodal #settings_no_permission'
-    }, {
-        ref: 'reportNameEdit',
-        selector: 'reportsettingsedit [name=report_name]'
-    }, {
-        ref: 'reportDescriptionEdit',
-        selector: 'reportsettingsedit [name=report_description]'
-    }, {
-        ref: 'reportNameCopy',
-        selector: 'reportsettingscopy [name=report_name]'
-    }, {
-        ref: 'reportDescriptionCopy',
-        selector: 'reportsettingscopy [name=report_description]'
-    }, {
-        ref: 'editFavoriteToggle',
-        selector: 'reportsettingsedit favoritetoggle'
-    }, {
-        ref: 'copyFavoriteToggle',
-        selector: 'reportsettingscopy favoritetoggle'
+        ref: 'shareSetting',
+        selector: 'reportsharesetting'
     }],
 
     stores: [
@@ -46,201 +28,212 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     init: function () {
         this.control({
-            'reportsettingsmodal tabpanel': {
-                beforerender: this.onReportSettingsTabsBeforeRender
+            'reportsettingsmodal': {
+                beforeclose: this.beforeSettingModalClose
             },
-
+            
             'reportsettingsmodal button[action=cancel]':  {
-                click: this.onReportModalCancelClick
+                click: this.cancelSettingModal
             },
-
-            'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender
+            
+            'reportsettingsmodaltabs': {
+                tabchange: this.changeSettingsModalTab
             },
-
-            'reportsettingsmodal favoritetoggle': {
-                afterrender: this.onReportModalFavoriteToggleAfterRender,
-                favorite: this.onReportFavorite,
-                unfavorite: this.onReportUnFavorite
+            
+            'reportsettingsmodal reporteditsetting': {
+                afterrender: this.afterEditSettingRender,
+                beforerender: this.beforeEditSettingRender
             },
-
-            'reportsettingsmodal reportsettingsedit button[action=edit]':  {
-                click: this.onReportModalEditClick
+            
+            'reportsettingsmodal reporteditsetting button[action=edit]':  {
+                click: this.editReport
             },
-
-            'reportsettingsmodal reportsettingscopy button[action=copy]':  {
-                click: this.onReportModalCopyClick
+            
+            'reportsettingsmodal reportcopysetting button[action=copy]':  {
+                click: this.copyReport
             },
-
-            'reportsettingsmodal #report_settings_tabbar tab': {
-                click: this.onReportModalTabClick
+            
+            'reportsettingsmodal reportcopysetting': {
+                afterrender: this.afterCopySettingRender
+            },
+            
+            'reportsettingsmodal reportfavorite': {
+                favorite: this.favoriteReport,
+                unfavorite: this.unfavoriteReport
             },
 
             'reportsettingsmodal reportsettingsexport button[action=export]':  {
-                click: this.onReportModalExportClick
+                click: this.exportReport
             },
 
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
-                click: this.onReportModalPrintPreviewClick
+                click: this.printReport
             },
 
-            'reportsettingsmodal reportsettingsshare sharesearchbox': {
+            'reportsettingsmodal reportsharesetting sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
                 specialkey: this.onReportModalShareSearchboxSpecialKey
             },
 
-            'reportsettingsmodal reportsettingsshare button[action=share]': {
+            'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
             }
         });
 
         this.application.on({
-            showsettingsmodal: this.showSettingsModal,
+            opensettingsmodal: this.openSettingsModal,
             scope: this
         });
     },
-
-    onReportFavorite: function (cmp, eOpts) {
+    
+    afterEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            active_tab = cmp.up('tabpanel').getActiveTab();
-            
-        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
-            report.set('is_favorite', true);
-        } else {
-            this.application.fireEvent('favoritereport');
-        }
-    },
-
-    onReportUnFavorite: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            active_tab = cmp.up('tabpanel').getActiveTab();
-            
-        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
-            report.set('is_favorite', false);
-        } else {
-            this.application.fireEvent('unfavoritereport');
-        }
-    },
-    
-    onReportModalCancelClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal();
-    
-        modal.close();
-    },
-    
-    onReportModalCopyClick: function (cmp, e, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_name = this.getReportNameCopy().getValue(),
-            report_description = this.getReportDescriptionCopy().getValue();
-    
-        this.setFavoriteStatus('copy');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
+            is_favorite = report.get('is_favorite'),
+            edit_favorite = cmp.down('reportfavorite');
         
-        // form reset
-        // TODO: put this in the view
-        cmp.up('form').getForm().reset();
+        if (is_favorite) {
+            edit_favorite.toggleFavorite();
+        }
+    },
+    
+    // TODO: not sure if intended functionality
+    afterCopySettingRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_favorite = report.get('is_favorite'),
+            copy_favorite = cmp.down('reportfavorite');
+        
+        if (is_favorite) {
+            copy_favorite.toggleFavorite();
+        }
+    },
+    
+    beforeEditSettingRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            edit_setting_view = this.getEditSetting();
+    
+        // if there is no form - do nothing
+        if (edit_setting_view) {
+            edit_setting_view.getForm().loadRecord(report);
+        }
+    },
+    
+    beforeSettingModalClose: function (cmp, eOpts) {
+        var settings_modal_tabs = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs.getActiveTab();
+            
+        if (Ext.getClassName(active_tab) != 'PICS.view.report.settings.CopySetting') {
+            return;
+        }
+            
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_favorite = report.get('is_favorite'),
+            copy_favorite = active_tab.down('reportfavorite');
+        
+        if (is_favorite) {
+            copy_favorite.toggleFavorite();
+        } else {
+            copy_favorite.toggleUnfavorite();
+        }
+    },
+    
+    cancelSettingModal: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal();
+    
+        settings_modal_view.close();
+    },
+    
+    changeSettingModalTab: function (cmp, nextCard, oldCard, eOpts) {
+        if (Ext.getClassName(nextCard) == 'PICS.view.report.settings.CopySetting') {
+            var favorite_element = nextCard.down('reportfavorite'), 
+                has_favorite_element = favorite_element.getEl();
+            
+            if (has_favorite_element) {
+                var report_store = this.getReportReportsStore(),
+                    report = report_store.first(),
+                    is_favorite = report.get('is_favorite');
+                
+                if (is_favorite) {
+                    favorite_element.toggleFavorite();
+                }
+            }
+        }
+        
+        var settings_modal_view = this.getSettingsModal(),
+            title = nextCard.modal_title;
+        
+        settings_modal_view.setTitle(title);
+    },
+    
+    copyReport: function (cmp, e, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            copy_setting_view = cmp.up('reportcopysetting'),
+            copy_setting_form = copy_setting_view.getForm();
+        
+        if (copy_setting_form.isValid()) {
+            copy_setting_form.updateRecord(report);
+        }
+        
+        copy_setting_form.reset();
         
         this.application.fireEvent('createreport');
     },
     
-    onReportModalEditClick: function (cmp, e, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue();
-    
-        this.setFavoriteStatus('edit');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
+    editReport: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            edit_setting_view = cmp.up('reporteditsetting'),
+            edit_setting_form = edit_setting_view.getForm();
         
-        this.getReportSettingsModal().close();
+        if (edit_setting_form.isValid()) {
+            edit_setting_form.updateRecord();
+        }
         
+        settings_modal_view.close();
+    
         this.application.fireEvent('updatepageheader');
+        
         this.application.fireEvent('savereport');
     },
     
-    onReportModalEditBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report_settings_edit = this.getReportSettingsEdit(),
-            report_no_permission_edit = this.getReportSettingsNoPermission();
-    
-        // if there is no form - do nothing
-        if (!report_no_permission_edit) {
-            if (!report_store.isLoaded()) {
-                report_store.on('load', function (store, records, successful, eOpts) {
-                    var report = report_store.first();
-    
-                    report_settings_edit.update(report);
-                });
-            } else {
-                var report = report_store.first();
-    
-                report_settings_edit.update(report);
-            }
-        }
-    },
-    
-    onReportModalFavoriteToggleAfterRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            is_favorite = report.get('is_favorite');
-        
-        if (is_favorite) {
-            cmp.toggleFavorite();
-        }
-    },
-    
-    onReportModalTabClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal(),
-            title = cmp.card.modal_title;
-    
-        modal.setTitle(title);
-    },
-    
-    onReportModalExportClick: function (cmp, e, eOpts) {
+    exportReport: function (cmp, e, eOpts) {
         this.application.fireEvent('downloadreport');
     },
+
+    favoriteReport: function (cmp, eOpts) {
+        var active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.EditSetting') {
+            this.application.fireEvent('favoritereport');
+        }
+    },
     
-    onReportModalPrintPreviewClick: function (cmp, e, eOpts) {
+    openSettingsModal: function (action) {
+        var settings_modal_view = this.getSettingsModal();
+        
+        if (!settings_modal_view) {
+            settings_modal_view = Ext.create('PICS.view.report.settings.SettingsModal');
+        }
+        
+        settings_modal_view.updateActiveTabFromAction(action);
+    
+        settings_modal_view.show();
+    },
+    
+    printReport: function (cmp, e, eOpts) {
         this.application.fireEvent('printreport');
     },
     
-    onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
-        var settings_modal = this.getReportSettingsModal(),
-            title = cmp.getActiveTab().modal_title;
-    
-        settings_modal.setTitle(title);
-    },
-    
-    setFavoriteStatus: function (action) {
-        if (action == 'edit') {
-            favorite_toggle = this.getEditFavoriteToggle();
-        } else if (action == 'copy') {
-            favorite_toggle = this.getCopyFavoriteToggle();
+    unfavoriteReport: function (cmp, eOpts) {
+        var active_tab = cmp.up('tabpanel').getActiveTab();
+            
+        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.EditSetting') {
+            this.application.fireEvent('unfavoritereport');
         }
-    
-        var is_favorite_on = favorite_toggle.isFavoriteOn();
-    
-        favorite_toggle.saveFavoriteStatus(is_favorite_on);
-    },
-    
-    showSettingsModal: function (action) {
-        var settings_modal = Ext.create('PICS.view.report.settings.SettingsModal');
-    
-        if (action == 'edit') {
-            this.getReportSettingsTabs().setActiveTab(0);
-        } else if (action == 'copy') {
-            this.getReportSettingsTabs().setActiveTab(1);
-        }
-    
-        settings_modal.show();
     },
     
     /**
@@ -260,7 +253,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
     
         if (record) {
-            var report_settings_share = this.getReportSettingsShare();
+            var report_settings_share = this.getShareSetting();
             
             var account = {
                 name: record.get('result_name'),
@@ -289,7 +282,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalShareClick: function (cmp, e, eOpts) {
-        var report_settings_share = this.getReportSettingsShare(),
+        var report_settings_share = this.getShareSetting(),
             data = report_settings_share.request_data;
         
         // Abort if no account has been selected.

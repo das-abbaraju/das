@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.settings.share.ShareSettings', {
+Ext.define('PICS.view.report.settings.share.ShareSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsshare'],
+    alias: 'widget.reportsharesetting',
 
     requires: [
         'PICS.view.report.settings.share.ShareSearchBox'

@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.settings.Share', {
+Ext.define('PICS.view.report.settings.share.Share', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsshare'],
+    alias: 'widget.reportsharesetting',
 
     border: 0,
     dockedItems: [{
@@ -25,19 +25,8 @@ Ext.define('PICS.view.report.settings.Share', {
     }],
     id: 'report_share',
     items: [
-        Ext.create('PICS.view.report.settings.UserSearch')
+        Ext.create('PICS.view.report.settings.share.UserSearch')
     ],
-//    items: [{
-//        xtype: 'textfield',
-//        fieldLabel: 'Report Name',
-//        labelAlign: 'right',
-//        name: 'report_name'
-//    }, {
-//        xtype: 'textarea',
-//        fieldLabel: 'Description',
-//        labelAlign: 'right',
-//        name: 'report_description'
-//    }],
     layout: 'form',
     // custom config
     modal_title: 'Share Report',

@@ -1,16 +1,9 @@
-Ext.define('PICS.view.report.settings.ExportSettings', {
+Ext.define('PICS.view.report.settings.ExportSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsexport'],
+    alias: 'widget.reportexportsetting',
 
     border: 0,
     id: 'report_export',
-    /*items: [{
-        text: '<i class="icon-table icon-large"></i>Spread Sheet'
-    }, {
-        text: '<i class="icon-file icon-large"></i>PDF'
-    }, {
-        text: '<i class="icon-home icon-large"></i>To Dashboard'
-    }],*/
     items: [{
         xtype: 'button',
         action: 'export',
@@ -20,7 +13,6 @@ Ext.define('PICS.view.report.settings.ExportSettings', {
         tooltip: 'Export this report to Excel',
         margin: '100 0 0 0'
     }],
-
     layout: {
         type: 'vbox',
         align: 'center'

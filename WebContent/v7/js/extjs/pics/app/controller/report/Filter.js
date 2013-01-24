@@ -228,7 +228,7 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onAddFilter: function (cmp, event, eOpts) {
-        this.application.fireEvent('showfiltermodal');
+        this.application.fireEvent('openfiltermodal');
     },
 
     /**

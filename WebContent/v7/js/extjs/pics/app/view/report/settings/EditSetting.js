@@ -1,8 +1,10 @@
-Ext.define('PICS.view.report.settings.EditSettings', {
+Ext.define('PICS.view.report.settings.EditSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsedit'],
+    alias: 'widget.reporteditsetting',
 
-    requires: ['PICS.view.report.settings.FavoriteToggle'],
+    requires: [
+        'PICS.view.report.settings.FavoriteToggle'
+    ],
 
     border: 0,
     id: 'report_edit',
@@ -57,15 +59,15 @@ Ext.define('PICS.view.report.settings.EditSettings', {
             allowBlank: false,
             fieldLabel: 'Report Name',
             labelAlign: 'right',
-            name: 'report_name'
+            name: 'name'
         }, {
             xtype: 'textarea',
             allowBlank: false,
             fieldLabel: 'Description',
             labelAlign: 'right',
-            name: 'report_description'
+            name: 'description'
         }, {
-            xtype: 'favoritetoggle'
+            xtype: 'reportfavoritetoggle'
         }];
 
         this.layout = 'form';
@@ -79,29 +81,9 @@ Ext.define('PICS.view.report.settings.EditSettings', {
                 "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
             ])
         }, {
-            xtype: 'favoritetoggle'
+            xtype: 'reportfavoritetoggle'
         }];
 
-        this.id = 'settings_no_permission';
-    },
-
-    update: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        var data = report ? report.data : {},
-            report_name_element = this.down('textfield[name=report_name]'),
-            report_description_element = this.down('textarea[name=report_description]');
-
-        if (data.name && report_name_element) {
-            report_name_element.setValue(data.name);
-        }
-
-        if (data.description && report_description_element) {
-            report_description_element.setValue(data.description);
-        }
-
-        this.callParent([data]);
+        this.id = 'report_edit_no_permission';
     }
 });

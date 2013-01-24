@@ -25,7 +25,7 @@ Ext.define('PICS.controller.report.Header', {
             },
 
             'reportheader button[action=edit]': {
-                click: this.showSettingsModal
+                click: this.openSettingsModal
             }
         });
 
@@ -39,8 +39,8 @@ Ext.define('PICS.controller.report.Header', {
         this.application.fireEvent('updatepageheader');
     },
 
-    showSettingsModal: function (cmp, e, eOpts) {
-        this.application.fireEvent('showsettingsmodal', 'edit');
+    openSettingsModal: function (cmp, e, eOpts) {
+        this.application.fireEvent('opensettingsmodal', 'edit');
     },
 
     saveReport: function (cmp, e, eOpts) {
@@ -51,7 +51,7 @@ Ext.define('PICS.controller.report.Header', {
         if (is_editable) {
             this.application.fireEvent('savereport');
         } else {
-            this.application.fireEvent('showsettingsmodal', 'copy');
+            this.application.fireEvent('opensettingsmodal', 'copy');
         }
     },
 

@@ -8951,8 +8951,8 @@ textarea.x-form-invalid-field {
 #report_edit .private,
 #report_copy .favorite,
 #report_copy .private,
-#settings_no_permission .favorite,
-#settings_no_permission .private {
+#report_edit_no_permission .favorite,
+#report_edit_no_permission .private {
   color: #ccc;
   cursor: pointer;
   font-size: 18px;
@@ -8962,33 +8962,33 @@ textarea.x-form-invalid-field {
 /* line 115, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .selected,
 #report_copy .selected,
-#settings_no_permission .selected {
+#report_edit_no_permission .selected {
   color: #A84D10; }
 /* line 120, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit strong,
 #report_copy strong,
-#settings_no_permission strong {
+#report_edit_no_permission strong {
   font-weight: bold; }
 /* line 125, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit input[type="text"],
 #report_copy input[type="text"],
-#settings_no_permission input[type="text"] {
+#report_edit_no_permission input[type="text"] {
   padding: 1px 3px; }
 
 /* line 133, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#settings_no_permission p {
+#report_edit_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 85%; }
 /* line 142, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#settings_no_permission .permission-info {
+#report_edit_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
 /* line 149, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#settings_no_permission .duplicate-info {
+#report_edit_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
 
@@ -9131,47 +9131,47 @@ textarea.x-form-invalid-field {
  * Tabs
  */
 /* line 331, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar {
+#report_settings_modal_tabbar {
   background: #454545; }
 
 /* line 336, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-tab {
+#report_settings_modal_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
 /* line 344, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-tab button {
+#report_settings_modal_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
 /* line 352, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-tab span {
+#report_settings_modal_tabbar .x-tab span {
   color: #cccccc; }
 
 /* line 357, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-over span {
+#report_settings_modal_tabbar .x-over span {
   color: #ffffff; }
 
 /* line 362, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-active {
+#report_settings_modal_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
 /* line 368, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-active button {
+#report_settings_modal_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
 /* line 374, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-active span {
+#report_settings_modal_tabbar .x-active span {
   color: #666666; }
 
 /* line 379, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_settings_tabbar .x-tab button i.icon-large {
+#report_settings_modal_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
 

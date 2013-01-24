@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.settings.UserSearch', {
+Ext.define('PICS.view.report.settings.share.UserSearch', {
     extend: 'Ext.form.field.ComboBox',
-    alias: ['widget.usersearch'],
+    alias: 'widget.usersearch',
 
     autoScroll: false,
     autoSelect: false,
