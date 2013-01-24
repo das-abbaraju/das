@@ -225,7 +225,9 @@
   -webkit-box-sizing: border-box; }
 
 /* line 13, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend, .x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
+.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3,
+.x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend,
+.x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
   margin: 0;
   padding: 0; }
 /* line 18, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -236,7 +238,8 @@
 .x-reset fieldset, .x-reset img {
   border: 0; }
 /* line 28, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset address, .x-reset caption, .x-reset cite, .x-reset code, .x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
+.x-reset address, .x-reset caption, .x-reset cite, .x-reset code,
+.x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
   font-style: normal;
   font-weight: normal; }
 /* line 33, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -249,7 +252,8 @@
 .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6 {
   font-size: 100%; }
 /* line 46, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset q:before, .x-reset q:after {
+.x-reset q:before,
+.x-reset q:after {
   content: ""; }
 /* line 50, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
 .x-reset abbr, .x-reset acronym {
@@ -1548,7 +1552,32 @@ tr.x-container:before {
   .x-reset .x-html {
     /* Begin bidirectionality settings (do not change) */ }
     /* line 34, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html html, .x-reset .x-html address, .x-reset .x-html blockquote, .x-reset .x-html body, .x-reset .x-html dd, .x-reset .x-html div, .x-reset .x-html dl, .x-reset .x-html dt, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html frame, .x-reset .x-html frameset, .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html noframes, .x-reset .x-html ol, .x-reset .x-html p, .x-reset .x-html ul, .x-reset .x-html center, .x-reset .x-html dir, .x-reset .x-html hr, .x-reset .x-html menu, .x-reset .x-html pre {
+    .x-reset .x-html html,
+    .x-reset .x-html address,
+    .x-reset .x-html blockquote,
+    .x-reset .x-html body,
+    .x-reset .x-html dd,
+    .x-reset .x-html div,
+    .x-reset .x-html dl,
+    .x-reset .x-html dt,
+    .x-reset .x-html fieldset,
+    .x-reset .x-html form,
+    .x-reset .x-html frame, .x-reset .x-html frameset,
+    .x-reset .x-html h1,
+    .x-reset .x-html h2,
+    .x-reset .x-html h3,
+    .x-reset .x-html h4,
+    .x-reset .x-html h5,
+    .x-reset .x-html h6,
+    .x-reset .x-html noframes,
+    .x-reset .x-html ol,
+    .x-reset .x-html p,
+    .x-reset .x-html ul,
+    .x-reset .x-html center,
+    .x-reset .x-html dir,
+    .x-reset .x-html hr,
+    .x-reset .x-html menu,
+    .x-reset .x-html pre {
       display: block; }
     /* line 35, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html li {
@@ -1579,7 +1608,8 @@ tr.x-container:before {
     .x-reset .x-html colgroup {
       display: table-column-group; }
     /* line 45, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td, .x-reset .x-html th {
+    .x-reset .x-html td,
+    .x-reset .x-html th {
       display: table-cell; }
     /* line 46, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html caption {
@@ -1607,7 +1637,16 @@ tr.x-container:before {
       font-size: 1.17em;
       margin: .83em 0; }
     /* line 62, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h4, .x-reset .x-html p, .x-reset .x-html blockquote, .x-reset .x-html ul, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html ol, .x-reset .x-html dl, .x-reset .x-html dir, .x-reset .x-html menu {
+    .x-reset .x-html h4,
+    .x-reset .x-html p,
+    .x-reset .x-html blockquote,
+    .x-reset .x-html ul,
+    .x-reset .x-html fieldset,
+    .x-reset .x-html form,
+    .x-reset .x-html ol,
+    .x-reset .x-html dl,
+    .x-reset .x-html dir,
+    .x-reset .x-html menu {
       margin: 1.12em 0; }
     /* line 63, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html h5 {
@@ -1618,29 +1657,49 @@ tr.x-container:before {
       font-size: .75em;
       margin: 1.67em 0; }
     /* line 72, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html b, .x-reset .x-html strong {
+    .x-reset .x-html h1,
+    .x-reset .x-html h2,
+    .x-reset .x-html h3,
+    .x-reset .x-html h4,
+    .x-reset .x-html h5,
+    .x-reset .x-html h6,
+    .x-reset .x-html b,
+    .x-reset .x-html strong {
       font-weight: bolder; }
     /* line 73, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html blockquote {
       margin-left: 40px;
       margin-right: 40px; }
     /* line 78, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html i, .x-reset .x-html cite, .x-reset .x-html em, .x-reset .x-html var, .x-reset .x-html address {
+    .x-reset .x-html i,
+    .x-reset .x-html cite,
+    .x-reset .x-html em,
+    .x-reset .x-html var,
+    .x-reset .x-html address {
       font-style: italic; }
     /* line 83, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html pre, .x-reset .x-html tt, .x-reset .x-html code, .x-reset .x-html kbd, .x-reset .x-html samp {
+    .x-reset .x-html pre,
+    .x-reset .x-html tt,
+    .x-reset .x-html code,
+    .x-reset .x-html kbd,
+    .x-reset .x-html samp {
       font-family: monospace; }
     /* line 84, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html pre {
       white-space: pre; }
     /* line 88, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html button, .x-reset .x-html textarea, .x-reset .x-html input, .x-reset .x-html select {
+    .x-reset .x-html button,
+    .x-reset .x-html textarea,
+    .x-reset .x-html input,
+    .x-reset .x-html select {
       display: inline-block; }
     /* line 89, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html big {
       font-size: 1.17em; }
     /* line 92, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html small, .x-reset .x-html sub, .x-reset .x-html sup {
+    .x-reset .x-html small,
+    .x-reset .x-html sub,
+    .x-reset .x-html sup {
       font-size: .83em; }
     /* line 93, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html sub {
@@ -1652,19 +1711,28 @@ tr.x-container:before {
     .x-reset .x-html table {
       border-spacing: 2px; }
     /* line 98, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html thead, .x-reset .x-html tbody, .x-reset .x-html tfoot {
+    .x-reset .x-html thead,
+    .x-reset .x-html tbody,
+    .x-reset .x-html tfoot {
       vertical-align: middle; }
     /* line 100, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td, .x-reset .x-html th {
+    .x-reset .x-html td,
+    .x-reset .x-html th {
       vertical-align: inherit; }
     /* line 103, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html s, .x-reset .x-html strike, .x-reset .x-html del {
+    .x-reset .x-html s,
+    .x-reset .x-html strike,
+    .x-reset .x-html del {
       text-decoration: line-through; }
     /* line 104, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html hr {
       border: 1px inset; }
     /* line 109, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol, .x-reset .x-html ul, .x-reset .x-html dir, .x-reset .x-html menu, .x-reset .x-html dd {
+    .x-reset .x-html ol,
+    .x-reset .x-html ul,
+    .x-reset .x-html dir,
+    .x-reset .x-html menu,
+    .x-reset .x-html dd {
       margin-left: 40px; }
     /* line 110, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html ul, .x-reset .x-html menu, .x-reset .x-html dir {
@@ -1673,11 +1741,15 @@ tr.x-container:before {
     .x-reset .x-html ol {
       list-style-type: decimal; }
     /* line 115, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol ul, .x-reset .x-html ul ol, .x-reset .x-html ul ul, .x-reset .x-html ol ol {
+    .x-reset .x-html ol ul,
+    .x-reset .x-html ul ol,
+    .x-reset .x-html ul ul,
+    .x-reset .x-html ol ol {
       margin-top: 0;
       margin-bottom: 0; }
     /* line 117, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html u, .x-reset .x-html ins {
+    .x-reset .x-html u,
+    .x-reset .x-html ins {
       text-decoration: underline; }
     /* line 118, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html br:before {
@@ -2110,7 +2182,8 @@ tr.x-container:before {
   line-height: 16px; }
 
 /* line 665, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon button, .x-btn-default-small-icon a {
+.x-btn-default-small-icon button,
+.x-btn-default-small-icon a {
   padding: 0; }
 /* line 669, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon .x-btn-inner {
@@ -2127,7 +2200,8 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-left button, .x-btn-default-small-icon-text-left a {
+.x-btn-default-small-icon-text-left button,
+.x-btn-default-small-icon-text-left a {
   height: 16px; }
 /* line 690, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-left .x-btn-inner {
@@ -2147,7 +2221,8 @@ tr.x-container:before {
     height: 16px; }
 
 /* line 713, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-right button, .x-btn-default-small-icon-text-right a {
+.x-btn-default-small-icon-text-right button,
+.x-btn-default-small-icon-text-right a {
   height: 16px; }
 /* line 716, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-right .x-btn-inner {
@@ -7880,7 +7955,8 @@ textarea.x-form-invalid-field {
     #site_menu .x-btn.x-over .x-btn-inner {
       color: #c66603; }
   /* line 94, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn.x-menu-active, #site_menu .x-btn.x-pressed {
+  #site_menu .x-btn.x-menu-active,
+  #site_menu .x-btn.x-pressed {
     background: #f1f1f2;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
     background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
@@ -7896,7 +7972,8 @@ textarea.x-form-invalid-field {
     border-top: 1px solid #eaeaea;
     border-bottom: 0px; }
     /* line 103, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-    #site_menu .x-btn.x-menu-active .x-btn-inner, #site_menu .x-btn.x-pressed .x-btn-inner {
+    #site_menu .x-btn.x-menu-active .x-btn-inner,
+    #site_menu .x-btn.x-pressed .x-btn-inner {
       color: #c66603; }
   /* line 109, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-toolbar-separator-horizontal {
@@ -7981,7 +8058,8 @@ textarea.x-form-invalid-field {
     .site-menu-search-list .search-item em {
       font-weight: bold; }
     /* line 199, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item .name, .site-menu-search-list .search-item .location {
+    .site-menu-search-list .search-item .name,
+    .site-menu-search-list .search-item .location {
       float: left;
       width: 175px; }
     /* line 205, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
@@ -7991,30 +8069,41 @@ textarea.x-form-invalid-field {
     .site-menu-search-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 218, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-deactivated, .site-menu-search-list .account-inactive {
-    color: #AEAEAE; }
+  /* line 217, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .account-demo {
+    font-style: italic; }
+    /* line 221, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    .site-menu-search-list .account-demo em {
+      font-style: italic; }
   /* line 228, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .account-deleted .name, .site-menu-search-list .account-deleted .id, .site-menu-search-list .account-deleted .location, .site-menu-search-list .account-deleted .type {
+  .site-menu-search-list .account-deactivated,
+  .site-menu-search-list .account-inactive {
+    color: #AEAEAE; }
+  /* line 238, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .account-deleted .name,
+  .site-menu-search-list .account-deleted .id,
+  .site-menu-search-list .account-deleted .location,
+  .site-menu-search-list .account-deleted .type {
     text-decoration: line-through; }
-  /* line 235, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .more-results, .site-menu-search-list .no-results {
+  /* line 245, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .more-results,
+  .site-menu-search-list .no-results {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-  /* line 244, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 254, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results a {
     color: #333333;
     display: block;
     font-weight: bold;
     padding: 3px 0px; }
-  /* line 252, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 262, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results p {
     color: #999;
     font-size: 13px;
     margin: 0px; }
 
-/* line 261, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 271, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 

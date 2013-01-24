@@ -736,7 +736,7 @@ tr.x-container:before {
  *
  * @member Global_CSS
  */
-/* line 30, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/_all.scss */
+/* line 30, ../themes/stylesheets/ext4/default/_all.scss */
 .x-reset {
   /*IE rounding error*/
   /*
@@ -5542,11 +5542,11 @@ textarea.x-form-invalid-field {
  * Start Custom
  * Author: Carey Hinoki
  */
-/* line 47, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 47, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_navigation {
   height: 50px; }
 
-/* line 52, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 52, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu {
   background: #eaeaea;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
@@ -5558,20 +5558,20 @@ textarea.x-form-invalid-field {
   -webkit-box-shadow: #cccccc 0px 2px 2px 0px;
   -moz-box-shadow: #cccccc 0px 2px 2px 0px;
   box-shadow: #cccccc 0px 2px 2px 0px; }
-  /* line 59, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 59, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-btn-arrow {
     background: none;
     padding: 0px !important; }
-  /* line 65, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 65, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-btn {
     margin: 0px;
     padding: 0px 10px;
     top: 0px !important; }
-    /* line 71, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 71, ../sass/my-ext-theme/layout/menu/_menu.scss */
     #site_menu .x-btn .x-btn-inner {
       color: #002441;
       font-weight: bold; }
-  /* line 78, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 78, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-btn.x-over {
     background: #eaeaea;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
@@ -5587,10 +5587,10 @@ textarea.x-form-invalid-field {
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-    /* line 87, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 87, ../sass/my-ext-theme/layout/menu/_menu.scss */
     #site_menu .x-btn.x-over .x-btn-inner {
       color: #c66603; }
-  /* line 94, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 94, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-btn.x-menu-active,
   #site_menu .x-btn.x-pressed {
     background: #f1f1f2;
@@ -5607,29 +5607,29 @@ textarea.x-form-invalid-field {
     border: 1px solid #aeaeae;
     border-top: 1px solid #eaeaea;
     border-bottom: 0px; }
-    /* line 103, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 103, ../sass/my-ext-theme/layout/menu/_menu.scss */
     #site_menu .x-btn.x-menu-active .x-btn-inner,
     #site_menu .x-btn.x-pressed .x-btn-inner {
       color: #c66603; }
-  /* line 109, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 109, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-toolbar-separator-horizontal {
     border-left: 1px solid #e7e7e7;
     border-right: 0px; }
 
-/* line 116, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 116, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .dashboard .x-btn-inner {
   padding: 0px 0px 0px 50px; }
 
-/* line 123, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 123, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search label {
   line-height: 14px;
   padding: 7px 0px 0px !important; }
-/* line 129, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 129, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search .icon-search {
   color: #cccccc;
   font-size: 14px;
   text-shadow: 0px -1px 0px #bcbcbc; }
-/* line 136, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 136, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search .x-form-text {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -5640,7 +5640,7 @@ textarea.x-form-invalid-field {
   line-height: 20px;
   padding: 0px 7px; }
 
-/* line 145, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 145, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
@@ -5648,7 +5648,7 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 150, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 150, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list li:first-child {
     -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
@@ -5656,7 +5656,7 @@ textarea.x-form-invalid-field {
     -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px; }
-  /* line 156, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 156, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list li:last-child {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-bottom-left-radius: 4px;
@@ -5664,13 +5664,13 @@ textarea.x-form-invalid-field {
     -moz-border-radius-bottomright: 4px;
     -webkit-border-bottom-right-radius: 4px;
     border-bottom-right-radius: 4px; }
-  /* line 162, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 162, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .even {
     background: #f1f1f2; }
-  /* line 167, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 167, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .x-boundlist-item {
     border: 1px solid transparent; }
-  /* line 172, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 172, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .x-boundlist-item-over {
     background: #a84d10;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
@@ -5682,62 +5682,68 @@ textarea.x-form-invalid-field {
     border-bottom: 1px solid #a84d10;
     border-top: 1px solid #c66603;
     color: white; }
-  /* line 182, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 182, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .search-item {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-    /* line 188, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 188, ../sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item div {
       clear: both; }
-    /* line 193, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 193, ../sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item em {
       font-weight: bold; }
-    /* line 199, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 199, ../sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .name,
     .site-menu-search-list .search-item .location {
       float: left;
       width: 175px; }
-    /* line 205, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 205, ../sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .id {
       float: right; }
-    /* line 210, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 210, ../sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 218, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 217, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .account-demo {
+    font-style: italic; }
+    /* line 221, ../sass/my-ext-theme/layout/menu/_menu.scss */
+    .site-menu-search-list .account-demo em {
+      font-style: italic; }
+  /* line 228, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .account-deactivated,
   .site-menu-search-list .account-inactive {
     color: #AEAEAE; }
-  /* line 228, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 238, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .account-deleted .name,
   .site-menu-search-list .account-deleted .id,
   .site-menu-search-list .account-deleted .location,
   .site-menu-search-list .account-deleted .type {
     text-decoration: line-through; }
-  /* line 235, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 245, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results,
   .site-menu-search-list .no-results {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-  /* line 244, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 254, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results a {
     color: #333333;
     display: block;
     font-weight: bold;
     padding: 3px 0px; }
-  /* line 252, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 262, ../sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results p {
     color: #999;
     font-size: 13px;
     margin: 0px; }
 
-/* line 261, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 271, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 
-/* line 14, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 14, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-body {
   border: 1px solid #dcdcdc;
   -webkit-border-radius: 5px;
@@ -5746,7 +5752,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 5px;
   border-radius: 5px; }
 
-/* line 20, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 20, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .menu-title {
   color: #999999;
   font-size: 11px;
@@ -5754,11 +5760,11 @@ textarea.x-form-invalid-field {
   padding: 8px 15px 4px 15px !important;
   text-transform: uppercase; }
 
-/* line 29, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 29, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-item-text {
   font-size: 13px; }
 
-/* line 34, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 34, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-item-active .x-menu-item-link {
   background: #a84d10;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
@@ -5773,7 +5779,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 0px !important;
   border-radius: 0px !important; }
 
-/* line 42, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 42, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-item:first-child.x-menu-item-active .x-menu-item-link {
   -moz-border-radius-topleft: 3px !important;
   -webkit-border-top-left-radius: 3px !important;
@@ -5782,7 +5788,7 @@ textarea.x-form-invalid-field {
   -webkit-border-top-right-radius: 3px !important;
   border-top-right-radius: 3px !important; }
 
-/* line 48, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 48, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
   -moz-border-radius-bottomleft: 3px !important;
   -webkit-border-bottom-left-radius: 3px !important;
@@ -5791,7 +5797,7 @@ textarea.x-form-invalid-field {
   -webkit-border-bottom-right-radius: 3px !important;
   border-bottom-right-radius: 3px !important; }
 
-/* line 54, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menus.scss */
+/* line 54, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-item-active .x-menu-item-link span {
   color: white; }
 

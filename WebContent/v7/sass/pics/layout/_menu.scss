@@ -105,7 +105,12 @@
     .account-deactivated a,
     .account-inactive a
     {
-       color: #AEAEAE;
+       color: #aeaeae;
+    }
+
+    .account-demo
+    {
+        font-style: italic;
     }
 
     .account-deleted
