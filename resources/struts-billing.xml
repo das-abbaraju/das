@@ -76,8 +76,9 @@
 		<action name="QBSyncEdit" class="com.picsauditing.actions.QBSyncEdit">
 			<result>struts/reports/qb_sync_edit.jsp</result>
 		</action>
-		<action name="DownloadCommissionAudit" class="com.picsauditing.actions.DownloadCommissionAudit">
+		<action name="DownloadCommissionAudit" class="com.picsauditing.actions.billing.DownloadCommissionAudit">
             <result type="file" />
         </action>
+        <action name="ProcessCommission" class="com.picsauditing.actions.billing.ProcessCommission" />
 	</package>
 </struts>

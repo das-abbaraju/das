@@ -27,29 +27,34 @@ public class PaymentObserver implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (!(arg instanceof PaymentDataEvent)
-				|| !featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_INVOICE_COMMISSION)) {
+		if (!(arg instanceof PaymentDataEvent)) {
+			return;
+		}
+
+		PaymentDataEvent event = (PaymentDataEvent) arg;
+		if (event != null && !event.isFromApiForForceReload()
+				&& !featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_INVOICE_COMMISSION)) {
 			return;
 		}
 
 		try {
-			PaymentDataEvent event = (PaymentDataEvent) arg;
+			// PaymentDataEvent event = (PaymentDataEvent) arg;
 			logger.info("Got payment id = {}", event.getData().getId());
 
 			PaymentCommissionStrategy<Payment> strategy = null;
 			switch (event.getPaymentEventType()) {
-				case PAYMENT:
-				case SAVE:
-					strategy = paymentStrategy;
-					break;
+			case PAYMENT:
+			case SAVE:
+				strategy = paymentStrategy;
+				break;
 
-				case REFUND:
-				case REMOVE:
-					strategy = paymentRemoveStrategy;
-					break;
+			case REFUND:
+			case REMOVE:
+				strategy = paymentRemoveStrategy;
+				break;
 
-				default:
-					throw new IllegalArgumentException("Unhandled Payment Event Type.");
+			default:
+				throw new IllegalArgumentException("Unhandled Payment Event Type.");
 			}
 
 			strategy.processPaymentCommission(event.getData());
