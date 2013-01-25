@@ -463,4 +463,30 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql);
 		return query.executeUpdate();
 	}
+	
+	@Transactional(propagation = Propagation.NESTED)
+	public int acceptRecommendedCsrs(String conIds) {
+		if (Strings.isEmpty(conIds)) {
+			return 0;
+		}
+		
+		String sql = "UPDATE contractor_info c " + 
+				"SET c.welcomeAuditor_id = c.recommendedCsrID " + 
+				"WHERE c.id in (" + conIds + ")";
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
+	
+	@Transactional(propagation = Propagation.NESTED)
+	public int rejectRecommendedCsrs(String conIds) {
+		if (Strings.isEmpty(conIds)) {
+			return 0;
+		}
+		
+		String sql = "UPDATE contractor_info c " + 
+				"SET c.recommendedCsrID = c.welcomeAuditor_id " +
+				"WHERE c.id in (" + conIds + ")";
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
 }

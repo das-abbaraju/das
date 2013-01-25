@@ -6,6 +6,7 @@
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ReportTester.action</pattern>
         <pattern>/NewYearMailer*.action</pattern>
+        <pattern>/ManageRecommendedCSRAssignments.action</pattern>
     </decorator>
     <decorator name="simpleLayout" page="simple-layout.jsp">
         <pattern>/Login.action</pattern>
