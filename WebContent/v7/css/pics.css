@@ -219,6 +219,52 @@ body {
   margin: 0px;
 }
 
+/* line 1, ../sass/pics/layout/_simple-layout.scss */
+.simple-layout {
+  background-color: #002441;
+  color: #666;
+}
+/* line 6, ../sass/pics/layout/_simple-layout.scss */
+.simple-layout .center-container {
+  background: #f1f1f2;
+  -webkit-box-shadow: black 0px 2px 8px 0px;
+  -moz-box-shadow: black 0px 2px 8px 0px;
+  box-shadow: black 0px 2px 8px 0px;
+  padding: 60px;
+  margin: 100px auto 20px;
+  overflow: hidden;
+  text-align: center;
+  width: 330px;
+}
+/* line 17, ../sass/pics/layout/_simple-layout.scss */
+.simple-layout .center-container h1 {
+  color: #a84d10;
+  font-weight: normal;
+  margin: 30px 0px;
+}
+/* line 24, ../sass/pics/layout/_simple-layout.scss */
+.simple-layout .center-container p {
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  /* line 33, ../sass/pics/layout/_simple-layout.scss */
+  .simple-layout {
+    background: #f1f1f2;
+  }
+  /* line 37, ../sass/pics/layout/_simple-layout.scss */
+  .simple-layout .center-container {
+    background: transparent;
+    box-shadow: none;
+    margin: 0;
+    padding: 30px 10px;
+    width: 100%;
+  }
+  /* line 46, ../sass/pics/layout/_simple-layout.scss */
+  .simple-layout .center-container button {
+    float: none;
+  }
+}
 /* line 2, ../sass/pics/widgets/pics/_example.scss */
 .example {
   background-color: #fff;

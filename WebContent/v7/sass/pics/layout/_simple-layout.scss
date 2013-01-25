@@ -1,0 +1,49 @@
+.simple-layout {
+    background-color: $pics_blue;
+    color: #666;
+    
+    .center-container
+    {
+        background: $pics_cool_grey;
+        @include box-shadow(#000000 0px 2px 8px 0px);        
+        padding: 60px;
+        margin: 100px auto 20px;
+        overflow: hidden;
+        text-align: center;
+        width: 330px;
+    }
+    
+    .center-container h1
+    {
+        color: $pics_burnt_orange;
+        font-weight: normal;
+        margin: 30px 0px;
+    }
+    
+    .center-container p
+    {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px)
+{
+    .simple-layout
+    {
+        background: $pics_cool_grey;
+
+        .center-container
+        {
+            background: transparent;
+            box-shadow: none;
+            margin: 0;
+            padding: 30px 10px;
+            width: 100%;
+        }
+    
+        .center-container button
+        {
+            float: none;
+        }
+    }
+}

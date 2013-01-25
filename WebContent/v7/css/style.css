@@ -8547,6 +8547,65 @@ body {
   color: #808285;
 }
 
+/* line 1, ../sass/pics/layout/_simple-layout.scss */
+
+.simple-layout {
+  color: #666;
+  background-color: #002441;
+}
+
+/* line 6, ../sass/pics/layout/_simple-layout.scss */
+
+.simple-layout .center-container {
+  width: 330px;
+  padding: 60px;
+  margin: 100px auto 20px;
+  overflow: hidden;
+  text-align: center;
+  background: #f1f1f2;
+  -webkit-box-shadow: black 0 2px 8px 0px;
+     -moz-box-shadow: black 0 2px 8px 0px;
+          box-shadow: black 0 2px 8px 0px;
+}
+
+/* line 17, ../sass/pics/layout/_simple-layout.scss */
+
+.simple-layout .center-container h1 {
+  margin: 30px 0;
+  font-weight: normal;
+  color: #a84d10;
+}
+
+/* line 24, ../sass/pics/layout/_simple-layout.scss */
+
+.simple-layout .center-container p {
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  {
+    /* line 33, ../sass/pics/layout/_simple-layout.scss */
+  
+    /* line 37, ../sass/pics/layout/_simple-layout.scss */
+  
+    /* line 46, ../sass/pics/layout/_simple-layout.scss */
+  
+  }
+  .simple-layout {
+    background: #f1f1f2;
+  }
+  .simple-layout .center-container {
+    width: 100%;
+    padding: 30px 10px;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .simple-layout .center-container button {
+    float: none;
+  }
+}
+
 /* line 2, ../sass/pics/widgets/pics/_example.scss */
 
 .example {
