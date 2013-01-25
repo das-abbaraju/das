@@ -307,7 +307,7 @@ public class ServiceRiskCalculatorTest {
 	}
 
 	@Test
-	public void testDetermineRiskCategory() throws Exception {
+	public void testGetCategory() throws Exception {
 		SafetyAssessment selfSafety = SafetyAssessment.LEVEL_OF_HAZARD_EXPOSURE;
 		SafetyAssessment safety = SafetyAssessment.CONDUCTED_FROM_OFFICE;
 
@@ -316,18 +316,18 @@ public class ServiceRiskCalculatorTest {
 
 		TransportationAssessment transportation = TransportationAssessment.DELIVER_TO_WAREHOUSE_OR_ADMINISTRATIVE_OFFICE;
 
-		assertEquals(RiskCategory.SELF_SAFETY, Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", selfSafety));
-		assertEquals(RiskCategory.SAFETY, Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", safety));
+		assertEquals(RiskCategory.SELF_SAFETY, Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", selfSafety));
+		assertEquals(RiskCategory.SAFETY, Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", safety));
 		assertEquals(RiskCategory.SELF_PRODUCT,
-				Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", selfProduct));
-		assertEquals(RiskCategory.PRODUCT, Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", product));
+				Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", selfProduct));
+		assertEquals(RiskCategory.PRODUCT, Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", product));
 		assertEquals(RiskCategory.TRANSPORTATION,
-				Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", transportation));
+				Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", transportation));
 	}
 
 	@Test(expected = Exception.class)
-	public void testDetermineRiskCategory_Null() throws Exception {
-		Whitebox.invokeMethod(serviceRiskCalculator, "determineRiskCategory", (RiskAssessment) null);
+	public void testGetCategory_Null() throws Exception {
+		Whitebox.invokeMethod(serviceRiskCalculator, "getCategory", (RiskAssessment) null);
 	}
 
 	private List<AuditData> createAuditDataAllAnswers(RiskCategory category, String answer) {

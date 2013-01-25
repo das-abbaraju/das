@@ -19,7 +19,7 @@ public class ServiceRiskCalculator {
 
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		try {
-			RiskAssessment assessment = findAssessmentType(auditData.getQuestion().getId());
+			RiskAssessment assessment = getAssessment(auditData.getQuestion().getId());
 			return assessment.getRiskLevelBasedOn(auditData.getAnswer());
 		} catch (Exception e) {
 			logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
@@ -29,21 +29,21 @@ public class ServiceRiskCalculator {
 		}
 	}
 
-	public Map<RiskCategory, LowMedHigh> getHighestRiskLevelMap(Collection<AuditData> auditDataForAllAssessmentQuestions) {
+	public Map<RiskCategory, LowMedHigh> getHighestRiskLevelMap(Collection<AuditData> auditDatas) {
 		Map<RiskCategory, LowMedHigh> highestRisks = new HashMap<RiskCategory, LowMedHigh>();
 		initializeRiskCategoriesToNone(highestRisks);
 
-		for (AuditData auditData : auditDataForAllAssessmentQuestions) {
+		for (AuditData auditData : auditDatas) {
 			int auditQuestionID = auditData.getQuestion().getId();
-			LowMedHigh calculatedRiskForThisQuestion = getRiskLevel(auditData);
+			LowMedHigh calculatedRisk = getRiskLevel(auditData);
 
 			try {
-				RiskAssessment assessmentType = findAssessmentType(auditQuestionID);
-				RiskCategory riskCategory = determineRiskCategory(assessmentType);
-				LowMedHigh currentRiskAssignedToThisQuestion = highestRisks.get(riskCategory);
+				RiskAssessment assessment = getAssessment(auditQuestionID);
+				RiskCategory category = getCategory(assessment);
+				LowMedHigh currentRisk = highestRisks.get(category);
 
-				if (calculatedRiskIsHigher(calculatedRiskForThisQuestion, currentRiskAssignedToThisQuestion)) {
-					highestRisks.put(riskCategory, calculatedRiskForThisQuestion);
+				if (calculatedRiskIsHigher(calculatedRisk, currentRisk)) {
+					highestRisks.put(category, calculatedRisk);
 				}
 			} catch (Exception e) {
 				logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
@@ -54,7 +54,7 @@ public class ServiceRiskCalculator {
 		return highestRisks;
 	}
 
-	private RiskAssessment findAssessmentType(int questionID) throws Exception {
+	private RiskAssessment getAssessment(int questionID) throws Exception {
         SafetyAssessment safetyAssessment = SafetyAssessment.findByQuestionID(questionID);
         if (safetyAssessment != null) {
             return safetyAssessment;
@@ -79,7 +79,7 @@ public class ServiceRiskCalculator {
 		}
 	}
 
-	private RiskCategory determineRiskCategory(RiskAssessment assessment) throws Exception {
+	private RiskCategory getCategory(RiskAssessment assessment) throws Exception {
 		if (assessment != null) {
 			if (assessment.isQuestionSelfEvaluation()) {
 				if (assessment instanceof SafetyAssessment) {
