@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,11 +50,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 	/**
 	 * Steps:
-	 * 
-	 * (1) Calculate the service level for each Client Site 
-	 * (2) Calculate the total number of sites that use each service level 
-	 * (3) Determine total dollar amount for each service level 
-	 * (4) Calculate the Client Site Revenue weight
+	 *
+	 * (1) Calculate the service level for each Client Site (2) Calculate the
+	 * total number of sites that use each service level (3) Determine total
+	 * dollar amount for each service level (4) Calculate the Client Site
+	 * Revenue weight
 	 */
 	@Override
 	public void buildInvoiceCommissions(Invoice invoice) {
@@ -69,7 +70,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	private void generateInvoiceCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
 		for (Map.Entry<ContractorOperator, Double> individualClientRevenueWeight : clientRevenueWeights.entrySet()) {
 			List<AccountUser> accountUsers = getActiveAccountUsersForClientSite(individualClientRevenueWeight.getKey()
-					.getOperatorAccount());
+					.getOperatorAccount(), invoice.getUpdateDate());
 			for (AccountUser accountUser : accountUsers) {
 				InvoiceCommission invoiceCommission = new InvoiceCommission();
 				invoiceCommission.setAccountUser(accountUser);
@@ -128,8 +129,8 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param clientSiteServiceLevel
 	 *            Contains the clientSite we are calculating the
 	 * @param totalSites
@@ -254,19 +255,31 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 	}
 
-	private List<AccountUser> getActiveAccountUsersForClientSite(OperatorAccount clientSite) {
+	private List<AccountUser> getActiveAccountUsersForClientSite(OperatorAccount clientSite, Date effectiveDate) {
 		if (clientSite == null) {
 			return Collections.emptyList();
 		}
 
 		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 		for (AccountUser accountUser : clientSite.getAccountUsers()) {
-			if (accountUser.isCurrent()) {
+			if (isAccountUserCurrent(accountUser, effectiveDate)) {
 				accountUsers.add(accountUser);
 			}
 		}
 
 		return accountUsers;
+	}
+
+	private boolean isAccountUserCurrent(AccountUser accountUser, Date effectiveDate) {
+		if (accountUser.getStartDate() != null && accountUser.getStartDate().after(effectiveDate)) {
+			return false; // This hasn't started yet
+		}
+
+		if (accountUser.getEndDate() != null && accountUser.getEndDate().before(effectiveDate)) {
+			return false; // This already ended
+		}
+
+		return true;
 	}
 
 	private List<ContractorOperator> getListOfAllOperatorSites(ContractorAccount contractor) {

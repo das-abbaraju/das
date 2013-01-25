@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.Api;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
