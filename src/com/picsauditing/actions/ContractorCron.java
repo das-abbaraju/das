@@ -441,15 +441,10 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		}
 
-		if (contractor == null) {
-			return;
-		}
-
 		if (contractorSafetyRiskIsVerifiedByAuditor(contractor)) {
 			return;
 		}
 
-		logger.trace("ContractorCron starting RiskRanking");
 		Map<ServiceRiskCalculator.RiskCategory, LowMedHigh> calculatedRiskLevels = determineRiskLevelsBasedOnServiceEvaluationAnswers(contractor);
 		applyCalculatedRiskRankings(contractor, calculatedRiskLevels);
 	}
@@ -475,7 +470,7 @@ public class ContractorCron extends PicsActionSupport {
 	private List<AuditData> determineRiskAnswers(ContractorAudit audit, Set<Integer> riskCategories) {
 		List<AuditData> serviceEvaluationAnswers = new ArrayList<AuditData>();
 		for (AuditData data : audit.getData()) {
-			if (riskCategories.contains(data.getQuestion().getCategory().getId()) && data.getQuestion().isCurrent()) {
+			if (riskCategories.contains(data.getQuestion().getCategory().getId())) {
 				serviceEvaluationAnswers.add(data);
 			}
 		}
@@ -483,6 +478,10 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private ContractorAudit findPQF(ContractorAccount contractor) throws Exception {
+		if (contractor == null) {
+			return null;
+		}
+
 		for (ContractorAudit contractorAudit : contractor.getAudits()) {
 			if (contractorAudit.getAuditType().isPqf()) {
 				return contractorAudit;

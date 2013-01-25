@@ -2,9 +2,8 @@ package com.picsauditing.actions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,9 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.contractors.risk.SafetyAssessment;
-import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,6 +26,13 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 
@@ -629,94 +632,7 @@ public class ContractorCronTest {
 		assertTrue(audit.getScheduledDate() == null);
 	
 	}
-
-	@Test
-	public void testRunRiskRanking_ForNonRiskRankVerifiedContractor() throws Exception {
-		List<ContractorAudit> audits = setupContractorPQFWithSafetyAuditDataAnd(true);
-
-		ContractorAccount contractor = setupContractorAccountWithSafetyQuestionAnsweredAnd(false);
-		when(contractor.getAudits()).thenReturn(audits);
-
-		contractorCron.setSteps(new ContractorCronStep[]{ ContractorCronStep.RiskRanking });
-		Whitebox.invokeMethod(contractorCron, "runRiskRanking", contractor);
-
-		verify(contractor).setSafetyRisk(LowMedHigh.High);
-	}
-
-	@Test
-	public void testRunRiskRanking_ForRiskRankVerifiedContractor() throws Exception {
-		List<ContractorAudit> audits = setupContractorPQFWithSafetyAuditDataAnd(true);
-
-		ContractorAccount contractor = setupContractorAccountWithSafetyQuestionAnsweredAnd(true);
-		when(contractor.getAudits()).thenReturn(audits);
-
-		contractorCron.setSteps(new ContractorCronStep[]{ ContractorCronStep.RiskRanking });
-		Whitebox.invokeMethod(contractorCron, "runRiskRanking", contractor);
-
-		verify(contractor, never()).setSafetyRisk(any(LowMedHigh.class));
-	}
-
-	@Test(expected = RecordNotFoundException.class)
-	public void testRunRiskRanking_ThrowExceptionWhenMissingPQF() throws Exception {
-		ContractorAccount contractor = setupContractorAccountWithSafetyQuestionAnsweredAnd(false);
-		when(contractor.getAudits()).thenReturn(new ArrayList<ContractorAudit>());
-
-		contractorCron.setSteps(new ContractorCronStep[]{ ContractorCronStep.RiskRanking });
-		Whitebox.invokeMethod(contractorCron, "runRiskRanking", contractor);
-
-		verify(contractor, never()).setSafetyRisk(LowMedHigh.None);
-	}
-
-	@Test
-	public void testRunRiskRanking_QuestionIsNotCurrent() {
-		List<ContractorAudit> audits = setupContractorPQFWithSafetyAuditDataAnd(false);
-
-		ContractorAccount contractor = setupContractorAccountWithSafetyQuestionAnsweredAnd(true);
-		when(contractor.getAudits()).thenReturn(audits);
-	}
-
-	private ContractorAccount setupContractorAccountWithSafetyQuestionAnsweredAnd(boolean isVerified) {
-		ContractorAccount contractor = mock(ContractorAccount.class);
-		when(contractor.isOnsiteServices()).thenReturn(true);
-		when(contractor.isOnsiteServices()).thenReturn(true);
-
-		if (isVerified) {
-			when(contractor.getSafetyRiskVerified()).thenReturn(new Date());
-		}
-
-		return contractor;
-	}
-
-	private List<ContractorAudit> setupContractorPQFWithSafetyAuditDataAnd(boolean questionIsCurrent) {
-		// Set up audit data
-		AuditCategory serviceSafetyEval = mock(AuditCategory.class);
-		when(serviceSafetyEval.getId()).thenReturn(AuditCategory.SERVICE_SAFETY_EVAL);
-
-		AuditQuestion permitToWork = mock(AuditQuestion.class);
-		when(permitToWork.getId()).thenReturn(SafetyAssessment.PERMIT_TO_WORK.getQuestionID());
-		when(permitToWork.getCategory()).thenReturn(serviceSafetyEval);
-		when(permitToWork.isCurrent()).thenReturn(questionIsCurrent);
-
-		AuditData permitToWorkAnswer = mock(AuditData.class);
-		when(permitToWorkAnswer.getQuestion()).thenReturn(permitToWork);
-		when(permitToWorkAnswer.getAnswer()).thenReturn(YesNo.Yes.toString());
-
-		AuditType auditType = mock(AuditType.class);
-		when(auditType.isPqf()).thenReturn(true);
-
-		List<AuditData> auditData = new ArrayList<AuditData>();
-		auditData.add(permitToWorkAnswer);
-
-		ContractorAudit contractorAudit = mock(ContractorAudit.class);
-		when(contractorAudit.getAuditType()).thenReturn(auditType);
-		when(contractorAudit.getData()).thenReturn(auditData);
-
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		audits.add(contractorAudit);
-
-		return audits;
-	}
-
+	
 	@Test
 	public void testContractorNotFound() throws Exception {
 		Whitebox.invokeMethod(contractorCron, "run", 0, 0);
