@@ -1098,10 +1098,9 @@ hr {
 
 /* line 2, ../sass/pics/templates/login/_login.scss */
 #Login__page {
-  background: #454545;
   padding-top: 0;
 }
-/* line 7, ../sass/pics/templates/login/_login.scss */
+/* line 6, ../sass/pics/templates/login/_login.scss */
 #Login__page #server_id {
   height: 25px;
   position: absolute;
@@ -1109,11 +1108,11 @@ hr {
   top: 0;
   width: 25px;
 }
-/* line 16, ../sass/pics/templates/login/_login.scss */
+/* line 15, ../sass/pics/templates/login/_login.scss */
 #Login__page .login-container {
   text-align: center;
 }
-/* line 21, ../sass/pics/templates/login/_login.scss */
+/* line 20, ../sass/pics/templates/login/_login.scss */
 #Login__page #login_form {
   background: #f1f1f2;
   -webkit-box-shadow: #131313 0px 2px 8px;
@@ -1124,22 +1123,18 @@ hr {
   text-align: left;
   width: 220px;
 }
-/* line 31, ../sass/pics/templates/login/_login.scss */
+/* line 30, ../sass/pics/templates/login/_login.scss */
 #Login__page .register {
   color: #ccc;
   text-decoration: none;
 }
-/* line 37, ../sass/pics/templates/login/_login.scss */
+/* line 36, ../sass/pics/templates/login/_login.scss */
 #Login__page .register:hover {
   color: #73BBE8;
 }
 
 @media (max-width: 480px) {
-  /* line 44, ../sass/pics/templates/login/_login.scss */
-  #Login__page {
-    background: #f1f1f2;
-  }
-  /* line 48, ../sass/pics/templates/login/_login.scss */
+  /* line 45, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form {
     background: transparent;
     -webkit-box-shadow: none;
@@ -1150,16 +1145,16 @@ hr {
     text-align: center;
     width: 100%;
   }
-  /* line 57, ../sass/pics/templates/login/_login.scss */
+  /* line 54, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form .logo {
     width: 50%;
   }
-  /* line 63, ../sass/pics/templates/login/_login.scss */
+  /* line 60, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form #forgot_password,
   #Login__page #login_form .form-actions {
     text-align: center;
   }
-  /* line 69, ../sass/pics/templates/login/_login.scss */
+  /* line 66, ../sass/pics/templates/login/_login.scss */
   #Login__page .register {
     display: none;
   }
