@@ -97,17 +97,26 @@ Ext.define('PICS.controller.report.SettingsModal', {
     beforeEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            edit_setting_view = this.getEditSetting();
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
 
         if (edit_setting_view) {
-            edit_setting_view.loadFormRecord(report);
+            edit_setting_form.loadRecord(report);
         }
     },
     
     settingsModalClose: function (cmp, eOpts) {
-        var settings_modal_view = this.getSettingsModal();
-
-        settings_modal_view.reset();
+        var copy_setting = this.getCopySetting();
+        
+        
+        if (copy_setting.isVisible()) {
+            var copy_setting_form = copy_setting.getForm(),
+                copy_favorite = copy_setting.down('reportfavoritetoggle');
+                
+            copy_favorite.toggleUnfavorite();
+            
+            copy_setting_form.reset();
+        }
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
@@ -126,18 +135,24 @@ Ext.define('PICS.controller.report.SettingsModal', {
     copyReport: function (cmp, e, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            copy_setting_view = cmp.up('reportcopysetting');
-
-        copy_setting_view.updateFormRecord(report);
+            copy_setting_view = this.getCopySetting(),
+            copy_setting_form = copy_setting_view.getForm();
+        
+        if (copy_setting_form.isValid()) {
+            copy_setting_form.updateRecord(report);
+        }
         
         this.application.fireEvent('createreport');
     },
     
     editReport: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
-            edit_setting_view = cmp.up('reporteditsetting');
-
-        edit_setting_view.updateFormRecord();
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
+            
+        if (edit_setting_form.isValid()) {
+            edit_setting_form.updateRecord();
+        }
 
         settings_modal_view.close();
     
@@ -151,19 +166,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     favoriteReport: function (cmp, eOpts) {
-        var active_tab_class_name = this.getActiveTabClassName();
-
-        if (active_tab_class_name == 'PICS.view.report.settings.EditSetting') {
+        var edit_setting_view = this.getEditSetting();
+        
+        if (edit_setting_view.isVisible()) {
             this.application.fireEvent('favoritereport');
         }
-    },
-
-    getActiveTabClassName: function () {
-        var settings_modal_tabs = this.getSettingsModalTabs(),
-            active_tab = settings_modal_tabs.getActiveTab(),
-            active_tab_class_name = Ext.getClassName(active_tab);
-
-        return active_tab_class_name;
     },
 
     openSettingsModal: function (action) {
@@ -183,9 +190,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     unfavoriteReport: function (cmp, eOpts) {
-        var active_tab_class_name = this.getActiveTabClassName();
-
-        if (active_tab_class_name == 'PICS.view.report.settings.EditSetting') {
+        var edit_setting_view = this.getEditSetting();
+        
+        if (edit_setting_view.isVisible()) {
             this.application.fireEvent('unfavoritereport');
         }
     },

@@ -18,27 +18,17 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     resizable: false,
     title: 'Edit Report',
     width: 352,
-
-    reset: function () {
-        var settings_modal_tabs = this.down('reportsettingsmodaltabs'),
-            active_tab = settings_modal_tabs.setActiveTab(1),
-            copy_favorite_toggle = active_tab.down('reportfavoritetoggle');
-
-        copy_favorite_toggle.toggleUnfavorite();
-    },
-
+    
     updateActiveTabFromAction: function (action) {
         var settings_modal_tabs = this.down('reportsettingsmodaltabs'),
-            active_tab = {},
-            title = "";
-
+            title;
+    
         if (action == 'edit') {
-            active_tab = settings_modal_tabs.setActiveTab(0);
+            title = settings_modal_tabs.setActiveTab(0).modal_title;
         } else if (action == 'copy') {
-            active_tab = settings_modal_tabs.setActiveTab(1);
+            title = settings_modal_tabs.setActiveTab(1).modal_title;
         }
-
-        title = active_tab.modal_title;
+        
         this.setTitle(title);
     }
 });
