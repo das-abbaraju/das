@@ -155,9 +155,9 @@ public class FlagDataCalculator {
 			hurdle = opCriteria.getHurdle();
 		}
 		
-		if ("Statistics".equals(criteria.getCategory()) && !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
-			return null;
-		}
+//		if ("Statistics".equals(criteria.getCategory()) && !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
+//			return null;
+//		}
 
 		// Check if we need to match tags
 		if (opCriteria.getTag() != null) {
