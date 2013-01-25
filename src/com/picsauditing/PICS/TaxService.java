@@ -1,9 +1,12 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 public class TaxService {
@@ -11,17 +14,23 @@ public class TaxService {
 	@Autowired
 	protected InvoiceService invoiceService;
 
+	private static final Logger logger = LoggerFactory.getLogger(TaxService.class);
+	static final Date NEW_CANADIAN_TAX_START_DATE = DateBean.parseDate("2013-02-01");
+
 	public void applyTax(Invoice invoice) {
-		if (isInvoiceTaxable(invoice)) {
-			InvoiceFee taxInvoiceFee = null;
-			try {
-				taxInvoiceFee = createTaxInvoiceFee(invoice);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
-			invoice.updateAmount();
+		if (!isInvoiceTaxable(invoice)) {
+			return;
 		}
+
+		InvoiceFee taxInvoiceFee = null;
+		try {
+			taxInvoiceFee = createTaxInvoiceFee(invoice);
+		} catch (Exception e) {
+			//todo: Revisit what we should do in this case
+			logger.error("Failed to create a taxInvoiceFee", e);
+		}
+		applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
+		invoice.updateAmount();
 	}
 
 	private boolean isInvoiceTaxable(Invoice invoice) {
@@ -31,7 +40,7 @@ public class TaxService {
 	private InvoiceFee createTaxInvoiceFee(Invoice invoice) throws Exception {
 		Currency currency = invoice.getCurrency();
 
-		if (currency.isCAD()) {
+		if (currency.isCAD() && shouldApplyNewCanadianTax(invoice)) {
 			return createCanadianTaxInvoiceFee(invoice);
 		} else if(currency.isGBP()){
 			InvoiceFee vat = new InvoiceFee(InvoiceFee.VAT);
@@ -40,6 +49,19 @@ public class TaxService {
 		} else {
 			return null;
 		}
+	}
+
+	private boolean shouldApplyNewCanadianTax(Invoice invoice) {
+		if (invoice.getCreationDate() == null) {
+			// Always apply tax to a new invoice.
+			return true;
+		}
+
+		if (invoice.getCreationDate().before(NEW_CANADIAN_TAX_START_DATE)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private InvoiceFee createCanadianTaxInvoiceFee(Invoice invoice) throws Exception {
@@ -54,6 +76,10 @@ public class TaxService {
 
 
 	private void applyTaxInvoiceFeeToInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {
+		if (!shouldApplyTaxInvoiceFee(taxInvoiceFee)) {
+			return;
+		}
+
 		BigDecimal taxAmount = calculateTaxAmountForInvoice(invoice, taxInvoiceFee);
 
 		InvoiceItem taxItem = findTaxInvoiceItemInInvoice(taxInvoiceFee, invoice);
@@ -64,6 +90,10 @@ public class TaxService {
 				updateExistingTaxItemInInvoice(invoice, taxItem, taxAmount);
 			}
 		}
+	}
+
+	private boolean shouldApplyTaxInvoiceFee(InvoiceFee taxInvoiceFee) {
+		return taxInvoiceFee != null;
 	}
 
 	private BigDecimal calculateTaxAmountForInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {

@@ -10,6 +10,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -33,11 +34,9 @@ public class TaxServiceTest {
 	}
 
 	@Test
-	public void testApplyTax() throws Exception {
-
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 5, "2012-04-01");
+	public void testApplyTax_whenInvoiceCreationDateBeforeNewTaxStartDate_DontApplyTax() throws Exception {
+		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
 		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-
 		invoiceItems = new ArrayList<InvoiceItem>(){{
 			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
 			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
@@ -45,6 +44,28 @@ public class TaxServiceTest {
 			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
 		}};
 		when(invoice.getItems()).thenReturn(invoiceItems);
+		Date tenDaysBeforeNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, -10);
+		when(invoice.getCreationDate()).thenReturn(tenDaysBeforeNewCanadianTaxStartDate);
+		assertEquals(4, invoice.getItems().size());
+
+		taxService.applyTax(invoice);
+
+		assertEquals(4, invoice.getItems().size());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceCreationDateAfterNewTaxStartDate_DoApplyTax() throws Exception {
+		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
+		invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
+			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
+		}};
+		when(invoice.getItems()).thenReturn(invoiceItems);
+		Date tenDaysAfterNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, 10);
+		when(invoice.getCreationDate()).thenReturn(tenDaysAfterNewCanadianTaxStartDate);
 		assertEquals(4, invoice.getItems().size());
 
 		taxService.applyTax(invoice);
@@ -53,13 +74,12 @@ public class TaxServiceTest {
 		InvoiceItem taxItem = invoice.getItems().get(4);
 		assertEquals(invoice, taxItem.getInvoice());
 		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
-		assertEquals(new BigDecimal("100.00"), taxItem.getAmount());
+		assertEquals(new BigDecimal("149.75"), taxItem.getAmount());
 		verify(invoice).updateAmount();
 	}
 
 	@Test
-	public void testApplyTax_updateExistingTaxItemIfFound() throws Exception {
-
+	public void testApplyTax_whenExistingTaxItemAndInvoiceCreationDateBeforeNewTaxStartDate_dontUpdateExistingTaxItem() throws Exception {
 		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
 		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
 		invoiceItems = new ArrayList<InvoiceItem>(){{
@@ -71,6 +91,34 @@ public class TaxServiceTest {
 			add(createInvoiceItem(6, createInvoiceFee(6, "SomeNewFeeJustAdded"), new BigDecimal("49.99")));
 		}};
 		when(invoice.getItems()).thenReturn(invoiceItems);
+		Date tenDaysBeforeNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, -10);
+		when(invoice.getCreationDate()).thenReturn(tenDaysBeforeNewCanadianTaxStartDate);
+		assertEquals(6, invoice.getItems().size());
+
+		taxService.applyTax(invoice);
+
+		assertEquals(6, invoice.getItems().size());
+		InvoiceItem taxItem = invoice.getItems().get(4);
+		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
+		assertEquals(new BigDecimal("50.00"), taxItem.getAmount());
+		verify(invoice).updateAmount();
+	}
+
+	@Test
+	public void testApplyTax_whenExistingTaxItemAndInvoiceCreationDateAfterNewTaxStartDate_updateExistingTaxItem() throws Exception {
+		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
+		invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
+			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
+			add(createInvoiceItem(5, taxInvoiceFee, new BigDecimal("50.00")));
+			add(createInvoiceItem(6, createInvoiceFee(6, "SomeNewFeeJustAdded"), new BigDecimal("49.99")));
+		}};
+		when(invoice.getItems()).thenReturn(invoiceItems);
+		Date tenDaysAfterNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, 10);
+		when(invoice.getCreationDate()).thenReturn(tenDaysAfterNewCanadianTaxStartDate);
 		assertEquals(6, invoice.getItems().size());
 
 		taxService.applyTax(invoice);
@@ -79,6 +127,30 @@ public class TaxServiceTest {
 		InvoiceItem taxItem = invoice.getItems().get(4);
 		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
 		assertEquals(new BigDecimal("157.24"), taxItem.getAmount());
+		verify(invoice).updateAmount();
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceCreationDateIsNull_DoApplyTax() throws Exception {
+		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
+		invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
+			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
+		}};
+		when(invoice.getItems()).thenReturn(invoiceItems);
+		when(invoice.getCreationDate()).thenReturn(null);
+		assertEquals(4, invoice.getItems().size());
+
+		taxService.applyTax(invoice);
+
+		assertEquals(5, invoice.getItems().size());
+		InvoiceItem taxItem = invoice.getItems().get(4);
+		assertEquals(invoice, taxItem.getInvoice());
+		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
+		assertEquals(new BigDecimal("149.75"), taxItem.getAmount());
 		verify(invoice).updateAmount();
 	}
 

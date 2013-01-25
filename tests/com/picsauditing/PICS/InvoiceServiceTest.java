@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class InvoiceServiceTest {
 
@@ -47,6 +47,41 @@ public class InvoiceServiceTest {
 		invoiceService.saveInvoice(invoice);
 
 		verify(taxService).applyTax(invoice);
+		verify(invoiceDAO).save(invoice);
+	}
+
+	@Test
+	public void testSaveInvoice_whenInvoiceHasDuplicateTax_throwExceptionAndDontSave() throws Exception {
+		InvoiceFee invoiceFee1 = createTaxInvoiceFee("Foo", 5, FeeClass.GST);
+		InvoiceItem invoiceItem1 = new InvoiceItem(invoiceFee1);
+		InvoiceFee invoiceFee2 = createTaxInvoiceFee("Bar", 10, FeeClass.CanadianTax);
+		InvoiceItem invoiceItem2 = new InvoiceItem(invoiceFee2);
+		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
+		invoiceItems.add(invoiceItem1);
+		invoiceItems.add(invoiceItem2);
+		when(invoice.getItems()).thenReturn(invoiceItems);
+
+		try {
+			invoiceService.saveInvoice(invoice);
+			fail();
+		} catch (InvoiceValidationException ive) {
+		} catch (Exception e) {
+			fail();
+		}
+
+		verify(invoiceDAO, never()).save(invoice);
+	}
+
+	@Test
+	public void testSaveInvoice_whenInvoiceHasOneTax_SaveNormally() throws Exception {
+		InvoiceFee invoiceFee1 = createTaxInvoiceFee("Foo", 5, FeeClass.CanadianTax);
+		InvoiceItem invoiceItem1 = new InvoiceItem(invoiceFee1);
+		List<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>();
+		invoiceItems.add(invoiceItem1);
+		when(invoice.getItems()).thenReturn(invoiceItems);
+
+		invoiceService.saveInvoice(invoice);
+
 		verify(invoiceDAO).save(invoice);
 	}
 
@@ -91,7 +126,7 @@ public class InvoiceServiceTest {
 	}
 
 	private void setupInvoiceFeeCountries() {
-		InvoiceFee invoiceFee = createTaxInvoiceFee("Foo", 5);
+		InvoiceFee invoiceFee = createTaxInvoiceFee("Foo", 5, FeeClass.CanadianTax);
 
 		List<InvoiceFeeCountry> invoiceFeeCountriesForAlberta = new ArrayList<InvoiceFeeCountry>();
 		invoiceFeeCountriesForAlberta.add(createInvoiceFeeCountry("CA-AB", 5, "2012-04-01", invoiceFee));
@@ -118,13 +153,13 @@ public class InvoiceServiceTest {
 		return invoiceFeeCountry;
 	}
 
-	private InvoiceFee createTaxInvoiceFee(String feeName, double invoiceFeeRate) {
+	private InvoiceFee createTaxInvoiceFee(String feeName, double invoiceFeeRate, FeeClass feeClass) {
 		InvoiceFee invoiceFee = new InvoiceFee();
 		TranslatableString fee = new TranslatableString();
 		fee.setKey(feeName);
 		invoiceFee.setFee(fee);
 		invoiceFee.setRatePercent(new BigDecimal(invoiceFeeRate));
-		invoiceFee.setFeeClass(FeeClass.CanadianTax);
+		invoiceFee.setFeeClass(feeClass);
 		invoiceFee.setQbFullName("qb" + feeName);
 		return invoiceFee;
 	}

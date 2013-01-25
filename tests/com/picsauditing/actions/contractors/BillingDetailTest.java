@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.PICS.InvoiceValidationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -148,7 +149,7 @@ public class BillingDetailTest extends PicsActionTest {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void setupInvoiceServiceToReturnArgumentOnSave() {
+	private void setupInvoiceServiceToReturnArgumentOnSave() throws InvoiceValidationException {
 		when(invoiceService.saveInvoice(any(Invoice.class))).thenAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
