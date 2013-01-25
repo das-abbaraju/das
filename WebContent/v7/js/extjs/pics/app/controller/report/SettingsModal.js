@@ -106,17 +106,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     settingsModalClose: function (cmp, eOpts) {
-        var copy_setting = this.getCopySetting();
-        
-        
-        if (copy_setting.isVisible()) {
-            var copy_setting_form = copy_setting.getForm(),
-                copy_favorite = copy_setting.down('reportfavoritetoggle');
+        var copy_setting = this.getCopySetting(),
+            copy_setting_form = copy_setting.getForm(),
+            copy_favorite = copy_setting.down('reportfavoritetoggle');
                 
-            copy_favorite.toggleUnfavorite();
-            
-            copy_setting_form.reset();
-        }
+        copy_favorite.toggleUnfavorite();
+        
+        copy_setting_form.reset();
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
