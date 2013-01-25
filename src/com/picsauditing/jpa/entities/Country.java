@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
@@ -60,6 +61,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected Currency currency = Currency.USD;
 	protected User csr;
 
+	private List<CountrySubdivision> countrySubdivisions = new ArrayList<CountrySubdivision>();
 	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
 
 	public Country() {
@@ -158,9 +160,18 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 		this.amountOverrides = amountOverrides;
 	}
 
+	@OneToMany(mappedBy = "country")
+	public List<CountrySubdivision> getCountrySubdivisions() {
+		return countrySubdivisions;
+	}
+
+	public void setCountrySubdivisions(List<CountrySubdivision> countrySubdivisions) {
+		this.countrySubdivisions = countrySubdivisions;
+	}
+
 	@Transient
 	public boolean isHasCountrySubdivisions() {
-		return isUS() || isCanada() || isUK();
+		return countrySubdivisions.size() > 0;
 	}
 
 	@Override
