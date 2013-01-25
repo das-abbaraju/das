@@ -58,11 +58,13 @@
 						<td>
 							<a href="javascript: changeOrderBy('form1','creationDate');">
 								<s:text name="global.CreationDate" />
+                                <i class="icon-circle-arrow-right"></i>
 							</a>
 						</td>
 						<td>
 							<a href="javascript: changeOrderBy('form1','deadline');">
 								<s:text name="ContractorRegistrationRequest.deadline" />
+                                <i class="icon-circle-arrow-right"></i>
 							</a>
 						</td>
 						<td>
@@ -74,6 +76,7 @@
 						<td>
 							<a href="javascript: changeOrderBy('form1','lastContactDate DESC');">
 								<s:text name="ReportNewRequestedContractor.label.On" />
+                                <i class="icon-circle-arrow-right"></i>
 							</a>
 						</td>
 						<td>
@@ -123,10 +126,10 @@
 							<td title="${crr.get('RequestedUser')}">
 								${crr.get('RequestedBy')}
 							</td>
-							<td>
+							<td class="report-date">
 								<s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
-							<td>
+							<td class="report-date">
 								<s:date name="get('deadline')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
@@ -138,7 +141,7 @@
 							<td>
 								${crr.get('ContactedBy')}
 							</td>
-							<td>
+							<td class="report-date">
 								<s:date name="get('lastContactDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
