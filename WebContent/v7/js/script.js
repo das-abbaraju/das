@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-01-22
+/*! Picsorganizer - v0.1.0 - 2013-01-30
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -2434,13 +2434,6 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     PICS.define('csr-assignments.CSRAssignmentsController', {
         methods:{
             init:function () {
-                /*$('#text-toggle-button').toggleButtons({
-                    width: 220,
-                    label: {
-                        enabled: "Lorem Ipsum",
-                        disabled: "Dolor Sit"
-                    }
-                });*/
                 var that = this;
                 
                 $('.status').on('click', function (event) {
@@ -2458,11 +2451,9 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 var parentDiv = element.closest('div');
                 
                 if (parentDiv.hasClass('accept')) {
-                    log('reject')
-                    parentDiv.removeClass('accept')
+                    parentDiv.removeClass('accept');
                 } else {
-                    log('accept')
-                    parentDiv.addClass('accept')
+                    parentDiv.addClass('accept');
                 }
                 
             },
@@ -2478,15 +2469,12 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                    id = id.trim();
 
                    if ($(this).closest('.accept').length > 0) {
-                       log('accpot')
                        approved.push(id);
                    } else {
-                       log('reject')
                        rejected.push(id);
                    }
                    
                });
-               log(rejected);
                accepted_value.val(approved.join());
                rejected_value.val(rejected.join());
             }

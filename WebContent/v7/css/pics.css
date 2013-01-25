@@ -248,11 +248,11 @@ body {
 }
 
 @media (max-width: 480px) {
-  /* line 33, ../sass/pics/layout/_simple-layout.scss */
+  /* line 32, ../sass/pics/layout/_simple-layout.scss */
   .simple-layout {
     background: #f1f1f2;
   }
-  /* line 37, ../sass/pics/layout/_simple-layout.scss */
+  /* line 36, ../sass/pics/layout/_simple-layout.scss */
   .simple-layout .center-container {
     background: transparent;
     box-shadow: none;
@@ -260,7 +260,7 @@ body {
     padding: 30px 10px;
     width: 100%;
   }
-  /* line 46, ../sass/pics/layout/_simple-layout.scss */
+  /* line 45, ../sass/pics/layout/_simple-layout.scss */
   .simple-layout .center-container button {
     float: none;
   }
