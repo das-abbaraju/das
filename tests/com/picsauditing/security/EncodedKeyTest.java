@@ -15,10 +15,19 @@ public class EncodedKeyTest {
 
 	private static final int TEST_SIZE = 100;
 
+	/*
+	 * If we force randomApiKey() to only one try, then we're bound to get an insufficiently complex code at least once in 100 tests.
+	 */
+	@Test(expected = SecurityException.class)
+	public void testApiKey_LimitToOneTry() throws Exception {
+		for (int i = 0; i < TEST_SIZE; i++) {
+			EncodedKey.randomApiKey(1);
+		}
+	}
+
 	@Test
 	/*
-	 * This is a genuine test for desired behavior. It was created at the same
-	 * time as the code under test.
+	 * If we allow randomApiKey() to have 10 tries, then the odds of failing should be non existent.
 	 */
 	public void testApiKey() throws Exception {
 		Set<String> keys = new HashSet<String>();

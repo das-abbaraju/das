@@ -1,5 +1,7 @@
 package com.picsauditing.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -21,41 +23,61 @@ import com.picsauditing.util.Base64;
  * 
  */
 public class EncodedKey {
-    private static final int DEFAULT_RADIX = 36;
-    private static final int MIN_SUFFICIENT_KEY_LENGTH = 20;
-    private static final int MIN_UNIQUE_PERCENT = 75;
-    private int maxCharLength = 32;
+	final static Logger logger = LoggerFactory.getLogger(EncodedKey.class);
+
+	private static final int DEFAULT_RADIX = 36;
+	private static final int MIN_SUFFICIENT_KEY_LENGTH = 20;
+	private static final int MIN_UNIQUE_PERCENT = 60;
+	private int maxCharLength = 32;
 	private SecureRandom random = new SecureRandom();
 	private String key;
-	
+
 	public EncodedKey(int maxCharLength) {
 		this.maxCharLength = maxCharLength;
 
 	}
+
 	public String generateRandom() {
-        return generateRandom(DEFAULT_RADIX);
+		return generateRandom(DEFAULT_RADIX);
 	}
 
 	public String generateRandom(int radix) {
 		int bitsPerChar = (int) Math.ceil(Math.sqrt(radix));
 		key = new BigInteger(bitsPerChar * maxCharLength, random).toString(radix);
-		return key.substring(0,maxCharLength);
+		return key.substring(0, maxCharLength);
 	}
+
 	/**
-	 * Generate a random API key (for use with the REST API).
-	 * For now, we're using a straight random number returned using a radix of 36 (10 digits and 26 letters) with a max character length of 32.
-	 * Later, we might want to switch to a GUID, or something else along those lines.
+	 * Generate a random API key (for use with the REST API). For now, we're
+	 * using a straight random number returned using a radix of 36 (10 digits
+	 * and 26 letters) with a max character length of 32. Later, we might want
+	 * to switch to a GUID, or something else along those lines.
 	 */
 	public static String randomApiKey() {
-		EncodedKey encodedKey = new EncodedKey(32);
-		return encodedKey.generateRandom();
+		return randomApiKey(20);
 	}
-	
+
+	/* testable*/ static String randomApiKey(int maxTries) {
+		EncodedKey encodedKey = new EncodedKey(32);
+		String result = null;
+		for (int i = 0; i < maxTries; i++) {
+			try {
+				result = encodedKey.generateRandom(36);
+				EncodedKey.verifySufficientlyComplex(result);
+				return result;
+			} catch (SecurityException e) {
+				// do nothing (just loop)
+			}
+		}
+		throw new SecurityException("Unable to generate a sufficiently complex key after "+maxTries+" attempts.");
+	}
+
 	/**
 	 * Generate a random user password.
 	 */
 	public static String randomPassword() {
-		// TODO Switch this to use BigInteger & SecureRandom to be consistent with randomApiKey()
+		// TODO Switch this to use BigInteger & SecureRandom to be consistent
+		// with randomApiKey()
 		return Long.toString(new Random().nextLong());
 	}
 
@@ -73,16 +95,22 @@ public class EncodedKey {
 		return null;
 	}
 
-    public static void verifySufficientlyComplex(String key) throws SecurityException {
-        if (key == null || key.length() < MIN_SUFFICIENT_KEY_LENGTH) {
-            throw new SecurityException("Invalid attempt to use an insufficiently complex key.");
-        }
-        Set uniqueChars = new HashSet();
-        for (int pos = 0; pos < key.length();pos++ ) {
-            uniqueChars.add(key.charAt(pos));
-        }
-        if ((uniqueChars.size()*100/key.length()) <  MIN_UNIQUE_PERCENT) {
-            throw new SecurityException("Invalid attempt to use an insufficiently complex key.");
-        }
-    }
+	public static void verifySufficientlyComplex(String key) throws SecurityException {
+		boolean soFarSoGood = (key != null);
+
+		if (soFarSoGood) {
+			soFarSoGood = (key.length() >= MIN_SUFFICIENT_KEY_LENGTH);
+		}
+		if (soFarSoGood) {
+			Set uniqueChars = new HashSet();
+			for (int pos = 0; pos < key.length(); pos++) {
+				uniqueChars.add(key.charAt(pos));
+			}
+			soFarSoGood = ((uniqueChars.size() * 100 / key.length()) >= MIN_UNIQUE_PERCENT);
+		}
+		if (!soFarSoGood) {
+			logger.warn("Invalid attempt to use an insufficiently complex key ('{}').", key);
+			throw new SecurityException("Invalid attempt to use an insufficiently complex key.");
+		}
+	}
 }
