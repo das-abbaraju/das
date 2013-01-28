@@ -231,8 +231,7 @@ public class CommissionModel {
 			BigDecimal points = calculatePoints(aggregatedWeight, ownershipPercent);
 			mathForBreakdown.append(points.doubleValue()).append(",");
 
-			BigDecimal revenueCredit = points.multiply(totalCommissionEligible).multiply(
-					BigDecimal.valueOf(ownershipPercent / 100));
+			BigDecimal revenueCredit = points.multiply(totalCommissionEligible); //.multiply(points);
 			mathForBreakdown.append(revenueCredit.doubleValue()).append(",").append(Strings.NEW_LINE);
 		}
 	}
@@ -262,7 +261,7 @@ public class CommissionModel {
 	}
 
 	private BigDecimal calculatePoints(BigDecimal aggregatedWeight, int ownershipPercent) {
-		return aggregatedWeight.multiply(BigDecimal.valueOf(ownershipPercent / 100));
+		return aggregatedWeight.multiply(BigDecimal.valueOf(ownershipPercent / 100.0));
 	}
 
 	private void buildMathForBreakdownHeader(StringBuilder mathForBreakdown, Set<FeeClass> services) {
