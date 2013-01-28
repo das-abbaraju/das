@@ -45,6 +45,8 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -274,7 +276,44 @@ public class EntityFactory {
 		auditType.setName(makeTranslatableString("Unit Test " + auditTypeID));
 		auditType.setClassType(AuditTypeClass.Audit);
 		auditType.setMonthsToExpire(12);
+		Workflow workFlow = makeWorkflowNoSubmitted();
+		auditType.setWorkFlow(workFlow);
 		return auditType;
+	}
+
+	public static Workflow makeWorkflowNoSubmitted() {
+		Workflow workFlow = new Workflow();
+		WorkflowStep step1 = new WorkflowStep();
+		step1.setOldStatus(AuditStatus.Pending);
+		step1.setNewStatus(AuditStatus.Complete);
+
+		WorkflowStep step2 = new WorkflowStep();
+		step2.setOldStatus(AuditStatus.Resubmit);
+		step2.setNewStatus(AuditStatus.Complete);
+
+		List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+		steps.add(step1);
+		steps.add(step2);
+		workFlow.setSteps(steps);
+		return workFlow;
+	}
+
+	public static Workflow makeWorkflowWithSubmitted() {
+		Workflow workFlow = new Workflow();
+
+		WorkflowStep step1 = new WorkflowStep();
+		step1.setOldStatus(AuditStatus.Pending);
+		step1.setNewStatus(AuditStatus.Submitted);
+
+		WorkflowStep step2 = new WorkflowStep();
+		step2.setOldStatus(AuditStatus.Submitted);
+		step2.setNewStatus(AuditStatus.Complete);
+
+		List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+		steps.add(step1);
+		steps.add(step2);
+		workFlow.setSteps(steps);
+		return workFlow;
 	}
 
 	/**
@@ -314,6 +353,7 @@ public class EntityFactory {
 		auditCategory.setId(categoryId);
 		auditCategory.setName(makeTranslatableString("Audit Category " + categoryId));
 		auditCategory.setNumber(categoryId);
+		auditCategory.setAuditType(makeAuditType());
 		return auditCategory;
 	}
 
