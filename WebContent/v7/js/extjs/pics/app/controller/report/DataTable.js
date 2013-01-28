@@ -1,32 +1,32 @@
-Ext.define('PICS.controller.report.ReportData', {
+Ext.define('PICS.controller.report.DataTable', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'reportPagingToolbar',
+        ref: 'pagingToolbar',
         selector: 'reportpagingtoolbar'
     }, {
-        ref: 'reportData',
-        selector: 'reportdata'
+        ref: 'dataTable',
+        selector: 'reportdatatable'
     }],
 
     stores: [
         'report.Reports',
-        'report.ReportDatas'
+        'report.DataTables'
     ],
     
     init: function () {
         this.control({
-            'reportdata': {
-                beforerender: this.onReportDataBeforeRender,
-                reconfigure: this.onReportDataReconfigure
+            'reportdatatable': {
+                beforerender: this.beforeDataTableRender,
+                reconfigure: this.reconfigureDataTable
             },
 
-            'reportdata headercontainer': {
+            'reportdatatable headercontainer': {
             	columnmove: this.moveColumn
             },
 
-            'reportdata gridcolumn': {
-                render: this.onGridColumnRender
+            'reportdatatable gridcolumn': {
+                render: this.renderGridColumn
             },
             
             'reportpagingtoolbar': {
@@ -61,51 +61,31 @@ Ext.define('PICS.controller.report.ReportData', {
                 click: this.openColumnModal
             },
 
-            'menu[name=report_data_header_menu] menuitem[name=function]': {
+            'menu[name=data_table_header_menu] menuitem[name=function]': {
                 click: this.openColumnFunctionModal
             },
 
-            'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
+            'menu[name=data_table_header_menu] menuitem[name=remove_column]': {
                 click: this.removeColumn
             },
 
-            'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
+            'menu[name=data_table_header_menu] menuitem[name=sort_asc]': {
                 click: this.sortColumnAsc
             },
 
-            'menu[name=report_data_header_menu] menuitem[name=sort_desc]': {
+            'menu[name=data_table_header_menu] menuitem[name=sort_desc]': {
                 click: this.sortColumnDesc
             }
         });
     },
     
-    onGridColumnRender: function (cmp, eOpts) {
-        // only create tooltips for PICS.ux.grid.column.Column(s)
-        if (typeof cmp.createTooltip == 'function') {
-            cmp.createTooltip();
-        }
-    },
-    
-    onReportDataBeforeRender: function (cmp, eOpts) {
+    beforeDataTableRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             grid_columns = report.convertColumnsToGridColumns(),
-            report_data_view = this.getReportData();
+            data_table_view = this.getDataTable();
 
-        report_data_view.updateGridColumns(grid_columns);
-    },
-    
-    onReportDataReconfigure: function (cmp, eOpts) {
-        var report_data_view = cmp,
-            report_data_store = report_data_view.getStore(),
-            results_total = report_data_store.getTotalCount(),
-            report_paging_toolbar = this.getReportPagingToolbar();
-        
-        // remove no results message if one exists
-        report_data_view.updateNoResultsMessage();
-        
-        // update display count
-        report_paging_toolbar.updateDisplayInfo(results_total);
+        data_table_view.updateGridColumns(grid_columns);
     },
     
     changeLimit: function (cmp, records, options) {
@@ -134,38 +114,27 @@ Ext.define('PICS.controller.report.ReportData', {
     },
     
     moveToPreviousPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            current_page = report_data_store.currentPage,
+        var data_table_store = this.getReportDataTablesStore(),
+            current_page = data_table_store.currentPage,
             previous_page = current_page - 1;
         
         PICS.data.ServerCommunication.loadData(previous_page);
     },
     
     moveToNextPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            current_page = report_data_store.currentPage,
+        var data_table_store = this.getReportDataTablesStore(),
+            current_page = data_table_store.currentPage,
             next_page = current_page + 1;
         
         PICS.data.ServerCommunication.loadData(next_page);
     },
     
     moveToLastPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            report_paging_toolbar_view = this.getReportPagingToolbar();
+        var data_table_store = this.getReportDataTablesStore(),
+            report_paging_toolbar_view = this.getPagingToolbar();
             last_page = report_paging_toolbar_view.getPageData().pageCount;
         
         PICS.data.ServerCommunication.loadData(last_page);
-    },
-    
-    removeColumn: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader.column;
-
-        column_store.remove(column);
-
-        PICS.data.ServerCommunication.loadData();
     },
     
     openColumnFunctionModal: function (cmp, event, eOpts) {
@@ -179,7 +148,38 @@ Ext.define('PICS.controller.report.ReportData', {
     openColumnModal: function (cmp, event, eOpts) {
         this.application.fireEvent('opencolumnmodal');
     },
+    
+    reconfigureDataTable: function (cmp, eOpts) {
+        var data_table_view = cmp,
+            data_table_store = data_table_view.getStore(),
+            results_total = data_table_store.getTotalCount(),
+            report_paging_toolbar = this.getPagingToolbar();
+        
+        // remove no results message if one exists
+        data_table_view.updateNoResultsMessage();
+        
+        // update display count
+        report_paging_toolbar.updateDisplayInfo(results_total);
+    },
+    
+    removeColumn: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            column = cmp.up('menu').activeHeader.column;
 
+        column_store.remove(column);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    renderGridColumn: function (cmp, eOpts) {
+        // only create tooltips for PICS.ux.grid.column.Column(s)
+        if (typeof cmp.createTooltip == 'function') {
+            cmp.createTooltip();
+        }
+    },
+    
     sortColumnAsc: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),

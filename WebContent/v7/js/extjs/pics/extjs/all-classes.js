@@ -66298,24 +66298,36 @@ Ext.define('PICS.data.ServerCommunication', {
             filter_store.loadRawData(json);
         }
         
-        function loadReportDataStore(json) {
+        function loadDataTableStore(json) {
             var report_store = Ext.StoreManager.get('report.Reports'),
                 report = report_store.first(),
-                report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                data_table_store = Ext.StoreManager.get('report.DataTables'),
                 model_fields = report.convertColumnsToModelFields();
             
-            // update report data model
-            report_data_store.updateReportDataModelFields(model_fields);
+            // update data table model
+            data_table_store.updateDataTableModelFields(model_fields);
             
-            // load report data with results
-            report_data_store.loadRawData(json);
+            // load data table with results
+            data_table_store.loadRawData(json);
+        }
+        
+        function startDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(true);
+        }
+        
+        function stopDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(false);
         }
             
-        function updateReportDataView(report) {
-            var report_data_view = Ext.ComponentQuery.query('reportdata')[0],
+        function updateDataTableView(report) {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
                 new_grid_columns = report.convertColumnsToGridColumns();
             
-            report_data_view.updateGridColumns(new_grid_columns);
+            data_table_view.updateGridColumns(new_grid_columns);
         }
         
         return {
@@ -66381,7 +66393,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         
                         loadFilterStore(json);
                         
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
 
                         callback.apply(scope, arguments);
                     }
@@ -66393,6 +66405,9 @@ Ext.define('PICS.data.ServerCommunication', {
                     report = report_store.first(),
                     report_id = report.get('id'),
                     url = this.getLoadDataUrl();
+                
+                // add data table loading mask
+                startDataTableLoading();
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
@@ -66413,10 +66428,14 @@ Ext.define('PICS.data.ServerCommunication', {
                         loadReportStore(json);
                         
                         // load new results
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
                         
                         // refresh grid
-                        updateReportDataView(report);
+                        updateDataTableView(report);
+                        
                     }
                 });
             },
@@ -66425,16 +66444,19 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                    data_table_store = Ext.StoreManager.get('report.DataTables'),
                     page = page ? page : 1,
-                    limit = limit ? limit : report_data_store.pageSize,
+                    limit = limit ? limit : data_table_store.pageSize,
                     url = this.getLoadDataUrl(page, limit);
 
                 // updates the stores limit tracker
-                report_data_store.setLimit(limit);
+                data_table_store.setLimit(limit);
                 
                 // updates the stores page tracker
-                report_data_store.setPage(page);
+                data_table_store.setPage(page);
+                
+                // add data table loading mask
+                startDataTableLoading();
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
@@ -66451,10 +66473,13 @@ Ext.define('PICS.data.ServerCommunication', {
                             json = Ext.JSON.decode(data);
                         
                         // load new results
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
                         
                         // refresh grid
-                        updateReportDataView(report);
+                        updateDataTableView(report);
                     }
                 });
             }
@@ -67036,20 +67061,23 @@ Ext.define('PICS.store.report.base.Store', {
         return !!this.loaded;
     }
 });
-Ext.define('PICS.view.report.modal.ReportModal', {
+Ext.define('PICS.ux.window.Window', {
     extend: 'Ext.window.Window',
 
     initComponent: function () {
-        var that = this;
-        
+        this.listeners = {
+            show: function (cmp, eOpts) {
+                var body_el = Ext.getBody();
+
+                this.mon(body_el, 'click', function (event, html, eOpts) {
+                    cmp.close();
+                }, cmp, {
+                    delegate: '.x-mask'
+                });
+            }
+        };
+
         this.callParent(arguments);
-        
-        this.on('show', function (cmp, eOpts) {
-            // Close the modal when the user clicks outside of it.
-            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
-                that.close();
-            });
-        });
     }
 });
 /**
@@ -68073,360 +68101,6 @@ Ext.define('Ext.panel.Table', {
     }
 });
 
-Ext.define('PICS.view.report.filter.base.AccountIDFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseaccountidfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            record.set('operator', 'Equals');
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: [
-                ['Equals', 'equals'],
-                ['NotEquals', 'does not equal'],
-                ['CurrentAccount', 'current account']
-            ],
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: false,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.BooleanFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasebooleanfilter'],
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var checkbox = this.createCheckbox(this.record);
-
-        this.add(checkbox);
-    },
-
-    createCheckbox: function (record) {
-        var value = record.get('value'),
-            checked = value == 'true' ? true : false;
-
-        return {
-            xtype: 'checkbox',
-            boxLabel: 'True',
-            checked: value == 'true' ? true : false,
-            inputValue: true,
-            name: 'filter_value',
-            uncheckedValue: false,
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.FloatFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasefloatfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.NUMBERSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.NUMBERSTORE,
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: true,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.IntegerFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseintegerfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.NUMBERSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.NUMBERSTORE,
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: false,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.StringFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasestringfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var textfield = this.createTextfield(this.record);
-
-        this.add([
-            combobox,
-            textfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.TEXTSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.TEXTSTORE,
-            value: operator
-        };
-    },
-
-    createTextfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'textfield',
-            flex: 2,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.UserIDFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseuseridfilter'],
-
-    border: 0,
-    layout: 'hbox',
-    
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        
-        this.add(combobox);
-        
-        if (this.record.get('fieldCompare')) {
-            this.createFieldSelect(this.record);
-        } else {
-            this.createNumberfield(this.record);
-        }
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            record.set('operator', 'equals');
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: [
-                ['Equals', 'equals'],
-                ['NotEquals', 'does not equal'],
-                ['CurrentUser', 'current user']
-            ],
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        if (this.value_field) {
-            this.remove(this.value_field);
-        }
-
-        var value = record.get('value');
-
-        // TODO: COMMENT
-        this.value_field = this.add({
-            xtype: 'numberfield',
-            allowDecimals: false,
-            blankText: 'Number',
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        });
-    },
-    
-    createFieldSelect: function (record) {
-
-        if (this.value_field) {
-            this.remove(this.value_field);
-        }
-
-        var value = record.get('fieldCompare');
-        
-        this.value_field = this.add({
-            xtype: 'textfield',
-            blankText: 'Field',
-            flex: 2,
-            name: 'filter_field_compare',
-            value: value
-        });
-    }
-});
-Ext.define('PICS.view.report.filter.FilterTooltip', {
-    extend: 'Ext.tip.ToolTip',
-    alias: 'widget.filtertooltip',
-    
-    anchor: 'left',
-    showDelay: 0,
-    tpl: '<div><p>{description}</p></div>'
-});
 /**
  * This is a layout that enables anchoring of contained elements relative to the container's dimensions.
  * If the container is resized, all anchored items are automatically rerendered according to their
@@ -68827,6 +68501,360 @@ Ext.define('Ext.layout.container.Anchor', {
     }
 });
 
+Ext.define('PICS.view.report.filter.base.AccountIDFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbaseaccountidfilter'],
+
+    border: 0,
+    layout: 'hbox',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        var numberfield = this.createNumberfield(this.record);
+
+        this.add([
+            combobox,
+            numberfield
+        ]);
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            record.set('operator', 'Equals');
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: [
+                ['Equals', 'equals'],
+                ['NotEquals', 'does not equal'],
+                ['CurrentAccount', 'current account']
+            ],
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        var value = record.get('value');
+
+        return {
+            xtype: 'numberfield',
+            allowDecimals: false,
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.BooleanFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbasebooleanfilter'],
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var checkbox = this.createCheckbox(this.record);
+
+        this.add(checkbox);
+    },
+
+    createCheckbox: function (record) {
+        var value = record.get('value'),
+            checked = value == 'true' ? true : false;
+
+        return {
+            xtype: 'checkbox',
+            boxLabel: 'True',
+            checked: value == 'true' ? true : false,
+            inputValue: true,
+            name: 'filter_value',
+            uncheckedValue: false,
+            value: value
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.FloatFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbasefloatfilter'],
+
+    border: 0,
+    layout: 'hbox',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        var numberfield = this.createNumberfield(this.record);
+
+        this.add([
+            combobox,
+            numberfield
+        ]);
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            operator = PICS.app.constants.NUMBERSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: PICS.app.constants.NUMBERSTORE,
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        var value = record.get('value');
+
+        return {
+            xtype: 'numberfield',
+            allowDecimals: true,
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.IntegerFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbaseintegerfilter'],
+
+    border: 0,
+    layout: 'hbox',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        var numberfield = this.createNumberfield(this.record);
+
+        this.add([
+            combobox,
+            numberfield
+        ]);
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            operator = PICS.app.constants.NUMBERSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: PICS.app.constants.NUMBERSTORE,
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        var value = record.get('value');
+
+        return {
+            xtype: 'numberfield',
+            allowDecimals: false,
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.StringFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbasestringfilter'],
+
+    border: 0,
+    layout: 'hbox',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        var textfield = this.createTextfield(this.record);
+
+        this.add([
+            combobox,
+            textfield
+        ]);
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            operator = PICS.app.constants.TEXTSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: PICS.app.constants.TEXTSTORE,
+            value: operator
+        };
+    },
+
+    createTextfield: function (record) {
+        var value = record.get('value');
+
+        return {
+            xtype: 'textfield',
+            flex: 2,
+            name: 'filter_value',
+            value: value
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.UserIDFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbaseuseridfilter'],
+
+    border: 0,
+    layout: 'hbox',
+    
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        
+        this.add(combobox);
+        
+        if (this.record.get('fieldCompare')) {
+            this.createFieldSelect(this.record);
+        } else {
+            this.createNumberfield(this.record);
+        }
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            record.set('operator', 'equals');
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: [
+                ['Equals', 'equals'],
+                ['NotEquals', 'does not equal'],
+                ['CurrentUser', 'current user']
+            ],
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
+        var value = record.get('value');
+
+        // TODO: COMMENT
+        this.value_field = this.add({
+            xtype: 'numberfield',
+            allowDecimals: false,
+            blankText: 'Number',
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        });
+    },
+    
+    createFieldSelect: function (record) {
+
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
+        var value = record.get('fieldCompare');
+        
+        this.value_field = this.add({
+            xtype: 'textfield',
+            blankText: 'Field',
+            flex: 2,
+            name: 'filter_field_compare',
+            value: value
+        });
+    }
+});
+Ext.define('PICS.view.report.filter.FilterTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.filtertooltip',
+    
+    anchor: 'left',
+    showDelay: 0,
+    tpl: '<div><p>{description}</p></div>'
+});
 /**
  * A simple class that renders text directly into a toolbar.
  *
@@ -71474,7 +71502,7 @@ Ext.define('PICS.view.report.header.Header', {
     layout: 'border'
 });
 Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
+    extend: 'PICS.ux.window.Window',
     alias: 'widget.reportcolumnfunctionmodal',
 
     border: 0,
@@ -71523,7 +71551,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
                 height: 35
             },
             dock: 'top',
-            id: 'column_function_list',
+            cls: 'column_function_list',
             items: sql_function_items,
             layout: 'vbox'
         };
@@ -71574,7 +71602,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         });
 
         this.application.on({
-            showcolumnfunctionmodal: this.showColumnFunctionModal,
+            opencolumnfunctionmodal: this.openColumnFunctionModal,
             scope: this
         });
     },
@@ -71588,14 +71616,14 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         column.set('sql_function', action);
 
         // destroy modal for next use (generate with correct column)
-        column_function_modal.destroy();
+        column_function_modal.close();
         
         // refresh report
         PICS.data.ServerCommunication.loadData();
     },
 
     // show the column function modal , but attach the specific column store - column your modifying
-    showColumnFunctionModal: function (column) {
+    openColumnFunctionModal: function (column) {
         var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
             column: column
         });
@@ -79647,57 +79675,6 @@ Ext.define('Ext.window.MessageBox', {
      */
     Ext.MessageBox = Ext.Msg = new this();
 });
-Ext.define('PICS.view.report.settings.FavoriteToggle', {
-    extend: 'Ext.form.field.Display',
-    alias: ['widget.favoritetoggle'],
-    
-    fieldLabel: '<i class="favorite icon-star"></i>',
-    labelAlign: 'right',
-    labelSeparator: '',
-    value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
-    
-    listeners: {
-        afterrender: function(cmp, eOpts) {
-            this.mon(this.getEl(), 'click', this.toggleFavoriteStatus, this, {
-                delegate: '.icon-star'
-            });
-        }
-    },
-    
-    toggleFavoriteStatus: function () {
-        var element = this.getEl(),
-            icon = element.down('.icon-star'),
-            is_favorite = icon.hasCls('selected');
-        
-        if (is_favorite) {
-            this.toggleUnfavorite();
-        } else {
-            this.toggleFavorite();
-        }
-    },
-    
-    toggleFavorite: function () {
-        var element = this.getEl(),
-            icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
-        
-        icon.addCls('selected');
-        text.setHTML('is');
-        
-        this.fireEvent('favorite', this);
-    },
-    
-    toggleUnfavorite: function () {
-        var element = this.getEl(),
-            icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
-        
-        icon.removeCls('selected');
-        text.setHTML('is not');
-        
-        this.fireEvent('unfavorite', this);
-    }
-});
 /**
  * Layout class for {@link Ext.form.field.ComboBox} fields. Handles sizing the input field.
  * @private
@@ -81674,9 +81651,9 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
         filter_footer.setPosition(0, filter_offset);
     }
 });
-Ext.define('PICS.view.report.settings.CopySettings', {
+Ext.define('PICS.view.report.settings.CopySetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingscopy'],
+    alias: 'widget.reportcopysetting',
 
     border: 0,
     dockedItems: [{
@@ -81708,141 +81685,27 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         allowBlank: false,
         fieldLabel: 'Report Name',
         labelAlign: 'right',
-        name: 'report_name'
+        name: 'name'
     }, {
         xtype: 'textarea',
         allowBlank: false,
         fieldLabel: 'Description',
         labelAlign: 'right',
-        name: 'report_description'
+        name: 'description'
     }, {
-        xtype: 'favoritetoggle'
+        xtype: 'reportfavoritetoggle'
     }],
     layout: 'form',
     // custom config
     modal_title: 'Duplicate Report',
     title: '<i class="icon-copy icon-large"></i>Duplicate'
 });
-Ext.define('PICS.view.report.settings.EditSettings', {
+Ext.define('PICS.view.report.settings.ExportSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsedit'],
-
-    requires: ['PICS.view.report.settings.FavoriteToggle'],
-
-    border: 0,
-    id: 'report_edit',
-    // custom config
-    modal_title: 'Edit Report',
-    title: '<i class="icon-cog icon-large"></i>Settings',
-
-    initComponent: function () {
-        var report_store = Ext.StoreManager.get('report.Reports'),
-            report = report_store.first(),
-            is_editable = report.get('is_editable');
-
-        if (is_editable) {
-            this.generateEditableSettings();
-        } else {
-            this.generateNonEditableSettings();
-        }
-
-        this.addEvents('favorite');
-        this.addEvents('unfavorite');
-        
-        this.callParent(arguments);
-    },
-
-    generateEditableSettings: function () {
-        this.dockedItems = [{
-            xtype: 'toolbar',
-            defaults: {
-                margin: '0 0 0 5'
-            },
-            dock: 'bottom',
-            items: [{
-                action: 'cancel',
-                cls: 'cancel default',
-                height: 28,
-                text: 'Cancel'
-            }, {
-                action: 'edit',
-                cls: 'edit primary',
-                formBind: true,
-                height: 28,
-                text: 'Apply'
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        }];
-
-        this.items = [{
-            xtype: 'textfield',
-            allowBlank: false,
-            fieldLabel: 'Report Name',
-            labelAlign: 'right',
-            name: 'report_name'
-        }, {
-            xtype: 'textarea',
-            allowBlank: false,
-            fieldLabel: 'Description',
-            labelAlign: 'right',
-            name: 'report_description'
-        }, {
-            xtype: 'favoritetoggle'
-        }];
-
-        this.layout = 'form';
-    },
-
-    generateNonEditableSettings: function () {
-        this.items = [{
-            xtype: 'component',
-            html:  new Ext.Template([
-                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
-            ])
-        }, {
-            xtype: 'favoritetoggle'
-        }];
-
-        this.id = 'settings_no_permission';
-    },
-
-    update: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        var data = report ? report.data : {},
-            report_name_element = this.down('textfield[name=report_name]'),
-            report_description_element = this.down('textarea[name=report_description]');
-
-        if (data.name && report_name_element) {
-            report_name_element.setValue(data.name);
-        }
-
-        if (data.description && report_description_element) {
-            report_description_element.setValue(data.description);
-        }
-
-        this.callParent([data]);
-    }
-});
-Ext.define('PICS.view.report.settings.ExportSettings', {
-    extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsexport'],
+    alias: 'widget.reportexportsetting',
 
     border: 0,
     id: 'report_export',
-    /*items: [{
-        text: '<i class="icon-table icon-large"></i>Spread Sheet'
-    }, {
-        text: '<i class="icon-file icon-large"></i>PDF'
-    }, {
-        text: '<i class="icon-home icon-large"></i>To Dashboard'
-    }],*/
     items: [{
         xtype: 'button',
         action: 'export',
@@ -81852,7 +81715,6 @@ Ext.define('PICS.view.report.settings.ExportSettings', {
         tooltip: 'Export this report to Excel',
         margin: '100 0 0 0'
     }],
-
     layout: {
         type: 'vbox',
         align: 'center'
@@ -81861,15 +81723,12 @@ Ext.define('PICS.view.report.settings.ExportSettings', {
     modal_title: 'Export Report',
     title: '<i class="icon-eject icon-large"></i>Export'
 });
-Ext.define('PICS.view.report.settings.PrintSettings', {
+Ext.define('PICS.view.report.settings.PrintSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsprint'],
+    alias: 'widget.reportprintsetting',
 
     border: 0,
     id: 'report_print',
-    /*items: [{
-        text: '<i class="icon-print icon-large"></i>Print'
-    }],*/
     items: [{
         xtype: 'button',
         action: 'print-preview',
@@ -81879,7 +81738,6 @@ Ext.define('PICS.view.report.settings.PrintSettings', {
         tooltip: 'Preview a printable version of this report',
         margin: '100 0 0 0'
     }],
-
     layout: {
         type: 'vbox',
         align: 'center'
@@ -84309,6 +84167,234 @@ Ext.define('Ext.tab.Panel', {
     }
 });
 
+/**
+ * A basic hidden field for storing hidden values in forms that need to be passed in the form submit.
+ *
+ * This creates an actual input element with type="submit" in the DOM. While its label is
+ * {@link #hideLabel not rendered} by default, it is still a real component and may be sized according
+ * to its owner container's layout.
+ *
+ * Because of this, in most cases it is more convenient and less problematic to simply
+ * {@link Ext.form.action.Action#params pass hidden parameters} directly when
+ * {@link Ext.form.Basic#submit submitting the form}.
+ *
+ * Example:
+ *
+ *     new Ext.form.Panel({
+ *         title: 'My Form',
+ *         items: [{
+ *             xtype: 'textfield',
+ *             fieldLabel: 'Text Field',
+ *             name: 'text_field',
+ *             value: 'value from text field'
+ *         }, {
+ *             xtype: 'hiddenfield',
+ *             name: 'hidden_field_1',
+ *             value: 'value from hidden field'
+ *         }],
+ *
+ *         buttons: [{
+ *             text: 'Submit',
+ *             handler: function() {
+ *                 this.up('form').getForm().submit({
+ *                     params: {
+ *                         hidden_field_2: 'value from submit call'
+ *                     }
+ *                 });
+ *             }
+ *         }]
+ *     });
+ *
+ * Submitting the above form will result in three values sent to the server:
+ *
+ *     text_field=value+from+text+field&hidden;_field_1=value+from+hidden+field&hidden_field_2=value+from+submit+call
+ *
+ */
+Ext.define('Ext.form.field.Hidden', {
+    extend:'Ext.form.field.Base',
+    alias: ['widget.hiddenfield', 'widget.hidden'],
+    alternateClassName: 'Ext.form.Hidden',
+
+    // private
+    inputType : 'hidden',
+    hideLabel: true,
+    
+    initComponent: function(){
+        this.formItemCls += '-hidden';
+        this.callParent();    
+    },
+    
+    /**
+     * @private
+     * Override. Treat undefined and null values as equal to an empty string value.
+     */
+    isEqual: function(value1, value2) {
+        return this.isEqualAsString(value1, value2);
+    },
+
+    // These are all private overrides
+    initEvents: Ext.emptyFn,
+    setSize : Ext.emptyFn,
+    setWidth : Ext.emptyFn,
+    setHeight : Ext.emptyFn,
+    setPosition : Ext.emptyFn,
+    setPagePosition : Ext.emptyFn,
+    markInvalid : Ext.emptyFn,
+    clearInvalid : Ext.emptyFn
+});
+
+Ext.define('PICS.view.report.settings.FavoriteToggle', {
+    extend: 'Ext.form.field.Hidden',
+    alias: 'widget.reportfavoritetoggle',
+    
+    beforeBodyEl: 'Report <strong class="favorite-text">is not</strong> a Favorite',
+    fieldLabel: '<i class="favorite icon-star"></i>',
+    hideLabel: false,
+    labelAlign: 'right',
+    labelSeparator: '',
+    name: 'is_favorite',
+    value: false,
+    
+    listeners: {
+        afterrender: function(cmp, eOpts) {
+            this.mon(this.getEl(), 'click', this.toggleFavoriteStatus, this, {
+                delegate: '.icon-star'
+            });
+        }
+    },
+    
+    getFavoriteStatus: function () {
+        var element = this.getEl(),
+            icon = element.down('.icon-star');
+        
+        return icon.hasCls('selected');
+    },
+    
+    toggleFavoriteStatus: function () {
+        var is_favorite = this.getFavoriteStatus();
+        
+        if (is_favorite) {
+            this.toggleUnfavorite();
+        } else {
+            this.toggleFavorite();
+        }
+    },
+    
+    toggleFavorite: function () {
+        var element = this.getEl(),
+            icon = element.down('.icon-star'),
+            text = element.down('.favorite-text');
+        
+        icon.addCls('selected');
+        text.setHTML('is');
+        
+        this.setValue(true);
+        
+        this.fireEvent('favorite', this);
+    },
+    
+    toggleUnfavorite: function () {
+        var element = this.getEl(),
+            icon = element.down('.icon-star'),
+            text = element.down('.favorite-text');
+        
+        icon.removeCls('selected');
+        text.setHTML('is not');
+        
+        this.setValue(false);
+        
+        this.fireEvent('unfavorite', this);
+    }
+});
+Ext.define('PICS.view.report.settings.EditSetting', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.reporteditsetting',
+
+    requires: [
+        'PICS.view.report.settings.FavoriteToggle'
+    ],
+
+    border: 0,
+    id: 'report_edit',
+    // custom config
+    modal_title: 'Edit Report',
+    title: '<i class="icon-cog icon-large"></i>Settings',
+
+    initComponent: function () {
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
+
+        if (is_editable) {
+            this.generateEditableSettings();
+        } else {
+            this.generateNonEditableSettings();
+        }
+
+        this.addEvents('favorite');
+        this.addEvents('unfavorite');
+        
+        this.callParent(arguments);
+    },
+
+    generateEditableSettings: function () {
+        this.dockedItems = [{
+            xtype: 'toolbar',
+            defaults: {
+                margin: '0 0 0 5'
+            },
+            dock: 'bottom',
+            items: [{
+                action: 'cancel',
+                cls: 'cancel default',
+                height: 28,
+                text: 'Cancel'
+            }, {
+                action: 'edit',
+                cls: 'edit primary',
+                formBind: true,
+                height: 28,
+                text: 'Apply'
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        }];
+
+        this.items = [{
+            xtype: 'textfield',
+            allowBlank: false,
+            fieldLabel: 'Report Name',
+            labelAlign: 'right',
+            name: 'name'
+        }, {
+            xtype: 'textarea',
+            allowBlank: false,
+            fieldLabel: 'Description',
+            labelAlign: 'right',
+            name: 'description'
+        }, {
+            xtype: 'reportfavoritetoggle'
+        }];
+
+        this.layout = 'form';
+    },
+
+    generateNonEditableSettings: function () {
+        this.items = [{
+            xtype: 'component',
+            html:  new Ext.Template([
+                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
+                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
+            ])
+        }, {
+            xtype: 'reportfavoritetoggle'
+        }];
+
+        this.id = 'report_edit_no_permission';
+    }
+});
 /**
  * Provides a convenient wrapper for TextFields that adds a clickable trigger button (looks like a combobox by default).
  * The trigger has no default action, so you must assign a function to implement the trigger click handler by overriding
@@ -87063,11 +87149,11 @@ Ext.define('Ext.toolbar.Paging', {
     }
 });
 
-Ext.define('PICS.view.report.report.ReportPagingToolbar', {
+Ext.define('PICS.view.report.report.PagingToolbar', {
     extend: 'Ext.toolbar.Paging',
-    alias: ['widget.reportpagingtoolbar'],
+    alias: 'widget.reportpagingtoolbar',
 
-    store: 'report.ReportDatas',
+    store: 'report.DataTables',
 
     border: 0,
     cls: 'paging-toolbar',
@@ -90591,15 +90677,15 @@ Ext.define('Ext.grid.Panel', {
      * @param {Object[]} columns (Optional) An array of column configs
      */
 });
-Ext.define('PICS.view.report.report.ReportData', {
+Ext.define('PICS.view.report.report.DataTable', {
     extend: 'Ext.grid.Panel',
-    alias: ['widget.reportdata'],
+    alias: 'widget.reportdatatable',
 
     requires: [
-        'PICS.view.report.report.ReportPagingToolbar'
+        'PICS.view.report.report.PagingToolbar'
     ],
 
-    store: 'report.ReportDatas',
+    store: 'report.DataTables',
 
     border: 0,
     // column configuration must be specified - will be overridden dynamically
@@ -90610,7 +90696,7 @@ Ext.define('PICS.view.report.report.ReportData', {
         xtype: 'reportpagingtoolbar',
         dock: 'top'
     }],
-    id: 'report_data',
+    id: 'data_table',
     margin: '0 30 0 0',
     rowLines: false,
 
@@ -90637,7 +90723,7 @@ Ext.define('PICS.view.report.report.ReportData', {
 
         // simulate header menu to be plain (menu is already created at this point)
         menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
-        menu.name = 'report_data_header_menu';
+        menu.name = 'data_table_header_menu';
 
         menu.add({
             name: 'sort_asc',
@@ -92802,7 +92888,7 @@ Ext.define('PICS.view.report.Viewport', {
 
     requires: [
         'PICS.view.layout.Header',
-        'PICS.view.report.report.ReportData',
+        'PICS.view.report.report.DataTable',
         'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.header.Header'
     ],
@@ -92822,7 +92908,7 @@ Ext.define('PICS.view.report.Viewport', {
             xtype: 'reportfilteroptions',
             region: 'west'
         }, {
-        	xtype: 'reportdata',
+        	xtype: 'reportdatatable',
             region: 'center'
         }],
         layout: 'border'
@@ -93296,9 +93382,9 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     valueField: 'searchQuery',
     width: 325    
 });
-Ext.define('PICS.view.report.settings.share.ShareSettings', {
+Ext.define('PICS.view.report.settings.share.ShareSetting', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsshare'],
+    alias: 'widget.reportsharesetting',
 
     requires: [
         'PICS.view.report.settings.share.ShareSearchBox'
@@ -93418,34 +93504,34 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
         c.update(account);
     }
 });
-Ext.define('PICS.view.report.settings.SettingsTabs', {
+Ext.define('PICS.view.report.settings.SettingsModalTabs', {
     extend: 'Ext.tab.Panel',
-    alias: ['widget.reportsettingstabs'],
+    alias: 'widget.reportsettingsmodaltabs',
 
     requires: [
-        'PICS.view.report.settings.CopySettings',
-        'PICS.view.report.settings.EditSettings',
-        'PICS.view.report.settings.ExportSettings',
-        'PICS.view.report.settings.PrintSettings',
-        'PICS.view.report.settings.share.ShareSettings'
+        'PICS.view.report.settings.CopySetting',
+        'PICS.view.report.settings.EditSetting',
+        'PICS.view.report.settings.ExportSetting',
+        'PICS.view.report.settings.PrintSetting',
+        'PICS.view.report.settings.share.ShareSetting'
     ],
 
     border: false,
     items: [{
-        xtype: 'reportsettingsedit'
+        xtype: 'reporteditsetting'
     }, {
-        xtype: 'reportsettingscopy'
+        xtype: 'reportcopysetting'
     }, {
-        xtype: 'reportsettingsshare'
+        xtype: 'reportsharesetting'
     }, {
-        xtype: 'reportsettingsexport'
+        xtype: 'reportexportsetting'
     }, {
-        xtype: 'reportsettingsprint'
+        xtype: 'reportprintsetting'
     }],
     tabBar: {
         border: false,
         height: 60,
-        id: 'report_settings_tabbar',
+        id: 'report_settings_modal_tabbar',
         // controls default proportions for tab buttons
         defaults: {
             height: 60,
@@ -93455,24 +93541,38 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     tabPosition: 'bottom'
 });
 Ext.define('PICS.view.report.settings.SettingsModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
-    alias: ['widget.reportsettingsmodal'],
+    extend: 'PICS.ux.window.Window',
+    alias: 'widget.reportsettingsmodal',
 
     requires: [
-        'PICS.view.report.settings.SettingsTabs'
+        'PICS.view.report.settings.SettingsModalTabs'
     ],
 
+    closeAction: 'hide',
     draggable: false,
     height: 324,
     id: 'report_settings_modal',
     items: [{
-        xtype: 'reportsettingstabs'
+        xtype: 'reportsettingsmodaltabs'
     }],
     layout: 'fit',
     modal: true,
     resizable: false,
     title: 'Edit Report',
-    width: 352
+    width: 352,
+    
+    updateActiveTabFromAction: function (action) {
+        var settings_modal_tabs = this.down('reportsettingsmodaltabs'),
+            title;
+    
+        if (action == 'edit') {
+            title = settings_modal_tabs.setActiveTab(0).modal_title;
+        } else if (action == 'copy') {
+            title = settings_modal_tabs.setActiveTab(1).modal_title;
+        }
+        
+        this.setTitle(title);
+    }
 });
 /**
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
@@ -96313,6 +96413,15 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
         }
 
         return new_class_names;
+    },
+
+    reset: function () {
+        var store = this.getStore(),
+            selection_model = this.getSelectionModel();
+
+        store.clearFilter();
+
+        selection_model.deselectAll();
     }
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
@@ -96332,7 +96441,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
     id: 'filter_list'
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
-    extend: 'PICS.view.report.modal.ReportModal',
+    extend: 'PICS.ux.window.Window',
     alias: 'columnfiltermodal',
     
     requires: [
@@ -96700,7 +96809,7 @@ Ext.define('PICS.store.report.Columns', {
         direction: 'ASC'
     }]
 });
-Ext.define('PICS.model.report.ReportData', {
+Ext.define('PICS.model.report.DataTable', {
     extend: 'Ext.data.Model',
     
     // there is no preset Model - we must place empty fields [] as a default
@@ -97004,14 +97113,9 @@ Ext.define('Ext.util.Inflector', {
         this.singular(irregulars[singular], singular);
     }
 });
-/**
- * ReportDatas Class
- *
- * Dynamically generates associated Data Model Class
- */
-Ext.define('PICS.store.report.ReportDatas', {
+Ext.define('PICS.store.report.DataTables', {
     extend : 'PICS.store.report.base.Store',
-    model : 'PICS.model.report.ReportData',
+    model : 'PICS.model.report.DataTable',
 
     requires: [
         'Ext.window.MessageBox'
@@ -97054,15 +97158,11 @@ Ext.define('PICS.store.report.ReportDatas', {
         this.currentPage = page;
     },
     
-    updateProxyParameters: function (params) {
-        this.proxy.extraParams = params;
-    },
-    
-    updateReportDataModelFields: function (model_fields) {
-        var report_data_model = Ext.ModelManager.getModel('PICS.model.report.ReportData');
+    updateDataTableModelFields: function (model_fields) {
+        var data_table_model = Ext.ModelManager.getModel('PICS.model.report.DataTable');
         
         // update model fields
-        report_data_model.setFields(model_fields);
+        data_table_model.setFields(model_fields);
     }
 });
 /**
@@ -97724,132 +97824,361 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     init: function () {
         this.control({
+            'columnmodal': {
+                beforeclose: this.beforeColumnModalClose
+            },
+            'filtermodal': {
+                beforeclose: this.beforeFilterModalClose
+            },
             'columnmodal textfield[name=search_box]': {
-                keyup: this.onColumnModalSearch
+                keyup: this.searchColumnList
             },
             'filtermodal textfield[name=search_box]': {
-                keyup: this.onFilterModalSearch
+                keyup: this.searchFilterList
             },
             'columnmodal button[action=add]':  {
-                click: this.onColumnModalAddClick
+                click: this.addColumn
             },
             'filtermodal button[action=add]':  {
-                click: this.onFilterModalAddClick
+                click: this.addFilter
             },
             'columnmodal button[action=cancel]':  {
-                click: this.onColumnModalCancelClick
+                click: this.cancelColumnModal
             },
             'filtermodal button[action=cancel]':  {
-                click: this.onFilterModalCancelClick
-            }            
+                click: this.cancelFilterModal
+            }
         });
 
         this.application.on({
-            showcolumnmodal: this.showColumnModal,
+            opencolumnmodal: this.openColumnModal,
             scope: this
         });
         
         this.application.on({
-            showfiltermodal: this.showFilterModal,
+            openfiltermodal: this.openFilterModal,
             scope: this
         });
     },
 
-    onColumnModalAddClick: function (cmp, event, eOpts) {
+    addColumn: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column_modal = this.getColumnModal(),
             column_list = this.getColumnList(),
             column_modal_checkbox_model = column_list.getSelectionModel(),
-            selected_columns = column_modal_checkbox_model.getSelection();
-
-        // Add the selected column to the report model.
+            selected_columns = column_modal_checkbox_model.getSelection(),
+            column_modal = this.getColumnModal();
+        
+        // Add the selected columns to the report model.
         report.addColumns(selected_columns);
         
-        // Close the column modal.
         column_modal.close();
-
-        // Get new data for the modified report model.
+        
+        // Get new data for the modified report model (which will update the view, as well).
         PICS.data.ServerCommunication.loadData();
     },
 
-    onColumnModalCancelClick: function (cmp, event, eOpts) {
-        var column_modal = this.getColumnModal();
+    addFilter: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_list = this.getFilterList(),
+            filter_modal_checkbox_model = filter_list.getSelectionModel(),
+            selected_filters = filter_modal_checkbox_model.getSelection(),
+            filter_modal = this.getFilterModal();
         
+        // Add the selected filters to the report model.
+        report.addFilters(selected_filters);
+        
+        // Add the selected filters to the FilterOptions view.
+        this.application.fireEvent('refreshfilters');
+        
+        filter_modal.close();
+        
+        // Get new data for the modified report.
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    beforeColumnModalClose: function (cmp, event, eOpts) {
+        var column_list = this.getColumnList();
+
+        column_list.reset();
+    },
+
+    beforeFilterModalClose: function (cmp, event, eOpts) {
+        var filter_list = this.getFilterList();
+
+        filter_list.reset();
+    },
+
+    cancelColumnModal: function (cmp, event, eOpts) {
+        var column_list = this.getColumnList(),
+            column_modal = this.getColumnModal();
+
         column_modal.close();
     },
 
-    onColumnModalSearch: function (cmp, event, eOpts) {
+    cancelFilterModal: function (cmp, event, eOpts) {
+        var filter_list = this.getFilterList(),
+            filter_modal = this.getFilterModal();
+        
+        filter_modal.close();
+    },
+    
+    searchColumnList: function (cmp, event, eOpts) {
         var columns_store = this.getReportColumnsStore(),
             columns_search_box = this.getColumnModalSearchBox(),
             search_query = columns_search_box.getValue();
-
-        columns_store.clearFilter();
 
         columns_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
         }));
     },
 
-    onFilterModalAddClick: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_modal = this.getFilterModal(),
-            filter_list = this.getFilterList(),
-            filter_modal_checkbox_model = filter_list.getSelectionModel(),
-            selected_filters = filter_modal_checkbox_model.getSelection();
-    
-        // Add the selected filter to the report model.
-        report.addFilters(selected_filters);
-
-        // Close the filter modal.
-        filter_modal.close();
-        
-        this.application.fireEvent('refreshfilters');
-    },
-
-    onFilterModalCancelClick: function (cmp, event, eOpts) {
-        var filter_modal = this.getFilterModal();
-        
-        filter_modal.close();
-    },
-
-    onFilterModalSearch: function (cmp, event, eOpts) {
+    searchFilterList: function (cmp, event, eOpts) {
         var filters_store = this.getReportFiltersStore(),
             filters_search_box = this.getFilterModalSearchBox(),
             search_query = filters_search_box.getValue();
-
-        filters_store.clearFilter();
 
         filters_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
         }));
     },
-
-    showColumnModal: function () {
+    
+    openColumnModal: function () {
+        // Create the modal.
         var column_modal = Ext.create('PICS.view.report.modal.column-filter.ColumnModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
-        
-        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
-        var column_list = this.getColumnList();
 
+        // Display the modal.
         column_modal.show();
-        column_list.getSelectionModel().deselectAll();
     },
 
-    showFilterModal: function () {
+    openFilterModal: function () {
+        // Create the modal.
         var filter_modal = Ext.create('PICS.view.report.modal.column-filter.FilterModal', {
             defaultFocus: 'textfield[name=search_box]'
         });
-        
-        // TODO: possibly link in the deselection on cancel, close, ReportModal.close
-        var filter_list = this.getFilterList();
-        
+
+        // Display the modal.
         filter_modal.show();
-        filter_list.getSelectionModel().deselectAll();
     }
 });
+Ext.define('PICS.controller.report.DataTable', {
+    extend: 'Ext.app.Controller',
+
+    refs: [{
+        ref: 'pagingToolbar',
+        selector: 'reportpagingtoolbar'
+    }, {
+        ref: 'dataTable',
+        selector: 'reportdatatable'
+    }],
+
+    stores: [
+        'report.Reports',
+        'report.DataTables'
+    ],
+    
+    init: function () {
+        this.control({
+            'reportdatatable': {
+                beforerender: this.beforeDataTableRender,
+                reconfigure: this.reconfigureDataTable
+            },
+
+            'reportdatatable headercontainer': {
+            	columnmove: this.moveColumn
+            },
+
+            'reportdatatable gridcolumn': {
+                render: this.renderGridColumn
+            },
+            
+            'reportpagingtoolbar': {
+                changepage: this.moveToPage
+            },
+
+            'reportpagingtoolbar button[itemId=refresh]': {
+                click: this.refreshReport
+            },
+            
+            'reportpagingtoolbar button[itemId=first]': {
+                click: this.moveToFirstPage
+            },
+            
+            'reportpagingtoolbar button[itemId=prev]': {
+                click: this.moveToPreviousPage
+            },
+            
+            'reportpagingtoolbar button[itemId=next]': {
+                click: this.moveToNextPage
+            },
+            
+            'reportpagingtoolbar button[itemId=last]': {
+                click: this.moveToLastPage
+            },
+
+            'reportpagingtoolbar combo[name=limit]': {
+                select: this.changeLimit
+            },
+
+            'reportpagingtoolbar button[action=add-column]': {
+                click: this.openColumnModal
+            },
+
+            'menu[name=data_table_header_menu] menuitem[name=function]': {
+                click: this.openColumnFunctionModal
+            },
+
+            'menu[name=data_table_header_menu] menuitem[name=remove_column]': {
+                click: this.removeColumn
+            },
+
+            'menu[name=data_table_header_menu] menuitem[name=sort_asc]': {
+                click: this.sortColumnAsc
+            },
+
+            'menu[name=data_table_header_menu] menuitem[name=sort_desc]': {
+                click: this.sortColumnDesc
+            }
+        });
+    },
+    
+    beforeDataTableRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            grid_columns = report.convertColumnsToGridColumns(),
+            data_table_view = this.getDataTable();
+
+        data_table_view.updateGridColumns(grid_columns);
+    },
+    
+    changeLimit: function (cmp, records, options) {
+        var limit = cmp.getValue();
+
+        PICS.data.ServerCommunication.loadData(1, limit);
+    },
+    
+    moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            // off by one due to rownumberer
+            from_index = fromIdx - 1,
+            // off by one due to rownumberer
+            to_index = toIdx - 1;
+        
+        report.moveColumnByIndex(from_index, to_index);
+    },
+    
+    moveToPage: function (cmp, page, eOpts) {
+        PICS.data.ServerCommunication.loadData(page);
+    },
+    
+    moveToFirstPage: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
+    },
+    
+    moveToPreviousPage: function (cmp, event, eOpts) {
+        var data_table_store = this.getReportDataTablesStore(),
+            current_page = data_table_store.currentPage,
+            previous_page = current_page - 1;
+        
+        PICS.data.ServerCommunication.loadData(previous_page);
+    },
+    
+    moveToNextPage: function (cmp, event, eOpts) {
+        var data_table_store = this.getReportDataTablesStore(),
+            current_page = data_table_store.currentPage,
+            next_page = current_page + 1;
+        
+        PICS.data.ServerCommunication.loadData(next_page);
+    },
+    
+    moveToLastPage: function (cmp, event, eOpts) {
+        var data_table_store = this.getReportDataTablesStore(),
+            report_paging_toolbar_view = this.getPagingToolbar();
+            last_page = report_paging_toolbar_view.getPageData().pageCount;
+        
+        PICS.data.ServerCommunication.loadData(last_page);
+    },
+    
+    openColumnFunctionModal: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        this.application.fireEvent('opencolumnfunctionmodal', column);
+    },
+    
+    openColumnModal: function (cmp, event, eOpts) {
+        this.application.fireEvent('opencolumnmodal');
+    },
+    
+    reconfigureDataTable: function (cmp, eOpts) {
+        var data_table_view = cmp,
+            data_table_store = data_table_view.getStore(),
+            results_total = data_table_store.getTotalCount(),
+            report_paging_toolbar = this.getPagingToolbar();
+        
+        // remove no results message if one exists
+        data_table_view.updateNoResultsMessage();
+        
+        // update display count
+        report_paging_toolbar.updateDisplayInfo(results_total);
+    },
+    
+    removeColumn: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            column = cmp.up('menu').activeHeader.column;
+
+        column_store.remove(column);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    renderGridColumn: function (cmp, eOpts) {
+        // only create tooltips for PICS.ux.grid.column.Column(s)
+        if (typeof cmp.createTooltip == 'function') {
+            cmp.createTooltip();
+        }
+    },
+    
+    sortColumnAsc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'ASC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+
+    sortColumnDesc: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column;
+        
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'DESC');
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    refreshReport: function (cmp, event, eOpts) {
+        PICS.data.ServerCommunication.loadData(1);
+    }
+});
+
 Ext.define('PICS.controller.report.Filter', {
     extend: 'Ext.app.Controller',
 
@@ -98080,7 +98409,7 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onAddFilter: function (cmp, event, eOpts) {
-        this.application.fireEvent('showfiltermodal');
+        this.application.fireEvent('openfiltermodal');
     },
 
     /**
@@ -98311,7 +98640,7 @@ Ext.define('PICS.controller.report.Header', {
             },
 
             'reportheader button[action=edit]': {
-                click: this.showSettingsModal
+                click: this.openSettingsModal
             }
         });
 
@@ -98325,8 +98654,8 @@ Ext.define('PICS.controller.report.Header', {
         this.application.fireEvent('updatepageheader');
     },
 
-    showSettingsModal: function (cmp, e, eOpts) {
-        this.application.fireEvent('showsettingsmodal', 'edit');
+    openSettingsModal: function (cmp, e, eOpts) {
+        this.application.fireEvent('opensettingsmodal', 'edit');
     },
 
     saveReport: function (cmp, e, eOpts) {
@@ -98337,7 +98666,7 @@ Ext.define('PICS.controller.report.Header', {
         if (is_editable) {
             this.application.fireEvent('savereport');
         } else {
-            this.application.fireEvent('showsettingsmodal', 'copy');
+            this.application.fireEvent('opensettingsmodal', 'copy');
         }
     },
 
@@ -98361,8 +98690,8 @@ Ext.define('PICS.controller.report.Report', {
         ref: 'reportAlertMessage',
         selector: 'reportalertmessage'
     }, {
-        ref: 'reportData',
-        selector: 'reportdata'
+        ref: 'dataTable',
+        selector: 'reportdatatable'
     }, {
         ref: 'reportSettingsModal',
         selector: 'reportsettingsmodal'
@@ -98370,7 +98699,7 @@ Ext.define('PICS.controller.report.Report', {
 
     // TODO: Try to move these to app.js.
     stores: [
-        'report.ReportDatas',
+        'report.DataTables',
         'report.Reports',
         'report.Columns',
         'report.Filters'
@@ -98397,11 +98726,6 @@ Ext.define('PICS.controller.report.Report', {
             scope: this
         });
 
-/*        this.application.on({
-            refreshreport: this.refreshReport,
-            scope: this
-        });
-*/
         this.application.on({
             savereport: this.saveReport,
             scope: this
@@ -98466,39 +98790,7 @@ Ext.define('PICS.controller.report.Report', {
         window.open('ReportData!print.action?report=' + report_id);
     },
     
-/*    refreshReport: function () {
-        // TODO: not what we want anymore
-        // need to hook into new load
-        return false;
-        
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_data_store = this.getReportReportDatasStore(),
-            report_data = this.getReportData();
-            
-        var report_name = report.get('name'),
-            // TODO: this should be removed
-            limit = report.get('rowsPerPage'),
-            params = report.toRequestParams(),
-            model_fields = report.convertColumnsToModelFields(),
-            grid_columns = report.convertColumnsToGridColumns();
-            
-        this.updatePageTitle(report_name);
-
-        // TODO: this should be removed
-        report_data_store.setLimit(limit);
-        
-        // update data store proxy
-        report_data_store.updateProxyParameters(params);
-        
-        // update data store model
-        report_data_store.updateReportDataModelFields(model_fields);
-        
-        // update report data grid columns
-        report_data.updateGridColumns(grid_columns);
-    },
-
-*/    saveReport: function () {
+    saveReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             params = report.toRequestParams(),
@@ -98585,257 +98877,24 @@ Ext.define('PICS.controller.report.Report', {
         document.title = 'PICS - ' + title;
     }
 });
-Ext.define('PICS.controller.report.ReportData', {
-    extend: 'Ext.app.Controller',
-
-    refs: [{
-        ref: 'reportPagingToolbar',
-        selector: 'reportpagingtoolbar'
-    }, {
-        ref: 'reportData',
-        selector: 'reportdata'
-    }],
-
-    stores: [
-        'report.Reports',
-        'report.ReportDatas'
-    ],
-    
-    init: function () {
-        this.control({
-            'reportdata': {
-                beforerender: this.onReportDataBeforeRender,
-                reconfigure: this.onReportDataReconfigure
-            },
-
-            'reportdata headercontainer': {
-            	columnmove: this.moveColumn
-            },
-
-            'reportdata gridcolumn': {
-                render: this.onGridColumnRender
-            },
-            
-            'reportpagingtoolbar': {
-                changepage: this.moveToPage
-            },
-
-            'reportpagingtoolbar button[itemId=refresh]': {
-                click: this.refreshReport
-            },
-            
-            'reportpagingtoolbar button[itemId=first]': {
-                click: this.moveToFirstPage
-            },
-            
-            'reportpagingtoolbar button[itemId=prev]': {
-                click: this.moveToPreviousPage
-            },
-            
-            'reportpagingtoolbar button[itemId=next]': {
-                click: this.moveToNextPage
-            },
-            
-            'reportpagingtoolbar button[itemId=last]': {
-                click: this.moveToLastPage
-            },
-
-            'reportpagingtoolbar combo[name=limit]': {
-                select: this.changeLimit
-            },
-
-            'reportpagingtoolbar button[action=add-column]': {
-                click: this.showColumnModal
-            },
-
-            'menu[name=report_data_header_menu] menuitem[name=function]': {
-                click: this.showColumnFunctionModal
-            },
-
-            'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
-                click: this.removeColumn
-            },
-
-            'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
-                click: this.sortColumnAsc
-            },
-
-            'menu[name=report_data_header_menu] menuitem[name=sort_desc]': {
-                click: this.sortColumnDesc
-            }
-        });
-    },
-    
-    onGridColumnRender: function (cmp, eOpts) {
-        // only create tooltips for PICS.ux.grid.column.Column(s)
-        if (typeof cmp.createTooltip == 'function') {
-            cmp.createTooltip();
-        }
-    },
-    
-    onReportDataBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            grid_columns = report.convertColumnsToGridColumns(),
-            report_data_view = this.getReportData();
-
-        report_data_view.updateGridColumns(grid_columns);
-    },
-    
-    onReportDataReconfigure: function (cmp, eOpts) {
-        var report_data = cmp,
-            report_data_store = cmp.getStore(),
-            total = report_data_store.getTotalCount(),
-            report_paging_toolbar = this.getReportPagingToolbar();
-        
-        // remove no results message if one exists
-        report_data.updateNoResultsMessage();
-        
-        // update display count
-        report_paging_toolbar.updateDisplayInfo(total);
-    },
-    
-    changeLimit: function (cmp, records, options) {
-        var value = cmp.getValue();
-
-        PICS.data.ServerCommunication.loadData(1, value);
-    },
-    
-    moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            // off by one due to rownumberer
-            from_index = fromIdx - 1,
-            // off by one due to rownumberer
-            to_index = toIdx - 1;
-        
-        report.moveColumnByIndex(from_index, to_index);
-    },
-    
-    moveToPage: function (cmp, page, eOpts) {
-        PICS.data.ServerCommunication.loadData(page);
-    },
-    
-    moveToFirstPage: function (cmp, event, eOpts) {
-        PICS.data.ServerCommunication.loadData(1);
-    },
-    
-    moveToPreviousPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            current_page = report_data_store.currentPage,
-            previous_page = current_page - 1;
-        
-        PICS.data.ServerCommunication.loadData(previous_page);
-    },
-    
-    moveToNextPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            current_page = report_data_store.currentPage,
-            next_page = current_page + 1;
-        
-        PICS.data.ServerCommunication.loadData(next_page);
-    },
-    
-    moveToLastPage: function (cmp, event, eOpts) {
-        var report_data_store = this.getReportReportDatasStore(),
-            report_paging_toolbar_view = this.getReportPagingToolbar();
-            last_page = report_paging_toolbar_view.getPageData().pageCount;
-        
-        PICS.data.ServerCommunication.loadData(last_page);
-    },
-    
-    removeColumn: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column_store = report.columns(),
-            column = cmp.up('menu').activeHeader.column;
-
-        column_store.remove(column);
-
-        PICS.data.ServerCommunication.loadData();
-    },
-    
-    showColumnFunctionModal: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-
-        this.application.fireEvent('showcolumnfunctionmodal', column);
-    },
-    
-    showColumnModal: function (cmp, event, eOpts) {
-        this.application.fireEvent('showcolumnmodal');
-    },
-
-    sortColumnAsc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'ASC');
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    sortColumnDesc: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
-        
-        // clear sorts
-        report.removeSorts();
-        
-        // add sort
-        report.addSort(column, 'DESC');
-
-        PICS.data.ServerCommunication.loadData();
-    },
-    
-    refreshReport: function (cmp, event, eOpts) {
-        PICS.data.ServerCommunication.loadData(1);
-    }
-});
-
 Ext.define('PICS.controller.report.SettingsModal', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'reportSettingsModal',
+        ref: 'settingsModal',
         selector: 'reportsettingsmodal'
     }, {
-        ref: 'reportSettingsTabs',
-        selector: 'reportsettingstabs'
+        ref: 'settingsModalTabs',
+        selector: 'reportsettingsmodaltabs'
     }, {
-        ref: 'reportSettingsEdit',
-        selector: 'reportsettingsedit'
+        ref: 'editSetting',
+        selector: 'reporteditsetting'
     }, {
-        ref: 'reportSettingsShare',
-        selector: 'reportsettingsshare'
+        ref: 'copySetting',
+        selector: 'reportcopysetting'
     }, {
-        ref: 'reportSettingsNoPermission',
-        selector: 'reportsettingsmodal #settings_no_permission'
-    }, {
-        ref: 'reportNameEdit',
-        selector: 'reportsettingsedit [name=report_name]'
-    }, {
-        ref: 'reportDescriptionEdit',
-        selector: 'reportsettingsedit [name=report_description]'
-    }, {
-        ref: 'reportNameCopy',
-        selector: 'reportsettingscopy [name=report_name]'
-    }, {
-        ref: 'reportDescriptionCopy',
-        selector: 'reportsettingscopy [name=report_description]'
-    }, {
-        ref: 'editFavoriteToggle',
-        selector: 'reportsettingsedit favoritetoggle'
-    }, {
-        ref: 'copyFavoriteToggle',
-        selector: 'reportsettingscopy favoritetoggle'
+        ref: 'shareSetting',
+        selector: 'reportsharesetting'
     }],
 
     stores: [
@@ -98848,201 +98907,169 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     init: function () {
         this.control({
-            'reportsettingsmodal tabpanel': {
-                beforerender: this.onReportSettingsTabsBeforeRender
+            'reportsettingsmodal': {
+                close: this.settingsModalClose
             },
-
+            
             'reportsettingsmodal button[action=cancel]':  {
-                click: this.onReportModalCancelClick
+                click: this.cancelSettingsModal
+            },
+            
+            'reportsettingsmodaltabs': {
+                tabchange: this.changeSettingsModalTab
+            },
+            
+            'reportsettingsmodal reporteditsetting': {
+                afterrender: this.afterEditSettingRender,
+                beforerender: this.beforeEditSettingRender
+            },
+            
+            'reportsettingsmodal reporteditsetting button[action=edit]':  {
+                click: this.editReport
+            },
+            
+            'reportsettingsmodal reportcopysetting button[action=copy]':  {
+                click: this.copyReport
             },
 
-            'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender
-            },
-
-            'reportsettingsmodal favoritetoggle': {
-                afterrender: this.onReportModalFavoriteToggleAfterRender,
-                favorite: this.onReportFavorite,
-                unfavorite: this.onReportUnFavorite
-            },
-
-            'reportsettingsmodal reportsettingsedit button[action=edit]':  {
-                click: this.onReportModalEditClick
-            },
-
-            'reportsettingsmodal reportsettingscopy button[action=copy]':  {
-                click: this.onReportModalCopyClick
-            },
-
-            'reportsettingsmodal #report_settings_tabbar tab': {
-                click: this.onReportModalTabClick
+            'reportsettingsmodal reportfavoritetoggle': {
+                favorite: this.favoriteReport,
+                unfavorite: this.unfavoriteReport
             },
 
             'reportsettingsmodal reportsettingsexport button[action=export]':  {
-                click: this.onReportModalExportClick
+                click: this.exportReport
             },
 
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
-                click: this.onReportModalPrintPreviewClick
+                click: this.printReport
             },
 
-            'reportsettingsmodal reportsettingsshare sharesearchbox': {
+            'reportsettingsmodal reportsharesetting sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
                 specialkey: this.onReportModalShareSearchboxSpecialKey
             },
 
-            'reportsettingsmodal reportsettingsshare button[action=share]': {
+            'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
             }
         });
 
         this.application.on({
-            showsettingsmodal: this.showSettingsModal,
+            opensettingsmodal: this.openSettingsModal,
             scope: this
         });
     },
-
-    onReportFavorite: function (cmp, eOpts) {
+    
+    afterEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            active_tab = cmp.up('tabpanel').getActiveTab();
-            
-        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
-            report.set('is_favorite', true);
-        } else {
-            this.application.fireEvent('favoritereport');
-        }
-    },
+            is_favorite = report.get('is_favorite'),
+            edit_favorite_toggle = cmp.down('reportfavoritetoggle');
 
-    onReportUnFavorite: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            active_tab = cmp.up('tabpanel').getActiveTab();
-            
-        if (Ext.getClassName(active_tab) == 'PICS.view.report.settings.CopySettings') {
-            report.set('is_favorite', false);
-        } else {
-            this.application.fireEvent('unfavoritereport');
+        if (is_favorite) {
+            edit_favorite_toggle.toggleFavorite();
         }
     },
     
-    onReportModalCancelClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal();
-    
-        modal.close();
-    },
-    
-    onReportModalCopyClick: function (cmp, e, eOpts) {
+    beforeEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = this.getReportNameCopy().getValue(),
-            report_description = this.getReportDescriptionCopy().getValue();
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
+
+        if (edit_setting_view) {
+            edit_setting_form.loadRecord(report);
+        }
+    },
     
-        this.setFavoriteStatus('copy');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
+    settingsModalClose: function (cmp, eOpts) {
+        var copy_setting = this.getCopySetting(),
+            copy_setting_form = copy_setting.getForm(),
+            copy_favorite = copy_setting.down('reportfavoritetoggle');
+                
+        copy_favorite.toggleUnfavorite();
         
-        // form reset
-        // TODO: put this in the view
-        cmp.up('form').getForm().reset();
+        copy_setting_form.reset();
+    },
+
+    cancelSettingsModal: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal();
+    
+        settings_modal_view.close();
+    },
+    
+    changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            title = nextCard.modal_title;
+        
+        settings_modal_view.setTitle(title);
+    },
+    
+    copyReport: function (cmp, e, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            copy_setting_view = this.getCopySetting(),
+            copy_setting_form = copy_setting_view.getForm();
+        
+        if (copy_setting_form.isValid()) {
+            copy_setting_form.updateRecord(report);
+        }
         
         this.application.fireEvent('createreport');
     },
     
-    onReportModalEditClick: function (cmp, e, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue();
+    editReport: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
+            
+        if (edit_setting_form.isValid()) {
+            edit_setting_form.updateRecord();
+        }
+
+        settings_modal_view.close();
     
-        this.setFavoriteStatus('edit');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
-        
-        this.getReportSettingsModal().close();
-        
         this.application.fireEvent('updatepageheader');
+        
         this.application.fireEvent('savereport');
     },
     
-    onReportModalEditBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report_settings_edit = this.getReportSettingsEdit(),
-            report_no_permission_edit = this.getReportSettingsNoPermission();
-    
-        // if there is no form - do nothing
-        if (!report_no_permission_edit) {
-            if (!report_store.isLoaded()) {
-                report_store.on('load', function (store, records, successful, eOpts) {
-                    var report = report_store.first();
-    
-                    report_settings_edit.update(report);
-                });
-            } else {
-                var report = report_store.first();
-    
-                report_settings_edit.update(report);
-            }
-        }
-    },
-    
-    onReportModalFavoriteToggleAfterRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            is_favorite = report.get('is_favorite');
-        
-        if (is_favorite) {
-            cmp.toggleFavorite();
-        }
-    },
-    
-    onReportModalTabClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal(),
-            title = cmp.card.modal_title;
-    
-        modal.setTitle(title);
-    },
-    
-    onReportModalExportClick: function (cmp, e, eOpts) {
+    exportReport: function (cmp, e, eOpts) {
         this.application.fireEvent('downloadreport');
     },
+
+    favoriteReport: function (cmp, eOpts) {
+        var edit_setting_view = this.getEditSetting();
+        
+        if (edit_setting_view.isVisible()) {
+            this.application.fireEvent('favoritereport');
+        }
+    },
+
+    openSettingsModal: function (action) {
+        var settings_modal_view = this.getSettingsModal();
+        
+        if (!settings_modal_view) {
+            settings_modal_view = Ext.create('PICS.view.report.settings.SettingsModal');
+        }
+        
+        settings_modal_view.updateActiveTabFromAction(action);
     
-    onReportModalPrintPreviewClick: function (cmp, e, eOpts) {
+        settings_modal_view.show();
+    },
+    
+    printReport: function (cmp, e, eOpts) {
         this.application.fireEvent('printreport');
     },
-    
-    onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
-        var settings_modal = this.getReportSettingsModal(),
-            title = cmp.getActiveTab().modal_title;
-    
-        settings_modal.setTitle(title);
-    },
-    
-    setFavoriteStatus: function (action) {
-        if (action == 'edit') {
-            favorite_toggle = this.getEditFavoriteToggle();
-        } else if (action == 'copy') {
-            favorite_toggle = this.getCopyFavoriteToggle();
+
+    unfavoriteReport: function (cmp, eOpts) {
+        var edit_setting_view = this.getEditSetting();
+        
+        if (edit_setting_view.isVisible()) {
+            this.application.fireEvent('unfavoritereport');
         }
-    
-        var is_favorite_on = favorite_toggle.isFavoriteOn();
-    
-        favorite_toggle.saveFavoriteStatus(is_favorite_on);
-    },
-    
-    showSettingsModal: function (action) {
-        var settings_modal = Ext.create('PICS.view.report.settings.SettingsModal');
-    
-        if (action == 'edit') {
-            this.getReportSettingsTabs().setActiveTab(0);
-        } else if (action == 'copy') {
-            this.getReportSettingsTabs().setActiveTab(1);
-        }
-    
-        settings_modal.show();
     },
     
     /**
@@ -99062,7 +99089,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
     
         if (record) {
-            var report_settings_share = this.getReportSettingsShare();
+            var report_settings_share = this.getShareSetting();
             
             var account = {
                 name: record.get('result_name'),
@@ -99091,7 +99118,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     onReportModalShareClick: function (cmp, e, eOpts) {
-        var report_settings_share = this.getReportSettingsShare(),
+        var report_settings_share = this.getShareSetting(),
             data = report_settings_share.request_data;
         
         // Abort if no account has been selected.

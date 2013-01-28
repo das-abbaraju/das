@@ -48,10 +48,10 @@ Ext.application({
     controllers: [
         'report.ColumnFilterModal',
         'report.ColumnFunctionModal',
+        'report.DataTable',
         'report.Filter',
         'report.Header',
         'report.Report',
-        'report.ReportData',
         'report.SettingsModal'
     ],
 

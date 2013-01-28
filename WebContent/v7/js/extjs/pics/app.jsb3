@@ -880,14 +880,19 @@
                     "path": "app/store/report/base/"
                 },
                 {
-                    "clsName": "PICS.view.report.modal.ReportModal",
-                    "name": "ReportModal.js",
-                    "path": "app/view/report/modal/"
+                    "clsName": "PICS.ux.window.Window",
+                    "name": "Window.js",
+                    "path": "app/ux/window/"
                 },
                 {
                     "clsName": "Ext.panel.Table",
                     "name": "Table.js",
                     "path": "extjs/src/panel/"
+                },
+                {
+                    "clsName": "Ext.layout.container.Anchor",
+                    "name": "Anchor.js",
+                    "path": "extjs/src/layout/container/"
                 },
                 {
                     "clsName": "PICS.view.report.filter.base.AccountIDFilter",
@@ -923,11 +928,6 @@
                     "clsName": "PICS.view.report.filter.FilterTooltip",
                     "name": "FilterTooltip.js",
                     "path": "app/view/report/filter/"
-                },
-                {
-                    "clsName": "Ext.layout.container.Anchor",
-                    "name": "Anchor.js",
-                    "path": "extjs/src/layout/container/"
                 },
                 {
                     "clsName": "Ext.toolbar.TextItem",
@@ -1135,11 +1135,6 @@
                     "path": "extjs/src/window/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.FavoriteToggle",
-                    "name": "FavoriteToggle.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
                     "clsName": "Ext.layout.component.field.ComboBox",
                     "name": "ComboBox.js",
                     "path": "extjs/src/layout/component/field/"
@@ -1175,23 +1170,18 @@
                     "path": "app/view/report/filter/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.CopySettings",
-                    "name": "CopySettings.js",
+                    "clsName": "PICS.view.report.settings.CopySetting",
+                    "name": "CopySetting.js",
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.EditSettings",
-                    "name": "EditSettings.js",
+                    "clsName": "PICS.view.report.settings.ExportSetting",
+                    "name": "ExportSetting.js",
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.ExportSettings",
-                    "name": "ExportSettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.PrintSettings",
-                    "name": "PrintSettings.js",
+                    "clsName": "PICS.view.report.settings.PrintSetting",
+                    "name": "PrintSetting.js",
                     "path": "app/view/report/settings/"
                 },
                 {
@@ -1213,6 +1203,21 @@
                     "clsName": "Ext.tab.Panel",
                     "name": "Panel.js",
                     "path": "extjs/src/tab/"
+                },
+                {
+                    "clsName": "Ext.form.field.Hidden",
+                    "name": "Hidden.js",
+                    "path": "extjs/src/form/field/"
+                },
+                {
+                    "clsName": "PICS.view.report.settings.FavoriteToggle",
+                    "name": "FavoriteToggle.js",
+                    "path": "app/view/report/settings/"
+                },
+                {
+                    "clsName": "PICS.view.report.settings.EditSetting",
+                    "name": "EditSetting.js",
+                    "path": "app/view/report/settings/"
                 },
                 {
                     "clsName": "Ext.form.field.Trigger",
@@ -1250,8 +1255,8 @@
                     "path": "extjs/src/toolbar/"
                 },
                 {
-                    "clsName": "PICS.view.report.report.ReportPagingToolbar",
-                    "name": "ReportPagingToolbar.js",
+                    "clsName": "PICS.view.report.report.PagingToolbar",
+                    "name": "PagingToolbar.js",
                     "path": "app/view/report/report/"
                 },
                 {
@@ -1280,8 +1285,8 @@
                     "path": "extjs/src/grid/"
                 },
                 {
-                    "clsName": "PICS.view.report.report.ReportData",
-                    "name": "ReportData.js",
+                    "clsName": "PICS.view.report.report.DataTable",
+                    "name": "DataTable.js",
                     "path": "app/view/report/report/"
                 },
                 {
@@ -1345,13 +1350,13 @@
                     "path": "app/view/report/settings/share/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.share.ShareSettings",
-                    "name": "ShareSettings.js",
+                    "clsName": "PICS.view.report.settings.share.ShareSetting",
+                    "name": "ShareSetting.js",
                     "path": "app/view/report/settings/share/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.SettingsTabs",
-                    "name": "SettingsTabs.js",
+                    "clsName": "PICS.view.report.settings.SettingsModalTabs",
+                    "name": "SettingsModalTabs.js",
                     "path": "app/view/report/settings/"
                 },
                 {
@@ -1470,8 +1475,8 @@
                     "path": "app/store/report/"
                 },
                 {
-                    "clsName": "PICS.model.report.ReportData",
-                    "name": "ReportData.js",
+                    "clsName": "PICS.model.report.DataTable",
+                    "name": "DataTable.js",
                     "path": "app/model/report/"
                 },
                 {
@@ -1480,8 +1485,8 @@
                     "path": "extjs/src/util/"
                 },
                 {
-                    "clsName": "PICS.store.report.ReportDatas",
-                    "name": "ReportDatas.js",
+                    "clsName": "PICS.store.report.DataTables",
+                    "name": "DataTables.js",
                     "path": "app/store/report/"
                 },
                 {
@@ -1505,6 +1510,11 @@
                     "path": "app/controller/report/"
                 },
                 {
+                    "clsName": "PICS.controller.report.DataTable",
+                    "name": "DataTable.js",
+                    "path": "app/controller/report/"
+                },
+                {
                     "clsName": "PICS.controller.report.Filter",
                     "name": "Filter.js",
                     "path": "app/controller/report/"
@@ -1517,11 +1527,6 @@
                 {
                     "clsName": "PICS.controller.report.Report",
                     "name": "Report.js",
-                    "path": "app/controller/report/"
-                },
-                {
-                    "clsName": "PICS.controller.report.ReportData",
-                    "name": "ReportData.js",
                     "path": "app/controller/report/"
                 },
                 {

@@ -1,12 +1,12 @@
-Ext.define('PICS.view.report.report.ReportData', {
+Ext.define('PICS.view.report.report.DataTable', {
     extend: 'Ext.grid.Panel',
-    alias: ['widget.reportdata'],
+    alias: 'widget.reportdatatable',
 
     requires: [
-        'PICS.view.report.report.ReportPagingToolbar'
+        'PICS.view.report.report.PagingToolbar'
     ],
 
-    store: 'report.ReportDatas',
+    store: 'report.DataTables',
 
     border: 0,
     // column configuration must be specified - will be overridden dynamically
@@ -17,7 +17,7 @@ Ext.define('PICS.view.report.report.ReportData', {
         xtype: 'reportpagingtoolbar',
         dock: 'top'
     }],
-    id: 'report_data',
+    id: 'data_table',
     margin: '0 30 0 0',
     rowLines: false,
 
@@ -44,7 +44,7 @@ Ext.define('PICS.view.report.report.ReportData', {
 
         // simulate header menu to be plain (menu is already created at this point)
         menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
-        menu.name = 'report_data_header_menu';
+        menu.name = 'data_table_header_menu';
 
         menu.add({
             name: 'sort_asc',

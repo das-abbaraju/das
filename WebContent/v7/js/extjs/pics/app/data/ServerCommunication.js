@@ -18,24 +18,36 @@ Ext.define('PICS.data.ServerCommunication', {
             filter_store.loadRawData(json);
         }
         
-        function loadReportDataStore(json) {
+        function loadDataTableStore(json) {
             var report_store = Ext.StoreManager.get('report.Reports'),
                 report = report_store.first(),
-                report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                data_table_store = Ext.StoreManager.get('report.DataTables'),
                 model_fields = report.convertColumnsToModelFields();
             
-            // update report data model
-            report_data_store.updateReportDataModelFields(model_fields);
+            // update data table model
+            data_table_store.updateDataTableModelFields(model_fields);
             
-            // load report data with results
-            report_data_store.loadRawData(json);
+            // load data table with results
+            data_table_store.loadRawData(json);
+        }
+        
+        function startDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(true);
+        }
+        
+        function stopDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(false);
         }
             
-        function updateReportDataView(report) {
-            var report_data_view = Ext.ComponentQuery.query('reportdata')[0],
+        function updateDataTableView(report) {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
                 new_grid_columns = report.convertColumnsToGridColumns();
             
-            report_data_view.updateGridColumns(new_grid_columns);
+            data_table_view.updateGridColumns(new_grid_columns);
         }
         
         return {
@@ -101,7 +113,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         
                         loadFilterStore(json);
                         
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
 
                         callback.apply(scope, arguments);
                     }
@@ -113,6 +125,9 @@ Ext.define('PICS.data.ServerCommunication', {
                     report = report_store.first(),
                     report_id = report.get('id'),
                     url = this.getLoadDataUrl();
+                
+                // add data table loading mask
+                startDataTableLoading();
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
@@ -133,10 +148,14 @@ Ext.define('PICS.data.ServerCommunication', {
                         loadReportStore(json);
                         
                         // load new results
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
                         
                         // refresh grid
-                        updateReportDataView(report);
+                        updateDataTableView(report);
+                        
                     }
                 });
             },
@@ -145,16 +164,19 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    report_data_store = Ext.StoreManager.get('report.ReportDatas'),
+                    data_table_store = Ext.StoreManager.get('report.DataTables'),
                     page = page ? page : 1,
-                    limit = limit ? limit : report_data_store.pageSize,
+                    limit = limit ? limit : data_table_store.pageSize,
                     url = this.getLoadDataUrl(page, limit);
 
                 // updates the stores limit tracker
-                report_data_store.setLimit(limit);
+                data_table_store.setLimit(limit);
                 
                 // updates the stores page tracker
-                report_data_store.setPage(page);
+                data_table_store.setPage(page);
+                
+                // add data table loading mask
+                startDataTableLoading();
                 
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
@@ -171,10 +193,13 @@ Ext.define('PICS.data.ServerCommunication', {
                             json = Ext.JSON.decode(data);
                         
                         // load new results
-                        loadReportDataStore(json);
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
                         
                         // refresh grid
-                        updateReportDataView(report);
+                        updateDataTableView(report);
                     }
                 });
             }

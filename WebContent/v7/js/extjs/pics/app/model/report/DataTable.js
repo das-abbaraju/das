@@ -1,4 +1,4 @@
-Ext.define('PICS.model.report.ReportData', {
+Ext.define('PICS.model.report.DataTable', {
     extend: 'Ext.data.Model',
     
     // there is no preset Model - we must place empty fields [] as a default

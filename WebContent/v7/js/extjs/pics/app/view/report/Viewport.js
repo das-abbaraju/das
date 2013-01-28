@@ -3,7 +3,7 @@ Ext.define('PICS.view.report.Viewport', {
 
     requires: [
         'PICS.view.layout.Header',
-        'PICS.view.report.report.ReportData',
+        'PICS.view.report.report.DataTable',
         'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.header.Header'
     ],
@@ -23,7 +23,7 @@ Ext.define('PICS.view.report.Viewport', {
             xtype: 'reportfilteroptions',
             region: 'west'
         }, {
-        	xtype: 'reportdata',
+        	xtype: 'reportdatatable',
             region: 'center'
         }],
         layout: 'border'

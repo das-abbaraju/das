@@ -1,11 +1,6 @@
-/**
- * ReportDatas Class
- *
- * Dynamically generates associated Data Model Class
- */
-Ext.define('PICS.store.report.ReportDatas', {
+Ext.define('PICS.store.report.DataTables', {
     extend : 'PICS.store.report.base.Store',
-    model : 'PICS.model.report.ReportData',
+    model : 'PICS.model.report.DataTable',
 
     requires: [
         'Ext.window.MessageBox'
@@ -48,14 +43,10 @@ Ext.define('PICS.store.report.ReportDatas', {
         this.currentPage = page;
     },
     
-    updateProxyParameters: function (params) {
-        this.proxy.extraParams = params;
-    },
-    
-    updateReportDataModelFields: function (model_fields) {
-        var report_data_model = Ext.ModelManager.getModel('PICS.model.report.ReportData');
+    updateDataTableModelFields: function (model_fields) {
+        var data_table_model = Ext.ModelManager.getModel('PICS.model.report.DataTable');
         
         // update model fields
-        report_data_model.setFields(model_fields);
+        data_table_model.setFields(model_fields);
     }
 });

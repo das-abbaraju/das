@@ -10,8 +10,8 @@ Ext.define('PICS.controller.report.Report', {
         ref: 'reportAlertMessage',
         selector: 'reportalertmessage'
     }, {
-        ref: 'reportData',
-        selector: 'reportdata'
+        ref: 'dataTable',
+        selector: 'reportdatatable'
     }, {
         ref: 'reportSettingsModal',
         selector: 'reportsettingsmodal'
@@ -19,7 +19,7 @@ Ext.define('PICS.controller.report.Report', {
 
     // TODO: Try to move these to app.js.
     stores: [
-        'report.ReportDatas',
+        'report.DataTables',
         'report.Reports',
         'report.Columns',
         'report.Filters'
@@ -46,11 +46,6 @@ Ext.define('PICS.controller.report.Report', {
             scope: this
         });
 
-/*        this.application.on({
-            refreshreport: this.refreshReport,
-            scope: this
-        });
-*/
         this.application.on({
             savereport: this.saveReport,
             scope: this
@@ -115,39 +110,7 @@ Ext.define('PICS.controller.report.Report', {
         window.open('ReportData!print.action?report=' + report_id);
     },
     
-/*    refreshReport: function () {
-        // TODO: not what we want anymore
-        // need to hook into new load
-        return false;
-        
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_data_store = this.getReportReportDatasStore(),
-            report_data = this.getReportData();
-            
-        var report_name = report.get('name'),
-            // TODO: this should be removed
-            limit = report.get('rowsPerPage'),
-            params = report.toRequestParams(),
-            model_fields = report.convertColumnsToModelFields(),
-            grid_columns = report.convertColumnsToGridColumns();
-            
-        this.updatePageTitle(report_name);
-
-        // TODO: this should be removed
-        report_data_store.setLimit(limit);
-        
-        // update data store proxy
-        report_data_store.updateProxyParameters(params);
-        
-        // update data store model
-        report_data_store.updateReportDataModelFields(model_fields);
-        
-        // update report data grid columns
-        report_data.updateGridColumns(grid_columns);
-    },
-
-*/    saveReport: function () {
+    saveReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             params = report.toRequestParams(),
