@@ -145,7 +145,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 							lineItem.setTxnLineID("-1");
 
 							lineItem.setDesc(item.getDescription());
-							if (!item.getInvoiceFee().isGST() && !item.getInvoiceFee().isVAT())
+							if (!item.getInvoiceFee().isLegacyGST() && !item.getInvoiceFee().isVAT())
 								lineItem.setQuantity("1");
 
 							lineItem.setClassRef(factory.createClassRef());
@@ -239,7 +239,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 								lineItem.setTxnLineID("-1");
 
 								lineItem.setDesc(item.getDescription());
-								if (!item.getInvoiceFee().isGST() && !item.getInvoiceFee().isVAT())
+								if (!item.getInvoiceFee().isLegacyGST() && !item.getInvoiceFee().isVAT())
 									lineItem.setQuantity("1");
 
 								lineItem.setClassRef(factory.createClassRef());

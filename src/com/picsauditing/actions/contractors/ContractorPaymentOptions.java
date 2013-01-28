@@ -7,11 +7,13 @@ import java.util.List;
 
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.jpa.entities.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
@@ -26,6 +28,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private BrainTreeService paymentService;
 	@Autowired
 	protected InvoiceService invoiceService;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -68,10 +72,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			} else {
 				String msg;
-				if (contractor.getNonCorporateOperators().size() == 0)
+				if (contractor.getNonCorporateOperators().size() == 0) {
 					msg = getText("ContractorPaymentOptions.PleaseSelectFacilities");
-				else
+				} else {
 					msg = getText("ContractorPaymentOptions.SelectRequestedByOperator");
+				}
 
 				addActionMessage(msg);
 
@@ -85,8 +90,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		contractorAccountDao.save(contractor);
 
-		if (!contractor.getPaymentMethod().isCreditCard())
+		if (!contractor.getPaymentMethod().isCreditCard()) {
 			return SUCCESS;
+		}
 
 		// Setup the new variables for sending the CC to braintree
 		loadCC();
@@ -99,18 +105,43 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	private void initCanadianTaxFee() throws Exception {
-		CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
-		canadianTaxFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)) {
+			CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
+			canadianTaxFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
+		} else {
+			canadianTaxFee = getLegacyGstFee();
+		}
 
 		BigDecimal total = BigDecimal.ZERO.setScale(2);
 		for (FeeClass feeClass : contractor.getFees().keySet()) {
-			if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+			if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 				total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+			}
 		}
 
 		total = total.add(getActivationFee().getAmount());
 		canadianTaxFee.setAmount(canadianTaxFee.getTax(total));
 		canadianTaxFeeMsgKey = canadianTaxFee.getI18nKey("fee");
+	}
+
+	@Deprecated
+	public InvoiceFee getLegacyGstFee() {
+		InvoiceFee gstFee = new InvoiceFee();
+
+		if (contractor.getCountry().getCurrency().isCAD()) {
+			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
+			BigDecimal total = BigDecimal.ZERO.setScale(2);
+			for (FeeClass feeClass : contractor.getFees().keySet()) {
+				if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+					total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+				}
+			}
+
+			total = total.add(getActivationFee().getAmount());
+			gstFee.setAmount(gstFee.getTax(total));
+		}
+
+		return gstFee;
 	}
 
 	private void loadCC() throws Exception {
@@ -146,8 +177,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
 				try {
 					int endPos = responsetext.indexOf("REFID");
-					if (endPos > 1)
+					if (endPos > 1) {
 						responsetext.substring(0, endPos - 1);
+					}
 				} catch (Exception justUseThePlainResponseText) {
 				}
 				// TODO: test
@@ -247,8 +279,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.Check);
 		contractorAccountDao.save(contractor);
-		if (contractor.isCcOnFile())
+		if (contractor.isCcOnFile()) {
 			loadCC();
+		}
 
 		return SUCCESS;
 	}
@@ -478,8 +511,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public boolean isHasPQFImportAudit() {
 		for (ContractorAudit ca : contractor.getAudits()) {
-			if (ca.getAuditType().getId() == AuditType.IMPORT_PQF)
+			if (ca.getAuditType().getId() == AuditType.IMPORT_PQF) {
 				return true;
+			}
 		}
 
 		return false;
@@ -501,8 +535,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
 				BigDecimal total = BigDecimal.ZERO.setScale(2);
 				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+					if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 						total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+					}
 				}
 
 				total = total.add(getActivationFee().getAmount());

@@ -1,7 +1,8 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
-import org.junit.After;
+import com.picsauditing.toggle.FeatureToggle;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,148 +11,213 @@ import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
 
 public class TaxServiceTest {
 
 	private TaxService taxService = new TaxService();
+
 	@Mock private InvoiceService invoiceService;
 	@Mock private Invoice invoice;
 	@Mock private Account account;
-	private ArrayList<InvoiceItem> invoiceItems;
-	private InvoiceFee taxInvoiceFee;
+	@Mock private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(taxService, "invoiceService", invoiceService);
+		Whitebox.setInternalState(taxService, "featureToggle", featureToggle);
 		setupMocks();
 	}
 
 	@Test
-	public void testApplyTax_whenInvoiceCreationDateBeforeNewTaxStartDate_DontApplyTax() throws Exception {
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-		invoiceItems = new ArrayList<InvoiceItem>(){{
-			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
-			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
-		}};
+	public void testFindTaxInvoiceFee_WhenInvoiceHasTax_ReturnsThatTax() {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		when(invoice.getItems()).thenReturn(invoiceItems);
-		Date tenDaysBeforeNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, -10);
-		when(invoice.getCreationDate()).thenReturn(tenDaysBeforeNewCanadianTaxStartDate);
-		assertEquals(4, invoice.getItems().size());
 
-		taxService.applyTax(invoice);
+		InvoiceItem foundInvoiceItem = taxService.findTaxInvoiceItem(invoice);
 
-		assertEquals(4, invoice.getItems().size());
+		assertEquals(existingTaxInvoiceFee, foundInvoiceItem.getInvoiceFee());
 	}
 
 	@Test
-	public void testApplyTax_whenInvoiceCreationDateAfterNewTaxStartDate_DoApplyTax() throws Exception {
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-		invoiceItems = new ArrayList<InvoiceItem>(){{
+	public void testFindTaxInvoiceFee_WhenNoTaxInInvoice_ReturnsNull() {
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
 			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
 			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
-			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
 		}};
 		when(invoice.getItems()).thenReturn(invoiceItems);
-		Date tenDaysAfterNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, 10);
-		when(invoice.getCreationDate()).thenReturn(tenDaysAfterNewCanadianTaxStartDate);
-		assertEquals(4, invoice.getItems().size());
 
-		taxService.applyTax(invoice);
+		InvoiceItem foundInvoiceItem = taxService.findTaxInvoiceItem(invoice);
 
-		assertEquals(5, invoice.getItems().size());
-		InvoiceItem taxItem = invoice.getItems().get(4);
-		assertEquals(invoice, taxItem.getInvoice());
-		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
-		assertEquals(new BigDecimal("149.75"), taxItem.getAmount());
-		verify(invoice).updateAmount();
+		assertEquals(null, foundInvoiceItem);
 	}
 
 	@Test
-	public void testApplyTax_whenExistingTaxItemAndInvoiceCreationDateBeforeNewTaxStartDate_dontUpdateExistingTaxItem() throws Exception {
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-		invoiceItems = new ArrayList<InvoiceItem>(){{
-			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
-			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
-			add(createInvoiceItem(5, taxInvoiceFee, new BigDecimal("50.00")));
-			add(createInvoiceItem(6, createInvoiceFee(6, "SomeNewFeeJustAdded"), new BigDecimal("49.99")));
-		}};
-		when(invoice.getItems()).thenReturn(invoiceItems);
-		Date tenDaysBeforeNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, -10);
-		when(invoice.getCreationDate()).thenReturn(tenDaysBeforeNewCanadianTaxStartDate);
-		assertEquals(6, invoice.getItems().size());
+	public void testApplyTax_whenInvoiceHasExistingNewCanadianTaxAndToggleIsOn_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
 
 		taxService.applyTax(invoice);
 
-		assertEquals(6, invoice.getItems().size());
-		InvoiceItem taxItem = invoice.getItems().get(4);
-		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
-		assertEquals(new BigDecimal("50.00"), taxItem.getAmount());
-		verify(invoice).updateAmount();
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
 	}
 
 	@Test
-	public void testApplyTax_whenExistingTaxItemAndInvoiceCreationDateAfterNewTaxStartDate_updateExistingTaxItem() throws Exception {
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-		invoiceItems = new ArrayList<InvoiceItem>(){{
-			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
-			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
-			add(createInvoiceItem(5, taxInvoiceFee, new BigDecimal("50.00")));
-			add(createInvoiceItem(6, createInvoiceFee(6, "SomeNewFeeJustAdded"), new BigDecimal("49.99")));
-		}};
-		when(invoice.getItems()).thenReturn(invoiceItems);
-		Date tenDaysAfterNewCanadianTaxStartDate = DateBean.addDays(TaxService.NEW_CANADIAN_TAX_START_DATE, 10);
-		when(invoice.getCreationDate()).thenReturn(tenDaysAfterNewCanadianTaxStartDate);
-		assertEquals(6, invoice.getItems().size());
+	public void testApplyTax_whenInvoiceHasExistingNewCanadianTaxAndToggleIsOff_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = new Invoice();
+		invoice.setItems(invoiceItems);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
 
 		taxService.applyTax(invoice);
 
-		assertEquals(6, invoice.getItems().size());
-		InvoiceItem taxItem = invoice.getItems().get(4);
-		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
-		assertEquals(new BigDecimal("157.24"), taxItem.getAmount());
-		verify(invoice).updateAmount();
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
 	}
 
 	@Test
-	public void testApplyTax_whenInvoiceCreationDateIsNull_DoApplyTax() throws Exception {
-		taxInvoiceFee = createTaxInvoiceFee("TaxFee", 5, 9.975, "2012-04-01");
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
-		invoiceItems = new ArrayList<InvoiceItem>(){{
-			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			add(createInvoiceItem(3, createInvoiceFee(3, "Fee3"), new BigDecimal("300.00")));
-			add(createInvoiceItem(4, createInvoiceFee(4, "Fee4"), new BigDecimal("400.00")));
-		}};
-		when(invoice.getItems()).thenReturn(invoiceItems);
-		when(invoice.getCreationDate()).thenReturn(null);
-		assertEquals(4, invoice.getItems().size());
+	public void testApplyTax_whenInvoiceHasExistingLegacyGstAndToggleIsOn_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
 
 		taxService.applyTax(invoice);
 
-		assertEquals(5, invoice.getItems().size());
-		InvoiceItem taxItem = invoice.getItems().get(4);
-		assertEquals(invoice, taxItem.getInvoice());
-		assertEquals(taxInvoiceFee, taxItem.getInvoiceFee());
-		assertEquals(new BigDecimal("149.75"), taxItem.getAmount());
-		verify(invoice).updateAmount();
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasExistingLegacyGstAndToggleIsOff_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
+
+		taxService.applyTax(invoice);
+
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasExistingVatAndToggleIsOn_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = buildInvoice(invoiceItems, Currency.EUR);
+
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
+
+		taxService.applyTax(invoice);
+
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasExistingVatAndToggleIsOff_DontChangeTheTax() throws Exception {
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
+		Invoice invoice = buildInvoice(invoiceItems, Currency.EUR);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
+
+		taxService.applyTax(invoice);
+
+		InvoiceItem newTaxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(existingTaxInvoiceFee, newTaxInvoiceItem.getInvoiceFee());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasNoTaxAndToggleIsOn_ApplyNewCanadianTax() throws Exception {
+		InvoiceFee taxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
+		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
+		int beforeInvoiceItemCount = invoice.getItems().size();
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
+
+		taxService.applyTax(invoice);
+
+		assertEquals(beforeInvoiceItemCount + 1, invoiceItems.size());
+		InvoiceItem taxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(FeeClass.CanadianTax, taxInvoiceItem.getInvoiceFee().getFeeClass());
+		assertEquals(new BigDecimal("44.93"), taxInvoiceItem.getAmount());
+		assertEquals(new BigDecimal("344.93"), invoice.getTotalAmount());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasNoTaxAndToggleIsOff_ApplyLegacyGst() throws Exception {
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
+		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
+		int beforeInvoiceItemCount = invoice.getItems().size();
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
+
+		taxService.applyTax(invoice);
+
+		assertEquals(beforeInvoiceItemCount + 1, invoiceItems.size());
+		InvoiceItem taxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(FeeClass.GST, taxInvoiceItem.getInvoiceFee().getFeeClass());
+		assertEquals(new BigDecimal("15.00"), taxInvoiceItem.getAmount());
+		assertEquals(new BigDecimal("315.00"), invoice.getTotalAmount());
+	}
+
+	@Test
+	public void testApplyTax_whenInvoiceHasNoTaxAndCurrencyIsGbp_ApplyVat() throws Exception {
+		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
+		Invoice invoice = buildInvoice(invoiceItems, Currency.GBP);
+		int beforeInvoiceItemCount = invoice.getItems().size();
+
+		taxService.applyTax(invoice);
+
+		assertEquals(beforeInvoiceItemCount + 1, invoiceItems.size());
+		InvoiceItem taxInvoiceItem = taxService.findTaxInvoiceItem(invoice);
+		assertEquals(FeeClass.VAT, taxInvoiceItem.getInvoiceFee().getFeeClass());
+		assertEquals(new BigDecimal("60.00"), taxInvoiceItem.getAmount());
+		assertEquals(new BigDecimal("360.00"), invoice.getTotalAmount());
+	}
+
+	private ArrayList<InvoiceItem> buildInvoiceItemsWithTax(final InvoiceFee taxInvoiceFee) {
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+			add(createInvoiceItem(3, taxInvoiceFee, new BigDecimal("15.00")));
+		}};
+
+		return invoiceItems;
+	}
+
+	private ArrayList<InvoiceItem> buildInvoiceItemsWithoutTax() {
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+		}};
+
+		return invoiceItems;
+	}
+
+	public Invoice buildInvoice(ArrayList<InvoiceItem> invoiceItems, Currency currency) {
+		Invoice invoice = new Invoice();
+		invoice.setItems(invoiceItems);
+		invoice.setCurrency(currency);
+		Account account = new Account();
+		account.setCountrySubdivision(new CountrySubdivision("foo"));
+		invoice.setAccount(account);
+		return invoice;
 	}
 
 	private void setupMocks() throws Exception {
@@ -177,19 +243,18 @@ public class TaxServiceTest {
 		return invoiceFee;
 	}
 
-	private InvoiceFee createTaxInvoiceFee(String feeName, double invoiceFeeRate, double subdivisionRate, String effectiveDate) {
+	private InvoiceFee createTaxInvoiceFee(FeeClass feeClass, double invoiceFeeRate, double subdivisionRate) {
 		InvoiceFee invoiceFee = new InvoiceFee();
-		TranslatableString fee = new TranslatableString();
-		fee.setKey(feeName);
-		invoiceFee.setFee(fee);
+
+		invoiceFee.setFeeClass(feeClass);
 		invoiceFee.setRatePercent(new BigDecimal(invoiceFeeRate));
-		invoiceFee.setFeeClass(FeeClass.CanadianTax);
-		invoiceFee.setQbFullName("qb" + feeName);
 
 		InvoiceFeeCountry invoiceFeeCountry = new InvoiceFeeCountry();
 		invoiceFeeCountry.setRatePercent(new BigDecimal(subdivisionRate));
-		invoiceFeeCountry.setEffectiveDate(DateBean.parseDate(effectiveDate));
+
+		invoiceFee.setQbFullName("qb" + feeClass);
 		invoiceFee.setSubdivisionFee(invoiceFeeCountry);
+
 		return invoiceFee;
 	}
 

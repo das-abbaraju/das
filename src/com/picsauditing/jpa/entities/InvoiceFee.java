@@ -88,7 +88,7 @@ public class InvoiceFee extends BaseTable {
 
 	/**
 	 * Activation, Membership, Misc, Free, Other
-	 * 
+	 *
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -139,7 +139,7 @@ public class InvoiceFee extends BaseTable {
 	public Integer getDisplayOrder() {
 		return displayOrder;
 	}
-	
+
 	public boolean isCommissionEligible() {
 		return commissionEligible;
 	}
@@ -195,7 +195,7 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Transient
-	public boolean isGST() {
+	public boolean isLegacyGST() {
 		return getId() == GST;
 	}
 
@@ -216,10 +216,13 @@ public class InvoiceFee extends BaseTable {
 			BigDecimal gstTaxRate = getRatePercent().divide(new BigDecimal(100));
 			BigDecimal totalTaxRate = provinceTaxRate.add(gstTaxRate);
 			return amountToTax.multiply(totalTaxRate).setScale(2, BigDecimal.ROUND_UP);
+		} else if (isLegacyGST()) {
+			return amountToTax.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
 		} else if (isVAT()) {
 			return amountToTax.multiply(BigDecimal.valueOf(0.20)).setScale(2, BigDecimal.ROUND_UP);
-		} else
+		} else {
 			return BigDecimal.ZERO;
+		}
 	}
 
 	@Transient
@@ -235,4 +238,5 @@ public class InvoiceFee extends BaseTable {
 	public void setSubdivisionFee(InvoiceFeeCountry subdivisionFee) {
 		this.subdivisionFee = subdivisionFee;
 	}
+
 }

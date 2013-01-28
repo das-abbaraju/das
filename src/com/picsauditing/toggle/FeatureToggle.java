@@ -23,6 +23,7 @@ public interface FeatureToggle {
 	String TOGGLE_CSR_SINGLE_ASSIGNMENT = "Toggle.BackgroundProcesses.Csr_SingleAssignment";
 	String TOGGLE_CANONICAL_TIMEZONES = "Toggle.Canonical_Timezone";
 	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
+	String TOGGLE_USE_NEW_CANADIAN_TAX = "Toggle.UseNewCanadianTax";
 
 	boolean isFeatureEnabled(String toggleName);
 
