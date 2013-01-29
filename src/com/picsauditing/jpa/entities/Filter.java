@@ -140,12 +140,12 @@ public class Filter extends ReportElement {
 			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
 		}
 
-		if (filterType == FilterType.Integer) {
-			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
-		}
-
-		if (filterType == FilterType.Float) {
-			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
+		if (filterType == FilterType.Number) {
+			try {
+				return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+			} catch (Exception e) {
+				return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
+			}
 		}
 
 		if (filterType == FilterType.String) {

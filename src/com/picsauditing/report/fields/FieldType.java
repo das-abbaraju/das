@@ -31,12 +31,12 @@ public enum FieldType {
 	DateTime(FilterType.DateTime, DisplayType.String, SqlFunctionProfile.Date, null),
 	FlagColor(FilterType.ShortList, DisplayType.Flag, SqlFunctionProfile.Boolean, EnumType.STRING),
 	FlagCriteriaOptionCode(FilterType.ShortList, DisplayType.String, SqlFunctionProfile.String, EnumType.STRING),
-	Float(FilterType.Float, DisplayType.Number, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
-	Integer(FilterType.Integer, DisplayType.Number, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
+	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null),
+	Integer(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null),
 	LowMedHigh(FilterType.ShortList, DisplayType.String, SqlFunctionProfile.String, EnumType.ORDINAL),
 	MultiYearScope(FilterType.ShortList, DisplayType.String, SqlFunctionProfile.String, EnumType.STRING),
 	NetworkLevel(FilterType.ShortList, DisplayType.String, SqlFunctionProfile.String, EnumType.ORDINAL),
-	Number(FilterType.Integer, DisplayType.Number, SqlFunctionProfile.Number, null),   // todo: Change to FilterType.Number?
+	Number(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null),
 	Operator(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null),
 	OperatorTag(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null),
 	OptionGroup(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null),
@@ -66,7 +66,7 @@ public enum FieldType {
 	/**
 	 * The Bean Name in the Spring Configuration must match the Enum, otherwise
 	 * the bean will not be found.
-	 * 
+	 *
 	 * @return Reusable instance of an AutocompleteService.
 	 * @throws RuntimeException if this FieldType is not a FilterType.Autocomplete
 	 */
@@ -74,7 +74,7 @@ public enum FieldType {
 		if (this.filterType != FilterType.Autocomplete) {
 			throw new RuntimeException("This FieldType is not an Autocomplete.");
 		}
-		
+
 		return SpringUtils.getBean(this.toString() + "AutocompleteService");
 	}
 
@@ -85,7 +85,7 @@ public enum FieldType {
 	public DisplayType getDisplayType() {
 		return displayType;
 	}
-	
+
 	public EnumType getEnumType() {
 		return enumType;
 	}

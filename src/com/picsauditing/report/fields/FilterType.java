@@ -6,14 +6,13 @@ public enum FilterType {
 	Boolean(DisplayType.Boolean),
 	Date(DisplayType.String),
 	DateTime(DisplayType.String),
-	Float(DisplayType.Number),
-	Integer(DisplayType.Number),
+	Number(DisplayType.Number),
 	ShortList(DisplayType.String),
 	String(DisplayType.String),
 	UserID(DisplayType.Number);
 
 	private DisplayType displayType;
-	
+
 	private FilterType() {
 		displayType = DisplayType.valueOf(this.toString());
 	}
@@ -21,7 +20,7 @@ public enum FilterType {
 	private FilterType(DisplayType displayType) {
 		this.displayType = displayType;
 	}
-	
+
 	public DisplayType getDisplayType() {
 		return displayType;
 	}

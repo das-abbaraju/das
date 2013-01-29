@@ -34,12 +34,12 @@ public class TypeFactoryTest {
 			"DateTime\tDateTime\tString\tCount,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour,Date\n" +
 			"FlagColor\tShortList\tFlag\tCount,CountDistinct,Max,Min\n" +
 			"FlagCriteriaOptionCode\tShortList\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
-			"Float\tFloat\tNumber\tCount,CountDistinct,Max,Min,Average,Round,Sum,StdDev\n" +
-			"Integer\tInteger\tNumber\tCount,CountDistinct,Max,Min,Average,Sum,StdDev\n" +
+			"Float\tNumber\tNumber\tCount,CountDistinct,Max,Min,Average,Round,Sum,StdDev\n" +
+			"Integer\tNumber\tNumber\tCount,CountDistinct,Max,Min,Average,Sum,StdDev\n" +
 			"LowMedHigh\tShortList\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"MultiYearScope\tShortList\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"NetworkLevel\tShortList\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
-			"Number\tInteger\tNumber\tCount,CountDistinct,Max,Min,Average,Round,Sum,StdDev\n" +
+			"Number\tNumber\tNumber\tCount,CountDistinct,Max,Min,Average,Round,Sum,StdDev\n" +
 			"Operator\tAutocomplete\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"OperatorTag\tAutocomplete\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"OptionGroup\tAutocomplete\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +

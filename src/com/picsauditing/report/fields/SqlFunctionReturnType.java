@@ -2,8 +2,8 @@ package com.picsauditing.report.fields;
 
 // todo: implement all the missing ones
 public enum SqlFunctionReturnType {
-	Year(FilterType.Integer, DisplayType.Number),
-	Integer(FilterType.Integer, DisplayType.Number);
+	Year(FilterType.Number, DisplayType.Number),
+	Integer(FilterType.Number, DisplayType.Number);
 
 	private FilterType filterType;
 	private DisplayType displayType;
