@@ -194,7 +194,7 @@
 										<img src="images/okCheck.gif" />
 									</s:if> 
 									<s:else>
-										<s:if test="permissions.auditor">
+										<s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@AuditDocumentReview)">
 											<a class="verify" href="ContractorAuditFileUpload.action?auditID=<s:property value="conAudit.id"/>&fileID=<s:property value="id"/>&button=Review"><s:text name="Audit.button.MarkAsReviewed" /></a>
 										</s:if>
 									</s:else>
