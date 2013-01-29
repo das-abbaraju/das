@@ -99,11 +99,13 @@ public class Registration extends ContractorActionSupport {
 
 		if ("request".equalsIgnoreCase(button)) {
 			// check for basic rID...?
-			if (getParameter("rID") > 0)
+			if (getParameter("rID") > 0) {
 				requestID = getParameter("rID");
+			}
 			// Check for new requestID
-			if (requestID == 0)
+			if (requestID == 0) {
 				requestID = getParameter("requestID");
+			}
 
 			if (requestID > 0) {
 				// Set the session variable
@@ -174,8 +176,9 @@ public class Registration extends ContractorActionSupport {
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
-		if (user.getEmail().length() > 0)
+		if (user.getEmail().length() > 0) {
 			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
+		}
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly
@@ -314,15 +317,22 @@ public class Registration extends ContractorActionSupport {
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
 
-		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
-			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
-				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
-						.toString());
-				contractor.setCountrySubdivision(contractorCountrySubdivision);
-			}
-		} else {
-			contractor.setCountrySubdivision(null);
-		}
+//		if (contractor.getCountry().isHasCountrySubdivisions() && 	) {
+//			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
+//				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
+//						.toString());
+//				contractor.setCountrySubdivision(contractorCountrySubdivision);
+//			}
+//		} else {
+//			contractor.setCountrySubdivision(null);
+//		}
+
+		// FIXME
+		// While working on PICS-8975, Mike N. and David A. found that the CountrySubdivision
+		// on Contractor was never being set because contractor.getCountry().isHasCountrySubdivisions()
+		// would always return false. This was due to improper hydrating of the countrySubdivisions
+		// member in Country.
+		contractor.setCountrySubdivision(countrySubdivision);
 
 		if (contractor.getStatus().isRequested()) {
 			contractor.setStatus(AccountStatus.Pending);
