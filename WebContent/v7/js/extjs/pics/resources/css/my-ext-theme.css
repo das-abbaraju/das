@@ -7999,7 +7999,7 @@ textarea.x-form-invalid-field {
       font-style: italic; }
   /* line 228, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .account-deactivated, .site-menu-search-list .account-inactive {
-    color: #AEAEAE; }
+    color: #aeaeae; }
   /* line 238, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .account-deleted .name, .site-menu-search-list .account-deleted .id, .site-menu-search-list .account-deleted .location, .site-menu-search-list .account-deleted .type {
     text-decoration: line-through; }
