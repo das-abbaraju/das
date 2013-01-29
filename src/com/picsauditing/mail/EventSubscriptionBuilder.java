@@ -211,22 +211,28 @@ public class EventSubscriptionBuilder {
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
 			Set<ContractorAudit> expiringPolicies) throws IOException {
 
+		User user = insuranceSubscription.getUser();
+		if (user.getAccount().isContractor() &&
+				((ContractorAccount) user.getAccount()).getExpiringPoliciesForInsuranceExpirationEmail().size() == 0) {
+			return;
+		}
+
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.clear();
 		emailBuilder.setTemplate(10); // Certificate Expiration
-		emailBuilder.setConID(insuranceSubscription.getUser().getAccount().getId());
-		emailBuilder.addToken("contractor", insuranceSubscription.getUser().getAccount());
+		emailBuilder.setConID(user.getAccount().getId());
+		emailBuilder.addToken("contractor", user.getAccount());
 		emailBuilder.addToken("policies", expiringPolicies);
-		emailBuilder.setToAddresses(insuranceSubscription.getUser().getEmail());
-		String seed = "u" + insuranceSubscription.getUser().getId() + "t"
+		emailBuilder.setToAddresses(user.getEmail());
+		String seed = "u" + user.getId() + "t"
 				+ insuranceSubscription.getSubscription().getTemplateID();
 		String confirmLink = "http://www.picsorganizer.com/EmailUserUnsubscribe.action?id="
-				+ insuranceSubscription.getUser().getId() + "&sub=" + insuranceSubscription.getSubscription() + "&key="
+				+ user.getId() + "&sub=" + insuranceSubscription.getSubscription() + "&key="
 				+ Strings.hashUrlSafe(seed);
 		emailBuilder.addToken("confirmLink", confirmLink);
-		emailBuilder.setUser(insuranceSubscription.getUser());
+		emailBuilder.setUser(user);
 
-		Account account = insuranceSubscription.getUser().getAccount();
+		Account account = user.getAccount();
 		if (account.isContractor() && ((ContractorAccount) account).getAuditor() != null)
 			emailBuilder.setFromAddressAsCSRFor((ContractorAccount) account);
 
@@ -235,7 +241,7 @@ public class EventSubscriptionBuilder {
 		email.setViewableById(Account.EVERYONE);
 		emailSender.send(email);
 
-		stampNote(insuranceSubscription.getUser().getAccount(),
+		stampNote(user.getAccount(),
 				"Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
 	}
 

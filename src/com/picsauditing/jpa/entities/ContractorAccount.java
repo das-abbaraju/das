@@ -2018,4 +2018,17 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return inputValidator;
 	}
+
+	@Transient
+	public List<ContractorAudit> getExpiringPoliciesForInsuranceExpirationEmail() {
+		List<ContractorAudit> expiringPolicies = new ArrayList<ContractorAudit>();
+
+		for (ContractorAudit audit : getAudits()) {
+			if (audit.getAuditType().getClassType().isPolicy() && audit.isExpiringSoon()) {
+				expiringPolicies.add(audit);
+			}
+		}
+
+		return expiringPolicies;
+	}
 }
