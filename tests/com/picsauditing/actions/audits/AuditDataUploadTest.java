@@ -133,6 +133,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(1)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
+        verify(caowDAO, times(1)).save(any(ContractorAuditOperatorWorkflow.class));
         verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
     @Test
@@ -147,6 +148,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(2)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
+        verify(caowDAO, times(1)).save(any(ContractorAuditOperatorWorkflow.class));
         verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
     @Test
@@ -161,7 +163,8 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(2)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
-        verify(auditDataDao, never()).save(any(AuditData.class));
+        verify(caowDAO, never()).save(any(ContractorAuditOperatorWorkflow.class));
+        verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
     @Test
     public void testSafetyManualUploadStatusAdjustments_NotTheManualPqfQuestion() throws Exception {
@@ -172,6 +175,7 @@ public class AuditDataUploadTest extends PicsActionTest {
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(auditDataDao, never()).findAnswerByAuditQuestion(anyInt(), anyInt());
         verify(builder, never()).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
+        verify(caowDAO, never()).save(any(ContractorAuditOperatorWorkflow.class));
         verify(auditDataDao, never()).save(any(AuditData.class));
     }
 }
