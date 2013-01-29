@@ -3,6 +3,7 @@ Ext.define('PICS.view.report.report.DataTable', {
     alias: 'widget.reportdatatable',
 
     requires: [
+        'Ext.grid.RowNumberer',
         'PICS.view.report.report.PagingToolbar'
     ],
 

@@ -3,6 +3,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     alias: 'columnfiltermodal',
     
     requires: [
+        'PICS.ux.util.filter.ColumnFilterStoreFilter',
         'PICS.view.report.modal.column-filter.ColumnList',
         'PICS.view.report.modal.column-filter.FilterList'
     ],

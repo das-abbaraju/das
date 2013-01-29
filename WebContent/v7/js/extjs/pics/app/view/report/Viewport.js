@@ -2,6 +2,8 @@ Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
     requires: [
+        'Ext.layout.container.Border',
+        'Ext.resizer.Splitter',
         'PICS.view.layout.Header',
         'PICS.view.report.report.DataTable',
         'PICS.view.report.filter.FilterOptions',

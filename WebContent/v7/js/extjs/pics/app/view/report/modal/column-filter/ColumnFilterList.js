@@ -3,6 +3,8 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     alias: 'columnfilterlist',
     
     requires: [
+        'Ext.grid.feature.Feature',
+        'Ext.grid.feature.Grouping',
         'Ext.grid.column.Template'
     ],
     
