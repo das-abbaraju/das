@@ -133,7 +133,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(1)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
-        verify(auditDataDao, times(1)).remove(any(AuditData.class));
+        verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
     @Test
     public void testSafetyManualUploadStatusAdjustments_OneCaoWithCompleteStatusAndOnePending() throws Exception {
@@ -147,7 +147,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(2)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
-        verify(auditDataDao, times(1)).remove(any(AuditData.class));
+        verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
     @Test
     public void testSafetyManualUploadStatusAdjustments_TwoCaosBothPending() throws Exception {
@@ -161,7 +161,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(builder, times(2)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
-        verify(auditDataDao, never()).remove(any(AuditData.class));
+        verify(auditDataDao, never()).save(any(AuditData.class));
     }
     @Test
     public void testSafetyManualUploadStatusAdjustments_NotTheManualPqfQuestion() throws Exception {
@@ -172,6 +172,6 @@ public class AuditDataUploadTest extends PicsActionTest {
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(auditDataDao, never()).findAnswerByAuditQuestion(anyInt(), anyInt());
         verify(builder, never()).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
-        verify(auditDataDao, never()).remove(any(AuditData.class));
+        verify(auditDataDao, never()).save(any(AuditData.class));
     }
 }
