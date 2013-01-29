@@ -810,18 +810,13 @@
                     "path": "extjs/src/draw/engine/"
                 },
                 {
-                    "clsName": "Ext.resizer.Splitter",
-                    "name": "Splitter.js",
-                    "path": "extjs/src/resizer/"
-                },
-                {
-                    "clsName": "PICS.ux.util.filter.FilterMultipleColumn",
-                    "name": "FilterMultipleColumn.js",
-                    "path": "app/ux/util/filter/"
-                },
-                {
                     "clsName": "PICS.data.ServerCommunication",
                     "name": "ServerCommunication.js",
+                    "path": "app/data/"
+                },
+                {
+                    "clsName": "PICS.data.ServerCommunicationUrl",
+                    "name": "ServerCommunicationUrl.js",
                     "path": "app/data/"
                 },
                 {
@@ -830,14 +825,19 @@
                     "path": "extjs/src/container/"
                 },
                 {
-                    "clsName": "Ext.resizer.BorderSplitter",
-                    "name": "BorderSplitter.js",
+                    "clsName": "Ext.resizer.Splitter",
+                    "name": "Splitter.js",
                     "path": "extjs/src/resizer/"
                 },
                 {
                     "clsName": "PICS.view.report.alert-message.AlertMessage",
                     "name": "AlertMessage.js",
                     "path": "app/view/report/alert-message/"
+                },
+                {
+                    "clsName": "Ext.resizer.BorderSplitter",
+                    "name": "BorderSplitter.js",
+                    "path": "extjs/src/resizer/"
                 },
                 {
                     "clsName": "PICS.view.report.filter.FilterHeader",
@@ -863,16 +863,6 @@
                     "clsName": "PICS.view.report.header.Actions",
                     "name": "Actions.js",
                     "path": "app/view/report/header/"
-                },
-                {
-                    "clsName": "Ext.grid.ColumnComponentLayout",
-                    "name": "ColumnComponentLayout.js",
-                    "path": "extjs/src/grid/"
-                },
-                {
-                    "clsName": "Ext.grid.ColumnLayout",
-                    "name": "ColumnLayout.js",
-                    "path": "extjs/src/grid/"
                 },
                 {
                     "clsName": "PICS.store.report.base.Store",
@@ -930,6 +920,16 @@
                     "path": "app/view/report/filter/"
                 },
                 {
+                    "clsName": "Ext.grid.ColumnComponentLayout",
+                    "name": "ColumnComponentLayout.js",
+                    "path": "extjs/src/grid/"
+                },
+                {
+                    "clsName": "Ext.grid.ColumnLayout",
+                    "name": "ColumnLayout.js",
+                    "path": "extjs/src/grid/"
+                },
+                {
                     "clsName": "Ext.toolbar.TextItem",
                     "name": "TextItem.js",
                     "path": "extjs/src/toolbar/"
@@ -940,9 +940,9 @@
                     "path": "extjs/src/form/"
                 },
                 {
-                    "clsName": "Ext.AbstractPlugin",
-                    "name": "AbstractPlugin.js",
-                    "path": "extjs/src/"
+                    "clsName": "PICS.ux.util.filter.FilterMultipleColumn",
+                    "name": "FilterMultipleColumn.js",
+                    "path": "app/ux/util/filter/"
                 },
                 {
                     "clsName": "Ext.selection.Model",
@@ -980,9 +980,9 @@
                     "path": "app/controller/report/"
                 },
                 {
-                    "clsName": "Ext.grid.plugin.HeaderResizer",
-                    "name": "HeaderResizer.js",
-                    "path": "extjs/src/grid/plugin/"
+                    "clsName": "PICS.ux.util.filter.ColumnFilterStoreFilter",
+                    "name": "ColumnFilterStoreFilter.js",
+                    "path": "app/ux/util/filter/"
                 },
                 {
                     "clsName": "Ext.form.field.VTypes",
@@ -1000,14 +1000,19 @@
                     "path": "extjs/src/layout/container/"
                 },
                 {
-                    "clsName": "Ext.dd.DragZone",
-                    "name": "DragZone.js",
-                    "path": "extjs/src/dd/"
-                },
-                {
                     "clsName": "PICS.model.report.Filter",
                     "name": "Filter.js",
                     "path": "app/model/report/"
+                },
+                {
+                    "clsName": "Ext.grid.feature.Feature",
+                    "name": "Feature.js",
+                    "path": "extjs/src/grid/feature/"
+                },
+                {
+                    "clsName": "Ext.grid.feature.Grouping",
+                    "name": "Grouping.js",
+                    "path": "extjs/src/grid/feature/"
                 },
                 {
                     "clsName": "Ext.form.Labelable",
@@ -1035,14 +1040,14 @@
                     "path": "extjs/src/layout/component/field/"
                 },
                 {
+                    "clsName": "Ext.AbstractPlugin",
+                    "name": "AbstractPlugin.js",
+                    "path": "extjs/src/"
+                },
+                {
                     "clsName": "Ext.form.action.Action",
                     "name": "Action.js",
                     "path": "extjs/src/form/action/"
-                },
-                {
-                    "clsName": "Ext.dd.Registry",
-                    "name": "Registry.js",
-                    "path": "extjs/src/dd/"
                 },
                 {
                     "clsName": "PICS.model.report.Sort",
@@ -1070,6 +1075,21 @@
                     "path": "extjs/src/selection/"
                 },
                 {
+                    "clsName": "Ext.dd.DragZone",
+                    "name": "DragZone.js",
+                    "path": "extjs/src/dd/"
+                },
+                {
+                    "clsName": "PICS.view.report.report.ColumnTooltip",
+                    "name": "ColumnTooltip.js",
+                    "path": "app/view/report/report/"
+                },
+                {
+                    "clsName": "Ext.dd.Registry",
+                    "name": "Registry.js",
+                    "path": "extjs/src/dd/"
+                },
+                {
                     "clsName": "Ext.dd.DDTarget",
                     "name": "DDTarget.js",
                     "path": "extjs/src/dd/"
@@ -1080,19 +1100,9 @@
                     "path": "extjs/src/dd/"
                 },
                 {
-                    "clsName": "PICS.view.report.report.ColumnTooltip",
-                    "name": "ColumnTooltip.js",
-                    "path": "app/view/report/report/"
-                },
-                {
                     "clsName": "Ext.ProgressBar",
                     "name": "ProgressBar.js",
                     "path": "extjs/src/"
-                },
-                {
-                    "clsName": "Ext.grid.header.DragZone",
-                    "name": "DragZone.js",
-                    "path": "extjs/src/grid/header/"
                 },
                 {
                     "clsName": "PICS.store.report.Filters",
@@ -1138,6 +1148,11 @@
                     "clsName": "Ext.layout.component.field.ComboBox",
                     "name": "ComboBox.js",
                     "path": "extjs/src/layout/component/field/"
+                },
+                {
+                    "clsName": "Ext.grid.plugin.HeaderResizer",
+                    "name": "HeaderResizer.js",
+                    "path": "extjs/src/grid/plugin/"
                 },
                 {
                     "clsName": "Ext.form.action.Load",
@@ -1285,11 +1300,6 @@
                     "path": "extjs/src/grid/"
                 },
                 {
-                    "clsName": "PICS.view.report.report.DataTable",
-                    "name": "DataTable.js",
-                    "path": "app/view/report/report/"
-                },
-                {
                     "clsName": "Ext.view.BoundList",
                     "name": "BoundList.js",
                     "path": "extjs/src/view/"
@@ -1318,11 +1328,6 @@
                     "clsName": "PICS.view.layout.Header",
                     "name": "Header.js",
                     "path": "app/view/layout/"
-                },
-                {
-                    "clsName": "PICS.view.report.Viewport",
-                    "name": "Viewport.js",
-                    "path": "app/view/report/"
                 },
                 {
                     "clsName": "PICS.view.report.filter.base.AutocompleteFilter",
@@ -1365,6 +1370,11 @@
                     "path": "app/view/report/settings/"
                 },
                 {
+                    "clsName": "Ext.grid.header.DragZone",
+                    "name": "DragZone.js",
+                    "path": "extjs/src/grid/header/"
+                },
+                {
                     "clsName": "Ext.dd.DropTarget",
                     "name": "DropTarget.js",
                     "path": "extjs/src/dd/"
@@ -1400,9 +1410,14 @@
                     "path": "extjs/src/grid/"
                 },
                 {
-                    "clsName": "Ext.grid.column.Number",
-                    "name": "Number.js",
-                    "path": "extjs/src/grid/column/"
+                    "clsName": "PICS.view.report.report.DataTable",
+                    "name": "DataTable.js",
+                    "path": "app/view/report/report/"
+                },
+                {
+                    "clsName": "PICS.view.report.Viewport",
+                    "name": "Viewport.js",
+                    "path": "app/view/report/"
                 },
                 {
                     "clsName": "Ext.grid.column.Template",
@@ -1583,11 +1598,11 @@
             "files": [
                 {
                     "path": "",
-                    "name": "ext-overrides.js"
+                    "name": "extjs/all-classes.js"
                 },
                 {
                     "path": "",
-                    "name": "extjs/all-classes.js"
+                    "name": "ext-overrides.js"
                 },
                 {
                     "path": "",

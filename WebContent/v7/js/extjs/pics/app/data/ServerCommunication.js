@@ -3,6 +3,8 @@ Ext.define('PICS.data.ServerCommunication', {
         function loadReportStore(json) {
             var report_store = Ext.StoreManager.get('report.Reports');
             
+            report_store.setProxyForRead();
+            
             report_store.loadRawData(json);
         }
         
@@ -51,53 +53,40 @@ Ext.define('PICS.data.ServerCommunication', {
         }
         
         return {
-            getLoadAllUrl: function () {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
-
-                var params = {
-                    reportId: report_id,
-                    includeReport: true,
-                    includeColumns: true,
-                    includeFilters: true,
-                    includeData: true
-                };
-
-                return path + Ext.Object.toQueryString(params);
+            copyReport: function () {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    url = PICS.data.ServerCommunicationUrl.getCopyReportUrl();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: redirect
+                    },
+                    failure: function (batch, eOpts) {
+                        // TODO: error message - revert?
+                    }
+                });
             },
             
-            getLoadReportAndDataUrl: function () {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
+            favoriteReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
                 
-                var params = {
-                    reportId: report_id,
-                    includeReport: true,
-                    includeData: true
-                };
-    
-                return path + Ext.Object.toQueryString(params);
-            },
-            
-            getLoadDataUrl: function (page, limit) {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
-                
-                var params = {
-                    reportId: report_id,
-                    includeData: true,
-                    page: page,
-                    limit: limit
-                };
-    
-                return path + Ext.Object.toQueryString(params);
+                Ext.Ajax.request({
+                    url: url,
+                    failure: function () {
+                        // TODO: error message - revert?
+                    }
+                });
             },
             
             loadAll: function (options) {
-                 var url = this.getLoadAllUrl(),
+                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
                     callback = typeof options.callback == 'function' ? options.callback : function () {},
                     scope = options.scope ? options.scope : this;
                     
@@ -124,7 +113,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    url = this.getLoadDataUrl();
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl();
                 
                 // add data table loading mask
                 startDataTableLoading();
@@ -142,8 +131,6 @@ Ext.define('PICS.data.ServerCommunication', {
                         var response = batch.operations[0].response,
                             data = response.responseText,
                             json = Ext.JSON.decode(data);
-                        
-                        report_store.setProxyForRead();
                         
                         loadReportStore(json);
                         
@@ -167,7 +154,7 @@ Ext.define('PICS.data.ServerCommunication', {
                     data_table_store = Ext.StoreManager.get('report.DataTables'),
                     page = page ? page : 1,
                     limit = limit ? limit : data_table_store.pageSize,
-                    url = this.getLoadDataUrl(page, limit);
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit);
 
                 // updates the stores limit tracker
                 data_table_store.setLimit(limit);
@@ -200,6 +187,38 @@ Ext.define('PICS.data.ServerCommunication', {
                         
                         // refresh grid
                         updateDataTableView(report);
+                    }
+                });
+            },
+            
+            saveReport: function () {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: alert message
+                    },
+                    failure: function (batch, eOpts) {
+                        // TODO: error message - revert?
+                    }
+                });
+            },
+            
+            unfavoriteReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
+                
+                Ext.Ajax.request({
+                    url: url,
+                    failure: function () {
+                        // TODO: error message - revert?
                     }
                 });
             }

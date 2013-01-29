@@ -65988,6 +65988,499 @@ Ext.define('Ext.draw.engine.Vml', {
     }
 });
 
+Ext.define('PICS.data.ServerCommunication', {
+    statics: (function () {
+        function loadReportStore(json) {
+            var report_store = Ext.StoreManager.get('report.Reports');
+            
+            report_store.setProxyForRead();
+            
+            report_store.loadRawData(json);
+        }
+        
+        function loadColumnStore(json) {
+            var column_store = Ext.StoreManager.get('report.Columns');
+            
+            column_store.loadRawData(json);
+        }
+        
+        function loadFilterStore(json) {
+            var filter_store = Ext.StoreManager.get('report.Filters');
+            
+            filter_store.loadRawData(json);
+        }
+        
+        function loadDataTableStore(json) {
+            var report_store = Ext.StoreManager.get('report.Reports'),
+                report = report_store.first(),
+                data_table_store = Ext.StoreManager.get('report.DataTables'),
+                model_fields = report.convertColumnsToModelFields();
+            
+            // update data table model
+            data_table_store.updateDataTableModelFields(model_fields);
+            
+            // load data table with results
+            data_table_store.loadRawData(json);
+        }
+        
+        function startDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(true);
+        }
+        
+        function stopDataTableLoading() {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
+            
+            data_table_view.setLoading(false);
+        }
+            
+        function updateDataTableView(report) {
+            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
+                new_grid_columns = report.convertColumnsToGridColumns();
+            
+            data_table_view.updateGridColumns(new_grid_columns);
+        }
+        
+        return {
+            copyReport: function () {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    url = PICS.data.ServerCommunicationUrl.getCopyReportUrl();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: redirect
+                    },
+                    failure: function (batch, eOpts) {
+                        // TODO: error message - revert?
+                    }
+                });
+            },
+            
+            favoriteReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
+                
+                Ext.Ajax.request({
+                    url: url,
+                    failure: function () {
+                        // TODO: error message - revert?
+                    }
+                });
+            },
+            
+            loadAll: function (options) {
+                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
+                    callback = typeof options.callback == 'function' ? options.callback : function () {},
+                    scope = options.scope ? options.scope : this;
+                    
+                Ext.Ajax.request({
+                    url: url,
+                    success: function (response) {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data);
+
+                        loadReportStore(json);
+                        
+                        loadColumnStore(json);
+                        
+                        loadFilterStore(json);
+                        
+                        loadDataTableStore(json);
+
+                        callback.apply(scope, arguments);
+                    }
+                });
+            },
+            
+            loadReportAndData: function () {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    report_id = report.get('id'),
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl();
+                
+                // add data table loading mask
+                startDataTableLoading();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                // sync
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: sketchy
+                        var response = batch.operations[0].response,
+                            data = response.responseText,
+                            json = Ext.JSON.decode(data);
+                        
+                        loadReportStore(json);
+                        
+                        // load new results
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
+                        
+                        // refresh grid
+                        updateDataTableView(report);
+                        
+                    }
+                });
+            },
+            
+            loadData: function (page, limit) {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    report_id = report.get('id'),
+                    data_table_store = Ext.StoreManager.get('report.DataTables'),
+                    page = page ? page : 1,
+                    limit = limit ? limit : data_table_store.pageSize,
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit);
+
+                // updates the stores limit tracker
+                data_table_store.setLimit(limit);
+                
+                // updates the stores page tracker
+                data_table_store.setPage(page);
+                
+                // add data table loading mask
+                startDataTableLoading();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                // sync
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: sketchy
+                        var response = batch.operations[0].response,
+                            data = response.responseText,
+                            json = Ext.JSON.decode(data);
+                        
+                        // load new results
+                        loadDataTableStore(json);
+                        
+                        // remove data table loading mask
+                        stopDataTableLoading();
+                        
+                        // refresh grid
+                        updateDataTableView(report);
+                    }
+                });
+            },
+            
+            saveReport: function () {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
+                
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
+                
+                // set load data proxy
+                report_store.setProxyForWrite(url);
+                
+                report_store.sync({
+                    success: function (batch, eOpts) {
+                        // TODO: alert message
+                    },
+                    failure: function (batch, eOpts) {
+                        // TODO: error message - revert?
+                    }
+                });
+            },
+            
+            unfavoriteReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
+                
+                Ext.Ajax.request({
+                    url: url,
+                    failure: function () {
+                        // TODO: error message - revert?
+                    }
+                });
+            }
+        };
+    }())
+});
+Ext.define('PICS.data.ServerCommunicationUrl', {
+    statics: {
+        getCopyReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportDynamic!copy.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getFavoriteReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!favorite.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getLoadAllUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi.action?';
+
+            var params = {
+                reportId: report_id,
+                includeReport: true,
+                includeColumns: true,
+                includeFilters: true,
+                includeData: true
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getLoadReportAndDataUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi.action?';
+            
+            var params = {
+                reportId: report_id,
+                includeReport: true,
+                includeData: true
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getLoadDataUrl: function (page, limit) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi.action?';
+            
+            var params = {
+                reportId: report_id,
+                includeData: true,
+                page: page,
+                limit: limit
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getSaveReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportDynamic!save.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getUnfavoriteReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!unfavorite.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+    }
+});
+/**
+ * A specialized container representing the viewable application area (the browser viewport).
+ *
+ * The Viewport renders itself to the document body, and automatically sizes itself to the size of
+ * the browser viewport and manages window resizing. There may only be one Viewport created
+ * in a page.
+ *
+ * Like any {@link Ext.container.Container Container}, a Viewport will only perform sizing and positioning
+ * on its child Components if you configure it with a {@link #layout}.
+ *
+ * A Common layout used with Viewports is {@link Ext.layout.container.Border border layout}, but if the
+ * required layout is simpler, a different layout should be chosen.
+ *
+ * For example, to simply make a single child item occupy all available space, use
+ * {@link Ext.layout.container.Fit fit layout}.
+ *
+ * To display one "active" item at full size from a choice of several child items, use
+ * {@link Ext.layout.container.Card card layout}.
+ *
+ * Inner layouts are available because all {@link Ext.panel.Panel Panel}s
+ * added to the Viewport, either through its {@link #cfg-items}, or the {@link #method-add}
+ * method of any of its child Panels may themselves have a layout.
+ *
+ * The Viewport does not provide scrolling, so child Panels within the Viewport should provide
+ * for scrolling if needed using the {@link #autoScroll} config.
+ *
+ * An example showing a classic application border layout:
+ *
+ *     @example
+ *     Ext.create('Ext.container.Viewport', {
+ *         layout: 'border',
+ *         items: [{
+ *             region: 'north',
+ *             html: '<h1 class="x-panel-header">Page Title</h1>',
+ *             border: false,
+ *             margins: '0 0 5 0'
+ *         }, {
+ *             region: 'west',
+ *             collapsible: true,
+ *             title: 'Navigation',
+ *             width: 150
+ *             // could use a TreePanel or AccordionLayout for navigational items
+ *         }, {
+ *             region: 'south',
+ *             title: 'South Panel',
+ *             collapsible: true,
+ *             html: 'Information goes here',
+ *             split: true,
+ *             height: 100,
+ *             minHeight: 100
+ *         }, {
+ *             region: 'east',
+ *             title: 'East Panel',
+ *             collapsible: true,
+ *             split: true,
+ *             width: 150
+ *         }, {
+ *             region: 'center',
+ *             xtype: 'tabpanel', // TabPanel itself has no title
+ *             activeTab: 0,      // First tab active by default
+ *             items: {
+ *                 title: 'Default Tab',
+ *                 html: 'The first tab\'s content. Others may be added dynamically'
+ *             }
+ *         }]
+ *     });
+ */
+Ext.define('Ext.container.Viewport', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.viewport',
+    requires: ['Ext.EventManager'],
+    alternateClassName: 'Ext.Viewport',
+
+    // Privatize config options which, if used, would interfere with the
+    // correct operation of the Viewport as the sole manager of the
+    // layout of the document body.
+
+    /**
+     * @cfg {String/HTMLElement/Ext.Element} applyTo
+     * @private
+     */
+
+    /**
+     * @cfg {Boolean} allowDomMove
+     * @private
+     */
+
+    /**
+     * @cfg {String/HTMLElement/Ext.Element} renderTo
+     * Always renders to document body.
+     * @private
+     */
+
+    /**
+     * @cfg {Number} height
+     * Sets itself to viewport width.
+     * @private
+     */
+
+    /**
+     * @cfg {Number} width
+     * Sets itself to viewport height.
+     * @private
+     */
+
+    /**
+     * @property {Boolean} isViewport
+     * `true` in this class to identify an object as an instantiated Viewport, or subclass thereof.
+     */
+    isViewport: true,
+
+    ariaRole: 'application',
+    
+    preserveElOnDestroy: true,
+
+    initComponent : function() {
+        var me = this,
+            html = document.body.parentNode,
+            el;
+
+        // Get the DOM disruption over with beforfe the Viewport renders and begins a layout
+        Ext.getScrollbarSize();
+        
+        // Clear any dimensions, we will size later on
+        me.width = me.height = undefined;
+
+        me.callParent(arguments);
+        Ext.fly(html).addCls(Ext.baseCSSPrefix + 'viewport');
+        if (me.autoScroll) {
+            delete me.autoScroll;
+            Ext.fly(html).setStyle('overflow', 'auto');
+        }
+        me.el = el = Ext.getBody();
+        el.setHeight = Ext.emptyFn;
+        el.setWidth = Ext.emptyFn;
+        el.setSize = Ext.emptyFn;
+        el.dom.scroll = 'no';
+        me.allowDomMove = false;
+        me.renderTo = me.el;
+    },
+    
+    onRender: function() {
+        var me = this;
+
+        me.callParent(arguments);
+
+        // Important to start life as the proper size (to avoid extra layouts)
+        // But after render so that the size is not stamped into the body
+        me.width = Ext.Element.getViewportWidth();
+        me.height = Ext.Element.getViewportHeight();
+    },
+
+    afterFirstLayout: function() {
+        var me = this;
+
+        me.callParent(arguments);
+        setTimeout(function() {
+            Ext.EventManager.onWindowResize(me.fireResize, me);
+        }, 1);
+    },
+
+    fireResize : function(width, height){
+        // In IE we can get resize events that have our current size, so we ignore them
+        // to avoid the useless layout...
+        if (width != this.width || height != this.height) {
+            this.setSize(width, height);
+        }
+    }
+});
+
 /**
  * This class functions **between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
  * layout** to resize both immediate siblings.
@@ -66253,409 +66746,16 @@ Ext.define('Ext.resizer.Splitter', {
     }
 });
 
-Ext.define('PICS.ux.util.filter.FilterMultipleColumn', {
-    extend: 'Ext.util.Filter',
-    
-    anyMatch: true,
-    root: 'data',
-    
-    createFilterFn: function () {
-        var me = this,
-            matcher = me.createValueMatcher(),
-            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
+Ext.define('PICS.view.report.alert-message.AlertMessage', {
+    extend: 'Ext.window.Window',
+    alias: ['widget.reportalertmessage'],
 
-        return function(item) {
-            var hasmatch = false;
-            
-            for(var i = 0; i < property.length; i++) {
-                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
-                    hasmatch = true;
-                    break;
-                }
-            }
-            
-            return matcher === null ? value === null : hasmatch;
-        };
-    }
+    draggable: false,
+    id: 'alert_message',
+    resizable: false,
+    shadow: false,
+    width: 250
 });
-Ext.define('PICS.data.ServerCommunication', {
-    statics: (function () {
-        function loadReportStore(json) {
-            var report_store = Ext.StoreManager.get('report.Reports');
-            
-            report_store.loadRawData(json);
-        }
-        
-        function loadColumnStore(json) {
-            var column_store = Ext.StoreManager.get('report.Columns');
-            
-            column_store.loadRawData(json);
-        }
-        
-        function loadFilterStore(json) {
-            var filter_store = Ext.StoreManager.get('report.Filters');
-            
-            filter_store.loadRawData(json);
-        }
-        
-        function loadDataTableStore(json) {
-            var report_store = Ext.StoreManager.get('report.Reports'),
-                report = report_store.first(),
-                data_table_store = Ext.StoreManager.get('report.DataTables'),
-                model_fields = report.convertColumnsToModelFields();
-            
-            // update data table model
-            data_table_store.updateDataTableModelFields(model_fields);
-            
-            // load data table with results
-            data_table_store.loadRawData(json);
-        }
-        
-        function startDataTableLoading() {
-            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
-            
-            data_table_view.setLoading(true);
-        }
-        
-        function stopDataTableLoading() {
-            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
-            
-            data_table_view.setLoading(false);
-        }
-            
-        function updateDataTableView(report) {
-            var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
-                new_grid_columns = report.convertColumnsToGridColumns();
-            
-            data_table_view.updateGridColumns(new_grid_columns);
-        }
-        
-        return {
-            getLoadAllUrl: function () {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
-
-                var params = {
-                    reportId: report_id,
-                    includeReport: true,
-                    includeColumns: true,
-                    includeFilters: true,
-                    includeData: true
-                };
-
-                return path + Ext.Object.toQueryString(params);
-            },
-            
-            getLoadReportAndDataUrl: function () {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
-                
-                var params = {
-                    reportId: report_id,
-                    includeReport: true,
-                    includeData: true
-                };
-    
-                return path + Ext.Object.toQueryString(params);
-            },
-            
-            getLoadDataUrl: function (page, limit) {
-                var params = Ext.Object.fromQueryString(window.location.search),
-                    report_id = params.report,
-                    path = 'ReportApi.action?';
-                
-                var params = {
-                    reportId: report_id,
-                    includeData: true,
-                    page: page,
-                    limit: limit
-                };
-    
-                return path + Ext.Object.toQueryString(params);
-            },
-            
-            loadAll: function (options) {
-                 var url = this.getLoadAllUrl(),
-                    callback = typeof options.callback == 'function' ? options.callback : function () {},
-                    scope = options.scope ? options.scope : this;
-                    
-                Ext.Ajax.request({
-                    url: url,
-                    success: function (response) {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data);
-
-                        loadReportStore(json);
-                        
-                        loadColumnStore(json);
-                        
-                        loadFilterStore(json);
-                        
-                        loadDataTableStore(json);
-
-                        callback.apply(scope, arguments);
-                    }
-                });
-            },
-            
-            loadReportAndData: function () {
-                var report_store = Ext.StoreManager.get('report.Reports'),
-                    report = report_store.first(),
-                    report_id = report.get('id'),
-                    url = this.getLoadDataUrl();
-                
-                // add data table loading mask
-                startDataTableLoading();
-                
-                // flag store as dirty so it will sync data to server
-                report.setDirty();
-                
-                // set load data proxy
-                report_store.setProxyForWrite(url);
-                
-                // sync
-                report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
-                        
-                        report_store.setProxyForRead();
-                        
-                        loadReportStore(json);
-                        
-                        // load new results
-                        loadDataTableStore(json);
-                        
-                        // remove data table loading mask
-                        stopDataTableLoading();
-                        
-                        // refresh grid
-                        updateDataTableView(report);
-                        
-                    }
-                });
-            },
-            
-            loadData: function (page, limit) {
-                var report_store = Ext.StoreManager.get('report.Reports'),
-                    report = report_store.first(),
-                    report_id = report.get('id'),
-                    data_table_store = Ext.StoreManager.get('report.DataTables'),
-                    page = page ? page : 1,
-                    limit = limit ? limit : data_table_store.pageSize,
-                    url = this.getLoadDataUrl(page, limit);
-
-                // updates the stores limit tracker
-                data_table_store.setLimit(limit);
-                
-                // updates the stores page tracker
-                data_table_store.setPage(page);
-                
-                // add data table loading mask
-                startDataTableLoading();
-                
-                // flag store as dirty so it will sync data to server
-                report.setDirty();
-                
-                // set load data proxy
-                report_store.setProxyForWrite(url);
-                
-                // sync
-                report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
-                        
-                        // load new results
-                        loadDataTableStore(json);
-                        
-                        // remove data table loading mask
-                        stopDataTableLoading();
-                        
-                        // refresh grid
-                        updateDataTableView(report);
-                    }
-                });
-            }
-        };
-    }())
-});
-/**
- * A specialized container representing the viewable application area (the browser viewport).
- *
- * The Viewport renders itself to the document body, and automatically sizes itself to the size of
- * the browser viewport and manages window resizing. There may only be one Viewport created
- * in a page.
- *
- * Like any {@link Ext.container.Container Container}, a Viewport will only perform sizing and positioning
- * on its child Components if you configure it with a {@link #layout}.
- *
- * A Common layout used with Viewports is {@link Ext.layout.container.Border border layout}, but if the
- * required layout is simpler, a different layout should be chosen.
- *
- * For example, to simply make a single child item occupy all available space, use
- * {@link Ext.layout.container.Fit fit layout}.
- *
- * To display one "active" item at full size from a choice of several child items, use
- * {@link Ext.layout.container.Card card layout}.
- *
- * Inner layouts are available because all {@link Ext.panel.Panel Panel}s
- * added to the Viewport, either through its {@link #cfg-items}, or the {@link #method-add}
- * method of any of its child Panels may themselves have a layout.
- *
- * The Viewport does not provide scrolling, so child Panels within the Viewport should provide
- * for scrolling if needed using the {@link #autoScroll} config.
- *
- * An example showing a classic application border layout:
- *
- *     @example
- *     Ext.create('Ext.container.Viewport', {
- *         layout: 'border',
- *         items: [{
- *             region: 'north',
- *             html: '<h1 class="x-panel-header">Page Title</h1>',
- *             border: false,
- *             margins: '0 0 5 0'
- *         }, {
- *             region: 'west',
- *             collapsible: true,
- *             title: 'Navigation',
- *             width: 150
- *             // could use a TreePanel or AccordionLayout for navigational items
- *         }, {
- *             region: 'south',
- *             title: 'South Panel',
- *             collapsible: true,
- *             html: 'Information goes here',
- *             split: true,
- *             height: 100,
- *             minHeight: 100
- *         }, {
- *             region: 'east',
- *             title: 'East Panel',
- *             collapsible: true,
- *             split: true,
- *             width: 150
- *         }, {
- *             region: 'center',
- *             xtype: 'tabpanel', // TabPanel itself has no title
- *             activeTab: 0,      // First tab active by default
- *             items: {
- *                 title: 'Default Tab',
- *                 html: 'The first tab\'s content. Others may be added dynamically'
- *             }
- *         }]
- *     });
- */
-Ext.define('Ext.container.Viewport', {
-    extend: 'Ext.container.Container',
-    alias: 'widget.viewport',
-    requires: ['Ext.EventManager'],
-    alternateClassName: 'Ext.Viewport',
-
-    // Privatize config options which, if used, would interfere with the
-    // correct operation of the Viewport as the sole manager of the
-    // layout of the document body.
-
-    /**
-     * @cfg {String/HTMLElement/Ext.Element} applyTo
-     * @private
-     */
-
-    /**
-     * @cfg {Boolean} allowDomMove
-     * @private
-     */
-
-    /**
-     * @cfg {String/HTMLElement/Ext.Element} renderTo
-     * Always renders to document body.
-     * @private
-     */
-
-    /**
-     * @cfg {Number} height
-     * Sets itself to viewport width.
-     * @private
-     */
-
-    /**
-     * @cfg {Number} width
-     * Sets itself to viewport height.
-     * @private
-     */
-
-    /**
-     * @property {Boolean} isViewport
-     * `true` in this class to identify an object as an instantiated Viewport, or subclass thereof.
-     */
-    isViewport: true,
-
-    ariaRole: 'application',
-    
-    preserveElOnDestroy: true,
-
-    initComponent : function() {
-        var me = this,
-            html = document.body.parentNode,
-            el;
-
-        // Get the DOM disruption over with beforfe the Viewport renders and begins a layout
-        Ext.getScrollbarSize();
-        
-        // Clear any dimensions, we will size later on
-        me.width = me.height = undefined;
-
-        me.callParent(arguments);
-        Ext.fly(html).addCls(Ext.baseCSSPrefix + 'viewport');
-        if (me.autoScroll) {
-            delete me.autoScroll;
-            Ext.fly(html).setStyle('overflow', 'auto');
-        }
-        me.el = el = Ext.getBody();
-        el.setHeight = Ext.emptyFn;
-        el.setWidth = Ext.emptyFn;
-        el.setSize = Ext.emptyFn;
-        el.dom.scroll = 'no';
-        me.allowDomMove = false;
-        me.renderTo = me.el;
-    },
-    
-    onRender: function() {
-        var me = this;
-
-        me.callParent(arguments);
-
-        // Important to start life as the proper size (to avoid extra layouts)
-        // But after render so that the size is not stamped into the body
-        me.width = Ext.Element.getViewportWidth();
-        me.height = Ext.Element.getViewportHeight();
-    },
-
-    afterFirstLayout: function() {
-        var me = this;
-
-        me.callParent(arguments);
-        setTimeout(function() {
-            Ext.EventManager.onWindowResize(me.fireResize, me);
-        }, 1);
-    },
-
-    fireResize : function(width, height){
-        // In IE we can get resize events that have our current size, so we ignore them
-        // to avoid the useless layout...
-        if (width != this.width || height != this.height) {
-            this.setSize(width, height);
-        }
-    }
-});
-
 /**
  * Private utility class for Ext.layout.container.Border.
  * @private
@@ -66679,16 +66779,6 @@ Ext.define('Ext.resizer.BorderSplitter', {
     }
 });
 
-Ext.define('PICS.view.report.alert-message.AlertMessage', {
-    extend: 'Ext.window.Window',
-    alias: ['widget.reportalertmessage'],
-
-    draggable: false,
-    id: 'alert_message',
-    resizable: false,
-    shadow: false,
-    width: 250
-});
 Ext.define('PICS.view.report.filter.FilterHeader', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportfilterheader'],
@@ -66797,253 +66887,6 @@ Ext.define('PICS.view.report.header.Actions', {
         this.add(save, edit);
     }
 });
-/**
- * Component layout for grid column headers which have a title element at the top followed by content.
- * @private
- */
-Ext.define('Ext.grid.ColumnComponentLayout', {
-    extend: 'Ext.layout.component.Auto',
-    alias: 'layout.columncomponent',
-
-    type: 'columncomponent',
-
-    setWidthInDom: true,
-
-    getContentHeight : function(ownerContext) {
-        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
-        return this.owner.isGroupHeader ? ownerContext.getProp('contentHeight') : this.callParent(arguments);
-    },
-
-    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
-        var result = this.callParent(arguments);
-        if (this.owner.isGroupHeader) {
-            result += this.owner.titleEl.dom.offsetHeight;
-        }
-        return result;
-    },
-    
-    getContentWidth : function(ownerContext) {
-        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
-        return this.owner.isGroupHeader ? ownerContext.getProp('contentWidth') : this.callParent(arguments);
-    },
-
-    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
-        return contentWidth + ownerContext.getPaddingInfo().width;
-    }
-});
-/**
- * @private
- *
- * This class is used only by the grid's HeaderContainer docked child.
- *
- * It adds the ability to shrink the vertical size of the inner container element back if a grouped
- * column header has all its child columns dragged out, and the whole HeaderContainer needs to shrink back down.
- *
- * Also, after every layout, after all headers have attained their 'stretchmax' height, it goes through and calls
- * `setPadding` on the columns so that they lay out correctly.
- */
-Ext.define('Ext.grid.ColumnLayout', {
-    extend: 'Ext.layout.container.HBox',
-    alias: 'layout.gridcolumn',
-    type : 'gridcolumn',
-
-    reserveOffset: false,
-
-    firstHeaderCls: Ext.baseCSSPrefix + 'column-header-first',
-    lastHeaderCls: Ext.baseCSSPrefix + 'column-header-last',
-
-    initLayout: function() {
-        this.grid = this.owner.up('[scrollerOwner]');
-        this.callParent();
-    },
-
-    // Collect the height of the table of data upon layout begin
-    beginLayout: function (ownerContext) {
-        var me = this,
-            grid = me.grid,
-            view = grid.view,
-            i = 0,
-            items = me.getVisibleItems(),
-            len = items.length,
-            item;
-
-        ownerContext.gridContext = ownerContext.context.getCmp(me.grid);
-
-        // If we are one side of a locking grid, then if we are on the "normal" side, we have to grab the normal view
-        // for use in determining whether to subtract scrollbar width from available width.
-        // The locked side does not have scrollbars, so it should not look at the view.
-        if (grid.lockable) {
-            if (me.owner.up('tablepanel') === view.normalGrid) {
-                view = view.normalGrid.getView();
-            } else {
-                view = null;
-            }
-        }
-
-        me.callParent(arguments);
-
-        // Unstretch child items before the layout which stretches them.
-        for (; i < len; i++) {
-            item = items[i];
-            item.removeCls([me.firstHeaderCls, me.lastHeaderCls]);
-            item.el.setStyle({
-                height: 'auto'
-            });
-            item.titleEl.setStyle({
-                height: 'auto',
-                paddingTop: ''  // reset back to default padding of the style
-            });
-        }
-
-        // Add special first/last classes
-        if (len > 0) {
-            items[0].addCls(me.firstHeaderCls);
-            items[len - 1].addCls(me.lastHeaderCls);
-        }
-
-        // If the owner is the grid's HeaderContainer, and the UI displays old fashioned scrollbars and there is a rendered View with data in it,
-        // AND we are scrolling vertically:
-        // collect the View context to interrogate it for overflow, and possibly invalidate it if there is overflow
-        if (!me.owner.isHeader && Ext.getScrollbarSize().width && !grid.collapsed && view &&
-                view.table.dom && (view.autoScroll || view.overflowY)) {
-            ownerContext.viewContext = ownerContext.context.getCmp(view);
-        }
-    },
-
-    roundFlex: function(width) {
-        return Math.floor(width);
-    },
-
-    calculate: function(ownerContext) {
-        var me = this,
-            viewContext = ownerContext.viewContext,
-            tableHeight,
-            viewHeight;
-
-        me.callParent(arguments);
-
-        if (ownerContext.state.parallelDone) {
-            ownerContext.setProp('columnWidthsDone', true);
-        }
-
-        // If we have a viewContext (Only created if there is an existing <table> within the view, AND we are scolling vertically AND scrollbars take up space)
-        //     we are not already in the second pass, and we are not shrinkWrapping...
-        //     Then we have to see if we know enough to determine whether there is vertical opverflow so that we can
-        //     invalidate and loop back for the second pass with a narrower target width.
-        if (viewContext && !ownerContext.state.overflowAdjust.width && !ownerContext.gridContext.heightModel.shrinkWrap) {
-            tableHeight = viewContext.tableContext.getProp('height');
-            viewHeight = viewContext.getProp('height');
-
-            // Heights of both view and its table content have not both been published; we cannot complete
-            if (isNaN(tableHeight + viewHeight)) {
-                me.done = false;
-            }
-
-            // Heights have been published, and there is vertical overflow; invalidate with a width adjustment to allow for the scrollbar
-            else if (tableHeight >= viewHeight) {
-                ownerContext.gridContext.invalidate({
-                    after: function() {
-                        ownerContext.state.overflowAdjust = {
-                            width: Ext.getScrollbarSize().width,
-                            height: 0
-                        };
-                    }
-                });
-            }
-        }
-    },
- 
-    completeLayout: function(ownerContext) {
-        var me = this,
-            owner = me.owner,
-            state = ownerContext.state,
-            needsInvalidate = false,
-            calculated = me.sizeModels.calculated,
-            childItems, len, i, childContext, item;
-
-        me.callParent(arguments);
-
-        // If we have not been through this already, and the owning Container is configured
-        // forceFit, is not a group column and and there is a valid width, then convert
-        // widths to flexes, and loop back.
-        if (!state.flexesCalculated && owner.forceFit && !owner.isHeader) {
-            childItems = ownerContext.childItems;
-            len = childItems.length;
-
-            for (i = 0; i < len; i++) {
-                childContext = childItems[i];
-                item = childContext.target;
-
-                // For forceFit, just use allocated width as the flex value, and the proportions
-                // will end up the same whatever HeaderContainer width they are being forced into.
-                if (item.width) {
-                    item.flex = ownerContext.childItems[i].flex = item.width;
-                    delete item.width;
-                    childContext.widthModel = calculated;
-                    needsInvalidate = true;
-                }
-            }
-
-            // Recalculate based upon all columns now being flexed instead of sized.
-            // Set flag, so that we do not do this infinitely
-            if (needsInvalidate) {
-                me.cacheFlexes(ownerContext);
-                ownerContext.invalidate({
-                    state: {
-                        flexesCalculated: true
-                    }
-                });
-            }
-        }
-    },
-
-    finalizeLayout: function() {
-        var me = this,
-            i = 0,
-            items,
-            len,
-            itemsHeight,
-            owner = me.owner,
-            titleEl = owner.titleEl;
-
-        // Set up padding in items
-        items = me.getVisibleItems();
-        len = items.length;
-        // header container's items take up the whole height
-        itemsHeight = owner.el.getViewSize().height;
-        if (titleEl) {
-        // if owner is a grouped column with children, we need to subtract the titleEl's height
-        // to determine the remaining available height for the child items
-            itemsHeight -= titleEl.getHeight();
-        }
-        for (; i < len; i++) {
-            items[i].setPadding(itemsHeight);
-        }
-    },
-
-    // FIX: when flexing we actually don't have enough space as we would
-    // typically because of the scrollOffset on the GridView, must reserve this
-    publishInnerCtSize: function(ownerContext) {
-        var me = this,
-            size = ownerContext.state.boxPlan.targetSize,
-            cw = ownerContext.peek('contentWidth'),
-            view;
-
-        // InnerCt MUST stretch to accommodate all columns so that left/right scrolling is enabled in the header container.
-        if ((cw != null) && !me.owner.isHeader) {
-            size.width = cw;
-
-            // innerCt must also encompass any vertical scrollbar width if there may be one
-            view = me.owner.ownerCt.view;
-            if (view.autoScroll || view.overflowY) {
-                size.width += Ext.getScrollbarSize().width;
-            }
-        }
-
-        return me.callParent(arguments);
-    }
-});
-
 Ext.define('PICS.store.report.base.Store', {
     extend: 'Ext.data.Store',
 
@@ -68856,6 +68699,253 @@ Ext.define('PICS.view.report.filter.FilterTooltip', {
     tpl: '<div><p>{description}</p></div>'
 });
 /**
+ * Component layout for grid column headers which have a title element at the top followed by content.
+ * @private
+ */
+Ext.define('Ext.grid.ColumnComponentLayout', {
+    extend: 'Ext.layout.component.Auto',
+    alias: 'layout.columncomponent',
+
+    type: 'columncomponent',
+
+    setWidthInDom: true,
+
+    getContentHeight : function(ownerContext) {
+        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
+        return this.owner.isGroupHeader ? ownerContext.getProp('contentHeight') : this.callParent(arguments);
+    },
+
+    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
+        var result = this.callParent(arguments);
+        if (this.owner.isGroupHeader) {
+            result += this.owner.titleEl.dom.offsetHeight;
+        }
+        return result;
+    },
+    
+    getContentWidth : function(ownerContext) {
+        // If we are a group header return container layout's contentHeight, else default to AutoComponent's answer
+        return this.owner.isGroupHeader ? ownerContext.getProp('contentWidth') : this.callParent(arguments);
+    },
+
+    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
+        return contentWidth + ownerContext.getPaddingInfo().width;
+    }
+});
+/**
+ * @private
+ *
+ * This class is used only by the grid's HeaderContainer docked child.
+ *
+ * It adds the ability to shrink the vertical size of the inner container element back if a grouped
+ * column header has all its child columns dragged out, and the whole HeaderContainer needs to shrink back down.
+ *
+ * Also, after every layout, after all headers have attained their 'stretchmax' height, it goes through and calls
+ * `setPadding` on the columns so that they lay out correctly.
+ */
+Ext.define('Ext.grid.ColumnLayout', {
+    extend: 'Ext.layout.container.HBox',
+    alias: 'layout.gridcolumn',
+    type : 'gridcolumn',
+
+    reserveOffset: false,
+
+    firstHeaderCls: Ext.baseCSSPrefix + 'column-header-first',
+    lastHeaderCls: Ext.baseCSSPrefix + 'column-header-last',
+
+    initLayout: function() {
+        this.grid = this.owner.up('[scrollerOwner]');
+        this.callParent();
+    },
+
+    // Collect the height of the table of data upon layout begin
+    beginLayout: function (ownerContext) {
+        var me = this,
+            grid = me.grid,
+            view = grid.view,
+            i = 0,
+            items = me.getVisibleItems(),
+            len = items.length,
+            item;
+
+        ownerContext.gridContext = ownerContext.context.getCmp(me.grid);
+
+        // If we are one side of a locking grid, then if we are on the "normal" side, we have to grab the normal view
+        // for use in determining whether to subtract scrollbar width from available width.
+        // The locked side does not have scrollbars, so it should not look at the view.
+        if (grid.lockable) {
+            if (me.owner.up('tablepanel') === view.normalGrid) {
+                view = view.normalGrid.getView();
+            } else {
+                view = null;
+            }
+        }
+
+        me.callParent(arguments);
+
+        // Unstretch child items before the layout which stretches them.
+        for (; i < len; i++) {
+            item = items[i];
+            item.removeCls([me.firstHeaderCls, me.lastHeaderCls]);
+            item.el.setStyle({
+                height: 'auto'
+            });
+            item.titleEl.setStyle({
+                height: 'auto',
+                paddingTop: ''  // reset back to default padding of the style
+            });
+        }
+
+        // Add special first/last classes
+        if (len > 0) {
+            items[0].addCls(me.firstHeaderCls);
+            items[len - 1].addCls(me.lastHeaderCls);
+        }
+
+        // If the owner is the grid's HeaderContainer, and the UI displays old fashioned scrollbars and there is a rendered View with data in it,
+        // AND we are scrolling vertically:
+        // collect the View context to interrogate it for overflow, and possibly invalidate it if there is overflow
+        if (!me.owner.isHeader && Ext.getScrollbarSize().width && !grid.collapsed && view &&
+                view.table.dom && (view.autoScroll || view.overflowY)) {
+            ownerContext.viewContext = ownerContext.context.getCmp(view);
+        }
+    },
+
+    roundFlex: function(width) {
+        return Math.floor(width);
+    },
+
+    calculate: function(ownerContext) {
+        var me = this,
+            viewContext = ownerContext.viewContext,
+            tableHeight,
+            viewHeight;
+
+        me.callParent(arguments);
+
+        if (ownerContext.state.parallelDone) {
+            ownerContext.setProp('columnWidthsDone', true);
+        }
+
+        // If we have a viewContext (Only created if there is an existing <table> within the view, AND we are scolling vertically AND scrollbars take up space)
+        //     we are not already in the second pass, and we are not shrinkWrapping...
+        //     Then we have to see if we know enough to determine whether there is vertical opverflow so that we can
+        //     invalidate and loop back for the second pass with a narrower target width.
+        if (viewContext && !ownerContext.state.overflowAdjust.width && !ownerContext.gridContext.heightModel.shrinkWrap) {
+            tableHeight = viewContext.tableContext.getProp('height');
+            viewHeight = viewContext.getProp('height');
+
+            // Heights of both view and its table content have not both been published; we cannot complete
+            if (isNaN(tableHeight + viewHeight)) {
+                me.done = false;
+            }
+
+            // Heights have been published, and there is vertical overflow; invalidate with a width adjustment to allow for the scrollbar
+            else if (tableHeight >= viewHeight) {
+                ownerContext.gridContext.invalidate({
+                    after: function() {
+                        ownerContext.state.overflowAdjust = {
+                            width: Ext.getScrollbarSize().width,
+                            height: 0
+                        };
+                    }
+                });
+            }
+        }
+    },
+ 
+    completeLayout: function(ownerContext) {
+        var me = this,
+            owner = me.owner,
+            state = ownerContext.state,
+            needsInvalidate = false,
+            calculated = me.sizeModels.calculated,
+            childItems, len, i, childContext, item;
+
+        me.callParent(arguments);
+
+        // If we have not been through this already, and the owning Container is configured
+        // forceFit, is not a group column and and there is a valid width, then convert
+        // widths to flexes, and loop back.
+        if (!state.flexesCalculated && owner.forceFit && !owner.isHeader) {
+            childItems = ownerContext.childItems;
+            len = childItems.length;
+
+            for (i = 0; i < len; i++) {
+                childContext = childItems[i];
+                item = childContext.target;
+
+                // For forceFit, just use allocated width as the flex value, and the proportions
+                // will end up the same whatever HeaderContainer width they are being forced into.
+                if (item.width) {
+                    item.flex = ownerContext.childItems[i].flex = item.width;
+                    delete item.width;
+                    childContext.widthModel = calculated;
+                    needsInvalidate = true;
+                }
+            }
+
+            // Recalculate based upon all columns now being flexed instead of sized.
+            // Set flag, so that we do not do this infinitely
+            if (needsInvalidate) {
+                me.cacheFlexes(ownerContext);
+                ownerContext.invalidate({
+                    state: {
+                        flexesCalculated: true
+                    }
+                });
+            }
+        }
+    },
+
+    finalizeLayout: function() {
+        var me = this,
+            i = 0,
+            items,
+            len,
+            itemsHeight,
+            owner = me.owner,
+            titleEl = owner.titleEl;
+
+        // Set up padding in items
+        items = me.getVisibleItems();
+        len = items.length;
+        // header container's items take up the whole height
+        itemsHeight = owner.el.getViewSize().height;
+        if (titleEl) {
+        // if owner is a grouped column with children, we need to subtract the titleEl's height
+        // to determine the remaining available height for the child items
+            itemsHeight -= titleEl.getHeight();
+        }
+        for (; i < len; i++) {
+            items[i].setPadding(itemsHeight);
+        }
+    },
+
+    // FIX: when flexing we actually don't have enough space as we would
+    // typically because of the scrollOffset on the GridView, must reserve this
+    publishInnerCtSize: function(ownerContext) {
+        var me = this,
+            size = ownerContext.state.boxPlan.targetSize,
+            cw = ownerContext.peek('contentWidth'),
+            view;
+
+        // InnerCt MUST stretch to accommodate all columns so that left/right scrolling is enabled in the header container.
+        if ((cw != null) && !me.owner.isHeader) {
+            size.width = cw;
+
+            // innerCt must also encompass any vertical scrollbar width if there may be one
+            view = me.owner.ownerCt.view;
+            if (view.autoScroll || view.overflowY) {
+                size.width += Ext.getScrollbarSize().width;
+            }
+        }
+
+        return me.callParent(arguments);
+    }
+});
+
+/**
  * A simple class that renders text directly into a toolbar.
  *
  *     @example
@@ -69123,93 +69213,29 @@ Ext.define('Ext.form.FieldAncestor', {
     onFieldErrorChange: Ext.emptyFn
 
 });
-/**
- * The AbstractPlugin class is the base class from which user-implemented plugins should inherit.
- *
- * This class defines the essential API of plugins as used by Components by defining the following methods:
- *
- *   - `init` : The plugin initialization method which the owning Component calls at Component initialization time.
- *
- *     The Component passes itself as the sole parameter.
- *
- *     Subclasses should set up bidirectional links between the plugin and its client Component here.
- *
- *   - `destroy` : The plugin cleanup method which the owning Component calls at Component destruction time.
- *
- *     Use this method to break links between the plugin and the Component and to free any allocated resources.
- *
- *   - `enable` : The base implementation just sets the plugin's `disabled` flag to `false`
- *
- *   - `disable` : The base implementation just sets the plugin's `disabled` flag to `true`
- */
-Ext.define('Ext.AbstractPlugin', {
-    disabled: false,
+Ext.define('PICS.ux.util.filter.FilterMultipleColumn', {
+    extend: 'Ext.util.Filter',
+    
+    anyMatch: true,
+    root: 'data',
+    
+    createFilterFn: function () {
+        var me = this,
+            matcher = me.createValueMatcher(),
+            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
 
-    constructor: function(config) {
-        this.initialConfig = config;
-        Ext.apply(this, config);
-    },
-
-    clone: function() {
-        return new this.self(this.initialConfig);
-    },
-
-    getCmp: function() {
-        return this.cmp;
-    },
-
-    /**
-     * @cfg {String} pluginId
-     * A name for the plugin that can be set at creation time to then retrieve the plugin
-     * through {@link Ext.AbstractComponent#getPlugin getPlugin} method.  For example:
-     *
-     *     var grid = Ext.create('Ext.grid.Panel', {
-     *         plugins: [{
-     *             ptype: 'cellediting',
-     *             clicksToEdit: 2,
-     *             pluginId: 'cellplugin'
-     *         }]
-     *     });
-     *
-     *     // later on:
-     *     var plugin = grid.getPlugin('cellplugin');
-     */
-
-    /**
-     * @method
-     * The init method is invoked after initComponent method has been run for the client Component.
-     *
-     * The supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional
-     * links between the plugin and its client Component in their own implementation of this method.
-     * @param {Ext.Component} client The client Component which owns this plugin.
-     */
-    init: Ext.emptyFn,
-
-    /**
-     * @method
-     * The destroy method is invoked by the owning Component at the time the Component is being destroyed.
-     *
-     * The supplied implementation is empty. Subclasses should perform plugin cleanup in their own implementation of
-     * this method.
-     */
-    destroy: Ext.emptyFn,
-
-    /**
-     * The base implementation just sets the plugin's `disabled` flag to `false`
-     *
-     * Plugin subclasses which need more complex processing may implement an overriding implementation.
-     */
-    enable: function() {
-        this.disabled = false;
-    },
-
-    /**
-     * The base implementation just sets the plugin's `disabled` flag to `true`
-     *
-     * Plugin subclasses which need more complex processing may implement an overriding implementation.
-     */
-    disable: function() {
-        this.disabled = true;
+        return function(item) {
+            var hasmatch = false;
+            
+            for(var i = 0; i < property.length; i++) {
+                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
+                    hasmatch = true;
+                    break;
+                }
+            }
+            
+            return matcher === null ? value === null : hasmatch;
+        };
     }
 });
 /**
@@ -71631,297 +71657,13 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         column_function_modal.show();
     }
 });
-/**
- * Plugin to add header resizing functionality to a HeaderContainer.
- * Always resizing header to the left of the splitter you are resizing.
- */
-Ext.define('Ext.grid.plugin.HeaderResizer', {
-    extend: 'Ext.AbstractPlugin',
-    requires: ['Ext.dd.DragTracker', 'Ext.util.Region'],
-    alias: 'plugin.gridheaderresizer',
-
-    disabled: false,
-
-    config: {
-        /**
-         * @cfg {Boolean} dynamic
-         * True to resize on the fly rather than using a proxy marker.
-         * @accessor
-         */
-        dynamic: false
-    },
-
-    colHeaderCls: Ext.baseCSSPrefix + 'column-header',
-
-    minColWidth: 40,
-    maxColWidth: 1000,
-    wResizeCursor: 'col-resize',
-    eResizeCursor: 'col-resize',
-    // not using w and e resize bc we are only ever resizing one
-    // column
-    //wResizeCursor: Ext.isWebKit ? 'w-resize' : 'col-resize',
-    //eResizeCursor: Ext.isWebKit ? 'e-resize' : 'col-resize',
-
-    init: function(headerCt) {
-        this.headerCt = headerCt;
-        headerCt.on('render', this.afterHeaderRender, this, {single: true});
-    },
-
-    /**
-     * @private
-     * AbstractComponent calls destroy on all its plugins at destroy time.
-     */
-    destroy: function() {
-        if (this.tracker) {
-            this.tracker.destroy();
-        }
-    },
-
-    afterHeaderRender: function() {
-        var headerCt = this.headerCt,
-            el = headerCt.el;
-
-        headerCt.mon(el, 'mousemove', this.onHeaderCtMouseMove, this);
-
-        this.tracker = new Ext.dd.DragTracker({
-            disabled: this.disabled,
-            onBeforeStart: Ext.Function.bind(this.onBeforeStart, this),
-            onStart: Ext.Function.bind(this.onStart, this),
-            onDrag: Ext.Function.bind(this.onDrag, this),
-            onEnd: Ext.Function.bind(this.onEnd, this),
-            tolerance: 3,
-            autoStart: 300,
-            el: el
-        });
-    },
-
-    // As we mouse over individual headers, change the cursor to indicate
-    // that resizing is available, and cache the resize target header for use
-    // if/when they mousedown.
-    onHeaderCtMouseMove: function(e, t) {
-        var me = this,
-            prevSiblings,
-            headerEl, overHeader, resizeHeader, resizeHeaderOwnerGrid, ownerGrid;
-
-        if (me.headerCt.dragging) {
-            if (me.activeHd) {
-                me.activeHd.el.dom.style.cursor = '';
-                delete me.activeHd;
-            }
-        } else {
-            headerEl = e.getTarget('.' + me.colHeaderCls, 3, true);
-
-            if (headerEl){
-                overHeader = Ext.getCmp(headerEl.id);
-
-                // On left edge, go back to the previous non-hidden header.
-                if (overHeader.isOnLeftEdge(e)) {
-                    resizeHeader = overHeader.previousNode('gridcolumn:not([hidden]):not([isGroupHeader])')
-                    // There may not *be* a previous non-hidden header.
-                    if (resizeHeader) {
-
-                        ownerGrid = me.headerCt.up('tablepanel');
-                        resizeHeaderOwnerGrid = resizeHeader.up('tablepanel');
-
-                        // Need to check that previousNode didn't go outside the current grid/tree
-                        // But in the case of a Grid which contains a locked and normal grid, allow previousNode to jump
-                        // from the first column of the normalGrid to the last column of the lockedGrid
-                        if (!((resizeHeaderOwnerGrid === ownerGrid) || ((ownerGrid.ownerCt.isXType('tablepanel')) && ownerGrid.ownerCt.view.lockedGrid === resizeHeaderOwnerGrid))) {
-                            resizeHeader = null;
-                        }
-                    }
-                }
-                // Else, if on the right edge, we're resizing the column we are over
-                else if (overHeader.isOnRightEdge(e)) {
-                    resizeHeader = overHeader;
-                }
-                // Between the edges: we are not resizing
-                else {
-                    resizeHeader = null;
-                }
-
-                // We *are* resizing
-                if (resizeHeader) {
-                    // If we're attempting to resize a group header, that cannot be resized,
-                    // so find its last visible leaf header; Group headers are sized
-                    // by the size of their child headers.
-                    if (resizeHeader.isGroupHeader) {
-                        prevSiblings = resizeHeader.getGridColumns();
-                        resizeHeader = prevSiblings[prevSiblings.length - 1];
-                    }
-
-                    // Check if the header is resizable. Continue checking the old "fixed" property, bug also
-                    // check whether the resizablwe property is set to false.
-                    if (resizeHeader && !(resizeHeader.fixed || (resizeHeader.resizable === false) || me.disabled)) {
-                        me.activeHd = resizeHeader;
-                        overHeader.el.dom.style.cursor = me.eResizeCursor;
-                    }
-                // reset
-                } else {
-                    overHeader.el.dom.style.cursor = '';
-                    delete me.activeHd;
-                }
-            }
-        }
-    },
-
-    // only start when there is an activeHd
-    onBeforeStart : function(e){
-        var t = e.getTarget();
-        // cache the activeHd because it will be cleared.
-        this.dragHd = this.activeHd;
-
-        if (!!this.dragHd && !Ext.fly(t).hasCls(Ext.baseCSSPrefix + 'column-header-trigger') && !this.headerCt.dragging) {
-            //this.headerCt.dragging = true;
-            this.tracker.constrainTo = this.getConstrainRegion();
-            return true;
-        } else {
-            this.headerCt.dragging = false;
-            return false;
-        }
-    },
-
-    // get the region to constrain to, takes into account max and min col widths
-    getConstrainRegion: function() {
-        var me       = this,
-            dragHdEl = me.dragHd.el,
-            region   = Ext.util.Region.getRegion(dragHdEl),
-            nextHd;
-
-        // If forceFit, then right constraint is based upon not being able to force the next header
-        // beyond the minColWidth. If there is no next header, then the header may not be expanded.
-        if (me.headerCt.forceFit) {
-            nextHd = me.dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
-        }
-
-         return region.adjust(
-            0,
-            me.headerCt.forceFit ? (nextHd ? nextHd.getWidth() - me.minColWidth : 0) : me.maxColWidth - dragHdEl.getWidth(),
-            0,
-            me.minColWidth
-        );
-    },
-
-    // initialize the left and right hand side markers around
-    // the header that we are resizing
-    onStart: function(e){
-        var me       = this,
-            dragHd   = me.dragHd,
-            dragHdEl = dragHd.el,
-            width    = dragHdEl.getWidth(),
-            headerCt = me.headerCt,
-            t        = e.getTarget(),
-            xy, gridSection, dragHct, firstSection, lhsMarker, rhsMarker, el, offsetLeft, offsetTop, topLeft, markerHeight, top;
-
-        if (me.dragHd && !Ext.fly(t).hasCls(Ext.baseCSSPrefix + 'column-header-trigger')) {
-            headerCt.dragging = true;
-        }
-
-        me.origWidth = width;
-
-        // setup marker proxies
-        if (!me.dynamic) {
-            xy           = dragHdEl.getXY();
-            gridSection  = headerCt.up('[scrollerOwner]');
-            dragHct      = me.dragHd.up(':not([isGroupHeader])');
-            firstSection = dragHct.up();
-            lhsMarker    = gridSection.getLhsMarker();
-            rhsMarker    = gridSection.getRhsMarker();
-            el           = rhsMarker.parent();
-            offsetLeft   = el.getLocalX();
-            offsetTop    = el.getLocalY();
-            topLeft      = el.translatePoints(xy);
-            markerHeight = firstSection.body.getHeight() + headerCt.getHeight();
-            top = topLeft.top - offsetTop;
-
-            lhsMarker.setTop(top);
-            rhsMarker.setTop(top);
-            lhsMarker.setHeight(markerHeight);
-            rhsMarker.setHeight(markerHeight);
-            lhsMarker.setLeft(topLeft.left - offsetLeft);
-            rhsMarker.setLeft(topLeft.left + width - offsetLeft);
-        }
-    },
-
-    // synchronize the rhsMarker with the mouse movement
-    onDrag: function(e){
-        if (!this.dynamic) {
-            var xy          = this.tracker.getXY('point'),
-                gridSection = this.headerCt.up('[scrollerOwner]'),
-                rhsMarker   = gridSection.getRhsMarker(),
-                el          = rhsMarker.parent(),
-                topLeft     = el.translatePoints(xy),
-                offsetLeft  = el.getLocalX();
-
-            rhsMarker.setLeft(topLeft.left - offsetLeft);
-        // Resize as user interacts
-        } else {
-            this.doResize();
-        }
-    },
-
-    onEnd: function(e){
-        this.headerCt.dragging = false;
-        if (this.dragHd) {
-            if (!this.dynamic) {
-                var dragHd      = this.dragHd,
-                    gridSection = this.headerCt.up('[scrollerOwner]'),
-                    lhsMarker   = gridSection.getLhsMarker(),
-                    rhsMarker   = gridSection.getRhsMarker(),
-                    offscreen   = -9999;
-
-                // hide markers
-                lhsMarker.setLeft(offscreen);
-                rhsMarker.setLeft(offscreen);
-            }
-            this.doResize();
-        }
-    },
-
-    doResize: function() {
-        if (this.dragHd) {
-            var dragHd = this.dragHd,
-                nextHd,
-                offset = this.tracker.getOffset('point');
-
-            // resize the dragHd
-            if (dragHd.flex) {
-                delete dragHd.flex;
-            }
-
-            Ext.suspendLayouts();
-
-            // Set the new column width.
-            dragHd.setWidth(this.origWidth + offset[0]);
- 
-            // In the case of forceFit, change the following Header width.
-            // Constraining so that neither neighbour can be sized to below minWidth is handled in getConstrainRegion
-            if (this.headerCt.forceFit) {
-                nextHd = dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
-                if (nextHd) {
-                    delete nextHd.flex;
-                    nextHd.setWidth(nextHd.getWidth() - offset[0]);
-                }
-            }
-
-            // Apply the two width changes by laying out the owning HeaderContainer
-            Ext.resumeLayouts(true);
-        }
-    },
-
-    disable: function() {
-        this.disabled = true;
-        if (this.tracker) {
-            this.tracker.disable();
-        }
-    },
-
-    enable: function() {
-        this.disabled = false;
-        if (this.tracker) {
-            this.tracker.enable();
-        }
-    }
+Ext.define('PICS.ux.util.filter.ColumnFilterStoreFilter', {
+    extend: 'PICS.ux.util.filter.FilterMultipleColumn',
+    
+    property: [
+        'category',
+        'name'
+    ]
 });
 /**
  * @singleton
@@ -72514,147 +72256,6 @@ Ext.define('Ext.layout.container.Card', {
     }
 });
 
-/**
- * This class provides a container DD instance that allows dragging of multiple child source nodes.
- *
- * This class does not move the drag target nodes, but a proxy element which may contain any DOM structure you wish. The
- * DOM element to show in the proxy is provided by either a provided implementation of {@link #getDragData}, or by
- * registered draggables registered with {@link Ext.dd.Registry}
- *
- * If you wish to provide draggability for an arbitrary number of DOM nodes, each of which represent some application
- * object (For example nodes in a {@link Ext.view.View DataView}) then use of this class is the most efficient way to
- * "activate" those nodes.
- *
- * By default, this class requires that draggable child nodes are registered with {@link Ext.dd.Registry}. However a
- * simpler way to allow a DragZone to manage any number of draggable elements is to configure the DragZone with an
- * implementation of the {@link #getDragData} method which interrogates the passed mouse event to see if it has taken
- * place within an element, or class of elements. This is easily done by using the event's {@link
- * Ext.EventObject#getTarget getTarget} method to identify a node based on a {@link Ext.DomQuery} selector. For example,
- * to make the nodes of a DataView draggable, use the following technique. Knowledge of the use of the DataView is
- * required:
- *
- *     myDataView.on('render', function(v) {
- *         myDataView.dragZone = new Ext.dd.DragZone(v.getEl(), {
- *
- *     //      On receipt of a mousedown event, see if it is within a DataView node.
- *     //      Return a drag data object if so.
- *             getDragData: function(e) {
- *
- *     //          Use the DataView's own itemSelector (a mandatory property) to
- *     //          test if the mousedown is within one of the DataView's nodes.
- *                 var sourceEl = e.getTarget(v.itemSelector, 10);
- *
- *     //          If the mousedown is within a DataView node, clone the node to produce
- *     //          a ddel element for use by the drag proxy. Also add application data
- *     //          to the returned data object.
- *                 if (sourceEl) {
- *                     d = sourceEl.cloneNode(true);
- *                     d.id = Ext.id();
- *                     return {
- *                         ddel: d,
- *                         sourceEl: sourceEl,
- *                         repairXY: Ext.fly(sourceEl).getXY(),
- *                         sourceStore: v.store,
- *                         draggedRecord: v.{@link Ext.view.View#getRecord getRecord}(sourceEl)
- *                     }
- *                 }
- *             },
- *
- *     //      Provide coordinates for the proxy to slide back to on failed drag.
- *     //      This is the original XY coordinates of the draggable element captured
- *     //      in the getDragData method.
- *             getRepairXY: function() {
- *                 return this.dragData.repairXY;
- *             }
- *         });
- *     });
- *
- * See the {@link Ext.dd.DropZone DropZone} documentation for details about building a DropZone which cooperates with
- * this DragZone.
- */
-Ext.define('Ext.dd.DragZone', {
-    extend: 'Ext.dd.DragSource',
-
-    /**
-     * Creates new DragZone.
-     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
-     * @param {Object} config
-     */
-    constructor : function(el, config){
-        this.callParent([el, config]);
-        if (this.containerScroll) {
-            Ext.dd.ScrollManager.register(this.el);
-        }
-    },
-
-    /**
-     * @property {Object} dragData
-     * This property contains the data representing the dragged object. This data is set up by the implementation of the
-     * {@link #getDragData} method. It must contain a ddel property, but can contain any other data according to the
-     * application's needs.
-     */
-
-    /**
-     * @cfg {Boolean} containerScroll
-     * True to register this container with the Scrollmanager for auto scrolling during drag operations.
-     */
-
-    /**
-     * Called when a mousedown occurs in this container. Looks in {@link Ext.dd.Registry} for a valid target to drag
-     * based on the mouse down. Override this method to provide your own lookup logic (e.g. finding a child by class
-     * name). Make sure your returned object has a "ddel" attribute (with an HTML Element) for other functions to work.
-     * @param {Event} e The mouse down event
-     * @return {Object} The dragData
-     */
-    getDragData : function(e){
-        return Ext.dd.Registry.getHandleFromEvent(e);
-    },
-
-    /**
-     * Called once drag threshold has been reached to initialize the proxy element. By default, it clones the
-     * this.dragData.ddel
-     * @param {Number} x The x position of the click on the dragged object
-     * @param {Number} y The y position of the click on the dragged object
-     * @return {Boolean} true to continue the drag, false to cancel
-     * @template
-     */
-    onInitDrag : function(x, y){
-        this.proxy.update(this.dragData.ddel.cloneNode(true));
-        this.onStartDrag(x, y);
-        return true;
-    },
-
-    /**
-     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
-     * @template
-     */
-    afterRepair : function(){
-        var me = this;
-        if (Ext.enableFx) {
-            Ext.fly(me.dragData.ddel).highlight(me.repairHighlightColor);
-        }
-        me.dragging = false;
-    },
-
-    /**
-     * Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of
-     * this.dragData.ddel
-     * @param {Event} e The mouse up event
-     * @return {Number[]} The xy location (e.g. `[100, 200]`)
-     * @template
-     */
-    getRepairXY : function(e){
-        return Ext.fly(this.dragData.ddel).getXY();
-    },
-
-    destroy : function(){
-        this.callParent();
-        if (this.containerScroll) {
-            Ext.dd.ScrollManager.unregister(this.el);
-        }
-    }
-});
-
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
@@ -72691,6 +72292,1084 @@ Ext.define('PICS.model.report.Filter', {
         useNull: true
     }]
 });
+/**
+ * A feature is a type of plugin that is specific to the {@link Ext.grid.Panel}. It provides several
+ * hooks that allows the developer to inject additional functionality at certain points throughout the 
+ * grid creation cycle. This class provides the base template methods that are available to the developer,
+ * it should be extended.
+ * 
+ * There are several built in features that extend this class, for example:
+ *
+ *  - {@link Ext.grid.feature.Grouping} - Shows grid rows in groups as specified by the {@link Ext.data.Store}
+ *  - {@link Ext.grid.feature.RowBody} - Adds a body section for each grid row that can contain markup.
+ *  - {@link Ext.grid.feature.Summary} - Adds a summary row at the bottom of the grid with aggregate totals for a column.
+ * 
+ * ## Using Features
+ * A feature is added to the grid by specifying it an array of features in the configuration:
+ * 
+ *     var groupingFeature = Ext.create('Ext.grid.feature.Grouping');
+ *     Ext.create('Ext.grid.Panel', {
+ *         // other options
+ *         features: [groupingFeature]
+ *     });
+ * 
+ * @abstract
+ */
+Ext.define('Ext.grid.feature.Feature', {
+    extend: 'Ext.util.Observable',
+    alias: 'feature.feature',
+
+    /*
+     * @property {Boolean} isFeature
+     * `true` in this class to identify an object as an instantiated Feature, or subclass thereof.
+     */
+    isFeature: true,
+
+    /**
+     * True when feature is disabled.
+     */
+    disabled: false,
+
+    /**
+     * @property {Boolean}
+     * Most features will expose additional events, some may not and will
+     * need to change this to false.
+     */
+    hasFeatureEvent: true,
+
+    /**
+     * @property {String}
+     * Prefix to use when firing events on the view.
+     * For example a prefix of group would expose "groupclick", "groupcontextmenu", "groupdblclick".
+     */
+    eventPrefix: null,
+
+    /**
+     * @property {String}
+     * Selector used to determine when to fire the event with the eventPrefix.
+     */
+    eventSelector: null,
+
+    /**
+     * @property {Ext.view.Table}
+     * Reference to the TableView.
+     */
+    view: null,
+
+    /**
+     * @property {Ext.grid.Panel}
+     * Reference to the grid panel
+     */
+    grid: null,
+
+    /**
+     * Most features will not modify the data returned to the view.
+     * This is limited to one feature that manipulates the data per grid view.
+     */
+    collectData: false,
+    
+    constructor: function(config) {
+        this.initialConfig = config;
+        this.callParent(arguments);
+    },
+
+    clone: function() {
+        return new this.self(this.initialConfig);
+    },
+
+    init: Ext.emptyFn,
+
+    getFeatureTpl: function() {
+        return '';
+    },
+
+    /**
+     * Abstract method to be overriden when a feature should add additional
+     * arguments to its event signature. By default the event will fire:
+     *
+     * - view - The underlying Ext.view.Table
+     * - featureTarget - The matched element by the defined {@link #eventSelector}
+     *
+     * The method must also return the eventName as the first index of the array
+     * to be passed to fireEvent.
+     * @template
+     */
+    getFireEventArgs: function(eventName, view, featureTarget, e) {
+        return [eventName, view, featureTarget, e];
+    },
+
+    /**
+     * Approriate place to attach events to the view, selectionmodel, headerCt, etc
+     * @template
+     */
+    attachEvents: function() {
+
+    },
+
+    getFragmentTpl: Ext.emptyFn,
+
+    /**
+     * Allows a feature to mutate the metaRowTpl.
+     * The array received as a single argument can be manipulated to add things
+     * on the end/begining of a particular row.
+     * @param {Array} metaRowTplArray A String array to be used constructing an {@link Ext.XTemplate XTemplate}
+     * to render the rows. This Array may be changed to provide extra DOM structure.
+     * @template
+     */
+    mutateMetaRowTpl: Ext.emptyFn,
+
+    /**
+     * Allows a feature to inject member methods into the metaRowTpl. This is
+     * important for embedding functionality which will become part of the proper
+     * row tpl.
+     * @template
+     */
+    getMetaRowTplFragments: function() {
+        return {};
+    },
+
+    getTableFragments: function() {
+        return {};
+    },
+
+    /**
+     * Provide additional data to the prepareData call within the grid view.
+     * @param {Object} data The data for this particular record.
+     * @param {Number} idx The row index for this record.
+     * @param {Ext.data.Model} record The record instance
+     * @param {Object} orig The original result from the prepareData call to massage.
+     * @template
+     */
+    getAdditionalData: function(data, idx, record, orig) {
+        return {};
+    },
+
+    /**
+     * Enables the feature.
+     */
+    enable: function() {
+        this.disabled = false;
+    },
+
+    /**
+     * Disables the feature.
+     */
+    disable: function() {
+        this.disabled = true;
+    }
+
+});
+/**
+ * This feature allows to display the grid rows aggregated into groups as specified by the {@link Ext.data.Store#groupers}
+ * specified on the Store. The group will show the title for the group name and then the appropriate records for the group
+ * underneath. The groups can also be expanded and collapsed.
+ * 
+ * ## Extra Events
+ *
+ * This feature adds several extra events that will be fired on the grid to interact with the groups:
+ *
+ *  - {@link #groupclick}
+ *  - {@link #groupdblclick}
+ *  - {@link #groupcontextmenu}
+ *  - {@link #groupexpand}
+ *  - {@link #groupcollapse}
+ * 
+ * ## Menu Augmentation
+ *
+ * This feature adds extra options to the grid column menu to provide the user with functionality to modify the grouping.
+ * This can be disabled by setting the {@link #enableGroupingMenu} option. The option to disallow grouping from being turned off
+ * by the user is {@link #enableNoGroups}.
+ * 
+ * ## Controlling Group Text
+ *
+ * The {@link #groupHeaderTpl} is used to control the rendered title for each group. It can modified to customized
+ * the default display.
+ * 
+ * ## Example Usage
+ * 
+ *     @example
+ *     var store = Ext.create('Ext.data.Store', {
+ *         storeId:'employeeStore',
+ *         fields:['name', 'seniority', 'department'],
+ *         groupField: 'department',
+ *         data: {'employees':[
+ *             { "name": "Michael Scott",  "seniority": 7, "department": "Management" },
+ *             { "name": "Dwight Schrute", "seniority": 2, "department": "Sales" },
+ *             { "name": "Jim Halpert",    "seniority": 3, "department": "Sales" },
+ *             { "name": "Kevin Malone",   "seniority": 4, "department": "Accounting" },
+ *             { "name": "Angela Martin",  "seniority": 5, "department": "Accounting" }
+ *         ]},
+ *         proxy: {
+ *             type: 'memory',
+ *             reader: {
+ *                 type: 'json',
+ *                 root: 'employees'
+ *             }
+ *         }
+ *     });
+ *
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Employees',
+ *         store: Ext.data.StoreManager.lookup('employeeStore'),
+ *         columns: [
+ *             { text: 'Name',     dataIndex: 'name' },
+ *             { text: 'Seniority', dataIndex: 'seniority' }
+ *         ],
+ *         features: [{ftype:'grouping'}],
+ *         width: 200,
+ *         height: 275,
+ *         renderTo: Ext.getBody()
+ *     });
+ *
+ * **Note:** To use grouping with a grid that has {@link Ext.grid.column.Column#locked locked columns}, you need to supply
+ * the grouping feature as a config object - so the grid can create two instances of the grouping feature.
+ *
+ * @author Nicolas Ferrero
+ */
+Ext.define('Ext.grid.feature.Grouping', {
+    extend: 'Ext.grid.feature.Feature',
+    alias: 'feature.grouping',
+
+    eventPrefix: 'group',
+    eventSelector: '.' + Ext.baseCSSPrefix + 'grid-group-hd',
+    bodySelector: '.' + Ext.baseCSSPrefix + 'grid-group-body',
+
+    constructor: function() {
+        var me = this;
+
+        me.collapsedState = {};
+        me.callParent(arguments);
+    },
+    
+    /**
+     * @event groupclick
+     * @param {Ext.view.Table} view
+     * @param {HTMLElement} node
+     * @param {String} group The name of the group
+     * @param {Ext.EventObject} e
+     */
+
+    /**
+     * @event groupdblclick
+     * @param {Ext.view.Table} view
+     * @param {HTMLElement} node
+     * @param {String} group The name of the group
+     * @param {Ext.EventObject} e
+     */
+
+    /**
+     * @event groupcontextmenu
+     * @param {Ext.view.Table} view
+     * @param {HTMLElement} node
+     * @param {String} group The name of the group
+     * @param {Ext.EventObject} e
+     */
+
+    /**
+     * @event groupcollapse
+     * @param {Ext.view.Table} view
+     * @param {HTMLElement} node
+     * @param {String} group The name of the group
+     */
+
+    /**
+     * @event groupexpand
+     * @param {Ext.view.Table} view
+     * @param {HTMLElement} node
+     * @param {String} group The name of the group
+     */
+
+    /**
+     * @cfg {String/Array/Ext.Template} groupHeaderTpl
+     * A string Template snippet, an array of strings (optionally followed by an object containing Template methods) to be used to construct a Template, or a Template instance.
+     * 
+     * - Example 1 (Template snippet):
+     * 
+     *       groupHeaderTpl: 'Group: {name}'
+     *     
+     * - Example 2 (Array):
+     * 
+     *       groupHeaderTpl: [
+     *           'Group: ',
+     *           '<div>{name:this.formatName}</div>',
+     *           {
+     *               formatName: function(name) {
+     *                   return Ext.String.trim(name);
+     *               }
+     *           }
+     *       ]
+     *     
+     * - Example 3 (Template Instance):
+     * 
+     *       groupHeaderTpl: Ext.create('Ext.XTemplate',
+     *           'Group: ',
+     *           '<div>{name:this.formatName}</div>',
+     *           {
+     *               formatName: function(name) {
+     *                   return Ext.String.trim(name);
+     *               }
+     *           }
+     *       )
+     *
+     * @cfg {String}           groupHeaderTpl.groupField         The field name being grouped by.
+     * @cfg {String}           groupHeaderTpl.columnName         The column header associated with the field being grouped by *if there is a column for the field*, falls back to the groupField name.
+     * @cfg {Mixed}            groupHeaderTpl.groupValue         The value of the {@link Ext.data.Store#groupField groupField} for the group header being rendered.
+     * @cfg {String}           groupHeaderTpl.renderedGroupValue The rendered value of the {@link Ext.data.Store#groupField groupField} for the group header being rendered, as produced by the column renderer.
+     * @cfg {String}           groupHeaderTpl.name               An alias for renderedGroupValue
+     * @cfg {Object[]}         groupHeaderTpl.rows               An array of child row data objects as returned by the View's {@link Ext.view.AbstractView#prepareData prepareData} method.
+     * @cfg {Ext.data.Model[]} groupHeaderTpl.children           An array containing the child records for the group being rendered.
+     */
+    groupHeaderTpl: '{columnName}: {name}',
+    
+    /**
+     * @cfg {Number} [depthToIndent=17]
+     * Number of pixels to indent per grouping level
+     */
+    depthToIndent: 17,
+
+    collapsedCls: Ext.baseCSSPrefix + 'grid-group-collapsed',
+    hdCollapsedCls: Ext.baseCSSPrefix + 'grid-group-hd-collapsed',
+    hdCollapsibleCls: Ext.baseCSSPrefix + 'grid-group-hd-collapsible',
+
+    //<locale>
+    /**
+     * @cfg {String} [groupByText="Group by this field"]
+     * Text displayed in the grid header menu for grouping by header.
+     */
+    groupByText : 'Group by this field',
+    //</locale>
+    //<locale>
+    /**
+     * @cfg {String} [showGroupsText="Show in groups"]
+     * Text displayed in the grid header for enabling/disabling grouping.
+     */
+    showGroupsText : 'Show in groups',
+    //</locale>
+
+    /**
+     * @cfg {Boolean} [hideGroupedHeader=false]
+     * True to hide the header that is currently grouped.
+     */
+    hideGroupedHeader : false,
+
+    /**
+     * @cfg {Boolean} [startCollapsed=false]
+     * True to start all groups collapsed.
+     */
+    startCollapsed : false,
+
+    /**
+     * @cfg {Boolean} [enableGroupingMenu=true]
+     * True to enable the grouping control in the header menu.
+     */
+    enableGroupingMenu : true,
+
+    /**
+     * @cfg {Boolean} [enableNoGroups=true]
+     * True to allow the user to turn off grouping.
+     */
+    enableNoGroups : true,
+
+    /**
+     * @cfg {Boolean} [collapsible=true]
+     * Set to `falsee` to disable collapsing groups from the UI.
+     * 
+     * This is set to `false` when the associated {@link Ext.data.Store store} is 
+     * {@link Ext.data.Store#buffered buffered}.
+     */
+    collapsible: true,
+
+    enable: function() {
+        var me    = this,
+            view  = me.view,
+            store = view.store,
+            groupToggleMenuItem;
+
+        me.lastGroupField = me.getGroupField();
+
+        if (me.lastGroupIndex) {
+            me.block();
+            store.group(me.lastGroupIndex);
+            me.unblock();
+        }
+        me.callParent();
+        groupToggleMenuItem = me.view.headerCt.getMenu().down('#groupToggleMenuItem');
+        groupToggleMenuItem.setChecked(true, true);
+        me.refreshIf();
+    },
+
+    disable: function() {
+        var me    = this,
+            view  = me.view,
+            store = view.store,
+            remote = store.remoteGroup,
+            groupToggleMenuItem,
+            lastGroup;
+
+        lastGroup = store.groupers.first();
+        if (lastGroup) {
+            me.lastGroupIndex = lastGroup.property;
+            me.block();
+            store.clearGrouping();
+            me.unblock();
+        }
+
+        me.callParent();
+        groupToggleMenuItem = me.view.headerCt.getMenu().down('#groupToggleMenuItem');
+        groupToggleMenuItem.setChecked(true, true);
+        groupToggleMenuItem.setChecked(false, true);
+        me.refreshIf();
+    },
+
+    refreshIf: function() {
+        var ownerCt = this.grid.ownerCt,
+            view = this.view;
+            
+        if (!view.store.remoteGroup && !this.blockRefresh) {
+
+            // We are one side of a lockable grid, so refresh the locking view
+            if (ownerCt && ownerCt.lockable) {
+                ownerCt.view.refresh();
+            } else {
+                view.refresh();
+            }
+        }
+    },
+
+    getFeatureTpl: function(values, parent, x, xcount) {
+        return [
+            '<tpl if="typeof rows !== \'undefined\'">',
+                // group row tpl
+                '<tr id="{groupHeaderId}" class="' + Ext.baseCSSPrefix + 'grid-group-hd {hdCollapsedCls} {collapsibleClass}"><td class="' + Ext.baseCSSPrefix + 'grid-cell" colspan="' + parent.columns.length + '" {[this.indentByDepth(values)]}><div class="' + Ext.baseCSSPrefix + 'grid-cell-inner"><div class="' + Ext.baseCSSPrefix + 'grid-group-title">{collapsed}{[this.renderGroupHeaderTpl(values, parent)]}</div></div></td></tr>',
+                // this is the rowbody
+                '<tr id="{groupBodyId}" class="' + Ext.baseCSSPrefix + 'grid-group-body {collapsedCls}"><td colspan="' + parent.columns.length + '">{[this.recurse(values)]}</td></tr>',
+            '</tpl>'
+        ].join('');
+    },
+
+    getFragmentTpl: function() {
+        var me = this;
+        return {
+            indentByDepth: me.indentByDepth,
+            depthToIndent: me.depthToIndent,
+            renderGroupHeaderTpl: function(values, parent) {
+                return Ext.XTemplate.getTpl(me, 'groupHeaderTpl').apply(values, parent);
+            }
+        };
+    },
+
+    indentByDepth: function(values) {
+        return 'style="padding-left:'+ ((values.depth || 0) * this.depthToIndent) + 'px;"';
+    },
+
+    // Containers holding these components are responsible for
+    // destroying them, we are just deleting references.
+    destroy: function() {
+        delete this.view;
+        delete this.prunedHeader;
+    },
+
+    // perhaps rename to afterViewRender
+    attachEvents: function() {
+        var me = this,
+            view = me.view;
+
+        view.on({
+            scope: me,
+            groupclick: me.onGroupClick,
+            rowfocus: me.onRowFocus
+        });
+
+        view.mon(view.store, {
+            scope: me,
+            groupchange: me.onGroupChange,
+            remove: me.onRemove,
+            add: me.onAdd,
+            update: me.onUpdate
+        });
+
+        if (me.enableGroupingMenu) {
+            me.injectGroupingMenu();
+        }
+
+        me.pruneGroupedHeader();
+
+        me.lastGroupField = me.getGroupField();
+        me.block();
+        me.onGroupChange();
+        me.unblock();
+    },
+
+    // If we add a new item that doesn't belong to a rendered group, refresh the view
+    onAdd: function(store, records){
+        var me = this,
+            view = me.view,
+            groupField = me.getGroupField(),
+            i = 0,
+            len = records.length,
+            activeGroups,
+            addedGroups,
+            groups,
+            needsRefresh,
+            group;
+
+        if (view.rendered) {
+            addedGroups = {};
+            activeGroups = {};
+
+            for (; i < len; ++i) {
+                group = records[i].get(groupField);
+                if (addedGroups[group] === undefined) {
+                    addedGroups[group] = 0;
+                }
+                addedGroups[group] += 1;
+            }
+            groups = store.getGroups();
+            for (i = 0, len = groups.length; i < len; ++i) {
+                group = groups[i];
+                activeGroups[group.name] = group.children.length;
+            }
+
+            for (group in addedGroups) {
+                if (addedGroups[group] === activeGroups[group]) {
+                    needsRefresh = true;
+                    break;
+                }
+            }
+            
+            if (needsRefresh) {
+                view.refresh();
+            }
+        }
+    },
+
+    onUpdate: function(store, record, type, changedFields){
+        var view = this.view;
+        if (view.rendered && !changedFields || Ext.Array.contains(changedFields, this.getGroupField())) {
+            view.refresh();
+        }
+    },
+
+    onRemove: function(store, record) {
+        var me = this,
+            groupField = me.getGroupField(),
+            removedGroup = record.get(groupField),
+            view = me.view;
+
+        if (view.rendered) {
+            // If that was the last one in the group, force a refresh
+            if (store.findExact(groupField, removedGroup) === -1) {
+                me.view.refresh(); 
+            }
+        }
+    },
+
+    injectGroupingMenu: function() {
+        var me       = this,
+            headerCt = me.view.headerCt;
+
+        headerCt.showMenuBy = me.showMenuBy;
+        headerCt.getMenuItems = me.getMenuItems();
+    },
+
+    showMenuBy: function(t, header) {
+        var menu = this.getMenu(),
+            groupMenuItem  = menu.down('#groupMenuItem'),
+            groupableMth = header.groupable === false ?  'disable' : 'enable';
+            
+        groupMenuItem[groupableMth]();
+        Ext.grid.header.Container.prototype.showMenuBy.apply(this, arguments);
+    },
+
+    getMenuItems: function() {
+        var me                 = this,
+            groupByText        = me.groupByText,
+            disabled           = me.disabled || !me.getGroupField(),
+            showGroupsText     = me.showGroupsText,
+            enableNoGroups     = me.enableNoGroups,
+            getMenuItems       = me.view.headerCt.getMenuItems;
+
+        // runs in the scope of headerCt
+        return function() {
+
+            // We cannot use the method from HeaderContainer's prototype here
+            // because other plugins or features may already have injected an implementation
+            var o = getMenuItems.call(this);
+            o.push('-', {
+                iconCls: Ext.baseCSSPrefix + 'group-by-icon',
+                itemId: 'groupMenuItem',
+                text: groupByText,
+                handler: me.onGroupMenuItemClick,
+                scope: me
+            });
+            if (enableNoGroups) {
+                o.push({
+                    itemId: 'groupToggleMenuItem',
+                    text: showGroupsText,
+                    checked: !disabled,
+                    checkHandler: me.onGroupToggleMenuItemClick,
+                    scope: me
+                });
+            }
+            return o;
+        };
+    },
+
+    /**
+     * Group by the header the user has clicked on.
+     * @private
+     */
+    onGroupMenuItemClick: function(menuItem, e) {
+        var me = this,
+            menu = menuItem.parentMenu,
+            hdr  = menu.activeHeader,
+            view = me.view,
+            store = view.store;
+
+        delete me.lastGroupIndex;
+        me.block();
+        me.enable();
+        store.group(hdr.dataIndex);
+        me.pruneGroupedHeader();
+        me.unblock();
+        me.refreshIf();
+    },
+
+    block: function(){
+        this.blockRefresh = this.view.blockRefresh = true;
+    },
+
+    unblock: function(){
+        this.blockRefresh = this.view.blockRefresh = false;
+    },
+
+    /**
+     * Turn on and off grouping via the menu
+     * @private
+     */
+    onGroupToggleMenuItemClick: function(menuItem, checked) {
+        this[checked ? 'enable' : 'disable']();
+    },
+
+    /**
+     * Prunes the grouped header from the header container
+     * @private
+     */
+    pruneGroupedHeader: function() {
+        var me = this,
+            header = me.getGroupedHeader();
+
+        if (me.hideGroupedHeader && header) {
+            if (me.prunedHeader) {
+                me.prunedHeader.show();
+            }
+            me.prunedHeader = header;
+            header.hide();
+        }
+    },
+
+    getGroupedHeader: function(){
+        var groupField = this.getGroupField(),
+            headerCt = this.view.headerCt;
+
+        return groupField ? headerCt.down('[dataIndex=' + groupField + ']') : null;
+    },
+
+    getGroupField: function(){
+        var group = this.view.store.groupers.first();
+        if (group) {
+            return group.property;
+        }
+        return ''; 
+    },
+
+    /**
+     * When a row gains focus, expand the groups above it
+     * @private
+     */
+    onRowFocus: function(rowIdx) {
+        var node    = this.view.getNode(rowIdx),
+            groupBd = Ext.fly(node).up('.' + this.collapsedCls);
+
+        if (groupBd) {
+            // for multiple level groups, should expand every groupBd
+            // above
+            this.expand(groupBd);
+        }
+    },
+
+    /**
+     * Returns `true` if the named group is expanded.
+     * @param {String} groupName The group name as returned from {@link Ext.data.Store#getGroupString getGroupString}. This is usually the value of
+     * the {@link Ext.data.Store#groupField groupField}.
+     * @return {Boolean} `true` if the group defined by that value is expanded.
+     */
+    isExpanded: function(groupName) {
+        return (this.collapsedState[groupName] === false);
+    },
+
+    /**
+     * Expand a group
+     * @param {String/Ext.Element} groupName The group name, or the element that contains the group body
+     * @param {Boolean} focus Pass `true` to focus the group after expand.
+     */
+    expand: function(groupName, focus, /*private*/ preventSizeCalculation) {
+        var me = this,
+            view = me.view,
+            groupHeader,
+            groupBody,
+            lockingPartner = me.lockingPartner;
+
+        // We've been passed the group name
+        if (Ext.isString(groupName)) {
+            groupBody = Ext.fly(me.getGroupBodyId(groupName), '_grouping');
+        }
+        // We've been passed an element
+        else {
+            groupBody = Ext.fly(groupName, '_grouping')
+            groupName = me.getGroupName(groupBody);
+        }
+        groupHeader = Ext.get(me.getGroupHeaderId(groupName));
+
+        // If we are collapsed...
+        if (me.collapsedState[groupName]) {
+            groupBody.removeCls(me.collapsedCls);
+            groupBody.prev().removeCls(me.hdCollapsedCls);
+
+            if (preventSizeCalculation !== true) {
+                view.refreshSize();
+            }
+            view.fireEvent('groupexpand', view, groupHeader, groupName);
+            me.collapsedState[groupName] = false;
+
+            // If we are one side of a locking view, the other side has to stay in sync
+            if (lockingPartner) {
+                lockingPartner.expand(groupName, focus, preventSizeCalculation);
+            }
+            if (focus) {
+                groupBody.scrollIntoView(view.el, null, true);
+            }
+        }
+    },
+
+    /**
+     * Expand all groups
+     */
+    expandAll: function(){
+        var me   = this,
+            view = me.view,
+            els  = view.el.select(me.eventSelector).elements,
+            e,
+            eLen = els.length;
+
+        for (e = 0; e < eLen; e++) {
+            me.expand(Ext.fly(els[e]).next(), false, true);
+        }
+
+        view.refreshSize();
+    },
+
+    /**
+     * Collapse a group
+     * @param {String/Ext.Element} groupName The group name, or the element that contains group body
+     * @param {Boolean} focus Pass `true` to focus the group after expand.
+     */
+    collapse: function(groupName, focus, /*private*/ preventSizeCalculation) {
+        var me = this,
+            view = me.view,
+            groupHeader,
+            groupBody,
+            lockingPartner = me.lockingPartner;
+
+        // We've been passed the group name
+        if (Ext.isString(groupName)) {
+            groupBody = Ext.fly(me.getGroupBodyId(groupName), '_grouping');
+        }
+        // We've been passed an element
+        else {
+            groupBody = Ext.fly(groupName, '_grouping')
+            groupName = me.getGroupName(groupBody);
+        }
+        groupHeader = Ext.get(me.getGroupHeaderId(groupName));
+ 
+        // If we are not collapsed...
+        if (!me.collapsedState[groupName]) {
+            groupBody.addCls(me.collapsedCls);
+            groupBody.prev().addCls(me.hdCollapsedCls);
+
+            if (preventSizeCalculation !== true) {
+                view.refreshSize();
+            }
+            view.fireEvent('groupcollapse', view, groupHeader, groupName);
+            me.collapsedState[groupName] = true;
+
+            // If we are one side of a locking view, the other side has to stay in sync
+            if (lockingPartner) {
+                lockingPartner.collapse(groupName, focus, preventSizeCalculation);
+            }
+            if (focus) {
+                groupHeader.scrollIntoView(view.el, null, true);
+            }
+        }
+    },
+
+    /**
+     * Collapse all groups
+     */
+    collapseAll: function() {
+        var me     = this,
+            view   = me.view,
+            els    = view.el.select(me.eventSelector).elements,
+            e,
+            eLen   = els.length;
+
+        for (e = 0; e < eLen; e++) {
+            me.collapse(Ext.fly(els[e]).next(), false, true);
+        }
+
+        view.refreshSize();
+    },
+
+    onGroupChange: function(){
+        var me = this,
+            field = me.getGroupField(),
+            menuItem,
+            visibleGridColumns,
+            groupingByLastVisibleColumn;
+
+        if (me.hideGroupedHeader) {
+            if (me.lastGroupField) {
+                menuItem = me.getMenuItem(me.lastGroupField);
+                if (menuItem) {
+                    menuItem.setChecked(true);
+                }
+            }
+            if (field) {
+                visibleGridColumns = me.view.headerCt.getVisibleGridColumns();
+
+                // See if we are being asked to group by the sole remaining visible column.
+                // If so, then do not hide that column.
+                groupingByLastVisibleColumn = ((visibleGridColumns.length === 1) && (visibleGridColumns[0].dataIndex == field));
+                menuItem = me.getMenuItem(field);
+                if (menuItem && !groupingByLastVisibleColumn) {
+                    menuItem.setChecked(false);
+                }
+            }
+        }
+        me.refreshIf();
+        me.lastGroupField = field;
+    },
+
+    /**
+     * Gets the related menu item for a dataIndex
+     * @private
+     * @return {Ext.grid.header.Container} The header
+     */
+    getMenuItem: function(dataIndex){
+        var view = this.view,
+            header = view.headerCt.down('gridcolumn[dataIndex=' + dataIndex + ']'),
+            menu = view.headerCt.getMenu();
+
+        return header ? menu.down('menuitem[headerId='+ header.id +']') : null;
+    },
+
+    /**
+     * Toggle between expanded/collapsed state when clicking on
+     * the group.
+     * @private
+     */
+    onGroupClick: function(view, rowElement, groupName, e) {
+        var me = this;
+
+        if (me.collapsible) {
+            if (me.collapsedState[groupName]) {
+                me.expand(groupName);
+            } else {
+                me.collapse(groupName);
+            }
+        }
+    },
+
+    // Injects isRow and closeRow into the metaRowTpl.
+    getMetaRowTplFragments: function() {
+        return {
+            isRow: this.isRow,
+            closeRow: this.closeRow
+        };
+    },
+
+    // injected into rowtpl and wrapped around metaRowTpl
+    // becomes part of the standard tpl
+    isRow: function() {
+        return '<tpl if="typeof rows === \'undefined\'">';
+    },
+
+    // injected into rowtpl and wrapped around metaRowTpl
+    // becomes part of the standard tpl
+    closeRow: function() {
+        return '</tpl>';
+    },
+
+    // isRow and closeRow are injected via getMetaRowTplFragments
+    mutateMetaRowTpl: function(metaRowTpl) {
+        metaRowTpl.unshift('{[this.isRow()]}');
+        metaRowTpl.push('{[this.closeRow()]}');
+    },
+
+    // injects an additional style attribute via tdAttrKey with the proper
+    // amount of padding
+    getAdditionalData: function(data, idx, record, orig) {
+        var view = this.view,
+            hCt  = view.headerCt,
+            col  = hCt.items.getAt(0),
+            o = {},
+            tdAttrKey;
+
+        // If there *are* any columne in this grid (possible empty side of a locking grid)...
+        // Add the padding-left style to indent the row according to grouping depth.
+        // Preserve any current tdAttr that a user may have set.
+        if (col) {
+            tdAttrKey = col.id + '-tdAttr';
+            o[tdAttrKey] = this.indentByDepth(data) + " " + (orig[tdAttrKey] ? orig[tdAttrKey] : '');
+            o.collapsed = 'true';
+            o.data = record.getData();
+        }
+        return o;
+    },
+
+    // return matching preppedRecords
+    getGroupRows: function(group, records, preppedRecords, fullWidth) {
+        var me = this,
+            children = group.children,
+            rows = group.rows = [],
+            view = me.view,
+            header = me.getGroupedHeader(),
+            groupField = me.getGroupField(),
+            index = -1,
+            r,
+            rLen = records.length,
+            record;
+            
+        // Buffered rendering implies that user collapsing is disabled.
+        if (view.store.buffered) {
+            me.collapsible = false;
+        }
+            
+        group.viewId = view.id;
+
+        for (r = 0; r < rLen; r++) {
+            record = records[r];
+
+            if (record.get(groupField) == group.name) {
+                index = r;
+            }
+            if (Ext.Array.indexOf(children, record) != -1) {
+                rows.push(Ext.apply(preppedRecords[r], {
+                    depth : 1
+                }));
+            }
+        }
+
+        group.groupField = groupField,
+        group.groupHeaderId = me.getGroupHeaderId(group.name);
+        group.groupBodyId = me.getGroupBodyId(group.name);
+        group.fullWidth = fullWidth;
+        group.columnName = header ? header.text : groupField;
+        group.groupValue = group.name;
+
+        // Here we attempt to overwrite the group name value from the Store with
+        // the get the rendered value of the column from the *prepped* record
+        if (header && index > -1) {
+            group.name = group.renderedValue = preppedRecords[index][header.id];
+        }
+        if (me.collapsedState[group.name]) {
+            group.collapsedCls = me.collapsedCls;
+            group.hdCollapsedCls = me.hdCollapsedCls;
+        } else {
+            group.collapsedCls = group.hdCollapsedCls = '';
+        }
+
+        // Collapsibility of groups may be disabled.
+        if (me.collapsible) {
+            group.collapsibleClass = me.hdCollapsibleCls;
+        } else {
+            group.collapsibleClass = '';
+        }
+
+        return group;
+    },
+
+    // Create an associated DOM id for the group's header element given the group name
+    getGroupHeaderId: function(groupName) {
+        return this.view.id + '-hd-' + groupName;
+    },
+
+    // Create an associated DOM id for the group's body element given the group name
+    getGroupBodyId: function(groupName) {
+        return this.view.id + '-bd-' + groupName;
+    },
+
+    // Get the group name from an associated element whether it's within a header or a body
+    getGroupName: function(element) {
+        var me = this,
+            targetEl;
+                
+        // See if element is, or is within a group header. If so, we can extract its name
+        targetEl = Ext.fly(element).findParent(me.eventSelector);
+        if (targetEl) {
+            return targetEl.id.split(this.view.id + '-hd-')[1];
+        }
+
+        // See if element is, or is within a group body. If so, we can extract its name
+        targetEl = Ext.fly(element).findParent(me.bodySelector);
+        if (targetEl) {
+            return targetEl.id.split(this.view.id + '-bd-')[1];
+        }
+    },
+
+    // return the data in a grouped format.
+    collectData: function(records, preppedRecords, startIndex, fullWidth, o) {
+        var me    = this,
+            store = me.view.store,
+            collapsedState = me.collapsedState,
+            collapseGroups,
+            g,
+            groups, gLen, group;
+
+        if (me.startCollapsed) {
+            // If we start collapse, we'll set the state of the groups here
+            // and unset the flag so any subsequent expand/collapse is
+            // managed by the feature
+            me.startCollapsed = false;
+            collapseGroups = true;
+        }
+
+        if (!me.disabled && store.isGrouped()) {
+            o.rows = groups = store.getGroups();
+            gLen   = groups.length;
+
+            for (g = 0; g < gLen; g++) {
+                group = groups[g];
+                
+                if (collapseGroups) {
+                    collapsedState[group.name] = true;
+                }
+
+                me.getGroupRows(group, records, preppedRecords, fullWidth);
+            }
+        }
+        return o;
+    },
+
+    // adds the groupName to the groupclick, groupdblclick, groupcontextmenu
+    // events that are fired on the view. Chose not to return the actual
+    // group itself because of its expense and because developers can simply
+    // grab the group via store.getGroups(groupName)
+    getFireEventArgs: function(type, view, targetEl, e) {
+        return [type, view, targetEl, this.getGroupName(targetEl), e];
+    }
+});
+
 /**
  * A mixin which allows a component to be configured and decorated with a label and/or error message as is
  * common for form fields. This is used by e.g. Ext.form.field.Base and Ext.form.FieldContainer
@@ -74584,6 +75263,95 @@ Ext.define('Ext.layout.component.field.Trigger', {
 });
 
 /**
+ * The AbstractPlugin class is the base class from which user-implemented plugins should inherit.
+ *
+ * This class defines the essential API of plugins as used by Components by defining the following methods:
+ *
+ *   - `init` : The plugin initialization method which the owning Component calls at Component initialization time.
+ *
+ *     The Component passes itself as the sole parameter.
+ *
+ *     Subclasses should set up bidirectional links between the plugin and its client Component here.
+ *
+ *   - `destroy` : The plugin cleanup method which the owning Component calls at Component destruction time.
+ *
+ *     Use this method to break links between the plugin and the Component and to free any allocated resources.
+ *
+ *   - `enable` : The base implementation just sets the plugin's `disabled` flag to `false`
+ *
+ *   - `disable` : The base implementation just sets the plugin's `disabled` flag to `true`
+ */
+Ext.define('Ext.AbstractPlugin', {
+    disabled: false,
+
+    constructor: function(config) {
+        this.initialConfig = config;
+        Ext.apply(this, config);
+    },
+
+    clone: function() {
+        return new this.self(this.initialConfig);
+    },
+
+    getCmp: function() {
+        return this.cmp;
+    },
+
+    /**
+     * @cfg {String} pluginId
+     * A name for the plugin that can be set at creation time to then retrieve the plugin
+     * through {@link Ext.AbstractComponent#getPlugin getPlugin} method.  For example:
+     *
+     *     var grid = Ext.create('Ext.grid.Panel', {
+     *         plugins: [{
+     *             ptype: 'cellediting',
+     *             clicksToEdit: 2,
+     *             pluginId: 'cellplugin'
+     *         }]
+     *     });
+     *
+     *     // later on:
+     *     var plugin = grid.getPlugin('cellplugin');
+     */
+
+    /**
+     * @method
+     * The init method is invoked after initComponent method has been run for the client Component.
+     *
+     * The supplied implementation is empty. Subclasses should perform plugin initialization, and set up bidirectional
+     * links between the plugin and its client Component in their own implementation of this method.
+     * @param {Ext.Component} client The client Component which owns this plugin.
+     */
+    init: Ext.emptyFn,
+
+    /**
+     * @method
+     * The destroy method is invoked by the owning Component at the time the Component is being destroyed.
+     *
+     * The supplied implementation is empty. Subclasses should perform plugin cleanup in their own implementation of
+     * this method.
+     */
+    destroy: Ext.emptyFn,
+
+    /**
+     * The base implementation just sets the plugin's `disabled` flag to `false`
+     *
+     * Plugin subclasses which need more complex processing may implement an overriding implementation.
+     */
+    enable: function() {
+        this.disabled = false;
+    },
+
+    /**
+     * The base implementation just sets the plugin's `disabled` flag to `true`
+     *
+     * Plugin subclasses which need more complex processing may implement an overriding implementation.
+     */
+    disable: function() {
+        this.disabled = true;
+    }
+});
+/**
  * The subclasses of this class provide actions to perform upon {@link Ext.form.Basic Form}s.
  *
  * Instances of this class are only created by a {@link Ext.form.Basic Form} when the Form needs to perform an action
@@ -74891,123 +75659,6 @@ Ext.define('Ext.form.action.Action', {
     }
 });
 
-/**
- * Provides easy access to all drag drop components that are registered on a page. Items can be retrieved either
- * directly by DOM node id, or by passing in the drag drop event that occurred and looking up the event target.
- */
-Ext.define('Ext.dd.Registry', {
-    singleton: true,
-    constructor: function() {
-        this.elements = {}; 
-        this.handles = {}; 
-        this.autoIdSeed = 0;
-    },
-    
-    getId: function(el, autogen){
-        if(typeof el == "string"){
-            return el;
-        }
-        var id = el.id;
-        if(!id && autogen !== false){
-            id = "extdd-" + (++this.autoIdSeed);
-            el.id = id;
-        }
-        return id;
-    },
-    
-    /**
-     * Registers a drag drop element.
-     *
-     * @param {String/HTMLElement} element The id or DOM node to register
-     * @param {Object} data An custom data object that will be passed between the elements that are involved in drag
-     * drop operations. You can populate this object with any arbitrary properties that your own code knows how to
-     * interpret, plus there are some specific properties known to the Registry that should be populated in the data
-     * object (if applicable):
-     * @param {HTMLElement[]} data.handles Array of DOM nodes that trigger dragging for the element being registered.
-     * @param {Boolean} data.isHandle True if the element passed in triggers dragging itself, else false.
-     */
-    register : function(el, data){
-        data = data || {};
-        if (typeof el == "string") {
-            el = document.getElementById(el);
-        }
-        data.ddel = el;
-        this.elements[this.getId(el)] = data;
-        if (data.isHandle !== false) {
-            this.handles[data.ddel.id] = data;
-        }
-        if (data.handles) {
-            var hs = data.handles,
-                i, len;
-            for (i = 0, len = hs.length; i < len; i++) {
-                this.handles[this.getId(hs[i])] = data;
-            }
-        }
-    },
-
-    /**
-     * Unregister a drag drop element
-     * @param {String/HTMLElement} element The id or DOM node to unregister
-     */
-    unregister : function(el){
-        var id = this.getId(el, false),
-            data = this.elements[id],
-            hs, i, len;
-        if(data){
-            delete this.elements[id];
-            if(data.handles){
-                hs = data.handles;
-                for (i = 0, len = hs.length; i < len; i++) {
-                    delete this.handles[this.getId(hs[i], false)];
-                }
-            }
-        }
-    },
-
-    /**
-     * Returns the handle registered for a DOM Node by id
-     * @param {String/HTMLElement} id The DOM node or id to look up
-     * @return {Object} handle The custom handle data
-     */
-    getHandle : function(id){
-        if(typeof id != "string"){ // must be element?
-            id = id.id;
-        }
-        return this.handles[id];
-    },
-
-    /**
-     * Returns the handle that is registered for the DOM node that is the target of the event
-     * @param {Event} e The event
-     * @return {Object} handle The custom handle data
-     */
-    getHandleFromEvent : function(e){
-        var t = e.getTarget();
-        return t ? this.handles[t.id] : null;
-    },
-
-    /**
-     * Returns a custom data object that is registered for a DOM node by id
-     * @param {String/HTMLElement} id The DOM node or id to look up
-     * @return {Object} data The custom data
-     */
-    getTarget : function(id){
-        if(typeof id != "string"){ // must be element?
-            id = id.id;
-        }
-        return this.elements[id];
-    },
-
-    /**
-     * Returns a custom data object that is registered for the DOM node that is the target of the event
-     * @param {Event} e The event
-     * @return {Object} data The custom data
-     */
-    getTargetFromEvent : function(e){
-        var t = e.getTarget();
-        return t ? this.elements[t.id] || this.handles[t.id] : null;
-    }
-});
 Ext.define('PICS.model.report.Sort', {
     extend: 'Ext.data.Model',
 
@@ -75821,6 +76472,272 @@ Ext.define('Ext.selection.DataViewModel', {
     }
 });
 
+/**
+ * This class provides a container DD instance that allows dragging of multiple child source nodes.
+ *
+ * This class does not move the drag target nodes, but a proxy element which may contain any DOM structure you wish. The
+ * DOM element to show in the proxy is provided by either a provided implementation of {@link #getDragData}, or by
+ * registered draggables registered with {@link Ext.dd.Registry}
+ *
+ * If you wish to provide draggability for an arbitrary number of DOM nodes, each of which represent some application
+ * object (For example nodes in a {@link Ext.view.View DataView}) then use of this class is the most efficient way to
+ * "activate" those nodes.
+ *
+ * By default, this class requires that draggable child nodes are registered with {@link Ext.dd.Registry}. However a
+ * simpler way to allow a DragZone to manage any number of draggable elements is to configure the DragZone with an
+ * implementation of the {@link #getDragData} method which interrogates the passed mouse event to see if it has taken
+ * place within an element, or class of elements. This is easily done by using the event's {@link
+ * Ext.EventObject#getTarget getTarget} method to identify a node based on a {@link Ext.DomQuery} selector. For example,
+ * to make the nodes of a DataView draggable, use the following technique. Knowledge of the use of the DataView is
+ * required:
+ *
+ *     myDataView.on('render', function(v) {
+ *         myDataView.dragZone = new Ext.dd.DragZone(v.getEl(), {
+ *
+ *     //      On receipt of a mousedown event, see if it is within a DataView node.
+ *     //      Return a drag data object if so.
+ *             getDragData: function(e) {
+ *
+ *     //          Use the DataView's own itemSelector (a mandatory property) to
+ *     //          test if the mousedown is within one of the DataView's nodes.
+ *                 var sourceEl = e.getTarget(v.itemSelector, 10);
+ *
+ *     //          If the mousedown is within a DataView node, clone the node to produce
+ *     //          a ddel element for use by the drag proxy. Also add application data
+ *     //          to the returned data object.
+ *                 if (sourceEl) {
+ *                     d = sourceEl.cloneNode(true);
+ *                     d.id = Ext.id();
+ *                     return {
+ *                         ddel: d,
+ *                         sourceEl: sourceEl,
+ *                         repairXY: Ext.fly(sourceEl).getXY(),
+ *                         sourceStore: v.store,
+ *                         draggedRecord: v.{@link Ext.view.View#getRecord getRecord}(sourceEl)
+ *                     }
+ *                 }
+ *             },
+ *
+ *     //      Provide coordinates for the proxy to slide back to on failed drag.
+ *     //      This is the original XY coordinates of the draggable element captured
+ *     //      in the getDragData method.
+ *             getRepairXY: function() {
+ *                 return this.dragData.repairXY;
+ *             }
+ *         });
+ *     });
+ *
+ * See the {@link Ext.dd.DropZone DropZone} documentation for details about building a DropZone which cooperates with
+ * this DragZone.
+ */
+Ext.define('Ext.dd.DragZone', {
+    extend: 'Ext.dd.DragSource',
+
+    /**
+     * Creates new DragZone.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
+     * @param {Object} config
+     */
+    constructor : function(el, config){
+        this.callParent([el, config]);
+        if (this.containerScroll) {
+            Ext.dd.ScrollManager.register(this.el);
+        }
+    },
+
+    /**
+     * @property {Object} dragData
+     * This property contains the data representing the dragged object. This data is set up by the implementation of the
+     * {@link #getDragData} method. It must contain a ddel property, but can contain any other data according to the
+     * application's needs.
+     */
+
+    /**
+     * @cfg {Boolean} containerScroll
+     * True to register this container with the Scrollmanager for auto scrolling during drag operations.
+     */
+
+    /**
+     * Called when a mousedown occurs in this container. Looks in {@link Ext.dd.Registry} for a valid target to drag
+     * based on the mouse down. Override this method to provide your own lookup logic (e.g. finding a child by class
+     * name). Make sure your returned object has a "ddel" attribute (with an HTML Element) for other functions to work.
+     * @param {Event} e The mouse down event
+     * @return {Object} The dragData
+     */
+    getDragData : function(e){
+        return Ext.dd.Registry.getHandleFromEvent(e);
+    },
+
+    /**
+     * Called once drag threshold has been reached to initialize the proxy element. By default, it clones the
+     * this.dragData.ddel
+     * @param {Number} x The x position of the click on the dragged object
+     * @param {Number} y The y position of the click on the dragged object
+     * @return {Boolean} true to continue the drag, false to cancel
+     * @template
+     */
+    onInitDrag : function(x, y){
+        this.proxy.update(this.dragData.ddel.cloneNode(true));
+        this.onStartDrag(x, y);
+        return true;
+    },
+
+    /**
+     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
+     * @template
+     */
+    afterRepair : function(){
+        var me = this;
+        if (Ext.enableFx) {
+            Ext.fly(me.dragData.ddel).highlight(me.repairHighlightColor);
+        }
+        me.dragging = false;
+    },
+
+    /**
+     * Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of
+     * this.dragData.ddel
+     * @param {Event} e The mouse up event
+     * @return {Number[]} The xy location (e.g. `[100, 200]`)
+     * @template
+     */
+    getRepairXY : function(e){
+        return Ext.fly(this.dragData.ddel).getXY();
+    },
+
+    destroy : function(){
+        this.callParent();
+        if (this.containerScroll) {
+            Ext.dd.ScrollManager.unregister(this.el);
+        }
+    }
+});
+
+Ext.define('PICS.view.report.report.ColumnTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.columntooltip',
+    
+    anchor: 'bottom',
+    showDelay: 0,
+    tpl: '<div><h3>{name}</h3><p>{description}</p></div>'
+});
+/**
+ * Provides easy access to all drag drop components that are registered on a page. Items can be retrieved either
+ * directly by DOM node id, or by passing in the drag drop event that occurred and looking up the event target.
+ */
+Ext.define('Ext.dd.Registry', {
+    singleton: true,
+    constructor: function() {
+        this.elements = {}; 
+        this.handles = {}; 
+        this.autoIdSeed = 0;
+    },
+    
+    getId: function(el, autogen){
+        if(typeof el == "string"){
+            return el;
+        }
+        var id = el.id;
+        if(!id && autogen !== false){
+            id = "extdd-" + (++this.autoIdSeed);
+            el.id = id;
+        }
+        return id;
+    },
+    
+    /**
+     * Registers a drag drop element.
+     *
+     * @param {String/HTMLElement} element The id or DOM node to register
+     * @param {Object} data An custom data object that will be passed between the elements that are involved in drag
+     * drop operations. You can populate this object with any arbitrary properties that your own code knows how to
+     * interpret, plus there are some specific properties known to the Registry that should be populated in the data
+     * object (if applicable):
+     * @param {HTMLElement[]} data.handles Array of DOM nodes that trigger dragging for the element being registered.
+     * @param {Boolean} data.isHandle True if the element passed in triggers dragging itself, else false.
+     */
+    register : function(el, data){
+        data = data || {};
+        if (typeof el == "string") {
+            el = document.getElementById(el);
+        }
+        data.ddel = el;
+        this.elements[this.getId(el)] = data;
+        if (data.isHandle !== false) {
+            this.handles[data.ddel.id] = data;
+        }
+        if (data.handles) {
+            var hs = data.handles,
+                i, len;
+            for (i = 0, len = hs.length; i < len; i++) {
+                this.handles[this.getId(hs[i])] = data;
+            }
+        }
+    },
+
+    /**
+     * Unregister a drag drop element
+     * @param {String/HTMLElement} element The id or DOM node to unregister
+     */
+    unregister : function(el){
+        var id = this.getId(el, false),
+            data = this.elements[id],
+            hs, i, len;
+        if(data){
+            delete this.elements[id];
+            if(data.handles){
+                hs = data.handles;
+                for (i = 0, len = hs.length; i < len; i++) {
+                    delete this.handles[this.getId(hs[i], false)];
+                }
+            }
+        }
+    },
+
+    /**
+     * Returns the handle registered for a DOM Node by id
+     * @param {String/HTMLElement} id The DOM node or id to look up
+     * @return {Object} handle The custom handle data
+     */
+    getHandle : function(id){
+        if(typeof id != "string"){ // must be element?
+            id = id.id;
+        }
+        return this.handles[id];
+    },
+
+    /**
+     * Returns the handle that is registered for the DOM node that is the target of the event
+     * @param {Event} e The event
+     * @return {Object} handle The custom handle data
+     */
+    getHandleFromEvent : function(e){
+        var t = e.getTarget();
+        return t ? this.handles[t.id] : null;
+    },
+
+    /**
+     * Returns a custom data object that is registered for a DOM node by id
+     * @param {String/HTMLElement} id The DOM node or id to look up
+     * @return {Object} data The custom data
+     */
+    getTarget : function(id){
+        if(typeof id != "string"){ // must be element?
+            id = id.id;
+        }
+        return this.elements[id];
+    },
+
+    /**
+     * Returns a custom data object that is registered for the DOM node that is the target of the event
+     * @param {Event} e The event
+     * @return {Object} data The custom data
+     */
+    getTargetFromEvent : function(e){
+        var t = e.getTarget();
+        return t ? this.elements[t.id] || this.handles[t.id] : null;
+    }
+});
 /*
  * This is a derivative of the similarly named class in the YUI Library.
  * The original license:
@@ -76211,14 +77128,6 @@ Ext.define('Ext.dd.ScrollManager', {
     }
 });
 
-Ext.define('PICS.view.report.report.ColumnTooltip', {
-    extend: 'Ext.tip.ToolTip',
-    alias: 'widget.columntooltip',
-    
-    anchor: 'bottom',
-    showDelay: 0,
-    tpl: '<div><h3>{name}</h3><p>{description}</p></div>'
-});
 /**
  * An updateable progress bar component. The progress bar supports two different modes: manual and automatic.
  *
@@ -76553,76 +77462,6 @@ Ext.define('Ext.ProgressBar', {
             Ext.destroyMembers(me, 'textEl', 'progressBar');
         }
         me.callParent();
-    }
-});
-
-/**
- * @private
- */
-Ext.define('Ext.grid.header.DragZone', {
-    extend: 'Ext.dd.DragZone',
-    colHeaderCls: Ext.baseCSSPrefix + 'column-header',
-    maxProxyWidth: 120,
-
-    constructor: function(headerCt) {
-        this.headerCt = headerCt;
-        this.ddGroup =  this.getDDGroup();
-        this.callParent([headerCt.el]);
-        this.proxy.el.addCls(Ext.baseCSSPrefix + 'grid-col-dd');
-    },
-
-    getDDGroup: function() {
-        return 'header-dd-zone-' + this.headerCt.up('[scrollerOwner]').id;
-    },
-
-    getDragData: function(e) {
-        var header = e.getTarget('.'+this.colHeaderCls),
-            headerCmp,
-            ddel;
-
-        if (header) {
-            headerCmp = Ext.getCmp(header.id);
-            if (!this.headerCt.dragging && headerCmp.draggable && !(headerCmp.isOnLeftEdge(e) || headerCmp.isOnRightEdge(e))) {
-                ddel = document.createElement('div');
-                ddel.innerHTML = Ext.getCmp(header.id).text;
-                return {
-                    ddel: ddel,
-                    header: headerCmp
-                };
-            }
-        }
-        return false;
-    },
-
-    onBeforeDrag: function() {
-        return !(this.headerCt.dragging || this.disabled);
-    },
-
-    onInitDrag: function() {
-        this.headerCt.dragging = true;
-        this.callParent(arguments);
-    },
-
-    onDragDrop: function() {
-        this.headerCt.dragging = false;
-        this.callParent(arguments);
-    },
-
-    afterRepair: function() {
-        this.callParent();
-        this.headerCt.dragging = false;
-    },
-
-    getRepairXY: function() {
-        return this.dragData.header.el.getXY();
-    },
-    
-    disable: function() {
-        this.disabled = true;
-    },
-    
-    enable: function() {
-        this.disabled = false;
     }
 });
 
@@ -79728,6 +80567,298 @@ Ext.define('Ext.layout.component.field.ComboBox', {
     }
 });
 
+/**
+ * Plugin to add header resizing functionality to a HeaderContainer.
+ * Always resizing header to the left of the splitter you are resizing.
+ */
+Ext.define('Ext.grid.plugin.HeaderResizer', {
+    extend: 'Ext.AbstractPlugin',
+    requires: ['Ext.dd.DragTracker', 'Ext.util.Region'],
+    alias: 'plugin.gridheaderresizer',
+
+    disabled: false,
+
+    config: {
+        /**
+         * @cfg {Boolean} dynamic
+         * True to resize on the fly rather than using a proxy marker.
+         * @accessor
+         */
+        dynamic: false
+    },
+
+    colHeaderCls: Ext.baseCSSPrefix + 'column-header',
+
+    minColWidth: 40,
+    maxColWidth: 1000,
+    wResizeCursor: 'col-resize',
+    eResizeCursor: 'col-resize',
+    // not using w and e resize bc we are only ever resizing one
+    // column
+    //wResizeCursor: Ext.isWebKit ? 'w-resize' : 'col-resize',
+    //eResizeCursor: Ext.isWebKit ? 'e-resize' : 'col-resize',
+
+    init: function(headerCt) {
+        this.headerCt = headerCt;
+        headerCt.on('render', this.afterHeaderRender, this, {single: true});
+    },
+
+    /**
+     * @private
+     * AbstractComponent calls destroy on all its plugins at destroy time.
+     */
+    destroy: function() {
+        if (this.tracker) {
+            this.tracker.destroy();
+        }
+    },
+
+    afterHeaderRender: function() {
+        var headerCt = this.headerCt,
+            el = headerCt.el;
+
+        headerCt.mon(el, 'mousemove', this.onHeaderCtMouseMove, this);
+
+        this.tracker = new Ext.dd.DragTracker({
+            disabled: this.disabled,
+            onBeforeStart: Ext.Function.bind(this.onBeforeStart, this),
+            onStart: Ext.Function.bind(this.onStart, this),
+            onDrag: Ext.Function.bind(this.onDrag, this),
+            onEnd: Ext.Function.bind(this.onEnd, this),
+            tolerance: 3,
+            autoStart: 300,
+            el: el
+        });
+    },
+
+    // As we mouse over individual headers, change the cursor to indicate
+    // that resizing is available, and cache the resize target header for use
+    // if/when they mousedown.
+    onHeaderCtMouseMove: function(e, t) {
+        var me = this,
+            prevSiblings,
+            headerEl, overHeader, resizeHeader, resizeHeaderOwnerGrid, ownerGrid;
+
+        if (me.headerCt.dragging) {
+            if (me.activeHd) {
+                me.activeHd.el.dom.style.cursor = '';
+                delete me.activeHd;
+            }
+        } else {
+            headerEl = e.getTarget('.' + me.colHeaderCls, 3, true);
+
+            if (headerEl){
+                overHeader = Ext.getCmp(headerEl.id);
+
+                // On left edge, go back to the previous non-hidden header.
+                if (overHeader.isOnLeftEdge(e)) {
+                    resizeHeader = overHeader.previousNode('gridcolumn:not([hidden]):not([isGroupHeader])')
+                    // There may not *be* a previous non-hidden header.
+                    if (resizeHeader) {
+
+                        ownerGrid = me.headerCt.up('tablepanel');
+                        resizeHeaderOwnerGrid = resizeHeader.up('tablepanel');
+
+                        // Need to check that previousNode didn't go outside the current grid/tree
+                        // But in the case of a Grid which contains a locked and normal grid, allow previousNode to jump
+                        // from the first column of the normalGrid to the last column of the lockedGrid
+                        if (!((resizeHeaderOwnerGrid === ownerGrid) || ((ownerGrid.ownerCt.isXType('tablepanel')) && ownerGrid.ownerCt.view.lockedGrid === resizeHeaderOwnerGrid))) {
+                            resizeHeader = null;
+                        }
+                    }
+                }
+                // Else, if on the right edge, we're resizing the column we are over
+                else if (overHeader.isOnRightEdge(e)) {
+                    resizeHeader = overHeader;
+                }
+                // Between the edges: we are not resizing
+                else {
+                    resizeHeader = null;
+                }
+
+                // We *are* resizing
+                if (resizeHeader) {
+                    // If we're attempting to resize a group header, that cannot be resized,
+                    // so find its last visible leaf header; Group headers are sized
+                    // by the size of their child headers.
+                    if (resizeHeader.isGroupHeader) {
+                        prevSiblings = resizeHeader.getGridColumns();
+                        resizeHeader = prevSiblings[prevSiblings.length - 1];
+                    }
+
+                    // Check if the header is resizable. Continue checking the old "fixed" property, bug also
+                    // check whether the resizablwe property is set to false.
+                    if (resizeHeader && !(resizeHeader.fixed || (resizeHeader.resizable === false) || me.disabled)) {
+                        me.activeHd = resizeHeader;
+                        overHeader.el.dom.style.cursor = me.eResizeCursor;
+                    }
+                // reset
+                } else {
+                    overHeader.el.dom.style.cursor = '';
+                    delete me.activeHd;
+                }
+            }
+        }
+    },
+
+    // only start when there is an activeHd
+    onBeforeStart : function(e){
+        var t = e.getTarget();
+        // cache the activeHd because it will be cleared.
+        this.dragHd = this.activeHd;
+
+        if (!!this.dragHd && !Ext.fly(t).hasCls(Ext.baseCSSPrefix + 'column-header-trigger') && !this.headerCt.dragging) {
+            //this.headerCt.dragging = true;
+            this.tracker.constrainTo = this.getConstrainRegion();
+            return true;
+        } else {
+            this.headerCt.dragging = false;
+            return false;
+        }
+    },
+
+    // get the region to constrain to, takes into account max and min col widths
+    getConstrainRegion: function() {
+        var me       = this,
+            dragHdEl = me.dragHd.el,
+            region   = Ext.util.Region.getRegion(dragHdEl),
+            nextHd;
+
+        // If forceFit, then right constraint is based upon not being able to force the next header
+        // beyond the minColWidth. If there is no next header, then the header may not be expanded.
+        if (me.headerCt.forceFit) {
+            nextHd = me.dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
+        }
+
+         return region.adjust(
+            0,
+            me.headerCt.forceFit ? (nextHd ? nextHd.getWidth() - me.minColWidth : 0) : me.maxColWidth - dragHdEl.getWidth(),
+            0,
+            me.minColWidth
+        );
+    },
+
+    // initialize the left and right hand side markers around
+    // the header that we are resizing
+    onStart: function(e){
+        var me       = this,
+            dragHd   = me.dragHd,
+            dragHdEl = dragHd.el,
+            width    = dragHdEl.getWidth(),
+            headerCt = me.headerCt,
+            t        = e.getTarget(),
+            xy, gridSection, dragHct, firstSection, lhsMarker, rhsMarker, el, offsetLeft, offsetTop, topLeft, markerHeight, top;
+
+        if (me.dragHd && !Ext.fly(t).hasCls(Ext.baseCSSPrefix + 'column-header-trigger')) {
+            headerCt.dragging = true;
+        }
+
+        me.origWidth = width;
+
+        // setup marker proxies
+        if (!me.dynamic) {
+            xy           = dragHdEl.getXY();
+            gridSection  = headerCt.up('[scrollerOwner]');
+            dragHct      = me.dragHd.up(':not([isGroupHeader])');
+            firstSection = dragHct.up();
+            lhsMarker    = gridSection.getLhsMarker();
+            rhsMarker    = gridSection.getRhsMarker();
+            el           = rhsMarker.parent();
+            offsetLeft   = el.getLocalX();
+            offsetTop    = el.getLocalY();
+            topLeft      = el.translatePoints(xy);
+            markerHeight = firstSection.body.getHeight() + headerCt.getHeight();
+            top = topLeft.top - offsetTop;
+
+            lhsMarker.setTop(top);
+            rhsMarker.setTop(top);
+            lhsMarker.setHeight(markerHeight);
+            rhsMarker.setHeight(markerHeight);
+            lhsMarker.setLeft(topLeft.left - offsetLeft);
+            rhsMarker.setLeft(topLeft.left + width - offsetLeft);
+        }
+    },
+
+    // synchronize the rhsMarker with the mouse movement
+    onDrag: function(e){
+        if (!this.dynamic) {
+            var xy          = this.tracker.getXY('point'),
+                gridSection = this.headerCt.up('[scrollerOwner]'),
+                rhsMarker   = gridSection.getRhsMarker(),
+                el          = rhsMarker.parent(),
+                topLeft     = el.translatePoints(xy),
+                offsetLeft  = el.getLocalX();
+
+            rhsMarker.setLeft(topLeft.left - offsetLeft);
+        // Resize as user interacts
+        } else {
+            this.doResize();
+        }
+    },
+
+    onEnd: function(e){
+        this.headerCt.dragging = false;
+        if (this.dragHd) {
+            if (!this.dynamic) {
+                var dragHd      = this.dragHd,
+                    gridSection = this.headerCt.up('[scrollerOwner]'),
+                    lhsMarker   = gridSection.getLhsMarker(),
+                    rhsMarker   = gridSection.getRhsMarker(),
+                    offscreen   = -9999;
+
+                // hide markers
+                lhsMarker.setLeft(offscreen);
+                rhsMarker.setLeft(offscreen);
+            }
+            this.doResize();
+        }
+    },
+
+    doResize: function() {
+        if (this.dragHd) {
+            var dragHd = this.dragHd,
+                nextHd,
+                offset = this.tracker.getOffset('point');
+
+            // resize the dragHd
+            if (dragHd.flex) {
+                delete dragHd.flex;
+            }
+
+            Ext.suspendLayouts();
+
+            // Set the new column width.
+            dragHd.setWidth(this.origWidth + offset[0]);
+ 
+            // In the case of forceFit, change the following Header width.
+            // Constraining so that neither neighbour can be sized to below minWidth is handled in getConstrainRegion
+            if (this.headerCt.forceFit) {
+                nextHd = dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
+                if (nextHd) {
+                    delete nextHd.flex;
+                    nextHd.setWidth(nextHd.getWidth() - offset[0]);
+                }
+            }
+
+            // Apply the two width changes by laying out the owning HeaderContainer
+            Ext.resumeLayouts(true);
+        }
+    },
+
+    disable: function() {
+        this.disabled = true;
+        if (this.tracker) {
+            this.tracker.disable();
+        }
+    },
+
+    enable: function() {
+        this.disabled = false;
+        if (this.tracker) {
+            this.tracker.enable();
+        }
+    }
+});
 /**
  * A class which handles loading of data from a server into the Fields of an {@link Ext.form.Basic}.
  *
@@ -90677,102 +91808,6 @@ Ext.define('Ext.grid.Panel', {
      * @param {Object[]} columns (Optional) An array of column configs
      */
 });
-Ext.define('PICS.view.report.report.DataTable', {
-    extend: 'Ext.grid.Panel',
-    alias: 'widget.reportdatatable',
-
-    requires: [
-        'PICS.view.report.report.PagingToolbar'
-    ],
-
-    store: 'report.DataTables',
-
-    border: 0,
-    // column configuration must be specified - will be overridden dynamically
-    columns: [{
-        xtype: 'rownumberer'
-    }],
-    dockedItems: [{
-        xtype: 'reportpagingtoolbar',
-        dock: 'top'
-    }],
-    id: 'data_table',
-    margin: '0 30 0 0',
-    rowLines: false,
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        this.headerCt.on('headerclick', function (header, column, event, html) {
-            if (column.xtype == 'rownumberer') {
-                return false;
-            };
-
-            header.showMenuBy(column.el.dom, column);
-        }, this);
-
-        this.headerCt.on('menucreate', function (header, column, event, html) {
-            var menu = header.getMenu();
-
-            this.createHeaderMenu(menu);
-        }, this);
-    },
-
-    createHeaderMenu: function (menu) {
-        menu.removeAll();
-
-        // simulate header menu to be plain (menu is already created at this point)
-        menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
-        menu.name = 'data_table_header_menu';
-
-        menu.add({
-            name: 'sort_asc',
-            text: 'Sort Ascending'
-        }, {
-            name: 'sort_desc',
-            text: 'Sort Descending'
-        }, {
-            xtype: 'menuseparator'
-        }, {
-            name: 'function',
-            text: 'Functions...'
-        }, {
-            xtype: 'menuseparator'
-        }, {
-            name: 'remove_column',
-            text: 'Remove'
-        });
-    },
-    
-    // column header height is dictated by the height of the rownumberer column
-    // more information on how to override header height:
-    // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
-    updateGridColumns: function (new_grid_columns) {
-        var grid_columns = [{
-            xtype: 'rownumberer',
-            height: 23,
-            width: 50
-        }];
-        
-        grid_columns = grid_columns.concat(new_grid_columns);
-        
-        this.reconfigure(null, grid_columns);
-    },
-    
-    // update or reset no results message
-    updateNoResultsMessage: function () {
-        var store = this.getStore(),
-            view = this.getView();
-        
-        if (store.getCount() == 0) {
-            view.emptyText = '<div class="x-grid-empty">no results</div>';
-        } else {
-            view.emptyText = '';
-        }
-
-        view.refresh();
-    }
-});
 /**
  * An internally used DataView for {@link Ext.form.field.ComboBox ComboBox}.
  */
@@ -92883,38 +93918,6 @@ Ext.define('PICS.view.layout.Header', {
         xtype: 'layoutmenu'
     }]
 });
-Ext.define('PICS.view.report.Viewport', {
-    extend: 'Ext.container.Viewport',
-
-    requires: [
-        'PICS.view.layout.Header',
-        'PICS.view.report.report.DataTable',
-        'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.Header'
-    ],
-
-    items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
-        region: 'center',
-
-        border: 0,
-        id: 'content',
-        items: [{
-        	xtype: 'reportheader',
-            region: 'north'
-        }, {
-            xtype: 'reportfilteroptions',
-            region: 'west'
-        }, {
-        	xtype: 'reportdatatable',
-            region: 'center'
-        }],
-        layout: 'border'
-    }],
-    layout: 'border'
-});
 Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.reportfilterbaseautocompletefilter',
@@ -93574,6 +94577,76 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
         this.setTitle(title);
     }
 });
+/**
+ * @private
+ */
+Ext.define('Ext.grid.header.DragZone', {
+    extend: 'Ext.dd.DragZone',
+    colHeaderCls: Ext.baseCSSPrefix + 'column-header',
+    maxProxyWidth: 120,
+
+    constructor: function(headerCt) {
+        this.headerCt = headerCt;
+        this.ddGroup =  this.getDDGroup();
+        this.callParent([headerCt.el]);
+        this.proxy.el.addCls(Ext.baseCSSPrefix + 'grid-col-dd');
+    },
+
+    getDDGroup: function() {
+        return 'header-dd-zone-' + this.headerCt.up('[scrollerOwner]').id;
+    },
+
+    getDragData: function(e) {
+        var header = e.getTarget('.'+this.colHeaderCls),
+            headerCmp,
+            ddel;
+
+        if (header) {
+            headerCmp = Ext.getCmp(header.id);
+            if (!this.headerCt.dragging && headerCmp.draggable && !(headerCmp.isOnLeftEdge(e) || headerCmp.isOnRightEdge(e))) {
+                ddel = document.createElement('div');
+                ddel.innerHTML = Ext.getCmp(header.id).text;
+                return {
+                    ddel: ddel,
+                    header: headerCmp
+                };
+            }
+        }
+        return false;
+    },
+
+    onBeforeDrag: function() {
+        return !(this.headerCt.dragging || this.disabled);
+    },
+
+    onInitDrag: function() {
+        this.headerCt.dragging = true;
+        this.callParent(arguments);
+    },
+
+    onDragDrop: function() {
+        this.headerCt.dragging = false;
+        this.callParent(arguments);
+    },
+
+    afterRepair: function() {
+        this.callParent();
+        this.headerCt.dragging = false;
+    },
+
+    getRepairXY: function() {
+        return this.dragData.header.el.getXY();
+    },
+    
+    disable: function() {
+        this.disabled = true;
+    },
+    
+    enable: function() {
+        this.disabled = false;
+    }
+});
+
 /**
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
  * draggable items dropped onto it.  The drop has no effect until an implementation of notifyDrop is provided.
@@ -96224,66 +97297,136 @@ Ext.define('Ext.grid.RowNumberer', {
     }
 });
 
-/**
- * A Column definition class which renders a numeric data field according to a {@link #format} string.
- *
- *     @example
- *     Ext.create('Ext.data.Store', {
- *        storeId:'sampleStore',
- *        fields:[
- *            { name: 'symbol', type: 'string' },
- *            { name: 'price',  type: 'number' },
- *            { name: 'change', type: 'number' },
- *            { name: 'volume', type: 'number' }
- *        ],
- *        data:[
- *            { symbol: "msft",   price: 25.76,  change: 2.43, volume: 61606325 },
- *            { symbol: "goog",   price: 525.73, change: 0.81, volume: 3053782  },
- *            { symbol: "apple",  price: 342.41, change: 1.35, volume: 24484858 },
- *            { symbol: "sencha", price: 142.08, change: 8.85, volume: 5556351  }
- *        ]
- *     });
- *     
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Number Column Demo',
- *         store: Ext.data.StoreManager.lookup('sampleStore'),
- *         columns: [
- *             { text: 'Symbol',         dataIndex: 'symbol', flex: 1 },
- *             { text: 'Current Price',  dataIndex: 'price',  renderer: Ext.util.Format.usMoney },
- *             { text: 'Change',         dataIndex: 'change', xtype: 'numbercolumn', format:'0.00' },
- *             { text: 'Volume',         dataIndex: 'volume', xtype: 'numbercolumn', format:'0,000' }
- *         ],
- *         height: 200,
- *         width: 400,
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('Ext.grid.column.Number', {
-    extend: 'Ext.grid.column.Column',
-    alias: ['widget.numbercolumn'],
-    requires: ['Ext.util.Format'],
-    alternateClassName: 'Ext.grid.NumberColumn',
+Ext.define('PICS.view.report.report.DataTable', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.reportdatatable',
 
-    //<locale>
-    /**
-     * @cfg {String} format
-     * A formatting string as used by {@link Ext.util.Format#number} to format a numeric value for this Column.
-     */
-    format : '0,000.00',
-    //</locale>
+    requires: [
+        'Ext.grid.RowNumberer',
+        'PICS.view.report.report.PagingToolbar'
+    ],
 
-    /**
-     * @cfg renderer
-     * @hide
-     */
-    /**
-     * @cfg scope
-     * @hide
-     */
+    store: 'report.DataTables',
 
-    defaultRenderer: function(value){
-        return Ext.util.Format.number(value, this.format);
+    border: 0,
+    // column configuration must be specified - will be overridden dynamically
+    columns: [{
+        xtype: 'rownumberer'
+    }],
+    dockedItems: [{
+        xtype: 'reportpagingtoolbar',
+        dock: 'top'
+    }],
+    id: 'data_table',
+    margin: '0 30 0 0',
+    rowLines: false,
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        this.headerCt.on('headerclick', function (header, column, event, html) {
+            if (column.xtype == 'rownumberer') {
+                return false;
+            };
+
+            header.showMenuBy(column.el.dom, column);
+        }, this);
+
+        this.headerCt.on('menucreate', function (header, column, event, html) {
+            var menu = header.getMenu();
+
+            this.createHeaderMenu(menu);
+        }, this);
+    },
+
+    createHeaderMenu: function (menu) {
+        menu.removeAll();
+
+        // simulate header menu to be plain (menu is already created at this point)
+        menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
+        menu.name = 'data_table_header_menu';
+
+        menu.add({
+            name: 'sort_asc',
+            text: 'Sort Ascending'
+        }, {
+            name: 'sort_desc',
+            text: 'Sort Descending'
+        }, {
+            xtype: 'menuseparator'
+        }, {
+            name: 'function',
+            text: 'Functions...'
+        }, {
+            xtype: 'menuseparator'
+        }, {
+            name: 'remove_column',
+            text: 'Remove'
+        });
+    },
+    
+    // column header height is dictated by the height of the rownumberer column
+    // more information on how to override header height:
+    // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
+    updateGridColumns: function (new_grid_columns) {
+        var grid_columns = [{
+            xtype: 'rownumberer',
+            height: 23,
+            width: 50
+        }];
+        
+        grid_columns = grid_columns.concat(new_grid_columns);
+        
+        this.reconfigure(null, grid_columns);
+    },
+    
+    // update or reset no results message
+    updateNoResultsMessage: function () {
+        var store = this.getStore(),
+            view = this.getView();
+        
+        if (store.getCount() == 0) {
+            view.emptyText = '<div class="x-grid-empty">no results</div>';
+        } else {
+            view.emptyText = '';
+        }
+
+        view.refresh();
     }
+});
+Ext.define('PICS.view.report.Viewport', {
+    extend: 'Ext.container.Viewport',
+
+    requires: [
+        'Ext.layout.container.Border',
+        'Ext.resizer.Splitter',
+        'PICS.view.layout.Header',
+        'PICS.view.report.report.DataTable',
+        'PICS.view.report.filter.FilterOptions',
+        'PICS.view.report.header.Header'
+    ],
+
+    items: [{
+    	xtype: 'layoutheader',
+        region: 'north'
+    }, {
+        region: 'center',
+
+        border: 0,
+        id: 'content',
+        items: [{
+        	xtype: 'reportheader',
+            region: 'north'
+        }, {
+            xtype: 'reportfilteroptions',
+            region: 'west'
+        }, {
+        	xtype: 'reportdatatable',
+            region: 'center'
+        }],
+        layout: 'border'
+    }],
+    layout: 'border'
 });
 /**
  * A Column definition class which renders a value by processing a {@link Ext.data.Model Model}'s
@@ -96357,6 +97500,8 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     alias: 'columnfilterlist',
     
     requires: [
+        'Ext.grid.feature.Feature',
+        'Ext.grid.feature.Grouping',
         'Ext.grid.column.Template'
     ],
     
@@ -96445,6 +97590,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     alias: 'columnfiltermodal',
     
     requires: [
+        'PICS.ux.util.filter.ColumnFilterStoreFilter',
         'PICS.view.report.modal.column-filter.ColumnList',
         'PICS.view.report.modal.column-filter.FilterList'
     ],

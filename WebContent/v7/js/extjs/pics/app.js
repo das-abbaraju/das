@@ -8,12 +8,8 @@ Ext.application({
 
     requires: [
         'PICS.view.report.Viewport',
-        'Ext.layout.container.Border',
-        'Ext.resizer.Splitter',
-        'Ext.grid.RowNumberer',
-        'Ext.grid.column.Number',
-        'PICS.ux.util.filter.FilterMultipleColumn',
-        'PICS.data.ServerCommunication'
+        'PICS.data.ServerCommunication',
+        'PICS.data.ServerCommunicationUrl'
     ],
 
     constants: {
