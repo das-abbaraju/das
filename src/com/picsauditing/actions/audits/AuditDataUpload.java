@@ -366,10 +366,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 		
 		if (updateAudit) {
-			AuditData sigQuestion = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), 10217);
+			AuditData sigQuestion = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), AuditQuestion.MANUAL_PQF_SIGNATURE);
 			if (sigQuestion != null) {
-				sigQuestion.setAnswer("");
-				auditDataDAO.save(sigQuestion);
+                auditDataDAO.remove(sigQuestion);
 			}
 			
 			auditDao.save(audit);

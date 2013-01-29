@@ -39,6 +39,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
+    static public final int MANUAL_PQF_SIGNATURE = 10217;
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
 	static public final int IEC = 10330;
