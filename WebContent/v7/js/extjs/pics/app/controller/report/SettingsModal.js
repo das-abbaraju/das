@@ -106,10 +106,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     settingsModalClose: function (cmp, eOpts) {
-        var copy_setting = this.getCopySetting(),
-            copy_setting_form = copy_setting.getForm(),
-            copy_favorite = copy_setting.down('reportfavoritetoggle');
-                
+        var settings_modal_tabs_view = this.getSettingsModalTabs(),
+            copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
+            copy_setting_form = copy_setting_view.getForm(),
+            copy_favorite = copy_setting_view.down('reportfavoritetoggle');
+        
         copy_favorite.toggleUnfavorite();
         
         copy_setting_form.reset();
