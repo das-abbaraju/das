@@ -98,7 +98,7 @@ public class PermissionServiceTest {
 	}
 
 	@Test
-	public void canUserEdit_FalseIfNoResultException() {
+	public void testCanUserEdit_FalseIfNoResultException() {
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportPermissionUserDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
@@ -109,7 +109,7 @@ public class PermissionServiceTest {
 	}
 
 	@Test
-	public void canUserEdit_FalseIfNoEditPermission() {
+	public void testCanUserEdit_FalseIfNoEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
@@ -121,7 +121,16 @@ public class PermissionServiceTest {
 	}
 
 	@Test
-	public void canUserEdit_TrueIfEditPermission() {
+	public void testCanUserEdit_WhenDaoReturnsNull_ThenReturnFalse() {
+		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(null);
+
+		boolean result = permissionService.canUserEditReport(permissions, report);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testCanUserEdit_TrueIfEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 

@@ -1,11 +1,8 @@
 package com.picsauditing.actions.report;
 
-import java.io.BufferedReader;
-import javax.servlet.http.HttpServletRequest;
-
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportApi extends PicsApiSupport {
@@ -37,6 +33,7 @@ public class ReportApi extends PicsApiSupport {
 	protected ReportDataConverter converter;
 	protected int limit = 50;
 	protected int pageNumber = 1;
+	protected boolean favorite;
 	protected boolean includeReport;
 	protected boolean includeColumns;
 	protected boolean includeFilters;
@@ -58,6 +55,45 @@ public class ReportApi extends PicsApiSupport {
 		} catch (Exception e) {
 			// TODO remove this
 			e.printStackTrace();
+			writeJsonError(e);
+		}
+
+		return JSON;
+	}
+
+	public String copy() {
+		return save(true);
+	}
+
+	public String save() {
+		return save(false);
+	}
+
+	private String save(boolean copy) {
+		JSONObject payloadJson = getJsonFromRequestPayload();
+		ReportContext reportContext = buildReportContext(payloadJson);
+		Report report = null;
+
+		try {
+			report = reportService.createReport(reportContext);
+
+			if (copy) {
+				report = reportService.copy(report, permissions, favorite);
+			} else {
+				reportService.edit(report, permissions);
+			}
+
+			json.put("success", true);
+			json.put("reportID", report.getId());
+		} catch (NoRightsException nre) {
+			json.put("success", false);
+			json.put("error", nre.getMessage());
+		} catch (Exception e) {
+			if (report == null) {
+				logger.error("Report was not able to load from DB");
+			} else {
+				logger.error("An error occurred saving report id = {} for user {}", report.getId(), permissions.getUserId());
+			}
 			writeJsonError(e);
 		}
 
@@ -101,61 +137,12 @@ public class ReportApi extends PicsApiSupport {
 		json.put(ReportJson.EXT_JS_MESSAGE, message);
 	}
 
-	protected JSONObject getJsonFromRequestPayload() {
-		JSONObject jsonObject = new JSONObject();
-		HttpServletRequest request = getRequest();
-		if (request == null) {
-			return jsonObject;
-		}
-
-		BufferedReader bufferedReader = null;
-		try {
-			bufferedReader = request.getReader();
-			jsonObject = parseJsonFromInput(bufferedReader);
-		} catch (Exception e) {
-			logger.error("There was an sqlException parsing the JSON from the request", e);
-		} finally {
-			closeBufferedReader(bufferedReader);
-		}
-
-		return jsonObject;
-	}
-
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
 		writeJsonError(sqlException);
 
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
 			logger.error("Report:" + reportId + " " + sqlException.getMessage() + " SQL: " + sqlException.getSql());
 		}
-	}
-
-	private void closeBufferedReader(BufferedReader bufferedReader) {
-		try {
-			if (bufferedReader != null) {
-				bufferedReader.close();
-			}
-		} catch (Exception e) {
-			logger.error("There was an sqlException closing the bufferedReader", e);
-		}
-	}
-
-	private JSONObject parseJsonFromInput(BufferedReader bufferedReader) throws Exception {
-		JSONObject jsonObject = new JSONObject();
-		if (bufferedReader == null) {
-			return jsonObject;
-		}
-
-		StringBuilder jsonString = new StringBuilder();
-		String line = null;
-		while ((line = bufferedReader.readLine()) != null) {
-			jsonString.append(line);
-		}
-
-		if (Strings.isEmpty(jsonString.toString())) {
-			return jsonObject;
-		}
-
-		return (JSONObject) JSONValue.parse(jsonString.toString());
 	}
 
 	protected ReportContext buildReportContext(JSONObject payloadJson) {
@@ -174,6 +161,10 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
 	}
 
 	public void setIncludeReport(boolean includeReport) {

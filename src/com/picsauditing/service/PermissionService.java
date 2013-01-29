@@ -10,6 +10,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.UserGroup;
 
 public class PermissionService {
@@ -38,15 +39,20 @@ public class PermissionService {
 	}
 
 	public boolean canUserEditReport(Permissions permissions, Report report) {
-		boolean editable = false;
-
 		try {
-			editable = reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions, report.getId());
+			if (reportPermissionUser == null) {
+				return false;
+			}
+
+			if (reportPermissionUser.isEditable()) {
+				return true;
+			}
 		} catch (NoResultException nre) {
 			logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
 		}
 
-		return editable || isReportDevelopmentGroup(permissions);
+		return isReportDevelopmentGroup(permissions);
 	}
 
 	private boolean isReportDevelopmentGroup(Permissions permissions) {

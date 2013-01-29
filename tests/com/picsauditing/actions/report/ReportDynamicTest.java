@@ -1,10 +1,8 @@
 package com.picsauditing.actions.report;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -34,19 +32,19 @@ public class ReportDynamicTest extends PicsActionTest {
 		Whitebox.setInternalState(reportDynamic, "reportService", reportService);
 	}
 
-	@Test
-	public void testCopy_ProxiesToReportModelCopy() throws Exception {
-		when(reportService.copy(report, permissions, false)).thenReturn(report);
-
-		reportDynamic.copy();
-
-		verify(reportService).copy(report, permissions, false);
-	}
-
-	@Test
-	public void testSave_ProxiesToReportModelEdit() throws Exception {
-		reportDynamic.save();
-
-		verify(reportService).edit(report, permissions);
-	}
+//	@Test
+//	public void testCopy_ProxiesToReportModelCopy() throws Exception {
+//		when(reportService.copy(report, permissions, false)).thenReturn(report);
+//
+//		reportDynamic.copy();
+//
+//		verify(reportService).copy(report, permissions, false);
+//	}
+//
+//	@Test
+//	public void testSave_ProxiesToReportModelEdit() throws Exception {
+//		reportDynamic.save();
+//
+//		verify(reportService).edit(report, permissions);
+//	}
 }

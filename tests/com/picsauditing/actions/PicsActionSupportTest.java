@@ -1,17 +1,25 @@
 package com.picsauditing.actions;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
+
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +31,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 	private AppPropertyDAO propertyDAO;
 	@Mock
 	private HierarchyBuilder hierarchyBuilder;
+	@Mock
+	private BufferedReader bufferedReader;
 
 	@Before
 	public void setUp() throws Exception {
@@ -318,6 +328,40 @@ public class PicsActionSupportTest extends PicsActionTest {
 		picsActionSupport.getChatUrl();
 
 		verify(request).getScheme();
+	}
+
+	@Test
+	public void testGetJsonFromRequestPayload_NullReaderReturnsEmptyJSON() throws Exception {
+		when(request.getReader()).thenReturn(null);
+
+		JSONObject result = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(bufferedReader, never()).close();
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetJsonFromRequestPayload_NullBufferedReaderReturnsEmptyJSON() throws Exception {
+		when(bufferedReader.readLine()).thenReturn(null);
+		when(request.getReader()).thenReturn(bufferedReader);
+
+		JSONObject result = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(bufferedReader, times(1)).close();
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetJsonFromRequestPayload_ParseJsonInRequest() throws Exception {
+		String json = "{\"test\":\"yay it works\"}";
+		BufferedReader spy = Mockito.spy(new BufferedReader(new StringReader(json)));
+
+		when(request.getReader()).thenReturn(spy);
+
+		JSONObject actual = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(spy, times(1)).close();
+		assertEquals(json, actual.toJSONString());
 	}
 
 }
