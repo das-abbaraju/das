@@ -68,7 +68,7 @@ Ext.define('PICS.controller.report.Report', {
             params = report.toRequestParams();
         
         Ext.Ajax.request({
-            url: 'ReportDynamic!copy.action',
+            url: 'ReportApi!copy.action',
             params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
@@ -117,7 +117,7 @@ Ext.define('PICS.controller.report.Report', {
             that = this;
         
         Ext.Ajax.request({
-            url: 'ReportDynamic!save.action',
+            url: 'ReportApi!save.action',
             params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);

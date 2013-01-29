@@ -3,7 +3,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getCopyReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportDynamic!copy.action?';
+                path = 'ReportApi!copy.action?';
             
             var params = {
                 reportId: report_id
@@ -72,7 +72,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportDynamic!save.action?';
+                path = 'ReportApi!save.action?';
             
             var params = {
                 reportId: report_id

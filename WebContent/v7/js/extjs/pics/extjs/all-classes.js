@@ -66220,7 +66220,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getCopyReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportDynamic!copy.action?';
+                path = 'ReportApi!copy.action?';
             
             var params = {
                 reportId: report_id
@@ -66289,7 +66289,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportDynamic!save.action?';
+                path = 'ReportApi!save.action?';
             
             var params = {
                 reportId: report_id
@@ -99894,7 +99894,7 @@ Ext.define('PICS.controller.report.Report', {
             params = report.toRequestParams();
         
         Ext.Ajax.request({
-            url: 'ReportDynamic!copy.action',
+            url: 'ReportApi!copy.action',
             params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
@@ -99943,7 +99943,7 @@ Ext.define('PICS.controller.report.Report', {
             that = this;
         
         Ext.Ajax.request({
-            url: 'ReportDynamic!save.action',
+            url: 'ReportApi!save.action',
             params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
@@ -100131,10 +100131,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     settingsModalClose: function (cmp, eOpts) {
-        var copy_setting = this.getCopySetting(),
-            copy_setting_form = copy_setting.getForm(),
-            copy_favorite = copy_setting.down('reportfavoritetoggle');
-                
+        var settings_modal_tabs_view = this.getSettingsModalTabs(),
+            copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
+            copy_setting_form = copy_setting_view.getForm(),
+            copy_favorite = copy_setting_view.down('reportfavoritetoggle');
+        
         copy_favorite.toggleUnfavorite();
         
         copy_setting_form.reset();
