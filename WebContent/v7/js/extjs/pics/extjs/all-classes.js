@@ -100007,8 +100007,8 @@ Ext.define('PICS.controller.report.ReportData', {
     onColumnSortAsc: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
-        
+            column = cmp.up('menu').activeHeader.column;
+
         // clear sorts
         report.removeSorts();
         
@@ -100021,7 +100021,7 @@ Ext.define('PICS.controller.report.ReportData', {
     onColumnSortDesc: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            column = cmp.up('menu').activeHeader.record;
+            column = cmp.up('menu').activeHeader.column;
         
         // clear sorts
         report.removeSorts();
