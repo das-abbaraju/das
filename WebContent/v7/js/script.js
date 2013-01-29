@@ -2709,13 +2709,15 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     success: function (data, textStatus, jqXHR) {
                         if (that.$element.val().length > 0) {
                             process($.map(data.results, function (item) {
+                                var status = 'account' + item.account_status;
+
                                 return {
                                     id: item.result_id,
                                     name: item.result_name,
                                     location: item.result_at,
                                     search: item.search_type,
                                     type: item.result_type,
-                                    status: 'account-' + item.account_status
+                                    status: status
                                 };
                             }), data.total_results);
                         }
