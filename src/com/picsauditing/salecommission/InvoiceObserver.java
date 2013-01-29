@@ -41,24 +41,24 @@ public class InvoiceObserver implements Observer {
 
 			InvoiceCommissionStrategy<Invoice> strategy = null;
 			switch (event.getEventType()) {
-				case NEW:
-					strategy = invoiceStrategy;
-					break;
-	
-				case VOID:
-					strategy = voidInvoiceCommissionStrategy;
-					break;
-	
-				case UPDATE:
-					strategy = updateInvoiceStrategy;
-					break;
-	
-				default:
-					throw new IllegalArgumentException("Unhandled Invoice Event Type.");
+			case NEW:
+				strategy = invoiceStrategy;
+				break;
+
+			case VOID:
+				strategy = voidInvoiceCommissionStrategy;
+				break;
+
+			case UPDATE:
+				strategy = updateInvoiceStrategy;
+				break;
+
+			default:
+				throw new IllegalArgumentException("Unhandled Invoice Event Type.");
 			}
 
 			strategy.processInvoiceCommission(event.getData());
-			
+
 		} catch (Exception e) {
 			logger.error("An error occured during processing in InvoiceObserver", e);
 		}

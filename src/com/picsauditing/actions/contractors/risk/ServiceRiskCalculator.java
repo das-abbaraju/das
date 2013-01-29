@@ -19,8 +19,8 @@ public class ServiceRiskCalculator {
 
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		try {
-			RiskAssessment assessment = findAssessmentType(auditData.getQuestion().getId());
-			return assessment.getRiskLevelBasedOn(auditData.getAnswer());
+			RiskAssessment assessment = getAssessment(auditData.getQuestion().getId());
+			return assessment.getRiskLevel(auditData.getAnswer());
 		} catch (Exception e) {
 			logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
 					new Object[] { auditData.getId(), auditData.getQuestion().getId(), auditData.getAnswer(), e });
@@ -29,21 +29,21 @@ public class ServiceRiskCalculator {
 		}
 	}
 
-	public Map<RiskCategory, LowMedHigh> getHighestRiskLevelMap(Collection<AuditData> auditDataForAllAssessmentQuestions) {
+	public Map<RiskCategory, LowMedHigh> getHighestRiskLevelMap(Collection<AuditData> auditDatas) {
 		Map<RiskCategory, LowMedHigh> highestRisks = new HashMap<RiskCategory, LowMedHigh>();
 		initializeRiskCategoriesToNone(highestRisks);
 
-		for (AuditData auditData : auditDataForAllAssessmentQuestions) {
+		for (AuditData auditData : auditDatas) {
 			int auditQuestionID = auditData.getQuestion().getId();
-			LowMedHigh calculatedRiskForThisQuestion = getRiskLevel(auditData);
+			LowMedHigh calculatedRisk = getRiskLevel(auditData);
 
 			try {
-				RiskAssessment assessmentType = findAssessmentType(auditQuestionID);
-				RiskCategory riskCategory = determineRiskCategory(assessmentType);
-				LowMedHigh currentRiskAssignedToThisQuestion = highestRisks.get(riskCategory);
+				RiskAssessment assessment = getAssessment(auditQuestionID);
+				RiskCategory category = getCategory(assessment);
+				LowMedHigh currentRisk = highestRisks.get(category);
 
-				if (calculatedRiskIsHigher(calculatedRiskForThisQuestion, currentRiskAssignedToThisQuestion)) {
-					highestRisks.put(riskCategory, calculatedRiskForThisQuestion);
+				if (calculatedRiskIsHigher(calculatedRisk, currentRisk)) {
+					highestRisks.put(category, calculatedRisk);
 				}
 			} catch (Exception e) {
 				logger.error("Unable to parse risk assessment for auditDataID {} with questionID {} and answer {}\n{}",
@@ -54,21 +54,24 @@ public class ServiceRiskCalculator {
 		return highestRisks;
 	}
 
-	private RiskAssessment findAssessmentType(int questionID) throws Exception {
-        SafetyAssessment safetyAssessment = SafetyAssessment.findByQuestionID(questionID);
-        if (safetyAssessment != null) {
-            return safetyAssessment;
-        }
+	private RiskAssessment getAssessment(int questionID) throws Exception {
+		for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
+			if (questionID == safetyAssessment.getQuestionID()) {
+				return safetyAssessment;
+			}
+		}
 
-        ProductAssessment productAssessment = ProductAssessment.findByQuestionID(questionID);
-        if (productAssessment != null) {
-            return productAssessment;
-        }
+		for (ProductAssessment productAssessment : ProductAssessment.values()) {
+			if (questionID == productAssessment.getQuestionID()) {
+				return productAssessment;
+			}
+		}
 
-        TransportationAssessment transportationAssessment = TransportationAssessment.findByQuestionID(questionID);
-        if (transportationAssessment != null) {
-            return transportationAssessment;
-        }
+		for (TransportationAssessment transportationAssessment : TransportationAssessment.values()) {
+			if (questionID == transportationAssessment.getQuestionID()) {
+				return transportationAssessment;
+			}
+		}
 
 		throw new IllegalArgumentException();
 	}
@@ -79,9 +82,9 @@ public class ServiceRiskCalculator {
 		}
 	}
 
-	private RiskCategory determineRiskCategory(RiskAssessment assessment) throws Exception {
+	private RiskCategory getCategory(RiskAssessment assessment) throws Exception {
 		if (assessment != null) {
-			if (assessment.isQuestionSelfEvaluation()) {
+			if (assessment.isSelfEvaluation()) {
 				if (assessment instanceof SafetyAssessment) {
 					return RiskCategory.SELF_SAFETY;
 				} else if (assessment instanceof ProductAssessment) {

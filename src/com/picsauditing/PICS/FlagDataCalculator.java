@@ -39,8 +39,8 @@ import com.picsauditing.util.Strings;
 
 public class FlagDataCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;
-    protected BasicDAO dao;
-	
+	protected BasicDAO dao;
+
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
@@ -110,8 +110,9 @@ public class FlagDataCalculator {
 						data.setAuditColumns(new User(User.SYSTEM));
 
 						/*
-						 * This logic is intended, if the criteria is an AU then we only add if the account is full and
-						 * not a sole proprietor
+						 * This logic is intended, if the criteria is an AU then
+						 * we only add if the account is full and not a sole
+						 * proprietor
 						 */
 						if (data.getCriteria().getAuditType() != null
 								&& !data.getCriteria().getAuditType().isAnnualAddendum()
@@ -125,7 +126,7 @@ public class FlagDataCalculator {
 							if (dataSet.get(key) == null)
 								dataSet.put(key, data);
 							else if (dataSet.get(key).getFlag().isWorseThan(flag))
-								dataSet.put(key, data);							
+								dataSet.put(key, data);
 						}
 					}
 				}
@@ -140,8 +141,9 @@ public class FlagDataCalculator {
 	 * 
 	 * @param opCriteria
 	 * @param conCriteria
-	 * @return True if the flag criteria is not being met (i.e. Red Flagged), or False if a criteria
-	 * is met (i.e. Green Flagged). NULL can be returned from this method when flagging does not apply.
+	 * @return True if the flag criteria is not being met (i.e. Red Flagged), or
+	 *         False if a criteria is met (i.e. Green Flagged). NULL can be
+	 *         returned from this method when flagging does not apply.
 	 */
 	private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		if (!opCriteria.getCriteria().equals(conCriteria.getCriteria()))
@@ -154,10 +156,11 @@ public class FlagDataCalculator {
 		if (criteria.isAllowCustomValue() && Strings.isNotEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
-		
-		if ("Statistics".equals(criteria.getCategory()) && !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
-			return null;
-		}
+
+		// if ("Statistics".equals(criteria.getCategory()) &&
+		// !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
+		// return null;
+		// }
 
 		// Check if we need to match tags
 		if (opCriteria.getTag() != null) {
@@ -203,8 +206,10 @@ public class FlagDataCalculator {
 									auditIsGood = true;
 								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
 									/*
-									 * I don't think Bid-only contractors are going to get AUs anymore So this may not
-									 * be needed in the future See above, this line will never get run. When we do our
+									 * I don't think Bid-only contractors are
+									 * going to get AUs anymore So this may not
+									 * be needed in the future See above, this
+									 * line will never get run. When we do our
 									 * rewrite, let's remove this section
 									 */
 									auditIsGood = true;
@@ -269,12 +274,12 @@ public class FlagDataCalculator {
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
 								return false;
 						}
-						
+
 						List<ContractorAuditOperator> caos = ca.getOperators();
 						if (ca.getAuditType().isWCB()) {
 							caos = findCaosForCurrentWCB(con, criteria.getAuditType());
 						}
-						
+
 						for (ContractorAuditOperator cao : caos) {
 							if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
 								if (flagCAO(criteria, cao))
@@ -291,30 +296,52 @@ public class FlagDataCalculator {
 						}
 					}
 				}
-				
+
 				if (criteria.isFlaggableWhenMissing())
 					// isFlaggableWhenMissing would be really useful for
 					// Manual Audits or Implementation Audits
 					return true;
 			}
-			
+
 			return null;
 
 		} else {
 
 			if (criteria.getRequiredStatus() != null) {
-				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified()) {
-					// Verified data is required, but the answer hasn't been
-					// verified yet
-					// Look at ContractorFlagETL for details about how data
-					// becomes "verified"
-					// It's not as straight forward as you might think...evil
-					// laugh ha ha ha
-					// http://intranet.picsauditing.com/display/organizer/Annual+Updates
+				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified()
+						&& criteria.getQuestion() != null && criteria.getQuestion().getAuditType() != null
+						&& criteria.getQuestion().getAuditType().getWorkFlow().isHasSubmittedStep()) {
 					if (criteria.isFlaggableWhenMissing())
 						return true;
 					else
 						return null;
+				}
+				else {
+					for (ContractorAudit ca : con.getAudits()) {
+						if (ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
+							if (!worksForOperator) {
+								if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
+									return false;
+							}
+
+							List<ContractorAuditOperator> caos = ca.getOperators();
+							if (ca.getAuditType().isWCB()) {
+								caos = findCaosForCurrentWCB(con, criteria.getQuestion().getAuditType());
+							}
+
+							for (ContractorAuditOperator cao : caos) {
+								if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
+									if (!flagCAO(criteria, cao))
+										return null;
+									else 
+										break;
+								}
+							}
+							
+							break;
+						}
+					}
+					// cao is before required status
 				}
 			}
 
@@ -333,22 +360,20 @@ public class FlagDataCalculator {
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirWIA)) {
 							return answer2 > con.getWeightedIndustryAverage() * hurdle2 / 100;
 						}
-						
+
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor()) 
-									* hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor()) * hurdle2) / 100;
 						}
-						
+
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) 
-									* hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) * hurdle2) / 100;
 						}
-						
+
 						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
 							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 						}
 					}
-					
+
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
 					if (comparison.equals(">"))
@@ -396,11 +421,10 @@ public class FlagDataCalculator {
 		}
 	}
 
-	private boolean isStatisticValidForOperator(OperatorAccount operator,
-			ContractorAccount con) {
-		for (ContractorAudit audit:con.getCurrentAnnualUpdates()) {
-			for (ContractorAuditOperator cao:audit.getOperatorsVisible()) {
-				for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+	private boolean isStatisticValidForOperator(OperatorAccount operator, ContractorAccount con) {
+		for (ContractorAudit audit : con.getCurrentAnnualUpdates()) {
+			for (ContractorAuditOperator cao : audit.getOperatorsVisible()) {
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 					if (caop.getOperator().isOrIsDescendantOf(operator.getId())) {
 						return true;
 					}
@@ -514,7 +538,8 @@ public class FlagDataCalculator {
 											waitingOnPics = true;
 										}
 									} else {
-										if (conAudit.getAuditType().isImplementation() &&  cao.getPercentVerified() != 100) {
+										if (conAudit.getAuditType().isImplementation()
+												&& cao.getPercentVerified() != 100) {
 											return WaitingOn.Contractor;
 										}
 									}
@@ -536,7 +561,7 @@ public class FlagDataCalculator {
 
 	public FlagColor calculateCaoStatus(AuditType auditType, Set<FlagData> flagDatas) {
 		logger.info("Calculating recommendation for {}", auditType);
-		
+
 		FlagColor flag = null;
 		for (FlagData flagData : flagDatas) {
 			if (isInsuranceCriteria(flagData, auditType)) {
@@ -548,7 +573,7 @@ public class FlagDataCalculator {
 				}
 			}
 		}
-		
+
 		if (flag == null)
 			flag = FlagColor.Green;
 
@@ -571,13 +596,17 @@ public class FlagDataCalculator {
 	}
 
 	/**
-	 * Determine the list of CAOs we should be flagging off of for WCBs, so we do not flag off a WCB
-	 * for the wrong year.
+	 * Determine the list of CAOs we should be flagging off of for WCBs, so we
+	 * do not flag off a WCB for the wrong year.
 	 * 
-	 * @param contractor The contractor with WCBs.
-	 * @param auditType The Audit Type, which should be one of the known WCB AuditTypes like Alberta WCB
-	 * @return List of CAOs for the appropriate WCB Audit that we should be flagging on. If no WCBs for the current
-	 * year are found, an empty list is returned.
+	 * @param contractor
+	 *            The contractor with WCBs.
+	 * @param auditType
+	 *            The Audit Type, which should be one of the known WCB
+	 *            AuditTypes like Alberta WCB
+	 * @return List of CAOs for the appropriate WCB Audit that we should be
+	 *         flagging on. If no WCBs for the current year are found, an empty
+	 *         list is returned.
 	 */
 	private List<ContractorAuditOperator> findCaosForCurrentWCB(ContractorAccount contractor, AuditType auditType) {
 		String auditFor = determineAuditForYear();
@@ -586,22 +615,20 @@ public class FlagDataCalculator {
 				return audit.getOperators();
 			}
 		}
-		
+
 		return Collections.emptyList();
 	}
-	
+
 	private String determineAuditForYear() {
 		if (DateBean.isGracePeriodForWCB()) {
 			return Integer.toString(DateBean.getPreviousWCBYear());
 		}
-		
+
 		return DateBean.getWCBYear();
 	}
 
 	private boolean isCurrentYearWCBAudit(AuditType auditType, String auditFor, ContractorAudit audit) {
-		return audit != null 
-				&& audit.getAuditType() != null 
-				&& auditType.getId() == audit.getAuditType().getId() 
+		return audit != null && audit.getAuditType() != null && auditType.getId() == audit.getAuditType().getId()
 				&& auditFor.equals(audit.getAuditFor());
 	}
 
@@ -625,22 +652,22 @@ public class FlagDataCalculator {
 			return !cao.getStatus().equals(criteria.getRequiredStatus());
 		if (compare.equals("!="))
 			return cao.getStatus().equals(criteria.getRequiredStatus());
-		
+
 		// Default is "<"
 		return !cao.getStatus().before(criteria.getRequiredStatus());
 	}
-	
+
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator value : list) {
 			if (operatorCriteria.get(value.getCriteria()) == null) {
 				operatorCriteria.put(value.getCriteria(), new ArrayList<FlagCriteriaOperator>());
 			}
-			
+
 			operatorCriteria.get(value.getCriteria()).add(value);
 		}
 	}
-	
+
 	public Map<FlagCriteria, List<FlagDataOverride>> getOverrides() {
 		return overrides;
 	}
@@ -685,9 +712,8 @@ public class FlagDataCalculator {
 			criteriaIds.add(key.getId());
 		}
 
-		List<FlagDataOverride> fdos = getApplicableFlagDataOverrides(operator,
-				criteriaIds);
-		
+		List<FlagDataOverride> fdos = getApplicableFlagDataOverrides(operator, criteriaIds);
+
 		// if not audit year, then must be plain, no year scope criteria
 		if (auditYear == null) {
 			if (fdos.size() > 0)
@@ -695,35 +721,35 @@ public class FlagDataCalculator {
 			else
 				return null;
 		}
-		
+
 		// we have multi-year criteria
 		FlagDataOverride found = null;
 		// find fdo with same year
-		for (FlagDataOverride fdo:fdos) {
+		for (FlagDataOverride fdo : fdos) {
 			if (auditYear.equals(fdo.getYear())) {
 				found = fdo;
 				break;
 			}
 		}
-		
+
 		if (found == null) {
 			return null; // no fdo found for year
 		}
-		
+
 		if (found.getCriteria().equals(key))
 			return found; // found no change
-		
+
 		FlagDataOverride fdo1 = found;
 		FlagDataOverride fdo2 = null;
 		FlagDataOverride fdo3 = null;
-		
-		for (FlagDataOverride fdo:fdos) {
+
+		for (FlagDataOverride fdo : fdos) {
 			if (fdo.getCriteria().equals(key)) {
 				fdo2 = fdo;
 				break;
 			}
 		}
-		
+
 		if (fdo2 == null) {
 			removeFlagDataOverride(fdo1);
 			FlagCriteria nextCriteriaSkip = getNextCriteria(key);
@@ -731,8 +757,7 @@ public class FlagDataCalculator {
 				for (FlagDataOverride fdo : fdos) {
 					int curYear = Integer.parseInt(fdo1.getYear());
 					int previousYear = Integer.parseInt(fdo.getYear());
-					if (fdo.getCriteria().equals(nextCriteriaSkip)
-							&& (previousYear != curYear)) {
+					if (fdo.getCriteria().equals(nextCriteriaSkip) && (previousYear != curYear)) {
 						fdo3 = fdo;
 						break;
 					}
@@ -749,53 +774,53 @@ public class FlagDataCalculator {
 			addFlagDataOverride(fdo1);
 			return fdo1;
 		}
-		
+
 		FlagCriteria nextCriteria = getNextCriteria(fdo2.getCriteria());
 		if (nextCriteria == null) {
 			removeFlagDataOverride(fdo1);
 			removeFlagDataOverride(fdo2);
 
-            fdo2.copyPayloadFrom(fdo1);
-            dao.save(fdo2);
+			fdo2.copyPayloadFrom(fdo1);
+			dao.save(fdo2);
 			dao.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
 			addFlagDataOverride(fdo2);
 			return fdo2;
 		}
-		
-		for (FlagDataOverride fdo:fdos) {
+
+		for (FlagDataOverride fdo : fdos) {
 			if (fdo.getCriteria().equals(nextCriteria)) {
 				fdo3 = fdo;
 				break;
 			}
 		}
-		
+
 		if (fdo3 == null) {
-			fdo3 = (FlagDataOverride)fdo2.clone();
+			fdo3 = (FlagDataOverride) fdo2.clone();
 			fdo3.setCriteria(nextCriteria);
 		} else {
 			removeFlagDataOverride(fdo3);
 		}
-		
+
 		removeFlagDataOverride(fdo1);
 		removeFlagDataOverride(fdo2);
 
-        fdo3.copyPayloadFrom(fdo2);
-        try {
-		dao.save(fdo3);
+		fdo3.copyPayloadFrom(fdo2);
+		try {
+			dao.save(fdo3);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 
-        fdo2.copyPayloadFrom(fdo1);
-        dao.save(fdo2);
+		fdo2.copyPayloadFrom(fdo1);
+		dao.save(fdo2);
 		dao.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
 		addFlagDataOverride(fdo3);
 		addFlagDataOverride(fdo2);
-		
+
 		return fdo2;
 	}
 
-    private void addFlagDataOverride(FlagDataOverride fdo) {
+	private void addFlagDataOverride(FlagDataOverride fdo) {
 		List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
 		if (list == null) {
 			list = new ArrayList<FlagDataOverride>();
@@ -810,8 +835,7 @@ public class FlagDataCalculator {
 			list.remove(fdo);
 	}
 
-	private List<FlagDataOverride> getApplicableFlagDataOverrides(
-			OperatorAccount operator, List<Integer> criteriaIds) {
+	private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
 		ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
 		for (int id : criteriaIds) {
 			FlagCriteria criteriaKey = new FlagCriteria();
@@ -832,19 +856,19 @@ public class FlagDataCalculator {
 
 	private FlagCriteria getNextCriteria(FlagCriteria criteria) {
 		MultiYearScope nextYear;
-		
+
 		if (criteria.getMultiYearScope().equals(MultiYearScope.LastYearOnly))
 			nextYear = MultiYearScope.TwoYearsAgo;
 		else if (criteria.getMultiYearScope().equals(MultiYearScope.TwoYearsAgo))
 			nextYear = MultiYearScope.ThreeYearsAgo;
 		else
 			return null;
-		
+
 		List<Integer> idList = correspondingMultiYearCriteria.get(criteria.getId());
 
 		List<FlagCriteria> criteriaList = flagCriteriaDao.findWhere("id IN (" + Strings.implode(idList) + ")");
-		
-		for (FlagCriteria foundCriteria:criteriaList)
+
+		for (FlagCriteria foundCriteria : criteriaList)
 			if (nextYear.equals(foundCriteria.getMultiYearScope()))
 				return foundCriteria;
 
@@ -854,12 +878,12 @@ public class FlagDataCalculator {
 	private String extractYear(String year) {
 		if (Strings.isEmpty(year))
 			return null;
-		
+
 		int index;
 		index = year.indexOf(":");
 		if (index >= 0)
 			year = year.substring(index + 1);
-		
+
 		index = year.indexOf("<br");
 		if (index >= 0)
 			year = year.substring(0, index);

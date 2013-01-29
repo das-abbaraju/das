@@ -10,23 +10,35 @@ import org.junit.Test;
 
 import com.picsauditing.security.EncodedKey;
 
-
 public class EncodedKeyTest {
-
 	private static final int TEST_SIZE = 100;
+
 
 	@Test
 	/*
-	 * This is a genuine test for desired behavior. It was created at the same
-	 * time as the code under test.
+	 * Same test as above, but using the randomApiKey() convenience method
 	 */
 	public void testApiKey() throws Exception {
 		Set<String> keys = new HashSet<String>();
 		for (int i = 0; i < TEST_SIZE; i++) {
 			String apiKey = EncodedKey.randomApiKey();
 			keys.add(apiKey);
-			// System.out.println(apiKey); // e.g. 16096rdumluz761fh2ty84956v7lelav
 			assertEquals(32, apiKey.length());
+		}
+		assertEquals(TEST_SIZE, keys.size());
+	}
+
+	@Test
+	/*
+	 * Same test as above, but using the randomApiKey() convenience method
+	 */
+	public void testNewServerSecretKey() throws Exception {
+		Set<String> keys = new HashSet<String>();
+		for (int i = 0; i < TEST_SIZE; i++) {
+			String secretKey = EncodedKey.newServerSecretKey();
+			System.out.println(secretKey);
+			keys.add(secretKey);
+			assertEquals(76+1+10+2, secretKey.length());
 		}
 		assertEquals(TEST_SIZE, keys.size());
 	}
@@ -46,4 +58,5 @@ public class EncodedKeyTest {
 		}
 		assertEquals(TEST_SIZE, passwords.size());
 	}
+
 }

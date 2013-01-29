@@ -1,9 +1,9 @@
 package com.picsauditing.PICS.data;
 
 public class DataEvent<T> {
-	
-	protected T data;	 
-	
+
+	protected T data;
+
 	public DataEvent(T data) {
 		super();
 		this.data = data;
@@ -15,6 +15,6 @@ public class DataEvent<T> {
 
 	public void setData(T data) {
 		this.data = data;
-	}	 
-	 
+	}
+
 }

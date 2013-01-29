@@ -21,9 +21,36 @@ public class InvoiceService {
 	@Autowired
 	protected TaxService taxService;
 
-	public Invoice saveInvoice(Invoice invoice) {
+	public static final ArrayList<FeeClass> TAX_FEE_CLASSES = new ArrayList<FeeClass>() {{
+		add(FeeClass.GST);
+		add(FeeClass.CanadianTax);
+		add(FeeClass.VAT);
+	}};
+
+	public Invoice saveInvoice(Invoice invoice) throws InvoiceValidationException {
 		taxService.applyTax(invoice);
+		validate(invoice);
 		return invoiceDAO.save(invoice);
+	}
+
+	private void validate(Invoice invoice) throws InvoiceValidationException {
+		if (invoiceContainDuplicateTaxItems(invoice)) {
+			throw new InvoiceValidationException("Invoice contains duplicate tax items.");
+		}
+	}
+
+	private boolean invoiceContainDuplicateTaxItems(Invoice invoice) {
+		int duplicateCount = 0;
+
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (TAX_FEE_CLASSES.contains(invoiceItem.getInvoiceFee().getFeeClass())) {
+				duplicateCount += 1;
+				if (duplicateCount > 1) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public InvoiceFee getCanadianTaxInvoiceFeeForProvince(CountrySubdivision countrySubdivision) throws Exception {

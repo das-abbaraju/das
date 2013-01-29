@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -87,7 +86,11 @@ public class FlagDataCalculatorTest {
 		fc = new FlagCriteria();
 		fc.setId(1);
 		fc.setCategory("Safety");
-		fc.setQuestion(EntityFactory.makeAuditQuestion());
+		
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.getAuditType().setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+		
+		fc.setQuestion(question);
 		// fc.setAuditType(EntityFactory.makeAuditType(1));
 		fc.setComparison("=");
 		fc.setDataType(FlagCriteria.STRING);
@@ -763,6 +766,240 @@ public class FlagDataCalculatorTest {
 		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
 		
 		assertFalse(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditCompleteAuditQuestionNoVerificationOrSubmittedWorkflow() throws Exception {		
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.getCategory().setAuditType(EntityFactory.makeAuditType());
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNotNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditCompleteAuditQuestionNoVerificationButWithSubmittedWorkflow() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = EntityFactory.makeAuditType();
+		auditType.setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditApprovedAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Approved);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = contractor.getAudits().get(0).getAuditType();
+		auditType.setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		contractorFlagCriteria.setVerified(true);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNotNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditPendingAuditQuestionNoVerificationOrSubmittedWorkflow() throws Exception {		
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.getCategory().setAuditType(EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditPendingAuditQuestionNoVerificationButWithSubmittedWorkflow() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID);
+		auditType.setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditPendingAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
+		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = contractor.getAudits().get(0).getAuditType();
+		auditType.setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		contractorFlagCriteria.setVerified(true);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditCompleteFailsCPIQuestionCheck() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
+		
+		FlagCriteria flagCriteria = EntityFactory.makeFlagCriteria();
+		flagCriteria.setId(709);
+		flagCriteria.setDataType("number");
+		flagCriteria.setComparison("<");
+		flagCriteria.setDefaultValue("70");
+		flagCriteria.setRequiredStatus(AuditStatus.Complete);
+
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID);
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		contractorFlagCriteria.setAnswer("50");
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testIsFlagged_AuditCompleteSucceedsCPIQuestionCheck() throws Exception {
+		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
+		
+		FlagCriteria flagCriteria = EntityFactory.makeFlagCriteria();
+		flagCriteria.setId(709);
+		flagCriteria.setDataType("number");
+		flagCriteria.setComparison("<");
+		flagCriteria.setDefaultValue("70");
+		flagCriteria.setRequiredStatus(AuditStatus.Complete);
+
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditType auditType = EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID);
+		
+		question.getCategory().setAuditType(auditType);
+		
+		flagCriteria.setAuditType(null);
+		flagCriteria.setQuestion(question);
+		
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		contractorFlagCriteria.setAnswer("80");
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertFalse(result);
+	}
+	
+	private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		contractor.setAccountLevel(AccountLevel.Full);
+		ContractorAudit mockAudit = buildMockAudit(1000, 2012, caoStatus);
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		audits.add(mockAudit);
+		contractor.setAudits(audits);
+		
+		
+		return contractor;
 	}
 	
 	private ContractorAccount buildFakeContractorAccountWithWCBs(AuditStatus caoStatus) {

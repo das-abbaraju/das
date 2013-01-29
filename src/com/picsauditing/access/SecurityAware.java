@@ -13,7 +13,7 @@ public interface SecurityAware {
 
 	void tryPermissions(OpPerms opPerm, OpType opType) throws NoRightsException;
 	
-	boolean isApiUser();
+	boolean isApiUser() throws AjaxNotLoggedInException;
 
 	boolean sessionCookieIsValidAndNotExpired();
 

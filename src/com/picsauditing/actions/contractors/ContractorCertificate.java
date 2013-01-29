@@ -37,6 +37,12 @@ public class ContractorCertificate extends ContractorActionSupport {
 		String dateGenerated = longDate.format(new Date());
 		String dateMemberSince = shortDate.format((contractor.getMembershipDate() == null) ? new Date()
 				: contractor.getMembershipDate());
+		String name = contractor.getName();
+		String dbaName = null;
+		float nameOffset = 400;
+		if (contractor.getDbaName() != null && contractor.getDbaName().trim().length() > 0) {
+			dbaName = getText("ContractorAccount.dbaName.short") + " " + contractor.getDbaName().trim();
+		}
 
 		PdfContentByte cb = writer.getOverContent(1);
 
@@ -56,12 +62,22 @@ public class ContractorCertificate extends ContractorActionSupport {
 		cb.setCMYKColorFillF(0f, .53f, 1f, .282f);
 		cb.showTextAligned(PdfContentByte.ALIGN_RIGHT, dateGenerated, 675, 475, 0);
 
-		size = shrinkFontSizeIfNeeded(contractor.getName(), contractorNameFont.getBaseFont(), 36, 600);	
+		size = shrinkFontSizeIfNeeded(name + dbaName, contractorNameFont.getBaseFont(), 36, 600);	
 		cb.setFontAndSize(contractorNameFont.getBaseFont(), size);
 		cb.setCMYKColorFillF(0f, 0f, 0f, 1f);
-		cb.showTextAligned(PdfContentByte.ALIGN_CENTER, contractor.getName(), 400, 400, 0);
+		if (dbaName != null) {
+			nameOffset = 400 + (size/2);
+		}
+		cb.showTextAligned(PdfContentByte.ALIGN_CENTER, contractor.getName(), 400, nameOffset, 0);
 
-		size = shrinkFontSizeIfNeeded(dateMemberSince, dateMemberSinceFont.getBaseFont(), 24, 600);
+		if (dbaName != null) {
+			cb.setFontAndSize(contractorNameFont.getBaseFont(), size);
+			cb.setCMYKColorFillF(0f, 0f, 0f, 1f);
+			nameOffset = 400 - (size/2);
+			cb.showTextAligned(PdfContentByte.ALIGN_CENTER, dbaName, 400, nameOffset, 0);
+		}
+		
+ 		size = shrinkFontSizeIfNeeded(dateMemberSince, dateMemberSinceFont.getBaseFont(), 24, 600);
 		cb.setFontAndSize(dateMemberSinceFont.getBaseFont(), size);
 		cb.setCMYKColorFillF(1f, .508f, 0f, .290f);
 		cb.showTextAligned(PdfContentByte.ALIGN_CENTER, dateMemberSince, 400, 315, 0);

@@ -1158,6 +1158,10 @@
 		<action name="AccountTimezonePopulator" class="com.picsauditing.actions.dev.AccountTimezonePopulatorController">
 			<result>struts/dev/account_timezone_populator.jsp</result>
         </action>
+
+        <action name="ManageRecommendedCSRAssignments" class="com.picsauditing.actions.ManageRecommendedCSRAssignments">
+            <result>struts/csr-assignments/csr-assignments.jsp</result>
+        </action>
     </package>
 
     <!-- Reports & API -->

@@ -7,15 +7,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.PICS.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
-import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -103,7 +100,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	public String execute() throws NoRightsException, IOException {
+	public String execute() throws NoRightsException, IOException, InvoiceValidationException {
 		if (invoice == null) {
 			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
 			return BLANK;

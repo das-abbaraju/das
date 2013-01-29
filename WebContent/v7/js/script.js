@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-01-18
+/*! Picsorganizer - v0.1.0 - 2013-01-22
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -2429,6 +2429,69 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
     
     PICS._init();
+}(jQuery));
+(function ($) {
+    PICS.define('csr-assignments.CSRAssignmentsController', {
+        methods:{
+            init:function () {
+                /*$('#text-toggle-button').toggleButtons({
+                    width: 220,
+                    label: {
+                        enabled: "Lorem Ipsum",
+                        disabled: "Dolor Sit"
+                    }
+                });*/
+                var that = this;
+                
+                $('.status').on('click', function (event) {
+                    that.toggleAccepted(event);
+                });
+                
+               
+                $('#save_assignments').on('click', function (event) {
+                    that.saveCSRAssignments();
+                });
+            },
+            
+            toggleAccepted: function (event) {
+                var element = $(event.target);
+                var parentDiv = element.closest('div');
+                
+                if (parentDiv.hasClass('accept')) {
+                    log('reject')
+                    parentDiv.removeClass('accept')
+                } else {
+                    log('accept')
+                    parentDiv.addClass('accept')
+                }
+                
+            },
+           saveCSRAssignments: function () {
+               var approved = [],
+                   accepted_value = $("#accepted"),
+                   rejected = [],
+                   rejected_value = $("#rejected");
+                   
+               $('.status').each(function (index, value) {
+                   var id = $(this).closest('tr').find('.account_id').html();
+
+                   id = id.trim();
+
+                   if ($(this).closest('.accept').length > 0) {
+                       log('accpot')
+                       approved.push(id);
+                   } else {
+                       log('reject')
+                       rejected.push(id);
+                   }
+                   
+               });
+               log(rejected);
+               accepted_value.val(approved.join());
+               rejected_value.val(rejected.join());
+            }
+        }
+    });
 }(jQuery));
 (function ($) {
     PICS.define('frontend-guide.FrontendDevelopmentGuideController', {

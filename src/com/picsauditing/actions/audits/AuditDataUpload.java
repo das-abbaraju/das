@@ -288,7 +288,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		auditDataDAO.save(auditData);
 		dataID = auditData.getId();
 
-		resetCaoIfNeeded(auditData);
+		safetyManualUploadStatusAdjustments(auditData);
 		
 		try {
 			if (copyDataID > 0) {
@@ -340,43 +340,51 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		return SUCCESS;
 	}
 
-	private void resetCaoIfNeeded(AuditData auditData) {
-		ContractorAudit audit = auditData.getAudit();
-		
-		auditCategoryRuleCache.initialize(auditRuleDAO);
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-		boolean updateAudit = false;
-		
-		if (auditData.getQuestion().getId()== AuditQuestion.MANUAL_PQF) {
-			for (ContractorAuditOperator cao : audit.getOperators()) {
-				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
-					operators.add(caop.getOperator());
-				builder.calculate(auditData.getAudit(), operators);
+    private void safetyManualUploadStatusAdjustments(AuditData auditData) {
+        if (auditData.getQuestion().getId() != AuditQuestion.MANUAL_PQF) {
+            return;
+        }
 
-				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
-						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-					ContractorAuditOperatorWorkflow caow = cao
-							.changeStatus(AuditStatus.Incomplete, permissions);
-					caow.setNotes("Due to data change");
-					caowDAO.save(caow);
-					updateAudit = true;
-				}
-			}
-		}
-		
-		if (updateAudit) {
-			AuditData sigQuestion = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), 10217);
-			if (sigQuestion != null) {
-				sigQuestion.setAnswer("");
-				auditDataDAO.save(sigQuestion);
-			}
-			
-			auditDao.save(audit);
-		}
-	}
+        ContractorAudit audit = auditData.getAudit();
 
-	public String downloadFile() throws Exception {
+        auditCategoryRuleCache.initialize(auditRuleDAO);
+        AuditCategoriesBuilder builder = initAuditCategoriesBuilder();
+        boolean oneOrMoreCaoStatusChanged = false;
+
+        for (ContractorAuditOperator cao : audit.getOperators()) {
+            Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+                operators.add(caop.getOperator());
+            }
+            builder.calculate(auditData.getAudit(), operators);
+
+            if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
+                    && builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+                ContractorAuditOperatorWorkflow caow = cao
+                        .changeStatus(AuditStatus.Incomplete, permissions);
+                caow.setNotes("Due to data change");
+                caowDAO.save(caow);
+                oneOrMoreCaoStatusChanged = true;
+            }
+        }
+
+        if (oneOrMoreCaoStatusChanged) {
+            AuditData signatureData = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), AuditQuestion.MANUAL_PQF_SIGNATURE);
+            if (signatureData != null) {
+            	signatureData.setAnswer(null);
+            	signatureData.setComment(null);
+            	signatureData.setUpdateDate(null);
+                auditDataDAO.save(signatureData);
+            }
+            auditDao.save(audit);
+        }
+    }
+
+    protected AuditCategoriesBuilder initAuditCategoriesBuilder() {
+        return new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+    }
+
+    public String downloadFile() throws Exception {
 		this.findConAudit();
 
 		if (auditData == null) {

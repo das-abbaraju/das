@@ -13,6 +13,7 @@ import java.util.TimeZone;
 
 
 import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.dao.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -253,7 +254,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 	// this class obviously has too many responsibilities and dependencies for a
 	// simple test to require this
 	// much setup.
-	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) {
+	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) throws InvoiceValidationException {
 		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 		scheduleAudit.setScheduledDateDay(sdf.format(dateScheduledViaUI));
 		sdf.applyPattern(PicsDateFormat.Time12Hour);

@@ -132,7 +132,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     /**
      * Container to hold a file being downloaded by the user.
      * 
-     * @see com.picsauditing.strutsutil.CsvFileResult
+     * @see com.picsauditing.strutsutil.FileResult
      */
     protected FileDownloadContainer fileContainer = null;
     
@@ -420,11 +420,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         this.apiKey = apiKey;
     }
 
-    public boolean isApiUser() {
+    public boolean isApiUser() throws AjaxNotLoggedInException {
         if (apiKey == null) {
             return false;
         }
-        User user = userDAO.findByApiKey(apiKey);
+        User user = null;
+        try {
+            user = userDAO.findByApiKey(apiKey);
+        } catch (SecurityException e) {
+            throw new AjaxNotLoggedInException(e.getMessage());
+        }
         try {
             permissions = permissionBuilder.login(user);
             this.user = user;

@@ -532,6 +532,40 @@
 							</pics:permission>
 						</s:if>
 
+						<s:if test="%{user.hasGroup(11)}">				
+							<li>
+								<label>Countries Serviced</label>
+								<table class="report">
+									<thead>
+										<th>country</th>
+										<th>remove</th>
+									</thead>
+									<tbody>
+										<s:iterator value="getSortedCountriesServiced()" var="country">
+											<tr>
+												<td><s:property value="%{#country.name}" /></td>
+												<td>
+													<a href="UsersManage!removeCountry.action?user=<s:property value='user.id' />&removeCountry=<s:property value='%{#country.isoCode}' />" class="remove"> Remove </a>
+												</td>
+											</tr>
+										</s:iterator>
+										<tr>
+											<td colspan="2">
+												<s:select 
+													id="selectedCountry"
+													name="selectedCountry"
+													list="getSortedCountryList()"
+													listKey="isoCode"
+													headerKey=""
+													headerValue="Select Country" 
+												/>
+												<s:submit method="addCountry" value="Add" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</li>
+						</s:if>
 					</ol>
 				</fieldset>
 

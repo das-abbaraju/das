@@ -26,7 +26,9 @@ public class OpenTasksSubscription extends SubscriptionBuilder {
 
 		User user = subscription.getUser();
 		try {
+			assert user.isActiveB();
 			assert user.getAccount().isContractor();
+			assert user.getAccount().getStatus().isActive();
 			assert subscription.getSubscription() == Subscription.OpenTasks;
 			List<String> tasks = openTasks.getOpenTasksEmail((ContractorAccount) user.getAccount(),user);
 			if (!tasks.isEmpty())

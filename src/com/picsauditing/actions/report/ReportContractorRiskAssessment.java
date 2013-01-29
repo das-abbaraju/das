@@ -198,7 +198,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
 		for (RiskAssessment safetyAssessment : SafetyAssessment.values()) {
-			if (safetyAssessment.isQuestionSelfEvaluation()) {
+			if (safetyAssessment.isSelfEvaluation()) {
 				questionIDs.add(safetyAssessment.getQuestionID());
 			}
 		}

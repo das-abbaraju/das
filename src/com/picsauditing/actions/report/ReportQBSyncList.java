@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.List;
 
 import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.InvoiceValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -46,7 +47,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 
 	private EmailQueue lastError;
 
-	public String execute() throws NoRightsException {
+	public String execute() throws NoRightsException, InvoiceValidationException {
 		if (!forceLogin())
 			return LOGIN;
 

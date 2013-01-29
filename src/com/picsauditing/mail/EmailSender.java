@@ -20,14 +20,16 @@ import com.picsauditing.util.Strings;
 
 public class EmailSender {
 	private final Logger logger = LoggerFactory.getLogger(EmailSender.class);
-	
+
 	@Autowired
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-	
-	// this is @Autowired at the setter because we need @Qualifier which does NOT work
-	// on the variable declaration; only on the method (I think this is a Spring bug)
+
+	// this is @Autowired at the setter because we need @Qualifier which does
+	// NOT work
+	// on the variable declaration; only on the method (I think this is a Spring
+	// bug)
 	private Publisher emailQueuePublisher;
 
 	@Autowired
@@ -47,12 +49,14 @@ public class EmailSender {
 
 		GridSender gridSender;
 		if (!Strings.isEmpty(email.getFromPassword())) {
-			// TODO We don't use Gmail anymore. SendGrid only accepts a single username (info@pics) So we should remove this section
+			// TODO We don't use Gmail anymore. SendGrid only accepts a single
+			// username (info@pics) So we should remove this section
 			// We need the password to correctly authenticate with GMail
 			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
 		} else {
 			// Use the default info@picsauditing.com address
-			gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS, EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
+			gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS,
+					EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
 		}
 		gridSender.sendMail(email);
 
@@ -67,31 +71,33 @@ public class EmailSender {
 			logEmailAsSendError(email);
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	private void logEmailAsSendError(EmailQueue email) {
-		logger.warn("Skipping Email \nFROM: {}\nTO: {}\nSUBJECT: {}", new Object[] {email.getFromAddress(), email.getToAddresses(), email.getSubject()});
+		logger.warn("Skipping Email \nFROM: {}\nTO: {}\nSUBJECT: {}",
+				new Object[] { email.getFromAddress(), email.getToAddresses(), email.getSubject() });
 		email.setStatus(EmailStatus.Error);
 		email.setSentDate(new Date());
 		emailQueueDAO.save(email);
 	}
 
 	private boolean contractorIsDeactivated(EmailQueue email) {
-		return (email.getContractorAccount() != null && email.getContractorAccount().getStatus().isDeactivated());
+		return (email.getContractorAccount() != null && !email.getContractorAccount().getStatus().isActivePendingRequested());
 	}
-	
+
 	private boolean emailTemplateIsValidForDeactivatedContractors(EmailQueue email) {
 		if (email.getEmailTemplate() == null) {
-			// this duplicates previous behavior before I refactored - if the template is null, then
+			// this duplicates previous behavior before I refactored - if the
+			// template is null, then
 			// it is valid for deactivated contractors
 			return true;
-		} else { 
+		} else {
 			return EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(email.getEmailTemplate().getId());
 		}
 	}
-	
+
 	/**
 	 * Send this through GMail or SendMail
 	 * 
@@ -122,22 +128,26 @@ public class EmailSender {
 	 * @param email
 	 */
 	public void send(EmailQueue email) {
-		emailQueueDAO.save(email);
-		publishEnterpriseMessageIfEmailShouldBeSent(email);
+		if (!checkDeactivated(email)) {
+			emailQueueDAO.save(email);
+			publishEnterpriseMessageIfEmailShouldBeSent(email);
+		}
 	}
 
 	public void publishSubscription(EmailQueue email) {
 		emailQueuePublisher.publish(email, "email-subscription");
 	}
-	
+
 	public void publish(EmailQueue email) {
 		publishEnterpriseMessageIfEmailShouldBeSent(email);
 	}
-	
+
 	private void publishEnterpriseMessageIfEmailShouldBeSent(EmailQueue email) {
 		if (contractorIsDeactivated(email) && !emailTemplateIsValidForDeactivatedContractors(email)) {
-			// this will write to the database NOW, as opposed to on actual sending of the email we're 
-			// only going to do this if the feature is enabled. We'll log now and not publish for sending
+			// this will write to the database NOW, as opposed to on actual
+			// sending of the email we're
+			// only going to do this if the feature is enabled. We'll log now
+			// and not publish for sending
 			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)) {
 				logEmailAsSendError(email);
 			}

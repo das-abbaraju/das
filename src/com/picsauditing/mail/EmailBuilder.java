@@ -300,12 +300,26 @@ public class EmailBuilder {
 
 	private String getUserTranslation(Locale locale, Collection<Translation> translations) {
 		String english = I18nCache.DEFAULT_TRANSLATION;
+		String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
 		for (Translation translation : translations) {
-			if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale()))
+			if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
 				english = translation.getValue();
+			}
+
 			if (locale.getLanguage().equals(translation.getLocale())
-					&& !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue()))
-				return translation.getValue();
+					&& !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
+				notVariantTranslation = translation.getValue();
+			}
+
+			if (Strings.isNotEmpty(locale.getCountry())) {
+				if (translation.getLocale().equals(locale.getLanguage() + "_" + locale.getCountry())) {
+					return translation.getValue();
+				}
+			}
+		}
+
+		if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
+			return notVariantTranslation;
 		}
 
 		return english;

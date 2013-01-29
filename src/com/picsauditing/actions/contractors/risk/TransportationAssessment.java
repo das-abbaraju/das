@@ -11,13 +11,13 @@ public enum TransportationAssessment implements RiskAssessment {
 	TRANSPORT_AND_OFFLOAD_HAZARDOUS_MATERIALS(14927, LowMedHigh.High, LowMedHigh.Low);
 
 	private int questionID;
-	private LowMedHigh riskRankingForAnswerYes;
-	private LowMedHigh riskRankingForAnswerNo;
+	private LowMedHigh yes;
+	private LowMedHigh no;
 
-	private TransportationAssessment(int questionID, LowMedHigh riskRankingForAnswerYes, LowMedHigh riskRankingForAnswerNo) {
+	private TransportationAssessment(int questionID, LowMedHigh yes, LowMedHigh no) {
 		this.questionID = questionID;
-		this.riskRankingForAnswerYes = riskRankingForAnswerYes;
-		this.riskRankingForAnswerNo = riskRankingForAnswerNo;
+		this.yes = yes;
+		this.no = no;
 	}
 
 	@Override
@@ -26,40 +26,30 @@ public enum TransportationAssessment implements RiskAssessment {
 	}
 
 	@Override
-	public LowMedHigh getRiskRankingForAnswerYes() {
-		return riskRankingForAnswerYes;
+	public LowMedHigh getYes() {
+		return yes;
 	}
 
 	@Override
-	public LowMedHigh getRiskRankingForAnswerNo() {
-		return riskRankingForAnswerNo;
+	public LowMedHigh getNo() {
+		return no;
 	}
 
 	@Override
-	public boolean isQuestionSelfEvaluation() {
+	public boolean isSelfEvaluation() {
 		return false;
 	}
 
 	@Override
-	public LowMedHigh getRiskLevelBasedOn(String answer) {
+	public LowMedHigh getRiskLevel(String answer) {
 		if (!Strings.isEmpty(answer.trim())) {
 			if (YesNo.valueOf(answer) == YesNo.Yes) {
-				return getRiskRankingForAnswerYes();
+				return getYes();
 			} else if (YesNo.valueOf(answer) == YesNo.No) {
-				return getRiskRankingForAnswerNo();
+				return getNo();
 			}
 		}
 
 		return LowMedHigh.None;
 	}
-
-    public static TransportationAssessment findByQuestionID(int questionID) {
-        for (TransportationAssessment assessment : values()) {
-            if (assessment.getQuestionID() == questionID) {
-                return assessment;
-            }
-        }
-
-        return null;
-    }
 }

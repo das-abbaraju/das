@@ -1,6 +1,10 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -10,18 +14,31 @@ public class TaxService {
 
 	@Autowired
 	protected InvoiceService invoiceService;
+	@Autowired
+	private FeatureToggle featureToggle;
+
+	private static final Logger logger = LoggerFactory.getLogger(TaxService.class);
 
 	public void applyTax(Invoice invoice) {
-		if (isInvoiceTaxable(invoice)) {
-			InvoiceFee taxInvoiceFee = null;
+		if (!isInvoiceTaxable(invoice)) {
+			return;
+		}
+
+		InvoiceItem taxInvoiceItem = findTaxInvoiceItem(invoice);
+
+		InvoiceFee taxInvoiceFee = null;
+		if (taxInvoiceItem != null) {
+			taxInvoiceFee = taxInvoiceItem.getInvoiceFee();
+		} else {
 			try {
 				taxInvoiceFee = createTaxInvoiceFee(invoice);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Failed to create a taxInvoiceFee for invoice {}", invoice.getId(), e);
 			}
-			applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
-			invoice.updateAmount();
 		}
+
+		applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
+		invoice.updateAmount();
 	}
 
 	private boolean isInvoiceTaxable(Invoice invoice) {
@@ -32,17 +49,31 @@ public class TaxService {
 		Currency currency = invoice.getCurrency();
 
 		if (currency.isCAD()) {
-			return createCanadianTaxInvoiceFee(invoice);
+			if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)) {
+				return createNewCanadianTaxInvoiceFee(invoice);
+			} else {
+				return createLegacyCanadianTaxInvoiceFee(invoice);
+			}
 		} else if(currency.isGBP()){
-			InvoiceFee vat = new InvoiceFee(InvoiceFee.VAT);
-			vat.setFeeClass(FeeClass.VAT);
-			return vat;
+			return createVatTaxInvoiceFee();
 		} else {
 			return null;
 		}
 	}
 
-	private InvoiceFee createCanadianTaxInvoiceFee(Invoice invoice) throws Exception {
+	private InvoiceFee createVatTaxInvoiceFee() {
+		InvoiceFee vatInvoiceFee = new InvoiceFee(InvoiceFee.VAT);
+		vatInvoiceFee.setFeeClass(FeeClass.VAT);
+		return vatInvoiceFee;
+	}
+
+	private InvoiceFee createLegacyCanadianTaxInvoiceFee(Invoice invoice) {
+		InvoiceFee canadianInvoiceFee = new InvoiceFee(InvoiceFee.GST);
+		canadianInvoiceFee.setFeeClass(FeeClass.GST);
+		return canadianInvoiceFee;
+	}
+
+	private InvoiceFee createNewCanadianTaxInvoiceFee(Invoice invoice) throws Exception {
 		CountrySubdivision countrySubdivision = invoice.getAccount().getCountrySubdivision();
 
 		try {
@@ -54,6 +85,10 @@ public class TaxService {
 
 
 	private void applyTaxInvoiceFeeToInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {
+		if (!shouldApplyTaxInvoiceFee(taxInvoiceFee)) {
+			return;
+		}
+
 		BigDecimal taxAmount = calculateTaxAmountForInvoice(invoice, taxInvoiceFee);
 
 		InvoiceItem taxItem = findTaxInvoiceItemInInvoice(taxInvoiceFee, invoice);
@@ -64,6 +99,10 @@ public class TaxService {
 				updateExistingTaxItemInInvoice(invoice, taxItem, taxAmount);
 			}
 		}
+	}
+
+	private boolean shouldApplyTaxInvoiceFee(InvoiceFee taxInvoiceFee) {
+		return taxInvoiceFee != null;
 	}
 
 	private BigDecimal calculateTaxAmountForInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {
@@ -131,5 +170,20 @@ public class TaxService {
 		amount.setScale(2, BigDecimal.ROUND_UP);
 
 		return amount;
+	}
+
+	InvoiceItem findTaxInvoiceItem(Invoice invoice) {
+		for (InvoiceItem item : invoice.getItems()) {
+			InvoiceFee invoiceFee = item.getInvoiceFee();
+			if (invoiceFee == null) {
+				continue;
+			}
+
+			if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
+				return item;
+			}
+		}
+
+		return null;
 	}
 }

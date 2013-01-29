@@ -45,7 +45,8 @@ table.report thead a {
 	padding-bottom: 0;
 }
 
-#ReportNewRequestedContractor__page table.report thead a {
+#ReportNewRequestedContractor__page table.report thead a,
+#ReportRegistrationRequests__page table.report thead a {
     background: none;
 }
 

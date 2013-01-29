@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -384,6 +385,32 @@ public class AuditBuilderTest extends PicsTest {
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
+	}
+	
+	@Test
+	public void testWelcomeCallValidity() throws Exception {
+		ContractorAudit audit;
+		Calendar creationDate;
+		Boolean result;
+		
+		ContractorAccount con = EntityFactory.makeContractor();
+		audit = EntityFactory.makeContractorAudit(AuditType.WELCOME, con);
+		
+		creationDate = Calendar.getInstance();
+		audit.setCreationDate(creationDate.getTime());
+		audit.setExpiresDate(null);
+		result = Whitebox.invokeMethod(auditBuilder, "isValidAudit", audit);
+		assertTrue(result);
+		assertNull(audit.getExpiresDate());
+		
+		creationDate = Calendar.getInstance();
+		creationDate.add(Calendar.MONTH, -2);
+		audit.setCreationDate(creationDate.getTime());
+		audit.setExpiresDate(null);
+		result = Whitebox.invokeMethod(auditBuilder, "isValidAudit", audit);
+		assertTrue(result);
+		assertNotNull(audit.getExpiresDate());
+		
 	}
 
 	@Test

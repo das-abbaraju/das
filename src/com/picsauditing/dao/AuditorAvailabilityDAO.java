@@ -1,15 +1,18 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
 
+import com.picsauditing.PICS.DateBean;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class AuditorAvailabilityDAO extends PicsDAO {
@@ -46,11 +49,15 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return em.find(AuditorAvailability.class, id);
 	}
 
-	public List<AuditorAvailability> findAvailable(Date startDate) {
-		Query query = em.createQuery("SELECT t FROM AuditorAvailability t WHERE t.startDate >= :startDate "
-				+ "ORDER BY startDate");
-		query.setParameter("startDate", startDate);
-		return query.getResultList();
+	public List<AuditorAvailability> findAvailable(Date startDate, String contractorCountry) {
+		String sql = "SELECT aa.* FROM auditor_availability aa\n" +
+				"JOIN user_country uc ON uc.userID = aa.userID\n" +
+				"WHERE uc.isoCode = '" + contractorCountry + "'\n" +
+				"AND aa.startDate >= '" + DateBean.toDBFormat(startDate) + "'" +
+				"ORDER BY aa.startDate";
+		Query q = em.createNativeQuery(sql, AuditorAvailability.class);
+
+		return q.getResultList();
 	}
 
 	public List<AuditorAvailability> findAvailableLocal(Date startDate, List<User> auditors) {

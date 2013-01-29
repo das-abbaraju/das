@@ -38,18 +38,18 @@ public class PaymentObserver implements Observer {
 
 			PaymentCommissionStrategy<Payment> strategy = null;
 			switch (event.getPaymentEventType()) {
-				case PAYMENT:
-				case SAVE:
-					strategy = paymentStrategy;
-					break;
+			case PAYMENT:
+			case SAVE:
+				strategy = paymentStrategy;
+				break;
 
-				case REFUND:
-				case REMOVE:
-					strategy = paymentRemoveStrategy;
-					break;
+			case REFUND:
+			case REMOVE:
+				strategy = paymentRemoveStrategy;
+				break;
 
-				default:
-					throw new IllegalArgumentException("Unhandled Payment Event Type.");
+			default:
+				throw new IllegalArgumentException("Unhandled Payment Event Type.");
 			}
 
 			strategy.processPaymentCommission(event.getData());

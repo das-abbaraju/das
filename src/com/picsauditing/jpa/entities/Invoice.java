@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -184,7 +185,12 @@ public class Invoice extends Transaction {
 
 	public boolean containsATaxLineItem() {
 		for (InvoiceItem item : getItems()) {
-			if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT()) {
+			InvoiceFee invoiceFee = item.getInvoiceFee();
+			if (invoiceFee == null) {
+				continue;
+			}
+
+			if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
 				return true;
 			}
 		}
@@ -224,4 +230,5 @@ public class Invoice extends Transaction {
 
 		return this.totalCommissionEligibleFees;
 	}
+
 }
