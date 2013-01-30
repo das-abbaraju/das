@@ -739,8 +739,11 @@ public class ContractorAudit extends AbstractIndexableTable {
 			Set<AuditCategory> requiredCategories) {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		List<AuditCatData> sortedCats = getCategories();
+		// TODO sort categories at the end
 		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
 			public int compare(AuditCatData o1, AuditCatData o2) {
+				// TODO switch out the category compare
+				// o1.getCategory().compareTo(o2.getCategory())
 				return ((Integer) o1.getCategory().getNumber()).compareTo(o2.getCategory().getNumber());
 			}
 		});
@@ -752,7 +755,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 							.getCategory().getId() == AuditCategory.FINANCIAL_HISTORY))) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
 					add = true;
-			} else if (permissions.isAdmin() || (permissions.isAuditor() && !permissions.isOperatorCorporate())) {
+			} else if (permissions.isAdmin() || permissions.isAuditor()) {
 				add = true;
 			} else {
 				if (auditCatData.isApplies()) {
@@ -767,6 +770,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 				categories.put(auditCatData.getCategory(), auditCatData);
 		}
 
+		// sort categories here
 		return categories;
 	}
 
