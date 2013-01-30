@@ -752,7 +752,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 							.getCategory().getId() == AuditCategory.FINANCIAL_HISTORY))) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
 					add = true;
-			} else if (permissions.isAdmin() || permissions.isAuditor()) {
+			} else if (permissions.isAdmin() || (permissions.isAuditor() && !permissions.isOperatorCorporate())) {
 				add = true;
 			} else {
 				if (auditCatData.isApplies()) {
