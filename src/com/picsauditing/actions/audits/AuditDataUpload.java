@@ -357,13 +357,24 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
             }
             builder.calculate(auditData.getAudit(), operators);
 
-            if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
-                    && builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-                ContractorAuditOperatorWorkflow caow = cao
-                        .changeStatus(AuditStatus.Incomplete, permissions);
-                caow.setNotes("New safety manual uploaded");
-                caowDAO.save(caow);
-            }
+            boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
+            
+			if (isApplicable) {
+				AuditStatus newStatus = null;
+				if (cao.getStatus().equals(AuditStatus.Submitted)) {
+					newStatus = AuditStatus.Pending;
+				} else if (cao.getStatus().equals(AuditStatus.Resubmitted)
+						|| cao.getStatus().equals(AuditStatus.Complete)) {
+					newStatus = AuditStatus.Resubmit;
+				}
+			
+				if (newStatus != null) {
+					ContractorAuditOperatorWorkflow caow = cao.changeStatus(
+							newStatus, permissions);
+					caow.setNotes("New safety manual uploaded");
+					caowDAO.save(caow);					
+				}
+			}
         }
 
 		AuditData signatureData = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), AuditQuestion.MANUAL_PQF_SIGNATURE);
