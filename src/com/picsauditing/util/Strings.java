@@ -578,4 +578,12 @@ public class Strings {
 
 		return EMPTY_STRING;
 	}
+
+	public static Object toStringPreserveNull(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		return object.toString();
+	}
 }

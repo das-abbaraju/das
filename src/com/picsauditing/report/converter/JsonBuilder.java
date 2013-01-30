@@ -96,7 +96,7 @@ public class JsonBuilder {
 
 		json.put(COLUMN_TYPE, obj.getField().getColumnType());
 		json.put(COLUMN_URL, obj.getField().getUrl());
-		json.put(COLUMN_SQL_FUNCTION, obj.getSqlFunction());
+		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(obj.getSqlFunction()));
 		json.put(COLUMN_WIDTH, obj.getWidth());
 		json.put(COLUMN_SORTABLE, obj.getField().isSortable());
 
