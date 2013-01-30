@@ -26,7 +26,7 @@
 </s:set>
 
 <div class="product-description">
-    <img src="v7/img/logo-alternate.png"/>
+    <img src="v7/img/logo/logo-large-alternate.png"/>
 
     <div class="version">
         <a href="#" data-title="${version_detail_tooltip}">Version ${version}</a>

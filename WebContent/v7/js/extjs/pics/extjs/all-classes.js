@@ -93603,9 +93603,9 @@ Ext.define('PICS.view.layout.Menu', {
         dashboard_menu.height = 50;
 
         if (Ext.supports.Svg) {
-            dashboard_menu.icon = '/v7/img/logo.svg';
+            dashboard_menu.icon = '/v7/img/logo/logo-icon.svg';
         } else {
-            dashboard_menu.icon = '/v7/img/logo.png';
+            dashboard_menu.icon = '/v7/img/logo/logo-icon.png';
         }
 
         dashboard_menu.padding = '0px 10px 0px 20px';

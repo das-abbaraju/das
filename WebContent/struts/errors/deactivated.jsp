@@ -3,9 +3,9 @@
 
 <title><s:text name="AccountStatus.Deactivated" /></title>
 
-<div class="center-container">
-    <!--[if lte IE 8]><img class="logo" src="/v7/img/login/logo.png"><!--<![endif]-->
-    <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/error/logo.svg"><!--<![endif]-->    
+<div class="notice">
+    <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png"><!--<![endif]-->
+    <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/logo/logo-small.svg"><!--<![endif]-->
 
     <h1><s:text name="Account.Deactivated" /></h1>
 
