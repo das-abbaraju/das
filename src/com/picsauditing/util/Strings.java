@@ -579,7 +579,7 @@ public class Strings {
 		return EMPTY_STRING;
 	}
 
-	public static Object toStringPreserveNull(Object object) {
+	public static String toStringPreserveNull(Object object) {
 		if (object == null) {
 			return null;
 		}

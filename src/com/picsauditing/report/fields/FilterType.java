@@ -5,17 +5,12 @@ public enum FilterType {
 	Autocomplete(DisplayType.String),
 	Boolean(DisplayType.Boolean),
 	Date(DisplayType.String),
-	DateTime(DisplayType.String),
+	Multiselect(DisplayType.String),
 	Number(DisplayType.Number),
-	ShortList(DisplayType.String),
 	String(DisplayType.String),
 	UserID(DisplayType.Number);
 
 	private DisplayType displayType;
-
-	private FilterType() {
-		displayType = DisplayType.valueOf(this.toString());
-	}
 
 	private FilterType(DisplayType displayType) {
 		this.displayType = displayType;

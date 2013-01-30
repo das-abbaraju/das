@@ -34,7 +34,7 @@ public class Autocompleter extends PicsActionSupport {
 					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
 					break;
 
-				case ShortList:
+				case Multiselect:
 					json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
 					break;
 

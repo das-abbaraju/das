@@ -40,13 +40,13 @@ public class Field {
 	public Field(ReportField annotation) {
 		type = annotation.type();
 		width = annotation.width();
-		
+
 		if (Strings.isEmpty(annotation.url())) {
 			url = null;
 		} else {
 			url = annotation.url();
 		}
-		
+
 		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
 		visible = annotation.visible();
@@ -56,7 +56,7 @@ public class Field {
 
 		preTranslation = annotation.i18nKeyPrefix();
 		postTranslation = annotation.i18nKeySuffix();
-		if (type.getFilterType() == FilterType.ShortList && Strings.isEmpty(preTranslation)) {
+		if (type.getFilterType() == FilterType.Multiselect && Strings.isEmpty(preTranslation)) {
 			preTranslation = type.toString();
 		}
 	}
@@ -73,7 +73,7 @@ public class Field {
 		if (type == null) {
 			throw new RuntimeException("type is required when creating Fields");
 		}
-		
+
 		this.type = type;
 //		this.url = Strings.EMPTY_STRING;
 	}
@@ -87,11 +87,13 @@ public class Field {
 	public String getI18nKey(String value) {
 		String key = value;
 
-		if (!Strings.isEmpty(preTranslation))
+		if (!Strings.isEmpty(preTranslation)) {
 			key = preTranslation + "." + key;
+		}
 
-		if (!Strings.isEmpty(postTranslation))
+		if (!Strings.isEmpty(postTranslation)) {
 			key = key + "." + postTranslation;
+		}
 
 		return key;
 	}
@@ -110,8 +112,9 @@ public class Field {
 	}
 
 	public boolean isTranslated() {
-		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation))
+		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation)) {
 			return false;
+		}
 
 		return true;
 	}
@@ -119,7 +122,7 @@ public class Field {
 	public FieldType getType() {
 		return type;
 	}
-	
+
 	@Transient
 	public String getColumnType() {
 		// TODO // [boolean, flag, number, string] - SEEMS WAY TO LIMITED - IMPLICITLY CREATE MODEL TYPE - CREATE MODEL TYPE CONVERSION CLASS FE
@@ -127,13 +130,13 @@ public class Field {
         // floats, ints, and currencies will be passed back as translated formatted numbers including relevant decimal and thousand separators
 		return type.toString();
 	}
-	
+
 	@Transient
 	public String getFilterType() {
 		// TODO // filter type - these need to be fixed [AccountID, AccountName, Autocomplete, Boolean, Date, DaysAgo, Enum, Float, Integer, LowMedHigh, NUmber*, String, UserID]
-		return type.toString();
+		return type.getFilterType().toString();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -222,11 +225,13 @@ public class Field {
 	}
 
 	public boolean canUserSeeQueryField(Permissions permissions) {
-		if (requiredPermission == null)
+		if (requiredPermission == null) {
 			return true;
+		}
 
-		if (requiredPermission.isNone())
+		if (requiredPermission.isNone()) {
 			return true;
+		}
 
 		return permissions.hasPermission(requiredPermission);
 	}
