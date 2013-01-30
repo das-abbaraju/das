@@ -10,7 +10,8 @@ body {
   }
 }
 
+@import 'simple-layout';
+
 @import 'environment';
 @import 'menu';
-@import "page-header";
-@import "simple-layout";
+@import 'page-header';
