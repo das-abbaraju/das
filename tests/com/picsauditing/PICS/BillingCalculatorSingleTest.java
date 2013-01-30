@@ -460,7 +460,7 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
-	public void createInvoice_shouldCallApplyTax() {
+	public void createInvoice_shouldCallApplyTax() throws Exception {
 		Country country = mock(Country.class);
 		BigDecimal amount = new BigDecimal(100);
 		when(country.getAmount(any(InvoiceFee.class))).thenReturn(amount);

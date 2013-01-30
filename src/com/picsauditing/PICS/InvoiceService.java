@@ -26,7 +26,7 @@ public class InvoiceService {
 		add(FeeClass.VAT);
 	}};
 
-	public Invoice saveInvoice(Invoice invoice) throws InvoiceValidationException {
+	public Invoice saveInvoice(Invoice invoice) throws Exception {
 		taxService.applyTax(invoice);
 		validate(invoice);
 		return invoiceDAO.save(invoice);
@@ -62,7 +62,7 @@ public class InvoiceService {
 		return canadianTaxInvoiceFee;
 	}
 
-	private InvoiceFeeCountry getProvinceTaxFee(CountrySubdivision countrySubdivision) throws Exception {
+	InvoiceFeeCountry getProvinceTaxFee(CountrySubdivision countrySubdivision) throws Exception {
 		List<InvoiceFeeCountry> invoiceFeeCountries = getAllTaxFeesForProvince(countrySubdivision);
 		return getProvinceTaxFeeCurrentlyInEffect(invoiceFeeCountries);
 	}

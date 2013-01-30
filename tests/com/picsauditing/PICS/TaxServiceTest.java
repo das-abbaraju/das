@@ -58,8 +58,10 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingNewCanadianTaxAndToggleIsOn_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFeeWithoutSubdivisionRate(FeeClass.CanadianTax, 5);
+		InvoiceFeeCountry provinceTaxFee = new InvoiceFeeCountry();
+		provinceTaxFee.setRatePercent(new BigDecimal("9.975"));
+		when(invoiceService.getProvinceTaxFee(any(CountrySubdivision.class))).thenReturn(provinceTaxFee);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
@@ -72,8 +74,10 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingNewCanadianTaxAndToggleIsOff_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFeeWithoutSubdivisionRate(FeeClass.CanadianTax, 5);
+		InvoiceFeeCountry provinceTaxFee = new InvoiceFeeCountry();
+		provinceTaxFee.setRatePercent(new BigDecimal("9.975"));
+		when(invoiceService.getProvinceTaxFee(any(CountrySubdivision.class))).thenReturn(provinceTaxFee);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = new Invoice();
 		invoice.setItems(invoiceItems);
@@ -87,8 +91,7 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingLegacyGstAndToggleIsOn_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(true);
@@ -101,8 +104,7 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingLegacyGstAndToggleIsOff_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.GST);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
@@ -115,8 +117,7 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingVatAndToggleIsOn_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.EUR);
 
@@ -130,8 +131,7 @@ public class TaxServiceTest {
 
 	@Test
 	public void testApplyTax_whenInvoiceHasExistingVatAndToggleIsOff_DontChangeTheTax() throws Exception {
-		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(existingTaxInvoiceFee);
+		final InvoiceFee existingTaxInvoiceFee = createTaxInvoiceFee(FeeClass.VAT);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithTax(existingTaxInvoiceFee);
 		Invoice invoice = buildInvoice(invoiceItems, Currency.EUR);
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_CANADIAN_TAX)).thenReturn(false);
@@ -255,6 +255,24 @@ public class TaxServiceTest {
 		invoiceFee.setQbFullName("qb" + feeClass);
 		invoiceFee.setSubdivisionFee(invoiceFeeCountry);
 
+		return invoiceFee;
+	}
+
+	private InvoiceFee createTaxInvoiceFeeWithoutSubdivisionRate(FeeClass feeClass, double invoiceFeeRate) {
+		InvoiceFee invoiceFee = new InvoiceFee();
+
+		invoiceFee.setFeeClass(feeClass);
+		invoiceFee.setRatePercent(new BigDecimal(invoiceFeeRate));
+
+		invoiceFee.setQbFullName("qb" + feeClass);
+		invoiceFee.setSubdivisionFee(null);
+
+		return invoiceFee;
+	}
+
+	private InvoiceFee createTaxInvoiceFee(FeeClass feeClass) {
+		InvoiceFee invoiceFee = new InvoiceFee();
+		invoiceFee.setFeeClass(feeClass);
 		return invoiceFee;
 	}
 

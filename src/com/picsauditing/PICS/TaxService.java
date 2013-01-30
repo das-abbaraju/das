@@ -19,7 +19,7 @@ public class TaxService {
 
 	private static final Logger logger = LoggerFactory.getLogger(TaxService.class);
 
-	public void applyTax(Invoice invoice) {
+	public void applyTax(Invoice invoice) throws Exception {
 		if (!isInvoiceTaxable(invoice)) {
 			return;
 		}
@@ -29,6 +29,7 @@ public class TaxService {
 		InvoiceFee taxInvoiceFee = null;
 		if (taxInvoiceItem != null) {
 			taxInvoiceFee = taxInvoiceItem.getInvoiceFee();
+			initializeTaxInvoiceFee(taxInvoiceFee, invoice);
 		} else {
 			try {
 				taxInvoiceFee = createTaxInvoiceFee(invoice);
@@ -39,6 +40,16 @@ public class TaxService {
 
 		applyTaxInvoiceFeeToInvoice(invoice, taxInvoiceFee);
 		invoice.updateAmount();
+	}
+
+	private void initializeTaxInvoiceFee(InvoiceFee invoiceFee, Invoice invoice) throws Exception {
+		if (!FeeClass.CanadianTax.equals(invoiceFee.getFeeClass())) {
+			return;
+		}
+
+		CountrySubdivision countrySubdivision = invoice.getAccount().getCountrySubdivision();
+		InvoiceFeeCountry provinceTaxFee = invoiceService.getProvinceTaxFee(countrySubdivision);
+		invoiceFee.setSubdivisionFee(provinceTaxFee);
 	}
 
 	private boolean isInvoiceTaxable(Invoice invoice) {

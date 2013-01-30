@@ -47,7 +47,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 
 	private EmailQueue lastError;
 
-	public String execute() throws NoRightsException, InvoiceValidationException {
+	public String execute() throws Exception, InvoiceValidationException {
 		if (!forceLogin())
 			return LOGIN;
 
