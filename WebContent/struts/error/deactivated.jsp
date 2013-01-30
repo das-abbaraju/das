@@ -10,6 +10,6 @@
     <h1><s:text name="Account.Deactivated" /></h1>
 
     <p><s:text name="Account.Deactivated.Intro" /></p>
-    
+
     <p><s:text name="Account.Deactivated.Message" /></p>
 </div>
