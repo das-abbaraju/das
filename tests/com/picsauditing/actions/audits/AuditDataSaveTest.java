@@ -209,6 +209,8 @@ public class AuditDataSaveTest {
 		oldData.setAudit(auditData.getAudit());
 		oldData.setQuestion(auditData.getQuestion());
 
+		when(questionDao.find(auditData.getQuestion().getId())).thenReturn(auditData.getQuestion());
+
 		when(auditDataDao.find(anyInt())).thenReturn(oldData);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "button", "verify");
 		assertEquals("success", auditDataSave.execute());

@@ -104,7 +104,8 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditID = auditData.getAudit().getId();
-
+			// question might not be fully reloaded with related records
+			auditData.setQuestion(questionDao.find(auditData.getQuestion().getId()));
 			/*
 			 * If we are reloading the question, we need to exit early to
 			 * prevent the object from saving.
@@ -113,8 +114,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (auditData.getId() == 0 && databaseCopy != null) {
 					auditData = databaseCopy;
 				}
-				// question might not be fully reloaded with related records
-				auditData.setQuestion(dao.find(AuditQuestion.class, auditData.getQuestion().getId()));
+
 				loadAnswerMap();
 
 				return SUCCESS;
