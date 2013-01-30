@@ -5695,7 +5695,7 @@ textarea.x-form-invalid-field {
       font-weight: bold; }
     /* line 199, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .name,
-    .site-menu-search-list .search-item .company {
+    .site-menu-search-list .search-item .location {
       float: left;
       width: 175px; }
     /* line 205, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
@@ -5705,19 +5705,25 @@ textarea.x-form-invalid-field {
     .site-menu-search-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 219, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .results-footer a {
+  /* line 218, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .more-results,
+  .site-menu-search-list .no-results {
+    line-height: 15px;
+    overflow: hidden;
+    padding: 5px 15px; }
+  /* line 227, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .more-results a {
     color: #333333;
     display: block;
     font-weight: bold;
     padding: 3px 0px; }
-  /* line 227, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  .site-menu-search-list .results-footer p {
+  /* line 235, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .more-results p {
     color: #999;
     font-size: 13px;
     margin: 0px; }
 
-/* line 236, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 244, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 

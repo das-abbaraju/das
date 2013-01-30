@@ -8513,28 +8513,28 @@ body {
   font-style: italic;
 }
 
-/* line 106, ../sass/pics/layout/_menu.scss */
+/* line 107, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .results-footer {
+#user_searchbox .no-results,
+#user_searchbox .total-results {
   padding: 5px 20px;
 }
 
-/* line 110, ../sass/pics/layout/_menu.scss */
+/* line 114, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .results-footer a {
-  padding: 3px 0;
+#user_searchbox .more-results a {
   font-weight: bold;
 }
 
-/* line 116, ../sass/pics/layout/_menu.scss */
+/* line 122, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .results-footer p {
+#user_searchbox .total-results p {
   margin: 0;
   font-size: 13px;
   color: #999;
 }
 
-/* line 127, ../sass/pics/layout/_menu.scss */
+/* line 133, ../sass/pics/layout/_menu.scss */
 
 #user_menu .icon-cog {
   position: relative;
@@ -8544,9 +8544,9 @@ body {
 
 @media (max-width: 1199px) and (min-width: 980px) {
   {
-    /* line 138, ../sass/pics/layout/_menu.scss */
+    /* line 144, ../sass/pics/layout/_menu.scss */
   
-    /* line 143, ../sass/pics/layout/_menu.scss */
+    /* line 149, ../sass/pics/layout/_menu.scss */
   
   }
   .navbar .brand {

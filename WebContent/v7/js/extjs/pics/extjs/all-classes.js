@@ -93291,14 +93291,13 @@ Ext.define('Ext.form.field.ComboBox', {
 
 Ext.define('PICS.view.layout.SearchBox', {
     extend: 'Ext.form.field.ComboBox',
-    alias: ['widget.searchbox'],
+    alias: 'widget.searchbox',
 
     autoScroll: false,
     autoSelect: false,
     cls: 'site-menu-search',
     displayField: 'name',
     emptyText: 'Search',
-    id: 'asdf',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
     labelSeparator: '',
@@ -93309,7 +93308,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         listeners: {
             el: {
                 click: {
-                    delegate: '.results-footer',
+                    delegate: '.more-results',
                     fn: function (e, t, eOpts) {
                         var cmp = Ext.ComponentQuery.query('searchbox')[0];
                         var term = cmp.inputEl.getValue();
@@ -93333,7 +93332,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                                 '<span class="id"><em>ID {result_id}</em></span>',
                             '</div>',
                             '<div>',
-                                '<span class="company">{result_at}</span>',
+                                '<span class="location">{result_at}</span>',
                                 '<span class="type">{result_type}</span>',
                             '</div>',
                         '</div>',
@@ -93341,7 +93340,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                 '</tpl>',
                 '{[this.setTotalResults()]}',
                 '<tpl if="this.total_results &gt; 0">',
-                    '<li class="results-footer search-item {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
+                    '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
                         '<tpl if="this.total_results &gt; 10">',
                             '<a href="#">',
                                 'More Results...',
@@ -93351,7 +93350,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '</li>',
                 '</tpl>',
                 '<tpl if="this.total_results == 0">',
-                    '<li class="search-item">No results found</li>',
+                    '<li class="no-results">No results found</li>',
                 '</tpl>',
             '</ul>',
             {
