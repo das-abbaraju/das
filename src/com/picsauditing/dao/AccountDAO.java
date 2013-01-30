@@ -46,17 +46,20 @@ public class AccountDAO extends PicsDAO {
 	
 	public List<Account> findNoteRestrictionOperators(Permissions permissions) {
 		String where = "AND a.status IN ('Active'";
+		boolean needsClosingParen = true;
 		
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
 			where += ",'Demo'";
 
 		if (permissions.isAdmin() || permissions.isAuditor())
-			where += ",'Pending')";
-		if (permissions.isContractor())
-			where += ")";
-		if (permissions.isOperatorCorporate())
+			where += ",'Pending'";
+		if (permissions.isOperatorCorporate()) {
+			needsClosingParen = false;
 			where += ",'Pending') AND a.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")";
-		
+		}
+		if (needsClosingParen)
+			where += ")";
+
 		Query query;
 		
 		query = em.createQuery("FROM Account a WHERE (type IN ('Admin','Corporate') OR (type='Operator' AND (parent.id is NULL OR parent.id IN ("
