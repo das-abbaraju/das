@@ -317,21 +317,6 @@ public class Registration extends ContractorActionSupport {
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
 
-//		if (contractor.getCountry().isHasCountrySubdivisions() && 	) {
-//			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
-//				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
-//						.toString());
-//				contractor.setCountrySubdivision(contractorCountrySubdivision);
-//			}
-//		} else {
-//			contractor.setCountrySubdivision(null);
-//		}
-
-		// FIXME
-		// While working on PICS-8975, Mike N. and David A. found that the CountrySubdivision
-		// on Contractor was never being set because contractor.getCountry().isHasCountrySubdivisions()
-		// would always return false. This was due to improper hydrating of the countrySubdivisions
-		// member in Country.
 		contractor.setCountrySubdivision(countrySubdivision);
 
 		if (contractor.getStatus().isRequested()) {
