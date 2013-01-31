@@ -10,6 +10,8 @@ import javax.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.PICS.InvoiceService;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
@@ -237,6 +239,15 @@ public class InvoiceFee extends BaseTable {
 
 	public void setSubdivisionFee(InvoiceFeeCountry subdivisionFee) {
 		this.subdivisionFee = subdivisionFee;
+	}
+
+	@Transient
+	public boolean isTax() {
+		if (InvoiceService.TAX_FEE_CLASSES.contains(feeClass)) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
