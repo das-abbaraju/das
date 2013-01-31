@@ -847,7 +847,6 @@ public class FlagDataCalculatorTest {
 		assertNotNull(result);
 	}
 	
-	@Ignore
 	@Test
 	public void testIsFlagged_AuditPendingAuditQuestionNoVerificationOrSubmittedWorkflow() throws Exception {		
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
@@ -898,7 +897,6 @@ public class FlagDataCalculatorTest {
 		assertNull(result);
 	}
 	
-	@Ignore
 	@Test
 	public void testIsFlagged_AuditPendingAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Pending);
@@ -996,7 +994,7 @@ public class FlagDataCalculatorTest {
 	private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setAccountLevel(AccountLevel.Full);
-		ContractorAudit mockAudit = buildMockAudit(1000, 2012, caoStatus);
+		ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus);
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(mockAudit);
 		contractor.setAudits(audits);
