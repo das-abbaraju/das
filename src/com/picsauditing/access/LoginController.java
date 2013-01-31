@@ -344,24 +344,45 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private String setRedirectUrlPostLogin() throws Exception {
-		String redirectURL = getPreLoginUrl();
-
+		String preLoginUrl = getPreLoginUrl();
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(preLoginUrl, user);
+		String redirectURL = determineRedirectUrlFromHomePageType(preLoginUrl, homePageType);
+		
 		if (Strings.isNotEmpty(redirectURL)) {
 			return setUrlForRedirect(redirectURL);
 		}
-
-		redirectURL = getRedirectUrl();
-
-		if (Strings.isNotEmpty(redirectURL)) {
-			return setUrlForRedirect(redirectURL);
-		}
-
 		throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 	}
 
+	private String determineRedirectUrlFromHomePageType(String preLoginUrl, HomePageType homePageType) {
+		String redirectURL = null;
+		switch (homePageType) {
+		case PreLogin:
+			redirectURL = preLoginUrl;
+			break;
+		case ContractorRegistrationStep:
+			ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) user.getAccount());
+			redirectURL = step.getUrl();
+			break;
+		case HomePage:
+			if (user.isUsingDynamicReports()) {
+				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
+				redirectURL = MenuBuilder.getHomePage(menu, permissions);
+			} else {
+				MenuComponent menu = PicsMenu.getMenu(permissions);
+				redirectURL = PicsMenu.getHomePage(menu, permissions);
+			}
+			break;
+		case Deactivated:
+			redirectURL = "RegistrationMakePayment.action?deactivated";
+			break;
+		}
+
+		return redirectURL;
+	}
+
 	private String getPreLoginUrl() {
-		// Find out if the user previously timed out on a page, we'll forward
-		// back there below
+		// Find out if the user previously timed out on a page, so we can forward to it if appropriate for the user
 		String urlPreLogin = null;
 		Cookie cookie = CookieSupport.cookieFromRequest(getRequest(), CookieSupport.PRELOGIN_URL_COOKIE_NAME);
 		if (cookie != null) {
@@ -373,25 +394,6 @@ public class LoginController extends PicsActionSupport {
 			getResponse().addCookie(resetCookie);
 		}
 		return urlPreLogin;
-	}
-
-	private String getRedirectUrl() {
-		String url = null;
-		if (permissions.isContractor()) {
-			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
-
-			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
-			url = step.getUrl();
-		} else {
-			if (user.isUsingDynamicReports()) {
-				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
-				url = MenuBuilder.getHomePage(menu, permissions);
-			} else {
-				MenuComponent menu = PicsMenu.getMenu(permissions);
-				url = PicsMenu.getHomePage(menu, permissions);
-			}
-		}
-		return url;
 	}
 
 	private void setBetaTestingCookie() {
