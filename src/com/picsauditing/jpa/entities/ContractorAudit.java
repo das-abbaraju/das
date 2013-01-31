@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -282,6 +280,11 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
 	public List<AuditCatData> getCategories() {
+//		// TODO clean up categories
+//		for (AuditCatData auditCatData : categories) {
+//			if (!auditCatData.getCategory().getAuditType().equals(auditType)) {
+//			}
+//		}
 		return categories;
 	}
 
@@ -732,46 +735,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 		}
 
 		return false;
-	}
-
-	@Transient
-	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
-			Set<AuditCategory> requiredCategories) {
-		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
-		List<AuditCatData> sortedCats = getCategories();
-		// TODO sort categories at the end
-		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
-			public int compare(AuditCatData o1, AuditCatData o2) {
-				// TODO switch out the category compare
-				// o1.getCategory().compareTo(o2.getCategory())
-				return ((Integer) o1.getCategory().getNumber()).compareTo(o2.getCategory().getNumber());
-			}
-		});
-
-		for (AuditCatData auditCatData : sortedCats) {
-			boolean add = false;
-			if (!permissions.isContractor()
-					&& ((auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) || (auditCatData
-							.getCategory().getId() == AuditCategory.FINANCIAL_HISTORY))) {
-				if (permissions.hasPermission(OpPerms.ViewFullPQF))
-					add = true;
-			} else if (permissions.isAdmin() || permissions.isAuditor()) {
-				add = true;
-			} else {
-				if (auditCatData.isApplies()) {
-					if (permissions.isOperatorCorporate()) {
-						if (requiredCategories == null || requiredCategories.contains(auditCatData.getCategory()))
-							add = true;
-					} else
-						add = true;
-				}
-			}
-			if (add && auditCatData.getCategory().getAuditType().equals(auditType))
-				categories.put(auditCatData.getCategory(), auditCatData);
-		}
-
-		// sort categories here
-		return categories;
 	}
 
 	@Transient

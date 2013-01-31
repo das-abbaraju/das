@@ -8,12 +8,10 @@
 
 <s:if test="#req">
 	<s:iterator value="categories">
-		<s:if test="value.applies">
-			<s:set value="false" name="req" />
-			<s:set name="category" value="key" />
-			
-			<s:include value="audit_cat_view.jsp" />
-		</s:if>
+		<s:set value="false" name="req" />
+		<s:set name="category" value="key" />
+		
+		<s:include value="audit_cat_view.jsp" />
 	</s:iterator>
 </s:if>
 <s:else>

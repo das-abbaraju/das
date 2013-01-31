@@ -23,6 +23,7 @@ import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.ContractorAuditCategories;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -142,7 +143,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				requiredCategories = builder.calculate(conAudit, operators);
 			}
 
-			categories = conAudit.getApplicableCategories(permissions, requiredCategories);
+			categories = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories, conAudit.getCategories());
 		}
 		return categories;
 	}
