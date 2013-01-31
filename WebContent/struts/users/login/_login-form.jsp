@@ -16,7 +16,7 @@
         <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
     </s:if>
 
-    <img src="/v7/img/login/logo.png" class="logo" />
+    <img src="/v7/img/logo/logo-large.png" class="logo" />
 
     <s:include value="../../_action-messages.jsp" />
 

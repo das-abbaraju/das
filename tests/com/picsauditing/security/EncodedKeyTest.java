@@ -36,7 +36,6 @@ public class EncodedKeyTest {
 		Set<String> keys = new HashSet<String>();
 		for (int i = 0; i < TEST_SIZE; i++) {
 			String secretKey = EncodedKey.newServerSecretKey();
-			System.out.println(secretKey);
 			keys.add(secretKey);
 			assertEquals(76+1+10+2, secretKey.length());
 		}

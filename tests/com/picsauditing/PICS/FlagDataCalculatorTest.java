@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -993,7 +994,7 @@ public class FlagDataCalculatorTest {
 	private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setAccountLevel(AccountLevel.Full);
-		ContractorAudit mockAudit = buildMockAudit(1000, 2012, caoStatus);
+		ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus);
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(mockAudit);
 		contractor.setAudits(audits);

@@ -254,7 +254,7 @@ public class ScheduleAuditTest extends PicsActionTest {
 	// this class obviously has too many responsibilities and dependencies for a
 	// simple test to require this
 	// much setup.
-	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) throws InvoiceValidationException {
+	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 		scheduleAudit.setScheduledDateDay(sdf.format(dateScheduledViaUI));
 		sdf.applyPattern(PicsDateFormat.Time12Hour);

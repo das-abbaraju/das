@@ -349,7 +349,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
         auditCategoryRuleCache.initialize(auditRuleDAO);
         AuditCategoriesBuilder builder = initAuditCategoriesBuilder();
-        boolean oneOrMoreCaoStatusChanged = false;
 
         for (ContractorAuditOperator cao : audit.getOperators()) {
             Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
@@ -358,26 +357,40 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
             }
             builder.calculate(auditData.getAudit(), operators);
 
-            if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
-                    && builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-                ContractorAuditOperatorWorkflow caow = cao
-                        .changeStatus(AuditStatus.Incomplete, permissions);
-                caow.setNotes("Due to data change");
-                caowDAO.save(caow);
-                oneOrMoreCaoStatusChanged = true;
-            }
+            boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
+            
+			if (isApplicable) {
+                AuditStatus newStatus = newStatusFollowingSafetyManualUpload(cao.getStatus());
+
+                if (newStatus != cao.getStatus()) {
+					ContractorAuditOperatorWorkflow caow = cao.changeStatus(
+							newStatus, permissions);
+					caow.setNotes("New safety manual uploaded");
+					caowDAO.save(caow);					
+				}
+			}
         }
 
-        if (oneOrMoreCaoStatusChanged) {
-            AuditData signatureData = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), AuditQuestion.MANUAL_PQF_SIGNATURE);
-            if (signatureData != null) {
-            	signatureData.setAnswer(null);
-            	signatureData.setComment(null);
-            	signatureData.setUpdateDate(null);
-                auditDataDAO.save(signatureData);
-            }
-            auditDao.save(audit);
+		AuditData signatureData = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), AuditQuestion.MANUAL_PQF_SIGNATURE);
+		if (signatureData != null) {
+			signatureData.setAnswer(null);
+			signatureData.setComment(null);
+			signatureData.setUpdateDate(null);
+			auditDataDAO.save(signatureData);
+		}
+		auditDao.save(audit);
+    }
+
+    // TODO Move this out of this controller into some model object
+    private AuditStatus newStatusFollowingSafetyManualUpload(AuditStatus currentStatus) {
+        if (currentStatus.equals(AuditStatus.Submitted)) {
+            return AuditStatus.Pending;
         }
+        if (currentStatus.equals(AuditStatus.Resubmitted)
+                || currentStatus.equals(AuditStatus.Complete)) {
+            return AuditStatus.Resubmit;
+        }
+        return currentStatus;
     }
 
     protected AuditCategoriesBuilder initAuditCategoriesBuilder() {

@@ -62,6 +62,7 @@ More information:
 
 Manage the build by executing the following commands (must install ruby client +
 navigate to the directory):
+ - From cmd, navigate to /v7/js/extjs/pics/resources/sass
  - compass compile my-ext-theme.scss
  - compass compile --output-style compressed my-ext-theme.min.scss
  

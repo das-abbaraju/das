@@ -1,38 +1,122 @@
 package com.picsauditing.access;
 
-import com.picsauditing.jpa.entities.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import javax.security.auth.login.AccountLockedException;
-import javax.security.auth.login.AccountNotFoundException;
-import javax.security.auth.login.FailedLoginException;
-
-import java.util.Date;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.util.Date;
+
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
 
 public class LoginServiceTest {
+	private LoginService loginService;
 
-	LoginService loginService = new LoginService();
-
-	@Mock private UserService userService;
-	@Mock private User user;
 	private String username = "joesixpack";
 	private String password = "8675309";
 	private String key = "abc123";
 
+	@Mock
+	private UserService userService;
+	@Mock
+	private User user;
+	@Mock
+	private ContractorAccount account;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		loginService = new LoginService();
+
 		loginService.userService = userService;
 		setupNormalUser();
+
+		when(user.getAccount()).thenReturn(account);
+		when(account.getId()).thenReturn(123);
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_NotContractorWithPreloginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(false);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+
+		assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
+
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_NotContractorWithNoPreloginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(false);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+
+		assertThat(HomePageType.HomePage, is(equalTo(homePageType)));
+
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+
+		assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithPreLoginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Active);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+
+		assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithPreLoginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Pending);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+
+		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithNoPreLoginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Pending);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+
+		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
+	}
+
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithNoPreLoginUrl() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Active);
+
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+
+		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
 	}
 
 	@Test

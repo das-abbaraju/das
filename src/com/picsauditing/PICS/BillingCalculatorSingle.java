@@ -358,11 +358,11 @@ public class BillingCalculatorSingle {
 				LowMedHigh.Med, false, Account.PicsID, user);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor, User user) {
+	public Invoice createInvoice(ContractorAccount contractor, User user) throws Exception {
 		return createInvoice(contractor, contractor.getBillingStatus(), user);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
+	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) throws Exception {
 		Invoice invoice = null;
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
 		// disallow zero dollar invoices (preserving existing behavior in a refactor)

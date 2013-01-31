@@ -100,7 +100,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
-	public String execute() throws NoRightsException, IOException, InvoiceValidationException {
+	public String execute() throws Exception, IOException, InvoiceValidationException {
 		if (invoice == null) {
 			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
 			return BLANK;

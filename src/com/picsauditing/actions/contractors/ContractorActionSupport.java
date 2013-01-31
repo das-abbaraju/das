@@ -494,7 +494,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Reviews Audits
 
-			MenuComponent subMenu = new MenuComponent(getText("global.Reviews"), "ContractorDocuments.action?id="
+			MenuComponent subMenu = new MenuComponent(getText("global.ClientReviews"), "ContractorDocuments.action?id="
 					+ id + "#reviews");
 			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
@@ -516,7 +516,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.Reviews")));
+						+ ContractorDocuments.getSafeName(getText("global.ClientReviews")));
 			}
 
 			addSubMenu(menu, subMenu);

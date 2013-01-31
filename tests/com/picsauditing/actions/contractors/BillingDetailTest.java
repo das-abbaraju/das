@@ -149,7 +149,7 @@ public class BillingDetailTest extends PicsActionTest {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void setupInvoiceServiceToReturnArgumentOnSave() throws InvoiceValidationException {
+	private void setupInvoiceServiceToReturnArgumentOnSave() throws Exception {
 		when(invoiceService.saveInvoice(any(Invoice.class))).thenAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {

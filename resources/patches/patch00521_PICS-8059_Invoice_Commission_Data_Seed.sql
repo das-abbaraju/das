@@ -17,7 +17,7 @@ INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPerc
 INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, updatedBy, creationDate, updateDate) VALUES (40798, 21167, 'PICSSalesRep', NOW(), NOW(), 100, 53137, 53137, NOW(), NOW());
 
 -- invoice 
-INSERT INTO invoice (accountID, tableType, createdBy, updatedBy, creationDate, updateDate, status, totalAmount, amountApplied, qbSync, qbListID, notes, currency) VALUES (40799, 'I', 53137, 53137, NOW(), NOW(), 'Paid', 0, 0, 0, 'NOLOAD', 'THIS IS FOR A HISTORICAL CONTRACTOR COUNT DATA CONVERSION', 'USD');
+INSERT INTO invoice (accountID, tableType, createdBy, updatedBy, creationDate, updateDate, status, totalAmount, amountApplied, qbSync, qbListID, notes, currency) VALUES (40799, 'I', 53137, 53137, '2011-12-31 00:00:00', '2011-12-31 00:00:00', 'Paid', 0, 0, 0, 'NOLOAD', 'THIS IS FOR A HISTORICAL CONTRACTOR COUNT DATA CONVERSION', 'USD');
 
 -- payments
 INSERT INTO invoice (accountID, tableType, createdBy, updatedBy, creationDate, updateDate, status, totalAmount, amountApplied, qbSync, qbListID, notes, currency) VALUES (40799, 'P', 53137, 53137, '2011-12-31 00:00:00', '2011-12-31 00:00:00', 'Paid', 0, 0, 0, 'NOLOADFAKE1', 'THIS IS FOR A HISTORICAL CONTRACTOR COUNT DATA CONVERSION', 'USD');

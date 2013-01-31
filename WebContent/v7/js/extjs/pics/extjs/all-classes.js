@@ -93588,7 +93588,7 @@ Ext.define('Ext.form.field.ComboBox', {
 
 Ext.define('PICS.view.layout.SearchBox', {
     extend: 'Ext.form.field.ComboBox',
-    alias: ['widget.searchbox'],
+    alias: 'widget.searchbox',
 
     autoScroll: false,
     autoSelect: false,
@@ -93622,30 +93622,47 @@ Ext.define('PICS.view.layout.SearchBox', {
         tpl: Ext.create('Ext.XTemplate',
             '<ul>',
                 '<tpl for=".">',
-                    '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
+                    '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]} account-{account_status}">',
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{result_name}</em></span>',
                                 '<span class="id"><em>ID {result_id}</em></span>',
                             '</div>',
                             '<div>',
-                                '<span class="company">{result_at}</span>',
+                                '<span class="location">{result_at}</span>',
                                 '<span class="type">{result_type}</span>',
                             '</div>',
                         '</div>',
                     '</li>',
-                    '<tpl if="xindex == xcount">',
-                        '<li>',
-                            '<div class="search-item">',
-                                '<a href="#" class="more-results">',
-                                    'More Results...',
-                                '</a>',
-                            '</div>',
-                        '</li>',
-                    '</tpl>',
                 '</tpl>',
-            '</ul>'
-        )
+                '{[this.setTotalResults()]}',
+                '<tpl if="this.total_results &gt; 0">',
+                    '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
+                        '<tpl if="this.total_results &gt; 10">',
+                            '<a href="#">',
+                                'More Results...',
+                            '</a>',
+                        '</tpl>',
+                        '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',
+                    '</li>',
+                '</tpl>',
+                '<tpl if="this.total_results == 0">',
+                    '<li class="no-results">No results found</li>',
+                '</tpl>',
+            '</ul>',
+            {
+                total_results: 0,
+                getTotalRecords: function () {
+                    var combo_store = Ext.ComponentQuery.query('searchbox')[0].getStore();
+
+                    return combo_store.getCount();
+                },
+                setTotalResults: function () {
+                    var combo_store = Ext.ComponentQuery.query('searchbox')[0].getStore();
+
+                    this.total_results = combo_store.getTotalCount();
+                }
+        })
     },
 
     listeners: {
@@ -93683,13 +93700,15 @@ Ext.define('PICS.view.layout.SearchBox', {
             'result_id',
             'result_name',
             'result_at',
-            'search_type'
+            'search_type',
+            'account_status'
         ],
         proxy: {
             type: 'ajax',
             url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
+                totalProperty: 'total_results',
                 type: 'json'
             }
         }
@@ -93819,9 +93838,9 @@ Ext.define('PICS.view.layout.Menu', {
         dashboard_menu.height = 50;
 
         if (Ext.supports.Svg) {
-            dashboard_menu.icon = '/v7/img/logo.svg';
+            dashboard_menu.icon = '/v7/img/logo/logo-icon.svg';
         } else {
-            dashboard_menu.icon = '/v7/img/logo.png';
+            dashboard_menu.icon = '/v7/img/logo/logo-icon.png';
         }
 
         dashboard_menu.padding = '0px 10px 0px 20px';

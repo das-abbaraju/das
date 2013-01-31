@@ -145,8 +145,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 							lineItem.setTxnLineID("-1");
 
 							lineItem.setDesc(item.getDescription());
-							if (!item.getInvoiceFee().isLegacyGST() && !item.getInvoiceFee().isVAT())
+							if (!item.getInvoiceFee().isTax()) {
 								lineItem.setQuantity("1");
+							}
 
 							lineItem.setClassRef(factory.createClassRef());
 							lineItem.getClassRef().setFullName("Contractors");
@@ -239,8 +240,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 								lineItem.setTxnLineID("-1");
 
 								lineItem.setDesc(item.getDescription());
-								if (!item.getInvoiceFee().isLegacyGST() && !item.getInvoiceFee().isVAT())
+								if (!item.getInvoiceFee().isTax()) {
 									lineItem.setQuantity("1");
+								}
 
 								lineItem.setClassRef(factory.createClassRef());
 								lineItem.getClassRef().setFullName("Contractors");
@@ -309,8 +311,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 				invoiceJPA = getInvoiceDao().find(invoiceJPA.getId());
 
 				try {
-					if (invoice == null)
+					if (invoice == null) {
 						throw new Exception("no invoice object");
+					}
 
 					String invoiceIdString = invoice.getRefNumber();
 
@@ -410,8 +413,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 					invoiceJPA = getInvoiceDao().find(invoiceJPA.getId());
 
 					try {
-						if (invoice == null)
+						if (invoice == null) {
 							throw new Exception("no invoice object");
+						}
 
 						String invoiceIdString = invoice.getRefNumber();
 

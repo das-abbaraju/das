@@ -25,9 +25,12 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
@@ -103,6 +106,69 @@ public class LoginControllerTest extends PicsActionTest {
 //		when(permissionBuilder.login(user)).thenReturn(permissions);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
 
+	}
+
+	@Test(expected = Exception.class)
+	public void testSetRedirectUrlPostLogin_NoRedirectUrlThrows() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+
+		LoginService loginService = mock(LoginService.class);
+		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(null);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
+
+		Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+	}
+
+	@Test
+	public void testSetRedirectUrlPostLogin_PreLogin() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+
+		final String PRELOGIN_URL = "/PreLoginUrl";
+		Cookie cookie1 = mock(Cookie.class);
+		when(cookie1.getName()).thenReturn(CookieSupport.PRELOGIN_URL_COOKIE_NAME);
+		when(cookie1.getValue()).thenReturn(PRELOGIN_URL);
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
+
+		LoginService loginService = mock(LoginService.class);
+		when(loginService.postLoginHomePageTypeForRedirect(PRELOGIN_URL, user)).thenReturn(HomePageType.PreLogin);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
+
+		String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+
+		assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
+		assertThat(PRELOGIN_URL, is(equalTo(loginController.getUrl())));
+	}
+
+	@Test
+	public void testSetRedirectUrlPostLogin_ContractorRegistrationStep() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+		ContractorAccount account = mock(ContractorAccount.class);
+		when(user.getAccount()).thenReturn(account);
+
+		LoginService loginService = mock(LoginService.class);
+		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
+				HomePageType.ContractorRegistrationStep);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
+
+		String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+
+		assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
+		assertThat(ContractorRegistrationStep.Register.getUrl(), is(equalTo(loginController.getUrl())));
+	}
+
+	@Test
+	public void testSetRedirectUrlPostLogin_Deactivated() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+
+		LoginService loginService = mock(LoginService.class);
+		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
+				HomePageType.Deactivated);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
+
+		String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+
+		assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
+		assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
 	}
 
 	// As a non-admin user

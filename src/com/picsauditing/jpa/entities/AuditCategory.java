@@ -397,4 +397,13 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		return hasMissingChild || getLanguages().isEmpty();
 	}
+
+	@Transient
+	public boolean requiresViewFullPQFPermission() {
+		if (id == WORK_HISTORY)
+			return true;
+		if (id == FINANCIAL_HISTORY)
+			return true;
+		return false;
+	}
 }
