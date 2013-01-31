@@ -120,7 +120,7 @@
                     success: function (data, textStatus, jqXHR) {
                         if (that.$element.val().length > 0) {
                             process($.map(data.results, function (item) {
-                                var status = 'account' + item.account_status;
+                                var status = 'account-' + item.account_status;
 
                                 return {
                                     id: item.result_id,
