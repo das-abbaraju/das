@@ -1,10 +1,7 @@
 package com.picsauditing.access;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountLockedException;
@@ -45,30 +42,6 @@ public class LoginService {
 		verifyPasswordIsNotExpired(user);
 
 		return user;
-	}
-
-	public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {
-		HomePageType homePageType = null;
-		Account account = user.getAccount();
-		if (account.isContractor()) {
-			if (account.getStatus().isDeactivated()) {
-				homePageType = HomePageType.Deactivated;
-			} else {
-				ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-				if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
-					homePageType = HomePageType.PreLogin;
-				} else {
-					homePageType = HomePageType.ContractorRegistrationStep;
-				}
-			}
-		} else {
-			if (Strings.isNotEmpty(preLoginUrl)) {
-				homePageType = HomePageType.PreLogin;
-			} else {
-				homePageType = HomePageType.HomePage;
-			}
-		}
-		return homePageType;
 	}
 
 	private void processReset(String key, User user) throws InvalidResetKeyException {

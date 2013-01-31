@@ -9,35 +9,33 @@ public enum ContractorRegistrationStep {
 	Done;
 
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
-		if (contractor == null || contractor.getId() == 0) {
+		if (contractor == null || contractor.getId() == 0)
 			return Register;
-		} else if (contractor.getStatus().isDemo() || contractor.getStatus().isActive()) {
+
+		if (contractor.getStatus().isDemo() || contractor.getStatus().isActive())
 			return Done;
-		} else if (!containsAtLeastOneClientSiteForGCFree(contractor)) {
+		if (!containsAtLeastOneClientSiteForGCFree(contractor))
 			return Clients;
-		} else if (!containsOperator(contractor.getOperators())) {
+		if (!containsOperator(contractor.getOperators()))
 			return Clients;
-		} else if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly()
-				&& !contractor.isTransportationServices()) {
+		if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly()
+				&& !contractor.isTransportationServices())
 			return Risk;
-		} else if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None)) {
+		if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))
 			return Risk;
 		if (!contractor.isHasFreeMembership() && contractor.getStatus().isPendingOrDeactivated())
 			return Payment;
-		} else {
-			return Done;
-		}
+
+		return Done;
 	}
 
 	static private boolean containsOperator(List<ContractorOperator> cos) {
-		if (cos == null) {
+		if (cos == null)
 			return false;
-		}
 
 		for (ContractorOperator co : cos) {
-			if (co.getOperatorAccount().isOperator()) {
+			if (co.getOperatorAccount().isOperator())
 				return true;
-			}
 		}
 
 		return false;

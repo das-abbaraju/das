@@ -1,215 +1,126 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 public class ContractorRegistrationStepTest {
 
-	private List<OperatorAccount> generalContractors;
-	private List<ContractorOperator> operators;
+	ContractorAccount contractor;
 
-	@Mock
-	private ContractorAccount contractor;
-	@Mock
-	private OperatorAccount operator;
-	@Mock
-	private ContractorOperator contractorOperator;
-
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
-		generalContractors = new ArrayList<OperatorAccount>();
-		generalContractors.add(operator);
-
-		operators = new ArrayList<ContractorOperator>();
-		operators.add(contractorOperator);
-		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
-		when(operator.isOperator()).thenReturn(true);
-
-		when(contractor.getId()).thenReturn(999);
-		when(contractor.getGeneralContractorOperatorAccounts()).thenReturn(generalContractors);
+	private OperatorAccount addOperator(int operatorId) {
+		ContractorOperator co = new ContractorOperator();
+		co.setContractorAccount(contractor);
+		OperatorAccount oa = new OperatorAccount();
+		oa.setId(operatorId);
+		co.setOperatorAccount(oa);
+		contractor.getOperators().add(co);
+		return oa;
 	}
 
 	@Test
-	public void testGetStep_NullContractorIsRegister() {
-		contractor = null;
+	public void testGetStep_null() {
 		assertNull(contractor);
 		assertEquals(ContractorRegistrationStep.Register, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_IdOfZeroIsRegister() {
-		when(contractor.getId()).thenReturn(0);
+	public void testGetStep_empty() {
+		contractor = new ContractorAccount();
 		assertEquals(ContractorRegistrationStep.Register, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_containsAtLeastOneClientSiteForGCFree_ReturnsClients() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		when(operator.getDoContractorsPay()).thenReturn("No");
+	public void testGetStep_hasId() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
 		assertEquals(ContractorRegistrationStep.Clients, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_NoOperators_ReturnsClients() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		when(contractor.getGeneralContractorOperatorAccounts()).thenReturn(new ArrayList<OperatorAccount>());
-		when(contractor.getOperatorAccounts()).thenReturn(new ArrayList<OperatorAccount>());
+	public void testGetStep_demo() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setStatus(AccountStatus.Demo);
+		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+	}
+
+	@Test
+	public void testGetStep_active() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setStatus(AccountStatus.Active);
+		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+	}
+
+	@Test
+	public void testGetStep_pending() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setStatus(AccountStatus.Pending);
 		assertEquals(ContractorRegistrationStep.Clients, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_DemoReturnsDone() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Demo);
-		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
-	}
-
-	@Test
-	public void testGetStep_ActiveReturnsDone() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
-	}
-
-	@Test
-	public void testGetStep_NoSafetyRishAndNotOnlyMaterialSupplierAndNotTransportationReturnsRisk() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
-		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
-		when(contractor.isTransportationServices()).thenReturn(false);
+	public void testGetStep_isMaterialSupplier() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setMaterialSupplier(true);
+		contractor.setProductRisk(LowMedHigh.None);
+		addOperator(888); // anything but SUNCOR
 
 		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_NoSafetyRishAndIsOnlyMaterialSupplierAndNotTransportationReturnsPayment() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
-		when(contractor.isMaterialSupplierOnly()).thenReturn(true);
-		when(contractor.isTransportationServices()).thenReturn(false);
+	public void testGetStep_isMaterialSupplierOnly() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setSafetyRisk(LowMedHigh.None);
+		addOperator(888); // anything but SUNCOR
 
-		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
-	}
-
-	@Test
-	public void testGetStep_NoSafetyRishAndNotOnlyMaterialSupplierAndTransportationReturnsPayment() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
-		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
-		when(contractor.isTransportationServices()).thenReturn(true);
-
-		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
-	}
-	
-	@Test
-	public void testGetStep_MaterialSupplierAndNoProductRiskReturnsRisk() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(true);
-		when(contractor.getProductRisk()).thenReturn(LowMedHigh.None);
-
+		assertFalse(contractor.isMaterialSupplierOnly());
 		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_MaterialSupplierAndHasProductRiskReturnsPayment() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(true);
-		when(contractor.getProductRisk()).thenReturn(LowMedHigh.Low);
-
-		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
+	public void testGetStep_multipleContractorTypes() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setSafetyRisk(LowMedHigh.None);
+		contractor.getAccountTypes().add(ContractorType.Supplier);
+		contractor.getAccountTypes().add(ContractorType.Onsite);
+		addOperator(888); // anything but SUNCOR
+		assertFalse(contractor.isMaterialSupplierOnly());
+		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
 	}
-	
+
 	@Test
-	public void testGetStep_NotFreeClientsRiskCompleteButDeactivatedNeedsPayment() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(false);
-		when(contractor.isHasFreeMembership()).thenReturn(false);
+	public void testGetStep_needsPayment() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setSafetyRisk(LowMedHigh.Low);
+		contractor.setProductRisk(LowMedHigh.Low);
+		contractor.setPayingFacilities(1);
+		addOperator(888); // anything but SUNCOR
 
 		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test
-	public void testGetStep_NotFreeClientsRiskCompleteButPendingNeedsPayment() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(false);
-		when(contractor.isHasFreeMembership()).thenReturn(false);
-
-		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
-	}
-
-	@Test
-	public void testGetStep_FreeClientsRiskCompleteButPendingIsDone() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(false);
-		when(contractor.isHasFreeMembership()).thenReturn(true);
-
-		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
-	}
-
-	@Test
-	public void testGetStep_NotFreeClientsRiskComplete_RequestedIsDone() {
-		when(contractor.getStatus()).thenReturn(AccountStatus.Requested);
-		// get past containsOperator block
-		when(contractor.getOperators()).thenReturn(operators);
-		// get past containsAtLeastOneClientSiteForGCFree block
-		when(operator.getDoContractorsPay()).thenReturn("Yes");
-		// get past first risk block
-		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
-		when(contractor.isMaterialSupplier()).thenReturn(false);
-		when(contractor.isHasFreeMembership()).thenReturn(false);
+	public void testGetStep_done() {
+		contractor = new ContractorAccount();
+		contractor.setId(999);
+		contractor.setSafetyRisk(LowMedHigh.Low);
+		contractor.setProductRisk(LowMedHigh.Low);
+		contractor.setPayingFacilities(1);
+		contractor.setCcOnFile(true);
+		// Process changed for new contractor registration
+		contractor.setStatus(AccountStatus.Active);
+		addOperator(888); // anything but SUNCOR
 
 		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
 	}
@@ -226,7 +137,6 @@ public class ContractorRegistrationStepTest {
 	@Test
 	public void testIsDone() {
 		assertTrue(ContractorRegistrationStep.Done.isDone());
-		assertFalse(ContractorRegistrationStep.Payment.isDone());
 	}
 
 	@Test
@@ -234,7 +144,6 @@ public class ContractorRegistrationStepTest {
 		assertTrue(ContractorRegistrationStep.Register.isHasNext());
 		assertTrue(ContractorRegistrationStep.Clients.isHasNext());
 		assertTrue(ContractorRegistrationStep.Risk.isHasNext());
-		assertTrue(ContractorRegistrationStep.Payment.isHasNext());
 		assertTrue(ContractorRegistrationStep.Payment.isHasNext());
 		assertFalse(ContractorRegistrationStep.Done.isHasNext());
 	}
