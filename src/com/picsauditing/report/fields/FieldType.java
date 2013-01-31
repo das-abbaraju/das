@@ -28,7 +28,7 @@ public enum FieldType {
 	CountrySubdivision(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null),
 	Currency(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, EnumType.STRING),
 	Date(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null),
-	DateTime(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.Date, null),
+	DateTime(FilterType.DateTime, DisplayType.String, SqlFunctionProfile.Date, null),
 	FlagColor(FilterType.Multiselect, DisplayType.Flag, SqlFunctionProfile.Boolean, EnumType.STRING),
 	FlagCriteriaOptionCode(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, EnumType.STRING),
 	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null),

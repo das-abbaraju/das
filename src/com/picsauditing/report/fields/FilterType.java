@@ -5,8 +5,12 @@ public enum FilterType {
 	Autocomplete(DisplayType.String),
 	Boolean(DisplayType.Boolean),
 	Date(DisplayType.String),
+	DateTime(DisplayType.String),
+	Float(DisplayType.Number),
+	Integer(DisplayType.Number),
 	Multiselect(DisplayType.String),
 	Number(DisplayType.Number),
+	ShortList(DisplayType.String),
 	String(DisplayType.String),
 	UserID(DisplayType.Number);
 
