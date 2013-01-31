@@ -318,7 +318,7 @@ public class FlagDataCalculator {
 				}
 				else {
 					for (ContractorAudit ca : con.getAudits()) {
-						if (ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
+						if (criteria.getQuestion() != null && ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
 							if (!worksForOperator) {
 								if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
 									return false;
