@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -733,6 +734,9 @@ public class FlagDataCalculator {
 		}
 
 		if (found == null) {
+			FlagDataOverride overrideWithMatchingCriteria = searchOverridesByCriteria(fdos, key);
+			if (searchOverridesByCriteria(fdos, key) != null)
+				shiftOverrides(fdos);
 			return null; // no fdo found for year
 		}
 
@@ -743,13 +747,7 @@ public class FlagDataCalculator {
 		FlagDataOverride fdo2 = null;
 		FlagDataOverride fdo3 = null;
 
-		for (FlagDataOverride fdo : fdos) {
-			if (fdo.getCriteria().equals(key)) {
-				fdo2 = fdo;
-				break;
-			}
-		}
-
+		fdo2 = searchOverridesByCriteria(fdos, key);
 		if (fdo2 == null) {
 			removeFlagDataOverride(fdo1);
 			FlagCriteria nextCriteriaSkip = getNextCriteria(key);
@@ -787,13 +785,7 @@ public class FlagDataCalculator {
 			return fdo2;
 		}
 
-		for (FlagDataOverride fdo : fdos) {
-			if (fdo.getCriteria().equals(nextCriteria)) {
-				fdo3 = fdo;
-				break;
-			}
-		}
-
+		fdo3 = searchOverridesByCriteria(fdos, nextCriteria);
 		if (fdo3 == null) {
 			fdo3 = (FlagDataOverride) fdo2.clone();
 			fdo3.setCriteria(nextCriteria);
@@ -808,7 +800,6 @@ public class FlagDataCalculator {
 		try {
 			dao.save(fdo3);
 		} catch (Exception e) {
-			System.out.println(e);
 		}
 
 		fdo2.copyPayloadFrom(fdo1);
@@ -818,6 +809,38 @@ public class FlagDataCalculator {
 		addFlagDataOverride(fdo2);
 
 		return fdo2;
+	}
+
+	private FlagDataOverride searchOverridesByCriteria(
+			List<FlagDataOverride> fdos, FlagCriteria key) {
+		for (FlagDataOverride fdo : fdos) {
+			if (fdo.getCriteria().equals(key)) {
+				return fdo;
+			}
+		}
+		return null;
+	}
+
+	private void shiftOverrides(List<FlagDataOverride> fdos) {
+		// put fdos in reverse MultiYearScope sorted order for easier traversal
+		Collections.sort(fdos, new Comparator<FlagDataOverride>() {
+			@Override
+			public int compare(FlagDataOverride o1, FlagDataOverride o2) {
+				return o1.getCriteria().getMultiYearScope().compareTo(o2.getCriteria().getMultiYearScope());
+			}
+		});
+		Collections.reverse(fdos);
+		
+		for (FlagDataOverride fdo:fdos) {
+			removeFlagDataOverride(fdo);
+			FlagCriteria nextCriteria = getNextCriteria(fdo.getCriteria());
+			if (nextCriteria != null) {
+				fdo.setCriteria(nextCriteria);
+				addFlagDataOverride(fdo);
+			} else {
+				dao.deleteData(FlagDataOverride.class, "id=" + fdo.getId());
+			}
+		}
 	}
 
 	private void addFlagDataOverride(FlagDataOverride fdo) {
