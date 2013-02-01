@@ -1,14 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
@@ -24,6 +15,13 @@ import com.picsauditing.util.ReportFilterNewContractor;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.ServletOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportRegistrationRequests extends ReportActionSupport {
@@ -33,11 +31,62 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 	private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	@Autowired
 	private FeatureToggle featureToggle;
-
 	private SelectSQL sql;
 	private ReportFilterNewContractor filter = new ReportFilterNewContractor();
 	@Deprecated
 	private SelectSQL legacy;
+
+	public static SelectSQL buildAccountQuery() {
+		SelectSQL sql = new SelectSQL("accounts a");
+		sql.addJoin("JOIN contractor_info c ON c.id = a.id");
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");
+		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
+		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+		sql.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = gc.requestedByUserID");
+		sql.addJoin("LEFT JOIN users pics ON pics.id = c.lastContactedByInsideSales");
+		sql.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = c.id");
+		sql.addJoin("LEFT JOIN operator_tag ot ON ct.tagID = ot.id > 0");
+
+		sql.addField("c.id");
+		sql.addField("a.name");
+		sql.addField("contact.name AS Contact");
+		sql.addField("contact.phone AS Phone");
+		sql.addField("contact.email AS Email");
+		sql.addField("c.taxID AS TaxID");
+		sql.addField("a.address AS Address");
+		sql.addField("a.city AS City");
+		sql.addField("a.countrySubdivision AS CountrySubdivision");
+		sql.addField("a.zip AS Zip");
+		sql.addField("a.country AS Country");
+		sql.addField("op.name AS RequestedBy");
+		sql.addField("op.id AS RequestedByID");
+		sql.addField("requestedUser.id AS RequestedUserID");
+		sql.addField("requestedUser.name AS RequestedUser");
+		sql.addField("gc.requestedByUser AS RequestedByUserOther");
+		sql.addField("gc.deadline");
+		sql.addField("pics.name AS ContactedBy");
+		sql.addField("pics.id AS ContactedByID");
+		sql.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
+		sql.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
+		sql.addField("'' AS matchCount");
+		sql.addField("c.expiresOnDate AS closedOnDate");
+		sql.addField("a.creationDate");
+		sql.addField("a.id AS conID");
+		sql.addField("a.name AS contractorName");
+		sql.addField("'' AS Notes");
+		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
+		sql.addField("'ACC' AS systemType");
+		sql.addField("CASE c.insideSalesPriority WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE 'None' END AS priority");
+		// Find requested or denied or pending but not active that have been
+		// requested
+		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL) "
+				+ "OR (a.status = 'Pending' AND a.id IN (SELECT subID FROM generalcontractors "
+				+ "WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0)))");
+
+		sql.addGroupBy("c.id, gc.id");
+
+		return sql;
+	}
 
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
@@ -92,58 +141,6 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 
-	public static SelectSQL buildAccountQuery() {
-		SelectSQL sql = new SelectSQL("accounts a");
-		sql.addJoin("JOIN contractor_info c ON c.id = a.id");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");
-		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
-		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = gc.requestedByUserID");
-		sql.addJoin("LEFT JOIN users pics ON pics.id = c.lastContactedByInsideSales");
-		sql.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = c.id");
-		sql.addJoin("LEFT JOIN operator_tag ot ON ct.tagID = ot.id > 0");
-
-		sql.addField("c.id");
-		sql.addField("a.name");
-		sql.addField("contact.name AS Contact");
-		sql.addField("contact.phone AS Phone");
-		sql.addField("contact.email AS Email");
-		sql.addField("c.taxID AS TaxID");
-		sql.addField("a.address AS Address");
-		sql.addField("a.city AS City");
-		sql.addField("a.countrySubdivision AS CountrySubdivision");
-		sql.addField("a.zip AS Zip");
-		sql.addField("a.country AS Country");
-		sql.addField("op.name AS RequestedBy");
-		sql.addField("op.id AS RequestedByID");
-		sql.addField("requestedUser.id AS RequestedUserID");
-		sql.addField("requestedUser.name AS RequestedUser");
-		sql.addField("gc.requestedByUser AS RequestedByUserOther");
-		sql.addField("gc.deadline");
-		sql.addField("pics.name AS ContactedBy");
-		sql.addField("pics.id AS ContactedByID");
-		sql.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
-		sql.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
-		sql.addField("'' AS matchCount");
-		sql.addField("c.expiresOnDate AS closedOnDate");
-		sql.addField("a.creationDate");
-		sql.addField("a.id AS conID");
-		sql.addField("a.name AS contractorName");
-		sql.addField("'' AS Notes");
-		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
-		sql.addField("'ACC' AS systemType");
-		sql.addField("CASE c.insideSalesPriority WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE 'None' END AS priority");
-		// Find requested or denied or pending but not active that have been
-		// requested
-		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL) "
-				+ "OR (a.status = 'Pending' AND a.id IN (SELECT subID FROM generalcontractors "
-				+ "WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0)))");
-
-		sql.addGroupBy("c.id, gc.id");
-
-		return sql;
-	}
-
 	private void buildQuery() {
 		sql = buildAccountQuery();
 		legacy = ReportNewRequestedContractor.buildLegacyQuery();
@@ -155,16 +152,16 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 				sql.addJoin("JOIN user_assignment ua ON ua.country = a.country AND ua.userID = "
 						+ permissions.getUserId() + " AND (a.countrySubdivision = ua.countrySubdivision OR a.zip "
 						+ "BETWEEN ua.postal_start AND ua.postal_end)");
-                legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
-                        + permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
-                        + "BETWEEN ua.postal_start AND ua.postal_end)");
+				legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
+						+ permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
+						+ "BETWEEN ua.postal_start AND ua.postal_end)");
 			}
 
 			if (isAmSales() && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-                legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
-                        + "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+				legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
+						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
 		}
 
@@ -173,11 +170,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 				getFilter().setShowOperator(true);
 				sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
-                legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
-                        + permissions.getAccountId() + ")");
+				legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+						+ permissions.getAccountId() + ")");
 			} else {
 				sql.addWhere("gc.genID = " + permissions.getAccountId());
-                legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
+				legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
 			}
 		}
 
@@ -190,14 +187,15 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		ReportFilterNewContractor f = getFilter();
 
 		if (filterOn(f.getStartsWith())) {
-			sql.addWhere("a.name LIKE '" + f.getStartsWith() + "%'");
-			legacy.addWhere("cr.name LIKE '" + f.getStartsWith() + "%'");
+			String startsWith = Strings.escapeQuotes(f.getStartsWith());
+			sql.addWhere("a.name LIKE '" + startsWith + "%'");
+			legacy.addWhere("cr.name LIKE '" + startsWith + "%'");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = f.getAccountName().trim();
+			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
 
 			sql.addWhere("a.name LIKE '%" + accountName + "%'");
 			legacy.addWhere("cr.name LIKE '%" + accountName + "%'");

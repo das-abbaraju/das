@@ -140,8 +140,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	private void addFilterToSQL() {
 		ReportFilterNewContractor f = getFilter();
 
-		if (filterOn(f.getStartsWith()))
+		if (filterOn(f.getStartsWith())) {
 			report.addFilter(new SelectFilter("startsWith", "cr.name LIKE '?%'", f.getStartsWith()));
+		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
