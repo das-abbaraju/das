@@ -48,7 +48,7 @@ public class ReportApi extends PicsApiSupport {
 		try {
 			json = reportService.buildJsonResponse(reportContext);
 		} catch (ReportValidationException rve) {
-			logger.error("Invalid report in ReportDynamic.report()", rve);
+			logger.error("Invalid report in ReportApi.execute()", rve);
 			writeJsonError(rve);
 		} catch (PicsSqlException pse) {
 			handleSqlException(pse);

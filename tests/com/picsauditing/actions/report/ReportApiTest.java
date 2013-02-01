@@ -37,7 +37,7 @@ public class ReportApiTest extends PicsActionTest {
 	public void testExecute() throws Exception {
 		String strutsResult = reportApi.execute();
 
-		assertEquals(ReportDynamic.JSON, strutsResult);
+		assertEquals(PicsActionSupport.JSON, strutsResult);
 	}
 
 //	@Test
@@ -48,7 +48,7 @@ public class ReportApiTest extends PicsActionTest {
 //
 //		String strutsResult = reportApi.execute();
 //
-//		assertEquals(ReportDynamic.JSON, strutsResult);
+//		assertEquals(PicsActionSupport.JSON, strutsResult);
 //		JSONObject json = reportApi.getJson();
 //		assertThat((Boolean) json.get(ReportJson.EXT_JS_SUCCESS), is(equalTo(Boolean.FALSE)));
 //	}
