@@ -799,6 +799,7 @@ public class FlagDataCalculator {
 		try {
 			dao.save(fdo3);
 		} catch (Exception e) {
+			logger.error(e.toString());
 		}
 
 		fdo2.copyPayloadFrom(fdo1);
