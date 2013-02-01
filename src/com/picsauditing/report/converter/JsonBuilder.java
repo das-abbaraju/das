@@ -58,18 +58,18 @@ public class JsonBuilder {
 		JSONArray jsonArray = new JSONArray();
 		json.put(type.getKey(), jsonArray);
 
-		for (ReportElement obj : getReportChildren(report, type)) {
+		for (ReportElement element : getReportChildren(report, type)) {
 			switch (type) {
 			case Columns:
-				jsonArray.add(toJSON((Column) obj));
+				jsonArray.add(toJSON((Column) element));
 				break;
 
 			case Filters:
-				jsonArray.add(toJSON((Filter) obj));
+				jsonArray.add(toJSON((Filter) element));
 				break;
 
 			case Sorts:
-				jsonArray.add(toJSON((Sort) obj));
+				jsonArray.add(toJSON((Sort) element));
 				break;
 			}
 		}
@@ -91,60 +91,58 @@ public class JsonBuilder {
 		return reportChild;
 	}
 
-	private static JSONObject toJSON(Column obj) {
-		JSONObject json = elementToCommonJson(obj);
+	private static JSONObject toJSON(Column column) {
+		JSONObject json = elementToCommonJson(column);
 
-		json.put(COLUMN_TYPE, obj.getField().getColumnType());
-		json.put(COLUMN_URL, obj.getField().getUrl());
-		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(obj.getSqlFunction()));
-		json.put(COLUMN_WIDTH, obj.getWidth());
-		json.put(COLUMN_SORTABLE, obj.getField().isSortable());
-
-		return json;
-	}
-
-	private static JSONObject toJSON(Filter obj) {
-		JSONObject json = elementToCommonJson(obj);
-		json.put(FILTER_TYPE, obj.getField().getFilterType());
-		json.put(FILTER_OPERATOR, obj.getOperator().toString());
-
-		setFilterValue(obj, json);
-
-		if (Strings.isNotEmpty(obj.getColumnCompare())) {
-			json.put(Filter.FIELD_COMPARE, obj.getColumnCompare());
-		}
+		json.put(COLUMN_TYPE, column.getField().getColumnType());
+		json.put(COLUMN_URL, column.getField().getUrl());
+		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
+		json.put(COLUMN_WIDTH, column.getWidth());
+		json.put(COLUMN_SORTABLE, column.getField().isSortable());
 
 		return json;
 	}
 
-	private static void setFilterValue(Filter obj, JSONObject json) {
-		if (obj.getOperator().isValueCurrentlySupported()) {
+	private static JSONObject toJSON(Filter filter) {
+		JSONObject json = elementToCommonJson(filter);
+		json.put(FILTER_TYPE, filter.getField().getFilterType());
+		json.put(FILTER_OPERATOR, filter.getOperator().toString());
+
+		setFilterValue(filter, json);
+
+		json.put(FILTER_COLUMN_COMPARE, filter.getColumnCompare());
+
+		return json;
+	}
+
+	private static void setFilterValue(Filter filter, JSONObject json) {
+		if (filter.getOperator().isValueCurrentlySupported()) {
 			JSONArray valueArray = new JSONArray();
-			valueArray.addAll(obj.getValues());
+			valueArray.addAll(filter.getValues());
 
 			// TODO Make sure the value handshake is correct
 			// http://intranet.picsauditing.com/display/it/Handshake
-			if (obj.getValues().size() == 1) {
-				json.put(FILTER_VALUE, obj.getValues().get(0));
+			if (filter.getValues().size() == 1) {
+				json.put(FILTER_VALUE, filter.getValues().get(0));
 			} else {
-				json.put(FILTER_VALUE, StringUtils.join(obj.getValues(), ", "));
+				json.put(FILTER_VALUE, StringUtils.join(filter.getValues(), ", "));
 			}
 		}
 	}
 
-	private static JSONObject toJSON(Sort obj) {
+	private static JSONObject toJSON(Sort sort) {
 		JSONObject json = new JSONObject();
-		json.put(REPORT_ELEMENT_FIELD_ID, obj.getName());
-		json.put(SORT_DIRECTION, obj.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
+		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());
+		json.put(SORT_DIRECTION, sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 		return json;
 	}
 
-	private static JSONObject elementToCommonJson(ReportElement obj) {
+	private static JSONObject elementToCommonJson(ReportElement element) {
 		JSONObject json = new JSONObject();
-		json.put(REPORT_ELEMENT_FIELD_ID, obj.getName());
-		json.put(REPORT_ELEMENT_CATEGORY, obj.getField().getCategoryTranslation());
-		json.put(REPORT_ELEMENT_NAME, obj.getField().getText());
-		json.put(REPORT_ELEMENT_DESCRIPTION, obj.getField().getHelp());
+		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());
+		json.put(REPORT_ELEMENT_CATEGORY, element.getField().getCategoryTranslation());
+		json.put(REPORT_ELEMENT_NAME, element.getField().getText());
+		json.put(REPORT_ELEMENT_DESCRIPTION, element.getField().getHelp());
 		return json;
 	}
 

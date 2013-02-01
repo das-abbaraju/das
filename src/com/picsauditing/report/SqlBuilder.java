@@ -152,6 +152,7 @@ public class SqlBuilder {
 		for (Filter filter : report.getFilters()) {
 			filter.addFieldCopy(availableFields);
 
+			// TODO See if this can be safely added to filter.isValid()
 			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {

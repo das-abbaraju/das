@@ -31,9 +31,11 @@ public class Filter extends ReportElement {
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
 
-	public static final String FIELD_COMPARE = "fieldCompare";
 	private String columnCompare;
 	private Field fieldForComparison;
+
+	@Deprecated
+	public static final String FIELD_COMPARE = "fieldCompare";
 
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 

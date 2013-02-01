@@ -90,80 +90,80 @@ public class LegacyReportConverter {
 		}
 	}
 
-	private JSONObject toJSONBase(ReportElement obj) {
+	private JSONObject toJSONBase(ReportElement element) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
+		json.put("name", element.getName());
 		// This is a legacy feature only used on the old ExtJS
 		// Removing for now since it makes testing a lot easier
 		// json.put("field", toJSON(obj.getField()));
 		return json;
 	}
 
-	private JSONObject toJSON(Column obj) {
-		JSONObject json = toJSONBase(obj);
-		if (obj.getSqlFunction() != null) {
-			json.put("method", obj.getSqlFunction().toString());
+	private JSONObject toJSON(Column column) {
+		JSONObject json = toJSONBase(column);
+		if (column.getSqlFunction() != null) {
+			json.put("method", column.getSqlFunction().toString());
 		}
 
 		return json;
 	}
 
-	public JSONObject toJSON(Field obj) {
-		if (obj == null) {
-			obj = new Field("Missing", "", FieldType.String);
+	public JSONObject toJSON(Field field) {
+		if (field == null) {
+			field = new Field("Missing", "", FieldType.String);
 		}
 
 		// TODO Move this to SimpleColumn.js toGridColumn
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
-		json.put("text", obj.getText());
-		json.put("help", obj.getHelp());
+		json.put("name", field.getName());
+		json.put("text", field.getText());
+		json.put("help", field.getHelp());
 
-		if (obj.getWidth() > 0) {
-			json.put("width", obj.getWidth());
+		if (field.getWidth() > 0) {
+			json.put("width", field.getWidth());
 		}
 
-		if (!Strings.isEmpty(obj.getUrl())) {
-			json.put("url", obj.getUrl());
+		if (!Strings.isEmpty(field.getUrl())) {
+			json.put("url", field.getUrl());
 		}
 
-		json.put("fieldType", obj.getType().toString());
-		json.put("filterType", obj.getType().getFilterType().toString());
-		json.put("displayType", obj.getType().toString().toLowerCase());
-		json.put("type", obj.getType().toString().toLowerCase());
+		json.put("fieldType", field.getType().toString());
+		json.put("filterType", field.getType().getFilterType().toString());
+		json.put("displayType", field.getType().toString().toLowerCase());
+		json.put("type", field.getType().toString().toLowerCase());
 		return json;
 	}
 
-	private JSONObject toJSON(Filter obj) {
+	private JSONObject toJSON(Filter filter) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
-		json.put("operator", obj.getOperator().toString());
+		json.put("name", filter.getName());
+		json.put("operator", filter.getOperator().toString());
 
-		if (obj.getOperator().isValueCurrentlySupported()) {
+		if (filter.getOperator().isValueCurrentlySupported()) {
 			JSONArray valueArray = new JSONArray();
-			valueArray.addAll(obj.getValues());
+			valueArray.addAll(filter.getValues());
 			// json.put("values", valueArray);
 
 			// Until we phase out the old code, we need this for backwards
 			// compatibility
-			if (obj.getValues().size() == 1) {
-				json.put("value", obj.getValues().get(0));
+			if (filter.getValues().size() == 1) {
+				json.put("value", filter.getValues().get(0));
 			} else {
-				json.put("value", StringUtils.join(obj.getValues(), ", "));
+				json.put("value", StringUtils.join(filter.getValues(), ", "));
 			}
 		}
 
-		if (obj.getFieldForComparison() != null) {
-			json.put(Filter.FIELD_COMPARE, obj.getFieldForComparison().getName());
+		if (filter.getFieldForComparison() != null) {
+			json.put(Filter.FIELD_COMPARE, filter.getFieldForComparison().getName());
 		}
 
 		return json;
 	}
 
-	private JSONObject toJSON(Sort obj) {
+	private JSONObject toJSON(Sort sort) {
 		JSONObject json = new JSONObject();
-		json.put("name", obj.getName());
-		if (!obj.isAscending()) {
+		json.put("name", sort.getName());
+		if (!sort.isAscending()) {
 			json.put("direction", Sort.DESCENDING);
 		}
 

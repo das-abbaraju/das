@@ -210,7 +210,7 @@ public class ReportBuilder {
 	}
 
 	private static Field parseAdvancedFilter(JSONObject json) {
-		String advancedFilterOption = (String) json.get(Filter.FIELD_COMPARE);
+		String advancedFilterOption = (String) json.get(FILTER_COLUMN_COMPARE);
 		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false")) {
 			return null;
 		}
