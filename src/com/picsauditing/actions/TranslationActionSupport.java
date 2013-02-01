@@ -1,38 +1,25 @@
 package com.picsauditing.actions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.util.Strings;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
-	private Set<String> usedKeys = null;
-	private I18nCache i18nCache = I18nCache.getInstance();
-	static final protected String i18nTracing = "i18nTracing";
-
-	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
-	private static Locale[] supportedLocales = null;
+	@Autowired
+	protected AppPropertyDAO propertyDAO;
 
 	public static final List<KeyValue> supportedLocaleList = new ArrayList<KeyValue>() {
 		{
@@ -47,6 +34,11 @@ public class TranslationActionSupport extends ActionSupport {
 			add(new KeyValue("pt", "Português"));
 		}
 	};
+	static final protected String i18nTracing = "i18nTracing";
+	private static Locale[] supportedLocales = null;
+	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
+	private Set<String> usedKeys = null;
+	private I18nCache i18nCache = I18nCache.getInstance();
 
 	public static Locale[] getSupportedLocales() {
 		if (supportedLocales == null) {
@@ -315,6 +307,24 @@ public class TranslationActionSupport extends ActionSupport {
 		return text;
 	}
 
+	public boolean isLanguageFullySupported() {
+		AppProperty commaSeparatedFullySupportedLanguages = propertyDAO.find(AppProperty.FULLY_SUPPORTED_LANGUAGES);
+		if (commaSeparatedFullySupportedLanguages != null && Strings.isNotEmpty(commaSeparatedFullySupportedLanguages.getValue())) {
+			for (String fullySupportedLanguage : commaSeparatedFullySupportedLanguages.getValue().split(",")) {
+				fullySupportedLanguage = fullySupportedLanguage.trim();
+				if (fullySupportedLanguage.equals(getLocaleStatic().getLanguage())) {
+					return true;
+				}
+			}
+		} else {
+			logger.error("Could not find value for app property " + AppProperty.FULLY_SUPPORTED_LANGUAGES);
+			// If the app property is not set, the only fully supported language is English
+			return getLocaleStatic().equals(Locale.ENGLISH);
+		}
+
+		return false;
+	}
+
 	private void useKey(String key) {
 		if (key == null)
 			throw new RuntimeException("i18n key cannot be NULL");
@@ -362,7 +372,7 @@ public class TranslationActionSupport extends ActionSupport {
 		sortedTranslationMap.putAll(newTranslationMap);
 		return sortedTranslationMap;
 	}
-	
+
 	private static class KeyValue {
 		private String key;
 		private String value;

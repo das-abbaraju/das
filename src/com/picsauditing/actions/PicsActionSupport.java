@@ -73,8 +73,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     @Autowired
     protected BasicDAO dao;
     @Autowired
-    protected AppPropertyDAO propertyDAO;
-    @Autowired
     protected UserDAO userDAO;
     @Autowired
     protected FeatureToggle featureToggleChecker;
