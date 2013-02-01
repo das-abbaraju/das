@@ -190,9 +190,7 @@ public enum FeeClass implements Translatable {
 		Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 		exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 		exclusions.put(OperatorAccount.AI, Jan2013InsureGUARDPricingEffectiveDate);
-		exclusions.put(OperatorAccount.OLDCASTLE, Jan2013InsureGUARDPricingEffectiveDate);
 		exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
-		exclusions.put(OperatorAccount.SUNOCO, Jan2013InsureGUARDPricingEffectiveDate);
 		return exclusions;
 	}
 
