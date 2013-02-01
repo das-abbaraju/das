@@ -118,7 +118,7 @@ public class JsonBuilder {
 	}
 
 	private static void setFilterValue(Filter obj, JSONObject json) {
-		if (obj.getOperator().isValueUsed()) {
+		if (obj.getOperator().isValueCurrentlySupported()) {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(obj.getValues());
 

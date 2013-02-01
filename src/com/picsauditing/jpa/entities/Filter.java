@@ -108,7 +108,7 @@ public class Filter extends ReportElement {
 
 		String filterValue = getValues().get(0);
 
-		if (filterType == FilterType.Date) {
+		if (filterType == FilterType.Date || filterType == FilterType.DateTime) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
 			return "'" + dateValue + "'";
@@ -146,6 +146,14 @@ public class Filter extends ReportElement {
 			} catch (Exception e) {
 				return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 			}
+		}
+
+		if (filterType == FilterType.Integer) {
+			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
+		}
+
+		if (filterType == FilterType.Float) {
+			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 		}
 
 		if (filterType == FilterType.String) {
@@ -207,7 +215,7 @@ public class Filter extends ReportElement {
 			return false;
 		}
 
-		if (!operator.isValueUsed()) {
+		if (!operator.isValueCurrentlySupported()) {
 			return true;
 		}
 
@@ -280,5 +288,9 @@ public class Filter extends ReportElement {
 		}
 
 		return super.toString() + " " + operator + " " + display;
+	}
+
+	public void addValue(String value) {
+		values.add(value);
 	}
 }

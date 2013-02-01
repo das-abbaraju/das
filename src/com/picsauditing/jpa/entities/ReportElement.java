@@ -34,6 +34,8 @@ public abstract class ReportElement {
 
 	protected int id;
 	protected Report report;
+	// TODO this should be field_id
+	// TODO this also duplicates field.getName()
 	protected String name;
 	protected SqlFunction sqlFunction;
 	protected Field field;
@@ -77,13 +79,13 @@ public abstract class ReportElement {
 
 	public void setName(String name) {
 		this.name = name;
-		
+
 		if (originalName == null) {
 			originalName = getFieldNameWithoutMethod();
 		}
 	}
 
-	// TODO: Move this into a Business Model or Utility class and keep the entity a POJO  
+	// TODO: Move this into a Business Model or Utility class and keep the entity a POJO
 	public void setMethodToFieldName() {
 		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod >= 0 || sqlFunction == null) {
@@ -94,7 +96,7 @@ public abstract class ReportElement {
 
 		if (startOfMethod > -1) {
 			originalName = name.substring(0, startOfMethod);
-		}		
+		}
 	}
 
 	@Transient
@@ -102,12 +104,12 @@ public abstract class ReportElement {
 		if (Strings.isEmpty(name)) {
 			return Strings.EMPTY_STRING;
 		}
-		
+
 		int index = name.indexOf(METHOD_SEPARATOR);
 		if (index == -1) {
 			return name;
-		} 
-			
+		}
+
 		return name.substring(0, index);
 	}
 
@@ -127,13 +129,17 @@ public abstract class ReportElement {
 
 	public void setField(Field field) {
 		this.field = field;
+		// FIXME
+		// 1. Why are we clobbering the existing field name?
+		// 2. Why are we tightly coupling our name to the field's name?
 		this.field.setName(name);
 	}
 
 	@Transient
 	public boolean isHasAggregateMethod() {
-		if (sqlFunction == null)
+		if (sqlFunction == null) {
 			return false;
+		}
 
 		return sqlFunction.isAggregate();
 	}
@@ -144,8 +150,9 @@ public abstract class ReportElement {
 			throw new RuntimeException(name + " is missing from available fields");
 		}
 		String fieldSql = field.getDatabaseColumnName();
-		if (sqlFunction == null)
+		if (sqlFunction == null) {
 			return fieldSql;
+		}
 
 		if (sqlFunction.isAggregate()) {
 			field.setUrl(null);

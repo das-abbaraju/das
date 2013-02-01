@@ -145,7 +145,7 @@ public class LegacyReportConverter {
 		json.put("name", obj.getName());
 		json.put("operator", obj.getOperator().toString());
 
-		if (obj.getOperator().isValueUsed()) {
+		if (obj.getOperator().isValueCurrentlySupported()) {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(obj.getValues());
 			// json.put("values", valueArray);

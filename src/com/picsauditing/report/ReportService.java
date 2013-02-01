@@ -481,6 +481,7 @@ public class ReportService {
 		return report;
 	}
 
+	@SuppressWarnings("unchecked")
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
 		Report report = createReport(reportContext);
 

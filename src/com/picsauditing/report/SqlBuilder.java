@@ -161,7 +161,9 @@ public class SqlBuilder {
 			}
 		}
 
-		sql.addWhere(FilterExpression.parseWhereClause(report.getFilterExpression(), whereFilters));
+		String filterExpression = report.getFilterExpression();
+		String whereClause = FilterExpression.parseWhereClause(filterExpression, whereFilters);
+		sql.addWhere(whereClause);
 
 		for (Filter filter : havingFilters) {
 			String filterExp = filter.getSqlForFilter();
