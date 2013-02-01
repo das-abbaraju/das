@@ -734,7 +734,6 @@ public class FlagDataCalculator {
 		}
 
 		if (found == null) {
-			FlagDataOverride overrideWithMatchingCriteria = searchOverridesByCriteria(fdos, key);
 			if (searchOverridesByCriteria(fdos, key) != null)
 				shiftOverrides(fdos);
 			return null; // no fdo found for year
