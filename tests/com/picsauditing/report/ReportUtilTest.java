@@ -38,8 +38,8 @@ public class ReportUtilTest {
 		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
 	}
 
-	@After
-	public void tearDown() {
+	@AfterClass
+	public static void tearDown() {
 		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 	}
 
