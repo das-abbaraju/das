@@ -2,7 +2,7 @@ drop table if exists app_language;
 
 create table `app_language`( `locale` varchar(5) NOT NULL , `language` varchar(2) NOT NULL , `country` varchar(2) , `status` varchar(50) NOT NULL DEFAULT 'Future' , PRIMARY KEY (`locale`))  ;
 
-alter table `pics_pruned`.`app_language` add unique `language_country` (`language`, `country`);
+alter table `app_language` add unique `languageCountry` (`language`, `country`);
 
 insert into app_language(`locale`, `language`, `country`)
 values ('sq', 'sq', NULL),
