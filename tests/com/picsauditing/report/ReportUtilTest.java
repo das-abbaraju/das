@@ -1,42 +1,46 @@
 package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertNotContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.search.Database;
 
 public class ReportUtilTest {
-	@Mock
-	private Database databaseForTesting;
 
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-	}
+	@Mock
+	protected I18nCache i18nCache;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", i18nCache);
+		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
+	}
+
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 	}
 
 	@Test
@@ -47,28 +51,60 @@ public class ReportUtilTest {
 	}
 
 	@Test
-	public void testEnumList_Permissions() throws ClassNotFoundException {
+	public void testRenderEnumFieldAsJson_ifFieldTypeEnumPermissionAware_valueListShouldBeFiltered() throws ClassNotFoundException {
 		Permissions permissions = EntityFactory.makePermission();
+
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
 		JSONArray results = (JSONArray)json.get("result");
+
+		assertEquals(7, FieldType.AccountStatus.getEnumClass().getEnumConstants().length);
 		assertEquals(5, results.size());
+		assertContains("\"key\":\"Active\"}", json.toJSONString());
+		assertContains("\"key\":\"Pending\"}", json.toJSONString());
+		assertContains("\"key\":\"Requested\"}", json.toJSONString());
+		assertContains("\"key\":\"Deactivated\"}", json.toJSONString());
+		assertContains("\"key\":\"Declined\"}", json.toJSONString());
+		assertNotContains("\"key\":\"Demo\"}", json.toJSONString());
+		assertNotContains("\"key\":\"Deleted\"}", json.toJSONString());
 	}
 
-	@Ignore("TODO: Need to translate AccountStatus.Active")
 	@Test
-	public void testEnumList_Translated() throws ClassNotFoundException {
+	public void testRenderEnumFieldAsJson_ifFieldTypeEnumIsTranslatable_valuesShouldBeTranslated() throws ClassNotFoundException {
 		Permissions permissions = EntityFactory.makePermission();
+
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
-		// TODO Mock the DB since the translation doesn't return anything
-		assertContains("{\"value\":\"\",\"key\":\"Active\"}", json.toString());
+		JSONArray results = (JSONArray)json.get("result");
+
+		assertEquals(5, results.size());
+		assertContains("{\"value\":\"translation:[AccountStatus.Active, en]\",\"key\":\"Active\"}", json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Pending, en]\",\"key\":\"Pending\"}", json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Requested, en]\",\"key\":\"Requested\"}", json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Deactivated, en]\",\"key\":\"Deactivated\"}", json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Declined, en]\",\"key\":\"Declined\"}", json.toJSONString());
 	}
 
 	@Test
-	public void testEnumList_Ordinal() throws ClassNotFoundException {
+	public void testRenderEnumFieldAsJson_ifFieldTypeEnumTypeIsOrdinal_keysShouldBeInts() throws ClassNotFoundException {
 		Permissions permissions = EntityFactory.makePermission();
+
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.LowMedHigh, permissions);
 		JSONArray results = (JSONArray)json.get("result");
+
 		assertEquals(4, results.size());
-		assertContains("\"key\":1}", json.toString());
+		assertContains("\"key\":0", json.toString());
+		assertContains("\"key\":1", json.toString());
+		assertContains("\"key\":2", json.toString());
+		assertContains("\"key\":3", json.toString());
 	}
+
+	private Answer<String> returnMockTranslation() {
+		return new Answer<String>() {
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return "translation:" + Arrays.toString(args);
+			}
+		};
+	}
+
 }

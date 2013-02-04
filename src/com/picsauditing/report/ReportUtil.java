@@ -312,14 +312,12 @@ public final class ReportUtil {
 		return permissions;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions)
-			throws ClassNotFoundException {
+	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions) throws ClassNotFoundException {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
-		Class enumClass = getEnumClassForName(fieldType);
-		for (Object enumValue : enumClass.getEnumConstants()) {
+		Class<? extends Enum> enumClass = fieldType.getEnumClass();
+		for (Enum enumValue : enumClass.getEnumConstants()) {
 			if (enumValue instanceof PermissionAware) {
 				if (!((PermissionAware) enumValue).isVisibleTo(permissions)) {
 					continue;
@@ -327,8 +325,8 @@ public final class ReportUtil {
 			}
 
 			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("key", setKeyForEnum(fieldType, enumValue));
-			enumAsJson.put("value", setValueForEnum(fieldType, enumValue, permissions.getLocale()));
+			enumAsJson.put("key", getKeyForEnum(fieldType, enumValue));
+			enumAsJson.put("value", getValueForEnum(enumValue, permissions.getLocale()));
 			jsonArray.add(enumAsJson);
 		}
 		json.put("result", jsonArray);
@@ -336,29 +334,19 @@ public final class ReportUtil {
 		return json;
 	}
 
-	@SuppressWarnings("rawtypes")
-	private static Class getEnumClassForName(FieldType fieldType) throws ClassNotFoundException {
-		if (fieldType == FieldType.UserAccountRole) {
-			return Class.forName("com.picsauditing.actions.users." + fieldType.name());
-		}
-
-		return Class.forName("com.picsauditing.jpa.entities." + fieldType.toString());
-	}
-
-	private static Object setKeyForEnum(FieldType fieldType, Object enumValue) {
-		Enum<?> enumValue2 = (Enum<?>) enumValue;
+	private static Object getKeyForEnum(FieldType fieldType, Enum enumValue) {
 		if (fieldType.getEnumType() == EnumType.ORDINAL) {
-			return enumValue2.ordinal();
+			return enumValue.ordinal();
 		} else {
-			return enumValue2.toString();
+			return enumValue.name();
 		}
 	}
 
-	private static Object setValueForEnum(FieldType fieldType, Object enumValue, Locale locale) {
+	private static Object getValueForEnum(Enum enumValue, Locale locale) {
 		if (enumValue instanceof Translatable) {
 			return getText(((Translatable) enumValue).getI18nKey(), locale);
 		} else {
-			return ((Enum<?>) enumValue).toString();
+			return enumValue.name();
 		}
 	}
 }

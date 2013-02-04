@@ -14,6 +14,7 @@ public enum FilterType {
 	String(DisplayType.String),
 	UserID(DisplayType.Number);
 
+	// todo: verify that displayType is NOT a property of a FilterType
 	private DisplayType displayType;
 
 	private FilterType(DisplayType displayType) {
