@@ -118,6 +118,10 @@ public class Report extends BaseTable {
 		this.filters = filters;
 	}
 
+	public void addFilter(Filter filter) {
+		filters.add(filter);
+	}
+
 	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<Sort> getSorts() {
 		return sorts;
@@ -125,6 +129,10 @@ public class Report extends BaseTable {
 
 	public void setSorts(List<Sort> sorts) {
 		this.sorts = sorts;
+	}
+
+	public void addSort(Sort sort) {
+		sorts.add(sort);
 	}
 
 	public String getFilterExpression() {

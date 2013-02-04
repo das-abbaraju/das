@@ -4,6 +4,7 @@ package com.picsauditing.report;
  * @see http://intranet.picsauditing.com/display/it/Handshake
  */
 public class ReportJson {
+
 	public static final String LEVEL_REPORT = "report";
 	public static final String LEVEL_COLUMNS = "columns";
 	public static final String LEVEL_FILTERS = "filters";
@@ -57,16 +58,4 @@ public class ReportJson {
 	@Deprecated
 	public static final String LEGACY_REPORT_FILTER_EXPRESSION = "filterExpression";
 
-	public enum ReportListType {
-		Columns(REPORT_COLUMNS), Filters(REPORT_FILTERS), Sorts(REPORT_SORTS);
-		private String key;
-
-		private ReportListType(String json) {
-			this.key = json;
-		}
-
-		public String getKey() {
-			return key;
-		}
-	}
 }
