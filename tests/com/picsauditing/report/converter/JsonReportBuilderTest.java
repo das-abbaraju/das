@@ -10,17 +10,17 @@ import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.report.converter.JsonBuilder;
+import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 
-public class JsonBuilderTest {
+public class JsonReportBuilderTest {
 
 	@Test
-	public void testFromReport_WhenReportFieldsAreSet_ThenTheyreWrittenToJson() {
+	public void testBuildReportJson_WhenReportFieldsAreSet_ThenTheyreWrittenToJson() {
 		Report report = new Report();
 		int reportId = 123;
 		String reportName = "Test Report";
@@ -38,7 +38,7 @@ public class JsonBuilderTest {
 		report.setEditable(editable);
 		report.setFavorite(favorite);
 
-		JSONObject json = JsonBuilder.fromReport(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -51,7 +51,7 @@ public class JsonBuilderTest {
 	}
 
 	@Test
-	public void testFromReport_WhenColumnsAreSet_ThenTheyreWrittenToJson() {
+	public void testBuildReportJson_WhenColumnsAreSet_ThenTheyreWrittenToJson() {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
@@ -85,7 +85,7 @@ public class JsonBuilderTest {
 		column.setField(field);
 		report.addColumn(column);
 
-		JSONObject json = JsonBuilder.fromReport(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
@@ -103,7 +103,7 @@ public class JsonBuilderTest {
 	}
 
 	@Test
-	public void testFromReport_WhenFiltersAreSet_ThenTheyreWrittenToJson() {
+	public void testBuildReportJson_WhenFiltersAreSet_ThenTheyreWrittenToJson() {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
@@ -134,7 +134,7 @@ public class JsonBuilderTest {
 		filter.setField(field);
 		report.addFilter(filter);
 
-		JSONObject json = JsonBuilder.fromReport(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
@@ -150,7 +150,7 @@ public class JsonBuilderTest {
 	}
 
 	@Test
-	public void testFromReport_WhenSortsAreSet_ThenTheyreWrittenToJson() {
+	public void testBuildReportJson_WhenSortsAreSet_ThenTheyreWrittenToJson() {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
@@ -164,7 +164,7 @@ public class JsonBuilderTest {
 		sort.setAscending(ascending);
 		report.addSort(sort);
 
-		JSONObject json = JsonBuilder.fromReport(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
 		assertContains(REPORT_SORTS, jsonString);

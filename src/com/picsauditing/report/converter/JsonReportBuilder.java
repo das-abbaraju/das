@@ -15,9 +15,9 @@ import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
-public class JsonBuilder {
+public class JsonReportBuilder {
 
-	public static JSONObject fromReport(Report report) {
+	public static JSONObject buildReportJson(Report report) {
 		JSONObject json = new JSONObject();
 
 		addReportLevelData(json, report);

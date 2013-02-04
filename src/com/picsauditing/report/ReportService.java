@@ -12,9 +12,9 @@ import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.access.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
+import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.converter.ReportBuilder;
-import com.picsauditing.report.converter.JsonBuilder;
+import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
@@ -26,6 +26,7 @@ import com.picsauditing.util.excel.ExcelBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -495,16 +496,19 @@ public class ReportService {
 		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			responseJson.put(LEVEL_REPORT, JsonBuilder.fromReport(report));
+			JSONObject reportJson = JsonReportBuilder.buildReportJson(report);
+			responseJson.put(LEVEL_REPORT, reportJson);
 		}
 
 		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
 		if (reportContext.includeColumns) {
-			responseJson.put(LEVEL_COLUMNS, AvailableFieldsToExtJSConverter.getColumns(reportModel, reportContext.permissions));
+			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
+			responseJson.put(LEVEL_COLUMNS, columnsJson);
 		}
 
 		if (reportContext.includeFilters) {
-			responseJson.put(LEVEL_FILTERS, AvailableFieldsToExtJSConverter.getFilters(reportModel, reportContext.permissions));
+			JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
+			responseJson.put(LEVEL_FILTERS, filtersJson);
 		}
 
 		if (reportContext.includeData) {

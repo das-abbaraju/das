@@ -17,13 +17,13 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.report.converter.AvailableFieldsToExtJSConverter;
+import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 
-public class AvailableFieldsToExtJSConverterTest {
+public class JsonReportElementsBuilderTest {
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -54,7 +54,7 @@ public class AvailableFieldsToExtJSConverterTest {
 	@Test
 	public void testColumns() {
 		AbstractModel model = ModelFactory.build(ModelType.Accounts, permissions);
-		JSONArray actual = AvailableFieldsToExtJSConverter.getColumns(model, permissions);
+		JSONArray actual = JsonReportElementsBuilder.buildColumns(model, permissions);
 
 		assertTrue(actual.size() > 30);
 	}
