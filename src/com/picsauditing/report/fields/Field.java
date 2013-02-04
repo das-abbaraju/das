@@ -163,6 +163,10 @@ public class Field implements JSONAware {
 		return type;
 	}
 	
+	public void setType(FieldType type) {
+		this.type = type;
+	}
+
 	public String getName() {
 		return name;
 	}

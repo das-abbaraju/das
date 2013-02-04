@@ -27,6 +27,8 @@ public class ModelFactory {
 			return new ContractorStatisticsModel(permissions);
 		if (type.equals(ModelType.ContractorAudits))
 			return new AccountContractorAuditModel(permissions);
+		if (type.equals(ModelType.ContractorAuditDatas))
+			return new ContractorAuditDataModel(permissions);
 		if (type.equals(ModelType.ContractorAuditOperators))
 			return new AccountContractorAuditOperatorModel(permissions);
 		if (type.equals(ModelType.ContractorFlagDatas))
@@ -39,6 +41,8 @@ public class ModelFactory {
 			return new InvoiceModel(permissions);
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel(permissions);
+		if (type.equals(ModelType.OperatorUsers))
+			return new OperatorUserModel(permissions);
 		if (type.equals(ModelType.PaymentCommissions))
 			return new PaymentCommissionModel(permissions);
 		if (type.equals(ModelType.ReportPermissions))

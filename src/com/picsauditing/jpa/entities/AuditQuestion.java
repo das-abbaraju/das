@@ -27,6 +27,8 @@ import org.json.simple.JSONObject;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -141,6 +143,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Integer)
 	public int getNumber() {
 		return this.number;
 	}
@@ -168,6 +171,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.String)
 	public String getQuestionType() {
 		return this.questionType;
 	}
@@ -187,6 +191,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isHasRequirement() {
 		return hasRequirement;
 	}
@@ -204,6 +209,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isRequired() {
 		return required;
 	}

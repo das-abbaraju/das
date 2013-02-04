@@ -153,9 +153,11 @@ public class ReportJoin {
 				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
-				for (String dependentField : column.getField().getDependentFields()) {
-					if (dependentField.equalsIgnoreCase(fieldName))
-						return true;
+				if (column.getField() != null) {
+					for (String dependentField : column.getField().getDependentFields()) {
+						if (dependentField.equalsIgnoreCase(fieldName))
+							return true;
+					}
 				}
 			}
 
