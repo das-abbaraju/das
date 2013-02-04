@@ -123,6 +123,10 @@ public class Field {
 		return type;
 	}
 
+	public void setType(FieldType type) {
+		this.type = type;
+	}
+
 	@Transient
 	public String getColumnType() {
 		// TODO // [boolean, flag, number, string] - SEEMS WAY TO LIMITED - IMPLICITLY CREATE MODEL TYPE - CREATE MODEL TYPE CONVERSION CLASS FE

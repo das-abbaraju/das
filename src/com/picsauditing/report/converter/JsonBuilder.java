@@ -12,8 +12,6 @@ import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.report.ReportJson.ReportListType;
-import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
@@ -22,15 +20,16 @@ public class JsonBuilder {
 	public static JSONObject fromReport(Report report) {
 		JSONObject json = new JSONObject();
 
-		convertReportLevelData(report, json);
-		convertListToJson(report, json, ReportListType.Columns);
-		convertListToJson(report, json, ReportListType.Filters);
-		convertListToJson(report, json, ReportListType.Sorts);
+		addReportLevelData(json, report);
+
+		addColumns(json, report.getColumns());
+		addFilters(json, report.getFilters());
+		addSorts(json, report.getSorts());
 
 		return json;
 	}
 
-	private static void convertReportLevelData(Report report, JSONObject json) {
+	private static void addReportLevelData(JSONObject json, Report report) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
@@ -38,60 +37,39 @@ public class JsonBuilder {
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 		json.put(REPORT_EDITABLE, report.isEditable());
 		json.put(REPORT_FAVORITE, report.isFavorite());
-
-		setJsonForAuditColumns(report, json);
 	}
 
-	private static void setJsonForAuditColumns(Report report, JSONObject json) {
-		if (report.getCreatedBy() != null && report.getCreationDate() != null) {
-			json.put(BASE_CREATION_DATE, PicsDateFormat.formatDateIsoOrBlank(report.getCreationDate()));
-			json.put(BASE_CREATED_BY, report.getCreatedBy().getName());
-		}
-
-		if (report.getUpdatedBy() != null && report.getUpdateDate() != null) {
-			json.put(BASE_UPDATE_DATE,  PicsDateFormat.formatDateIsoOrBlank(report.getUpdateDate()));
-			json.put(BASE_UPDATED_BY, report.getUpdatedBy().getName());
-		}
-	}
-
-	private static void convertListToJson(Report report, JSONObject json, ReportListType type) {
+	private static void addColumns(JSONObject json, List<Column> columns) {
 		JSONArray jsonArray = new JSONArray();
-		json.put(type.getKey(), jsonArray);
 
-		for (ReportElement element : getReportChildren(report, type)) {
-			switch (type) {
-			case Columns:
-				jsonArray.add(toJSON((Column) element));
-				break;
-
-			case Filters:
-				jsonArray.add(toJSON((Filter) element));
-				break;
-
-			case Sorts:
-				jsonArray.add(toJSON((Sort) element));
-				break;
-			}
-		}
-	}
-
-	private static List<? extends ReportElement> getReportChildren(Report report, ReportListType type) {
-		List<? extends ReportElement> reportChild = null;
-
-		if (type == ReportListType.Columns) {
-			reportChild = report.getColumns();
-		} else if (type == ReportListType.Filters) {
-			reportChild = report.getFilters();
-		} else if (type == ReportListType.Sorts) {
-			reportChild = report.getSorts();
-		} else {
-			// TODO log this error
+		for (Column column : columns) {
+			jsonArray.add(columnToJson(column));
 		}
 
-		return reportChild;
+		json.put(REPORT_COLUMNS, jsonArray);
 	}
 
-	private static JSONObject toJSON(Column column) {
+	private static void addFilters(JSONObject json, List<Filter> filters) {
+		JSONArray jsonArray = new JSONArray();
+
+		for (Filter filter : filters) {
+			jsonArray.add(filterToJson(filter));
+		}
+
+		json.put(REPORT_FILTERS, jsonArray);
+	}
+
+	private static void addSorts(JSONObject json, List<Sort> sorts) {
+		JSONArray jsonArray = new JSONArray();
+
+		for (Sort sort: sorts) {
+			jsonArray.add(sortToJson(sort));
+		}
+
+		json.put(REPORT_SORTS, jsonArray);
+	}
+
+	private static JSONObject columnToJson(Column column) {
 		JSONObject json = elementToCommonJson(column);
 
 		json.put(COLUMN_TYPE, column.getField().getColumnType());
@@ -103,46 +81,50 @@ public class JsonBuilder {
 		return json;
 	}
 
-	private static JSONObject toJSON(Filter filter) {
+	private static JSONObject filterToJson(Filter filter) {
 		JSONObject json = elementToCommonJson(filter);
+
 		json.put(FILTER_TYPE, filter.getField().getFilterType());
 		json.put(FILTER_OPERATOR, filter.getOperator().toString());
-
-		setFilterValue(filter, json);
-
+		String filterValue = makeFilterValue(filter);
+		json.put(FILTER_VALUE, filterValue);
 		json.put(FILTER_COLUMN_COMPARE, filter.getColumnCompare());
 
 		return json;
 	}
 
-	private static void setFilterValue(Filter filter, JSONObject json) {
-		if (filter.getOperator().isValueCurrentlySupported()) {
-			JSONArray valueArray = new JSONArray();
-			valueArray.addAll(filter.getValues());
+	private static String makeFilterValue(Filter filter) {
+		String filterValue = "";
 
-			// TODO Make sure the value handshake is correct
-			// http://intranet.picsauditing.com/display/it/Handshake
+		if (filter.getOperator().isValueCurrentlySupported()) {
 			if (filter.getValues().size() == 1) {
-				json.put(FILTER_VALUE, filter.getValues().get(0));
+				filterValue = filter.getValues().get(0);
 			} else {
-				json.put(FILTER_VALUE, StringUtils.join(filter.getValues(), ", "));
+				filterValue = StringUtils.join(filter.getValues(), ", ");
 			}
 		}
+
+		return filterValue;
 	}
 
-	private static JSONObject toJSON(Sort sort) {
+	private static JSONObject sortToJson(Sort sort) {
 		JSONObject json = new JSONObject();
+
 		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());
 		json.put(SORT_DIRECTION, sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
+
 		return json;
 	}
 
 	private static JSONObject elementToCommonJson(ReportElement element) {
 		JSONObject json = new JSONObject();
+
+		// TODO sort out these member variable names
 		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());
 		json.put(REPORT_ELEMENT_CATEGORY, element.getField().getCategoryTranslation());
 		json.put(REPORT_ELEMENT_NAME, element.getField().getText());
 		json.put(REPORT_ELEMENT_DESCRIPTION, element.getField().getHelp());
+
 		return json;
 	}
 
