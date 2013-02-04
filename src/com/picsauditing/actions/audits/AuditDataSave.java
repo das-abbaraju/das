@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -719,6 +720,10 @@ public class AuditDataSave extends AuditActionSupport {
 		// Null or blank answers are always OK
 		if (Strings.isEmpty(answer))
 			return true;
+		
+		if ("Date".equals(questionType)) {
+			return isDateValid(auditData);
+		}
 
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
 			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
@@ -766,6 +771,36 @@ public class AuditDataSave extends AuditActionSupport {
 				auditData.setAnswer("");
 		}
 
+		return true;
+	}
+
+	private boolean isDateValid(AuditData auditData) {
+		if (auditData.getAnswer() == null || auditData.getAnswer().equals(""))
+			return true;
+		
+		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode()) 
+				|| "policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())) {
+			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			Date enteredDate = null;
+			df.setLenient(true);
+			try {
+				enteredDate = df.parse(auditData.getAnswer());
+			} catch (Exception e) {
+				df = new SimpleDateFormat("yyyy-MM-dd");
+				df.setLenient(true);
+				try {
+				enteredDate = df.parse(auditData.getAnswer());
+				} catch (Exception second) {
+					addActionError(getText("Audit.message.InvalidDate"));
+					return false;
+				}
+			}
+			
+			if (DateBean.getYearFromDate(enteredDate) < 2001) {
+				addActionError(getText("Audit.message.InvalidDate"));
+				return false;
+			}
+		}
 		return true;
 	}
 
