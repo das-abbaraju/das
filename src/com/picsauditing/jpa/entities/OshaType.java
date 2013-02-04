@@ -18,6 +18,8 @@ public enum OshaType implements Translatable {
 			OshaRateType.Hours }),
 	UK_HSE(OshaAudit.CAT_ID_UK_HSE, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
 	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null),
+	MEXICO(OshaAudit.CAT_ID_MEXICO, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, 
+			OshaRateType.Fatalities, OshaRateType.Hours }),
 	EMR(OshaAudit.CAT_ID_EMR, new OshaRateType[] { OshaRateType.EMR });
 	
 
