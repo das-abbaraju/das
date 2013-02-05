@@ -274,6 +274,9 @@ public class PicsMenu {
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action", "CSRAssignment");
 			subMenu.addChild("CSR Assignment Stats", "ReportCsrAssignmentStats.action", "CSRAssignmentStats");
 		}
+		if (permissions.hasPermission(OpPerms.ManageCsrAssignment)){
+			subMenu.addChild("Recommended CSR Assignments", "ManageRecommendedCSRAssignments.action", "RecommendedCsrAssignments");
+		}
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {

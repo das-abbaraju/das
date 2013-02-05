@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -21,6 +23,9 @@ import com.picsauditing.util.Strings;
 
 public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 	private static final long serialVersionUID = -1613254037742590324L;
+	
+    private final Logger logger = LoggerFactory.getLogger(ManageRecommendedCSRAssignments.class);
+
 
 	@Autowired
 	private ReportDAO reportDao;
@@ -35,7 +40,7 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 	private String acceptRecommendations;
 	private String rejectRecommendations;
 
-	@RequiredPermission(value = OpPerms.DevelopmentEnvironment)
+	@RequiredPermission(value = OpPerms.ManageCsrAssignment)
 	public String execute() throws Exception {
 		runReport(RECOMMENDED_CSR_ASSIGNMENTS_REPORT_ID, permissions);
 		return SUCCESS;
@@ -53,11 +58,13 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 
 	public String save() throws IOException {
 		if (Strings.isNotEmpty(acceptRecommendations)) {
-			contractorAccountDAO.acceptRecommendedCsrs(acceptRecommendations);
+			int numRowsAffected = contractorAccountDAO.acceptRecommendedCsrs(acceptRecommendations);
+			logger.info(numRowsAffected + " changes accepted, ids: " + acceptRecommendations);
 		}
 		
 		if (Strings.isNotEmpty(rejectRecommendations)) {
-			contractorAccountDAO.rejectRecommendedCsrs(rejectRecommendations);
+			int numRowsAffected = contractorAccountDAO.rejectRecommendedCsrs(rejectRecommendations);
+			logger.info(numRowsAffected + " changes rejected, ids: " + rejectRecommendations);
 		}
 		
 		return this.setUrlForRedirect("ManageRecommendedCSRAssignments.action");
