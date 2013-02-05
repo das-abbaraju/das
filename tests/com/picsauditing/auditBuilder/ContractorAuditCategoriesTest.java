@@ -42,23 +42,27 @@ public class ContractorAuditCategoriesTest {
 
 	@Test
 	public void testGetApplicableCategories__WorkHistory_OperatorWithoutPerm() {
-		createCategory(AuditCategory.WORK_HISTORY);
+		Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
+		AuditCatData acd2 = createCategory(AuditCategory.WORK_HISTORY);
+		requiredCategories.add(acd2.getCategory());
 
 		when(permissions.isOperatorCorporate()).thenReturn(true);
-		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, null,
+		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories,
 				categories);
-		assertEquals(1, answer.size());
+		assertEquals(0, answer.size());
 	}
 
 	@Test
 	public void testGetApplicableCategories__WorkHistory_OperatorWithPerm() {
-		createCategory(AuditCategory.WORK_HISTORY);
+		Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
+		AuditCatData acd2 = createCategory(AuditCategory.WORK_HISTORY);
+		requiredCategories.add(acd2.getCategory());
 
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ViewFullPQF)).thenReturn(true);
-		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, null,
+		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories,
 				categories);
-		assertEquals(2, answer.size());
+		assertEquals(1, answer.size());
 	}
 
 	@Test
@@ -90,7 +94,7 @@ public class ContractorAuditCategoriesTest {
 		when(permissions.isAdmin()).thenReturn(true);
 		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, null,
 				categories);
-		assertEquals(1, answer.size());
+		assertEquals(2, answer.size());
 	}
 
 	@Test
