@@ -531,7 +531,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EditUsers))
 			addChildAction(subMenu, "UserList");
 		if (permissions.getAccountId() == 1813 || permissions.hasPermission(OpPerms.DevelopmentEnvironment)
-				|| permissions.isAuditor()) // Hardcode to BP Cherry point
+				|| (permissions.isAuditor() && !permissions.isOperatorCorporate())) // Hardcode to BP Cherry point
 			subMenu.addChild("Washington Audit",
 					"ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176", "WashingtonAudit");
 		if (permissions.hasPermission(OpPerms.EmployeeList))
