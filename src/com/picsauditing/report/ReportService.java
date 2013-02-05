@@ -111,14 +111,11 @@ public class ReportService {
 		return newReport;
 	}
 
-	public void edit(Report report, Permissions permissions) throws Exception {
+	public void save(Report report, Permissions permissions) throws NoRightsException, ReportValidationException {
 		if (!permissionService.canUserEditReport(permissions, report)) {
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 		}
 
-		// TODO Consider adding a "save" column to the ReportElement class to
-		// store Delete/Update/Insert flags
-		// Allow updating rather than full delete/insert instead
 		clearColumnsFiltersAndSorts(report);
 
 		legacyConvertParametersToReport(report);

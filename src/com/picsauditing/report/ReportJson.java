@@ -1,5 +1,7 @@
 package com.picsauditing.report;
 
+import org.json.simple.JSONObject;
+
 /**
  * @see http://intranet.picsauditing.com/display/it/Handshake
  */
@@ -59,5 +61,25 @@ public class ReportJson {
 	public static final String LEGACY_METHOD = "method";
 	@Deprecated
 	public static final String LEGACY_REPORT_FILTER_EXPRESSION = "filterExpression";
+
+	@SuppressWarnings("unchecked")
+	public static void writeJsonSuccess(JSONObject json) {
+		json.put(ReportJson.EXT_JS_SUCCESS, true);
+	}
+
+	public static void writeJsonException(JSONObject json, Exception e) {
+		String message = e.getMessage();
+		if (message == null) {
+			message = e.toString();
+		}
+
+		writeJsonErrorMessage(json, message);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void writeJsonErrorMessage(JSONObject json, String message) {
+		json.put(ReportJson.EXT_JS_SUCCESS, false);
+		json.put(ReportJson.EXT_JS_MESSAGE, message);
+	}
 
 }

@@ -49,6 +49,7 @@ public final class ReportUtil {
 	public static final String HELP_KEY_SUFFIX = ".help";
 	public static final String REPORT_KEY_PREFIX = "Report.";
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
+	private static final String REPORT_FUNCTION_KEY_PREFIX = "Report.Function.";
 
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
@@ -65,19 +66,19 @@ public final class ReportUtil {
 		field.setHelp(translateHelp(field, locale));
 	}
 
-	public static void addTranslatedLabelsToReportParameters(Report definition, Locale locale) {
-		addTranslationLabelsToFields(definition, locale);
-		addTranslationLabelsToFilters(definition, locale);
-		addTranslationLabelsToSorts(definition, locale);
+	public static void addTranslatedLabelsToReportParameters(Report report, Locale locale) {
+		addTranslationLabelsToFields(report, locale);
+		addTranslationLabelsToFilters(report, locale);
+		addTranslationLabelsToSorts(report, locale);
 	}
 
 	// TODO rename to addTranslationLabelsToColumns
-	private static void addTranslationLabelsToFields(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getColumns())) {
+	private static void addTranslationLabelsToFields(Report report, Locale locale) {
+		if (CollectionUtils.isEmpty(report.getColumns())) {
 			return;
 		}
 
-		for (Column column : definition.getColumns()) {
+		for (Column column : report.getColumns()) {
 			Field field = column.getField();
 
 			if (field == null) {
@@ -90,7 +91,7 @@ public final class ReportUtil {
 
 			if (column.getSqlFunction() != null) {
 				// field.setTranslationPrefixAndSuffix(null, null);
-				String functionTranslation = getText("Report.Function." + column.getSqlFunction().toString(), locale);
+				String functionTranslation = getText(REPORT_FUNCTION_KEY_PREFIX + column.getSqlFunction().toString(), locale);
 				field.setText(functionTranslation + ": " + field.getText());
 			}
 
@@ -120,12 +121,12 @@ public final class ReportUtil {
 		return functionsArray;
 	}
 
-	private static void addTranslationLabelsToFilters(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getFilters())) {
+	private static void addTranslationLabelsToFilters(Report report, Locale locale) {
+		if (CollectionUtils.isEmpty(report.getFilters())) {
 			return;
 		}
 
-		for (Filter filter : definition.getFilters()) {
+		for (Filter filter : report.getFilters()) {
 			Field field = filter.getField();
 			if (field != null) {
 				field.setName(filter.getFieldNameWithoutMethod());
@@ -136,12 +137,12 @@ public final class ReportUtil {
 		}
 	}
 
-	private static void addTranslationLabelsToSorts(Report definition, Locale locale) {
-		if (CollectionUtils.isEmpty(definition.getSorts())) {
+	private static void addTranslationLabelsToSorts(Report report, Locale locale) {
+		if (CollectionUtils.isEmpty(report.getSorts())) {
 			return;
 		}
 
-		for (Sort sort : definition.getSorts()) {
+		for (Sort sort : report.getSorts()) {
 			Field field = sort.getField();
 			if (field != null) {
 				field.setName(sort.getFieldNameWithoutMethod());
@@ -298,7 +299,7 @@ public final class ReportUtil {
 		}
 
 		for (SqlFunction queryMethod : methods) {
-			String fieldSuffixKey = "Report.Function." + queryMethod.name();
+			String fieldSuffixKey = REPORT_FUNCTION_KEY_PREFIX + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
 	}

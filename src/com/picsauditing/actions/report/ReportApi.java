@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import static com.picsauditing.report.ReportJson.*;
+
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import org.json.simple.JSONObject;
@@ -12,13 +14,12 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
-import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
 
 	private static final String PRINT = "print";
@@ -49,52 +50,51 @@ public class ReportApi extends PicsApiSupport {
 			json = reportService.buildJsonResponse(reportContext);
 		} catch (ReportValidationException rve) {
 			logger.error("Invalid report in ReportApi.execute()", rve);
-			writeJsonError(rve);
+			writeJsonException(json, rve);
 		} catch (PicsSqlException pse) {
 			handleSqlException(pse);
 		} catch (Exception e) {
-			// TODO remove this
-			e.printStackTrace();
-			writeJsonError(e);
+			writeJsonException(json, e);
 		}
 
 		return JSON;
 	}
 
 	public String copy() {
-		return save(true);
+		JSONObject payloadJson = getJsonFromRequestPayload();
+		ReportContext reportContext = buildReportContext(payloadJson);
+
+		try {
+			Report report = reportService.createReport(reportContext);
+
+			report = reportService.copy(report, permissions, favorite);
+
+			writeJsonSuccess(json);
+		} catch (NoRightsException nre) {
+			writeJsonException(json, nre);
+		} catch (Exception e) {
+			logger.error("An error occurred copying report id = {} for user {}", reportId, permissions.getUserId());
+			writeJsonException(json, e);
+		}
+
+		return JSON;
 	}
 
 	public String save() {
-		return save(false);
-	}
-
-	private String save(boolean copy) {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
-		Report report = null;
 
 		try {
-			report = reportService.createReport(reportContext);
+			Report report = reportService.createReport(reportContext);
 
-			if (copy) {
-				report = reportService.copy(report, permissions, favorite);
-			} else {
-				reportService.edit(report, permissions);
-			}
+			reportService.save(report, permissions);
 
-			json.put("success", true);
-			json.put("reportID", report.getId());
+			writeJsonSuccess(json);
 		} catch (NoRightsException nre) {
-			json.put("success", false);
-			json.put("error", nre.getMessage());
+			writeJsonException(json, nre);
 		} catch (Exception e) {
-			if (report == null) {
-				logger.error("Report was not able to load from DB");
-			} else {
-				logger.error("An error occurred saving report id = {} for user {}", report.getId(), permissions.getUserId());
-			}
-			writeJsonError(e);
+			logger.error("An error occurred saving report id = {} for user {}", reportId, permissions.getUserId());
+			writeJsonException(json, e);
 		}
 
 		return JSON;
@@ -103,6 +103,7 @@ public class ReportApi extends PicsApiSupport {
 	public String print() throws Exception {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
+
 		json = reportService.buildJsonResponse(reportContext);
 		reportService.convertForPrinting();
 
@@ -110,12 +111,12 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String download(Report report) {
+		JSONObject payloadJson = getJsonFromRequestPayload();
+		ReportContext reportContext = buildReportContext(payloadJson);
+
 		try {
-			JSONObject payloadJson = getJsonFromRequestPayload();
-			ReportContext reportContext = buildReportContext(payloadJson);
 			json = reportService.buildJsonResponse(reportContext);
 			reportService.downloadReport(report);
-
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}
@@ -123,22 +124,8 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
-	protected void writeJsonError(Exception e) {
-		String message = e.getMessage();
-		if (message == null) {
-			message = e.toString();
-		}
-
-		writeJsonError(message);
-	}
-
-	protected void writeJsonError(String message) {
-		json.put(ReportJson.EXT_JS_SUCCESS, false);
-		json.put(ReportJson.EXT_JS_MESSAGE, message);
-	}
-
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
-		writeJsonError(sqlException);
+		writeJsonException(json, sqlException);
 
 		if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
 			logger.error("Report:" + reportId + " " + sqlException.getMessage() + " SQL: " + sqlException.getSql());

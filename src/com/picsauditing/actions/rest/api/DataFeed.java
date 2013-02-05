@@ -12,6 +12,7 @@ import com.picsauditing.access.Api;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportApi;
 import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.util.Strings;
 
@@ -74,28 +75,30 @@ public class DataFeed extends ReportApi implements ParameterAware {
 
 				json.put("success", true);
 			} else {
-				writeJsonError("Invalid format. Choices are: "+Strings.implodeForDB(DATAFEED_FORMATS, ", ")+".");
+				String message = "Invalid format. Choices are: " + Strings.implodeForDB(DATAFEED_FORMATS, ", ") + ".";
+				ReportJson.writeJsonErrorMessage(json, message);
 				// The error message itself needs to be presented somehow...
 				outputFormat = JSON;
 			}
-        } catch (ReportValidationException error) {
-            writeJsonError(error.getMessage());
+        } catch (ReportValidationException rve) {
+        	ReportJson.writeJsonException(json, rve);
         } catch (Exception e) {
             if (report == null) {
                 String err = "Invalid report ID: " + reportIdSpecified;
                 logger.error(err);
-                writeJsonError(err);
+                ReportJson.writeJsonErrorMessage(json, err);
             } else {
                 logger.error("Report: {} {} SQL: {}", new Object[]{report.getId(), e.getMessage(), debugSQL});
                 if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-                    writeJsonError(e);
+                    ReportJson.writeJsonException(json, e);
                     json.put("sql", debugSQL);
                 } else {
-                    writeJsonError("Invalid Query");
+                	ReportJson.writeJsonErrorMessage(json, "Invalid Query");
                 }
             }
         }
         logger.debug("Output Format: " + outputFormat);
         return outputFormat;
     }
+
 }
