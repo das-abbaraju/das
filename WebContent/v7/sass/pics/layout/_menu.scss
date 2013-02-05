@@ -108,6 +108,13 @@
        color: #aeaeae;
     }
 
+    .account-deactivated a:hover,
+    .account-inactive a:hover
+    {
+       color: #cccccc;
+    }
+
+
     .account-demo
     {
         font-style: italic;
