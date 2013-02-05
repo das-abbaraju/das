@@ -28,24 +28,15 @@ public class PublisherRabbitMq implements Publisher {
 	
 	@Override
 	public void publish(Object message) {
-		try {
 			if (featureToggleChecker == null || featureToggleChecker.isFeatureEnabled(featureToggleName)) {
 				amqpTemplate.convertAndSend(message);
 			}
-			
-		} catch (AmqpException amqpException) {
-			logger.error(amqpException.getMessage(), amqpException);
-		}
 	}
 
 	public void publish(Object message, String routingKey) {
-		try {
 			if (featureToggleChecker.isFeatureEnabled(featureToggleName)) {
 				amqpTemplate.convertAndSend(routingKey, message);
 			}
-		} catch (AmqpException amqpException) {
-			logger.error(amqpException.getMessage(), amqpException);
-		}
 	}
 
 }
