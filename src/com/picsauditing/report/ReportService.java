@@ -60,12 +60,13 @@ public class ReportService {
 	private PermissionService permissionService;
 
 	@SuppressWarnings("deprecation")
+	// TODO make this a class with a single static public method
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
 	@Autowired
 	private FeatureToggle featureToggle;
 
-	// TODO make this autowired
+	// TODO remove this instance variable
 	private ReportDataConverter converter;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
@@ -146,7 +147,7 @@ public class ReportService {
 	}
 
 	// TODO Remove this method after the next release
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
 		if (report == null) {
 			throw new IllegalArgumentException("Report should not be null");
@@ -160,7 +161,7 @@ public class ReportService {
 	}
 
 	// TODO: Remove this method after the next release
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	private void setReportParameters(Report report) {
 		if (!isBackwardsCompatibilityOn()) {
 			return;
@@ -526,7 +527,7 @@ public class ReportService {
 
 		if (shouldIncludeSql(reportContext.permissions)) {
 			String debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
-			dataJson.put(ReportUtil.SQL, debugSQL);
+			dataJson.put(DEBUG_SQL, debugSQL);
 		}
 
 		sql.setPageNumber(reportContext.limit, reportContext.pageNumber);

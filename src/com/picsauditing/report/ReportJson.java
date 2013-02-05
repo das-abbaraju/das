@@ -51,6 +51,8 @@ public class ReportJson {
 	public static final String EXT_JS_SUCCESS = "success";
 	public static final String EXT_JS_MESSAGE = "message";
 
+	public static final String DEBUG_SQL = "sql";
+
 	@Deprecated
 	public static final String LEGACY_MODEL_TYPE = "modelType";
 	@Deprecated

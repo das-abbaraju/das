@@ -50,8 +50,6 @@ public final class ReportUtil {
 	public static final String REPORT_KEY_PREFIX = "Report.";
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
 
-	public static final String SQL = "sql";
-
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	private ReportUtil() {
