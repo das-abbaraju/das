@@ -1,6 +1,6 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.*;
 import static com.picsauditing.report.ReportJson.*;
 
 import org.json.simple.JSONObject;
@@ -99,7 +99,6 @@ public class JsonReportBuilderTest {
 		assertJson(COLUMN_SQL_FUNCTION, sqlFunction, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
-
 	}
 
 	@Test
@@ -170,14 +169,6 @@ public class JsonReportBuilderTest {
 		assertContains(REPORT_SORTS, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(SORT_DIRECTION, Sort.ASCENDING, jsonString);
-	}
-
-	private void assertJsonNoQuotes(String property, Object value, String jsonString) {
-		assertContains("\"" + property + "\":" + value, jsonString);
-	}
-
-	private void assertJson(String property, Object value, String jsonString) {
-		assertContains("\"" + property + "\":\"" + value + "\"", jsonString);
 	}
 
 	private Report buildMinimalReport() {

@@ -33,22 +33,22 @@ public class ReportUtilTest {
 	@Mock
 	protected I18nCache i18nCache;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
-		Whitebox.setInternalState(I18nCache.class, "INSTANCE", i18nCache);
-	}
-
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
 	}
 
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
+	}
+
 	@AfterClass
 	public static void tearDownClass() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", (I18nCache) null);
 	}
 
 	@Test
@@ -77,7 +77,6 @@ public class ReportUtilTest {
 	}
 
 	@Test
-	@Ignore(value = "Runs fine in isolation, but fails in the suite!")
 	public void testRenderEnumFieldAsJson_ifFieldTypeEnumIsTranslatable_valuesShouldBeTranslated() throws Exception {
 		Permissions permissions = EntityFactory.makePermission();
 

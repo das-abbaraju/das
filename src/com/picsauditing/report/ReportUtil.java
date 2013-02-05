@@ -46,9 +46,13 @@ import com.picsauditing.util.Strings;
  */
 public final class ReportUtil {
 
+	public static final String HELP_KEY_SUFFIX = ".help";
+	public static final String REPORT_KEY_PREFIX = "Report.";
+	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
+
 	public static final String SQL = "sql";
 
-	private final static I18nCache i18nCache = I18nCache.getInstance();
+	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	private ReportUtil() {
 	}
@@ -154,7 +158,7 @@ public final class ReportUtil {
 		String translatedText = null;
 
 		if (field != null) {
-			translatedText = getText("Report." + field.getName(), locale);
+			translatedText = getText(REPORT_KEY_PREFIX + field.getName(), locale);
 
 			if (Strings.isEmpty(translatedText)) {
 				return field.getName();
@@ -168,14 +172,14 @@ public final class ReportUtil {
 		String translatedText = null;
 
 		if (field != null) {
-			translatedText = getText("Report." + field.getName() + ".help", locale);
+			translatedText = getText(REPORT_KEY_PREFIX + field.getName() + HELP_KEY_SUFFIX, locale);
 		}
 
 		return translatedText;
 	}
 
 	public static String translateCategory(Field field, Locale locale) {
-		String translatedText = getText("Report.Category." + field.getCategory(), locale);
+		String translatedText = getText(REPORT_CATEGORY_KEY_PREFIX + field.getCategory(), locale);
 
 		if (translatedText == null) {
 			translatedText = getText("Report.Category.General", locale);
@@ -285,9 +289,9 @@ public final class ReportUtil {
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();
-				String fieldCategoryKey = "Report.Category." + category;
-				String fieldKey = "Report." + field.getName();
-				String fieldHelpKey = fieldKey + ".help";
+				String fieldCategoryKey = REPORT_CATEGORY_KEY_PREFIX + category;
+				String fieldKey = REPORT_KEY_PREFIX + field.getName();
+				String fieldHelpKey = fieldKey + HELP_KEY_SUFFIX;
 
 				translations.put(fieldKey, translateLabel(field, locale));
 				translations.put(fieldHelpKey, getText(fieldHelpKey, locale));

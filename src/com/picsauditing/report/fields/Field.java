@@ -64,7 +64,6 @@ public class Field {
 	public Field(String name) {
 		this.name = name;
 		this.databaseColumnName = name;
-//		this.url = Strings.EMPTY_STRING;
 	}
 
 	public Field(String name, String databaseColumnName, FieldType type) {
@@ -75,7 +74,6 @@ public class Field {
 		}
 
 		this.type = type;
-//		this.url = Strings.EMPTY_STRING;
 	}
 
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
