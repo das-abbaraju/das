@@ -225,7 +225,7 @@
 													<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
 	
 													<s:if test="#flagoverride != null">
-														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo2">
+														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo3">
 															<s:param>
 																<s:property value="#flagoverride.criteria.label" />
 															</s:param>
@@ -248,6 +248,11 @@
 															</s:param>
 															<s:param>
 																<s:property value="#data.operator.name" />
+															</s:param>
+															<s:param>
+																<s:if test="#flagoverride.year != null" >
+																	<s:property value="#flagoverride.year" />
+																</s:if>
 															</s:param>
 														</s:text><br />
 													</s:if>
