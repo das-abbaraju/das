@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -130,7 +131,9 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void establishPermissions(User user) {
-		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		permissions = (Permissions) session.get("permissions");
 
 		LocaleController.setLocaleOfNearestSupported(permissions);
 	}
