@@ -16,15 +16,19 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             editable: false,
             multiSelect: true,
             name: 'value',
+            queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
             valueField: 'key',
             width: 258
         };
     },
     
-    updateValueFieldStore: function (field_id) {
-        var value_field = this.down('combobox');
+    updateValueFieldStore: function (filter) {
+        var value = filter.get('value'),
+            field_id = filter.get('field_id'),
+            value_field = this.down('combobox');
         
         value_field.store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
             fields: [{
                 name: 'key',
                 type: 'string'
@@ -38,6 +42,14 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
                 reader: {
                     root: 'result',
                     type: 'json'
+                }
+            },
+            listeners: {
+                // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
+                load: function (store, records, successful, eOpts) {
+                    var keys = value.split(', ');
+                    
+                    value_field.select(keys);
                 }
             }
         });

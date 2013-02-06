@@ -25,11 +25,11 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             width: 258
         };
     },
-    
+
     updateValueFieldStore: function (field_id) {
         var value_field = this.down('combobox');
         
-        value_field.store = {
+        value_field.store = Ext.create('Ext.data.Store', {
             fields: [{
                 name: 'key',
                 type: 'string'
@@ -45,6 +45,6 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
                     type: 'json'
                 }
             }
-        };
+        });
     }
 });

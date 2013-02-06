@@ -214,9 +214,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         // if autocomplete or multiselect
         if (filter_input.down('combobox[name=value]')) {
-            var field_id = cmp.filter.get('field_id');
-            
-            filter_input.updateValueFieldStore(field_id);
+            filter_input.updateValueFieldStore(cmp.filter);
         }
     },
     
@@ -413,37 +411,6 @@ Ext.define('PICS.controller.report.Filter', {
             value = cmp.getSubmitValue();
 
         filter.set('value', value);
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    selectFilterCheckbox: function (cmp, records, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            yes_checkbox = filter_panel.down('checkbox[boxLabel=Yes]'),
-            no_checkbox = filter_panel.down('checkbox[boxLabel=No]'),
-            is_yes_checked = yes_checkbox.value,
-            is_no_checked = no_checkbox.value,
-            filter_value = '';
-        
-        // TODO: not verified in handshake
-        if (is_yes_checked && is_no_checked) {
-            filter_value = 'or';
-        } else if (is_yes_checked) {
-            filter_value = 'true';
-        } else if (is_no_checked) {
-            filter_value = 'false';
-        } else if (cmp.boxLabel == 'Yes') {
-            no_checkbox.setValue(true);
-            
-            filter_value = 'false';
-        } else if (cmp.boxLabel == 'No') {
-            yes_checkbox.setValue(true);
-            
-            filter_value = 'true';
-        }
-
-        filter.set('value', filter_value);
 
         PICS.data.ServerCommunication.loadData();
     },
