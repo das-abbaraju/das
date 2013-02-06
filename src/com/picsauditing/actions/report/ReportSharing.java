@@ -136,11 +136,4 @@ public class ReportSharing extends PicsActionSupport {
 		json.put("message", e.toString());
 	}
 
-	public Report getReport() {
-		return report;
-	}
-
-//	public void setReport(Report report) {
-//		this.report = report;
-//	}
 }

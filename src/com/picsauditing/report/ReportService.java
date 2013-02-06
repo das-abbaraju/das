@@ -3,7 +3,6 @@ package com.picsauditing.report;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -60,7 +59,6 @@ public class ReportService {
 	private PermissionService permissionService;
 
 	@SuppressWarnings("deprecation")
-	// TODO make this a class with a single static public method
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
 	@Autowired
@@ -94,7 +92,6 @@ public class ReportService {
 		reportDao.save(newReport);
 
 		if (favorite) {
-			// TODO will this persist?
 			newReport.setFavorite(true);
 			favoriteReport(permissions.getUserId(), newReport.getId());
 		}
@@ -118,7 +115,7 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public void clearColumnsFiltersAndSorts(Report report) {
+	private void clearColumnsFiltersAndSorts(Report report) {
 		removeAllReportElements(report.getId(), Column.class);
 		report.getColumns().clear();
 		removeAllReportElements(report.getId(), Filter.class);
@@ -233,21 +230,6 @@ public class ReportService {
 		return reportUsers;
 	}
 
-	public ReportUser loadOrCreateReportUser(User user, Report report) {
-		ReportUser reportUser = new ReportUser();
-
-		try {
-			reportUser = reportUserDao.findOne(user.getId(), report.getId());
-		} catch (NoResultException nre) {
-			reportUser.setUser(user);
-			reportUser.setReport(report);
-		}
-
-		reportUser.setLastViewedDate(new Date());
-		reportUser.setViewCount(reportUser.getViewCount() + 1);
-		return reportUser;
-	}
-
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
 			SQLException {
 		ReportUser reportUser = connectReportUser(userId, reportId);
@@ -305,7 +287,7 @@ public class ReportService {
 		reportUserDao.save(reportUser);
 	}
 
-	public ReportUser connectReportUser(int userId, int reportId) {
+	private ReportUser connectReportUser(int userId, int reportId) {
 		ReportUser reportUser;
 
 		try {
@@ -388,7 +370,8 @@ public class ReportService {
 		}
 	}
 
-	public void removeAndCascade(Report report) {
+	// TODO is this method required anywhere?
+	private void removeAndCascade(Report report) {
 		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllByReportId(report.getId());
 		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
 			reportPermissionUserDao.remove(reportPermissionUser);
