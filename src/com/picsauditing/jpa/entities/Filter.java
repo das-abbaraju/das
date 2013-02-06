@@ -1,8 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryDateParameter;
-import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -30,13 +25,14 @@ public class Filter extends ReportElement {
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
-
 	private String columnCompare;
 	private Field fieldForComparison;
 
 	@Deprecated
 	public static final String FIELD_COMPARE = "fieldCompare";
-
+	private static final Set<String> INDEXABLE_FIELDS = new HashSet<String>() {{
+		add("AccountName");
+	}};
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
 	@Enumerated(EnumType.STRING)
@@ -159,6 +155,7 @@ public class Filter extends ReportElement {
 		}
 
 		if (filterType == FilterType.String) {
+			filterValue = indexValueIfNecessary(filterValue, field);
 			filterValue = Strings.escapeQuotes(filterValue);
 
 			switch (operator) {
@@ -184,6 +181,14 @@ public class Filter extends ReportElement {
 		}
 
 		throw new RuntimeException(field.getType().getFilterType() + " has no filter calculation defined yet");
+	}
+
+	private String indexValueIfNecessary(String filterValue, Field field) {
+		// FIXME: Until we have better field ids, we need to rely on a fragile string check.
+		if (INDEXABLE_FIELDS.contains(field.getName())){
+			return Strings.indexName(filterValue);
+		}
+		return filterValue;
 	}
 
 	@Transient

@@ -66,7 +66,6 @@ public class FilterTest {
 		assertTrue(filterSql.contains(originalFilterValue));
 	}
 
-	@Ignore("We can't make this test pass unless we do some refactoring.")
 	@Test
 	public void testGetSqlForFilter_WhenFilterFieldNameIsAccountName_ThenConvertToIndexFormat() throws ReportValidationException {
 		filter.setName("AccountName");
