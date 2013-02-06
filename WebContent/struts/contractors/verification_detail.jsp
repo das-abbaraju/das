@@ -202,14 +202,18 @@
 						<s:iterator value="annualUpdates" id="year">
 							<td class="center">
 								<s:iterator value="value">
+									<s:set name="answer" value="value.answer" />
+									<s:if test="value.answer.equals('Audit.missingParameter')" >
+										<s:set name="answer" value="0" />
+									</s:if>
 									<s:if test="value.audit.equals(#year)">
 										<s:if test="value.verified">
 											<span style="color: #006400; font-weight: bold;">
-												<s:property value="value.answer" />
+												<s:property value="#answer" />
 											</span>
 										</s:if>
 										<s:else>
-											<s:property value="value.answer" />
+											<s:property value="#answer" />
 										</s:else>
 									</s:if>
 								</s:iterator>
