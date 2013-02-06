@@ -100,7 +100,7 @@ public class Report extends BaseTable {
 		this.sql = sql;
 	}
 
-	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<com.picsauditing.jpa.entities.Column> getColumns() {
 		return columns;
 	}

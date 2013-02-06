@@ -1,9 +1,6 @@
 package com.picsauditing.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
@@ -29,6 +26,7 @@ import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.service.PermissionService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -60,6 +58,8 @@ public class ReportServiceTest {
 	private ReportService reportServiceMock;
 	@Mock
 	private ReportContext reportContext;
+	@Mock
+	private PermissionService permissionService;
 
 	private Pagination<Report> pagination;
 	private LegacyReportConverter legacyReportConverter;
@@ -80,6 +80,7 @@ public class ReportServiceTest {
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "featureToggle", featureToggle);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
+		setInternalState(reportService, "permissionService", permissionService);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
@@ -306,6 +307,54 @@ public class ReportServiceTest {
 		Map<String, Sort> resultSortMap = createReportElementMap(sorts);
 
 		verifySort("AccountName", true, resultSortMap);
+	}
+
+	@Test(expected = Exception.class)
+	public void testCopy_WhenUserDoesntHavePermissionToCopy_ThenExceptionIsThrown() throws Exception {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		when(permissionService.canUserViewAndCopyReport(permissions, REPORT_ID)).thenReturn(false);
+
+		reportService.copy(reportContext, false);
+	}
+
+	@Test
+	public void testCopy_WhenReportIsCopied_ThenReportIsValidatedAndSaved() throws Exception {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		when(permissionService.canUserViewAndCopyReport(permissions, REPORT_ID)).thenReturn(true);
+		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
+		ReportService reportServiceSpy = spy(reportService);
+
+		Report newReport = reportServiceSpy.copy(reportContext, false);
+
+		assertTrue(REPORT_ID != newReport.getId());
+		verify(reportServiceSpy).validate(newReport);
+		verify(reportDao).save(newReport);
+	}
+
+
+	@Test(expected = Exception.class)
+	public void testSave_WhenUserDoesntHavePermissionToEdit_ThenExceptionIsThrown() throws Exception {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+
+		reportService.save(reportContext);
+	}
+
+	@Test
+	public void testSave_WhenReportIsSaved_ThenReportIsValidatedAndSaved() throws Exception {
+		JSONObject payloadJson = buildMinimalPayloadJson();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		ReportService reportServiceSpy = spy(reportService);
+
+		Report report = reportServiceSpy.save(reportContext);
+
+		assertTrue(REPORT_ID == report.getId());
+		verify(reportServiceSpy).validate(report);
+		verify(reportDao).save(report);
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {

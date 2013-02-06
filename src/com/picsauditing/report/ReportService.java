@@ -80,7 +80,7 @@ public class ReportService {
 		int userId = reportContext.permissions.getUserId();
 
 		if (!permissionService.canUserViewAndCopyReport(reportContext.permissions, reportContext.reportId)) {
-			throw new NoRightsException("User " + userId + " does not have permission to copy report "
+			throw new Exception("User " + userId + " does not have permission to copy report "
 					+ reportContext.reportId);
 		}
 
@@ -89,7 +89,6 @@ public class ReportService {
 		validate(newReport);
 
 		newReport.setAuditColumns(reportContext.permissions);
-		// TODO do we need to save right away to get an id?
 		newReport.setId(0);
 		reportDao.save(newReport);
 
@@ -105,22 +104,21 @@ public class ReportService {
 		return newReport;
 	}
 
-	public void save(ReportContext reportContext) throws NoRightsException,
-			ReportValidationException, RecordNotFoundException {
+	public Report save(ReportContext reportContext) throws Exception {
 		if (!permissionService.canUserEditReport(reportContext.permissions, reportContext.reportId)) {
-			throw new NoRightsException("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
+			throw new Exception("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
 		}
 
-		Report report = createOrLoadReport(reportContext);
+		Report report = createReportFromPayload(reportContext);
 
-		clearColumnsFiltersAndSorts(report);
-
-		legacyConvertParametersToReport(report);
-		setReportParameters(report);
+		validate(report);
 
 		reportDao.save(report);
+
+		return report;
 	}
 
+	@Deprecated
 	private void clearColumnsFiltersAndSorts(Report report) {
 		removeAllReportElements(report.getId(), Column.class);
 		report.getColumns().clear();
@@ -130,6 +128,7 @@ public class ReportService {
 		report.getSorts().clear();
 	}
 
+	@Deprecated
 	private <E extends ReportElement> void removeAllReportElements(int reportId, Class<E> type) {
 		reportDao.remove(type, "t.report.id = " + reportId);
 	}

@@ -110,6 +110,7 @@ public class JsonReportBuilder {
 	private static JSONObject sortToJson(Sort sort) {
 		JSONObject json = new JSONObject();
 
+		json.put(REPORT_ID, sort.getId());
 		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());
 		json.put(SORT_DIRECTION, sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 
@@ -120,6 +121,7 @@ public class JsonReportBuilder {
 		JSONObject json = new JSONObject();
 
 		// TODO sort out these member variable names
+		json.put(REPORT_ID, element.getId());
 		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());
 		json.put(REPORT_ELEMENT_CATEGORY, element.getField().getCategoryTranslation());
 		json.put(REPORT_ELEMENT_NAME, element.getField().getText());

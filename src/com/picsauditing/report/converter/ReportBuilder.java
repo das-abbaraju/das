@@ -149,7 +149,14 @@ public class ReportBuilder {
 
 
 	private static void toElementFromJSON(JSONObject json, ReportElement element) {
-		// TODO make sure this didn't break everything
+		try {
+			String idString = json.get(REPORT_ID).toString();
+			int id = Integer.parseInt(idString);
+			element.setId(id);
+		} catch (Exception e) {
+			logger.warn("Couldn't parse id from ReportElement '" + json.get(REPORT_ID) + "' ReportElement's id will default to 0.");
+		}
+
 		element.setName((String) json.get(REPORT_ELEMENT_FIELD_ID));
 
 		String sqlFunction = (String) json.get(COLUMN_SQL_FUNCTION);

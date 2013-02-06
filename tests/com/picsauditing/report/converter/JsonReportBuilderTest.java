@@ -55,6 +55,7 @@ public class JsonReportBuilderTest {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
+		int id = 321;
 		String fieldName = "Field Name";
 		String fieldText = "Field Text";
 		String categoryTranslation = "Account Information";
@@ -68,7 +69,6 @@ public class JsonReportBuilderTest {
 		field.setHelp(description);
 
 		// Column specific properties
-		String columnName = "Column Name";
 		String url = "www.picsauditing.com";
 		SqlFunction sqlFunction = SqlFunction.Max;
 		int width = 123;
@@ -76,6 +76,7 @@ public class JsonReportBuilderTest {
 		String columnType = "String";
 
 		Column column = new Column();
+		column.setId(id);
 		column.setName(fieldName);
 		field.setUrl(url);
 		column.setSqlFunction(sqlFunction);
@@ -88,6 +89,7 @@ public class JsonReportBuilderTest {
 		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
+		assertJsonNoQuotes(REPORT_ID, id, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(REPORT_ELEMENT_CATEGORY, categoryTranslation, jsonString);
 		assertJson(REPORT_ELEMENT_NAME, fieldText, jsonString);
@@ -106,6 +108,7 @@ public class JsonReportBuilderTest {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
+		int id = 321;
 		String fieldName = "Field Name";
 		String fieldText = "Field Text";
 		String categoryTranslation = "Account Information";
@@ -125,6 +128,7 @@ public class JsonReportBuilderTest {
 		String columnCompareId = "column compare";
 
 		Filter filter = new Filter();
+		filter.setId(id);
 		filter.setName(fieldName);
 		field.setType(fieldType);
 		filter.setOperator(operator);
@@ -136,6 +140,7 @@ public class JsonReportBuilderTest {
 		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
+		assertJsonNoQuotes(REPORT_ID, id, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(REPORT_ELEMENT_CATEGORY, categoryTranslation, jsonString);
 		assertJson(REPORT_ELEMENT_NAME, fieldText, jsonString);
@@ -153,12 +158,14 @@ public class JsonReportBuilderTest {
 		Report report = buildMinimalReport();
 
 		// ReportElement common properties
+		int id = 321;
 		String fieldName = "Field Name";
 
 		// Sort specific properties
 		boolean ascending = true;
 
 		Sort sort = new Sort();
+		sort.setId(id);
 		sort.setName(fieldName);
 		sort.setAscending(ascending);
 		report.addSort(sort);
@@ -166,6 +173,7 @@ public class JsonReportBuilderTest {
 		JSONObject json = JsonReportBuilder.buildReportJson(report);
 		String jsonString = json.toString();
 
+		assertJsonNoQuotes(REPORT_ID, id, jsonString);
 		assertContains(REPORT_SORTS, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(SORT_DIRECTION, Sort.ASCENDING, jsonString);
