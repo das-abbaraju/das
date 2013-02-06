@@ -35,14 +35,15 @@ Ext.define('PICS.controller.report.Filter', {
     init: function() {
         this.control({
             'reportfilter': {
-                render: this.onFilterRender
+                beforerender: this.beforeFilterRender,
+                render: this.renderFilter
             },
             
             // render filter options
             'reportfilteroptions': {
-                afterlayout: this.onFilterOptionsAfterLayout,
-                afterrender: this.onFilterOptionsAfterRender,
-                beforerender: this.onFilterOptionsBeforeRender
+                afterlayout: this.afterFilterOptionsLayout,
+                afterrender: this.afterFilterOptionsRender,
+                beforerender: this.beforeFilterOptionsRender
             },
 
             // collapse filter options
@@ -130,13 +131,8 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // remove filter
-            'reportfilteroptions button[action=remove-filter]': {
-                click: this.onFilterRemove
-            },
-
-            // advanced filter
-            'reportfilteroptions button[action=show-advanced-filter]': {
-                click: this.onAdvancedFilterButtonClick
+            'reportfilteroptions button[action=remove-filter]': {   
+                click: this.removeFilter
             }
          });
 
@@ -144,66 +140,89 @@ Ext.define('PICS.controller.report.Filter', {
             refreshfilters: this.refreshFilters,
             scope: this
         });
+
+        Ext.EventManager.onWindowResize(this.updateRemoveButtonPositions, this);
     },
 
     /**
      * Filter Options
      */
 
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter_content = filter_panel.down('reportfilterbaseuseridfilter'),
-            filter = filter_panel.record,
-            el = cmp.getEl(),
-            advanced_button = el.down('.icon-pencil'),
-            advanced_on = el.down('.icon-pencil.selected');
-
-        if (advanced_on) {
-            filter.set('fieldCompare', null);
-            
-            filter_content.createNumberfield(filter);
-            
-            advanced_button.removeCls('selected');
-        } else {
-            filter.set('value', null);
-            
-            advanced_button.addCls('selected');
-            
-            filter_content.createFieldSelect(filter);
-        }
-    },
-    
     // customizes the filter options view after it gets placed by the layout manager
-    onFilterOptionsAfterLayout: function (cmp, eOpts) {
+    afterFilterOptionsLayout: function (cmp, eOpts) {
         // TODO: This is a workaround. Two afterlayouts get called. In the first of them, the view has no filters. Why?
-        var filters = this.getFilters();
+        var filters_view = this.getFilters();
 
-        if (!filters) {
+        if (!filters_view) {
             return;
         }
 
         cmp.updateBodyHeight();
         
         cmp.updateFooterPosition();
+
+        this.updateRemoveButtonPositions();
     },
 
-    // add filters to the filter options panel before its rendered
-    onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        this.application.fireEvent('refreshfilters');
-    },
-    
+    // TODO: figure out if this should be here
     // add the filter formula view after the filter options have been generated
-    onFilterOptionsAfterRender: function (cmp, eOpts) {
+    afterFilterOptionsRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_expression = report.get('filter_expression');
-
+        report = report_store.first(),
+        filter_expression = report.get('filter_expression');
+        
         if (filter_expression) {
             cmp.showFormula();
         }
+    },
+    
+    // add filters to the filter options panel before its rendered
+    beforeFilterOptionsRender: function (cmp, eOpts) {
+        this.application.fireEvent('refreshfilters');
+    },
+    
+    refreshFilters: function () {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_store = report.filters(),
+            filter_options_view = this.getFilterOptions(),
+            filter_formula = this.getFilterFormula();
+
+        // remove all filter items from the filter options view
+        filter_options_view.removeAll();
+
+        // create new list of filters
+        var filters_view = Ext.create('PICS.view.report.filter.Filters', {
+            store: filter_store
+        });
+
+        // add new filters
+        filter_options_view.add(filters_view);
+
+        if (filter_formula) {
+            filters_view.showFilterNumbers();
+        }
+
+        this.updateRemoveButtonPositions();
+    },
+    
+    beforeFilterRender: function (cmp, eOpts) {
+        var filter_input = cmp.down('reportfilterbasefilter'),
+            filter_input_form = filter_input.getForm();
+            
+        filter_input_form.loadRecord(cmp.filter);
+        
+        // if autocomplete or multiselect
+        if (filter_input.down('combobox[name=value]')) {
+            var field_id = cmp.filter.get('field_id');
+            
+            filter_input.updateValueFieldStore(field_id);
+        }
+    },
+    
+    renderFilter: function (cmp, eOpts) {
+        // attach tooltip on the name of each filter
+        cmp.createTooltip();
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {
@@ -218,11 +237,6 @@ Ext.define('PICS.controller.report.Filter', {
         filter_options.expand();
     },
     
-    onFilterRender: function (cmp, eOpts) {
-        // attach tooltip on the name of each filter
-        cmp.createTooltip();
-    },
-
     /**
      * Add Filter
      */
@@ -241,29 +255,37 @@ Ext.define('PICS.controller.report.Filter', {
         filter_options.showFormula();
     },
 
+    // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
     onFilterFormulaCancel: function (cmp, event, eOpts) {
         var filter_options = cmp.up('reportfilteroptions'),
-            filters = this.getFilters();
-        
+            filters_view = this.getFilters(),
+            report_store = this.getReportReportsStore(),
+            report = report_store.first();
+
+        // Reset the filter expression to null.
+        report.setFilterExpression(null);
+
+        // Hide the filter expression field.
         filter_options.showToolbar();
         
-        filters.removeCls('x-active');
+        filters_view.hideFilterNumbers();
+
+        // Refresh the report with the expression no longer applied.
+        PICS.data.ServerCommunication.loadData();
     },
 
     onFilterFormulaBeforeRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
-            filters = this.getFilters(),
+            filters_view = this.getFilters(),
             filter_expression = report.get('filter_expression');
-            
+
         if (filter_expression) {
             filter_formula_textfield.setValue(report.getFilterExpression());
         }
 
-        if (filters) {
-            filters.addCls('x-active');
-        }
+        filters_view.showFilterNumbers();
     },
 
     onFilterFormulaBlur: function (cmp, event, eOpts) {
@@ -273,6 +295,8 @@ Ext.define('PICS.controller.report.Filter', {
             filter_expression = filter_formula_textfield.getValue();
         
         report.setFilterExpression(filter_expression);
+
+        PICS.data.ServerCommunication.loadData();
     },
 
     onFilterFormulaInputSpecialKey: function (cmp, event) {
@@ -293,24 +317,6 @@ Ext.define('PICS.controller.report.Filter', {
     /**
      * Filters
      */
-
-    refreshFilters: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_store = report.filters(),
-            filter_options_view = this.getFilterOptions();
-
-        // remove all filter items from the filter options view
-        filter_options_view.removeAll();
-
-        // create new list of filters
-        var filters = Ext.create('PICS.view.report.filter.Filters', {
-            store: filter_store
-        });
-
-        // add new filters
-        filter_options_view.add(filters);
-    },
 
     /**
      * Filter
@@ -336,11 +342,11 @@ Ext.define('PICS.controller.report.Filter', {
         
         filter.set('operator', operator_value);
         
-        if (operator_value == 'Empty') {
+        if (operator_value == 'Empty' || operator_value == 'CurrentAccount') {
             filter_value_textfield.setValue('');
-            filter_value_textfield.disable();
+            filter_value_textfield.hide();
         } else {
-            filter_value_textfield.enable();
+            filter_value_textfield.show();
         }
 
         if (filter.get('value') != '') {
@@ -348,7 +354,7 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    onFilterRemove: function (cmp, event, eOpts) {
+    removeFilter: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
@@ -370,7 +376,7 @@ Ext.define('PICS.controller.report.Filter', {
             value = cmp.getValue(),
             // TODO: weird may need some unified date format
             date = Ext.Date.format(value, 'Y-m-d') || value;
-        
+
         filter.set('value', date);
     },
 
@@ -383,7 +389,7 @@ Ext.define('PICS.controller.report.Filter', {
             filter = filter_panel.record,
             // TODO: weird may need some unified date format
             date = Ext.Date.format(value, 'Y-m-d') || value;
-        
+
         filter.set('value', date);
 
         PICS.data.ServerCommunication.loadData();
@@ -393,21 +399,10 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_panel = cmp.up('reportfilter'),
             filter = filter_panel.record,
             value = cmp.getSubmitValue();
-        
+
         filter.set('value', value);
     },
 
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getSubmitValue();
-        
-        filter.set('fieldCompare', value);
-    },
-    
     onFilterValueInputSpecialKey: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
@@ -416,8 +411,39 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_panel = cmp.up('reportfilter'),
             filter = filter_panel.record,
             value = cmp.getSubmitValue();
-        
+
         filter.set('value', value);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+
+    selectFilterCheckbox: function (cmp, records, eOpts) {
+        var filter_panel = cmp.up('reportfilter'),
+            filter = filter_panel.record,
+            yes_checkbox = filter_panel.down('checkbox[boxLabel=Yes]'),
+            no_checkbox = filter_panel.down('checkbox[boxLabel=No]'),
+            is_yes_checked = yes_checkbox.value,
+            is_no_checked = no_checkbox.value,
+            filter_value = '';
+        
+        // TODO: not verified in handshake
+        if (is_yes_checked && is_no_checked) {
+            filter_value = 'or';
+        } else if (is_yes_checked) {
+            filter_value = 'true';
+        } else if (is_no_checked) {
+            filter_value = 'false';
+        } else if (cmp.boxLabel == 'Yes') {
+            no_checkbox.setValue(true);
+            
+            filter_value = 'false';
+        } else if (cmp.boxLabel == 'No') {
+            yes_checkbox.setValue(true);
+            
+            filter_value = 'true';
+        }
+
+        filter.set('value', filter_value);
 
         PICS.data.ServerCommunication.loadData();
     },
@@ -426,9 +452,30 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_panel = cmp.up('reportfilter'),
             filter = filter_panel.record,
             value = cmp.getSubmitValue();
-        
+
         filter.set('value', value);
 
         PICS.data.ServerCommunication.loadData();
+    },
+
+    // TODO: check requirements, but is here to fix view for filters that vertically go past browser height
+    updateRemoveButtonPositions: function () {
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
+
+        if (remove_filter_elements.length) {
+            var filter_options = this.getFilterOptions(),
+                scrollbar_width = Ext.getScrollbarSize().width,
+                scrollbar_left = filter_options.width - scrollbar_width,
+                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
+                button_left = parseInt(remove_filter_elements[0].style.left),
+                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
+
+            if (scrollbar_visible && button_obscured) {
+                button_left = button_left - scrollbar_width;
+                for (var i = 0; i < remove_filter_elements.length; i++) {
+                    remove_filter_elements[i].style.left = button_left + 'px';
+                }
+            }
+        }
     }
 });

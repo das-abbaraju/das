@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.filter.Filters', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilters'],
+    alias: 'widget.reportfilters',
 
     requires: [
         'PICS.view.report.filter.Filter'
@@ -22,7 +22,7 @@ Ext.define('PICS.view.report.filter.Filters', {
         this.store.each(function (record) {
             var filter = Ext.create('PICS.view.report.filter.Filter', {
                 index: index,
-                record: record
+                filter: record
             });
 
             items.push(filter);
@@ -33,5 +33,13 @@ Ext.define('PICS.view.report.filter.Filters', {
         this.items = items;
         
         this.callParent(arguments);
+    },
+    
+    hideFilterNumbers: function () {
+        this.removeCls('x-active');
+    },
+    
+    showFilterNumbers: function () {
+        this.addCls('x-active');
     }
 });

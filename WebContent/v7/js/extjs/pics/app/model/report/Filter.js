@@ -26,6 +26,13 @@ Ext.define('PICS.model.report.Filter', {
         useNull: true
     }, {
         name: 'value',
+        convert: function (value, record) {
+            if (value instanceof Array) {
+                value = value.join(', ');
+            }
+            
+            return value;
+        },
         type: 'string',
         useNull: true
     }, {

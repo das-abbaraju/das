@@ -13,32 +13,7 @@ Ext.application({
     ],
 
     constants: {
-        APPFOLDER: '/v7/js/extjs/pics/app',
-        DATESTORE: [
-            ['LessThan', 'before'],
-            ['GreaterThan', 'after'],
-            ['Empty', 'is empty']
-        ],
-        NUMBERSTORE: [
-            ['Equals', '='],
-            ['GreaterThan', '>'],
-            ['LessThan', '<'],
-            ['GreaterThanOrEquals', '>='],
-            ['LessThanOrEquals', '<='],
-            ['Empty', 'is empty']
-        ],
-        TEXTSTORE: [
-            ['Contains', 'contains'],
-            ['NotContains', 'does not contain'],
-            ['BeginsWith', 'begins with'],
-            ['NotBeginsWith', 'does not begin with'],
-            ['EndsWith', 'ends with'],
-            ['NotEndsWith', 'does not end with'],
-            ['Equals', 'equals'],
-            ['NotEquals', 'does not equal'],
-            ['Empty', 'is empty'],
-            ['NotEmpty', 'is not empty']
-        ]
+        APPFOLDER: '/v7/js/extjs/pics/app'
     },
 
     controllers: [
