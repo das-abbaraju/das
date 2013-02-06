@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.UserGroup;
 
@@ -38,9 +37,9 @@ public class PermissionService {
 		return true;
 	}
 
-	public boolean canUserEditReport(Permissions permissions, Report report) {
+	public boolean canUserEditReport(Permissions permissions, int reportId) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions, report.getId());
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions, reportId);
 			if (reportPermissionUser == null) {
 				return false;
 			}
@@ -49,7 +48,7 @@ public class PermissionService {
 				return true;
 			}
 		} catch (NoResultException nre) {
-			logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
+			logger.error("No results found for {} and reportId = {}", permissions.toString(), reportId);
 		}
 
 		return isReportDevelopmentGroup(permissions);

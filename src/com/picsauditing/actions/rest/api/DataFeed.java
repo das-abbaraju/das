@@ -14,10 +14,16 @@ import com.picsauditing.actions.report.ReportApi;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class DataFeed extends ReportApi implements ParameterAware {
+
+	private ReportDataConverter converter;
+
+	protected String outputFormat = "";
+	protected String reportIdSpecified = "";
 
     private static final Logger logger = LoggerFactory.getLogger(DataFeed.class);
 
@@ -36,9 +42,6 @@ public class DataFeed extends ReportApi implements ParameterAware {
     public void setReportIdSpecified(String reportIdSpecified) {
         this.reportIdSpecified = reportIdSpecified;
     }
-
-    protected String outputFormat = "";
-    protected String reportIdSpecified = "";
 
     @Override
     public void setParameters(Map<String, String[]> parameters) {

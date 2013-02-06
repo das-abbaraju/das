@@ -148,7 +148,7 @@ public class ReportServiceTest {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 
-		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, false);
+		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(USER_ID, REPORT_ID, false);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -161,7 +161,7 @@ public class ReportServiceTest {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 
-		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, true);
+		ReportPermissionUser reportPermissionUser = reportService.connectReportPermissionUser(USER_ID, REPORT_ID, true);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());

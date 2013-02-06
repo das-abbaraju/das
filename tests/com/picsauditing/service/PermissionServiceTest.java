@@ -103,7 +103,7 @@ public class PermissionServiceTest {
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportPermissionUserDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
-		boolean result = permissionService.canUserEditReport(permissions, report);
+		boolean result = permissionService.canUserEditReport(permissions, REPORT_ID);
 
 		assertFalse(result);
 	}
@@ -115,7 +115,7 @@ public class PermissionServiceTest {
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportPermissionUserDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
 
-		boolean result = permissionService.canUserEditReport(permissions, report);
+		boolean result = permissionService.canUserEditReport(permissions, REPORT_ID);
 
 		assertFalse(result);
 	}
@@ -124,7 +124,7 @@ public class PermissionServiceTest {
 	public void testCanUserEdit_WhenDaoReturnsNull_ThenReturnFalse() {
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(null);
 
-		boolean result = permissionService.canUserEditReport(permissions, report);
+		boolean result = permissionService.canUserEditReport(permissions, REPORT_ID);
 
 		assertFalse(result);
 	}
@@ -134,7 +134,7 @@ public class PermissionServiceTest {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		boolean result = permissionService.canUserEditReport(permissions, report);
+		boolean result = permissionService.canUserEditReport(permissions, REPORT_ID);
 
 		assertTrue(result);
 	}

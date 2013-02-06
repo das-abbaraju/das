@@ -36,16 +36,16 @@ public class ReportSharing extends PicsActionSupport {
 
 			editable = Boolean.parseBoolean(ServletActionContext.getRequest().getParameter("editable"));
 
-			if (type != null && permissionService.canUserEditReport(permissions, report)
+			if (type != null && permissionService.canUserEditReport(permissions, report.getId())
 					&& id != permissions.getUserId()) {
 
 				json.put("title", "Report Shared");
 
 				if ("user".equalsIgnoreCase(type)) {
-					reportService.connectReportPermissionUser(permissions, id, report.getId(), editable);
+					reportService.connectReportPermissionUser(id, report.getId(), editable);
 					json.put("html", "Your report has been added to the user's My Reports.");
 				} else if ("group".equalsIgnoreCase(type)) {
-					reportService.connectReportPermissionUser(permissions, id, report.getId(), editable);
+					reportService.connectReportPermissionUser(id, report.getId(), editable);
 					json.put("html", "Your report has been added to the users' My Reports.");
 				} else if ("account".equalsIgnoreCase(type)) {
 					reportService.connectReportPermissionAccount(id, report.getId(), permissions);
@@ -78,7 +78,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
 			id = Integer.parseInt(dirtyParameter);
 
-			if (permissionService.canUserEditReport(permissions, report) && id != permissions.getUserId()) {
+			if (permissionService.canUserEditReport(permissions, report.getId()) && id != permissions.getUserId()) {
 				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type)) {
 					reportService.disconnectReportPermissionUser(id, report.getId());
 				} else if ("account".equalsIgnoreCase(type)) {
@@ -114,7 +114,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("editable");
 			editable = Boolean.parseBoolean(dirtyParameter);
 
-			if (permissionService.canUserEditReport(permissions, report)) {
+			if (permissionService.canUserEditReport(permissions, report.getId())) {
 				reportService.setEditPermissions(permissions, id, report.getId(), editable);
 				json.put("success", true);
 			} else {

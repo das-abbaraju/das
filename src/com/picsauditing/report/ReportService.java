@@ -71,14 +71,16 @@ public class ReportService {
 
 	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
-		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, userId, reportId, editable);
+		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(userId, reportId, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
 
-	public Report copy(ReportContext reportContext, Permissions permissions, boolean favorite) throws Exception {
-		if (!permissionService.canUserViewAndCopyReport(permissions, reportContext.reportId)) {
-			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
+	public Report copy(ReportContext reportContext, boolean favorite) throws Exception {
+		int userId = reportContext.permissions.getUserId();
+
+		if (!permissionService.canUserViewAndCopyReport(reportContext.permissions, reportContext.reportId)) {
+			throw new NoRightsException("User " + userId + " does not have permission to copy report "
 					+ reportContext.reportId);
 		}
 
@@ -86,32 +88,36 @@ public class ReportService {
 
 		validate(newReport);
 
-		newReport.setAuditColumns(permissions);
+		newReport.setAuditColumns(reportContext.permissions);
 		// TODO do we need to save right away to get an id?
 		newReport.setId(0);
 		reportDao.save(newReport);
 
 		if (favorite) {
 			newReport.setFavorite(true);
-			favoriteReport(permissions.getUserId(), newReport.getId());
+			favoriteReport(userId, newReport.getId());
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		connectReportUser(permissions.getUserId(), newReport.getId());
-		connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), true);
+		connectReportUser(userId, newReport.getId());
+		connectReportPermissionUser(userId, newReport.getId(), true);
 
 		return newReport;
 	}
 
-	public void save(Report report, Permissions permissions) throws NoRightsException, ReportValidationException {
-		if (!permissionService.canUserEditReport(permissions, report)) {
-			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
+	public void save(ReportContext reportContext) throws NoRightsException,
+			ReportValidationException, RecordNotFoundException {
+		if (!permissionService.canUserEditReport(reportContext.permissions, reportContext.reportId)) {
+			throw new NoRightsException("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
 		}
+
+		Report report = createOrLoadReport(reportContext);
 
 		clearColumnsFiltersAndSorts(report);
 
 		legacyConvertParametersToReport(report);
 		setReportParameters(report);
+
 		reportDao.save(report);
 	}
 
@@ -304,19 +310,7 @@ public class ReportService {
 		return reportUser;
 	}
 
-	/**
-	 * Create permissions to access the report permissions.
-	 *
-	 * @param permissions
-	 *            Permissions object from request
-	 * @param userId
-	 *            Could be either the User ID or Group ID to share with
-	 * @param reportId
-	 * @param editable
-	 * @return
-	 */
-	public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int userId, int reportId,
-			boolean editable) {
+	public ReportPermissionUser connectReportPermissionUser(int userId, int reportId, boolean editable) {
 		ReportPermissionUser reportPermissionUser;
 
 		try {
@@ -325,7 +319,7 @@ public class ReportService {
 			// Need to connect user to report first
 			Report report = reportDao.find(Report.class, reportId);
 			reportPermissionUser = new ReportPermissionUser(userId, report);
-			reportPermissionUser.setAuditColumns(new User(permissions.getUserId()));
+			reportPermissionUser.setAuditColumns(new User(userId));
 		}
 
 		reportPermissionUser.setEditable(editable);

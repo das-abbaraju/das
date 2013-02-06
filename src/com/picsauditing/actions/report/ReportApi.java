@@ -16,8 +16,6 @@ import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.data.ReportDataConverter;
-import com.picsauditing.report.data.ReportResults;
 
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
@@ -31,7 +29,6 @@ public class ReportApi extends PicsApiSupport {
 
 	protected int reportId;
 	protected String debugSQL = "";
-	protected ReportDataConverter converter;
 	protected int limit = 50;
 	protected int pageNumber = 1;
 	protected boolean favorite;
@@ -65,7 +62,7 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			Report newReport = reportService.copy(reportContext, permissions, favorite);
+			Report newReport = reportService.copy(reportContext, favorite);
 
 			writeJsonSuccess(json);
 			json.put(REPORT_ID, newReport.getId());
@@ -84,9 +81,7 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			Report report = reportService.createOrLoadReport(reportContext);
-
-			reportService.save(report, permissions);
+			reportService.save(reportContext);
 
 			writeJsonSuccess(json);
 		} catch (NoRightsException nre) {
@@ -135,10 +130,6 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = new ReportContext(payloadJson, reportId, getUser(), permissions, includeReport,
 				includeData, includeColumns, includeFilters, limit, pageNumber );
 		return reportContext;
-	}
-
-	public ReportResults getResults() {
-		return converter.getReportResults();
 	}
 
 	public void setPage(int page) {
