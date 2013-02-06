@@ -27,7 +27,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONArray;
@@ -359,7 +358,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.fax = fax;
 	}
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "accountID", nullable = false)
 	public Account getAccount() {
 		return account;
