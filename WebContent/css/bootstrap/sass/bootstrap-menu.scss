@@ -20,8 +20,16 @@
     line-height: 20px;
 }
 
+.navbar .brand
+{
+    // svg fallback for ie6/7/8
+    background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
+    background: rgba(0,0,0,0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
+}
 
 /*PICS overrides*/
 a:link,a:visited {
     text-decoration: none;
 }
+
+@import '../../../v7/sass/pics/layout/environment';
