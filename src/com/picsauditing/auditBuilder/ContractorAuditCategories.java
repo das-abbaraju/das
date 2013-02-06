@@ -30,14 +30,21 @@ public class ContractorAuditCategories {
 		if (!auditCatData.isApplies())
 			return false;
 
-		if (permissions.isContractor() || permissions.isAdmin() || permissions.isAuditor())
+		if (permissions.isContractor())
 			return true;
+
+		AuditCategory category = auditCatData.getCategory();
+
+		if (permissions.isAdmin() || permissions.isAuditor()) {
+			if (category.requiresViewFullPQFPermission()) {
+				return permissions.hasPermission(OpPerms.ViewFullPQF);
+			}
+			return true;
+		}
 
 		if (requiredCategories == null)
 			return true;
 		
-		AuditCategory category = auditCatData.getCategory();
-
 		if (requiredCategories.contains(category)) {
 			if (category.requiresViewFullPQFPermission()) {
 				return permissions.hasPermission(OpPerms.ViewFullPQF);

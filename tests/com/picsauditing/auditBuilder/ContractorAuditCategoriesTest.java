@@ -94,7 +94,7 @@ public class ContractorAuditCategoriesTest {
 		when(permissions.isAdmin()).thenReturn(true);
 		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, null,
 				categories);
-		assertEquals(2, answer.size());
+		assertEquals(1, answer.size());
 	}
 
 	@Test
