@@ -5,3 +5,18 @@
 @import '../../../v7/sass/pics/layout/menu';
 
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_navbar';
+
+
+/*Styles not included elsewhere*/
+.navbar
+{
+    color: #777777;
+}
+
+
+/*body styles*/
+.navbar
+{
+    font-size: 14px;
+    line-height: 20px;
+}
