@@ -78,35 +78,30 @@ public class ReportService {
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
 
-	public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException,
-			NonUniqueResultException, SQLException, Exception {
-		if (!permissionService.canUserViewAndCopyReport(permissions, sourceReport.getId())) {
+	public Report copy(ReportContext reportContext, Permissions permissions, boolean favorite) throws Exception {
+		if (!permissionService.canUserViewAndCopyReport(permissions, reportContext.reportId)) {
 			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
-					+ sourceReport.getId());
+					+ reportContext.reportId);
 		}
 
-		boolean editable = true;
-
-		Report newReport = copyReportWithoutPermissions(sourceReport);
-
-		// TODO the front end is passing new report data in the current report,
-		// so we need to change sourceReport to it's old state.
-		// Is this is the desired behavior?
-		reportDao.refresh(sourceReport);
+		Report newReport = createReportFromPayload(reportContext);
 
 		validate(newReport);
 
 		newReport.setAuditColumns(permissions);
+		// TODO do we need to save right away to get an id?
+		newReport.setId(0);
 		reportDao.save(newReport);
 
 		if (favorite) {
+			// TODO will this persist?
+			newReport.setFavorite(true);
 			favoriteReport(permissions.getUserId(), newReport.getId());
 		}
 
-		// This is a new report owned by the user, unconditionally give them
-		// edit permission
+		// This is a new report owned by the user, unconditionally give them edit permission
 		connectReportUser(permissions.getUserId(), newReport.getId());
-		connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), editable);
+		connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), true);
 
 		return newReport;
 	}
@@ -120,13 +115,6 @@ public class ReportService {
 
 		legacyConvertParametersToReport(report);
 		setReportParameters(report);
-		saveReportElements(report);
-	}
-
-	public void saveReportElements(Report report) {
-		reportDao.save(report.getColumns());
-		reportDao.save(report.getFilters());
-		reportDao.save(report.getSorts());
 		reportDao.save(report);
 	}
 
@@ -153,7 +141,7 @@ public class ReportService {
 		if (isBackwardsCompatibilityOn()) {
 			clearColumnsFiltersAndSorts(report);
 			legacyReportConverter.setReportPropertiesFromJsonParameters(report);
-			saveReportElements(report);
+			reportDao.save(report);
 		}
 	}
 
@@ -172,22 +160,6 @@ public class ReportService {
 		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY);
 	}
 
-	private Report copyReportWithoutPermissions(Report sourceReport) {
-		Report newReport = new Report();
-
-		newReport.setModelType(sourceReport.getModelType());
-		newReport.setName(sourceReport.getName());
-		newReport.setDescription(sourceReport.getDescription());
-		newReport.setParameters(sourceReport.getParameters());
-
-		return newReport;
-	}
-
-	/**
-	 * Rudimentary validation of a report object. Currently, this only means
-	 * that the model type is set and that the report-spec is parsable as valid
-	 * JSON.
-	 */
 	void validate(Report report) throws ReportValidationException {
 		if (report == null) {
 			throw new ReportValidationException("Report object is null. (Possible security concern.)");
@@ -277,7 +249,7 @@ public class ReportService {
 	}
 
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
-			SQLException, Exception {
+			SQLException {
 		ReportUser reportUser = connectReportUser(userId, reportId);
 
 		reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, Integer.MAX_VALUE);
@@ -429,7 +401,19 @@ public class ReportService {
 		}
 	}
 
-	public Report createReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
+	public Report createReportFromPayload(ReportContext reportContext) throws IllegalArgumentException, ReportValidationException {
+		if (JSONUtilities.isEmpty(reportContext.payloadJson)) {
+			throw new IllegalArgumentException();
+		}
+
+		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
+
+		Report report = buildReportFromJson(reportJson, reportContext.reportId);
+
+		return report;
+	}
+
+	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
 		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
 
 		Report report;
@@ -439,13 +423,6 @@ public class ReportService {
 			report = loadReportFromDatabase(reportContext.reportId);
 			legacyConvertParametersToReport(report);
 		}
-
-		validate(report);
-
-/*      todo: why is this here??
-		ReportUser reportUser = loadOrCreateReportUser(reportContext.user, report);
-		reportUserDao.save(reportUser);
-*/
 
 		return report;
 	}
@@ -482,7 +459,7 @@ public class ReportService {
 
 	@SuppressWarnings("unchecked")
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
-		Report report = createReport(reportContext);
+		Report report = createOrLoadReport(reportContext);
 
 		// FIXME this basically initializes a report as well as building SQL
 		SelectSQL sql = new SqlBuilder().initializeSql(report, reportContext.permissions);

@@ -109,6 +109,11 @@ public class Report extends BaseTable {
 		this.columns = columns;
 	}
 
+	public void addColumn(com.picsauditing.jpa.entities.Column column) {
+		column.setReport(this);
+		columns.add(column);
+	}
+
 	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<Filter> getFilters() {
 		return filters;
@@ -119,6 +124,7 @@ public class Report extends BaseTable {
 	}
 
 	public void addFilter(Filter filter) {
+		filter.setReport(this);
 		filters.add(filter);
 	}
 
@@ -132,6 +138,7 @@ public class Report extends BaseTable {
 	}
 
 	public void addSort(Sort sort) {
+		sort.setReport(this);
 		sorts.add(sort);
 	}
 
@@ -188,10 +195,6 @@ public class Report extends BaseTable {
 		}
 
 		return null;
-	}
-
-	public void addColumn(com.picsauditing.jpa.entities.Column column) {
-		columns.add(column);
 	}
 
 	public boolean hasNoColumns() {

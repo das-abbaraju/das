@@ -212,8 +212,7 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Column column = toColumn((JSONObject) object);
-				column.setReport(report);
-				report.getColumns().add(column);
+				report.addColumn(column);
 			}
 		}
 	}
@@ -227,8 +226,7 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Filter filter = toFilter((JSONObject) object);
-				filter.setReport(report);
-				report.getFilters().add(filter);
+				report.addFilter(filter);
 			}
 		}
 	}
@@ -242,8 +240,7 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Sort sort = toSort((JSONObject) object);
-				sort.setReport(report);
-				report.getSorts().add(sort);
+				report.addSort(sort);
 			}
 		}
 	}

@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
@@ -196,62 +194,66 @@ public class ReportServiceTest {
 		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
 	}
 
-	@Test
-	public void testCreateReport_ReportShouldAlwaysValidate() throws ReportValidationException, RecordNotFoundException {
-		JSONObject payloadJson = buildMinimalPayloadJson();
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateReportFromPayload_WhenPayloadIsNull_ThenItThrowsIllegalArgumentException() throws IllegalArgumentException, ReportValidationException {
+		JSONObject payloadJson = null;
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-		ReportService reportServiceSpy = spy(reportService);
-		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report report = reportServiceSpy.createReport(reportContext);
+		reportService.createReportFromPayload(reportContext);
+	}
 
-		verify(reportServiceSpy).validate(report);
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateReportFromPayload_WhenPayloadIsEmpty_ThenItThrowsIllegalArgumentException() throws IllegalArgumentException, ReportValidationException {
+		JSONObject payloadJson = new JSONObject();
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+
+		reportService.createReportFromPayload(reportContext);
 	}
 
 	@Test
-	public void testCreateReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		assertEquals(REPORT_ID, resultReport.getId());
 	}
 
 	@Test
-	public void testCreateReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, false, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
 		legacyReportConverter = mock(LegacyReportConverter.class);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		assertEquals(report, resultReport);
 	}
 
 	@Test
-	public void testCreateReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
 		legacyReportConverter = mock(LegacyReportConverter.class);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		assertEquals(report, resultReport);
 	}
 
 	@Test
-	public void testCreateReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 		Report report = buildBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		assertEquals(report.getId(), resultReport.getId());
 		assertEquals(report.getModelType(), resultReport.getModelType());
@@ -266,13 +268,13 @@ public class ReportServiceTest {
 	}
 
 	@Test
-	public void testCreateReport_WhenReportIsLoadedFromDb_ReportElementsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportElementsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 		Report report = buildBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		List<Column> columns = resultReport.getColumns();
 		assertEquals(7, columns.size());
@@ -287,13 +289,13 @@ public class ReportServiceTest {
 	}
 
 	@Test
-	public void testCreateReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 		Report report = buildBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		List<Filter> filters = resultReport.getFilters();
 		assertEquals(2, filters.size());
@@ -304,13 +306,13 @@ public class ReportServiceTest {
 	}
 
 	@Test
-	public void testCreateReport_WhenReportIsLoadedFromDb_SortsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_SortsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
 		Report report = buildBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report resultReport = reportService.createReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext);
 
 		List<Sort> sorts = resultReport.getSorts();
 		assertEquals(1, sorts.size());

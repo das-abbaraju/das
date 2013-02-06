@@ -65,11 +65,10 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			Report report = reportService.createReport(reportContext);
-
-			report = reportService.copy(report, permissions, favorite);
+			Report newReport = reportService.copy(reportContext, permissions, favorite);
 
 			writeJsonSuccess(json);
+			json.put(REPORT_ID, newReport.getId());
 		} catch (NoRightsException nre) {
 			writeJsonException(json, nre);
 		} catch (Exception e) {
@@ -85,7 +84,7 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			Report report = reportService.createReport(reportContext);
+			Report report = reportService.createOrLoadReport(reportContext);
 
 			reportService.save(report, permissions);
 

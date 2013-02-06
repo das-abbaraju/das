@@ -69,13 +69,10 @@ public class ReportBuilder {
 		}
 
 		for (Object object : jsonArray) {
-			if (object == null) {
-				continue;
+			if (object != null) {
+				Column column = toColumn((JSONObject) object);
+				report.addColumn(column);
 			}
-
-			JSONObject jsonObject = (JSONObject)object;
-			Column column = toColumn(jsonObject);
-			report.addColumn(column);
 		}
 	}
 
@@ -87,7 +84,8 @@ public class ReportBuilder {
 
 		for (Object object : jsonArray) {
 			if (object != null) {
-				report.getFilters().add(toFilter((JSONObject) object));
+				Filter filter = toFilter((JSONObject) object);
+				report.addFilter(filter);
 			}
 		}
 	}
@@ -100,7 +98,8 @@ public class ReportBuilder {
 
 		for (Object object : jsonArray) {
 			if (object != null) {
-				report.getSorts().add(toSort((JSONObject) object));
+				Sort sort = toSort((JSONObject) object);
+				report.addSort(sort);
 			}
 		}
 	}

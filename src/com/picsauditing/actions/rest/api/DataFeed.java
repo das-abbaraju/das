@@ -61,7 +61,7 @@ public class DataFeed extends ReportApi implements ParameterAware {
         try {
 	        JSONObject payloadJson = getJsonFromRequestPayload();
 	        ReportContext reportContext = buildReportContext(payloadJson);
-	        report = reportService.createReport(reportContext);
+	        report = reportService.createOrLoadReport(reportContext);
 
 	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
 		        json = reportService.buildJsonResponse(reportContext);
