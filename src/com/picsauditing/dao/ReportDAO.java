@@ -171,4 +171,8 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 	public Report findById(int reportId) {
 		return find(Report.class, reportId);
 	}
+
+	public void detach(Report newReport) {
+		em.detach(newReport);
+	}
 }

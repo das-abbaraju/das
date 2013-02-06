@@ -105,7 +105,6 @@ public class ReportBuilder {
 	}
 
 	private static Column toColumn(JSONObject json) {
-
 		Column column = new Column();
 		toElementFromJSON(json, column);
 
@@ -123,7 +122,6 @@ public class ReportBuilder {
 
 		return sort;
 	}
-
 
 	private static boolean isAscending(JSONObject json) {
 		String direction = (String) json.get(SORT_DIRECTION);
@@ -144,9 +142,9 @@ public class ReportBuilder {
 		filter.setOperator(parseOperator(json));
 		filter.getValues().addAll(parseValues(json));
 		parseAdvancedFilter(json);
+
 		return filter;
 	}
-
 
 	private static void toElementFromJSON(JSONObject json, ReportElement element) {
 		try {

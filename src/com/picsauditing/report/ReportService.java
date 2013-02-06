@@ -88,12 +88,11 @@ public class ReportService {
 
 		validate(newReport);
 
-		newReport.setAuditColumns(reportContext.permissions);
-		newReport.setId(0);
+		prepareNewReportForDatabaseCopy(newReport, reportContext.permissions);
+
 		reportDao.save(newReport);
 
 		if (favorite) {
-			newReport.setFavorite(true);
 			favoriteReport(userId, newReport.getId());
 		}
 
@@ -102,6 +101,29 @@ public class ReportService {
 		connectReportPermissionUser(userId, newReport.getId(), true);
 
 		return newReport;
+	}
+
+	private void prepareNewReportForDatabaseCopy(Report newReport, Permissions permissions) {
+		reportDao.detach(newReport);
+
+		newReport.setAuditColumns(permissions);
+
+		newReport.setId(0);
+
+		for (Column column : newReport.getColumns()) {
+			column.setReport(newReport);
+			column.setId(0);
+		}
+
+		for (Filter filter : newReport.getFilters()) {
+			filter.setReport(newReport);
+			filter.setId(0);
+		}
+
+		for (Sort sort : newReport.getSorts()) {
+			sort.setReport(newReport);
+			sort.setId(0);
+		}
 	}
 
 	public Report save(ReportContext reportContext) throws Exception {
