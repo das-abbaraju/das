@@ -15,6 +15,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -26,6 +27,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONArray;
@@ -357,7 +359,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.fax = fax;
 	}
 
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "accountID", nullable = false)
 	public Account getAccount() {
 		return account;
