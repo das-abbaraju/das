@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -129,8 +130,8 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void establishPermissions(User user) {
-		permissions = new Permissions();
-		permissions.login(user);
+		permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+
 		LocaleController.setLocaleOfNearestSupported(permissions);
 	}
 
