@@ -187,13 +187,14 @@
         <jsp:include page="/struts/layout/_environment.jsp" />
         
         <% if (useDynamicReports) { %>
-        
-        <nav id="site_navigation"></nav>
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
-        <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
-        <script type="text/javascript" src="v7/js/extjs/pics/ext-overrides.js"></script>        
-        <script type="text/javascript" src="js/layout/menu.js"></script>
-        
+            <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
+            <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
+            <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap.css?v=${version}" />
+            <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}" />
+            <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}" />
+            <header>
+                <s:action name="Menu!menu" executeResult="true" />
+            </header>
         <% } %>
 
         <% if (!useDynamicReports) { %>
