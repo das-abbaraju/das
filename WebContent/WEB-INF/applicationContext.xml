@@ -83,6 +83,7 @@
     <bean id="JobSiteTaskDAO" class="com.picsauditing.dao.JobSiteTaskDAO"/>
     <bean id="JobTaskDAO" class="com.picsauditing.dao.JobTaskDAO"/>
     <bean id="JobTaskCriteriaDAO" class="com.picsauditing.dao.JobTaskCriteriaDAO"/>
+    <bean id="LanguageDAO" class="com.picsauditing.dao.LanguageDAO"/>
     <bean id="NaicsDAO" class="com.picsauditing.dao.NaicsDAO"/>
     <bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
     <bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>

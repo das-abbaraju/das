@@ -1,23 +1,24 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Locale;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.Locale;
 
 @Entity
 @Table(name = "app_language")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Language extends BaseTranslatable {
-	
 	private Locale locale;
 	private String language;
 	private String country;
 	private LanguageStatus status;
 
+	@Id
 	public Locale getLocale() {
 		return locale;
 	}
@@ -51,13 +52,14 @@ public class Language extends BaseTranslatable {
 	}
 
 	@Override
+	@Transient
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.locale;
 	}
-	
+
 	@Override
+	@Transient
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}
-
 }
