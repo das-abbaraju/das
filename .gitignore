@@ -10,7 +10,5 @@
 *.log.1
 *.tmp
 *.bak
-/src/rebel.xml
-/src/rebel-remote.xml
-/resources/rebel.xml
-/resources/rebel-remote.xml
+rebel.xml
+rebel-remote.xml
