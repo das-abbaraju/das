@@ -6,17 +6,22 @@
 
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_navbar';
 
+@import '../../../v7/sass/pics/widgets/twitter-bootstrap/_dropdown';
+
+@import '../../../v7/sass/pics/widgets/twitter-bootstrap/_form';
+
+
 
 /*Styles not included elsewhere*/
 .navbar
 {
     color: #777777;
+    font-size: 14px;
+    line-height: 20px;
 }
 
 
-/*body styles*/
-.navbar
-{
-    font-size: 14px;
-    line-height: 20px;
+/*PICS overrides*/
+a:link,a:visited {
+    text-decoration: none;
 }
