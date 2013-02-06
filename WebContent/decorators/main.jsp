@@ -136,7 +136,7 @@
 					}
 				});
 
-				$('#debug-menu').live('click', function(e) {
+				$('#debug-menu, #debug-menu_menu').live('click', function(e) {
 					e.preventDefault();
 					$('body').toggleClass('debugging');
 					$.cookie('debugging', $('body').is('.debugging'), { expires: 20 });
