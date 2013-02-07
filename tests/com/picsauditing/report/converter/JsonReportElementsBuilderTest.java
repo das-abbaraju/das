@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
+import com.picsauditing.report.fields.DisplayType;
 import org.json.simple.JSONArray;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -108,7 +109,7 @@ public class JsonReportElementsBuilderTest {
 		assertJson(REPORT_ELEMENT_NAME, TRANSLATION_PREFIX + fieldName, jsonString);
 		assertJson(REPORT_ELEMENT_DESCRIPTION, TRANSLATION_PREFIX + description, jsonString);
 
-		assertJson(COLUMN_TYPE, fieldType, jsonString);
+		assertJson(COLUMN_TYPE, field.getDisplayType().name(), jsonString);
 		assertJson(COLUMN_URL, url, jsonString);
 		assertJsonNoQuotes(COLUMN_SQL_FUNCTION, null, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);

@@ -48,7 +48,7 @@ public class JsonReportElementsBuilder {
 	private static JSONObject fieldToColumnJson(Field field) {
 		JSONObject json = fieldToCommonJson(field);
 
-		json.put(COLUMN_TYPE, field.getColumnType());
+		json.put(COLUMN_TYPE, field.getDisplayType().name());
 		json.put(COLUMN_URL, field.getUrl());
 		json.put(COLUMN_SQL_FUNCTION, null);
 		json.put(COLUMN_WIDTH, field.getWidth());
@@ -60,7 +60,7 @@ public class JsonReportElementsBuilder {
 	private static JSONObject fieldToFilterJson(Field field) {
 		JSONObject json = fieldToCommonJson(field);
 
-		json.put(FILTER_TYPE, field.getFilterType());
+		json.put(FILTER_TYPE, field.getFilterType().name());
 		json.put(FILTER_OPERATOR, null);
 		json.put(FILTER_VALUE, null);
 		json.put(FILTER_COLUMN_COMPARE, null);

@@ -72,7 +72,7 @@ public class JsonReportBuilder {
 	private static JSONObject columnToJson(Column column) {
 		JSONObject json = elementToCommonJson(column);
 
-		json.put(COLUMN_TYPE, column.getField().getColumnType());
+		json.put(COLUMN_TYPE, column.getField().getDisplayType().name());
 		json.put(COLUMN_URL, column.getField().getUrl());
 		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
 		json.put(COLUMN_WIDTH, column.getWidth());
@@ -84,7 +84,7 @@ public class JsonReportBuilder {
 	private static JSONObject filterToJson(Filter filter) {
 		JSONObject json = elementToCommonJson(filter);
 
-		json.put(FILTER_TYPE, filter.getField().getFilterType());
+		json.put(FILTER_TYPE, filter.getField().getFilterType().name());
 		json.put(FILTER_OPERATOR, filter.getOperator().toString());
 		String filterValue = makeFilterValue(filter);
 		json.put(FILTER_VALUE, filterValue);

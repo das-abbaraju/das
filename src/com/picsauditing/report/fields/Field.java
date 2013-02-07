@@ -126,17 +126,13 @@ public class Field {
 	}
 
 	@Transient
-	public String getColumnType() {
-		// TODO // [boolean, flag, number, string] - SEEMS WAY TO LIMITED - IMPLICITLY CREATE MODEL TYPE - CREATE MODEL TYPE CONVERSION CLASS FE
-        // dates, datetimes and functions on dates will all be transmitted back as translated and/or formated strings
-        // floats, ints, and currencies will be passed back as translated formatted numbers including relevant decimal and thousand separators
-		return type.toString();
+	public DisplayType getDisplayType() {
+		return type.getDisplayType();
 	}
 
 	@Transient
-	public String getFilterType() {
-		// TODO // filter type - these need to be fixed [AccountID, AccountName, Autocomplete, Boolean, Date, DaysAgo, Enum, Float, Integer, LowMedHigh, NUmber*, String, UserID]
-		return type.getFilterType().toString();
+	public FilterType getFilterType() {
+		return type.getFilterType();
 	}
 
 	public String getName() {
