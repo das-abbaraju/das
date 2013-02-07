@@ -166,7 +166,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var edit_setting_view = this.getEditSetting();
 
         if (edit_setting_view.isVisible()) {
-            this.application.fireEvent('favoritereport');
+            PICS.data.ServerCommunication.favoriteReport();
         }
     },
 
@@ -190,7 +190,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var edit_setting_view = this.getEditSetting();
 
         if (edit_setting_view.isVisible()) {
-            this.application.fireEvent('unfavoritereport');
+            PICS.data.ServerCommunication.unfavoriteReport();
         }
     },
 
