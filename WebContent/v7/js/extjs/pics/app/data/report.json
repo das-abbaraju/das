@@ -1527,7 +1527,7 @@
 			"category": "Account Information",
 			"is_sortable": true,
 			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
-			"width": 100,
+			"width": 200,
 			"name": "Company",
 			"type": "String",
 			"url": "ContractorView.action?id={AccountID}"
@@ -1538,7 +1538,7 @@
 			"category": "Account Information",
 			"is_sortable": true,
 			"description": "PICS account status",
-			"width": 100,
+			"width": 150,
 			"name": "PICS Status",
 			"type": "AccountStatus",
 			"url": null
@@ -1560,7 +1560,7 @@
 			"category": "Contact Information",
 			"is_sortable": true,
 			"description": "City of the account\u2019s primary address",
-			"width": 100,
+			"width": 200,
 			"name": "City",
 			"type": "String",
 			"url": null
@@ -1571,7 +1571,7 @@
 			"category": "Miscellaneous",
 			"is_sortable": true,
 			"description": "Total number of billable Client Sites",
-			"width": 100,
+			"width": 300,
 			"name": "Billable Sites",
 			"type": "String",
 			"url": null
@@ -1611,24 +1611,7 @@
 			"field_id": "AccountName",
 			"direction": "ASC"
 		}],
-		"filters": [{
-			"field_id": "AccountName",
-			"category": null,
-			"description": "Name of the Company (Contractor, Vendor, Supplier, Hotel, Client Site, Owner \/ Operator, City, or Organization)",
-			"name": "Company",
-			"value": "",
-			"type": "String",
-			"operator": "Contains"
-		},
-		{
-			"field_id": "AccountStatus",
-			"category": null,
-			"description": "PICS account status",
-			"name": "PICS Status",
-			"value": "Active, Pending",
-			"type": "AccountStatus",
-			"operator": "In"
-		}]
+		"filters": []
 	},
 	"success": true,
 	"filters": [{
@@ -1648,7 +1631,7 @@
 		"name": "Report.ContractorWelcomeCallTypeName",
 		"value": null,
 		"column_compare_id": null,
-		"type": "AuditType",
+		"type": "AccountID",
 		"operator": null
 	},
 	{
@@ -1888,7 +1871,7 @@
 		"name": "Country",
 		"value": null,
 		"column_compare_id": null,
-		"type": "Country",
+		"type": "Autocomplete",
 		"operator": null
 	},
 	{

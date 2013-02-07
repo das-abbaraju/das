@@ -3,6 +3,7 @@ Ext.define('PICS.ux.util.filter.ColumnFilterStoreFilter', {
     
     property: [
         'category',
-        'name'
+        'name',
+        'description'
     ]
 });

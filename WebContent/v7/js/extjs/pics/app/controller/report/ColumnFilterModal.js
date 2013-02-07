@@ -102,19 +102,16 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected filters to the FilterOptions view.
         this.application.fireEvent('refreshfilters');
         
-        filter_modal.close();
-        
-        // Get new data for the modified report.
-        PICS.data.ServerCommunication.loadData();
+        filter_modal.close();        
     },
     
-    beforeColumnModalClose: function (cmp, event, eOpts) {
+    beforeColumnModalClose: function (cmp, eOpts) {
         var column_list = this.getColumnList();
 
         column_list.reset();
     },
 
-    beforeFilterModalClose: function (cmp, event, eOpts) {
+    beforeFilterModalClose: function (cmp, eOpts) {
         var filter_list = this.getFilterList();
 
         filter_list.reset();
@@ -139,6 +136,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             columns_search_box = this.getColumnModalSearchBox(),
             search_query = columns_search_box.getValue();
 
+        columns_store.clearFilter();
+
         columns_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
         }));
@@ -148,6 +147,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         var filters_store = this.getReportFiltersStore(),
             filters_search_box = this.getFilterModalSearchBox(),
             search_query = filters_search_box.getValue();
+
+        filters_store.clearFilter();
 
         filters_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
