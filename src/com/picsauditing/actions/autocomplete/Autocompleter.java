@@ -9,6 +9,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.model.general.Autocomplete;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class Autocompleter extends PicsActionSupport {
@@ -17,7 +18,10 @@ public class Autocompleter extends PicsActionSupport {
 	private Autocomplete autocomplete;
 
 	private FieldType fieldType;
-	private String searchQuery = "";
+
+	// TODO: we should not have to assign these to empty strings
+	private String searchQuery = Strings.EMPTY_STRING;
+	private String searchKey;
 
 	private static final Logger logger = LoggerFactory.getLogger(Autocompleter.class);
 
@@ -31,7 +35,11 @@ public class Autocompleter extends PicsActionSupport {
 			json.put("success", true);
 			switch (fieldType.getFilterType()) {
 				case Autocomplete:
-					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
+					if (Strings.isNotEmpty(searchKey)) {
+						json = fieldType.getAutocompleteService().searchByKey(searchKey, permissions);
+					} else {
+						json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
+					}
 					break;
 
 				case ShortList:
@@ -77,5 +85,9 @@ public class Autocompleter extends PicsActionSupport {
 
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
+	}
+
+	public void setSearchKey(String searchKey) {
+		this.searchKey = searchKey;
 	}
 }

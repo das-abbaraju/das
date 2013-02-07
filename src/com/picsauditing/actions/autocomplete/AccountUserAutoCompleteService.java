@@ -1,8 +1,10 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ public class AccountUserAutoCompleteService extends AbstractAutocompleteService<
 	private static final Logger logger = LoggerFactory.getLogger(AccountUserAutoCompleteService.class);
 
 	@Override
-	protected Collection<User> getItems(String search, Permissions permissions) {
+	protected Collection<User> getItemsForSearch(String search, Permissions permissions) {
 		Collection<User> results = Collections.emptyList();
 		try {
 			results = userDAO.findByGroupAndUserName(User.GROUP_MARKETING, search);
@@ -47,6 +49,16 @@ public class AccountUserAutoCompleteService extends AbstractAutocompleteService<
 		}
 
 		return Strings.EMPTY_STRING;
+	}
+
+	@Override
+	protected Collection<User> getItemsForSearchKey(String searchKey, Permissions permissions) {
+		int userId = NumberUtils.toInt(searchKey);
+		if (userId == 0) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(userDAO.find(userId));
 	}
 
 }
