@@ -47,9 +47,10 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    var keys = value.split(', ');
-                    
-                    value_field.select(keys);
+                    if (typeof value == 'string') {
+                        var keys = value.split(', ');                        
+                        value_field.select(keys);
+                    }
                 }
             }
         });

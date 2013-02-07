@@ -24,12 +24,6 @@ Ext.define('PICS.view.report.filter.base.Date', {
             xtype: 'datefield',
             flex: 1,
             format: 'Y-m-d',
-            listeners: {
-                render: function (cmp, eOpts) {
-                    // by-pass setValue validation by modifying dom directly
-                    cmp.el.down('input[name="filter_value"]').dom.value = value;
-                }
-            },
             name: 'value',
             preventMark: true
         };

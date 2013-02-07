@@ -31,7 +31,12 @@ Ext.define('PICS.model.report.Filter', {
                 value = value.join(', ');
             }
             
-            return value;
+            if (value == null) {
+                value = '';
+            }
+            
+            // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
+            return value.toString();
         },
         type: 'string',
         useNull: true

@@ -22,7 +22,11 @@ Ext.define('PICS.view.report.filter.base.UserId', {
     createValueField: function () {
         return {
             xtype: 'numberfield',
-            flex: 1, // TODO: Leaves too little room for all of the string operators
+            allowDecimals: false,
+            flex: 1,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
             name: 'value'
         };
     },

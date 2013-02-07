@@ -16,20 +16,23 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             xtype: 'combobox',
             displayField: 'value',
             editable: true,
+            flex: 1,
             hideTrigger: true,
             minChars: 2,
             multiSelect: false,
             name: 'value',
             queryParam: 'searchQuery',
-            valueField: 'key',
-            width: 258
+            valueField: 'key'
         };
     },
 
-    updateValueFieldStore: function (field_id) {
-        var value_field = this.down('combobox');
+    updateValueFieldStore: function (filter) {
+        var value = filter.get('value'),
+            field_id = filter.get('field_id'),
+            value_field = this.down('combobox');
         
         value_field.store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
             fields: [{
                 name: 'key',
                 type: 'string'

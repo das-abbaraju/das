@@ -29,7 +29,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     init: function () {
         this.control({
             'reportsettingsmodal': {
-                close: this.settingsModalClose
+                close: this.closeSettingsModal
             },
 
             'reportsettingsmodal button[action=cancel]':  {
@@ -105,7 +105,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    settingsModalClose: function (cmp, eOpts) {
+    closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
             copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
             copy_setting_form = copy_setting_view.getForm(),

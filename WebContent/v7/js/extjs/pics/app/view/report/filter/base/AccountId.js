@@ -32,7 +32,7 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
     },
     
     updateValueFieldFromOperatorValue: function (operator) {
-        var input = this.down('textfield');
+        var input = this.down('numberfield');
         
         if (operator == 'CurrentAccount') {
             input.setValue(null);
