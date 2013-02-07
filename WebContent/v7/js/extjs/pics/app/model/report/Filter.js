@@ -52,6 +52,11 @@ Ext.define('PICS.model.report.Filter', {
                     value = value.toString();
                     
                     break;
+                case PICS.data.FilterType.Autocomplete:
+                case PICS.data.FilterType.String:
+                default:
+                    // no conversion necessary
+                    break;
             }
             
             return value;
