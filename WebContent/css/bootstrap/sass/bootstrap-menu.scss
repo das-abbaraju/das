@@ -1,35 +1,19 @@
+/*
+ * PICS Stylesheet
+ *
+ * Compiles to bootstrap-menu.css file
+ *
+ * @author: Joel Brownell
+ * @date: 2013-02-06
+ */
+
 @import 'compass/css3';
+@import 'blueprint/typography';
 
-@import 'bootstrap';
-
+@import 'vendor/vendor';
 @import '../../../v7/sass/pics/layout/menu';
-
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_navbar';
-
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_dropdown';
-
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_form';
-
-
-
-/*Styles not included elsewhere*/
-.navbar
-{
-    color: #777777;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-.navbar .brand
-{
-    // svg fallback for ie6/7/8
-    background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
-    background: rgba(0,0,0,0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
-}
-
-/*PICS overrides*/
-a:link,a:visited {
-    text-decoration: none;
-}
-
 @import '../../../v7/sass/pics/layout/environment';
+@import 'override/override';

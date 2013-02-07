@@ -1,0 +1,35 @@
+@import 'form';
+
+/*From bootstrap body defaults*/ 
+.navbar
+{
+    color: #777777;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/*Logo URL update*/
+.navbar .brand
+{
+    // svg fallback for ie6/7/8
+    background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
+    background: rgba(0,0,0,0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
+}
+
+/*PICS Global overrides*/
+body {
+  padding-top: 55px;
+  padding-bottom: 26px;
+  position: relative;
+}
+
+@media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
+  body {
+    padding-top: 0;
+  }
+}
+
+a:link,
+a:visited {
+    text-decoration: none;
+}
