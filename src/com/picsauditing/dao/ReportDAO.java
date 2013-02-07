@@ -145,6 +145,15 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		}
 	}
 
+	// TODO remove this after next release
+	@Transactional(propagation = Propagation.NEVER)
+	public void truncateReportChildren() {
+		System.out.println("WARNING: TRUNCATING REPORT TABLES");
+		em.createNativeQuery("TRUNCATE TABLE report_column").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE report_filter").executeUpdate();
+		em.createNativeQuery("TRUNCATE TABLE report_sort").executeUpdate();
+	}
+
 	@Transactional(propagation = Propagation.NESTED)
 	public ReportElement save(ReportElement o) {
 		if (o.getId() == 0) {

@@ -19,13 +19,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.FilterExpression;
-import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -35,7 +35,6 @@ import com.picsauditing.util.Strings;
 
 // TODO Remove this method after the next release
 @SuppressWarnings("unchecked")
-@Deprecated
 public class LegacyReportConverter {
 
 	private static final Logger logger = LoggerFactory.getLogger(LegacyReportConverter.class);
@@ -170,9 +169,9 @@ public class LegacyReportConverter {
 		return json;
 	}
 
-	public void setReportPropertiesFromJsonParameters(Report report) throws ReportValidationException {
+	public void setReportPropertiesFromJsonParameters(Report report) {
 		if (report.getParameters() == null) {
-			throw new ReportValidationException("Your parameters should not be null.");
+			return;
 		}
 
 		JSONObject json = (JSONObject) JSONValue.parse(report.getParameters());
@@ -212,6 +211,7 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Column column = toColumn((JSONObject) object);
+				System.out.println("converting column data" + column.toString());
 				report.addColumn(column);
 			}
 		}
@@ -226,6 +226,7 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Filter filter = toFilter((JSONObject) object);
+				System.out.println("converting filter data" + filter.toString());
 				report.addFilter(filter);
 			}
 		}

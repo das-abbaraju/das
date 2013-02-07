@@ -1,6 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.QueryDateParameter;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -25,6 +32,7 @@ public class Filter extends ReportElement {
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
+	private String value;
 	private String columnCompare;
 	private Field fieldForComparison;
 
@@ -44,7 +52,14 @@ public class Filter extends ReportElement {
 		this.operator = operator;
 	}
 
-	// TODO add in a String value field
+	public String getValue() {
+		return Strings.implodeForDB(values, ",");
+	}
+
+	public void setValue(String value) {
+		this.value = Strings.implodeForDB(values, ",");
+	}
+
 	@Transient
 	public List<String> getValues() {
 		return values;

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 public class AppVersion {
 	// Update Current Version each release
-	final static public AppVersion current = new AppVersion(6, 33);
+	static public AppVersion current = new AppVersion(6, 34);
 
 	private int major;
 	private int minor;
