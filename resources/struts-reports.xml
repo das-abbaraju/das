@@ -30,6 +30,10 @@
 			<result name="searchList">/struts/report/manage-report/_search-list.jsp</result>
 		</action>
 		
+		<action name="CreateReport" class="com.picsauditing.actions.report.CreateReport">
+			<result>/struts/report/create-report.jsp</result>
+		</action>
+				
 		<!-- Contractor List -->
 		<action name="ContractorList"
 			class="com.picsauditing.actions.report.ReportAccountAudits">

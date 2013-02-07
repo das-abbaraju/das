@@ -232,7 +232,6 @@ public final class MenuBuilder {
 
 		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
 
-		devMenu.addChild("Report Tester", "ReportTester.action", "report_tester");
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
 		devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");
 
@@ -327,108 +326,12 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-		{
-			MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
-			// BILLING
-			if (permissions.hasPermission(OpPerms.Billing)) {
-				legacyMenu.addChild("Billing Report",
-						"ReportBilling.action?filter.status=Active&filter.status=Pending", "BillingReport");
-				legacyMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action", "UnpaidInvoices");
-				legacyMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action", "InvoiceSearch");
-				legacyMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active",
-						"ExpiredCCs");
-				legacyMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action", "LifetimeMembers");
-			}
-			// CONTRACTORS
-			FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
-			if (featureToggleChecker != null
-					&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
-				legacyMenu.addChild(getText("ReportNewRequestedContractor.title"), "ReportRegistrationRequests.action",
-						"ReportNewRequestedContractor");
-			} else {
-				legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),
-						"ReportNewRequestedContractor.action", "ReportNewRequestedContractor");
-			}
-			if (permissions.hasPermission(OpPerms.SearchContractors)) {
-				legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
-			}
-			if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
-				legacyMenu.addChild(getText("ArchivedContractorAccounts.title"), "ArchivedContractorAccounts.action",
-						"ArchivedContractorAccounts");
-				legacyMenu.addChild(getText("DelinquentContractorAccounts.title"),
-						"DelinquentContractorAccounts.action", "DelinquentContractorAccounts");
-			}
-			if (permissions.hasPermission(OpPerms.ContractorApproval))
-				legacyMenu.addChild(getText("ContractorApproval.title"),
-						"ContractorApproval.action?filter.workStatus=P", "subMenu_ApproveContractors");
-			if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
-				legacyMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action", "ContractorLicenses");
-			if (permissions.isAdmin()
-					|| (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
-				legacyMenu.addChild(getText("ReportContractorScore.title"), "ReportContractorScore.action",
-						"ReportContractorScore");
-
-			// USER
-			if (permissions.hasPermission(OpPerms.EmployeeList))
-				legacyMenu.addChild(getText("EmployeeList.title"), "EmployeeList.action");
-
-			if (permissions.seesAllContractors())
-				legacyMenu.addChild("User Multi-Login", "MultiLoginUser.action", "MultiLogin");
-			
-			// FLAGS
-			if (permissions.isCorporate())
-				legacyMenu.addChild(getText("ReportContractorOperatorFlag.title"),
-						"ReportContractorOperatorFlag.action", "ReportContractorOperatorFlag");
-			if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
-				legacyMenu.addChild(getText("ReportContractorOperatorFlagMatrix.title"),
-						"ReportContractorOperatorFlagMatrix.action", "ReportContractorOperatorFlagMatrix");
-			if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
-				legacyMenu.addChild(getText("OperatorFlagMatrix.title"), "OperatorFlagMatrix.action",
-						"OperatorFlagMatrix");
-
-			if (permissions.hasPermission(OpPerms.InsuranceVerification))
-				legacyMenu.addChild(
-						getText("PolicyVerification.title"),
-						"PolicyVerification.action"
-								+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
-										+ permissions.getShadowedUserID() : ""), "PolicyVerification");
-			if (permissions.hasPermission(OpPerms.InsuranceApproval))
-				legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
-						"ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
-
-			// OTHER
-			if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
-				legacyMenu.addChild("Sales Report", "ReportSalesReps.action", "SalesReport");
-			}
-
-			if (permissions.hasPermission(OpPerms.ContractorDetails))
-				legacyMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
-						"QuestionAnswerSearch");
-			if (permissions.hasPermission(OpPerms.EmailQueue))
-				legacyMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
-						"EmailQueue");
-
-			if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
-				legacyMenu.addChild(getText("GraphEmrRates.title"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
-				legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
-						"ReportEmrRates");
-				if (permissions.isAuditor()) {
-					legacyMenu.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action",
-							"ReportAuditorEmrRates");
-				}
-			}
-			if (permissions.hasPermission(OpPerms.TRIRReport)) {
-				legacyMenu.addChild(getText("GraphTrirRates.title"), "GraphTrirRates.action", "GraphTrirRates");
-				legacyMenu.addChild(getText("ReportIncidenceRate.title"),
-						"ReportIncidenceRate.action?filter.shaType=OSHA&filter.shaLocation=Corporate",
-						"ReportIncidenceRate");
-			}
-			if (permissions.hasPermission(OpPerms.FatalitiesReport))
-				legacyMenu
-						.addChild(
-								getText("ReportFatalities.title"),
-								"ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate",
-								"ReportFatalities");
+		addLegacyReports(permissions, reportsMenu);
+		
+		if (permissions.has(OpPerms.Report)) {
+			MenuComponent adminMenu = reportsMenu.addChild("Administration");
+			adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
+			adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
 		}
 
 		if (CollectionUtils.isNotEmpty(favoriteReports)) {
@@ -443,6 +346,108 @@ public final class MenuBuilder {
 			reportsMenu
 					.addChild(report.getName(), "Report.action?report=" + report.getId(), "report_" + report.getId());
 		}
+	}
+
+	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
+		MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
+
+		// BILLING
+		if (permissions.hasPermission(OpPerms.Billing)) {
+			legacyMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending",
+					"BillingReport");
+			legacyMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action", "UnpaidInvoices");
+			legacyMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action", "InvoiceSearch");
+			legacyMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active",
+					"ExpiredCCs");
+			legacyMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action", "LifetimeMembers");
+		}
+		// CONTRACTORS
+		FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
+		if (featureToggleChecker != null
+				&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			legacyMenu.addChild(getText("ReportNewRequestedContractor.title"), "ReportRegistrationRequests.action",
+					"ReportNewRequestedContractor");
+		} else {
+			legacyMenu.addChild(getText("ReportNewRequestedContractor.title"), "ReportNewRequestedContractor.action",
+					"ReportNewRequestedContractor");
+		}
+		if (permissions.hasPermission(OpPerms.SearchContractors)) {
+			legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
+		}
+		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
+			legacyMenu.addChild(getText("ArchivedContractorAccounts.title"), "ArchivedContractorAccounts.action",
+					"ArchivedContractorAccounts");
+			legacyMenu.addChild(getText("DelinquentContractorAccounts.title"), "DelinquentContractorAccounts.action",
+					"DelinquentContractorAccounts");
+		}
+		if (permissions.hasPermission(OpPerms.ContractorApproval))
+			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
+					"subMenu_ApproveContractors");
+		if (permissions.hasPermission(OpPerms.ContractorLicenseReport))
+			legacyMenu.addChild("Contractor Licenses", "ReportContractorLicenses.action", "ContractorLicenses");
+		if (permissions.isAdmin()
+				|| (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
+			legacyMenu.addChild(getText("ReportContractorScore.title"), "ReportContractorScore.action",
+					"ReportContractorScore");
+
+		// USER
+		if (permissions.hasPermission(OpPerms.EmployeeList))
+			legacyMenu.addChild(getText("EmployeeList.title"), "EmployeeList.action");
+
+		if (permissions.seesAllContractors())
+			legacyMenu.addChild("User Multi-Login", "MultiLoginUser.action", "MultiLogin");
+
+		// FLAGS
+		if (permissions.isCorporate())
+			legacyMenu.addChild(getText("ReportContractorOperatorFlag.title"), "ReportContractorOperatorFlag.action",
+					"ReportContractorOperatorFlag");
+		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
+			legacyMenu.addChild(getText("ReportContractorOperatorFlagMatrix.title"),
+					"ReportContractorOperatorFlagMatrix.action", "ReportContractorOperatorFlagMatrix");
+		if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
+			legacyMenu.addChild(getText("OperatorFlagMatrix.title"), "OperatorFlagMatrix.action", "OperatorFlagMatrix");
+
+		if (permissions.hasPermission(OpPerms.InsuranceVerification))
+			legacyMenu.addChild(
+					getText("PolicyVerification.title"),
+					"PolicyVerification.action"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
+									+ permissions.getShadowedUserID() : ""), "PolicyVerification");
+		if (permissions.hasPermission(OpPerms.InsuranceApproval))
+			legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
+					"ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
+
+		// OTHER
+		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
+			legacyMenu.addChild("Sales Report", "ReportSalesReps.action", "SalesReport");
+		}
+
+		if (permissions.hasPermission(OpPerms.ContractorDetails))
+			legacyMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
+					"QuestionAnswerSearch");
+		if (permissions.hasPermission(OpPerms.EmailQueue))
+			legacyMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
+					"EmailQueue");
+
+		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
+			legacyMenu.addChild(getText("GraphEmrRates.title"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
+			legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
+					"ReportEmrRates");
+			if (permissions.isAuditor()) {
+				legacyMenu
+						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+			}
+		}
+		if (permissions.hasPermission(OpPerms.TRIRReport)) {
+			legacyMenu.addChild(getText("GraphTrirRates.title"), "GraphTrirRates.action", "GraphTrirRates");
+			legacyMenu.addChild(getText("ReportIncidenceRate.title"),
+					"ReportIncidenceRate.action?filter.shaType=OSHA&filter.shaLocation=Corporate",
+					"ReportIncidenceRate");
+		}
+		if (permissions.hasPermission(OpPerms.FatalitiesReport))
+			legacyMenu.addChild(getText("ReportFatalities.title"),
+					"ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate",
+					"ReportFatalities");
 	}
 
 	private static void addSupportMenu(MenuComponent menubar, Permissions permissions) {
