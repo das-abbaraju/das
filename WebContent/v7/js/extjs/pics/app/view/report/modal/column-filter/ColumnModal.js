@@ -1,10 +1,10 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
     extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
-    alias: 'widget.columnmodal',
+    alias: 'widget.reportcolumnmodal',
 
     id: 'column_modal',
     items: [{
-        xtype: 'columnlist'
+        xtype: 'reportcolumnlist'
     }],
 
     initComponent: function () {

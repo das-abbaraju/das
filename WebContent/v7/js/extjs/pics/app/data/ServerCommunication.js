@@ -91,7 +91,7 @@ Ext.define('PICS.data.ServerCommunication', {
             },
 
             loadAll: function (options) {
-                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
+                var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
                     callback = typeof options.callback == 'function' ? options.callback : function () {},
                     scope = options.scope ? options.scope : this;
 

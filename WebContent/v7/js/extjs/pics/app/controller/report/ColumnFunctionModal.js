@@ -6,6 +6,10 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         selector: 'reportcolumnfunctionmodal'
     }],
 
+    stores: [
+        'report.ColumnFunctions'
+    ],
+
     views: [
         'PICS.view.report.modal.column-function.ColumnFunctionModal'
     ],
@@ -38,12 +42,21 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
         PICS.data.ServerCommunication.loadData();
     },
 
-    // show the column function modal , but attach the specific column store - column your modifying
     openColumnFunctionModal: function (column) {
-        var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-            column: column
+        var field_id = column.get('field_id'),
+            column_function_store = this.getReportColumnFunctionsStore(),
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(field_id);
+        
+        column_function_store.setProxyForRead(url);
+        
+        column_function_store.load(function (records, operation, success) {
+            if (success) {
+                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal');
+                
+                column_function_modal.show();
+            } else {
+                // TODO: throw error
+            }
         });
-
-        column_function_modal.show();
     }
 });

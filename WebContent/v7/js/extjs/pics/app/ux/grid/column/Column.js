@@ -2,7 +2,7 @@ Ext.define('PICS.ux.grid.column.Column', {
     extend: 'Ext.grid.column.Column',
     
     requires: [
-        'PICS.view.report.report.ColumnTooltip'
+        'PICS.view.report.data-table.ColumnTooltip'
     ],
     
     menuDisabled: true,
@@ -60,7 +60,7 @@ Ext.define('PICS.ux.grid.column.Column', {
             name = column.get('name'),
             description = column.get('description');
         
-        var tooltip = Ext.create('PICS.view.report.report.ColumnTooltip', {
+        var tooltip = Ext.create('PICS.view.report.data-table.ColumnTooltip', {
             target: target
         });
         

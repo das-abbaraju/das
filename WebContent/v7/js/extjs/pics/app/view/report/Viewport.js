@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.Viewport', {
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
         'PICS.view.layout.Header',
-        'PICS.view.report.report.DataTable',
+        'PICS.view.report.data-table.DataTable',
         'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.header.Header'
     ],

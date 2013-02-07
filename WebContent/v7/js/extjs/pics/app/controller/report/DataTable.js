@@ -136,15 +136,13 @@ Ext.define('PICS.controller.report.DataTable', {
         
         PICS.data.ServerCommunication.loadData(last_page);
     },
-    
+
     openColumnFunctionModal: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
+        var column = cmp.up('menu').activeHeader.column;
 
         this.application.fireEvent('opencolumnfunctionmodal', column);
     },
-    
+
     openColumnModal: function (cmp, event, eOpts) {
         this.application.fireEvent('opencolumnmodal');
     },

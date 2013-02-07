@@ -1,0 +1,11 @@
+{
+	column_functions: [{
+			key: 'Count',
+			value: 'Count'
+		},{
+			key: 'Sum',
+			value: 'Sum'
+		}
+	],
+	success: true
+}

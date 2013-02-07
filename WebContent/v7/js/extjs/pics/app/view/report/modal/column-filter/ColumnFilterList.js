@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     extend: 'Ext.grid.Panel',
-    alias: 'columnfilterlist',
+    alias: 'reportcolumnfilterlist',
     
     requires: [
         'Ext.grid.feature.Feature',

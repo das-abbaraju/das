@@ -3,22 +3,22 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     refs: [{
         ref: 'columnModal',
-        selector: 'columnmodal'
+        selector: 'reportcolumnmodal'
     }, {
         ref: 'filterModal',
-        selector: 'filtermodal'
+        selector: 'reportfiltermodal'
     }, {
         ref: 'columnList',
-        selector: 'columnlist'
+        selector: 'reportcolumnlist'
     }, {
         ref: 'filterList',
-        selector: 'filterlist'
+        selector: 'reportfilterlist'
     }, {
         ref: 'columnModalSearchBox',
-        selector: 'columnmodal textfield[name=search_box]'
+        selector: 'reportcolumnmodal textfield[name=search_box]'
     }, {
         ref: 'filterModalSearchBox',
-        selector: 'filtermodal textfield[name=search_box]'
+        selector: 'reportfiltermodal textfield[name=search_box]'
     }],
 
     stores: [
@@ -34,28 +34,28 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     init: function () {
         this.control({
-            'columnmodal': {
+            'reportcolumnmodal': {
                 beforeclose: this.beforeColumnModalClose
             },
-            'filtermodal': {
+            'reportfiltermodal': {
                 beforeclose: this.beforeFilterModalClose
             },
-            'columnmodal textfield[name=search_box]': {
+            'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.searchColumnList
             },
-            'filtermodal textfield[name=search_box]': {
+            'reportfiltermodal textfield[name=search_box]': {
                 keyup: this.searchFilterList
             },
-            'columnmodal button[action=add]':  {
+            'reportcolumnmodal button[action=add]':  {
                 click: this.addColumn
             },
-            'filtermodal button[action=add]':  {
+            'reportfiltermodal button[action=add]':  {
                 click: this.addFilter
             },
-            'columnmodal button[action=cancel]':  {
+            'reportcolumnmodal button[action=cancel]':  {
                 click: this.cancelColumnModal
             },
-            'filtermodal button[action=cancel]':  {
+            'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
             }
         });

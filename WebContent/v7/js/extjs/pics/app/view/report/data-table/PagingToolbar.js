@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.report.PagingToolbar', {
+Ext.define('PICS.view.report.data-table.PagingToolbar', {
     extend: 'Ext.toolbar.Paging',
     alias: 'widget.reportpagingtoolbar',
 

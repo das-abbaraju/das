@@ -26,6 +26,16 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getColumnFunctionUrl: function (field_id) {
+            var path = 'v7/js/extjs/pics/app/data/column-functions.json?';
+            
+            var params = {
+                fieldId: field_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getFavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,

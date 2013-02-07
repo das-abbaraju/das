@@ -1,10 +1,10 @@
-Ext.define('PICS.view.report.report.DataTable', {
+Ext.define('PICS.view.report.data-table.DataTable', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.reportdatatable',
 
     requires: [
         'Ext.grid.RowNumberer',
-        'PICS.view.report.report.PagingToolbar'
+        'PICS.view.report.data-table.PagingToolbar'
     ],
 
     store: 'report.DataTables',
