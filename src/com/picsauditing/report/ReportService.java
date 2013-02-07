@@ -40,7 +40,6 @@ import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -59,11 +58,8 @@ public class ReportService {
 	@Autowired
 	private PermissionService permissionService;
 
-	@SuppressWarnings("deprecation")
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
-	@Autowired
-	private FeatureToggle featureToggle;
 
 	// TODO remove this instance variable
 	private ReportDataConverter converter;
@@ -142,21 +138,6 @@ public class ReportService {
 		return report;
 	}
 
-	@Deprecated
-	private void clearColumnsFiltersAndSorts(Report report) {
-		removeAllReportElements(report.getId(), Column.class);
-		report.getColumns().clear();
-		removeAllReportElements(report.getId(), Filter.class);
-		report.getFilters().clear();
-		removeAllReportElements(report.getId(), Sort.class);
-		report.getSorts().clear();
-	}
-
-	@Deprecated
-	private <E extends ReportElement> void removeAllReportElements(int reportId, Class<E> type) {
-		reportDao.remove(type, "t.report.id = " + reportId);
-	}
-
 	// TODO Remove this method after the next release
 	@Deprecated
 	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
@@ -164,26 +145,15 @@ public class ReportService {
 			throw new IllegalArgumentException("Report should not be null");
 		}
 
-		if (isBackwardsCompatibilityOn()) {
-			clearColumnsFiltersAndSorts(report);
-			legacyReportConverter.setReportPropertiesFromJsonParameters(report);
-			reportDao.save(report);
-		}
-	}
+		reportDao.remove(Column.class, "t.report.id = " + report.getId());
+		report.getColumns().clear();
+		reportDao.remove(Filter.class, "t.report.id = " + report.getId());
+		report.getFilters().clear();
+		reportDao.remove(Sort.class, "t.report.id = " + report.getId());
+		report.getSorts().clear();
 
-	// TODO: Remove this method after the next release
-	@Deprecated
-	private void setReportParameters(Report report) {
-		if (!isBackwardsCompatibilityOn()) {
-			return;
-		}
-
-		JSONObject json = legacyReportConverter.toJSON(report);
-		report.setParameters(json.toString());
-	}
-
-	private boolean isBackwardsCompatibilityOn() {
-		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY);
+		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
+		reportDao.save(report);
 	}
 
 	void validate(Report report) throws ReportValidationException {
@@ -433,20 +403,6 @@ public class ReportService {
 		}
 	}
 
-	// TODO is this method required anywhere?
-	private void removeAndCascade(Report report) {
-		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllByReportId(report.getId());
-		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
-			reportPermissionUserDao.remove(reportPermissionUser);
-		}
-
-		List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report
-				.getId());
-		for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
-			reportPermissionAccountDao.remove(reportPermissionAccount);
-		}
-	}
-
 	public Report createReportFromPayload(ReportContext reportContext) throws IllegalArgumentException, ReportValidationException {
 		if (JSONUtilities.isEmpty(reportContext.payloadJson)) {
 			throw new IllegalArgumentException();
@@ -467,9 +423,11 @@ public class ReportService {
 			report = buildReportFromJson(reportJson, reportContext.reportId);
 		} else {
 			report = loadReportFromDatabase(reportContext.reportId);
-			legacyConvertParametersToReport(report);
-		}
 
+			if (report.hasNoColumnsFiltersOrSorts()) {
+				legacyConvertParametersToReport(report);
+			}
+		}
 		return report;
 	}
 
@@ -542,6 +500,7 @@ public class ReportService {
 		return responseJson;
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql) throws ReportValidationException, PicsSqlException {
 		JSONObject dataJson = new JSONObject();
 

@@ -201,6 +201,10 @@ public class Report extends BaseTable {
 		return CollectionUtils.isEmpty(columns);
 	}
 
+	public boolean hasNoColumnsFiltersOrSorts() {
+		return CollectionUtils.isEmpty(columns) && CollectionUtils.isEmpty(filters) && CollectionUtils.isEmpty(sorts);
+	}
+
 	public boolean hasNoModelType() {
 		return modelType == null;
 	}
@@ -210,50 +214,4 @@ public class Report extends BaseTable {
 		return parameters != null;
 	}
 
-	/**
-	 * TODO: Remove after the next release
-	 *
-	 * We assume that we always overwrite the JSON String in the parameters field with the changes
-	 * made by the user in the columns/filters/sorts
-	 * @throws Exception
-	 */
-//	@PrePersist
-//	public void convertOnSave() throws Exception {
-//		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-//		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
-//			return;
-//		}
-//
-//		try {
-//			JSONObject json = LegacyReportConverter.toJSON(this);
-//			if (json != null) {
-//				this.parameters = json.toString();
-//			}
-//		} catch (Exception e) {
-//			logger.error("An error occurred while converting the report to a JSON String for report id = {}", id, e);
-//			throw new Exception(e);
-//		}
-//	}
-
-	/**
-	 * TODO: Remove after the next release
-	 *
-	 * We will assume that every read from the database will involve over-writing the columns, filters
-	 * and sorts from those in the JSON String.
-	 * @throws Exception
-	 */
-//	@PostLoad
-//	public void convertOnRead() throws Exception {
-//		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-//		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY)) {
-//			return;
-//		}
-//
-//		try {
-//			LegacyReportConverter.fillParameters(this);
-//		} catch (ReportValidationException rve) {
-//			logger.error("Error converting from the Legacy JSON into the report object for reportId = {}", id, rve);
-//			throw new Exception(rve.getMessage());
-//		}
-//	}
 }

@@ -29,7 +29,6 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.PermissionService;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.pagination.Pagination;
 
 public class ReportServiceTest {
@@ -54,8 +53,6 @@ public class ReportServiceTest {
 	private ReportPermissionUser reportPermissionUser;
 	@Mock
 	private Permissions permissions;
-	@Mock
-	private FeatureToggle featureToggle;
 	@Mock
 	private ReportService reportServiceMock;
 	@Mock
@@ -82,7 +79,6 @@ public class ReportServiceTest {
 		setInternalState(reportService, "reportUserDao", reportUserDao);
 		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
-		setInternalState(reportService, "featureToggle", featureToggle);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
 
@@ -90,7 +86,6 @@ public class ReportServiceTest {
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(account.getId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
-		when(featureToggle.isFeatureEnabled(anyString())).thenReturn(true);
 	}
 
 	@Test(expected = ReportValidationException.class)
