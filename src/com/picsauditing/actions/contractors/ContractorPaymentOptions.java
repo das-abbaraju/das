@@ -90,16 +90,16 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		contractorAccountDao.save(contractor);
 
+		if (contractor.getCountry().getCurrency().isCAD()) {
+			initCanadianTaxFee();
+		}
+
 		if (!contractor.getPaymentMethod().isCreditCard()) {
 			return SUCCESS;
 		}
 
 		// Setup the new variables for sending the CC to braintree
 		loadCC();
-
-		if (contractor.getCountry().getCurrency().isCAD()) {
-			initCanadianTaxFee();
-		}
 
 		return SUCCESS;
 	}
