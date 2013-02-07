@@ -10035,9 +10035,10 @@ dd {
   background-image: -moz-linear-gradient(#c66603, #a84d10);
   background-image: -o-linear-gradient(#c66603, #a84d10);
   background-image: linear-gradient(#c66603, #a84d10);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c66603', endColorstr='#a84d10', GradientType=0);
 }
 
-/* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+/* line 15, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 
 .dropdown-menu .nav-header {
   display: block;
@@ -10049,7 +10050,7 @@ dd {
   text-transform: uppercase;
 }
 
-/* line 25, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+/* line 26, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 
 .dropdown-striped li:nth-child(even) {
   background-color: #f1f1f2;
