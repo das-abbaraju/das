@@ -368,7 +368,10 @@ public final class MenuBuilder {
 				legacyMenu.addChild(getText("ReportContractorScore.title"), "ReportContractorScore.action",
 						"ReportContractorScore");
 
-			// USERS
+			// USER
+			if (permissions.hasPermission(OpPerms.EmployeeList))
+				legacyMenu.addChild(getText("EmployeeList.title"), "EmployeeList.action");
+
 			if (permissions.seesAllContractors())
 				legacyMenu.addChild("User Multi-Login", "MultiLoginUser.action", "MultiLogin");
 			
