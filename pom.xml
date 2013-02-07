@@ -945,5 +945,11 @@
             <classifier>jdk15</classifier>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+      		<groupId>ApprovalTests</groupId>
+      		<artifactId>ApprovalTests</artifactId>
+      		<version>1.0</version>
+      		<scope>test</scope>
+    	</dependency>
     </dependencies>
 </project>
