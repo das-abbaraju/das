@@ -280,10 +280,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         // dynamically load value store for multiselect and autocomplete
         if (is_autocomplete) {
-            var report_store = this.getReportReportsStore(),
-                report = report_store.first();
-            
-            filter_input.updateValueFieldStore(report, cmp.filter);
+            filter_input.updateValueFieldStore(cmp.filter);
         } else if (is_multiselect) {
             filter_input.updateValueFieldStore(cmp.filter);
         }

@@ -1,6 +1,6 @@
 Ext.define('PICS.data.ServerCommunicationUrl', {
     statics: {
-        getAutocompleteUrl: function (report_id, field_id, search_key) {
+        getAutocompleteUrl: function (field_id, search_key) {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'Autocompleter.action?';

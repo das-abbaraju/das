@@ -26,12 +26,11 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
         };
     },
 
-    updateValueFieldStore: function (report, filter) {
-        var report_id = report.get('id'),
-            field_id = filter.get('field_id'),
+    updateValueFieldStore: function (filter) {
+        var field_id = filter.get('field_id'),
             filter_value = filter.get('value'),
             value_field = this.down('combobox'),
-            url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(report_id, field_id, filter_value);
+            url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id, filter_value);
         
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
