@@ -211,7 +211,6 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Column column = toColumn((JSONObject) object);
-				System.out.println("converting column data" + column.toString());
 				report.addColumn(column);
 			}
 		}
@@ -226,7 +225,6 @@ public class LegacyReportConverter {
 		for (Object object : jsonArray) {
 			if (object != null) {
 				Filter filter = toFilter((JSONObject) object);
-				System.out.println("converting filter data" + filter.toString());
 				report.addFilter(filter);
 			}
 		}

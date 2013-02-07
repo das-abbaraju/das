@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,6 @@ public class Filter extends ReportElement {
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
-	private String value;
 	private String columnCompare;
 	private Field fieldForComparison;
 
@@ -53,11 +53,11 @@ public class Filter extends ReportElement {
 	}
 
 	public String getValue() {
-		return Strings.implodeForDB(values, ",");
+		return Strings.implode(values, ", ");
 	}
 
 	public void setValue(String value) {
-		this.value = Strings.implodeForDB(values, ",");
+		values = Arrays.asList(value.split(", "));
 	}
 
 	@Transient

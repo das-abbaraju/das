@@ -115,6 +115,7 @@ public class Strings {
 		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
 	}
 
+	// FIXME THIS FUNCTION IS NOT USING DELIMITER
 	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
 		return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
 	}
