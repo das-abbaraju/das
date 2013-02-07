@@ -87,7 +87,7 @@ public class ReportUserDAO extends PicsDAO {
 
 	public List<ReportUser> findAllFavorite(int userId) {
 		String where = "t.user.id = " + userId + " AND favorite = 1";
-		String orderBy = "sortOrder";
+		String orderBy = "sortOrder DESC";
 		int limit = 0;
 
 		List<ReportUser> reportUsers = findWhere(ReportUser.class, where, limit, orderBy);
@@ -119,7 +119,7 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
-	public void cascadeFavoriteReportSorting(int userId, int offset, int start, int end) throws SQLException {
+	public void offsetSortOrderForRange(int userId, int offset, int start, int end) throws SQLException {
 		String sql = "UPDATE report_user SET sortOrder = sortOrder + " + offset + " WHERE userID = " + userId
 				+ " AND sortOrder >= " + start + " AND sortOrder <= " + end;
 

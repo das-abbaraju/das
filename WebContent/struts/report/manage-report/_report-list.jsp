@@ -80,7 +80,7 @@
                         <ul class="dropdown-menu">
                             <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up == 'true')">
                                 <li>
-                                    <a href="ManageReports!moveUp.action?reportId=${report_id}" class="move-up">
+                                    <a href="ManageReports!moveFavoriteUp.action?reportId=${report_id}" class="move-up">
                                         <s:text name="ManageReports.myReports.MoveUp" />
                                     </a>
                                 </li>
@@ -88,7 +88,7 @@
                             
                             <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down == 'true')">
                                 <li>
-                                    <a href="ManageReports!moveDown.action?reportId=${report_id}" class="move-down">
+                                    <a href="ManageReports!moveFavoriteDown.action?reportId=${report_id}" class="move-down">
                                         <s:text name="ManageReports.myReports.MoveDown" />
                                     </a>
                                 </li>

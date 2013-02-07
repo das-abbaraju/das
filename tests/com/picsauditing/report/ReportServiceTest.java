@@ -1,6 +1,7 @@
 package com.picsauditing.report;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
@@ -68,7 +69,8 @@ public class ReportServiceTest {
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
-	private static final int MAX_SORT_ORDER = 5;
+	private static final int MAX_SORT_ORDER = 10;
+	private static final int MAX_FAVORITE_COUNT = 15;
 
 	@Before
 	public void setUp() throws Exception {
@@ -395,6 +397,53 @@ public class ReportServiceTest {
 		ReportUser result = reportService.favoriteReport(USER_ID, REPORT_ID);
 
 		assertEquals(MAX_SORT_ORDER + 1, result.getSortOrder());
+	}
+
+	@Test
+	public void testUnfavoriteReport_unfavoritedReportShouldBeRemoved() throws Exception {
+		ReportUser reportUser = createTestReportUser();
+		reportUser.setFavorite(false);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+
+		ReportUser result = reportService.unfavoriteReport(USER_ID, REPORT_ID);
+
+		assertFalse(result.isFavorite());
+		assertEquals(0, result.getSortOrder());
+	}
+
+	@Test
+	public void testMoveFavoriteUp() throws Exception {
+		ReportUser reportUser = createTestReportUser();
+		int beforeSortOrder = 3;
+		reportUser.setSortOrder(beforeSortOrder);
+		reportUser.setFavorite(true);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+
+		ReportUser result = reportService.moveFavoriteUp(USER_ID, REPORT_ID);
+
+		assertEquals(beforeSortOrder + 1, result.getSortOrder());
+		verify(reportUserDao).offsetSortOrderForRange(USER_ID, -1, 4, 4);
+	}
+
+	@Test
+	public void testMoveFavoriteDown() throws Exception {
+		ReportUser reportUser = createTestReportUser();
+		int beforeSortOrder = 3;
+		reportUser.setSortOrder(beforeSortOrder);
+		reportUser.setFavorite(true);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+
+		ReportUser result = reportService.moveFavoriteDown(USER_ID, REPORT_ID);
+
+		assertEquals(beforeSortOrder - 1, result.getSortOrder());
+		verify(reportUserDao).offsetSortOrderForRange(USER_ID, 1, 2, 2);
 	}
 
 	private ReportUser createTestReportUser() {

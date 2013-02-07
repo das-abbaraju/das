@@ -69,6 +69,7 @@ public class ReportService {
 	private ReportDataConverter converter;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
+	private static final int MAX_REPORTS_IN_MENU = 10;
 
 	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
@@ -227,9 +228,7 @@ public class ReportService {
 		return reports;
 	}
 
-	@SuppressWarnings("deprecation")
-	public List<ReportUser> getReportUsersForMyReports(String sort, String direction, Permissions permissions)
-			throws IllegalArgumentException {
+	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions) throws IllegalArgumentException {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(sort)) {
@@ -242,20 +241,38 @@ public class ReportService {
 		for (Report report : reports) {
 			ReportUser reportUser = report.getReportUser(permissions.getUserId());
 			if (reportUser == null) {
-				reportUser = new ReportUser();
-
-				User user = new User();
-				user.setId(permissions.getUserId());
-				reportUser.setUser(user);
-				reportUser.setReport(report);
-
-				reportUser.setFavorite(false);
-				reportUserDao.save(reportUser);
+				// todo: Why are creating a new ReportUser for each report???
+				reportUser = createReportUserForReport(permissions.getUserId(), report);
 			}
 			reportUsers.add(reportUser);
 		}
 
 		return reportUsers;
+	}
+
+	private ReportUser createReportUserForReport(int userId, Report report) {
+		ReportUser reportUser = new ReportUser();
+
+		User user = new User();
+		user.setId(userId);
+		reportUser.setUser(user);
+		reportUser.setReport(report);
+		reportUser.setFavorite(false);
+		reportUserDao.save(reportUser);
+
+		return reportUser;
+	}
+
+	public List<ReportUser> getFavorites(int userId) {
+		List<ReportUser> favorites;
+		favorites = reportUserDao.findAllFavorite(userId);
+
+		if (favorites.size() > MAX_REPORTS_IN_MENU) {
+			List<ReportUser> reportUserOverflow = favorites.subList(MAX_REPORTS_IN_MENU, favorites.size());
+			favorites = favorites.subList(0, MAX_REPORTS_IN_MENU);
+		}
+
+		return favorites;
 	}
 
 	public ReportUser favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
@@ -274,35 +291,24 @@ public class ReportService {
 		return reportUser;
 	}
 
-	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
-			SQLException, Exception {
+	public ReportUser unfavoriteReport(int userId, int reportId) {
 		ReportUser unfavoritedReportUser = loadOrCreateReportUser(userId, reportId);
-		int removedSortIndex = unfavoritedReportUser.getSortOrder();
-
-		reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, Integer.MAX_VALUE);
 
 		unfavoritedReportUser.setSortOrder(0);
 		unfavoritedReportUser.setFavorite(false);
-		reportUserDao.save(unfavoritedReportUser);
+		unfavoritedReportUser = (ReportUser) reportUserDao.save(unfavoritedReportUser);
+		return unfavoritedReportUser;
 	}
 
-	public ReportUser loadOrCreateReportUser(User user, Report report) {
-		ReportUser reportUser = new ReportUser();
-
-		try {
-			reportUser = loadReportUser(user.getId(), report.getId());
-		} catch (NoResultException nre) {
-			reportUser.setUser(user);
-			reportUser.setReport(report);
-		}
-
-		reportUser.setLastViewedDate(new Date());
-		reportUser.setViewCount(reportUser.getViewCount() + 1);
-		return reportUser;
+	public ReportUser moveFavoriteUp(int userId, int reportId) throws Exception {
+		return moveFavorite(userId, reportId, 1);
 	}
 
-	public void moveFavorite(int userId, int reportId, int magnitude) throws Exception {
-		reportUserDao.resetSortOrder(userId);
+	public ReportUser moveFavoriteDown(int userId, int reportId) throws Exception {
+		return moveFavorite(userId, reportId, -1);
+	}
+
+	public ReportUser moveFavorite(int userId, int reportId, int magnitude) throws Exception {
 
 		ReportUser reportUser = loadReportUser(userId, reportId);
 		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
@@ -310,29 +316,36 @@ public class ReportService {
 		int newPosition = currentPosition + magnitude;
 
 		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites) {
-			return;
+			return reportUser;
 		}
 
-		int offsetPosition;
-		int topPositionToMove;
-		int bottomPositionToMove;
-
-		if (currentPosition < newPosition) {
-			// Moving down in list, other reports move up
-			offsetPosition = -1;
-			topPositionToMove = currentPosition + 1;
-			bottomPositionToMove = newPosition;
-		} else {
-			// Moving up in list, other reports move down
-			offsetPosition = 1;
-			topPositionToMove = newPosition;
-			bottomPositionToMove = currentPosition - 1;
-		}
-
-		reportUserDao.cascadeFavoriteReportSorting(userId, offsetPosition, topPositionToMove, bottomPositionToMove);
+		shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
 
 		reportUser.setSortOrder(newPosition);
-		reportUserDao.save(reportUser);
+		reportUser = (ReportUser) reportUserDao.save(reportUser);
+		return reportUser;
+	}
+
+	private void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
+		reportUserDao.resetSortOrder(userId);
+
+		int offsetAmount;
+		int offsetRangeBegin;
+		int offsetRangeEnd;
+
+		if (currentPosition < newPosition) {
+			// Moving up in list, displaced reports move down
+			offsetAmount = -1;
+			offsetRangeBegin = currentPosition + 1;
+			offsetRangeEnd = newPosition;
+		} else {
+			// Moving down in list, displaced reports move up
+			offsetAmount = 1;
+			offsetRangeBegin = newPosition;
+			offsetRangeEnd = currentPosition - 1;
+		}
+
+		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
 	}
 
 	public ReportUser loadOrCreateReportUser(int userId, int reportId) {

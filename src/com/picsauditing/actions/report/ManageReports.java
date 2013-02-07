@@ -95,9 +95,33 @@ public class ManageReports extends PicsActionSupport {
 		return "favorites";
 	}
 
+	public String moveFavoriteUp() {
+		try {
+			reportService.moveFavoriteUp(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String moveFavoriteDown() {
+		try {
+			reportService.moveFavoriteDown(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
 	public String myReportsList() {
 		try {
-			reportUsers = reportService.getReportUsersForMyReports(sort, direction, permissions);
+			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -160,6 +184,30 @@ public class ManageReports extends PicsActionSupport {
 	 * @return
 	 */
 	public String deleteReport() {
+		return redirectToPreviousView();
+	}
+
+	public String favorite() {
+		try {
+			reportService.favoriteReport(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String unfavorite() {
+		try {
+			reportService.unfavoriteReport(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+		}
+
 		return redirectToPreviousView();
 	}
 
