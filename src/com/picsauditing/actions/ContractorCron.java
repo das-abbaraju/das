@@ -163,6 +163,7 @@ public class ContractorCron extends PicsActionSupport {
 	public String listAjax() {
 		List<Integer> ids = contractorDAO.findContractorsNeedingRecalculation(15, new HashSet<Integer>());
 		output = Strings.implode(ids);
+		contractorDAO.updateLastRecalculationToNow(output);
 		return PLAIN_TEXT;
 	}
 
