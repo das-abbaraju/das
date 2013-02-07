@@ -25,6 +25,7 @@ public enum ModelType {
 	InvoiceItems,
 	Invoices,
 	Operators,
+	OperatorAccountUsers,
 	OperatorUsers,
 	PaymentCommissions,
 	RegistrationRequests,

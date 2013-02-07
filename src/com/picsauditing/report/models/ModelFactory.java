@@ -41,6 +41,8 @@ public class ModelFactory {
 			return new InvoiceModel(permissions);
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel(permissions);
+		if (type.equals(ModelType.OperatorAccountUsers))
+			return new OperatorAccountUserModel(permissions);
 		if (type.equals(ModelType.OperatorUsers))
 			return new OperatorUserModel(permissions);
 		if (type.equals(ModelType.PaymentCommissions))
