@@ -9,7 +9,9 @@ Ext.application({
     requires: [
         'PICS.view.report.Viewport',
         'PICS.data.ServerCommunication',
-        'PICS.data.ServerCommunicationUrl'
+        'PICS.data.ServerCommunicationUrl',
+        'PICS.data.ColumnType',
+        'PICS.data.FilterType'
     ],
 
     constants: {

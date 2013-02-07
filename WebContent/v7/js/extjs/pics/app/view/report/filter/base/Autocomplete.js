@@ -26,10 +26,12 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
         };
     },
 
-    updateValueFieldStore: function (filter) {
-        var value = filter.get('value'),
+    updateValueFieldStore: function (report, filter) {
+        var report_id = report.get('id'),
             field_id = filter.get('field_id'),
-            value_field = this.down('combobox');
+            filter_value = filter.get('value'),
+            value_field = this.down('combobox'),
+            url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(report_id, field_id, filter_value);
         
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
@@ -42,10 +44,16 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'Autocompleter.action?fieldType=' + field_id,
+                url: url,
                 reader: {
                     root: 'result',
                     type: 'json'
+                }
+            },
+            listeners: {
+                // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
+                load: function (store, records, successful, eOpts) {
+                    value_field.select(filter_value);
                 }
             }
         });

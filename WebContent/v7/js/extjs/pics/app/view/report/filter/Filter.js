@@ -161,23 +161,28 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     getFilterClassByType: function (type) {
-        var filter_classes = {
-            AccountID: 'PICS.view.report.filter.base.AccountId',
-            Autocomplete: 'PICS.view.report.filter.base.Autocomplete',
-            Boolean: 'PICS.view.report.filter.base.Boolean',
-            Date: 'PICS.view.report.filter.base.Date',
-            Multiselect: 'PICS.view.report.filter.base.MultiSelect',
-            Number: 'PICS.view.report.filter.base.Number',
-            String: 'PICS.view.report.filter.base.String',
-            UserID: 'PICS.view.report.filter.base.UserId'
-        };
-        
-        var filter_class = filter_classes[type];
+        var filter_classes = this.getFilterClasses(),
+            filter_class = filter_classes[type];
         
         if (typeof filter_class == 'undefined') {
             Ext.Error.raise('Invalid filter type: ' + type);
         }
         
         return filter_class;
+    },
+    
+    getFilterClasses: function () {
+        var filter_classes = {};
+        
+        filter_classes[PICS.data.FilterType.AccountID] = 'PICS.view.report.filter.base.AccountId';
+        filter_classes[PICS.data.FilterType.Autocomplete] = 'PICS.view.report.filter.base.Autocomplete';
+        filter_classes[PICS.data.FilterType.Boolean] = 'PICS.view.report.filter.base.Boolean';
+        filter_classes[PICS.data.FilterType.Date] = 'PICS.view.report.filter.base.Date';
+        filter_classes[PICS.data.FilterType.Multiselect] = 'PICS.view.report.filter.base.MultiSelect';
+        filter_classes[PICS.data.FilterType.Number] = 'PICS.view.report.filter.base.Number';
+        filter_classes[PICS.data.FilterType.String] = 'PICS.view.report.filter.base.String';
+        filter_classes[PICS.data.FilterType.UserID] = 'PICS.view.report.filter.base.UserId';
+        
+        return filter_classes;
     }
 });

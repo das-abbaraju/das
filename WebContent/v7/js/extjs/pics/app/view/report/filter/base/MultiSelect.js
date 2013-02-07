@@ -23,9 +23,10 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
     },
     
     updateValueFieldStore: function (filter) {
-        var value = filter.get('value'),
-            field_id = filter.get('field_id'),
-            value_field = this.down('combobox');
+        var field_id = filter.get('field_id'),
+            filter_value = filter.get('value'),
+            value_field = this.down('combobox'),
+            url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
         
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
@@ -38,7 +39,7 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'Autocompleter.action?fieldType=' + field_id,
+                url: url,
                 reader: {
                     root: 'result',
                     type: 'json'
@@ -47,8 +48,9 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    if (typeof value == 'string') {
-                        var keys = value.split(', ');                        
+                    if (typeof filter_value == 'string') {
+                        var keys = filter_value.split(', ');
+                        
                         value_field.select(keys);
                     }
                 }

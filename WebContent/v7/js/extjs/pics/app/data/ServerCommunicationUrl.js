@@ -1,5 +1,19 @@
 Ext.define('PICS.data.ServerCommunicationUrl', {
     statics: {
+        getAutocompleteUrl: function (report_id, field_id, search_key) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'Autocompleter.action?';
+            
+            var params = {
+                reportId: report_id,
+                fieldId: field_id,
+                searchKey: search_key
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getCopyReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
@@ -66,6 +80,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 limit: limit
             };
 
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getMultiSelectUrl: function (field_id) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'Autocompleter.action?';
+            
+            var params = {
+                fieldType: field_id
+            };
+            
             return path + Ext.Object.toQueryString(params);
         },
         

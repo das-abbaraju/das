@@ -27,16 +27,34 @@ Ext.define('PICS.model.report.Filter', {
     }, {
         name: 'value',
         convert: function (value, record) {
-            if (value instanceof Array) {
-                value = value.join(', ');
-            }
+            var type = record.get('type');
             
             if (value == null) {
-                value = '';
+                return '';
             }
             
-            // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
-            return value.toString();
+            switch (type) {
+                case PICS.data.FilterType.Date:
+                    value = Ext.Date.format(value, 'Y-m-d') || value;
+                    
+                    break;
+                case PICS.data.FilterType.Multiselect:
+                    if (value instanceof Array) {
+                        value = value.join(', ');
+                    }
+                    
+                    break;
+                case PICS.data.FilterType.AccountID:
+                case PICS.data.FilterType.Boolean:
+                case PICS.data.FilterType.Number:
+                case PICS.data.FilterType.UserID:
+                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
+                    value = value.toString();
+                    
+                    break;
+            }
+            
+            return value;
         },
         type: 'string',
         useNull: true

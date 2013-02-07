@@ -110,13 +110,11 @@ Ext.define('PICS.controller.report.Filter', {
 
             // saving edits to date filter store + refresh
             '#report_filters datefield[name=value]': {
-                blur: this.blurDateField,
-                render: this.renderDateField,
-                specialkey: this.submitDateField
+                render: this.renderDateField
             },
             
             // saving edits to non-date filter store + refresh
-            '#report_filters [name=value]:not(datefield)': {
+            '#report_filters [name=value]': {
                 blur: this.blurValueField,
                 specialkey: this.submitValueField
             },
@@ -273,28 +271,22 @@ Ext.define('PICS.controller.report.Filter', {
     
     beforeFilterRender: function (cmp, eOpts) {
         var filter_input = cmp.down('reportfilterbasefilter'),
-            filter_input_form = filter_input.getForm();
-
+            filter_input_form = filter_input.getForm(),
+            is_autocomplete = cmp.down('reportfilterbaseautocomplete'),
+            is_multiselect = cmp.down('reportfilterbasemultiselect');
+        
         // attach filter record to "filter view form"
         filter_input_form.loadRecord(cmp.filter);
         
         // dynamically load value store for multiselect and autocomplete
-        if (filter_input.down('combobox[name=value]')) {
+        if (is_autocomplete) {
+            var report_store = this.getReportReportsStore(),
+                report = report_store.first();
+            
+            filter_input.updateValueFieldStore(report, cmp.filter);
+        } else if (is_multiselect) {
             filter_input.updateValueFieldStore(cmp.filter);
         }
-    },
-    
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    blurDateField: function (cmp, event, eOpts) {
-        var filter_view = cmp.up('reportfilter'),
-            filter = filter_view.record,
-            value = cmp.getValue(),
-            // TODO: weird may need some unified date format
-            date = Ext.Date.format(value, 'Y-m-d') || value;
-
-        filter.set('value', date);
     },
     
     blurFilter: function (cmp, event, eOpts) {
@@ -362,11 +354,11 @@ Ext.define('PICS.controller.report.Filter', {
     renderDateField: function (cmp, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm(),
-            filter_input_form_record = filter_input_form.getRecord(),
-            filter_input_value = filter_input_form_record.get('value');
+            filter = filter_input_form.getRecord(),
+            filter_value = filter.get('value');
 
         // by-pass setValue validation by modifying dom directly
-        cmp.el.down('input[name="value"]').dom.value = filter_input_value;
+        cmp.el.down('input[name="value"]').dom.value = filter_value;
     },
 
     renderFilter: function (cmp, eOpts) {
@@ -377,8 +369,8 @@ Ext.define('PICS.controller.report.Filter', {
     selectOperator: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm(),
-            filter_input_form_record = filter_input_form.getRecord(),
-            filter_input_value = filter_input_form_record.get('value');
+            filter = filter_input_form.getRecord(),
+            filter_value = filter.get('value');
             
         // hide value field depending on operator selected
         if (typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
@@ -389,7 +381,7 @@ Ext.define('PICS.controller.report.Filter', {
         filter_input_form.updateRecord();
         
         // refresh report if filter value present
-        if (filter_input_value != '' && filter_input_value != null) {
+        if (filter_value != '' && filter_value != null) {
             PICS.data.ServerCommunication.loadData();
         }
     },
@@ -399,24 +391,6 @@ Ext.define('PICS.controller.report.Filter', {
             filter_input_form = filter_input_view.getForm();
     
         filter_input_form.updateRecord();
-
-        PICS.data.ServerCommunication.loadData();
-    },
-    
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    // TODO: come back to this to figure it out - updateRecord with dates?
-    submitDateField: function (cmp, event) {
-        if (event.getKey() != event.ENTER) {
-            return false;
-        }
-        
-        var filter_view = cmp.up('reportfilter'),
-            filter = filter_view.record,
-            // TODO: weird may need some unified date format
-            date = Ext.Date.format(value, 'Y-m-d') || value;
-
-        filter.set('value', date);
 
         PICS.data.ServerCommunication.loadData();
     },

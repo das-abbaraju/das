@@ -86,21 +86,21 @@ Ext.define('PICS.model.report.Column', {
             column: this
         };
 
-        switch (type.toLowerCase()) {
-            case 'boolean':
+        switch (type) {
+            case PICS.data.ColumnType.Boolean:
                 grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
-            case 'flag':
+            case PICS.data.ColumnType.Flag:
                 grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
                 break;
-            case 'number':
+            case PICS.data.ColumnType.Number:
                 grid_column = Ext.create('PICS.ux.grid.column.Number', config);
 
                 break;
-            case 'date':
-            case 'string':
+            case PICS.data.ColumnType.Date:
+            case PICS.data.ColumnType.String:
             default:
                 grid_column = Ext.create('PICS.ux.grid.column.String', config);
                 
