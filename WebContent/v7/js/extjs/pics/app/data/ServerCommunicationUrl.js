@@ -15,7 +15,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getFavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ManageReports!favorite.action?';
+                path = 'ReportApi!favorite.action?';
             
             var params = {
                 reportId: report_id
@@ -84,7 +84,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getUnfavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ManageReports!unfavorite.action?';
+                path = 'ReportApi!unfavorite.action?';
             
             var params = {
                 reportId: report_id

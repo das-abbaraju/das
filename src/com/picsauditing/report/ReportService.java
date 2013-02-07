@@ -3,6 +3,7 @@ package com.picsauditing.report;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -97,7 +98,7 @@ public class ReportService {
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		connectReportUser(userId, newReport.getId());
+		loadOrCreateReportUser(userId, newReport.getId());
 		connectReportPermissionUser(userId, newReport.getId(), true);
 
 		return newReport;
@@ -257,20 +258,25 @@ public class ReportService {
 		return reportUsers;
 	}
 
-	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
+	public ReportUser favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
 			SQLException {
-		ReportUser reportUser = connectReportUser(userId, reportId);
+		ReportUser reportUser = loadOrCreateReportUser(userId, reportId);
+		favorite(reportUser);
+		return (ReportUser) reportUserDao.save(reportUser);
+	}
 
-		reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, Integer.MAX_VALUE);
-
-		reportUser.setSortOrder(1);
+	private ReportUser favorite(ReportUser reportUser) throws SQLException {
+		int userId = reportUser.getUser().getId() ;
+		int nextSortIndex = getNextSortIndex(userId);
+		reportUser.setSortOrder(nextSortIndex);
 		reportUser.setFavorite(true);
-		reportUserDao.save(reportUser);
+
+		return reportUser;
 	}
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
 			SQLException, Exception {
-		ReportUser unfavoritedReportUser = connectReportUser(userId, reportId);
+		ReportUser unfavoritedReportUser = loadOrCreateReportUser(userId, reportId);
 		int removedSortIndex = unfavoritedReportUser.getSortOrder();
 
 		reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, Integer.MAX_VALUE);
@@ -280,10 +286,25 @@ public class ReportService {
 		reportUserDao.save(unfavoritedReportUser);
 	}
 
-	public void moveReportUser(int userId, int reportId, int magnitude) throws Exception {
+	public ReportUser loadOrCreateReportUser(User user, Report report) {
+		ReportUser reportUser = new ReportUser();
+
+		try {
+			reportUser = loadReportUser(user.getId(), report.getId());
+		} catch (NoResultException nre) {
+			reportUser.setUser(user);
+			reportUser.setReport(report);
+		}
+
+		reportUser.setLastViewedDate(new Date());
+		reportUser.setViewCount(reportUser.getViewCount() + 1);
+		return reportUser;
+	}
+
+	public void moveFavorite(int userId, int reportId, int magnitude) throws Exception {
 		reportUserDao.resetSortOrder(userId);
 
-		ReportUser reportUser = reportUserDao.findOne(userId, reportId);
+		ReportUser reportUser = loadReportUser(userId, reportId);
 		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
 		int currentPosition = reportUser.getSortOrder();
 		int newPosition = currentPosition + magnitude;
@@ -314,21 +335,35 @@ public class ReportService {
 		reportUserDao.save(reportUser);
 	}
 
-	private ReportUser connectReportUser(int userId, int reportId) {
+	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
 		ReportUser reportUser;
 
 		try {
-			reportUser = reportUserDao.findOne(userId, reportId);
+			reportUser = loadReportUser(userId, reportId);
 		} catch (NoResultException nre) {
-			// Need to connect user to report first
-			Report report = reportDao.find(Report.class, reportId);
-			reportUser = new ReportUser(userId, report);
-			reportUser.setAuditColumns(new User(userId));
-			reportUser.setFavorite(false);
-			reportUserDao.save(reportUser);
+			reportUser = createReportUser(userId, reportId);
 		}
 
 		return reportUser;
+	}
+
+	private ReportUser createReportUser(int userId, int reportId) {
+		ReportUser reportUser;// Need to connect user to report first
+		Report report = reportDao.find(Report.class, reportId);
+		reportUser = new ReportUser(userId, report);
+		reportUser.setAuditColumns(new User(userId));
+		reportUser.setFavorite(false);
+		reportUserDao.save(reportUser);
+		return reportUser;
+	}
+
+	public ReportUser loadReportUser(int userId, int reportId) {
+		return reportUserDao.findOne(userId, reportId);
+	}
+
+	private int getNextSortIndex(int userId) {
+		int maxSortIndex = reportUserDao.findMaxSortIndex(userId);
+		return maxSortIndex + 1;
 	}
 
 	public ReportPermissionUser connectReportPermissionUser(int userId, int reportId, boolean editable) {
@@ -544,6 +579,10 @@ public class ReportService {
 		convertForPrinting();
 		HSSFWorkbook workbook = buildWorkbook(report);
 		writeFile(report.getName() + ".xls", workbook);
+	}
+
+	public List<ReportUser> getSortedFavoriteReports(int userId) {
+		return reportUserDao.findAllFavorite(userId);
 	}
 
 	private HSSFWorkbook buildWorkbook(Report report) {

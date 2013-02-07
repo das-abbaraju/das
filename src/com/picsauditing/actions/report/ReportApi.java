@@ -4,6 +4,7 @@ import static com.picsauditing.report.ReportJson.*;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.Strings;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,9 @@ import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportValidationException;
+
+import javax.persistence.NoResultException;
+import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
@@ -38,6 +42,7 @@ public class ReportApi extends PicsApiSupport {
 	protected boolean includeData;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
+	private static final String LANDING_URL = "ReportApi!favoritesList.action"; // todo: move from ManageReports.favoritesList()
 
 	public String execute() throws Exception {
 		JSONObject payloadJson = getJsonFromRequestPayload();
@@ -94,6 +99,56 @@ public class ReportApi extends PicsApiSupport {
 		return JSON;
 	}
 
+	public String favorite() {
+		try {
+			reportService.favoriteReport(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ReportApi.favorite(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String unfavorite() {
+		try {
+			reportService.unfavoriteReport(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ReportApi.unfavorite(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String moveFavoriteUp() {
+		int positionChange = -1;
+		try {
+			reportService.moveFavorite(permissions.getUserId(), reportId, positionChange);
+		} catch (NoResultException nre) {
+			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String moveFavoriteDown() {
+		int positionChange = 1;
+		try {
+			reportService.moveFavorite(permissions.getUserId(), reportId, positionChange);
+		} catch (NoResultException nre) {
+			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
 	public String print() throws Exception {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
@@ -116,6 +171,23 @@ public class ReportApi extends PicsApiSupport {
 		}
 
 		return BLANK;
+	}
+
+	private String redirectToPreviousView() {
+		try {
+			String referer = getRequest().getHeader("Referer");
+			if (Strings.isEmpty(referer)) {
+				referer = LANDING_URL;
+			}
+
+			setUrlForRedirect(referer);
+		} catch (IOException e) {
+			logger.warn("Problem setting URL for redirect in ManageReports.redirectToPreviousView()", e);
+		} catch (Exception e) {
+			logger.error("Unexpected problem in ManageReports.redirectToPreviousView()");
+		}
+
+		return REDIRECT;
 	}
 
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {

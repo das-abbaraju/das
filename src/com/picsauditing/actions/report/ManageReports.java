@@ -163,56 +163,6 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	public String favorite() {
-		try {
-			reportService.favoriteReport(permissions.getUserId(), reportId);
-		} catch (NoResultException nre) {
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
-		}
-
-		return redirectToPreviousView();
-	}
-
-	public String unfavorite() {
-		try {
-			reportService.unfavoriteReport(permissions.getUserId(), reportId);
-		} catch (NoResultException nre) {
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
-		}
-
-		return redirectToPreviousView();
-	}
-
-	public String moveUp() {
-		int positionChange = -1;
-		try {
-			reportService.moveReportUser(permissions.getUserId(), reportId, positionChange);
-		} catch (NoResultException nre) {
-			logger.warn("No result found in ManageReports.moveUp()", nre);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports.moveUp(). ", e);
-		}
-
-		return redirectToPreviousView();
-	}
-
-	public String moveDown() {
-		int positionChange = 1;
-		try {
-			reportService.moveReportUser(permissions.getUserId(), reportId, positionChange);
-		} catch (NoResultException nre) {
-			logger.warn("No result found in ManageReports.moveDown()", nre);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports.moveDown(). ", e);
-		}
-
-		return redirectToPreviousView();
-	}
-
 	/**
 	 * Exclusively to export Columns for translations
 	 * 

@@ -163,4 +163,19 @@ public class ReportUserDAO extends PicsDAO {
 		Database db = new Database();
 		db.executeUpdate(sql);
 	}
+
+	public int findMaxSortIndex(int userId) {
+		Query query = em.createQuery("SELECT MAX(ru.sortOrder) FROM ReportUser ru WHERE ru.user.id = :userId");
+		query.setParameter("userId", userId);
+
+		int result;
+		try {
+			result = (Integer) query.getSingleResult();
+		} catch (Exception e) {
+			result = 0;
+		}
+
+		return result;
+	}
+
 }

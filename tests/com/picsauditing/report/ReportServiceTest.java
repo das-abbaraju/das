@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import javax.persistence.NoResultException;
@@ -62,11 +63,12 @@ public class ReportServiceTest {
 	private PermissionService permissionService;
 
 	private Pagination<Report> pagination;
-	private LegacyReportConverter legacyReportConverter;
 
+	private LegacyReportConverter legacyReportConverter;
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
+	private static final int MAX_SORT_ORDER = 5;
 
 	@Before
 	public void setUp() throws Exception {
@@ -142,6 +144,19 @@ public class ReportServiceTest {
 
 		assertNotNull(reports);
 		verify(reportUserDao).findTenMostFavoritedReports(permissions);
+	}
+
+	@Test
+	public void testConnectReportUser() {
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+
+		ReportUser reportUser = reportService.loadOrCreateReportUser(USER_ID, REPORT_ID);
+
+		verify(reportUserDao).save(reportUser);
+		assertEquals(REPORT_ID, reportUser.getReport().getId());
+		assertEquals(USER_ID, reportUser.getUser().getId());
+		assertFalse(reportUser.isFavorite());
 	}
 
 	@Test
@@ -355,6 +370,45 @@ public class ReportServiceTest {
 		assertTrue(REPORT_ID == report.getId());
 		verify(reportServiceSpy).validate(report);
 		verify(reportDao).save(report);
+	}
+
+	@Test
+	public void testFavoriteReport_shouldSetFavoriteFlag() throws SQLException {
+		ReportUser reportUser = createTestReportUser();
+		reportUser.setFavorite(false);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+
+		ReportUser result = reportService.favoriteReport(USER_ID, REPORT_ID);
+
+		assertTrue(result.isFavorite());
+	}
+
+	@Test
+	public void testFavoriteReport_newlyFavoritedReportShouldHaveHighestSortOrder() throws SQLException {
+		ReportUser reportUser = createTestReportUser();
+		reportUser.setFavorite(false);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+
+		ReportUser result = reportService.favoriteReport(USER_ID, REPORT_ID);
+
+		assertEquals(MAX_SORT_ORDER + 1, result.getSortOrder());
+	}
+
+	private ReportUser createTestReportUser() {
+		ReportUser reportUser = new ReportUser();
+
+		Report report = new Report();
+		report.setName("myReport");
+		reportUser.setReport(report);
+
+		User user = new User("Joe User");
+		user.setId(USER_ID);
+		reportUser.setUser(user);
+
+		return reportUser;
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {
