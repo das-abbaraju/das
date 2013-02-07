@@ -220,6 +220,35 @@ public class AuditDataSaveTest {
 	}
 
 	@Test
+	public void testDates() throws Exception {
+		Boolean result = null;
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditData data = new AuditData();
+		data.setQuestion(question);
+		
+		// null answer
+		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		assertTrue(result);
+
+		// empty answer
+		data.setAnswer("");
+		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		assertTrue(result);
+
+		// valid policy date answer
+		question.setUniqueCode("policyEffectiveDate");
+		data.setAnswer("2001-01-01");
+		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		assertTrue(result);
+
+		// invalid policy date answer
+		question.setUniqueCode("policyEffectiveDate");
+		data.setAnswer("1999-12-31");
+		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		assertFalse(result);
+	}
+	
+	@Test
 	public void testTrimWhitespaceLeadingZerosAndAllCommas() throws Exception {
 		assertEquals("10.10", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("10.10"));
 		assertEquals("10.10", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("  10.10"));

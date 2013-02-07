@@ -1,3 +1,5 @@
+replace into app_properties values ('Toggle.Canonical_Timezone', 'true', null);
+
 update accounts set timezone = 'Pacific/Pago_Pago' where timezone = 'Pacific/Samoa';
 update accounts set timezone = 'America/Adak' where timezone = 'US/Aleutian';
 update accounts set timezone = 'America/Anchorage' where timezone = 'US/Alaska';

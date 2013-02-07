@@ -77,7 +77,7 @@
 		</s:url>
 		
 		<div id="download_commission">
-			<a href="${download_commission}">Download Breakdown Calculation</a>
+			<a href="${download_commission}"><img src="images/icon_link_excel.png" />Download Breakdown Calculation</a>
 		</div>
 		
 	</s:else>

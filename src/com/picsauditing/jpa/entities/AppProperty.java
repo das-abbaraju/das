@@ -19,6 +19,7 @@ public class AppProperty implements java.io.Serializable {
 	public static final String BETA_LEVEL = "BETA_maxLevel";
 	public static final String QB_JAXB_ENCODING = "QuickBooks.JAXB.ASCII.Encoding";
 	public static final String QB_AXIS_ENCODING = "QuickBooks.Axis.ASCII.Encoding";
+	public static final String FULLY_SUPPORTED_LANGUAGES = "PICS.fullySupportedLanguages";
 
 	private String property;
 	private String value;

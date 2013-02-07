@@ -6,12 +6,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -32,7 +34,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -52,7 +53,8 @@ public class OpenTasks extends TranslationActionSupport {
 	private ArrayList<String> openTasks;
 	private ContractorAccount contractor;
 	private User user;
-	// TODO We should convert this and build all the tasks off a user instead of a permission
+	// TODO We should convert this and build all the tasks off a user instead of
+	// a permission
 	private Permissions permissions;
 	private final Logger logger = LoggerFactory.getLogger(OpenTasks.class);
 
@@ -129,15 +131,11 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void establishPermissions(User user) {
-		permissions = new Permissions();
-		try {
-			permissions.login(user);
-			LocaleController.setLocaleOfNearestSupported(permissions);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.toString());
-		}
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		permissions = (Permissions) session.get("permissions");
 
+		LocaleController.setLocaleOfNearestSupported(permissions);
 	}
 
 	private void gatherTasksAboutDeclaringTrades() {
@@ -269,7 +267,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 			String auditTypeAndFor = conAudit.getAuditType().getId()
 					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
-					+ ((conAudit.getEmployee() != null)?  conAudit.getEmployee().getId():"");
+					+ ((conAudit.getEmployee() != null) ? conAudit.getEmployee().getId() : "");
 			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
 			if (!isAuditTypeAndForRepeated) {
@@ -597,12 +595,13 @@ public class OpenTasks extends TranslationActionSupport {
 								|| cao.getStatus() == AuditStatus.Resubmit) {
 							needed++;
 						}
-					} 
-					if (conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT) {
+					}
+					if (conAudit.getAuditType().getId() == AuditType.COR
+							|| conAudit.getAuditType().getId() == AuditType.IEC_AUDIT) {
 						if (conAudit.hasCaoStatus(AuditStatus.Resubmitted)
-									|| conAudit .hasCaoStatus(AuditStatus.Incomplete) || conAudit
-									.hasCaoStatus(AuditStatus.Pending))
-									needed++;
+								|| conAudit.hasCaoStatus(AuditStatus.Incomplete)
+								|| conAudit.hasCaoStatus(AuditStatus.Pending))
+							needed++;
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
 						if (conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 								&& cao.getStatus().isPending()) {

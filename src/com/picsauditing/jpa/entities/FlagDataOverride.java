@@ -11,6 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data_override")
@@ -67,6 +72,7 @@ public class FlagDataOverride extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatistics, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getForceflag() {
 		return forceflag;
 	}
@@ -75,6 +81,7 @@ public class FlagDataOverride extends BaseTable {
 		this.forceflag = forceflag;
 	}
 
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
 	public Date getForceEnd() {
 		return forceEnd;
 	}
@@ -83,6 +90,7 @@ public class FlagDataOverride extends BaseTable {
 		this.forceEnd = forceEnd;
 	}
 	
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public String getYear() {
 		return year;
 	}

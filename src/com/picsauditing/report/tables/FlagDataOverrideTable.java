@@ -1,19 +1,32 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
-public class FlagDataTable extends AbstractTable {
+public class FlagDataOverrideTable extends AbstractTable {
 
 	public static final String FlagCriteria = "FlagCriteria";
 	public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
 	public static final String Operator = "Operator";
 	public static final String Contractor = "Contractor";
 	public static final String ContractorOperator = "ContractorOperator";
-	public static final String Override = "Override";
 
-	public FlagDataTable() {
-		super("flag_data");
+	public FlagDataOverrideTable() {
+		super("flag_data_override");
 		addFields(FlagData.class);
+
+		Field createdBy = new Field("CreatedBy", "createdBy", FieldType.UserID);
+		createdBy.setImportance(FieldImportance.Required);
+		addField(createdBy).setCategory(FieldCategory.CompanyStatistics);
+
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+		creationDate.setImportance(FieldImportance.Required);
+		addField(creationDate).setCategory(FieldCategory.CompanyStatistics);
+
+		Field updateDate = new Field("UpdateDate", "updateDate", FieldType.Date);
+		updateDate.setImportance(FieldImportance.Required);
+		addField(updateDate).setCategory(FieldCategory.CompanyStatistics);
 	}
 
 	public void addJoins() {
@@ -31,13 +44,6 @@ public class FlagDataTable extends AbstractTable {
 						+ ".genID"));
 		contractorOperator.setMinimumImportance(FieldImportance.Average);
 		addJoinKey(contractorOperator);
-
-		ReportForeignKey override = new ReportForeignKey(Override, new FlagDataOverrideTable(),
-				new ReportOnClause("conID", "conID", ReportOnClause.FromAlias + ".opID = " + ReportOnClause.ToAlias
-						+ ".opID AND " + ReportOnClause.FromAlias + ".criteriaID = " + ReportOnClause.ToAlias
-						+ ".criteriaID"));
-		override.setMinimumImportance(FieldImportance.Required);
-		addOptionalKey(override);
 
 		// TODO: Placeholder for when we will need to implement the flag criteria contractor
 		// ReportForeignKey flagCriteriaContractor = new

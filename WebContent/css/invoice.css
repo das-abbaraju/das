@@ -69,6 +69,16 @@ table.allborder th.right, table.allborder td.right {
     text-align: right;
 }
 
+#download_commission a
+{
+    text-decoration: none;
+}
+
+#download_commission img
+{
+    margin-right: 5px;
+}
+
 /**
  Help text for ContractorPaymentOptions
 */

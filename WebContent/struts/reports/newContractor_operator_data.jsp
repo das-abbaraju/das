@@ -6,15 +6,28 @@
 	<s:include value="../actionMessages.jsp" />
 </s:if>
 <s:elseif test="report.allRows == 0">
-	<div class="alert">
-        <s:text name="NewContractorSearch.message.NoCompanyAccountsFound" />
-    </div>
-    
-	<pics:permission perm="RequestNewContractor" type="Edit">
-		<div class="info">
-            <s:text name="NewContractorSearch.message.SubmitNewContractorAccountRequest" />
+    <pics:toggle name="RequestNewContractorAccount">
+        <div class="alert">
+            <s:text name="NewContractorSearch.message.NoCompanyAccountsFound" />
         </div>
-	</pics:permission>
+
+        <pics:permission perm="RequestNewContractor" type="Edit">
+            <div class="info">
+                <s:text name="NewContractorSearch.message.SubmitNewContractorAccountRequest" />
+            </div>
+        </pics:permission>
+    </pics:toggle>
+    <pics:toggleElse>
+        <div class="alert">
+            <s:text name="NewContractorSearch.message.NoCompaniesFound" />
+        </div>
+
+        <pics:permission perm="RequestNewContractor" type="Edit">
+            <div class="info">
+                <s:text name="NewContractorSearch.message.SubmitNewContractorRequest" />
+            </div>
+        </pics:permission>
+    </pics:toggleElse>
 </s:elseif>
 <s:else>
     <pics:permission perm="ContractorDetails">

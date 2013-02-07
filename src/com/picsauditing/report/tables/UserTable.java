@@ -6,6 +6,8 @@ import com.picsauditing.report.fields.FieldType;
 
 public class UserTable extends AbstractTable {
 	public static final String Account = "Account";
+	public static final String LoginLog = "LoginLog";
+	public static final String Group = "Group";
 
 	public UserTable() {
 		super("users");
@@ -20,6 +22,14 @@ public class UserTable extends AbstractTable {
 	protected void addJoins() {
 		ReportForeignKey accountKey = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"));
 		accountKey.setMinimumImportance(FieldImportance.Average);
-		addOptionalKey(accountKey);
+		addRequiredKey(accountKey);
+
+		ReportForeignKey loginLog = new ReportForeignKey(LoginLog, new UserLoginLogTable(), new ReportOnClause("id","userID"));
+		loginLog.setMinimumImportance(FieldImportance.Average);
+		addOptionalKey(loginLog);
+
+		ReportForeignKey group = new ReportForeignKey(Group, new UserGroupTable(), new ReportOnClause("id","userID"));
+		group.setMinimumImportance(FieldImportance.Average);
+		addOptionalKey(group);
 	}
 }

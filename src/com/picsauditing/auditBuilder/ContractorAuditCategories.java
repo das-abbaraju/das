@@ -27,28 +27,34 @@ public class ContractorAuditCategories {
 	private static boolean isCategoryVisible(Permissions permissions, Set<AuditCategory> requiredCategories,
 			AuditCatData auditCatData) {
 
-		if (!auditCatData.isApplies()) {
+		if (!auditCatData.isApplies())
 			return false;
-		}
 
-		if (permissions.isContractor()) {
+		if (permissions.isContractor())
 			return true;
-		}
 
 		AuditCategory category = auditCatData.getCategory();
 
-		if (category.requiresViewFullPQFPermission()) {
-			return permissions.hasPermission(OpPerms.ViewFullPQF);
-		}
-
 		if (permissions.isAdmin() || permissions.isAuditor()) {
+			if (category.requiresViewFullPQFPermission()) {
+				return permissions.hasPermission(OpPerms.ViewFullPQF);
+			}
 			return true;
 		}
 
 		if (requiredCategories == null)
 			return true;
+		
+		if (requiredCategories.contains(category)) {
+			if (category.requiresViewFullPQFPermission()) {
+				return permissions.hasPermission(OpPerms.ViewFullPQF);
+			}
+			
+			return true;
+		}
 
-		return requiredCategories.contains(category);
+		
+		return false;
 	}
 
 }

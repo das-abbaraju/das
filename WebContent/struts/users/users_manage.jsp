@@ -254,23 +254,6 @@
     								<s:text name="UsersManage.SwitchToThisUser" />
     							</a>
     						</li>
-
-    						<s:if test="isBetaEnvironment()">
-    							<pics:toggle name="<%= FeatureToggle.TOGGLE_SWITCHUSERSERVER %>">
-    								<li>
-    									<a class="btn" id="SwitchUser" href="UsersManage!switchUserToDifferentServer.action?user=${user_id}" >
-    										<s:text name="UsersManage.SwitchToThisUserStable" />
-    									</a>
-    								</li>
-    							</pics:toggle>
-    							<pics:toggleElse>
-    								<li>
-    									<a class="btn" id="SwitchUser" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=${user_id}">
-    										<s:text name="UsersManage.SwitchToThisUserStable" />
-    									</a>
-    								</li>
-    							</pics:toggleElse>
-    						</s:if>
     					</pics:permission>
     				</s:if>
     			</ul>

@@ -812,7 +812,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public String getViewLink() {
 		if (this.type.equals("Contractor")) {
 			if (status.isRequested()) {
-				return ("RequestNewContractorAccount.action?requestedContractor=" + this.id);
+				return ("RequestNewContractorAccount.action?contractor=" + this.id);
 			} else {
 				return ("ContractorView.action?id=" + this.id);
 			}

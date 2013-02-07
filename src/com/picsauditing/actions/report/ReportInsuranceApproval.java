@@ -17,6 +17,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApproval extends ReportContractorAuditOperator {
@@ -65,10 +66,12 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 
 		// Get certificates
 		if (permissions.isOperatorCorporate()) {
-			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
-			sql.addJoin("JOIN audit_question q ON q.id = d.questionID AND q.questionType = 'FileCertificate' AND q.columnHeader = 'Certificate' AND q.number = 1");
-			sql.addJoin("JOIN audit_category_rule acr ON q.categoryID = acr.catID");
-			sql.addWhere("acr.opID = cao.opID");
+			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id AND d.questionID IN "
+					+ "(SELECT aq.id FROM audit_question aq "
+					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID IN ("
+					+ Strings.implode(permissions.getVisibleAccounts())
+					+ ")"
+					+ "WHERE aq.questionType = 'FileCertificate' AND aq.columnHeader = 'Certificate' AND aq.number = 1 AND acr.opID = cao.opID)");
 
 			sql.addField("d.answer certID");
 
@@ -77,25 +80,25 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 
 		sql.addGroupBy("cao.id");
 	}
-	
+
 	public String ajaxFormInsuranceRejectionStatus() {
-	    if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
-	    	addActionError("This method is only accessible through an AJAX Request.");
-	    	return SUCCESS;
-	    }
-	    
-	    String id = ServletActionContext.getRequest().getParameter("id");
-	    ServletActionContext.getRequest().setAttribute("id", id);
-	    
-	    String operatorVisible = ServletActionContext.getRequest().getParameter("operator_visible");
-	    
-	    if (BooleanUtils.toBoolean(operatorVisible)) {
-	        ServletActionContext.getRequest().setAttribute("operator_visible", true);
-	    } else {
-	        ServletActionContext.getRequest().setAttribute("operator_visible", false);
-	    }
-	    
-	    return "form";
+		if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+			addActionError("This method is only accessible through an AJAX Request.");
+			return SUCCESS;
+		}
+
+		String id = ServletActionContext.getRequest().getParameter("id");
+		ServletActionContext.getRequest().setAttribute("id", id);
+
+		String operatorVisible = ServletActionContext.getRequest().getParameter("operator_visible");
+
+		if (BooleanUtils.toBoolean(operatorVisible)) {
+			ServletActionContext.getRequest().setAttribute("operator_visible", true);
+		} else {
+			ServletActionContext.getRequest().setAttribute("operator_visible", false);
+		}
+
+		return "form";
 	}
 
 	public Map<Integer, ContractorAuditOperator> getCaos() {

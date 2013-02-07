@@ -154,6 +154,7 @@ public class ReportJoin {
 				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
+
 				if ((column.getField()) == null) {
 					logger.error("ReportJoin.isNeeded() - Column: "  + column + " has a null field");
 				} else {

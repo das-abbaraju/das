@@ -229,6 +229,12 @@ $site_menu_search_more_results_text_color: #333;
        color: #aeaeae;
     }
 
+    .account-deactivated.x-boundlist-item-over,
+    .account-inactive.x-boundlist-item-over
+    {
+       color: $site_menu_search_icon_search_text_color;
+    }
+
     .account-deleted
     {
         .name,
@@ -252,10 +258,16 @@ $site_menu_search_more_results_text_color: #333;
     {
         a
         {
-            color: $site_menu_search_more_results_text_color;
+            color: #226396;
             display: block;
             font-weight: bold;
             padding: 3px 0px;
+            text-decoration: none;
+        }
+
+        a:hover
+        {
+            color: #73bbe8;
         }
 
         p

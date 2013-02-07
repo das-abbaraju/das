@@ -318,6 +318,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		displayOsha.put(OshaType.COHS, false);
 		displayOsha.put(OshaType.UK_HSE, false);
 		displayOsha.put(OshaType.EMR, false);
+		displayOsha.put(OshaType.MEXICO, false);
 
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isAnnualAddendum()
@@ -334,6 +335,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (audit
 						.isDataExpectedAnswer(AuditQuestion.EMR_KEPT_ID, "Yes"))
 					displayOsha.put(OshaType.EMR, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.MEXICO_KEPT_ID,
+				"Yes"))
+					displayOsha.put(OshaType.MEXICO, true);
 			}
 		}
 	}
