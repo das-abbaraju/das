@@ -2,10 +2,6 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -140,7 +136,7 @@ public class ReportBuilder {
 		Filter filter = new Filter();
 		toElementFromJSON(json, filter);
 		filter.setOperator(parseOperator(json));
-		filter.getValues().addAll(parseValues(json));
+		filter.setValue(Strings.toString(json.get(FILTER_VALUE)));
 		parseAdvancedFilter(json);
 
 		return filter;
@@ -170,47 +166,6 @@ public class ReportBuilder {
 		}
 
 		return QueryFilterOperator.valueOf(object.toString());
-	}
-
-	private static List<String> parseValues(JSONObject json) {
-		JSONArray valuesJsonArray = null;
-		List<String> values = new ArrayList<String>();
-
-		try {
-			valuesJsonArray = (JSONArray) json.get("values");
-		} catch (ClassCastException cce) {
-			logger.warn("A filter's values field is not a JSONArray", cce);
-		} catch (Exception e) {
-			logger.warn("Old format report that doesn't have 'values' in filter");
-		}
-
-		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
-			for (Object value : valuesJsonArray) {
-				values.add(value.toString().trim());
-			}
-		} else {
-			String value = (String) json.get("value");
-
-			if (Strings.isEmpty(value)) {
-				return values;
-			}
-
-			if (value.contains(",")) {
-				logger.warn("Old style filter value found with commas separating multiple values. "
-						+ "Until we phase out the old code, we need this for backwards compatibility");
-
-				String[] valueSplit = value.split(", ");
-				if (valueSplit.length == 1 && value.contains(",")) {
-					valueSplit = value.split(",");
-				}
-
-				values.addAll(Arrays.asList(valueSplit));
-			} else {
-				values.add(value);
-			}
-		}
-
-		return values;
 	}
 
 	private static Field parseAdvancedFilter(JSONObject json) {

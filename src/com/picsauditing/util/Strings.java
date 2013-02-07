@@ -587,4 +587,12 @@ public class Strings {
 
 		return object.toString();
 	}
+
+	public static String toString(Object object) {
+		if (object == null) {
+			return "";
+		}
+
+		return object.toString();
+	}
 }

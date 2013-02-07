@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Filter;
@@ -19,6 +22,25 @@ public class FilterTest {
 	@Before
 	public void setUp() {
 		filter = new Filter();
+		filter.setField(new Field("Gets Clobbered"));
+	}
+
+	@Test
+	public void setValue_WhenEmptyString_ThenLeavesArrayEmpty() {
+		filter.setValue("");
+
+		List<String> values = filter.getValues();
+
+		assertEquals(0, values.size());
+	}
+
+	@Test
+	public void setValue_WhenWhitespaceOnly_ThenLeavesArrayEmpty() {
+		filter.setValue(" \t\n");
+
+		List<String> values = filter.getValues();
+
+		assertEquals(0, values.size());
 	}
 
 	@Test
@@ -39,7 +61,7 @@ public class FilterTest {
 	public void testFilterWithValue() throws ReportValidationException {
 		filter.setName("FieldName");
 		filter.setField(new Field(filter.getName(), "fieldName", FieldType.String));
-		filter.addValue("Bob's");
+		filter.addValueToCollection("Bob's");
 
 		assertEquals("fieldName = 'Bob''s'", filter.getSqlForFilter());
 	}
@@ -47,8 +69,8 @@ public class FilterTest {
 	@Test
 	public void testFilterFromJson_CommaSeparatedValues() throws ReportValidationException {
 		filter.setName("AccountStatus");
-		filter.addValue("Active");
-		filter.addValue("Pending");
+		filter.addValueToCollection("Active");
+		filter.addValueToCollection("Pending");
 
 		assertEquals("[Active, Pending]", filter.getValues().toString());
 		assertEquals(2, filter.getValues().size());
@@ -58,7 +80,7 @@ public class FilterTest {
 	public void testGetSqlForFilter_WhenFilterFieldNameShouldntBeConverted_ThenItsNotConverted() throws ReportValidationException {
 		filter.setName("Foo");
 		String originalFilterValue = "something";
-		filter.addValue(originalFilterValue);
+		filter.addValueToCollection(originalFilterValue);
 		filter.setField(new Field("Get Clobbered"));
 
 		String filterSql = filter.getSqlForFilter();
@@ -70,7 +92,7 @@ public class FilterTest {
 	public void testGetSqlForFilter_WhenFilterFieldNameIsAccountName_ThenConvertToIndexFormat() throws ReportValidationException {
 		filter.setName("AccountName");
 		String originalFilterValue = "two words";
-		filter.addValue(originalFilterValue);
+		filter.addValueToCollection(originalFilterValue);
 		filter.setField(new Field("Gets Clobbered"));
 
 		String filterSql = filter.getSqlForFilter();
@@ -78,5 +100,25 @@ public class FilterTest {
 		assertFalse(filterSql.contains(originalFilterValue));
 		String modifiedFilterValue = Strings.indexName(originalFilterValue);
 		assertTrue(filterSql.contains(modifiedFilterValue));
+	}
+
+	@Test
+	public void testIsValid_WhenValuesIsEmpty_ThenReturnFalse() {
+		filter.setValues(new ArrayList<String>());
+
+		boolean result = filter.isValid();
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsValid_WhenValuesContainsSingleEmptyString_ThenReturnFalse() {
+		List<String> values = new ArrayList<String>();
+		values.add("");
+		filter.setValues(values);
+
+		boolean result = filter.isValid();
+
+		assertFalse(result);
 	}
 }

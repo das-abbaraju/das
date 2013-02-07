@@ -56,7 +56,9 @@ public class SqlBuilder {
 
 		addJoins(model.getStartingJoin());
 
-		sql.addWhere(model.getWhereClause(report.getFilters()));
+		List<Filter> filters = report.getFilters();
+		String whereClause = model.getWhereClause(filters);
+		sql.addWhere(whereClause);
 
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");

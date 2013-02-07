@@ -132,7 +132,7 @@ public class JsonReportBuilderTest {
 		filter.setName(fieldName);
 		field.setType(fieldType);
 		filter.setOperator(operator);
-		filter.addValue(value);
+		filter.addValueToCollection(value);
 		filter.setColumnCompare(columnCompareId);
 		filter.setField(field);
 		report.addFilter(filter);

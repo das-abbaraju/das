@@ -31,6 +31,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "report_filter")
 public class Filter extends ReportElement {
 
+	public static final String FILTER_VALUE_DELIMITER = ", ";
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	private List<String> values = new ArrayList<String>();
 	private String columnCompare;
@@ -53,16 +54,28 @@ public class Filter extends ReportElement {
 	}
 
 	public String getValue() {
-		return Strings.implode(values, ", ");
+		return Strings.implode(values, FILTER_VALUE_DELIMITER);
 	}
 
 	public void setValue(String value) {
-		values = Arrays.asList(value.split(", "));
+		if (StringUtils.isEmpty(StringUtils.trim(value))) {
+			return;
+		}
+
+		values = Arrays.asList(value.split(FILTER_VALUE_DELIMITER));
 	}
 
 	@Transient
 	public List<String> getValues() {
 		return values;
+	}
+
+	public void setValues(List<String> values) {
+		this.values = values;
+	}
+
+	public void addValueToCollection(String value) {
+		values.add(value);
 	}
 
 	@Transient
@@ -241,7 +254,7 @@ public class Filter extends ReportElement {
 			return true;
 		}
 
-		if (values.isEmpty() && fieldForComparison == null) {
+		if (valuesAreEmpty() && fieldForComparison == null) {
 			return false;
 		}
 
@@ -249,6 +262,10 @@ public class Filter extends ReportElement {
 		// different filter types to make sure they are all properly defined.
 
 		return true;
+	}
+
+	private boolean valuesAreEmpty() {
+		return StringUtils.isEmpty(getValue());
 	}
 
 	public void updateCurrentUser(Permissions permissions) {
@@ -310,9 +327,5 @@ public class Filter extends ReportElement {
 		}
 
 		return super.toString() + " " + operator + " " + display;
-	}
-
-	public void addValue(String value) {
-		values.add(value);
 	}
 }
