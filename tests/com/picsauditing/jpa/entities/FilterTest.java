@@ -61,16 +61,20 @@ public class FilterTest {
 	public void testFilterWithValue() throws ReportValidationException {
 		filter.setName("FieldName");
 		filter.setField(new Field(filter.getName(), "fieldName", FieldType.String));
-		filter.addValueToCollection("Bob's");
+		filter.setValue("Bob's");
 
-		assertEquals("fieldName = 'Bob''s'", filter.getSqlForFilter());
+		String sqlString = filter.getSqlForFilter();
+
+		assertEquals("fieldName = 'Bob''s'", sqlString);
 	}
 
 	@Test
 	public void testFilterFromJson_CommaSeparatedValues() throws ReportValidationException {
 		filter.setName("AccountStatus");
-		filter.addValueToCollection("Active");
-		filter.addValueToCollection("Pending");
+		List<String> values = new ArrayList<String>();
+		values.add("Active");
+		values.add("Pending");
+		filter.setValues(values);
 
 		assertEquals("[Active, Pending]", filter.getValues().toString());
 		assertEquals(2, filter.getValues().size());
@@ -80,7 +84,7 @@ public class FilterTest {
 	public void testGetSqlForFilter_WhenFilterFieldNameShouldntBeConverted_ThenItsNotConverted() throws ReportValidationException {
 		filter.setName("Foo");
 		String originalFilterValue = "something";
-		filter.addValueToCollection(originalFilterValue);
+		filter.setValue(originalFilterValue);
 		filter.setField(new Field("Get Clobbered"));
 
 		String filterSql = filter.getSqlForFilter();
@@ -92,7 +96,7 @@ public class FilterTest {
 	public void testGetSqlForFilter_WhenFilterFieldNameIsAccountName_ThenConvertToIndexFormat() throws ReportValidationException {
 		filter.setName("AccountName");
 		String originalFilterValue = "two words";
-		filter.addValueToCollection(originalFilterValue);
+		filter.setValue(originalFilterValue);
 		filter.setField(new Field("Gets Clobbered"));
 
 		String filterSql = filter.getSqlForFilter();

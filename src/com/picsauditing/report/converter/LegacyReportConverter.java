@@ -279,7 +279,7 @@ public class LegacyReportConverter {
 		Filter filter = new Filter();
 		toElementFromJSON(json, filter);
 		filter.setOperator(parseOperator(json));
-		filter.getValues().addAll(parseValues(json));
+		filter.setValues(parseValues(json));
 		parseAdvancedFilter(json);
 		return filter;
 	}

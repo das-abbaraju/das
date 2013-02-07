@@ -31,10 +31,10 @@ import com.picsauditing.search.SelectSQL;
 
 @UseReporter(DiffReporter.class)
 public class SqlBuilderTest {
-	
+
 	@Mock
 	private Permissions permissions;
-	
+
 	private SqlBuilder builder;
 	private Report report = new Report();
 	private SelectSQL sql;
@@ -63,7 +63,7 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testMultipleColumns() throws Exception {	
+	public void testMultipleColumns() throws Exception {
 		builder = new SqlBuilder();
 		addColumn("AccountID");
 		addColumn("AccountName");
@@ -112,7 +112,7 @@ public class SqlBuilderTest {
 
 		Filter filter = addFilter("AccountCreationDate__Year", QueryFilterOperator.GreaterThan, "2010");
 		filter.setSqlFunction(SqlFunction.Year);
-		
+
 		Field field = new Field("AccountCreationDate");
 		field.setDatabaseColumnName("Account.creationDate");
 		column.setField(field);
@@ -120,7 +120,7 @@ public class SqlBuilderTest {
 
 		verifySql();
 	}
-	
+
 	@Test
 	public void testAdvancedFilter() throws Exception {
 		Column column = addColumn("AccountName");
@@ -150,7 +150,7 @@ public class SqlBuilderTest {
 		Column column = addColumn("AccountName");
 		addFilter(column.getName(), QueryFilterOperator.BeginsWith, null);
 		when(permissions.has(OpPerms.AllOperators)).thenReturn(true);
-		
+
 		initializeSql();
 
 		assertAllFiltersHaveFields();
@@ -170,10 +170,10 @@ public class SqlBuilderTest {
 
 		Field field = new Field("AccountStatus");
 		field.setDatabaseColumnName("Account.status");
-		
-		accountStatus.setField(field);		
+
+		accountStatus.setField(field);
 		accountStatusCount.setField(field);
-		
+
 		verifySql();
 	}
 
@@ -181,13 +181,13 @@ public class SqlBuilderTest {
 	public void testHaving() throws Exception {
 		builder = new SqlBuilder();
 		addColumn("AccountStatus");
-		
+
 		Column accountStatusCount = addColumn("AccountName__Count");
 		accountStatusCount.setSqlFunction(SqlFunction.Count);
 
 		Filter countFilter = addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
 		countFilter.setSqlFunction(SqlFunction.Count);
-		
+
 		addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
 		verifySql();
 	}
@@ -209,10 +209,10 @@ public class SqlBuilderTest {
 
 	private Column addColumn(String fieldName) {
 		Column column = new Column(fieldName);
-		report.getColumns().add(column);
+		report.addColumn(column);
 		return column;
 	}
-	
+
 	private Filter addFilter(String fieldName, QueryFilterOperator operator, String value) {
 		return addFilter(fieldName, operator, value, false);
 	}
@@ -221,12 +221,12 @@ public class SqlBuilderTest {
 		Filter filter = new Filter();
 		filter.setName(fieldName);
 		filter.setOperator(operator);
-		filter.getValues().add(value); // ???
+		filter.setValue(value);
 		if (advanced) {
 			filter.setFieldForComparison(new Field(value));
 		}
 
-		report.getFilters().add(filter);
+		report.addFilter(filter);
 		return filter;
 	}
 

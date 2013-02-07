@@ -33,7 +33,7 @@ public class Filter extends ReportElement {
 
 	public static final String FILTER_VALUE_DELIMITER = ", ";
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
-	private List<String> values = new ArrayList<String>();
+	private String value = "";
 	private String columnCompare;
 	private Field fieldForComparison;
 
@@ -54,28 +54,24 @@ public class Filter extends ReportElement {
 	}
 
 	public String getValue() {
-		return Strings.implode(values, FILTER_VALUE_DELIMITER);
+		return value;
 	}
 
 	public void setValue(String value) {
-		if (StringUtils.isEmpty(StringUtils.trim(value))) {
-			return;
-		}
-
-		values = Arrays.asList(value.split(FILTER_VALUE_DELIMITER));
+		this.value = value;
 	}
 
 	@Transient
 	public List<String> getValues() {
-		return values;
+		if (StringUtils.isEmpty(StringUtils.trim(value))) {
+			return new ArrayList<String>();
+		}
+
+		return Arrays.asList(value.split(FILTER_VALUE_DELIMITER));
 	}
 
 	public void setValues(List<String> values) {
-		this.values = values;
-	}
-
-	public void addValueToCollection(String value) {
-		values.add(value);
+		value = Strings.implode(values, FILTER_VALUE_DELIMITER);
 	}
 
 	@Transient
@@ -120,7 +116,7 @@ public class Filter extends ReportElement {
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();
 		} else {
-			return "(" + Strings.implodeForDB(values, ",") + ")";
+			return "(" + Strings.implodeForDB(getValues(), ",") + ")";
 		}
 	}
 
@@ -227,22 +223,6 @@ public class Filter extends ReportElement {
 		return field.getType().getFilterType();
 	}
 
-//	@Transient
-//	private DisplayType getActualFieldTypeForFilter() {
-//		DisplayType fieldType = field.getType().getDisplayType();
-//		if (hasMethodWithDifferentFieldType()) {
-//			fieldType = sqlFunction.getDisplayType();
-//		}
-//		return fieldType;
-//	}
-
-//	private boolean hasMethodWithDifferentFieldType() {
-//		if (sqlFunction == null || sqlFunction.getDisplayType() == null)
-//			return false;
-//
-//		return true;
-//	}
-
 	// TODO: Filter should not be validating itself
 	@Transient
 	public boolean isValid() {
@@ -254,7 +234,8 @@ public class Filter extends ReportElement {
 			return true;
 		}
 
-		if (valuesAreEmpty() && fieldForComparison == null) {
+		// TODO replace this with StringUtils.isEmpty(value)
+		if (getValues().isEmpty() && fieldForComparison == null) {
 			return false;
 		}
 
@@ -264,19 +245,13 @@ public class Filter extends ReportElement {
 		return true;
 	}
 
-	private boolean valuesAreEmpty() {
-		return StringUtils.isEmpty(getValue());
-	}
-
 	public void updateCurrentUser(Permissions permissions) {
 		if (operator == QueryFilterOperator.CurrentAccount) {
-			values.clear();
-			values.add(permissions.getAccountIdString());
+			setValue(permissions.getAccountIdString());
 		}
 
 		if (operator == QueryFilterOperator.CurrentUser) {
-			values.clear();
-			values.add(permissions.getUserIdString());
+			setValue(permissions.getUserIdString());
 		}
 	}
 
@@ -321,7 +296,7 @@ public class Filter extends ReportElement {
 	}
 
 	public String toString() {
-		String display = values.toString();
+		String display = getValues().toString();
 		if (fieldForComparison != null) {
 			display = fieldForComparison.toString();
 		}
