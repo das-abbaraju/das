@@ -114,7 +114,7 @@ public class Report extends BaseTable {
 		columns.add(column);
 	}
 
-	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<Filter> getFilters() {
 		return filters;
 	}
@@ -128,7 +128,7 @@ public class Report extends BaseTable {
 		filters.add(filter);
 	}
 
-	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<Sort> getSorts() {
 		return sorts;
 	}
