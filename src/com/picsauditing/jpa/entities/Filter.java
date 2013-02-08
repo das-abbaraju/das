@@ -130,7 +130,7 @@ public class Filter extends ReportElement {
 
 		String filterValue = getValues().get(0);
 
-		if (filterType == FilterType.Date || filterType == FilterType.DateTime) {
+		if (filterType == FilterType.Date) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), Strings.EMPTY_STRING);
 			return "'" + dateValue + "'";
@@ -168,14 +168,6 @@ public class Filter extends ReportElement {
 			} catch (Exception e) {
 				return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 			}
-		}
-
-		if (filterType == FilterType.Integer) {
-			return Integer.parseInt(filterValue) + Strings.EMPTY_STRING;
-		}
-
-		if (filterType == FilterType.Float) {
-			return Float.parseFloat(filterValue) + Strings.EMPTY_STRING;
 		}
 
 		if (filterType == FilterType.String) {

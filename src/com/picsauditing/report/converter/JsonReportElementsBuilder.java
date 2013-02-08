@@ -61,8 +61,8 @@ public class JsonReportElementsBuilder {
 		JSONObject json = fieldToCommonJson(field);
 
 		json.put(FILTER_TYPE, field.getFilterType().name());
-		json.put(FILTER_OPERATOR, null);
-		json.put(FILTER_VALUE, null);
+		json.put(FILTER_OPERATOR, field.getFilterType().defaultOperator);
+		json.put(FILTER_VALUE, "");
 		json.put(FILTER_COLUMN_COMPARE, null);
 
 		return json;

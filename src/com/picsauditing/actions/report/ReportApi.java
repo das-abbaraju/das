@@ -19,8 +19,6 @@ import javax.persistence.NoResultException;
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
 
-	private static final String PRINT = "print";
-
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -36,8 +34,9 @@ public class ReportApi extends PicsApiSupport {
 	protected boolean includeFilters;
 	protected boolean includeData;
 
+	private static final String PRINT = "print";
+
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
-	private static final String LANDING_URL = "ReportApi!favoritesList.action";
 
 	public String execute() throws Exception {
 		JSONObject payloadJson = getJsonFromRequestPayload();

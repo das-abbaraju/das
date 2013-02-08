@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-import com.picsauditing.report.fields.DisplayType;
 import org.json.simple.JSONArray;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -154,8 +153,8 @@ public class JsonReportElementsBuilderTest {
 		assertJson(REPORT_ELEMENT_DESCRIPTION, TRANSLATION_PREFIX + description, jsonString);
 
 		assertJson(FILTER_TYPE, fieldType.getFilterType(), jsonString);
-		assertJsonNoQuotes(FILTER_OPERATOR, null, jsonString);
-		assertJsonNoQuotes(FILTER_VALUE, null, jsonString);
+		assertJsonNoQuotes(FILTER_OPERATOR, fieldType.getFilterType().defaultOperator, jsonString);
+		assertJsonNoQuotes(FILTER_VALUE, "", jsonString);
 		assertJsonNoQuotes(FILTER_COLUMN_COMPARE, null, jsonString);
 	}
 

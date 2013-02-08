@@ -31,7 +31,7 @@ public class TypeFactoryTest {
 			"CountrySubdivision\tAutocomplete\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"Currency\tMultiselect\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"Date\tDate\tString\tCount,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour\n" +
-			"DateTime\tDateTime\tString\tCount,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour,Date\n" +
+			"DateTime\tDate\tString\tCount,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour,Date\n" +
 			"FlagColor\tMultiselect\tFlag\tCount,CountDistinct,Max,Min\n" +
 			"FlagCriteriaOptionCode\tMultiselect\tString\tCount,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase\n" +
 			"Float\tNumber\tNumber\tCount,CountDistinct,Max,Min,Average,Round,Sum,StdDev\n" +

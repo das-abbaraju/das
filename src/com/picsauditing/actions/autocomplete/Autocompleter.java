@@ -12,7 +12,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.general.Autocomplete;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -58,7 +57,6 @@ public class Autocompleter extends PicsActionSupport {
 				}
 				break;
 
-			case ShortList:
 			case Multiselect:
 				json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
 				break;
