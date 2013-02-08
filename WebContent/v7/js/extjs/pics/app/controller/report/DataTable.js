@@ -22,7 +22,8 @@ Ext.define('PICS.controller.report.DataTable', {
             },
 
             'reportdatatable headercontainer': {
-            	columnmove: this.moveColumn
+            	columnmove: this.moveColumn,
+            	columnresize: this.resizeColumn
             },
 
             'reportdatatable gridcolumn': {
@@ -176,6 +177,10 @@ Ext.define('PICS.controller.report.DataTable', {
         if (typeof cmp.createTooltip == 'function') {
             cmp.createTooltip();
         }
+    },
+    
+    resizeColumn: function (ct, column, width, eOpts) {
+        column.column.set('width', width);
     },
     
     sortColumnAsc: function (cmp, event, eOpts) {

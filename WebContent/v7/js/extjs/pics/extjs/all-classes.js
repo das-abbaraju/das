@@ -96551,7 +96551,7 @@ Ext.define('PICS.model.report.Report', {
         columns.splice(to_index, 0, spliced_column);
     
         // remove all column store records
-        column_store.removeAll();
+        this.removeColumns();
         
         this.addColumns(columns);
         
@@ -96812,7 +96812,8 @@ Ext.define('PICS.controller.report.DataTable', {
             },
 
             'reportdatatable headercontainer': {
-            	columnmove: this.moveColumn
+            	columnmove: this.moveColumn,
+            	columnresize: this.resizeColumn
             },
 
             'reportdatatable gridcolumn': {
@@ -96966,6 +96967,10 @@ Ext.define('PICS.controller.report.DataTable', {
         if (typeof cmp.createTooltip == 'function') {
             cmp.createTooltip();
         }
+    },
+    
+    resizeColumn: function (ct, column, width, eOpts) {
+        column.column.set('width', width);
     },
     
     sortColumnAsc: function (cmp, event, eOpts) {
