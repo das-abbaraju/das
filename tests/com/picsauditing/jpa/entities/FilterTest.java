@@ -23,6 +23,7 @@ public class FilterTest {
 	public void setUp() {
 		filter = new Filter();
 		filter.setField(new Field("Gets Clobbered"));
+		filter.setOperator(QueryFilterOperator.BeginsWith);
 	}
 
 	@Test
@@ -60,12 +61,14 @@ public class FilterTest {
 	@Test
 	public void testFilterWithValue() throws ReportValidationException {
 		filter.setName("FieldName");
+		QueryFilterOperator operator = QueryFilterOperator.Equals;
+		filter.setOperator(operator);
 		filter.setField(new Field(filter.getName(), "fieldName", FieldType.String));
 		filter.setValue("Bob's");
 
 		String sqlString = filter.getSqlForFilter();
 
-		assertEquals("fieldName = 'Bob''s'", sqlString);
+		assertEquals("fieldName " + operator.getOperand() + " 'Bob''s'", sqlString);
 	}
 
 	@Test

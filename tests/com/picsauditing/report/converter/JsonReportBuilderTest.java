@@ -2,9 +2,16 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.util.Assert.*;
 import static com.picsauditing.report.ReportJson.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -19,9 +26,18 @@ import com.picsauditing.report.models.ModelType;
 
 public class JsonReportBuilderTest {
 
+	@Mock
+	private Report report;
+
+	private static final int USER_ID = 123;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
+
 	@Test
 	public void testBuildReportJson_WhenReportFieldsAreSet_ThenTheyreWrittenToJson() {
-		Report report = new Report();
 		int reportId = 123;
 		String reportName = "Test Report";
 		ModelType modelType = ModelType.Contractors;
@@ -30,15 +46,15 @@ public class JsonReportBuilderTest {
 		boolean editable = true;
 		boolean favorite = true;
 
-		report.setId(reportId);
-		report.setName(reportName);
-		report.setModelType(modelType);
-		report.setDescription(description);
-		report.setFilterExpression(filterExpression);
-		report.setEditable(editable);
-		report.setFavorite(favorite);
+		when(report.getId()).thenReturn(reportId);
+		when(report.getName()).thenReturn(reportName);
+		when(report.getModelType()).thenReturn(modelType);
+		when(report.getDescription()).thenReturn(description);
+		when(report.getFilterExpression()).thenReturn(filterExpression);
+		when(report.isEditableBy(USER_ID)).thenReturn(editable);
+		when(report.isFavoritedBy(USER_ID)).thenReturn(favorite);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -52,7 +68,7 @@ public class JsonReportBuilderTest {
 
 	@Test
 	public void testBuildReportJson_WhenColumnsAreSet_ThenTheyreWrittenToJson() {
-		Report report = buildMinimalReport();
+		mockMinimalReport();
 
 		// ReportElement common properties
 		int id = 321;
@@ -84,9 +100,11 @@ public class JsonReportBuilderTest {
 		field.setSortable(sortable);
 
 		column.setField(field);
-		report.addColumn(column);
+		List<Column> columns = new ArrayList<Column>();
+		columns.add(column);
+		when(report.getColumns()).thenReturn(columns);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -105,7 +123,7 @@ public class JsonReportBuilderTest {
 
 	@Test
 	public void testBuildReportJson_WhenFiltersAreSet_ThenTheyreWrittenToJson() {
-		Report report = buildMinimalReport();
+		mockMinimalReport();
 
 		// ReportElement common properties
 		int id = 321;
@@ -135,9 +153,12 @@ public class JsonReportBuilderTest {
 		filter.setValue(value);
 		filter.setColumnCompare(columnCompareId);
 		filter.setField(field);
-		report.addFilter(filter);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report);
+		List<Filter> filters = new ArrayList<Filter>();
+		filters.add(filter);
+		when(report.getFilters()).thenReturn(filters);
+
+		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -155,7 +176,7 @@ public class JsonReportBuilderTest {
 
 	@Test
 	public void testBuildReportJson_WhenSortsAreSet_ThenTheyreWrittenToJson() {
-		Report report = buildMinimalReport();
+		mockMinimalReport();
 
 		// ReportElement common properties
 		int id = 321;
@@ -168,9 +189,12 @@ public class JsonReportBuilderTest {
 		sort.setId(id);
 		sort.setName(fieldName);
 		sort.setAscending(ascending);
-		report.addSort(sort);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report);
+		List<Sort> sorts = new ArrayList<Sort>();
+		sorts.add(sort);
+		when(report.getSorts()).thenReturn(sorts);
+
+		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -179,10 +203,8 @@ public class JsonReportBuilderTest {
 		assertJson(SORT_DIRECTION, Sort.ASCENDING, jsonString);
 	}
 
-	private Report buildMinimalReport() {
-		Report report = new Report();
-		report.setModelType(ModelType.Accounts);
-		return report;
+	public void mockMinimalReport() {
+		when(report.getModelType()).thenReturn(ModelType.Accounts);
 	}
 
 }

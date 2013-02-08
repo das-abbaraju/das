@@ -17,10 +17,10 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {
 
-	public static JSONObject buildReportJson(Report report) {
+	public static JSONObject buildReportJson(Report report, int userId) {
 		JSONObject json = new JSONObject();
 
-		addReportLevelData(json, report);
+		addReportLevelData(json, report, userId);
 
 		addColumns(json, report.getColumns());
 		addFilters(json, report.getFilters());
@@ -29,14 +29,14 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static void addReportLevelData(JSONObject json, Report report) {
+	private static void addReportLevelData(JSONObject json, Report report, int userId) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
 		json.put(REPORT_DESCRIPTION, report.getDescription());
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		json.put(REPORT_EDITABLE, report.isEditable());
-		json.put(REPORT_FAVORITE, report.isFavorite());
+		json.put(REPORT_EDITABLE, report.isEditableBy(userId));
+		json.put(REPORT_FAVORITE, report.isFavoritedBy(userId));
 	}
 
 	private static void addColumns(JSONObject json, List<Column> columns) {

@@ -25,21 +25,20 @@ public class Report extends BaseTable {
 
 	private ModelType modelType;
 	private String name;
-	private int numTimesFavorited;
-
-	@Deprecated
-	private String parameters;
 	private String description;
-
+	private String filterExpression;
+	private int numTimesFavorited;
 	private String sql;
+
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
-	private String filterExpression;
-	private boolean editable;
-	private boolean favorite;
 
+	private List<ReportPermissionUser> reportPermissionUsers;
 	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
+	@Deprecated
+	private String parameters;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -151,21 +150,27 @@ public class Report extends BaseTable {
 	}
 
 	@Transient
-	public boolean isEditable() {
-		return editable;
-	}
+	public boolean isEditableBy(int userId) {
+		// FIXME this is a terrible implementation but we need something to test save and copy
+		for (ReportPermissionUser rpu : reportPermissionUsers) {
+			if (userId == rpu.getUser().getId()) {
+				return rpu.isEditable();
+			}
+		}
 
-	public void setEditable(boolean editable) {
-		this.editable = editable;
+		return false;
 	}
 
 	@Transient
-	public boolean isFavorite() {
-		return favorite;
-	}
+	public boolean isFavoritedBy(int userId) {
+		// FIXME this is a terrible implementation but we need something to test save and copy
+		for (ReportUser ru : reportUsers) {
+			if (userId == ru.getUser().getId()) {
+				return ru.isFavorite();
+			}
+		}
 
-	public void setFavorite(boolean favorite) {
-		this.favorite = favorite;
+		return false;
 	}
 
 	@Override
@@ -175,7 +180,7 @@ public class Report extends BaseTable {
 
 	@Deprecated
 	// TODO this should not be used here
-	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<ReportUser> getReportUsers() {
 		return reportUsers;
 	}
@@ -212,6 +217,15 @@ public class Report extends BaseTable {
 	@Deprecated
 	public boolean hasParameters() {
 		return parameters != null;
+	}
+
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	public List<ReportPermissionUser> getReportPermissionUsers() {
+		return reportPermissionUsers;
+	}
+
+	public void setReportPermissionUsers(List<ReportPermissionUser> reportPermissionUsers) {
+		this.reportPermissionUsers = reportPermissionUsers;
 	}
 
 }

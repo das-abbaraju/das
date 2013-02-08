@@ -475,7 +475,7 @@ public class ReportService {
 		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			JSONObject reportJson = JsonReportBuilder.buildReportJson(report);
+			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.user.getId());
 			responseJson.put(LEVEL_REPORT, reportJson);
 		}
 

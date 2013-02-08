@@ -32,7 +32,7 @@ import com.picsauditing.util.Strings;
 public class Filter extends ReportElement {
 
 	public static final String FILTER_VALUE_DELIMITER = ", ";
-	private QueryFilterOperator operator = QueryFilterOperator.Equals;
+	private QueryFilterOperator operator;
 	private String value = "";
 	private String columnCompare;
 	private Field fieldForComparison;
