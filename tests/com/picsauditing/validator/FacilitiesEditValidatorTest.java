@@ -198,6 +198,36 @@ public class FacilitiesEditValidatorTest {
 		assertEquals(Strings.EMPTY_STRING, validationMessage);
 	}
 
+	@Test
+	public void testValidateOwnershipPercentage_AddSalesRepresentativeWithNoAccountManager() {
+		AccountUser salesRepresentativeToAdd = buildFakeActiveAccountUser(50, UserAccountRole.PICSSalesRep);
+
+		String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(null, salesRepresentativeToAdd);
+
+		assertEquals(Strings.EMPTY_STRING, validationMessage);
+	}
+
+	@Test
+	public void testValidateOwnershipPercentage_SaveSalesRepresentativeWithNoAccountManager() {
+		accountUsersForOperator.add(buildFakeActiveAccountUser(50, UserAccountRole.PICSSalesRep));
+		accountUsersForOperator.add(buildFakeActiveAccountUser(50, UserAccountRole.PICSSalesRep));
+
+		String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(accountUsersForOperator);
+
+		assertEquals(Strings.EMPTY_STRING, validationMessage);
+	}
+
+	@Test
+	public void testValidateOwnershipPercentage_RemoveSalesRepresentativeWithNoAccountManager() {
+		AccountUser accountUserToRemove = buildFakeActiveAccountUser(50, UserAccountRole.PICSSalesRep);
+		accountUsersForOperator.add(buildFakeActiveAccountUser(50, UserAccountRole.PICSSalesRep));
+		accountUsersForOperator.add(accountUserToRemove);
+
+		String validationMessage = facilitiesEditValidator.validateRemoveAccountUser(accountUsersForOperator, accountUserToRemove);
+
+		assertEquals(Strings.EMPTY_STRING, validationMessage);
+	}
+
 	private AccountUser buildFakeActiveAccountUser(int ownershipPercent, UserAccountRole role) {
 		AccountUser accountUser = buildFakeAccountUser(ownershipPercent, role);
 		accountUser.setStartDate(DateBean.addDays(new Date(), -1));

@@ -20,11 +20,13 @@ public class FacilitiesEditValidator {
 	 */
 	public String validateOwnershipPercentage(List<AccountUser> accountUsers) {
 		try {
+			boolean hasAccountManager = false;
 			int totalOwnershipForAccountManager = 0;
 			for (AccountUser accountUser : accountUsers) {
 				if (isActiveAccountManager(accountUser)) {
 					validateIndividualAccountManager(accountUser);
 					totalOwnershipForAccountManager += accountUser.getOwnerPercent();
+					hasAccountManager = true;
 				}
 
 				if (isActiveSalesRepresentative(accountUser)) {
@@ -32,7 +34,7 @@ public class FacilitiesEditValidator {
 				}
 			}
 
-			if (totalOwnershipForAccountManager != 100) {
+			if (hasAccountManager && totalOwnershipForAccountManager != 100) {
 				return "All active Account Managers must have a total ownership of 100%.";
 			}
 
@@ -115,7 +117,8 @@ public class FacilitiesEditValidator {
 	 *         successful.
 	 */
 	public String validateRemoveAccountUser(List<AccountUser> accountUsers, AccountUser accountUserToRemove) {
-		if (accountUserToRemove == null) {
+		if (accountUserToRemove == null || CollectionUtils.isEmpty(accountUsers)
+				|| containsNoAccountManager(accountUsers)) {
 			return Strings.EMPTY_STRING;
 		}
 
@@ -128,17 +131,30 @@ public class FacilitiesEditValidator {
 		return Strings.EMPTY_STRING;
 	}
 
+	private boolean containsNoAccountManager(List<AccountUser> accountUsers) {
+		for (AccountUser accountUser : accountUsers) {
+			if (accountUser != null && accountUser.getRole().isAccountManager()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void validateAnotherActiveAccountManager(List<AccountUser> accountUsers, AccountUser accountUserToRemove)
 			throws ValidationException {
-		if (accountUserToRemove.getAccount() != null && accountUserToRemove.getAccount().getStatus() != null
-				&& accountUserToRemove.getAccount().getStatus().isActiveOrDemo()
-				&& CollectionUtils.isEmpty(accountUsers)) {
+		if (isActiveAccount(accountUserToRemove) && CollectionUtils.isEmpty(accountUsers)) {
 			throw new ValidationException("Active accounts are required to have at least one active Account Manager.");
 		}
 
 		if (!hasAnotherActiveAccountUser(accountUsers, accountUserToRemove)) {
 			throw new ValidationException("Active accounts are required to have at least one active Account Manager.");
 		}
+	}
+
+	private boolean isActiveAccount(AccountUser accountUserToRemove) {
+		return (accountUserToRemove.getAccount() != null && accountUserToRemove.getAccount().getStatus() != null && accountUserToRemove
+				.getAccount().getStatus().isActiveOrDemo());
 	}
 
 	private boolean hasAnotherActiveAccountUser(List<AccountUser> accountUsers, AccountUser accountUserToRemove) {
