@@ -25,7 +25,7 @@ function getTasks(siteID) {
 	$('#editProject:visible').slideUp();
 
 	startThinking({div: 'jobSiteTasks', message: translate('JS.ManageProjects.loading.LoadingTasks'), type: 'large'});
-	$('#jobSiteTasks').load('ManageProjects!getTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> },
+	$('#jobSiteTasks').load('ManageProjects!getTasks.action', { jobSite: siteID, operator: '<s:property value="operator.id" />' },
 		function() {
 			$('#addSiteTasks').empty();
 			$('#jobSiteTasks').slideDown();
@@ -36,7 +36,7 @@ function getTasks(siteID) {
 function getNewSiteTasks(siteID) {
 	$('#addTaskLink').fadeOut();
 	startThinking({div: 'addSiteTasks', message: translate('JS.ManageProjects.loading.LoadingNewTasks'), type: 'large'});
-	$('#addSiteTasks').load('ManageProjects!newTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> });
+	$('#addSiteTasks').load('ManageProjects!newTasks.action', { jobSite: siteID, operator: '<s:property value="operator.id" />' });
 }
 
 function addTask(siteID, taskID) {
@@ -45,7 +45,7 @@ function addTask(siteID, taskID) {
 		jobSite: siteID,
 		jobTask: taskID,
 		controlSpan: controlSpan,
-		operator: <s:property value="operator.id" />
+		operator: '<s:property value="operator.id" />'
 	};
 
 	$('#jobSiteTasks').load('ManageProjects!addTask.action', data,
@@ -62,7 +62,7 @@ function removeTask(siteID, siteTaskID) {
 		var data = {
 			jobSite: siteID,
 			jobSiteTask: siteTaskID,
-			operator: <s:property value="operator.id" />
+			operator: '<s:property value="operator.id" />'
 		};
 	
 		$('#jobSiteTasks').load('ManageProjects!removeTask.action', data,
@@ -81,7 +81,7 @@ function editSite(siteID) {
 	$('#editProject:hidden').slideDown();
 	startThinking({div: 'editProject', message: translate('JS.ManageProjects.loading.LoadingProject')});
 	$('#editProject').load('ManageProjects!editSite.action',
-		{ jobSite: siteID, operator: <s:property value="operator.id" /> },
+		{ jobSite: siteID, operator: '<s:property value="operator.id" />' },
 		function () {
 			$('.datepicker').datepicker();
 		}
@@ -94,7 +94,7 @@ function getCountrySubdivisions(country) {
 
 function addCompany(conID, siteID) {
 	var data = {
-		operator: <s:property value="operator.id" />,
+		operator: '<s:property value="operator.id" />',
 		contractor: conID,
 		jobSite: siteID
 	};
