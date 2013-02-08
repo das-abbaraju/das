@@ -333,7 +333,7 @@ public class ReportServiceTest {
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserViewAndCopyReport(permissions, REPORT_ID)).thenReturn(false);
 
-		reportService.copy(reportContext, false);
+		reportService.copy(reportContext);
 	}
 
 	@Test
@@ -344,7 +344,7 @@ public class ReportServiceTest {
 		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
 		ReportService reportServiceSpy = spy(reportService);
 
-		Report newReport = reportServiceSpy.copy(reportContext, false);
+		Report newReport = reportServiceSpy.copy(reportContext);
 
 		assertTrue(REPORT_ID != newReport.getId());
 		verify(reportServiceSpy).validate(newReport);

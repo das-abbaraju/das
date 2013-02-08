@@ -28,7 +28,6 @@ public class ReportApi extends PicsApiSupport {
 	protected String debugSQL = "";
 	protected int limit = 50;
 	protected int pageNumber = 1;
-	protected boolean favorite;
 	protected boolean includeReport;
 	protected boolean includeColumns;
 	protected boolean includeFilters;
@@ -61,7 +60,7 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			Report newReport = reportService.copy(reportContext, favorite);
+			Report newReport = reportService.copy(reportContext);
 
 			writeJsonSuccess(json);
 			json.put(REPORT_ID, newReport.getId());
@@ -157,7 +156,7 @@ public class ReportApi extends PicsApiSupport {
 
 	protected ReportContext buildReportContext(JSONObject payloadJson) {
 		ReportContext reportContext = new ReportContext(payloadJson, reportId, getUser(), permissions, includeReport,
-				includeData, includeColumns, includeFilters, limit, pageNumber );
+				includeData, includeColumns, includeFilters, limit, pageNumber);
 		return reportContext;
 	}
 
@@ -167,10 +166,6 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-
-	public void setFavorite(boolean favorite) {
-		this.favorite = favorite;
 	}
 
 	public void setIncludeReport(boolean includeReport) {

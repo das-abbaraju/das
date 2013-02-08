@@ -30,7 +30,6 @@ public class ReportBuilder {
 		report.setName((String) reportJson.get(REPORT_NAME));
 		report.setDescription((String) reportJson.get(REPORT_DESCRIPTION));
 		report.setModelType(parseModelType(reportJson));
-
 		report.setFilterExpression(parseFilterExpression(reportJson));
 
 		addColumns(reportJson, report);

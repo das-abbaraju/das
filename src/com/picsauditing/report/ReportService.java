@@ -3,7 +3,6 @@ package com.picsauditing.report;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -74,7 +73,7 @@ public class ReportService {
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
 
-	public Report copy(ReportContext reportContext, boolean favorite) throws Exception {
+	public Report copy(ReportContext reportContext) throws Exception {
 		int userId = reportContext.permissions.getUserId();
 
 		if (!permissionService.canUserViewAndCopyReport(reportContext.permissions, reportContext.reportId)) {
@@ -90,7 +89,7 @@ public class ReportService {
 
 		reportDao.save(newReport);
 
-		if (favorite) {
+		if (shouldFavorite(reportContext)) {
 			favoriteReport(userId, newReport.getId());
 		}
 
@@ -99,6 +98,19 @@ public class ReportService {
 		connectReportPermissionUser(userId, newReport.getId(), true);
 
 		return newReport;
+	}
+
+	private boolean shouldFavorite(ReportContext reportContext) {
+		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
+
+		try {
+			boolean favorite = (Boolean) reportJson.get(REPORT_FAVORITE);
+			return favorite;
+		} catch (Exception e) {
+			// Just eat it!
+		}
+
+		return false;
 	}
 
 	private void prepareNewReportForDatabaseCopy(Report newReport, Permissions permissions) {
