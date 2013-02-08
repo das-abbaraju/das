@@ -107,13 +107,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm(),
             copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
             copy_setting_form = copy_setting_view.getForm(),
             copy_favorite = copy_setting_view.down('reportfavoritetoggle');
 
-        copy_favorite.toggleUnfavorite();
-
+        // reset the edit form
+        edit_setting_form.loadRecord(edit_setting_form.getRecord());
+        
+        // reset the copy form
         copy_setting_form.reset();
+        
+        // reset the copy favorite regardless
+        copy_favorite.toggleUnfavorite();
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
