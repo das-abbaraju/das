@@ -77,6 +77,7 @@ public class JsonReportBuilder {
 		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
 		json.put(COLUMN_WIDTH, column.getWidth());
 		json.put(COLUMN_SORTABLE, column.getField().isSortable());
+		json.put(COLUMN_SORT, column.getSortIndex());
 
 		return json;
 	}

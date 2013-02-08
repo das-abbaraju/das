@@ -40,6 +40,7 @@ public class LegacyReportConverter {
 	private static final Logger logger = LoggerFactory.getLogger(LegacyReportConverter.class);
 
 	// From Report to JSON
+	@Deprecated
 	public JSONObject toJSON(Report report) {
 		JSONObject json = new JSONObject();
 
@@ -247,6 +248,7 @@ public class LegacyReportConverter {
 	public Column toColumn(JSONObject json) {
 		Column column = new Column();
 		toElementFromJSON(json, column);
+		column.setSortIndex(Column.DEFAULT_SORT_INDEX);
 		return column;
 	}
 

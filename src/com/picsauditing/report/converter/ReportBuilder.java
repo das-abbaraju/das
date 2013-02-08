@@ -113,7 +113,21 @@ public class ReportBuilder {
 
 			column.setWidth(width);
 		} catch (Exception e) {
-			logger.warn("Couldn't parse width from ReportElement '" + json.get(REPORT_ID) + "' ReportElement's id will default to 0.");
+			logger.warn("Couldn't parse width from Column '" + json.get(REPORT_ID));
+		}
+
+		try {
+			String sortIndexString = json.get(COLUMN_SORT).toString();
+			int sortIndex = Integer.parseInt(sortIndexString);
+
+			if (sortIndex < 1) {
+				sortIndex = Column.DEFAULT_SORT_INDEX;
+			}
+
+			column.setSortIndex(sortIndex);
+		} catch (Exception e) {
+			logger.warn("Couldn't parse sort from Column '" + json.get(REPORT_ID));
+			column.setSortIndex(Column.DEFAULT_SORT_INDEX);
 		}
 
 		return column;

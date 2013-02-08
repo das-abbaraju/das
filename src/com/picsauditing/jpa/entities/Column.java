@@ -11,10 +11,12 @@ import com.picsauditing.report.fields.PivotDimension;
 @Table(name = "report_column")
 public class Column extends ReportElement {
 
+	private int width = DEFAULT_WIDTH;
+	private int sortIndex;
+
 	public static final int MIN_WIDTH = 35;
 	public static final int DEFAULT_WIDTH = 100;
-
-	private int width = DEFAULT_WIDTH;
+	public static final int DEFAULT_SORT_INDEX = 1;
 
 	public Column() {
 	}
@@ -33,6 +35,14 @@ public class Column extends ReportElement {
 
 	public void setWidth(int width) {
 		this.width = width;
+	}
+
+	public int getSortIndex() {
+		return sortIndex;
+	}
+
+	public void setSortIndex(int sortIndex) {
+		this.sortIndex = sortIndex;
 	}
 
 	@Transient

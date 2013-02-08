@@ -424,6 +424,8 @@ public class ReportService {
 
 		Report report = buildReportFromJson(reportJson, reportContext.reportId);
 
+		report.sortColumns();
+
 		return report;
 	}
 
@@ -440,6 +442,9 @@ public class ReportService {
 				legacyConvertParametersToReport(report);
 			}
 		}
+
+		report.sortColumns();
+
 		return report;
 	}
 

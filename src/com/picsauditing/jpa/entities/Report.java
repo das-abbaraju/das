@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -226,6 +228,19 @@ public class Report extends BaseTable {
 
 	public void setReportPermissionUsers(List<ReportPermissionUser> reportPermissionUsers) {
 		this.reportPermissionUsers = reportPermissionUsers;
+	}
+
+	public void sortColumns() {
+		Collections.sort(columns, new Comparator<com.picsauditing.jpa.entities.Column>() {
+			@Override
+			public int compare(com.picsauditing.jpa.entities.Column c1, com.picsauditing.jpa.entities.Column c2) {
+				if (c1.getSortIndex() == c2.getSortIndex()) {
+					return c1.getId() - c2.getId();
+				}
+
+				return c1.getSortIndex() - c2.getSortIndex();
+			}
+		});
 	}
 
 }
