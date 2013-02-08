@@ -95586,6 +95586,10 @@ Ext.define('PICS.model.report.Column', {
         name: 'width',
         type: 'int'
     }, {
+        name: 'sort',
+        type: 'int',
+        defaultValue: 1
+    }, {
         name: 'is_sortable',
         type: 'boolean',
         persist: false
@@ -96441,12 +96445,14 @@ Ext.define('PICS.model.report.Report', {
             new_column = column.getData();
         
         column_store.add(new_column);
+        
+        this.resortColumns();
     },
     
     addColumns: function (columns) {
         var new_columns = [];
         
-        Ext.Array.forEach(columns, function (column) {
+        Ext.each(columns, function (column) {
             if (Ext.getClassName(column) != 'PICS.model.report.Column') {
                 Ext.Error.raise('Invalid column');
             }
@@ -96457,6 +96463,8 @@ Ext.define('PICS.model.report.Report', {
         var column_store = this.columns();
         
         column_store.add(new_columns);
+        
+        this.resortColumns();
     },
     
     addFilter: function (filter) {
@@ -96526,14 +96534,6 @@ Ext.define('PICS.model.report.Report', {
         return grid_columns;
     },
     
-    removeColumns: function () {
-        this.columns().removeAll();
-    },
-    
-    removeSorts: function () {
-        this.sorts().removeAll();
-    },
-    
     // reorder columns
     moveColumnByIndex: function (from_index, to_index) {
         var column_store = this.columns(),
@@ -96545,7 +96545,7 @@ Ext.define('PICS.model.report.Report', {
         });
     
         // splice out the column store - column your moving
-        var spliced_column = columns.splice(from_index, 1);
+        var spliced_column = columns.splice(from_index, 1)[0];
     
         // insert the column store - column to the position you moved it to
         columns.splice(to_index, 0, spliced_column);
@@ -96553,9 +96553,26 @@ Ext.define('PICS.model.report.Report', {
         // remove all column store records
         column_store.removeAll();
         
-        // re-insert column store records in the new position
-        Ext.each(columns, function (column, index) {
-            column_store.add(column);
+        this.addColumns(columns);
+        
+        this.resortColumns();
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    resortColumns: function () {
+        var column_store = this.columns();
+        
+        column_store.each(function (column, index) {
+            index += 1;
+            
+            column.set('sort', index);
         });
     }
 });
