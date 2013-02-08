@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_cat_data")
-public class AuditCatData extends BaseTable implements java.io.Serializable {
+public class AuditCatData extends BaseTable implements java.io.Serializable, Comparable<AuditCatData> {
 
 	private ContractorAudit audit;
 	private AuditCategory category;
@@ -169,5 +169,10 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 		} else {
 			return "-";
 		}
+	}
+	
+	@Override
+	public int compareTo(AuditCatData o) {
+		return getCategory().compareTo(o.getCategory());
 	}
 }

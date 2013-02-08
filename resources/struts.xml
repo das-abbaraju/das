@@ -590,11 +590,11 @@
         </action>
 
         <action name="AddRemoveCategories"
-                class="com.picsauditing.actions.audits.ContractorAuditController">
+                class="com.picsauditing.actions.audits.AddRemoveCategories">
             <result>struts/audits/addRemoveCategory.jsp</result>
         </action>
         <action name="AddRemoveCategoriesAjax"
-                class="com.picsauditing.actions.audits.ContractorAuditController">
+                class="com.picsauditing.actions.audits.AddRemoveCategories">
             <result>struts/audits/addRemoveCategoryData.jsp</result>
         </action>
 

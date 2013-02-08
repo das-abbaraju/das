@@ -356,13 +356,31 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		if (cmp != 0)
 			return cmp;
-
+		
+		String[] thisFullNumber = getFullNumber().split("\\.");
+		String[] otherFullNumber = other.getFullNumber().split("\\.");
+		
+		for (int i = 0; i < Math.max(thisFullNumber.length, otherFullNumber.length); i++) {
+			if (thisFullNumber.length-1 < i) 
+				return -1;
+			if (otherFullNumber.length-1 < i)
+				return 1;
+			
+			int thisNumber = Integer.parseInt(thisFullNumber[i]);
+			int otherNumber = Integer.parseInt(otherFullNumber[i]);
+			
+			int numCompare = thisNumber-otherNumber;
+			
+			if (numCompare != 0)
+				return numCompare;
+		}
+		
 		return getFullNumber().compareTo(other.getFullNumber());
 	}
 
 	@Override
 	public String toString() {
-		return getNumber() + " " + name;
+		return getFullNumber() + " " + name;
 	}
 
 	@Transient
