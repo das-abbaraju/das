@@ -41,6 +41,10 @@ Ext.define('PICS.model.report.Column', {
         name: 'width',
         type: 'int'
     }, {
+        name: 'sort',
+        type: 'int',
+        defaultValue: 1
+    }, {
         name: 'is_sortable',
         type: 'boolean',
         persist: false
