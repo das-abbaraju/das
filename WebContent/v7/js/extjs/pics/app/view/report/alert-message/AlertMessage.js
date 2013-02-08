@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.alert-message.AlertMessage', {
     extend: 'Ext.window.Window',
-    alias: ['widget.reportalertmessage'],
+    alias: 'widget.reportalertmessage',
 
     draggable: false,
     id: 'alert_message',

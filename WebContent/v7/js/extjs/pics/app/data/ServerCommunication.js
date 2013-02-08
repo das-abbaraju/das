@@ -219,9 +219,11 @@ Ext.define('PICS.data.ServerCommunication', {
                 window.open(url);
             },
 
-            saveReport: function () {
+            saveReport: function (options) {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
+                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
 
                 // flag store as dirty so it will sync data to server
@@ -231,12 +233,8 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.setProxyForWrite(url);
 
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: alert message
-                    },
-                    failure: function (batch, eOpts) {
-                        // TODO: error message - revert?
-                    }
+                    success: success_callback,
+                    failure: failure_callback
                 });
             },
             
@@ -244,8 +242,8 @@ Ext.define('PICS.data.ServerCommunication', {
                 var account_id = options.account_id,
                     account_type = options.account_type,
                     is_editable = options.is_editable,
-                    success_callback = options.success_callback ? options.success_callback : function () {},
-                    failure_callback = options.failure_callback ? options.failure_callback : function () {},
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
+                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = PICS.data.ServerCommunicationUrl.getShareReportUrl();
                     
                 if (!(account_id && account_type && is_editable)) {

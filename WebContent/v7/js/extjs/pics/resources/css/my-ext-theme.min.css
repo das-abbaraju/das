@@ -8079,31 +8079,39 @@ textarea.x-form-invalid-field {
   .site-menu-search-list .account-deactivated,
   .site-menu-search-list .account-inactive {
     color: #aeaeae; }
-  /* line 238, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 234, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .account-deactivated.x-boundlist-item-over,
+  .site-menu-search-list .account-inactive.x-boundlist-item-over {
+    color: #cccccc; }
+  /* line 244, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .account-deleted .name,
   .site-menu-search-list .account-deleted .id,
   .site-menu-search-list .account-deleted .location,
   .site-menu-search-list .account-deleted .type {
     text-decoration: line-through; }
-  /* line 245, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 251, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results,
   .site-menu-search-list .no-results {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-  /* line 254, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 260, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results a {
-    color: #333333;
+    color: #226396;
     display: block;
     font-weight: bold;
-    padding: 3px 0px; }
-  /* line 262, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    padding: 3px 0px;
+    text-decoration: none; }
+  /* line 269, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  .site-menu-search-list .more-results a:hover {
+    color: #73bbe8; }
+  /* line 274, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results p {
     color: #999;
     font-size: 13px;
     margin: 0px; }
 
-/* line 271, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 283, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 

@@ -145,7 +145,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     editReport: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
+            edit_setting_form = edit_setting_view.getForm(),
+            that = this;
 
         if (edit_setting_form.isValid()) {
             edit_setting_form.updateRecord();
@@ -155,7 +156,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         this.application.fireEvent('updatepageheader');
 
-        PICS.data.ServerCommunication.saveReport();
+        PICS.data.ServerCommunication.saveReport({
+            success_callback: function () {
+                that.application.fireEvent('openalertmessage', {
+                    title: 'Report Saved',
+                    html: 'to My Reports in Manage Reports.'
+                });
+            }
+        });
     },
 
     exportReport: function (cmp, e, eOpts) {
