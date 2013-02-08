@@ -20,7 +20,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
@@ -57,6 +56,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String isoCode;
 	protected TranslatableString name;
 	protected String english;
+	protected String phone;
 	protected Double corruptionPerceptionIndex;
 	protected Currency currency = Currency.USD;
 	protected User csr;
@@ -101,6 +101,15 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	public void setEnglish(String english) {
 		this.english = english;
+	}
+
+	@Column(name = "phone", length = 25)
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public static String convertToCode(String tempCountry) {
