@@ -14,12 +14,16 @@ Ext.define('PICS.data.ServerCommunication', {
             var column_store = Ext.StoreManager.get('report.Columns');
 
             column_store.loadRawData(json);
+            
+            return column_store;
         }
 
         function loadFilterStore(json) {
             var filter_store = Ext.StoreManager.get('report.Filters');
 
             filter_store.loadRawData(json);
+            
+            return filter_store;
         }
 
         function loadDataTableStore(json) {
@@ -33,6 +37,8 @@ Ext.define('PICS.data.ServerCommunication', {
 
             // load data table with results
             data_table_store.loadRawData(json);
+            
+            return data_table_store;
         }
 
         function startDataTableLoading() {
@@ -79,6 +85,12 @@ Ext.define('PICS.data.ServerCommunication', {
                         // TODO: error message - revert?
                     }
                 });
+            },
+            
+            exportReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
+                
+                window.open(url);
             },
 
             favoriteReport: function () {
@@ -200,6 +212,12 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
+            
+            printReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getPrintReportUrl();
+                
+                window.open(url);
+            },
 
             saveReport: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
@@ -219,6 +237,30 @@ Ext.define('PICS.data.ServerCommunication', {
                     failure: function (batch, eOpts) {
                         // TODO: error message - revert?
                     }
+                });
+            },
+            
+            shareReport: function (options) {
+                var account_id = options.account_id,
+                    account_type = options.account_type,
+                    is_editable = options.is_editable,
+                    success_callback = options.success_callback ? options.success_callback : function () {},
+                    failure_callback = options.failure_callback ? options.failure_callback : function () {},
+                    url = PICS.data.ServerCommunicationUrl.getShareReportUrl();
+                    
+                if (!(account_id && account_type && is_editable)) {
+                    Ext.Error.raise('Error');
+                }
+                
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        id: account_id,
+                        type: account_type,
+                        editable: is_editable
+                    },
+                    success: success_callback,
+                    failure: failure_callback
                 });
             },
 

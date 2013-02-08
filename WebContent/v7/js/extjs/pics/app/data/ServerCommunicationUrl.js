@@ -36,6 +36,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getExportReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportData!download.action?';
+            
+            var params = {
+                report: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getFavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
@@ -105,10 +117,34 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getPrintReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportData!print.action?';
+            
+            var params = {
+                report: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!save.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getShareReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportSharing!share.action';
             
             var params = {
                 reportId: report_id

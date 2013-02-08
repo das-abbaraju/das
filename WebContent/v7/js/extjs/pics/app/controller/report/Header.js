@@ -49,7 +49,7 @@ Ext.define('PICS.controller.report.Header', {
             is_editable = report.get('is_editable');
 
         if (is_editable) {
-            this.application.fireEvent('savereport');
+            PICS.data.ServerCommunication.saveReport();
         } else {
             this.application.fireEvent('opensettingsmodal', 'copy');
         }

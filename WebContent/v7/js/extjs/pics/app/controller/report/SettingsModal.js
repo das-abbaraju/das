@@ -155,11 +155,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         this.application.fireEvent('updatepageheader');
 
-        this.application.fireEvent('savereport');
+        PICS.data.ServerCommunication.saveReport();
     },
 
     exportReport: function (cmp, e, eOpts) {
-        this.application.fireEvent('downloadreport');
+        PICS.data.ServerCommunication.exportReport();
     },
 
     favoriteReport: function (cmp, eOpts) {
@@ -183,7 +183,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     printReport: function (cmp, e, eOpts) {
-        this.application.fireEvent('printreport');
+        PICS.data.ServerCommunication.printReport();
     },
 
     unfavoriteReport: function (cmp, eOpts) {
@@ -248,19 +248,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
             return;
         }
 
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id'),
-            report_settings_share_element = report_settings_share.getEl(),
-            account_id = data.account_id,
-            account_type = data.account_type,
+        var report_settings_share_element = report_settings_share.getEl(),
             is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
+            account_id = data.account_id,
+            account_type = data.account_type;
 
-        this.application.fireEvent('sharereport', {
-            report_id: report_id,
+        var options = {
             account_id: account_id,
             account_type: account_type,
-            is_editable: is_editable
-        });
+            is_editable: is_editable,
+            success_callback: function (response) {
+                report_settings_modal.close();
+            }
+        };
+        
+        PICS.data.ServerCommunication.shareReport(options);
     }
 });
