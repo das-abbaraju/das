@@ -11,7 +11,10 @@ import com.picsauditing.report.fields.PivotDimension;
 @Table(name = "report_column")
 public class Column extends ReportElement {
 
-	private int width = 100;
+	public static final int MIN_WIDTH = 35;
+	public static final int DEFAULT_WIDTH = 100;
+
+	private int width = DEFAULT_WIDTH;
 
 	public Column() {
 	}
@@ -24,7 +27,7 @@ public class Column extends ReportElement {
 		if (width < 1 && field != null) {
 			return field.getWidth();
 		}
-		
+
 		return width;
 	}
 

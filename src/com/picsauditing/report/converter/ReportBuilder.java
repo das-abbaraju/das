@@ -103,6 +103,19 @@ public class ReportBuilder {
 		Column column = new Column();
 		toElementFromJSON(json, column);
 
+		try {
+			String widthString = json.get(COLUMN_WIDTH).toString();
+			int width = Integer.parseInt(widthString);
+
+			if (width < Column.MIN_WIDTH) {
+				width = Column.MIN_WIDTH;
+			}
+
+			column.setWidth(width);
+		} catch (Exception e) {
+			logger.warn("Couldn't parse width from ReportElement '" + json.get(REPORT_ID) + "' ReportElement's id will default to 0.");
+		}
+
 		return column;
 	}
 
