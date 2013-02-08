@@ -65992,71 +65992,84 @@ Ext.define('PICS.data.ServerCommunication', {
     statics: (function () {
         function loadReportStore(json) {
             var report_store = Ext.StoreManager.get('report.Reports');
-            
+
             report_store.setProxyForRead();
-            
+
             report_store.loadRawData(json);
+            
+            return report_store;
         }
-        
+
         function loadColumnStore(json) {
             var column_store = Ext.StoreManager.get('report.Columns');
-            
+
             column_store.loadRawData(json);
+            
+            return column_store;
         }
-        
+
         function loadFilterStore(json) {
             var filter_store = Ext.StoreManager.get('report.Filters');
-            
+
             filter_store.loadRawData(json);
+            
+            return filter_store;
         }
-        
+
         function loadDataTableStore(json) {
             var report_store = Ext.StoreManager.get('report.Reports'),
                 report = report_store.first(),
                 data_table_store = Ext.StoreManager.get('report.DataTables'),
                 model_fields = report.convertColumnsToModelFields();
-            
+
             // update data table model
             data_table_store.updateDataTableModelFields(model_fields);
-            
+
             // load data table with results
             data_table_store.loadRawData(json);
+            
+            return data_table_store;
         }
-        
+
         function startDataTableLoading() {
             var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
-            
+
             data_table_view.setLoading(true);
         }
-        
+
         function stopDataTableLoading() {
             var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0];
-            
+
             data_table_view.setLoading(false);
         }
-            
+
         function updateDataTableView(report) {
             var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
                 new_grid_columns = report.convertColumnsToGridColumns();
-            
+
             data_table_view.updateGridColumns(new_grid_columns);
         }
-        
+
         return {
             copyReport: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     url = PICS.data.ServerCommunicationUrl.getCopyReportUrl();
-                
+
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
-                
+
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
                     success: function (batch, eOpts) {
-                        // TODO: redirect
+                        var response = batch.operations[0].response,
+                            data = response.responseText,
+                            json = Ext.JSON.decode(data),
+                            report_id = json.id;
+
+                        window.location.href = 'Report.action?report=' + report_id;
                     },
                     failure: function (batch, eOpts) {
                         // TODO: error message - revert?
@@ -66064,9 +66077,15 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
             
+            exportReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
+                
+                window.open(url);
+            },
+
             favoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
-                
+
                 Ext.Ajax.request({
                     url: url,
                     failure: function () {
@@ -66074,12 +66093,12 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
-            
+
             loadAll: function (options) {
-                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
+                var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
                     callback = typeof options.callback == 'function' ? options.callback : function () {},
                     scope = options.scope ? options.scope : this;
-                    
+
                 Ext.Ajax.request({
                     url: url,
                     success: function (response) {
@@ -66087,33 +66106,33 @@ Ext.define('PICS.data.ServerCommunication', {
                             json = Ext.JSON.decode(data);
 
                         loadReportStore(json);
-                        
+
                         loadColumnStore(json);
-                        
+
                         loadFilterStore(json);
-                        
+
                         loadDataTableStore(json);
 
                         callback.apply(scope, arguments);
                     }
                 });
             },
-            
+
             loadReportAndData: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl();
-                
+                    url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl();
+
                 // add data table loading mask
                 startDataTableLoading();
-                
+
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
-                
+
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     success: function (batch, eOpts) {
@@ -66121,22 +66140,25 @@ Ext.define('PICS.data.ServerCommunication', {
                         var response = batch.operations[0].response,
                             data = response.responseText,
                             json = Ext.JSON.decode(data);
+
+                        // load the report store
+                        var report_store = loadReportStore(json),
+                            report = report_store.first();
                         
-                        loadReportStore(json);
-                        
+
                         // load new results
                         loadDataTableStore(json);
-                        
+
                         // remove data table loading mask
                         stopDataTableLoading();
-                        
+
                         // refresh grid
                         updateDataTableView(report);
-                        
+
                     }
                 });
             },
-            
+
             loadData: function (page, limit) {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
@@ -66148,19 +66170,19 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // updates the stores limit tracker
                 data_table_store.setLimit(limit);
-                
+
                 // updates the stores page tracker
                 data_table_store.setPage(page);
-                
+
                 // add data table loading mask
                 startDataTableLoading();
-                
+
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
-                
+
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 // sync
                 report_store.sync({
                     success: function (batch, eOpts) {
@@ -66168,43 +66190,71 @@ Ext.define('PICS.data.ServerCommunication', {
                         var response = batch.operations[0].response,
                             data = response.responseText,
                             json = Ext.JSON.decode(data);
-                        
+
                         // load new results
                         loadDataTableStore(json);
-                        
+
                         // remove data table loading mask
                         stopDataTableLoading();
-                        
+
                         // refresh grid
                         updateDataTableView(report);
                     }
                 });
             },
             
-            saveReport: function () {
+            printReport: function () {
+                var url = PICS.data.ServerCommunicationUrl.getPrintReportUrl();
+                
+                window.open(url);
+            },
+
+            saveReport: function (options) {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
+                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
-                
+
                 // flag store as dirty so it will sync data to server
                 report.setDirty();
-                
+
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-                
+
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: alert message
-                    },
-                    failure: function (batch, eOpts) {
-                        // TODO: error message - revert?
-                    }
+                    success: success_callback,
+                    failure: failure_callback
                 });
             },
             
+            shareReport: function (options) {
+                var account_id = options.account_id,
+                    account_type = options.account_type,
+                    is_editable = options.is_editable,
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
+                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
+                    url = PICS.data.ServerCommunicationUrl.getShareReportUrl();
+                    
+                if (!(account_id && account_type && is_editable)) {
+                    Ext.Error.raise('Error');
+                }
+                
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        id: account_id,
+                        type: account_type,
+                        editable: is_editable
+                    },
+                    success: success_callback,
+                    failure: failure_callback
+                });
+            },
+
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
-                
+
                 Ext.Ajax.request({
                     url: url,
                     failure: function () {
@@ -66217,6 +66267,20 @@ Ext.define('PICS.data.ServerCommunication', {
 });
 Ext.define('PICS.data.ServerCommunicationUrl', {
     statics: {
+        getAutocompleteUrl: function (field_id, search_key) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'Autocompleter.action?';
+            
+            var params = {
+                reportId: report_id,
+                fieldId: field_id,
+                searchKey: search_key
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getCopyReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
@@ -66229,10 +66293,32 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getColumnFunctionUrl: function (field_id) {
+            var path = 'v7/js/extjs/pics/app/data/column-functions.json?';
+            
+            var params = {
+                fieldId: field_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getExportReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportData!download.action?';
+            
+            var params = {
+                report: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getFavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ManageReports!favorite.action?';
+                path = 'ReportApi!favorite.action?';
             
             var params = {
                 reportId: report_id
@@ -66286,6 +66372,30 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getMultiSelectUrl: function (field_id) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'Autocompleter.action?';
+            
+            var params = {
+                fieldType: field_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
+        getPrintReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportData!print.action?';
+            
+            var params = {
+                report: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
@@ -66298,10 +66408,22 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
         
+        getShareReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportSharing!share.action';
+            
+            var params = {
+                reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+        
         getUnfavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ManageReports!unfavorite.action?';
+                path = 'ReportApi!unfavorite.action?';
             
             var params = {
                 reportId: report_id
@@ -66310,6 +66432,56 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
     }
+});
+Ext.define('PICS.data.ColumnType', {
+    statics: (function () {
+        var types = {
+            Boolean: 'Boolean',
+            Flag: 'Flag',
+            Number: 'Number',
+            String: 'String'
+        };
+        
+        return {
+            getTypes: function () {
+                return types;
+            },
+            
+            Boolean: types.Boolean,
+            Flag: types.Flag,
+            Number: types.Number,
+            String: types.String
+        };
+    }())
+});
+Ext.define('PICS.data.FilterType', {
+    statics: (function () {
+        var types = {
+            AccountID: 'AccountID',
+            Autocomplete: 'Autocomplete',
+            Boolean: 'Boolean',
+            Date: 'Date',
+            Multiselect: 'Multiselect',
+            Number: 'Number',
+            String: 'String',
+            UserID: 'UserID'
+        };
+        
+        return {
+            getTypes: function () {
+                return types;
+            },
+            
+            AccountID: types.AccountID,
+            Autocomplete: types.Autocomplete,
+            Boolean: types.Boolean,
+            Date: types.Date,
+            Multiselect: types.Multiselect,
+            Number: types.Number,
+            String: types.String,
+            UserID: types.UserID
+        };
+    }())
 });
 /**
  * A specialized container representing the viewable application area (the browser viewport).
@@ -66748,7 +66920,7 @@ Ext.define('Ext.resizer.Splitter', {
 
 Ext.define('PICS.view.report.alert-message.AlertMessage', {
     extend: 'Ext.window.Window',
-    alias: ['widget.reportalertmessage'],
+    alias: 'widget.reportalertmessage',
 
     draggable: false,
     id: 'alert_message',
@@ -68344,352 +68516,6 @@ Ext.define('Ext.layout.container.Anchor', {
     }
 });
 
-Ext.define('PICS.view.report.filter.base.AccountIDFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseaccountidfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            record.set('operator', 'Equals');
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: [
-                ['Equals', 'equals'],
-                ['NotEquals', 'does not equal'],
-                ['CurrentAccount', 'current account']
-            ],
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: false,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.BooleanFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasebooleanfilter'],
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var checkbox = this.createCheckbox(this.record);
-
-        this.add(checkbox);
-    },
-
-    createCheckbox: function (record) {
-        var value = record.get('value'),
-            checked = value == 'true' ? true : false;
-
-        return {
-            xtype: 'checkbox',
-            boxLabel: 'True',
-            checked: value == 'true' ? true : false,
-            inputValue: true,
-            name: 'filter_value',
-            uncheckedValue: false,
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.FloatFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasefloatfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.NUMBERSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.NUMBERSTORE,
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: true,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.IntegerFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseintegerfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.NUMBERSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.NUMBERSTORE,
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'numberfield',
-            allowDecimals: false,
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.StringFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasestringfilter'],
-
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var textfield = this.createTextfield(this.record);
-
-        this.add([
-            combobox,
-            textfield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.TEXTSTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.TEXTSTORE,
-            value: operator
-        };
-    },
-
-    createTextfield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'textfield',
-            flex: 2,
-            name: 'filter_value',
-            value: value
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.UserIDFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseuseridfilter'],
-
-    border: 0,
-    layout: 'hbox',
-    
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        
-        this.add(combobox);
-        
-        if (this.record.get('fieldCompare')) {
-            this.createFieldSelect(this.record);
-        } else {
-            this.createNumberfield(this.record);
-        }
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            record.set('operator', 'equals');
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: [
-                ['Equals', 'equals'],
-                ['NotEquals', 'does not equal'],
-                ['CurrentUser', 'current user']
-            ],
-            value: operator
-        };
-    },
-
-    createNumberfield: function (record) {
-        if (this.value_field) {
-            this.remove(this.value_field);
-        }
-
-        var value = record.get('value');
-
-        // TODO: COMMENT
-        this.value_field = this.add({
-            xtype: 'numberfield',
-            allowDecimals: false,
-            blankText: 'Number',
-            flex: 2,
-            hideTrigger: true,
-            keyNavEnabled: false,
-            mouseWheelEnabled: false,
-            name: 'filter_value',
-            value: value
-        });
-    },
-    
-    createFieldSelect: function (record) {
-
-        if (this.value_field) {
-            this.remove(this.value_field);
-        }
-
-        var value = record.get('fieldCompare');
-        
-        this.value_field = this.add({
-            xtype: 'textfield',
-            blankText: 'Field',
-            flex: 2,
-            name: 'filter_field_compare',
-            value: value
-        });
-    }
-});
 Ext.define('PICS.view.report.filter.FilterTooltip', {
     extend: 'Ext.tip.ToolTip',
     alias: 'widget.filtertooltip',
@@ -71527,142 +71353,13 @@ Ext.define('PICS.view.report.header.Header', {
     }],
     layout: 'border'
 });
-Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-    extend: 'PICS.ux.window.Window',
-    alias: 'widget.reportcolumnfunctionmodal',
-
-    border: 0,
-    closeAction: 'destroy',
-    draggable: false,
-    header: {
-        height: 44
-    },
-    id: 'column_function_modal',
-    layout: 'fit',
-    modal: true,
-    resizable: false,
-    shadow: 'frame',
-    title: 'Column Functions',
-    width: 300,
-    dockedItems: [{
-        xtype: 'panel',
-        border: 0,
-        dock: 'bottom',
-        height: 10,
-        id: 'column_function_modal_footer'
-    }],
-        
-    initComponent: function () {
-        if (Ext.getClassName(this.column) != 'PICS.model.report.Column') {
-            Ext.Error.raise('Invalid column');
-        }
-
-        var field = this.column,
-            sql_functions = [{key: 'Sum', value: 'Count'}], // TODO: Temporary. Replace with server request.
-            sql_function_items = this.createSqlFunctionItems(sql_functions),
-            sql_function_list_view = this.createSqlFunctionListView(sql_function_items);
-
-        this.dockedItems.push(sql_function_list_view);
-
-        this.height = (40 * sql_functions.length) + 95;
-
-        this.callParent(arguments);
-    },
-
-    createSqlFunctionListView: function (sql_function_items) {
-        return {
-            xtype: 'toolbar',
-            border: 0,
-            defaults: {
-                height: 35
-            },
-            dock: 'top',
-            cls: 'column_function_list',
-            items: sql_function_items,
-            layout: 'vbox'
-        };
-    },
-
-    createSqlFunctionItem: function (sql_function) {
-        return {
-            action: sql_function.key,
-            height: 40,
-            text: sql_function.value,
-            textAlign: 'left'
-        };
-    },
-
-    createSqlFunctionItems: function (sql_functions) {
-        var items = [{
-            action: '',
-            height: 40,
-            text: 'None',
-            textAlign: 'left'
-        }];
-
-        var that = this;
-        Ext.each(sql_functions, function (sql_function) {
-            items.push(that.createSqlFunctionItem(sql_function));
-        });
-
-        return items;
-    }
-});
-Ext.define('PICS.controller.report.ColumnFunctionModal', {
-    extend: 'Ext.app.Controller',
-
-    refs: [{
-        ref: 'columnFunctionModal',
-        selector: 'reportcolumnfunctionmodal'
-    }],
-
-    views: [
-        'PICS.view.report.modal.column-function.ColumnFunctionModal'
-    ],
-
-    init: function () {
-        this.control({
-            'reportcolumnfunctionmodal button': {
-                click: this.onButtonClick
-            }
-        });
-
-        this.application.on({
-            opencolumnfunctionmodal: this.openColumnFunctionModal,
-            scope: this
-        });
-    },
-
-    onButtonClick: function (cmp, event, eOpts) {
-        var column_function_modal = this.getColumnFunctionModal(),
-            column = column_function_modal.column,
-            action = cmp.action;
-
-        // set the method on the column store - column
-        column.set('sql_function', action);
-
-        // destroy modal for next use (generate with correct column)
-        column_function_modal.close();
-        
-        // refresh report
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    // show the column function modal , but attach the specific column store - column your modifying
-    openColumnFunctionModal: function (column) {
-        var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-            column: column
-        });
-
-        column_function_modal.show();
-    }
-});
 Ext.define('PICS.ux.util.filter.ColumnFilterStoreFilter', {
     extend: 'PICS.ux.util.filter.FilterMultipleColumn',
     
     property: [
         'category',
-        'name'
+        'name',
+        'description'
     ]
 });
 /**
@@ -72284,12 +71981,58 @@ Ext.define('PICS.model.report.Filter', {
         useNull: true
     }, {
         name: 'value',
+        convert: function (value, record) {
+            var type = record.get('type');
+            
+            if (value == null) {
+                return '';
+            }
+            
+            switch (type) {
+                case PICS.data.FilterType.Date:
+                    value = Ext.Date.format(value, 'Y-m-d') || value;
+                    
+                    break;
+                case PICS.data.FilterType.Multiselect:
+                    if (value instanceof Array) {
+                        value = value.join(', ');
+                    }
+                    
+                    break;
+                case PICS.data.FilterType.AccountID:
+                case PICS.data.FilterType.Boolean:
+                case PICS.data.FilterType.Number:
+                case PICS.data.FilterType.UserID:
+                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
+                    value = value.toString();
+                    
+                    break;
+                case PICS.data.FilterType.Autocomplete:
+                case PICS.data.FilterType.String:
+                default:
+                    // no conversion necessary
+                    break;
+            }
+            
+            return value;
+        },
         type: 'string',
         useNull: true
     }, {
         name: 'column_compare_id',
         type: 'string',
         useNull: true
+    }]
+});
+Ext.define('PICS.model.report.ColumnFunctions', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'key',
+        type: 'string'
+    }, {
+        name: 'value',
+        type: 'string'
     }]
 });
 /**
@@ -75672,620 +75415,6 @@ Ext.define('PICS.model.report.Sort', {
     }]
 });
 /**
- * A split button that provides a built-in dropdown arrow that can fire an event separately from the default click event
- * of the button. Typically this would be used to display a dropdown menu that provides additional options to the
- * primary button action, but any custom handler can provide the arrowclick implementation.  Example usage:
- *
- *     @example
- *     // display a dropdown menu:
- *     Ext.create('Ext.button.Split', {
- *         renderTo: Ext.getBody(),
- *         text: 'Options',
- *         // handle a click on the button itself
- *         handler: function() {
- *             alert("The button was clicked");
- *         },
- *         menu: new Ext.menu.Menu({
- *             items: [
- *                 // these will render as dropdown menu items when the arrow is clicked:
- *                 {text: 'Item 1', handler: function(){ alert("Item 1 clicked"); }},
- *                 {text: 'Item 2', handler: function(){ alert("Item 2 clicked"); }}
- *             ]
- *         })
- *     });
- *
- * Instead of showing a menu, you can provide any type of custom functionality you want when the dropdown
- * arrow is clicked:
- *
- *     Ext.create('Ext.button.Split', {
- *         renderTo: 'button-ct',
- *         text: 'Options',
- *         handler: optionsHandler,
- *         arrowHandler: myCustomHandler
- *     });
- *
- */
-Ext.define('Ext.button.Split', {
-
-    /* Begin Definitions */
-    alias: 'widget.splitbutton',
-
-    extend: 'Ext.button.Button',
-    alternateClassName: 'Ext.SplitButton',
-    /* End Definitions */
-    
-    /**
-     * @cfg {Function} arrowHandler
-     * A function called when the arrow button is clicked (can be used instead of click event)
-     * @cfg {Ext.button.Split} arrowHandler.this
-     * @cfg {Event} arrowHandler.e The click event
-     */
-    /**
-     * @cfg {String} arrowTooltip
-     * The title attribute of the arrow
-     */
-
-    // private
-    arrowCls      : 'split',
-    split         : true,
-
-    // private
-    initComponent : function(){
-        this.callParent();
-        /**
-         * @event arrowclick
-         * Fires when this button's arrow is clicked.
-         * @param {Ext.button.Split} this
-         * @param {Event} e The click event
-         */
-        this.addEvents("arrowclick");
-    },
-
-    /**
-     * Sets this button's arrow click handler.
-     * @param {Function} handler The function to call when the arrow is clicked
-     * @param {Object} scope (optional) Scope for the function passed above
-     */
-    setArrowHandler : function(handler, scope){
-        this.arrowHandler = handler;
-        this.scope = scope;
-    },
-
-    // private
-    onClick : function(e, t) {
-        var me = this;
-        
-        e.preventDefault();
-        if (!me.disabled) {
-            if (me.overMenuTrigger) {
-                me.maybeShowMenu();
-                me.fireEvent("arrowclick", me, e);
-                if (me.arrowHandler) {
-                    me.arrowHandler.call(me.scope || me, me, e);
-                }
-            } else {
-                me.doToggle();
-                me.fireHandler(e);
-            }
-        }
-    }
-});
-/**
- * @private
- * A month picker component. This class is used by the {@link Ext.picker.Date Date picker} class
- * to allow browsing and selection of year/months combinations.
- */
-Ext.define('Ext.picker.Month', {
-    extend: 'Ext.Component',
-    requires: [
-        'Ext.XTemplate', 
-        'Ext.util.ClickRepeater', 
-        'Ext.Date', 
-        'Ext.button.Button'
-    ],
-    alias: 'widget.monthpicker',
-    alternateClassName: 'Ext.MonthPicker',
-
-    childEls: [
-        'bodyEl', 'prevEl', 'nextEl', 'buttonsEl', 'monthEl', 'yearEl'
-    ],
-
-    renderTpl: [
-        '<div id="{id}-bodyEl" class="{baseCls}-body">',
-          '<div id="{id}-monthEl" class="{baseCls}-months">',
-              '<tpl for="months">',
-                  '<div class="{parent.baseCls}-item {parent.baseCls}-month"><a style="{parent.monthStyle}" href="#" hidefocus="on">{.}</a></div>',
-              '</tpl>',
-          '</div>',
-          '<div id="{id}-yearEl" class="{baseCls}-years">',
-              '<div class="{baseCls}-yearnav">',
-                  '<button id="{id}-prevEl" class="{baseCls}-yearnav-prev"></button>',
-                  '<button id="{id}-nextEl" class="{baseCls}-yearnav-next"></button>',
-              '</div>',
-              '<tpl for="years">',
-                  '<div class="{parent.baseCls}-item {parent.baseCls}-year"><a href="#" hidefocus="on">{.}</a></div>',
-              '</tpl>',
-          '</div>',
-          '<div class="' + Ext.baseCSSPrefix + 'clear"></div>',
-        '</div>',
-        '<tpl if="showButtons">',
-            '<div id="{id}-buttonsEl" class="{baseCls}-buttons">{%',
-                'var me=values.$comp, okBtn=me.okBtn, cancelBtn=me.cancelBtn;',
-                'okBtn.ownerLayout = cancelBtn.ownerLayout = me.componentLayout;',
-                'okBtn.ownerCt = cancelBtn.ownerCt = me;',
-                'Ext.DomHelper.generateMarkup(okBtn.getRenderTree(), out);',
-                'Ext.DomHelper.generateMarkup(cancelBtn.getRenderTree(), out);',
-            '%}</div>',
-        '</tpl>'
-    ],
-
-    //<locale>
-    /**
-     * @cfg {String} okText The text to display on the ok button.
-     */
-    okText: 'OK',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} cancelText The text to display on the cancel button.
-     */
-    cancelText: 'Cancel',
-    //</locale>
-
-    /**
-     * @cfg {String} [baseCls='x-monthpicker']
-     *  The base CSS class to apply to the picker element.
-     */
-    baseCls: Ext.baseCSSPrefix + 'monthpicker',
-
-    /**
-     * @cfg {Boolean} showButtons True to show ok and cancel buttons below the picker.
-     */
-    showButtons: true,
-
-    /**
-     * @cfg {String} [selectedCls='x-monthpicker-selected'] The class to be added to selected items in the picker.
-     */
-
-    /**
-     * @cfg {Date/Number[]} value The default value to set. See {@link #setValue}
-     */
-    
-    
-    width: 178,
-    measureWidth: 35,
-    measureMaxHeight: 20,
-
-    // used when attached to date picker which isnt showing buttons
-    smallCls: Ext.baseCSSPrefix + 'monthpicker-small',
-
-    // private
-    totalYears: 10,
-    yearOffset: 5, // 10 years in total, 2 per row
-    monthOffset: 6, // 12 months, 2 per row
-
-    // private, inherit docs
-    initComponent: function(){
-        var me = this;
-
-        me.selectedCls = me.baseCls + '-selected';
-        me.addEvents(
-            /**
-             * @event cancelclick
-             * Fires when the cancel button is pressed.
-             * @param {Ext.picker.Month} this
-             */
-            'cancelclick',
-
-            /**
-             * @event monthclick
-             * Fires when a month is clicked.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'monthclick',
-
-            /**
-             * @event monthdblclick
-             * Fires when a month is clicked.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'monthdblclick',
-
-            /**
-             * @event okclick
-             * Fires when the ok button is pressed.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'okclick',
-
-            /**
-             * @event select
-             * Fires when a month/year is selected.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'select',
-
-            /**
-             * @event yearclick
-             * Fires when a year is clicked.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'yearclick',
-
-            /**
-             * @event yeardblclick
-             * Fires when a year is clicked.
-             * @param {Ext.picker.Month} this
-             * @param {Array} value The current value
-             */
-            'yeardblclick'
-        );
-        if (me.small) {
-            me.addCls(me.smallCls);
-        }
-        me.setValue(me.value);
-        me.activeYear = me.getYear(new Date().getFullYear() - 4, -4);
-
-        if (me.showButtons) {
-            me.okBtn = new Ext.button.Button({
-                text: me.okText,
-                handler: me.onOkClick,
-                scope: me
-            });
-            me.cancelBtn = new Ext.button.Button({
-                text: me.cancelText,
-                handler: me.onCancelClick,
-                scope: me
-            });
-        }
-
-        this.callParent();
-    },
-
-    // private, inherit docs
-    beforeRender: function(){
-        var me = this,
-            i = 0,
-            months = [],
-            shortName = Ext.Date.getShortMonthName,
-            monthLen = me.monthOffset,
-            margin = me.monthMargin,
-            style = '';
-
-        me.callParent();
-
-        for (; i < monthLen; ++i) {
-            months.push(shortName(i), shortName(i + monthLen));
-        }
-        
-        if (Ext.isDefined(margin)) {
-            style = 'margin: 0 ' + margin + 'px;';
-        }
-
-        Ext.apply(me.renderData, {
-            months: months,
-            years: me.getYears(),
-            showButtons: me.showButtons,
-            monthStyle: style
-        });
-    },
-
-    // private, inherit docs
-    afterRender: function(){
-        var me = this,
-            body = me.bodyEl,
-            buttonsEl = me.buttonsEl;
-
-        me.callParent();
-
-        me.mon(body, 'click', me.onBodyClick, me);
-        me.mon(body, 'dblclick', me.onBodyClick, me);
-
-        // keep a reference to the year/month elements since we'll be re-using them
-        me.years = body.select('.' + me.baseCls + '-year a');
-        me.months = body.select('.' + me.baseCls + '-month a');
-
-        me.backRepeater = new Ext.util.ClickRepeater(me.prevEl, {
-            handler: Ext.Function.bind(me.adjustYear, me, [-me.totalYears])
-        });
-
-        me.prevEl.addClsOnOver(me.baseCls + '-yearnav-prev-over');
-        me.nextRepeater = new Ext.util.ClickRepeater(me.nextEl, {
-            handler: Ext.Function.bind(me.adjustYear, me, [me.totalYears])
-        });
-        me.nextEl.addClsOnOver(me.baseCls + '-yearnav-next-over');
-        me.updateBody();
-        
-        if (!Ext.isDefined(me.monthMargin)) {
-            Ext.picker.Month.prototype.monthMargin = me.calculateMonthMargin();
-        }
-    },
-    
-    calculateMonthMargin: function(){
-        // We use this method for locales where the short month name
-        // may be longer than we see in English. For example in the 
-        // zh_TW locale the month ends up spanning lines, so we loosen
-        // the margins to get some extra space
-        var me = this,
-            monthEl = me.monthEl,
-            months = me.months,
-            first = months.first(),
-            itemMargin = first.getMargin('l');
-            
-        while (itemMargin && me.getLargest() > me.measureMaxHeight) {
-            --itemMargin;
-            months.setStyle('margin', '0 ' + itemMargin + 'px');
-        }
-        return itemMargin;
-    },
-    
-    getLargest: function(months){
-        var largest = 0;
-        this.months.each(function(item){
-            var h = item.getHeight();
-            if (h > largest) {
-                largest = h;
-            }
-        });
-        return largest;
-        
-    },
-
-    /**
-     * Set the value for the picker.
-     * @param {Date/Number[]} value The value to set. It can be a Date object, where the month/year will be extracted, or
-     * it can be an array, with the month as the first index and the year as the second.
-     * @return {Ext.picker.Month} this
-     */
-    setValue: function(value){
-        var me = this,
-            active = me.activeYear,
-            offset = me.monthOffset,
-            year,
-            index;
-
-        if (!value) {
-            me.value = [null, null];
-        } else if (Ext.isDate(value)) {
-            me.value = [value.getMonth(), value.getFullYear()];
-        } else {
-            me.value = [value[0], value[1]];
-        }
-
-        if (me.rendered) {
-            year = me.value[1];
-            if (year !== null) {
-                if ((year < active || year > active + me.yearOffset)) {
-                    me.activeYear = year - me.yearOffset + 1;
-                }
-            }
-            me.updateBody();
-        }
-
-        return me;
-    },
-
-    /**
-     * Gets the selected value. It is returned as an array [month, year]. It may
-     * be a partial value, for example [null, 2010]. The month is returned as
-     * 0 based.
-     * @return {Number[]} The selected value
-     */
-    getValue: function(){
-        return this.value;
-    },
-
-    /**
-     * Checks whether the picker has a selection
-     * @return {Boolean} Returns true if both a month and year have been selected
-     */
-    hasSelection: function(){
-        var value = this.value;
-        return value[0] !== null && value[1] !== null;
-    },
-
-    /**
-     * Get an array of years to be pushed in the template. It is not in strict
-     * numerical order because we want to show them in columns.
-     * @private
-     * @return {Number[]} An array of years
-     */
-    getYears: function(){
-        var me = this,
-            offset = me.yearOffset,
-            start = me.activeYear, // put the "active" year on the left
-            end = start + offset,
-            i = start,
-            years = [];
-
-        for (; i < end; ++i) {
-            years.push(i, i + offset);
-        }
-
-        return years;
-    },
-
-    /**
-     * Update the years in the body based on any change
-     * @private
-     */
-    updateBody: function(){
-        var me = this,
-            years = me.years,
-            months = me.months,
-            yearNumbers = me.getYears(),
-            cls = me.selectedCls,
-            value = me.getYear(null),
-            month = me.value[0],
-            monthOffset = me.monthOffset,
-            year,
-            yearItems, y, yLen, el;
-
-        if (me.rendered) {
-            years.removeCls(cls);
-            months.removeCls(cls);
-
-            yearItems = years.elements;
-            yLen      = yearItems.length;
-
-            for (y = 0; y < yLen; y++) {
-                el = Ext.fly(yearItems[y]);
-
-                year = yearNumbers[y];
-                el.dom.innerHTML = year;
-                if (year == value) {
-                    el.dom.className = cls;
-                }
-            }
-            if (month !== null) {
-                if (month < monthOffset) {
-                    month = month * 2;
-                } else {
-                    month = (month - monthOffset) * 2 + 1;
-                }
-                months.item(month).addCls(cls);
-            }
-        }
-    },
-
-    /**
-     * Gets the current year value, or the default.
-     * @private
-     * @param {Number} defaultValue The default value to use if the year is not defined.
-     * @param {Number} offset A number to offset the value by
-     * @return {Number} The year value
-     */
-    getYear: function(defaultValue, offset) {
-        var year = this.value[1];
-        offset = offset || 0;
-        return year === null ? defaultValue : year + offset;
-    },
-
-    /**
-     * React to clicks on the body
-     * @private
-     */
-    onBodyClick: function(e, t) {
-        var me = this,
-            isDouble = e.type == 'dblclick';
-
-        if (e.getTarget('.' + me.baseCls + '-month')) {
-            e.stopEvent();
-            me.onMonthClick(t, isDouble);
-        } else if (e.getTarget('.' + me.baseCls + '-year')) {
-            e.stopEvent();
-            me.onYearClick(t, isDouble);
-        }
-    },
-
-    /**
-     * Modify the year display by passing an offset.
-     * @param {Number} [offset=10] The offset to move by.
-     */
-    adjustYear: function(offset){
-        if (typeof offset != 'number') {
-            offset = this.totalYears;
-        }
-        this.activeYear += offset;
-        this.updateBody();
-    },
-
-    /**
-     * React to the ok button being pressed
-     * @private
-     */
-    onOkClick: function(){
-        this.fireEvent('okclick', this, this.value);
-    },
-
-    /**
-     * React to the cancel button being pressed
-     * @private
-     */
-    onCancelClick: function(){
-        this.fireEvent('cancelclick', this);
-    },
-
-    /**
-     * React to a month being clicked
-     * @private
-     * @param {HTMLElement} target The element that was clicked
-     * @param {Boolean} isDouble True if the event was a doubleclick
-     */
-    onMonthClick: function(target, isDouble){
-        var me = this;
-        me.value[0] = me.resolveOffset(me.months.indexOf(target), me.monthOffset);
-        me.updateBody();
-        me.fireEvent('month' + (isDouble ? 'dbl' : '') + 'click', me, me.value);
-        me.fireEvent('select', me, me.value);
-    },
-
-    /**
-     * React to a year being clicked
-     * @private
-     * @param {HTMLElement} target The element that was clicked
-     * @param {Boolean} isDouble True if the event was a doubleclick
-     */
-    onYearClick: function(target, isDouble){
-        var me = this;
-        me.value[1] = me.activeYear + me.resolveOffset(me.years.indexOf(target), me.yearOffset);
-        me.updateBody();
-        me.fireEvent('year' + (isDouble ? 'dbl' : '') + 'click', me, me.value);
-        me.fireEvent('select', me, me.value);
-
-    },
-
-    /**
-     * Returns an offsetted number based on the position in the collection. Since our collections aren't
-     * numerically ordered, this function helps to normalize those differences.
-     * @private
-     * @param {Object} index
-     * @param {Object} offset
-     * @return {Number} The correctly offsetted number
-     */
-    resolveOffset: function(index, offset){
-        if (index % 2 === 0) {
-            return (index / 2);
-        } else {
-            return offset + Math.floor(index / 2);
-        }
-    },
-
-    // private, inherit docs
-    beforeDestroy: function(){
-        var me = this;
-        me.years = me.months = null;
-        Ext.destroyMembers(me, 'backRepeater', 'nextRepeater', 'okBtn', 'cancelBtn');
-        me.callParent();
-    },
-
-    // Do the job of a container layout at this point even though we are not a Container.
-    // TODO: Refactor as a Container.
-    finishRenderChildren: function () {
-        var me = this;
-
-        this.callParent(arguments);
-
-        if (this.showButtons) {
-            me.okBtn.finishRender();
-            me.cancelBtn.finishRender();
-        }
-    },
-
-    onDestroy: function() {
-        Ext.destroyMembers(this, 'okBtn', 'cancelBtn');
-        this.callParent();
-    }
-    
-});
-
-/**
  * Component layout for tabs
  * @private
  */
@@ -76613,9 +75742,9 @@ Ext.define('Ext.dd.DragZone', {
     }
 });
 
-Ext.define('PICS.view.report.report.ColumnTooltip', {
+Ext.define('PICS.view.report.data-table.ColumnTooltip', {
     extend: 'Ext.tip.ToolTip',
-    alias: 'widget.columntooltip',
+    alias: 'widget.reportcolumntooltip',
     
     anchor: 'bottom',
     showDelay: 0,
@@ -77481,6 +76610,24 @@ Ext.define('PICS.store.report.Filters', {
         property: 'category',
         direction: 'ASC'
     }]
+});
+Ext.define('PICS.store.report.ColumnFunctions', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.ColumnFunctions',
+    
+    // dynamic url needs to be generated to obtain specific column's "sql functions" 
+    setProxyForRead: function (url) {
+        var proxy = {
+            reader: {
+                root: 'column_functions',
+                type: 'json'
+            },
+            type: 'ajax',
+            url: url
+        };
+        
+        this.setProxy(proxy);
+    }
 });
 /**
  * @docauthor Jason Johnston <jason@sencha.com>
@@ -82782,6 +81929,630 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
         filter_footer.setPosition(0, filter_offset);
     }
 });
+Ext.define('PICS.view.report.filter.base.Filter', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.reportfilterbasefilter',
+
+    border: 0,
+    draggable: false,
+    layout: 'hbox',
+    name: 'filter_input',
+
+    initComponent: function () {
+        if (typeof this.createOperatorField != 'function') {
+            Ext.Error.raise('Method createOperatorField missing');
+        }
+        
+        if (typeof this.createValueField != 'function') {
+            Ext.Error.raise('Method createValueField missing');
+        }
+        
+        var operator_field = this.createOperatorField();
+        var value_field = this.createValueField();
+        
+        this.items = [operator_field, value_field];
+
+        this.callParent(arguments);
+    }
+});
+Ext.define('PICS.view.report.filter.base.AccountId', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbaseaccountid',
+
+    operator_store: [
+        ['Equals', 'equals'],
+        ['NotEquals', 'does not equal'],
+        ['CurrentAccount', 'current account']
+    ],
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'combobox',
+            editable: false,
+            width: 120,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: this.operator_store
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'numberfield',
+            allowDecimals: false,
+            flex: 1,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'value'
+        };
+    },
+    
+    updateValueFieldFromOperatorValue: function (operator) {
+        var input = this.down('numberfield');
+        
+        if (operator == 'CurrentAccount') {
+            input.setValue(null);
+            input.hide();
+        } else {
+            input.show();
+        }
+    }
+});
+Ext.define('PICS.view.report.filter.base.Autocomplete', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbaseautocomplete',
+    
+    cls: 'autocomplete',
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'hiddenfield',
+            name: 'operator'
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'combobox',
+            displayField: 'value',
+            editable: true,
+            flex: 1,
+            hideTrigger: true,
+            minChars: 2,
+            multiSelect: false,
+            name: 'value',
+            queryParam: 'searchQuery',
+            valueField: 'key'
+        };
+    },
+
+    updateValueFieldStore: function (filter) {
+        var field_id = filter.get('field_id'),
+            filter_value = filter.get('value'),
+            value_field = this.down('combobox'),
+            url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id, filter_value);
+        
+        value_field.store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            fields: [{
+                name: 'key',
+                type: 'string'
+            }, {
+                name: 'value',
+                type: 'string'
+            }],
+            proxy: {
+                type: 'ajax',
+                url: url,
+                reader: {
+                    root: 'result',
+                    type: 'json'
+                }
+            },
+            listeners: {
+                // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
+                load: function (store, records, successful, eOpts) {
+                    value_field.select(filter_value);
+                }
+            }
+        });
+    }
+});
+Ext.define('PICS.view.report.filter.base.Boolean', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbaseboolean',
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'hiddenfield',
+            name: 'operator'
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'checkbox',
+            boxLabel: 'True',
+            inputValue: true,
+            name: 'value',
+            uncheckedValue: false
+        };
+    }
+});
+Ext.define('PICS.view.report.filter.base.Date', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbasedate',
+
+    operator_store: [
+        ['LessThan', 'before'],
+        ['GreaterThan', 'after'],
+        ['Empty', 'is empty']
+    ],
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'combobox',
+            editable: false,
+            width: 120,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: this.operator_store
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'datefield',
+            flex: 1,
+            format: 'Y-m-d',
+            name: 'value',
+            preventMark: true
+        };
+    },
+    
+    updateValueFieldFromOperatorValue: function (operator) {
+        var input = this.down('datefield');
+        
+        if (operator == 'Empty') {
+            input.setValue(null);
+            input.hide();
+        } else {
+            input.show();
+        }
+    }
+});
+Ext.define('PICS.view.report.filter.base.Number', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbasenumber',
+
+    operator_store: [
+        ['Equals', '='],
+        ['GreaterThan', '>'],
+        ['LessThan', '<'],
+        ['GreaterThanOrEquals', '>='],
+        ['LessThanOrEquals', '<='],
+        ['Empty', 'is empty']
+    ],
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'combobox',
+            editable: false,
+            width: 120,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: this.operator_store
+        };
+    },
+    
+    createValueField: function () {
+        return {
+            xtype: 'numberfield',
+            allowDecimals: true,
+            flex: 1,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'value'
+        };
+    },
+    
+    updateValueFieldFromOperatorValue: function (operator) {
+        var input = this.down('numberfield');
+        
+        if (operator == 'Empty') {
+            input.setValue(null);
+            input.hide();
+        } else {
+            input.show();
+        }
+    }
+});
+Ext.define('PICS.view.report.filter.base.MultiSelect', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbasemultiselect',
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'hiddenfield',
+            name: 'operator'
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'combobox',
+            displayField: 'value',
+            editable: false,
+            multiSelect: true,
+            name: 'value',
+            queryMode: 'local', // Prevents reloading of the store, which would wipe out pre-selections.
+            valueField: 'key',
+            width: 258
+        };
+    },
+    
+    updateValueFieldStore: function (filter) {
+        var field_id = filter.get('field_id'),
+            filter_value = filter.get('value'),
+            value_field = this.down('combobox'),
+            url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
+        
+        value_field.store = Ext.create('Ext.data.Store', {
+            autoLoad: true,
+            fields: [{
+                name: 'key',
+                type: 'string'
+            }, {
+                name: 'value',
+                type: 'string'
+            }],
+            proxy: {
+                type: 'ajax',
+                url: url,
+                reader: {
+                    root: 'result',
+                    type: 'json'
+                }
+            },
+            listeners: {
+                // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
+                load: function (store, records, successful, eOpts) {
+                    if (typeof filter_value == 'string') {
+                        var keys = filter_value.split(', ');
+                        
+                        value_field.select(keys);
+                    }
+                }
+            }
+        });
+    }
+});
+Ext.define('PICS.view.report.filter.base.String', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbasestring',
+
+    operator_store: [
+        ['Contains', 'contains'],
+        ['NotContains', 'does not contain'],
+        ['BeginsWith', 'begins with'],
+        ['NotBeginsWith', 'does not begin with'],
+        ['EndsWith', 'ends with'],
+        ['NotEndsWith', 'does not end with'],
+        ['Equals', 'equals'],
+        ['NotEquals', 'does not equal'],
+        ['Empty', 'is empty'],
+        ['NotEmpty', 'is not empty']
+    ],
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'combobox',
+            editable: false,
+            width: 120,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: this.operator_store
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'textfield',
+            flex: 1, // TODO: Leaves too little room for all of the string operators
+            name: 'value'
+        };
+    },
+    
+    updateValueFieldFromOperatorValue: function (operator) {
+        var input = this.down('textfield');
+        
+        if (operator == 'Empty') {
+            input.setValue(null);
+            input.hide();
+        } else {
+            input.show();
+        }
+    }
+});
+Ext.define('PICS.view.report.filter.base.UserId', {
+    extend: 'PICS.view.report.filter.base.Filter',
+    alias: 'widget.reportfilterbaseuserid',
+
+    operator_store: [
+        ['Equals', 'equals'],
+        ['NotEquals', 'does not equal'],
+        ['CurrentUser', 'current user']
+    ],
+    
+    createOperatorField: function () {
+        return {
+            xtype: 'combobox',
+            editable: false,
+            width: 120,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: this.operator_store
+        };
+    },
+
+    createValueField: function () {
+        return {
+            xtype: 'numberfield',
+            allowDecimals: false,
+            flex: 1,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'value'
+        };
+    },
+    
+    updateValueFieldFromOperatorValue: function (operator) {
+        var input = this.down('numberfield');
+        
+        if (operator == 'CurrentUser') {
+            input.setValue(null);
+            input.hide();
+        } else {
+            input.show();
+        }
+    }
+});
+Ext.define('PICS.view.report.filter.Filter', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.reportfilter',
+
+    requires: [
+        'PICS.view.report.filter.base.AccountId',
+        'PICS.view.report.filter.base.Autocomplete',
+        'PICS.view.report.filter.base.Boolean',
+        'PICS.view.report.filter.base.Date',
+        'PICS.view.report.filter.base.Filter',
+        'PICS.view.report.filter.base.Number',
+        'PICS.view.report.filter.base.MultiSelect',
+        'PICS.view.report.filter.base.String',
+        'PICS.view.report.filter.base.UserId',
+        'PICS.view.report.filter.FilterTooltip'
+    ],
+
+    bodyCls: 'filter-body',
+    border: 0,
+    cls: 'filter',
+    height: 96,
+    layout: {
+        type: 'hbox',
+        align: 'middle'
+    },
+    overCls: 'x-over',
+    width: 320,
+
+    initComponent: function () {
+        var filter = this.filter,
+            index = this.index;
+        
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        if (!index) {
+            Ext.Error.raise('Invalid filter index');
+        }
+
+        var type = filter.get('type'),
+            cls = this.getFilterClassByType(type),
+            filter_number = this.createNumber(index),
+            filter_content = this.createContent(filter),
+            remove_button = this.createRemoveButton();
+
+        this.items = [
+            filter_number,
+            filter_content
+        ];
+        
+        this.dockedItems = [
+            remove_button
+        ];
+
+        this.callParent(arguments);
+    },
+
+    createNumber: function (index) {
+        return {
+            xtype: 'displayfield',
+            border: 0,
+            cls: 'filter-number',
+            fieldLabel: index.toString(),
+            labelSeparator: '',
+            labelWidth: 30,
+            name: 'filter_number',
+            width: 30
+        };
+    },
+
+    createContent: function (filter) {
+        var filter_title = this.createTitle(filter);
+        var filter_input = this.createInput(filter);
+
+        return {
+            border: 0,
+            cls: 'filter-content',
+            items: [
+                filter_title,
+                filter_input
+            ],
+            name: 'filter_content',
+            width: 258
+        };
+    },
+
+    createTitle: function (filter) {
+        var name = filter.get('name');
+
+        if (name.length >= 29) {
+            name = name.substring(0, 29) + '...';
+        }
+
+        return {
+            border: 0,
+            height: 30,
+            items: [{
+                xtype: 'displayfield',
+                cls: 'filter-name',
+                name: 'filter_name',
+                value: name
+            }, {
+                xtype: 'tbfill'
+            }],
+            layout: {
+                type: 'hbox',
+                align: 'middle'
+            },
+            name: 'filter_title'
+        };
+    },
+
+    createInput: function (filter) {
+        var type = filter.get('type'),
+            cls = this.getFilterClassByType(type);
+
+        return Ext.create(cls);
+    },
+    
+    createRemoveButton: function () {
+        return {
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 4 0 0'
+            },
+            dock: 'top',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'remove-filter',
+                height: 20,
+                text: '<i class="icon-remove-sign"></i>',
+                tooltip: 'Remove',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        };
+    },
+    
+    createTooltip: function () {
+        var filter = this.filter;
+        
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter record');
+        }
+        
+        var target = this.el.down('.filter-name'),
+            description = filter.get('description');
+        
+        var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
+            target: target
+        });
+        
+        tooltip.update({
+            description: description
+        });
+    },
+
+    getFilterClassByType: function (type) {
+        var filter_classes = this.getFilterClasses(),
+            filter_class = filter_classes[type];
+        
+        if (typeof filter_class == 'undefined') {
+            Ext.Error.raise('Invalid filter type: ' + type);
+        }
+        
+        return filter_class;
+    },
+    
+    getFilterClasses: function () {
+        var filter_classes = {};
+        
+        filter_classes[PICS.data.FilterType.AccountID] = 'PICS.view.report.filter.base.AccountId';
+        filter_classes[PICS.data.FilterType.Autocomplete] = 'PICS.view.report.filter.base.Autocomplete';
+        filter_classes[PICS.data.FilterType.Boolean] = 'PICS.view.report.filter.base.Boolean';
+        filter_classes[PICS.data.FilterType.Date] = 'PICS.view.report.filter.base.Date';
+        filter_classes[PICS.data.FilterType.Multiselect] = 'PICS.view.report.filter.base.MultiSelect';
+        filter_classes[PICS.data.FilterType.Number] = 'PICS.view.report.filter.base.Number';
+        filter_classes[PICS.data.FilterType.String] = 'PICS.view.report.filter.base.String';
+        filter_classes[PICS.data.FilterType.UserID] = 'PICS.view.report.filter.base.UserId';
+        
+        return filter_classes;
+    }
+});
+Ext.define('PICS.view.report.filter.Filters', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.reportfilters',
+
+    requires: [
+        'PICS.view.report.filter.Filter'
+    ],
+
+    border: 0,
+    bodyBorder: 0,
+    id: 'report_filters',
+
+    initComponent: function () {
+        if (Ext.getClassName(this.store) != 'Ext.data.Store') {
+            Ext.Error.raise('Invalid Filter Store');
+        }
+
+        var index = 1,
+            items = [],
+            that = this;
+
+        this.store.each(function (record) {
+            var filter = Ext.create('PICS.view.report.filter.Filter', {
+                index: index,
+                filter: record
+            });
+
+            items.push(filter);
+
+            index += 1;
+        });
+        
+        this.items = items;
+        
+        this.callParent(arguments);
+    },
+    
+    hideFilterNumbers: function () {
+        this.removeCls('x-active');
+    },
+    
+    showFilterNumbers: function () {
+        this.addCls('x-active');
+    }
+});
 Ext.define('PICS.view.report.settings.CopySetting', {
     extend: 'Ext.form.Panel',
     alias: 'widget.reportcopysetting',
@@ -82877,1154 +82648,6 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     // custom config
     modal_title: 'Print Report'
 });
-/**
- * A date picker. This class is used by the Ext.form.field.Date field to allow browsing and selection of valid
- * dates in a popup next to the field, but may also be used with other components.
- *
- * Typically you will need to implement a handler function to be notified when the user chooses a date from the picker;
- * you can register the handler using the {@link #select} event, or by implementing the {@link #handler} method.
- *
- * By default the user will be allowed to pick any date; this can be changed by using the {@link #minDate},
- * {@link #maxDate}, {@link #disabledDays}, {@link #disabledDatesRE}, and/or {@link #disabledDates} configs.
- *
- * All the string values documented below may be overridden by including an Ext locale file in your page.
- *
- *     @example
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Choose a future date:',
- *         width: 200,
- *         bodyPadding: 10,
- *         renderTo: Ext.getBody(),
- *         items: [{
- *             xtype: 'datepicker',
- *             minDate: new Date(),
- *             handler: function(picker, date) {
- *                 // do something with the selected date
- *             }
- *         }]
- *     });
- */
-Ext.define('Ext.picker.Date', {
-    extend: 'Ext.Component',
-    requires: [
-        'Ext.XTemplate',
-        'Ext.button.Button',
-        'Ext.button.Split',
-        'Ext.util.ClickRepeater',
-        'Ext.util.KeyNav',
-        'Ext.EventObject',
-        'Ext.fx.Manager',
-        'Ext.picker.Month'
-    ],
-    alias: 'widget.datepicker',
-    alternateClassName: 'Ext.DatePicker',
-
-    childEls: [
-        'innerEl', 'eventEl', 'prevEl', 'nextEl', 'middleBtnEl', 'footerEl'
-    ],
-    
-    border: true,
-
-    renderTpl: [
-        '<div id="{id}-innerEl" role="grid">',
-            '<div role="presentation" class="{baseCls}-header">',
-                '<div class="{baseCls}-prev"><a id="{id}-prevEl" href="#" role="button" title="{prevText}"></a></div>',
-                '<div class="{baseCls}-month" id="{id}-middleBtnEl">{%this.renderMonthBtn(values, out)%}</div>',
-                '<div class="{baseCls}-next"><a id="{id}-nextEl" href="#" role="button" title="{nextText}"></a></div>',
-            '</div>',
-            '<table id="{id}-eventEl" class="{baseCls}-inner" cellspacing="0" role="presentation">',
-                '<thead role="presentation"><tr role="presentation">',
-                    '<tpl for="dayNames">',
-                        '<th role="columnheader" title="{.}"><span>{.:this.firstInitial}</span></th>',
-                    '</tpl>',
-                '</tr></thead>',
-                '<tbody role="presentation"><tr role="presentation">',
-                    '<tpl for="days">',
-                        '{#:this.isEndOfWeek}',
-                        '<td role="gridcell" id="{[Ext.id()]}">',
-                            '<a role="presentation" href="#" hidefocus="on" class="{parent.baseCls}-date" tabIndex="1">',
-                                '<em role="presentation"><span role="presentation"></span></em>',
-                            '</a>',
-                        '</td>',
-                    '</tpl>',
-                '</tr></tbody>',
-            '</table>',
-            '<tpl if="showToday">',
-                '<div id="{id}-footerEl" role="presentation" class="{baseCls}-footer">{%this.renderTodayBtn(values, out)%}</div>',
-            '</tpl>',
-        '</div>',
-        {
-            firstInitial: function(value) {
-                return Ext.picker.Date.prototype.getDayInitial(value);
-            },
-            isEndOfWeek: function(value) {
-                // convert from 1 based index to 0 based
-                // by decrementing value once.
-                value--;
-                var end = value % 7 === 0 && value !== 0;
-                return end ? '</tr><tr role="row">' : '';
-            },
-            renderTodayBtn: function(values, out) {
-                Ext.DomHelper.generateMarkup(values.$comp.todayBtn.getRenderTree(), out);
-            },
-            renderMonthBtn: function(values, out) {
-                Ext.DomHelper.generateMarkup(values.$comp.monthBtn.getRenderTree(), out);
-            }
-        }
-    ],
-
-    //<locale>
-    /**
-     * @cfg {String} todayText
-     * The text to display on the button that selects the current date
-     */
-    todayText : 'Today',
-    //</locale>
-    
-    //<locale>
-    /**
-     * @cfg {String} ariaTitle
-     * The text to display for the aria title
-     */
-    ariaTitle: 'Date Picker: {0}',
-    //</locale>
-    
-    //<locale>
-    /**
-     * @cfg {String} ariaTitleDateFormat
-     * The date format to display for the current value in the {@link #ariaTitle}
-     */
-    ariaTitleDateFormat: 'F d, Y',
-    //</locale>
-
-    /**
-     * @cfg {Function} handler
-     * Optional. A function that will handle the select event of this picker. The handler is passed the following
-     * parameters:
-     *
-     *   - `picker` : Ext.picker.Date
-     *
-     * This Date picker.
-     *
-     *   - `date` : Date
-     *
-     * The selected date.
-     */
-
-    /**
-     * @cfg {Object} scope
-     * The scope (`this` reference) in which the `{@link #handler}` function will be called.
-     *
-     * Defaults to this DatePicker instance.
-     */
-
-    //<locale>
-    /**
-     * @cfg {String} todayTip
-     * A string used to format the message for displaying in a tooltip over the button that selects the current date.
-     * The `{0}` token in string is replaced by today's date.
-     */
-    todayTip : '{0} (Spacebar)',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} minText
-     * The error text to display if the minDate validation fails.
-     */
-    minText : 'This date is before the minimum date',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} maxText
-     * The error text to display if the maxDate validation fails.
-     */
-    maxText : 'This date is after the maximum date',
-    //</locale>
-
-    /**
-     * @cfg {String} format
-     * The default date format string which can be overriden for localization support. The format must be valid
-     * according to {@link Ext.Date#parse} (defaults to {@link Ext.Date#defaultFormat}).
-     */
-
-    //<locale>
-    /**
-     * @cfg {String} disabledDaysText
-     * The tooltip to display when the date falls on a disabled day.
-     */
-    disabledDaysText : 'Disabled',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} disabledDatesText
-     * The tooltip text to display when the date falls on a disabled date.
-     */
-    disabledDatesText : 'Disabled',
-    //</locale>
-
-    /**
-     * @cfg {String[]} monthNames
-     * An array of textual month names which can be overriden for localization support (defaults to Ext.Date.monthNames)
-     */
-
-    /**
-     * @cfg {String[]} dayNames
-     * An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
-     */
-
-    //<locale>
-    /**
-     * @cfg {String} nextText
-     * The next month navigation button tooltip
-     */
-    nextText : 'Next Month (Control+Right)',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} prevText
-     * The previous month navigation button tooltip
-     */
-    prevText : 'Previous Month (Control+Left)',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {String} monthYearText
-     * The header month selector tooltip
-     */
-    monthYearText : 'Choose a month (Control+Up/Down to move years)',
-    //</locale>
-    
-    //<locale>
-    /**
-     * @cfg {String} monthYearFormat
-     * The date format for the header month
-     */
-    monthYearFormat: 'F Y',
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {Number} [startDay=undefined]
-     * Day index at which the week should begin, 0-based.
-     *
-     * Defaults to `0` (Sunday).
-     */
-    startDay : 0,
-    //</locale>
-
-    //<locale>
-    /**
-     * @cfg {Boolean} showToday
-     * False to hide the footer area containing the Today button and disable the keyboard handler for spacebar that
-     * selects the current date.
-     */
-    showToday : true,
-    //</locale>
-
-    /**
-     * @cfg {Date} [minDate=null]
-     * Minimum allowable date (JavaScript date object)
-     */
-
-    /**
-     * @cfg {Date} [maxDate=null]
-     * Maximum allowable date (JavaScript date object)
-     */
-
-    /**
-     * @cfg {Number[]} [disabledDays=null]
-     * An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday.
-     */
-
-    /**
-     * @cfg {RegExp} [disabledDatesRE=null]
-     * JavaScript regular expression used to disable a pattern of dates. The {@link #disabledDates}
-     * config will generate this regex internally, but if you specify disabledDatesRE it will take precedence over the
-     * disabledDates value.
-     */
-
-    /**
-     * @cfg {String[]} disabledDates
-     * An array of 'dates' to disable, as strings. These strings will be used to build a dynamic regular expression so
-     * they are very powerful. Some examples:
-     *
-     *   - ['03/08/2003', '09/16/2003'] would disable those exact dates
-     *   - ['03/08', '09/16'] would disable those days for every year
-     *   - ['^03/08'] would only match the beginning (useful if you are using short years)
-     *   - ['03/../2006'] would disable every day in March 2006
-     *   - ['^03'] would disable every day in every March
-     *
-     * Note that the format of the dates included in the array should exactly match the {@link #format} config. In order
-     * to support regular expressions, if you are using a date format that has '.' in it, you will have to escape the
-     * dot when restricting dates. For example: ['03\\.08\\.03'].
-     */
-
-    /**
-     * @cfg {Boolean} disableAnim
-     * True to disable animations when showing the month picker.
-     */
-    disableAnim: false,
-
-    /**
-     * @cfg {String} [baseCls='x-datepicker']
-     * The base CSS class to apply to this components element.
-     */
-    baseCls: Ext.baseCSSPrefix + 'datepicker',
-
-    /**
-     * @cfg {String} [selectedCls='x-datepicker-selected']
-     * The class to apply to the selected cell.
-     */
-
-    /**
-     * @cfg {String} [disabledCellCls='x-datepicker-disabled']
-     * The class to apply to disabled cells.
-     */
-
-    //<locale>
-    /**
-     * @cfg {String} longDayFormat
-     * The format for displaying a date in a longer format.
-     */
-    longDayFormat: 'F d, Y',
-    //</locale>
-
-    /**
-     * @cfg {Object} keyNavConfig
-     * Specifies optional custom key event handlers for the {@link Ext.util.KeyNav} attached to this date picker. Must
-     * conform to the config format recognized by the {@link Ext.util.KeyNav} constructor. Handlers specified in this
-     * object will replace default handlers of the same name.
-     */
-
-    /**
-     * @cfg {Boolean} focusOnShow
-     * True to automatically focus the picker on show.
-     */
-    focusOnShow: false,
-
-    // private
-    // Set by other components to stop the picker focus being updated when the value changes.
-    focusOnSelect: true,
-
-    width: 178,
-
-    // default value used to initialise each date in the DatePicker
-    // (note: 12 noon was chosen because it steers well clear of all DST timezone changes)
-    initHour: 12, // 24-hour format
-
-    numDays: 42,
-
-    // private, inherit docs
-    initComponent : function() {
-        var me = this,
-            clearTime = Ext.Date.clearTime;
-
-        me.selectedCls = me.baseCls + '-selected';
-        me.disabledCellCls = me.baseCls + '-disabled';
-        me.prevCls = me.baseCls + '-prevday';
-        me.activeCls = me.baseCls + '-active';
-        me.nextCls = me.baseCls + '-prevday';
-        me.todayCls = me.baseCls + '-today';
-        me.dayNames = me.dayNames.slice(me.startDay).concat(me.dayNames.slice(0, me.startDay));
-
-        me.listeners = Ext.apply(me.listeners||{}, {
-            mousewheel: {
-                element: 'eventEl',
-                fn: me.handleMouseWheel,
-                scope: me
-            },
-            click: {
-                element: 'eventEl',
-                fn: me.handleDateClick, 
-                scope: me,
-                delegate: 'a.' + me.baseCls + '-date'
-            }
-        });
-        this.callParent();
-
-        me.value = me.value ?
-                 clearTime(me.value, true) : clearTime(new Date());
-
-        me.addEvents(
-            /**
-             * @event select
-             * Fires when a date is selected
-             * @param {Ext.picker.Date} this DatePicker
-             * @param {Date} date The selected date
-             */
-            'select'
-        );
-
-        me.initDisabledDays();
-    },
-
-    beforeRender: function () {
-        /*
-         * days array for looping through 6 full weeks (6 weeks * 7 days)
-         * Note that we explicitly force the size here so the template creates
-         * all the appropriate cells.
-         */
-        var me = this,
-            days = new Array(me.numDays),
-            today = Ext.Date.format(new Date(), me.format);
-
-        // If there's a Menu among our ancestors, then add the menu class.
-        // This is so that the MenuManager does not see a mousedown in this Component as a document mousedown, outside the Menu
-        if (me.up('menu')) {
-            me.addCls(Ext.baseCSSPrefix + 'menu');
-        }
-
-        me.monthBtn = new Ext.button.Split({
-            ownerCt: me,
-            ownerLayout: me.getComponentLayout(),
-            text: '',
-            tooltip: me.monthYearText,
-            listeners: {
-                click: me.showMonthPicker,
-                arrowclick: me.showMonthPicker,
-                scope: me
-            }
-        });
-
-        if (this.showToday) {
-            me.todayBtn = new Ext.button.Button({
-                ownerCt: me,
-                ownerLayout: me.getComponentLayout(),
-                text: Ext.String.format(me.todayText, today),
-                tooltip: Ext.String.format(me.todayTip, today),
-                tooltipType: 'title',
-                handler: me.selectToday,
-                scope: me
-            });
-        }
-
-        me.callParent();
-
-        Ext.applyIf(me, {
-            renderData: {}
-        });
-
-        Ext.apply(me.renderData, {
-            dayNames: me.dayNames,
-            showToday: me.showToday,
-            prevText: me.prevText,
-            nextText: me.nextText,
-            days: days
-        });
-    },
-
-    // Do the job of a container layout at this point even though we are not a Container.
-    // TODO: Refactor as a Container.
-    finishRenderChildren: function () {
-        var me = this;
-        
-        me.callParent();
-        me.monthBtn.finishRender();
-        if (me.showToday) {
-            me.todayBtn.finishRender();
-        }
-    },
-
-    // private, inherit docs
-    onRender : function(container, position){
-        var me = this;
-
-        me.callParent(arguments);
-        me.el.unselectable();
-        me.cells = me.eventEl.select('tbody td');
-        me.textNodes = me.eventEl.query('tbody td span');
-    },
-
-    // private, inherit docs
-    initEvents: function(){
-        var me = this,
-            eDate = Ext.Date,
-            day = eDate.DAY;
-
-        me.callParent();
-
-        me.prevRepeater = new Ext.util.ClickRepeater(me.prevEl, {
-            handler: me.showPrevMonth,
-            scope: me,
-            preventDefault: true,
-            stopDefault: true
-        });
-
-        me.nextRepeater = new Ext.util.ClickRepeater(me.nextEl, {
-            handler: me.showNextMonth,
-            scope: me,
-            preventDefault:true,
-            stopDefault:true
-        });
-
-        me.keyNav = new Ext.util.KeyNav(me.eventEl, Ext.apply({
-            scope: me,
-            left : function(e){
-                if(e.ctrlKey){
-                    me.showPrevMonth();
-                }else{
-                    me.update(eDate.add(me.activeDate, day, -1));
-                }
-            },
-
-            right : function(e){
-                if(e.ctrlKey){
-                    me.showNextMonth();
-                }else{
-                    me.update(eDate.add(me.activeDate, day, 1));
-                }
-            },
-
-            up : function(e){
-                if(e.ctrlKey){
-                    me.showNextYear();
-                }else{
-                    me.update(eDate.add(me.activeDate, day, -7));
-                }
-            },
-
-            down : function(e){
-                if(e.ctrlKey){
-                    me.showPrevYear();
-                }else{
-                    me.update(eDate.add(me.activeDate, day, 7));
-                }
-            },
-            pageUp : me.showNextMonth,
-            pageDown : me.showPrevMonth,
-            enter : function(e){
-                e.stopPropagation();
-                return true;
-            }
-        }, me.keyNavConfig));
-
-        if (me.showToday) {
-            me.todayKeyListener = me.eventEl.addKeyListener(Ext.EventObject.SPACE, me.selectToday,  me);
-        }
-        me.update(me.value);
-    },
-
-    /**
-     * Setup the disabled dates regex based on config options
-     * @private
-     */
-    initDisabledDays : function(){
-        var me = this,
-            dd = me.disabledDates,
-            re = '(?:',
-            len,
-            d, dLen, dI;
-
-        if(!me.disabledDatesRE && dd){
-                len = dd.length - 1;
-
-            dLen = dd.length;
-
-            for (d = 0; d < dLen; d++) {
-                dI = dd[d];
-
-                re += Ext.isDate(dI) ? '^' + Ext.String.escapeRegex(Ext.Date.dateFormat(dI, me.format)) + '$' : dI;
-                if (d != len) {
-                    re += '|';
-                }
-            }
-
-            me.disabledDatesRE = new RegExp(re + ')');
-        }
-    },
-
-    /**
-     * Replaces any existing disabled dates with new values and refreshes the DatePicker.
-     * @param {String[]/RegExp} disabledDates An array of date strings (see the {@link #disabledDates} config for
-     * details on supported values), or a JavaScript regular expression used to disable a pattern of dates.
-     * @return {Ext.picker.Date} this
-     */
-    setDisabledDates : function(dd){
-        var me = this;
-
-        if(Ext.isArray(dd)){
-            me.disabledDates = dd;
-            me.disabledDatesRE = null;
-        }else{
-            me.disabledDatesRE = dd;
-        }
-        me.initDisabledDays();
-        me.update(me.value, true);
-        return me;
-    },
-
-    /**
-     * Replaces any existing disabled days (by index, 0-6) with new values and refreshes the DatePicker.
-     * @param {Number[]} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config for details
-     * on supported values.
-     * @return {Ext.picker.Date} this
-     */
-    setDisabledDays : function(dd){
-        this.disabledDays = dd;
-        return this.update(this.value, true);
-    },
-
-    /**
-     * Replaces any existing {@link #minDate} with the new value and refreshes the DatePicker.
-     * @param {Date} value The minimum date that can be selected
-     * @return {Ext.picker.Date} this
-     */
-    setMinDate : function(dt){
-        this.minDate = dt;
-        return this.update(this.value, true);
-    },
-
-    /**
-     * Replaces any existing {@link #maxDate} with the new value and refreshes the DatePicker.
-     * @param {Date} value The maximum date that can be selected
-     * @return {Ext.picker.Date} this
-     */
-    setMaxDate : function(dt){
-        this.maxDate = dt;
-        return this.update(this.value, true);
-    },
-
-    /**
-     * Sets the value of the date field
-     * @param {Date} value The date to set
-     * @return {Ext.picker.Date} this
-     */
-    setValue : function(value){
-        this.value = Ext.Date.clearTime(value, true);
-        return this.update(this.value);
-    },
-
-    /**
-     * Gets the current selected value of the date field
-     * @return {Date} The selected date
-     */
-    getValue : function(){
-        return this.value;
-    },
-
-    //<locale type="function">
-    /**
-     * Gets a single character to represent the day of the week
-     * @return {String} The character
-     */
-    getDayInitial: function(value){
-        return value.substr(0,1);
-    },
-    //</locale>
-
-    // private
-    focus : function(){
-        this.update(this.activeDate);
-    },
-
-    // private, inherit docs
-    onEnable: function(){
-        this.callParent();
-        this.setDisabledStatus(false);
-        this.update(this.activeDate);
-
-    },
-
-    // private, inherit docs
-    onDisable : function(){
-        this.callParent();
-        this.setDisabledStatus(true);
-    },
-
-    /**
-     * Set the disabled state of various internal components
-     * @private
-     * @param {Boolean} disabled
-     */
-    setDisabledStatus : function(disabled){
-        var me = this;
-
-        me.keyNav.setDisabled(disabled);
-        me.prevRepeater.setDisabled(disabled);
-        me.nextRepeater.setDisabled(disabled);
-        if (me.showToday) {
-            me.todayKeyListener.setDisabled(disabled);
-            me.todayBtn.setDisabled(disabled);
-        }
-    },
-
-    /**
-     * Get the current active date.
-     * @private
-     * @return {Date} The active date
-     */
-    getActive: function(){
-        return this.activeDate || this.value;
-    },
-
-    /**
-     * Run any animation required to hide/show the month picker.
-     * @private
-     * @param {Boolean} isHide True if it's a hide operation
-     */
-    runAnimation: function(isHide){
-        var picker = this.monthPicker,
-            options = {
-                duration: 200,
-                callback: function(){
-                    if (isHide) {
-                        picker.hide();
-                    } else {
-                        picker.show();
-                    }
-                }
-            };
-
-        if (isHide) {
-            picker.el.slideOut('t', options);
-        } else {
-            picker.el.slideIn('t', options);
-        }
-    },
-
-    /**
-     * Hides the month picker, if it's visible.
-     * @param {Boolean} [animate] Indicates whether to animate this action. If the animate
-     * parameter is not specified, the behavior will use {@link #disableAnim} to determine
-     * whether to animate or not.
-     * @return {Ext.picker.Date} this
-     */
-    hideMonthPicker : function(animate){
-        var me = this,
-            picker = me.monthPicker;
-
-        if (picker) {
-            if (me.shouldAnimate(animate)) {
-                me.runAnimation(true);
-            } else {
-                picker.hide();
-            }
-        }
-        return me;
-    },
-
-    /**
-     * Show the month picker
-     * @param {Boolean} [animate] Indicates whether to animate this action. If the animate
-     * parameter is not specified, the behavior will use {@link #disableAnim} to determine
-     * whether to animate or not.
-     * @return {Ext.picker.Date} this
-     */
-    showMonthPicker : function(animate){
-        var me = this,
-            picker;
-        
-        if (me.rendered && !me.disabled) {
-            picker = me.createMonthPicker();
-            picker.setValue(me.getActive());
-            picker.setSize(me.getSize());
-            picker.setPosition(-1, -1);
-            if (me.shouldAnimate(animate)) {
-                me.runAnimation(false);
-            } else {
-                picker.show();
-            }
-        }
-        return me;
-    },
-    
-    /**
-     * Checks whether a hide/show action should animate
-     * @private
-     * @param {Boolean} [animate] A possible animation value
-     * @return {Boolean} Whether to animate the action
-     */
-    shouldAnimate: function(animate){
-        return Ext.isDefined(animate) ? animate : !this.disableAnim;
-    },
-
-    /**
-     * Create the month picker instance
-     * @private
-     * @return {Ext.picker.Month} picker
-     */
-    createMonthPicker: function(){
-        var me = this,
-            picker = me.monthPicker;
-
-        if (!picker) {
-            me.monthPicker = picker = new Ext.picker.Month({
-                renderTo: me.el,
-                floating: true,
-                shadow: false,
-                small: me.showToday === false,
-                listeners: {
-                    scope: me,
-                    cancelclick: me.onCancelClick,
-                    okclick: me.onOkClick,
-                    yeardblclick: me.onOkClick,
-                    monthdblclick: me.onOkClick
-                }
-            });
-            if (!me.disableAnim) {
-                // hide the element if we're animating to prevent an initial flicker
-                picker.el.setStyle('display', 'none');
-            }
-            me.on('beforehide', Ext.Function.bind(me.hideMonthPicker, me, [false]));
-        }
-        return picker;
-    },
-
-    /**
-     * Respond to an ok click on the month picker
-     * @private
-     */
-    onOkClick: function(picker, value){
-        var me = this,
-            month = value[0],
-            year = value[1],
-            date = new Date(year, month, me.getActive().getDate());
-
-        if (date.getMonth() !== month) {
-            // 'fix' the JS rolling date conversion if needed
-            date = Ext.Date.getLastDateOfMonth(new Date(year, month, 1));
-        }
-        me.update(date);
-        me.hideMonthPicker();
-    },
-
-    /**
-     * Respond to a cancel click on the month picker
-     * @private
-     */
-    onCancelClick: function(){
-        // update the selected value, also triggers a focus
-        this.selectedUpdate(this.activeDate);
-        this.hideMonthPicker();
-    },
-
-    /**
-     * Show the previous month.
-     * @param {Object} e
-     * @return {Ext.picker.Date} this
-     */
-    showPrevMonth : function(e){
-        return this.update(Ext.Date.add(this.activeDate, Ext.Date.MONTH, -1));
-    },
-
-    /**
-     * Show the next month.
-     * @param {Object} e
-     * @return {Ext.picker.Date} this
-     */
-    showNextMonth : function(e){
-        return this.update(Ext.Date.add(this.activeDate, Ext.Date.MONTH, 1));
-    },
-
-    /**
-     * Show the previous year.
-     * @return {Ext.picker.Date} this
-     */
-    showPrevYear : function(){
-        this.update(Ext.Date.add(this.activeDate, Ext.Date.YEAR, -1));
-    },
-
-    /**
-     * Show the next year.
-     * @return {Ext.picker.Date} this
-     */
-    showNextYear : function(){
-        this.update(Ext.Date.add(this.activeDate, Ext.Date.YEAR, 1));
-    },
-
-    /**
-     * Respond to the mouse wheel event
-     * @private
-     * @param {Ext.EventObject} e
-     */
-    handleMouseWheel : function(e){
-        e.stopEvent();
-        if(!this.disabled){
-            var delta = e.getWheelDelta();
-            if(delta > 0){
-                this.showPrevMonth();
-            } else if(delta < 0){
-                this.showNextMonth();
-            }
-        }
-    },
-
-    /**
-     * Respond to a date being clicked in the picker
-     * @private
-     * @param {Ext.EventObject} e
-     * @param {HTMLElement} t
-     */
-    handleDateClick : function(e, t){
-        var me = this,
-            handler = me.handler;
-
-        e.stopEvent();
-        if(!me.disabled && t.dateValue && !Ext.fly(t.parentNode).hasCls(me.disabledCellCls)){
-            me.doCancelFocus = me.focusOnSelect === false;
-            me.setValue(new Date(t.dateValue));
-            delete me.doCancelFocus;
-            me.fireEvent('select', me, me.value);
-            if (handler) {
-                handler.call(me.scope || me, me, me.value);
-            }
-            // event handling is turned off on hide
-            // when we are using the picker in a field
-            // therefore onSelect comes AFTER the select
-            // event.
-            me.onSelect();
-        }
-    },
-
-    /**
-     * Perform any post-select actions
-     * @private
-     */
-    onSelect: function() {
-        if (this.hideOnSelect) {
-             this.hide();
-         }
-    },
-
-    /**
-     * Sets the current value to today.
-     * @return {Ext.picker.Date} this
-     */
-    selectToday : function(){
-        var me = this,
-            btn = me.todayBtn,
-            handler = me.handler;
-
-        if(btn && !btn.disabled){
-            me.setValue(Ext.Date.clearTime(new Date()));
-            me.fireEvent('select', me, me.value);
-            if (handler) {
-                handler.call(me.scope || me, me, me.value);
-            }
-            me.onSelect();
-        }
-        return me;
-    },
-
-    /**
-     * Update the selected cell
-     * @private
-     * @param {Date} date The new date
-     */
-    selectedUpdate: function(date){
-        var me        = this,
-            t         = date.getTime(),
-            cells     = me.cells,
-            cls       = me.selectedCls,
-            cellItems = cells.elements,
-            c,
-            cLen      = cellItems.length,
-            cell;
-
-        cells.removeCls(cls);
-
-        for (c = 0; c < cLen; c++) {
-            cell = Ext.fly(cellItems[c]);
-
-            if (cell.dom.firstChild.dateValue == t) {
-                me.fireEvent('highlightitem', me, cell);
-                cell.addCls(cls);
-
-                if(me.isVisible() && !me.doCancelFocus){
-                    Ext.fly(cell.dom.firstChild).focus(50);
-                }
-
-                break;
-            }
-        }
-    },
-
-    /**
-     * Update the contents of the picker for a new month
-     * @private
-     * @param {Date} date The new date
-     */
-    fullUpdate: function(date){
-        var me = this,
-            cells = me.cells.elements,
-            textNodes = me.textNodes,
-            disabledCls = me.disabledCellCls,
-            eDate = Ext.Date,
-            i = 0,
-            extraDays = 0,
-            visible = me.isVisible(),
-            sel = +eDate.clearTime(date, true),
-            today = +eDate.clearTime(new Date()),
-            min = me.minDate ? eDate.clearTime(me.minDate, true) : Number.NEGATIVE_INFINITY,
-            max = me.maxDate ? eDate.clearTime(me.maxDate, true) : Number.POSITIVE_INFINITY,
-            ddMatch = me.disabledDatesRE,
-            ddText = me.disabledDatesText,
-            ddays = me.disabledDays ? me.disabledDays.join('') : false,
-            ddaysText = me.disabledDaysText,
-            format = me.format,
-            days = eDate.getDaysInMonth(date),
-            firstOfMonth = eDate.getFirstDateOfMonth(date),
-            startingPos = firstOfMonth.getDay() - me.startDay,
-            previousMonth = eDate.add(date, eDate.MONTH, -1),
-            longDayFormat = me.longDayFormat,
-            prevStart,
-            current,
-            disableToday,
-            tempDate,
-            setCellClass,
-            html,
-            cls,
-            formatValue,
-            value;
-
-        if (startingPos < 0) {
-            startingPos += 7;
-        }
-
-        days += startingPos;
-        prevStart = eDate.getDaysInMonth(previousMonth) - startingPos;
-        current = new Date(previousMonth.getFullYear(), previousMonth.getMonth(), prevStart, me.initHour);
-
-        if (me.showToday) {
-            tempDate = eDate.clearTime(new Date());
-            disableToday = (tempDate < min || tempDate > max ||
-                (ddMatch && format && ddMatch.test(eDate.dateFormat(tempDate, format))) ||
-                (ddays && ddays.indexOf(tempDate.getDay()) != -1));
-
-            if (!me.disabled) {
-                me.todayBtn.setDisabled(disableToday);
-                me.todayKeyListener.setDisabled(disableToday);
-            }
-        }
-
-        setCellClass = function(cell){
-            value = +eDate.clearTime(current, true);
-            cell.title = eDate.format(current, longDayFormat);
-            // store dateValue number as an expando
-            cell.firstChild.dateValue = value;
-            if(value == today){
-                cell.className += ' ' + me.todayCls;
-                cell.title = me.todayText;
-            }
-            if(value == sel){
-                cell.className += ' ' + me.selectedCls;
-                me.fireEvent('highlightitem', me, cell);
-                if (visible && me.floating) {
-                    Ext.fly(cell.firstChild).focus(50);
-                }
-            }
-            // disabling
-            if(value < min) {
-                cell.className = disabledCls;
-                cell.title = me.minText;
-                return;
-            }
-            if(value > max) {
-                cell.className = disabledCls;
-                cell.title = me.maxText;
-                return;
-            }
-            if(ddays){
-                if(ddays.indexOf(current.getDay()) != -1){
-                    cell.title = ddaysText;
-                    cell.className = disabledCls;
-                }
-            }
-            if(ddMatch && format){
-                formatValue = eDate.dateFormat(current, format);
-                if(ddMatch.test(formatValue)){
-                    cell.title = ddText.replace('%0', formatValue);
-                    cell.className = disabledCls;
-                }
-            }
-        };
-
-        for(; i < me.numDays; ++i) {
-            if (i < startingPos) {
-                html = (++prevStart);
-                cls = me.prevCls;
-            } else if (i >= days) {
-                html = (++extraDays);
-                cls = me.nextCls;
-            } else {
-                html = i - startingPos + 1;
-                cls = me.activeCls;
-            }
-            textNodes[i].innerHTML = html;
-            cells[i].className = cls;
-            current.setDate(current.getDate() + 1);
-            setCellClass(cells[i]);
-        }
-
-        me.monthBtn.setText(Ext.Date.format(date, me.monthYearFormat));
-    },
-
-    /**
-     * Update the contents of the picker
-     * @private
-     * @param {Date} date The new date
-     * @param {Boolean} forceRefresh True to force a full refresh
-     */
-    update : function(date, forceRefresh){
-        var me = this,
-            active = me.activeDate;
-
-        if (me.rendered) {
-            me.activeDate = date;
-            if(!forceRefresh && active && me.el && active.getMonth() == date.getMonth() && active.getFullYear() == date.getFullYear()){
-                me.selectedUpdate(date, active);
-            } else {
-                me.fullUpdate(date, active);
-            }
-            me.innerEl.dom.title = Ext.String.format(me.ariaTitle, Ext.Date.format(me.activeDate, me.ariaTitleDateFormat));
-        }
-        return me;
-    },
-
-    // private, inherit docs
-    beforeDestroy : function() {
-        var me = this;
-
-        if (me.rendered) {
-            Ext.destroy(
-                me.todayKeyListener,
-                me.keyNav,
-                me.monthPicker,
-                me.monthBtn,
-                me.nextRepeater,
-                me.prevRepeater,
-                me.todayBtn
-            );
-            delete me.textNodes;
-            delete me.cells.elements;
-        }
-        me.callParent();
-    },
-
-    // private, inherit docs
-    onShow: function() {
-        this.callParent(arguments);
-        if (this.focusOnShow) {
-            this.focus();
-        }
-    }
-},
-
-// After dependencies have loaded:
-function() {
-    var proto = this.prototype,
-        date = Ext.Date;
-
-    proto.monthNames = date.monthNames;
-    proto.dayNames   = date.dayNames;
-    proto.format     = date.defaultFormat;
-});
-
 /**
  * @author Ed Spencer
  * 
@@ -86331,650 +84954,6 @@ Ext.define('Ext.form.field.Picker', {
 
 
 /**
- * @docauthor Jason Johnston <jason@sencha.com>
- *
- * Provides a date input field with a {@link Ext.picker.Date date picker} dropdown and automatic date
- * validation.
- *
- * This field recognizes and uses the JavaScript Date object as its main {@link #value} type. In addition,
- * it recognizes string values which are parsed according to the {@link #format} and/or {@link #altFormats}
- * configs. These may be reconfigured to use date formats appropriate for the user's locale.
- *
- * The field may be limited to a certain range of dates by using the {@link #minValue}, {@link #maxValue},
- * {@link #disabledDays}, and {@link #disabledDates} config parameters. These configurations will be used both
- * in the field's validation, and in the date picker dropdown by preventing invalid dates from being selected.
- *
- * # Example usage
- *
- *     @example
- *     Ext.create('Ext.form.Panel', {
- *         renderTo: Ext.getBody(),
- *         width: 300,
- *         bodyPadding: 10,
- *         title: 'Dates',
- *         items: [{
- *             xtype: 'datefield',
- *             anchor: '100%',
- *             fieldLabel: 'From',
- *             name: 'from_date',
- *             maxValue: new Date()  // limited to the current date or prior
- *         }, {
- *             xtype: 'datefield',
- *             anchor: '100%',
- *             fieldLabel: 'To',
- *             name: 'to_date',
- *             value: new Date()  // defaults to today
- *         }]
- *     });
- *
- * # Date Formats Examples
- *
- * This example shows a couple of different date format parsing scenarios. Both use custom date format
- * configurations; the first one matches the configured `format` while the second matches the `altFormats`.
- *
- *     @example
- *     Ext.create('Ext.form.Panel', {
- *         renderTo: Ext.getBody(),
- *         width: 300,
- *         bodyPadding: 10,
- *         title: 'Dates',
- *         items: [{
- *             xtype: 'datefield',
- *             anchor: '100%',
- *             fieldLabel: 'Date',
- *             name: 'date',
- *             // The value matches the format; will be parsed and displayed using that format.
- *             format: 'm d Y',
- *             value: '2 4 1978'
- *         }, {
- *             xtype: 'datefield',
- *             anchor: '100%',
- *             fieldLabel: 'Date',
- *             name: 'date',
- *             // The value does not match the format, but does match an altFormat; will be parsed
- *             // using the altFormat and displayed using the format.
- *             format: 'm d Y',
- *             altFormats: 'm,d,Y|m.d.Y',
- *             value: '2.4.1978'
- *         }]
- *     });
- */
-Ext.define('Ext.form.field.Date', {
-    extend:'Ext.form.field.Picker',
-    alias: 'widget.datefield',
-    requires: ['Ext.picker.Date'],
-    alternateClassName: ['Ext.form.DateField', 'Ext.form.Date'],
-
-    //<locale>
-    /**
-     * @cfg {String} format
-     * The default date format string which can be overriden for localization support. The format must be valid
-     * according to {@link Ext.Date#parse}.
-     */
-    format : "m/d/Y",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} altFormats
-     * Multiple date formats separated by "|" to try when parsing a user input value and it does not match the defined
-     * format.
-     */
-    altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d|n-j|n/j",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} disabledDaysText
-     * The tooltip to display when the date falls on a disabled day.
-     */
-    disabledDaysText : "Disabled",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} disabledDatesText
-     * The tooltip text to display when the date falls on a disabled date.
-     */
-    disabledDatesText : "Disabled",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} minText
-     * The error text to display when the date in the cell is before {@link #minValue}.
-     */
-    minText : "The date in this field must be equal to or after {0}",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} maxText
-     * The error text to display when the date in the cell is after {@link #maxValue}.
-     */
-    maxText : "The date in this field must be equal to or before {0}",
-    //</locale>
-    //<locale>
-    /**
-     * @cfg {String} invalidText
-     * The error text to display when the date in the field is invalid.
-     */
-    invalidText : "{0} is not a valid date - it must be in the format {1}",
-    //</locale>
-    /**
-     * @cfg {String} [triggerCls='x-form-date-trigger']
-     * An additional CSS class used to style the trigger button. The trigger will always get the class 'x-form-trigger'
-     * and triggerCls will be **appended** if specified (default class displays a calendar icon).
-     */
-    triggerCls : Ext.baseCSSPrefix + 'form-date-trigger',
-    /**
-     * @cfg {Boolean} showToday
-     * false to hide the footer area of the Date picker containing the Today button and disable the keyboard handler for
-     * spacebar that selects the current date.
-     */
-    showToday : true,
-    /**
-     * @cfg {Date/String} minValue
-     * The minimum allowed date. Can be either a Javascript date object or a string date in a valid format.
-     */
-    /**
-     * @cfg {Date/String} maxValue
-     * The maximum allowed date. Can be either a Javascript date object or a string date in a valid format.
-     */
-    /**
-     * @cfg {Number[]} disabledDays
-     * An array of days to disable, 0 based. Some examples:
-     *
-     *     // disable Sunday and Saturday:
-     *     disabledDays:  [0, 6]
-     *     // disable weekdays:
-     *     disabledDays: [1,2,3,4,5]
-     */
-    /**
-     * @cfg {String[]} disabledDates
-     * An array of "dates" to disable, as strings. These strings will be used to build a dynamic regular expression so
-     * they are very powerful. Some examples:
-     *
-     *     // disable these exact dates:
-     *     disabledDates: ["03/08/2003", "09/16/2003"]
-     *     // disable these days for every year:
-     *     disabledDates: ["03/08", "09/16"]
-     *     // only match the beginning (useful if you are using short years):
-     *     disabledDates: ["^03/08"]
-     *     // disable every day in March 2006:
-     *     disabledDates: ["03/../2006"]
-     *     // disable every day in every March:
-     *     disabledDates: ["^03"]
-     *
-     * Note that the format of the dates included in the array should exactly match the {@link #format} config. In order
-     * to support regular expressions, if you are using a {@link #format date format} that has "." in it, you will have
-     * to escape the dot when restricting dates. For example: `["03\\.08\\.03"]`.
-     */
-
-    /**
-     * @cfg {String} submitFormat
-     * The date format string which will be submitted to the server. The format must be valid according to
-     * {@link Ext.Date#parse}.
-     *
-     * Defaults to {@link #format}.
-     */
-    
-    /**
-     * @cfg {Boolean} useStrict
-     * True to enforce strict date parsing to prevent the default Javascript "date rollover".
-     * Defaults to the useStrict parameter set on Ext.Date
-     * See {@link Ext.Date#parse}.
-     */
-    useStrict: undefined,
-
-    // in the absence of a time value, a default value of 12 noon will be used
-    // (note: 12 noon was chosen because it steers well clear of all DST timezone changes)
-    initTime: '12', // 24 hour format
-
-    initTimeFormat: 'H',
-
-    matchFieldWidth: false,
-    //<locale>
-    /**
-     * @cfg {Number} [startDay=undefined]
-     * Day index at which the week should begin, 0-based.
-     *
-     * Defaults to `0` (Sunday).
-     */
-    startDay: 0,
-    //</locale>
-
-    initComponent : function(){
-        var me = this,
-            isString = Ext.isString,
-            min, max;
-
-        min = me.minValue;
-        max = me.maxValue;
-        if(isString(min)){
-            me.minValue = me.parseDate(min);
-        }
-        if(isString(max)){
-            me.maxValue = me.parseDate(max);
-        }
-        me.disabledDatesRE = null;
-        me.initDisabledDays();
-
-        me.callParent();
-    },
-
-    initValue: function() {
-        var me = this,
-            value = me.value;
-
-        // If a String value was supplied, try to convert it to a proper Date
-        if (Ext.isString(value)) {
-            me.value = me.rawToValue(value);
-        }
-
-        me.callParent();
-    },
-
-    // private
-    initDisabledDays : function(){
-        if(this.disabledDates){
-            var dd   = this.disabledDates,
-                len  = dd.length - 1,
-                re   = "(?:",
-                d,
-                dLen = dd.length,
-                date;
-
-            for (d = 0; d < dLen; d++) {
-                date = dd[d];
-
-                re += Ext.isDate(date) ? '^' + Ext.String.escapeRegex(date.dateFormat(this.format)) + '$' : date;
-                if (d !== len) {
-                    re += '|';
-                }
-            }
-
-            this.disabledDatesRE = new RegExp(re + ')');
-        }
-    },
-
-    /**
-     * Replaces any existing disabled dates with new values and refreshes the Date picker.
-     * @param {String[]} disabledDates An array of date strings (see the {@link #disabledDates} config for details on
-     * supported values) used to disable a pattern of dates.
-     */
-    setDisabledDates : function(dd){
-        var me = this,
-            picker = me.picker;
-
-        me.disabledDates = dd;
-        me.initDisabledDays();
-        if (picker) {
-            picker.setDisabledDates(me.disabledDatesRE);
-        }
-    },
-
-    /**
-     * Replaces any existing disabled days (by index, 0-6) with new values and refreshes the Date picker.
-     * @param {Number[]} disabledDays An array of disabled day indexes. See the {@link #disabledDays} config for details on
-     * supported values.
-     */
-    setDisabledDays : function(dd){
-        var picker = this.picker;
-
-        this.disabledDays = dd;
-        if (picker) {
-            picker.setDisabledDays(dd);
-        }
-    },
-
-    /**
-     * Replaces any existing {@link #minValue} with the new value and refreshes the Date picker.
-     * @param {Date} value The minimum date that can be selected
-     */
-    setMinValue : function(dt){
-        var me = this,
-            picker = me.picker,
-            minValue = (Ext.isString(dt) ? me.parseDate(dt) : dt);
-
-        me.minValue = minValue;
-        if (picker) {
-            picker.minText = Ext.String.format(me.minText, me.formatDate(me.minValue));
-            picker.setMinDate(minValue);
-        }
-    },
-
-    /**
-     * Replaces any existing {@link #maxValue} with the new value and refreshes the Date picker.
-     * @param {Date} value The maximum date that can be selected
-     */
-    setMaxValue : function(dt){
-        var me = this,
-            picker = me.picker,
-            maxValue = (Ext.isString(dt) ? me.parseDate(dt) : dt);
-
-        me.maxValue = maxValue;
-        if (picker) {
-            picker.maxText = Ext.String.format(me.maxText, me.formatDate(me.maxValue));
-            picker.setMaxDate(maxValue);
-        }
-    },
-
-    /**
-     * Runs all of Date's validations and returns an array of any errors. Note that this first runs Text's validations,
-     * so the returned array is an amalgamation of all field errors. The additional validation checks are testing that
-     * the date format is valid, that the chosen date is within the min and max date constraints set, that the date
-     * chosen is not in the disabledDates regex and that the day chosed is not one of the disabledDays.
-     * @param {Object} [value] The value to get errors for (defaults to the current field value)
-     * @return {String[]} All validation errors for this field
-     */
-    getErrors: function(value) {
-        var me = this,
-            format = Ext.String.format,
-            clearTime = Ext.Date.clearTime,
-            errors = me.callParent(arguments),
-            disabledDays = me.disabledDays,
-            disabledDatesRE = me.disabledDatesRE,
-            minValue = me.minValue,
-            maxValue = me.maxValue,
-            len = disabledDays ? disabledDays.length : 0,
-            i = 0,
-            svalue,
-            fvalue,
-            day,
-            time;
-
-        value = me.formatDate(value || me.processRawValue(me.getRawValue()));
-
-        if (value === null || value.length < 1) { // if it's blank and textfield didn't flag it then it's valid
-             return errors;
-        }
-
-        svalue = value;
-        value = me.parseDate(value);
-        if (!value) {
-            errors.push(format(me.invalidText, svalue, Ext.Date.unescapeFormat(me.format)));
-            return errors;
-        }
-
-        time = value.getTime();
-        if (minValue && time < clearTime(minValue).getTime()) {
-            errors.push(format(me.minText, me.formatDate(minValue)));
-        }
-
-        if (maxValue && time > clearTime(maxValue).getTime()) {
-            errors.push(format(me.maxText, me.formatDate(maxValue)));
-        }
-
-        if (disabledDays) {
-            day = value.getDay();
-
-            for(; i < len; i++) {
-                if (day === disabledDays[i]) {
-                    errors.push(me.disabledDaysText);
-                    break;
-                }
-            }
-        }
-
-        fvalue = me.formatDate(value);
-        if (disabledDatesRE && disabledDatesRE.test(fvalue)) {
-            errors.push(format(me.disabledDatesText, fvalue));
-        }
-
-        return errors;
-    },
-
-    rawToValue: function(rawValue) {
-        return this.parseDate(rawValue) || rawValue || null;
-    },
-
-    valueToRaw: function(value) {
-        return this.formatDate(this.parseDate(value));
-    },
-
-    /**
-     * @method setValue
-     * Sets the value of the date field. You can pass a date object or any string that can be parsed into a valid date,
-     * using {@link #format} as the date format, according to the same rules as {@link Ext.Date#parse} (the default
-     * format used is "m/d/Y").
-     *
-     * Usage:
-     *
-     *     //All of these calls set the same date value (May 4, 2006)
-     *
-     *     //Pass a date object:
-     *     var dt = new Date('5/4/2006');
-     *     dateField.setValue(dt);
-     *
-     *     //Pass a date string (default format):
-     *     dateField.setValue('05/04/2006');
-     *
-     *     //Pass a date string (custom format):
-     *     dateField.format = 'Y-m-d';
-     *     dateField.setValue('2006-05-04');
-     *
-     * @param {String/Date} date The date or valid date string
-     * @return {Ext.form.field.Date} this
-     */
-
-    /**
-     * Attempts to parse a given string value using a given {@link Ext.Date#parse date format}.
-     * @param {String} value The value to attempt to parse
-     * @param {String} format A valid date format (see {@link Ext.Date#parse})
-     * @return {Date} The parsed Date object, or null if the value could not be successfully parsed.
-     */
-    safeParse : function(value, format) {
-        var me = this,
-            utilDate = Ext.Date,
-            result = null,
-            strict = me.useStrict,
-            parsedDate;
-
-        if (utilDate.formatContainsHourInfo(format)) {
-            // if parse format contains hour information, no DST adjustment is necessary
-            result = utilDate.parse(value, format, strict);
-        } else {
-            // set time to 12 noon, then clear the time
-            parsedDate = utilDate.parse(value + ' ' + me.initTime, format + ' ' + me.initTimeFormat, strict);
-            if (parsedDate) {
-                result = utilDate.clearTime(parsedDate);
-            }
-        }
-        return result;
-    },
-
-    // @private
-    getSubmitValue: function() {
-        var format = this.submitFormat || this.format,
-            value = this.getValue();
-
-        return value ? Ext.Date.format(value, format) : '';
-    },
-
-    /**
-     * @private
-     */
-    parseDate : function(value) {
-        if(!value || Ext.isDate(value)){
-            return value;
-        }
-
-        var me = this,
-            val = me.safeParse(value, me.format),
-            altFormats = me.altFormats,
-            altFormatsArray = me.altFormatsArray,
-            i = 0,
-            len;
-
-        if (!val && altFormats) {
-            altFormatsArray = altFormatsArray || altFormats.split('|');
-            len = altFormatsArray.length;
-            for (; i < len && !val; ++i) {
-                val = me.safeParse(value, altFormatsArray[i]);
-            }
-        }
-        return val;
-    },
-
-    // private
-    formatDate : function(date){
-        return Ext.isDate(date) ? Ext.Date.dateFormat(date, this.format) : date;
-    },
-
-    createPicker: function() {
-        var me = this,
-            format = Ext.String.format;
-
-        return new Ext.picker.Date({
-            pickerField: me,
-            ownerCt: me.ownerCt,
-            renderTo: document.body,
-            floating: true,
-            hidden: true,
-            focusOnShow: true,
-            minDate: me.minValue,
-            maxDate: me.maxValue,
-            disabledDatesRE: me.disabledDatesRE,
-            disabledDatesText: me.disabledDatesText,
-            disabledDays: me.disabledDays,
-            disabledDaysText: me.disabledDaysText,
-            format: me.format,
-            showToday: me.showToday,
-            startDay: me.startDay,
-            minText: format(me.minText, me.formatDate(me.minValue)),
-            maxText: format(me.maxText, me.formatDate(me.maxValue)),
-            listeners: {
-                scope: me,
-                select: me.onSelect
-            },
-            keyNavConfig: {
-                esc: function() {
-                    me.collapse();
-                }
-            }
-        });
-    },
-
-    onSelect: function(m, d) {
-        var me = this;
-
-        me.setValue(d);
-        me.fireEvent('select', me, d);
-        me.collapse();
-    },
-
-    /**
-     * @private
-     * Sets the Date picker's value to match the current field value when expanding.
-     */
-    onExpand: function() {
-        var value = this.getValue();
-        this.picker.setValue(Ext.isDate(value) ? value : new Date());
-    },
-
-    /**
-     * @private
-     * Focuses the field when collapsing the Date picker.
-     */
-    onCollapse: function() {
-        this.focus(false, 60);
-    },
-
-    // private
-    beforeBlur : function(){
-        var me = this,
-            v = me.parseDate(me.getRawValue()),
-            focusTask = me.focusTask;
-
-        if (focusTask) {
-            focusTask.cancel();
-        }
-
-        if (v) {
-            me.setValue(v);
-        }
-    }
-
-    /**
-     * @cfg {Boolean} grow
-     * @private
-     */
-    /**
-     * @cfg {Number} growMin
-     * @private
-     */
-    /**
-     * @cfg {Number} growMax
-     * @private
-     */
-    /**
-     * @method autoSize
-     * @private
-     */
-});
-
-Ext.define('PICS.view.report.filter.base.DateFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbasedatefilter'],
-
-    requires: [
-        'Ext.form.field.Date'
-    ],
-    
-    border: 0,
-    layout: 'hbox',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        var combobox = this.createCombobox(this.record);
-        var datefield = this.createDatefield(this.record);
-
-        this.add([
-            combobox,
-            datefield
-        ]);
-    },
-
-    createCombobox: function (record) {
-        var operator = record.get('operator');
-
-        if (!operator) {
-            operator = PICS.app.constants.DATESTORE[0][0];
-
-            record.set('operator', operator);
-        }
-
-        return {
-            xtype: 'combobox',
-            editable: false,
-            flex: 1.5,
-            margin: '0 5 0 0',
-            name: 'operator',
-            store: PICS.app.constants.DATESTORE,
-            value: operator
-        };
-    },
-
-    createDatefield: function (record) {
-        var value = record.get('value');
-
-        return {
-            xtype: 'datefield',
-            flex: 2,
-            format: 'Y-m-d',
-            listeners: {
-                render: function (cmp, eOpts) {
-                    // by-pass setValue validation by modifying dom directly
-                    cmp.el.down('input[name="filter_value"]').dom.value = value;
-                }
-            },
-            name: 'filter_value',
-            preventMark: true
-        };
-    }
-});
-/**
  * A field with a pair of up/down spinner buttons. This class is not normally instantiated directly,
  * instead it is subclassed and the {@link #onSpinUp} and {@link #onSpinDown} methods are implemented
  * to handle when the buttons are clicked. A good example of this is the {@link Ext.form.field.Number}
@@ -88280,7 +86259,7 @@ Ext.define('Ext.toolbar.Paging', {
     }
 });
 
-Ext.define('PICS.view.report.report.PagingToolbar', {
+Ext.define('PICS.view.report.data-table.PagingToolbar', {
     extend: 'Ext.toolbar.Paging',
     alias: 'widget.reportpagingtoolbar',
 
@@ -91808,6 +89787,121 @@ Ext.define('Ext.grid.Panel', {
      * @param {Object[]} columns (Optional) An array of column configs
      */
 });
+Ext.define('PICS.view.report.modal.column-function.ColumnFunctionList', {
+    extend: 'Ext.grid.Panel',
+    alias: 'widget.reportcolumnfunctionlist',
+
+    border: 0,
+    bodyBorder: false,
+    cls: 'column_function_list',
+    columns: [{
+        xtype: 'templatecolumn',
+        dataIndex: 'name',
+        tpl: '<span class="column-function">{value}</span>',
+        flex: 1
+    }],
+    enableColumnHide: false,    
+    hideHeaders: true,
+    rowLines: false,
+    store: 'report.ColumnFunctions'
+});
+Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+    extend: 'PICS.ux.window.Window',
+    alias: 'widget.reportcolumnfunctionmodal',
+
+    requires: [
+        'PICS.view.report.modal.column-function.ColumnFunctionList'
+    ],
+
+    border: 0,
+    bodyBorder: false,
+    closeAction: 'destroy',
+    draggable: false,
+    header: {
+        height: 44
+    },
+    id: 'column_function_modal',
+    layout: 'fit',
+    modal: true,
+    resizable: false,
+    shadow: 'frame',
+    title: 'Column Functions',
+    width: 300,
+    items: [{
+        xtype: 'reportcolumnfunctionlist'
+    }],
+    dockedItems: [{
+        xtype: 'panel',
+        border: 0,
+        dock: 'bottom',
+        height: 10,
+        id: 'column_function_modal_footer'
+    }]
+});
+Ext.define('PICS.controller.report.ColumnFunctionModal', {
+    extend: 'Ext.app.Controller',
+
+    refs: [{
+        ref: 'columnFunctionModal',
+        selector: 'reportcolumnfunctionmodal'
+    }],
+
+    stores: [
+        'report.ColumnFunctions'
+    ],
+
+    views: [
+        'PICS.view.report.modal.column-function.ColumnFunctionModal'
+    ],
+
+    init: function () {
+        this.control({
+            'reportcolumnfunctionlist': {
+                cellclick: this.onCellClick
+            }
+        });
+
+        this.application.on({
+            opencolumnfunctionmodal: this.openColumnFunctionModal,
+            scope: this
+        });
+    },
+
+    onCellClick: function (cmp, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+        var column_function_modal = this.getColumnFunctionModal(),
+            column = column_function_modal.column,
+            column_function_key = record.get('key');
+
+        // set the method on the column store - column
+        column.set('sql_function', column_function_key);
+
+        // destroy modal for next use (generate with correct column)
+        column_function_modal.close();
+        
+        // refresh report
+        PICS.data.ServerCommunication.loadReportAndData();
+    },
+
+    openColumnFunctionModal: function (column) {
+        var field_id = column.get('field_id'),
+            column_function_store = this.getReportColumnFunctionsStore(),
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(field_id);
+        
+        column_function_store.setProxyForRead(url);
+        
+        column_function_store.load(function (records, operation, success) {
+            if (success) {
+                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                    column: column
+                });
+                
+                column_function_modal.show();
+            } else {
+                // TODO: throw error
+            }
+        });
+    }
+});
 /**
  * An internally used DataView for {@link Ext.form.field.ComboBox ComboBox}.
  */
@@ -93936,402 +92030,6 @@ Ext.define('PICS.view.layout.Header', {
     items: [{
         xtype: 'layoutmenu'
     }]
-});
-Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.reportfilterbaseautocompletefilter',
-    
-    requires: [
-        'Ext.form.field.ComboBox'
-    ],
-
-    cls: 'autocomplete-filter',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        this.record.set('operator', 'In');
-
-        var autocomplete = this.createAutocomplete(this.record);
-        this.add(autocomplete);
-    },
-
-    createAutocomplete: function (record) {
-        var value = record.get('value');
-        var store = this.getStoreForAutocomplete(record);
-
-        return {
-            xtype: 'combobox',
-            displayField: 'value',
-            editable: true,
-            hideTrigger: true,
-            minChars: 2,
-            multiSelect: false,
-            name: 'filter_value',
-            queryParam: 'searchQuery',
-            store: store,
-            value: value,
-            valueField: 'key',
-            width: 258
-        };
-    },
-
-    getStoreForAutocomplete: function (record) {
-        var field = record.getAvailableField(),
-            field_type = field.get('fieldType');
-
-        return {
-            fields: [{
-                name: 'key',
-                type: 'string'
-            }, {
-                name: 'value',
-                type: 'string'
-            }],
-            proxy: {
-                type: 'ajax',
-                url: 'Autocompleter.action?fieldType=' + field_type,
-                reader: {
-                    root: 'result',
-                    type: 'json'
-                }
-            }
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.base.ListFilter', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.reportfilterbaselistfilter',
-    
-    requires: [
-        'Ext.form.field.ComboBox'
-    ],
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        if (!this.record) {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        this.record.set('operator', 'In');
-
-        var list = this.createList(this.record);
-
-        this.add(list);
-    },
-
-    createList: function (record) {
-        var value = record.get('value');
-        var store = this.getStoreForList(record);
-
-        return {
-            xtype: 'combobox',
-            displayField: 'value',
-            editable: false,
-            multiSelect: true,
-            name: 'filter_value',
-            store: store,
-            value: value,
-            valueField: 'key',
-            width: 258
-        };
-    },
-
-    getStoreForList: function (record) {
-        var field = record.getAvailableField(),
-            field_type = field.get('fieldType');
-
-        return {
-            fields: [{
-                name: 'key',
-                type: 'string'
-            }, {
-                name: 'value',
-                type: 'string'
-            }],
-            proxy: {
-                type: 'ajax',
-                url: 'Autocompleter.action?fieldType=' + field_type,
-                reader: {
-                    root: 'result',
-                    type: 'json'
-                }
-            }
-        };
-    }
-});
-Ext.define('PICS.view.report.filter.Filter', {
-    extend: 'Ext.form.Panel',
-    alias: ['widget.reportfilter'],
-
-    requires: [
-        'PICS.view.report.filter.base.AccountIDFilter',
-        'PICS.view.report.filter.base.AutocompleteFilter',
-        'PICS.view.report.filter.base.BooleanFilter',
-        'PICS.view.report.filter.base.DateFilter',
-        'PICS.view.report.filter.base.FloatFilter',
-        'PICS.view.report.filter.base.IntegerFilter',
-        'PICS.view.report.filter.base.ListFilter',
-        'PICS.view.report.filter.base.StringFilter',
-        'PICS.view.report.filter.base.UserIDFilter',
-        'PICS.view.report.filter.FilterTooltip'
-    ],
-
-    bodyCls: 'filter-body',
-    border: 0,
-    cls: 'filter',
-    height: 96,
-    layout: {
-        type: 'hbox',
-        align: 'middle'
-    },
-    overCls: 'x-over',
-    width: 320,
-
-    initComponent: function () {
-        var filter = this.record,
-            index = this.index;
-        
-        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
-            Ext.Error.raise('Invalid filter record');
-        }
-
-        if (!index) {
-            Ext.Error.raise('Invalid filter index');
-        }
-
-        var type = filter.get('type'),
-            cls = this.getFilterClassByType(type),
-            filter_number = this.createNumber(this.index),
-            filter_content = this.createContent(this.record),
-            remove_button = this.createRemoveButton();
-
-        this.items = [
-            filter_number,
-            filter_content
-        ];
-        
-        this.dockedItems = [
-            remove_button
-        ];
-        
-        // TODO: update this - probably doesn't belong
-        // TODO: THIS IS CRAP
-        if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
-            var editable_button = this.creatEditableButton();
-
-            this.dockedItems.push(editable_button);
-        }
-        
-        this.callParent(arguments);
-    },
-
-    createNumber: function (index) {
-        return {
-            xtype: 'displayfield',
-            border: 0,
-            cls: 'filter-number',
-            fieldLabel: index.toString(),
-            labelSeparator: '',
-            labelWidth: 30,
-            name: 'filter_number',
-            width: 30
-        };
-    },
-
-    createContent: function (record) {
-        var filter_title = this.createTitle(record);
-        var filter_input = this.createInput(record);
-
-        return {
-            border: 0,
-            cls: 'filter-content',
-            items: [
-                filter_title,
-                filter_input
-            ],
-            name: 'filter_content',
-            width: 258
-        };
-    },
-
-    createTitle: function (record) {
-        var filter = record,
-            text = filter.get('name');
-
-        if (text.length >= 29) {
-            text = text.substring(0, 29) + '...';
-        }
-
-        return {
-            border: 0,
-            height: 30,
-            items: [{
-                xtype: 'displayfield',
-                cls: 'filter-name',
-                name: 'filter_name',
-                value: text
-            }, {
-                xtype: 'tbfill'
-            }],
-            layout: {
-                type: 'hbox',
-                align: 'middle'
-            },
-            name: 'filter_title'
-        };
-    },
-
-    createInput: function (record) {
-        var filter = record,
-            type = filter.get('type'),
-            cls = this.getFilterClassByType(type);
-
-        return Ext.create(cls, {
-            border: 0,
-            draggable: false,
-            name: 'filter_input',
-            record: record
-        });
-    },
-    
-    createRemoveButton: function () {
-        return {
-            xtype: 'toolbar',
-            defaults: {
-                margin: '2 4 0 0'
-            },
-            dock: 'top',
-            items: [{
-                xtype: 'button',
-                action: 'remove-filter',
-                cls: 'remove-filter',
-                height: 20,
-                text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
-                width: 20
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        };
-    },
-    
-    creatEditableButton: function () {
-        return {
-            xtype: 'toolbar',
-            defaults: {
-                margin: '0 5 5 0'
-            },
-            dock: 'bottom',
-            items: [{
-                xtype: 'button',
-                action: 'show-advanced-filter',
-                cls: 'advanced-filter-button',
-                height: 22,
-                text: '<i class="icon-pencil"></i>',
-                tooltip: 'Advanced Filter',
-                width: 20
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        };
-    },
-    
-    createTooltip: function () {
-        var filter = this.record;
-        
-        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
-            Ext.Error.raise('Invalid filter record');
-        }
-        
-        var target = this.el.down('.filter-name'),
-            description = filter.get('description');
-        
-        var tooltip = Ext.create('PICS.view.report.filter.FilterTooltip', {
-            target: target
-        });
-        
-        tooltip.update({
-            description: description
-        });
-    },
-
-    // TODO: FISH BY CRAY FISH FILLET
-    getFilterClassByType: function (type) {
-        var cls;
-        
-        switch (type) {
-            case 'AccountID':
-            case 'Autocomplete':
-            case 'Boolean':
-            case 'Date':
-            case 'Float':
-            case 'Integer':
-            case 'String':
-            case 'UserID':
-                cls = 'PICS.view.report.filter.base.' + type + 'Filter';
-                break;
-            case 'ShortList':
-                // TODO Rename ListFilter to ShortListFilter
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'DateTime':
-                // TODO add in a DateTime filter type
-                cls = 'PICS.view.report.filter.base.DateFilter';
-                break;
-            default:
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
-        }
-
-        return cls;
-    }
-});
-Ext.define('PICS.view.report.filter.Filters', {
-    extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilters'],
-
-    requires: [
-        'PICS.view.report.filter.Filter'
-    ],
-
-    border: 0,
-    bodyBorder: 0,
-    id: 'report_filters',
-
-    initComponent: function () {
-        if (Ext.getClassName(this.store) != 'Ext.data.Store') {
-            Ext.Error.raise('Invalid Filter Store');
-        }
-
-        var index = 1,
-            items = [],
-            that = this;
-
-        this.store.each(function (record) {
-            var filter = Ext.create('PICS.view.report.filter.Filter', {
-                index: index,
-                record: record
-            });
-
-            items.push(filter);
-
-            index += 1;
-        });
-        
-        this.items = items;
-        
-        this.callParent(arguments);
-    }
 });
 Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     extend: 'Ext.form.field.ComboBox',
@@ -97316,13 +95014,13 @@ Ext.define('Ext.grid.RowNumberer', {
     }
 });
 
-Ext.define('PICS.view.report.report.DataTable', {
+Ext.define('PICS.view.report.data-table.DataTable', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.reportdatatable',
 
     requires: [
         'Ext.grid.RowNumberer',
-        'PICS.view.report.report.PagingToolbar'
+        'PICS.view.report.data-table.PagingToolbar'
     ],
 
     store: 'report.DataTables',
@@ -97420,7 +95118,7 @@ Ext.define('PICS.view.report.Viewport', {
         'Ext.layout.container.Border',
         'Ext.resizer.Splitter',
         'PICS.view.layout.Header',
-        'PICS.view.report.report.DataTable',
+        'PICS.view.report.data-table.DataTable',
         'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.header.Header'
     ],
@@ -97516,7 +95214,7 @@ Ext.define('Ext.grid.column.Template', {
 
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     extend: 'Ext.grid.Panel',
-    alias: 'columnfilterlist',
+    alias: 'reportcolumnfilterlist',
     
     requires: [
         'Ext.grid.feature.Feature',
@@ -97590,7 +95288,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
     extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
-    alias: 'widget.columnlist',
+    alias: 'widget.reportcolumnlist',
 
     store: 'report.Columns',
     
@@ -97598,7 +95296,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnList', {
 });
 Ext.define('PICS.view.report.modal.column-filter.FilterList', {
     extend: 'PICS.view.report.modal.column-filter.ColumnFilterList',
-    alias: 'widget.filterlist',
+    alias: 'widget.reportfilterlist',
 
     store: 'report.Filters',
     
@@ -97606,7 +95304,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterList', {
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
     extend: 'PICS.ux.window.Window',
-    alias: 'columnfiltermodal',
+    alias: 'reportcolumnfiltermodal',
     
     requires: [
         'PICS.ux.util.filter.ColumnFilterStoreFilter',
@@ -97673,11 +95371,11 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
 });
 Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
     extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
-    alias: 'widget.columnmodal',
+    alias: 'widget.reportcolumnmodal',
 
     id: 'column_modal',
     items: [{
-        xtype: 'columnlist'
+        xtype: 'reportcolumnlist'
     }],
 
     initComponent: function () {
@@ -97688,11 +95386,11 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
 });
 Ext.define('PICS.view.report.modal.column-filter.FilterModal', {
     extend: 'PICS.view.report.modal.column-filter.ColumnFilterModal',
-    alias: 'widget.filtermodal',
+    alias: 'widget.reportfiltermodal',
 
     id: 'filter_modal',
     items: [{
-        xtype: 'filterlist'
+        xtype: 'reportfilterlist'
     }],
 
     initComponent: function () {
@@ -97705,7 +95403,7 @@ Ext.define('PICS.ux.grid.column.Column', {
     extend: 'Ext.grid.column.Column',
     
     requires: [
-        'PICS.view.report.report.ColumnTooltip'
+        'PICS.view.report.data-table.ColumnTooltip'
     ],
     
     menuDisabled: true,
@@ -97763,7 +95461,7 @@ Ext.define('PICS.ux.grid.column.Column', {
             name = column.get('name'),
             description = column.get('description');
         
-        var tooltip = Ext.create('PICS.view.report.report.ColumnTooltip', {
+        var tooltip = Ext.create('PICS.view.report.data-table.ColumnTooltip', {
             target: target
         });
         
@@ -97933,21 +95631,21 @@ Ext.define('PICS.model.report.Column', {
             column: this
         };
 
-        switch (type.toLowerCase()) {
-            case 'boolean':
+        switch (type) {
+            case PICS.data.ColumnType.Boolean:
                 grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
-            case 'flag':
+            case PICS.data.ColumnType.Flag:
                 grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
                 break;
-            case 'number':
+            case PICS.data.ColumnType.Number:
                 grid_column = Ext.create('PICS.ux.grid.column.Number', config);
 
                 break;
-            case 'date':
-            case 'string':
+            case PICS.data.ColumnType.Date:
+            case PICS.data.ColumnType.String:
             default:
                 grid_column = Ext.create('PICS.ux.grid.column.String', config);
                 
@@ -98669,128 +96367,71 @@ Ext.define('PICS.model.report.Report', {
     
     // TODO: probably fix this because nichols wrote it
     setFilterExpression: function (filter_expression) {
-        // Hack: because this is broken
-        if (filter_expression == '') {
-            this.set('filter_expression', filter_expression);
+        var sanitized_expression = this.sanitizeFilterExpression(filter_expression);
 
-            return false;
+        this.set('filter_expression', sanitized_expression);
+    },
+
+    // TODO write a real grammar and parser for our filter formula DSL
+    sanitizeFilterExpression: function (filter_expression) {
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi,
+            tokens = [],
+            token = '',
+            paren_count = 0,
+            token_count = 0,
+            index_num = 0,
+            sanitized_expression = '';
+        
+        if (typeof filter_expression != 'string') {
+            return '';
         }
 
-        // TODO write a real grammar and parser for our filter formula DSL
-
         // Split into tokens
-        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
         filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
-
-        var tokens = filter_expression.trim().split(/ +/);
-        filter_expression = '';
+        tokens = filter_expression.trim().split(/ +/);
 
         // Check for invalid tokens and make sure parens are balanced
-        var parenCount = 0;
-        for (var i = 0; i < tokens.length; i += 1) {
-            var token = tokens[i];
+        for (token_count = 0; token_count < tokens.length; token_count += 1) {
+            token = tokens[token_count];
 
             if (token.search(validTokenRegex) === -1) {
-                return false;
+                return '';
             }
 
             if (token === '(') {
-                parenCount += 1;
-                filter_expression += token;
+                paren_count += 1;
+                sanitized_expression += token;
             } else if (token === ')') {
-                parenCount -= 1;
-                filter_expression += token;
+                paren_count -= 1;
+                sanitized_expression += token;
             } else if (token.toUpperCase() === 'AND') {
-                filter_expression += ' AND ';
+                sanitized_expression += ' AND ';
             } else if (token.toUpperCase() === 'OR') {
-                filter_expression += ' OR ';
+                sanitized_expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
                 if (token === '0') {
-                    return false;
+                    return '';
                 }
 
                 // Convert from counting number to index
-                var indexNum = new Number(token);
-                filter_expression += '{' + indexNum + '}';
+                index_num = new Number(token);
+                sanitized_expression += '{' + index_num + '}';
             } else {
-                return false;
+                return '';
             }
 
-            if (parenCount < 0) {
-                return false;
+            if (paren_count < 0) {
+                return '';
             }
         }
 
-        if (parenCount !== 0) {
-            return false;
+        if (paren_count !== 0) {
+            return '';
         }
 
-        this.set('filter_expression', filter_expression);
+        return sanitized_expression;
     },
 
-    /**
-     * Get Report JSON
-     *
-     * Builds a jsonified version of the report to be sent to the server
-     */
-    toJson: function () {
-        var report = {};
-
-        function getStoreType(store) {
-            var className = store.getName(), // store.self.getName()
-                nameSpaces = className.split("."),
-                storeType = nameSpaces[nameSpaces.length-1];
-
-            return storeType;
-        }
-
-        function convertStoreToDataObject(store) {
-            var data = [],
-                mutableFields = store.mutableFields;
-
-            store.each(function (record) {
-                var item = {};
-                
-                record.fields.each(function (field) {
-
-                    var fieldName = record.get(field.name),
-                        storeType = getStoreType(store);
-                    
-                    //if (fieldname && this.mutableFields[store].indexOf(fieldName) != 1) {
-                    if (fieldName && store.mutableFields.indexOf(fieldName) != -1) {
-                        item[fieldName] = fieldName;
-                    }
-                });
-                
-                data.push(item);
-            });
-
-            return data;
-        }
-
-        report = this.data;
-        report.columns = convertStoreToDataObject(this.columns());
-        report.filters = convertStoreToDataObject(this.filters());
-        report.sorts = convertStoreToDataObject(this.sorts());
-
-        return Ext.encode(report);
-    },
-
-    toRequestParams: function () {
-        var report = {};
-
-        report.report = this.get('id');
-        report['report.description'] = this.get('description');
-        report['report.name'] = this.get('name');
-        report['report.parameters'] = this.toJson();
-        report['report.rowsPerPage'] = this.get('rowsPerPage');
-
-        return report;
-    },
-    
-    
-    
-    
     addColumn: function (column) {
         if (Ext.getClassName(column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column');
@@ -98958,22 +96599,22 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     refs: [{
         ref: 'columnModal',
-        selector: 'columnmodal'
+        selector: 'reportcolumnmodal'
     }, {
         ref: 'filterModal',
-        selector: 'filtermodal'
+        selector: 'reportfiltermodal'
     }, {
         ref: 'columnList',
-        selector: 'columnlist'
+        selector: 'reportcolumnlist'
     }, {
         ref: 'filterList',
-        selector: 'filterlist'
+        selector: 'reportfilterlist'
     }, {
         ref: 'columnModalSearchBox',
-        selector: 'columnmodal textfield[name=search_box]'
+        selector: 'reportcolumnmodal textfield[name=search_box]'
     }, {
         ref: 'filterModalSearchBox',
-        selector: 'filtermodal textfield[name=search_box]'
+        selector: 'reportfiltermodal textfield[name=search_box]'
     }],
 
     stores: [
@@ -98989,28 +96630,28 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
     init: function () {
         this.control({
-            'columnmodal': {
+            'reportcolumnmodal': {
                 beforeclose: this.beforeColumnModalClose
             },
-            'filtermodal': {
+            'reportfiltermodal': {
                 beforeclose: this.beforeFilterModalClose
             },
-            'columnmodal textfield[name=search_box]': {
+            'reportcolumnmodal textfield[name=search_box]': {
                 keyup: this.searchColumnList
             },
-            'filtermodal textfield[name=search_box]': {
+            'reportfiltermodal textfield[name=search_box]': {
                 keyup: this.searchFilterList
             },
-            'columnmodal button[action=add]':  {
+            'reportcolumnmodal button[action=add]':  {
                 click: this.addColumn
             },
-            'filtermodal button[action=add]':  {
+            'reportfiltermodal button[action=add]':  {
                 click: this.addFilter
             },
-            'columnmodal button[action=cancel]':  {
+            'reportcolumnmodal button[action=cancel]':  {
                 click: this.cancelColumnModal
             },
-            'filtermodal button[action=cancel]':  {
+            'reportfiltermodal button[action=cancel]':  {
                 click: this.cancelFilterModal
             }
         });
@@ -99057,19 +96698,16 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         // Add the selected filters to the FilterOptions view.
         this.application.fireEvent('refreshfilters');
         
-        filter_modal.close();
-        
-        // Get new data for the modified report.
-        PICS.data.ServerCommunication.loadData();
+        filter_modal.close();        
     },
     
-    beforeColumnModalClose: function (cmp, event, eOpts) {
+    beforeColumnModalClose: function (cmp, eOpts) {
         var column_list = this.getColumnList();
 
         column_list.reset();
     },
 
-    beforeFilterModalClose: function (cmp, event, eOpts) {
+    beforeFilterModalClose: function (cmp, eOpts) {
         var filter_list = this.getFilterList();
 
         filter_list.reset();
@@ -99094,6 +96732,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
             columns_search_box = this.getColumnModalSearchBox(),
             search_query = columns_search_box.getValue();
 
+        columns_store.clearFilter();
+
         columns_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
         }));
@@ -99103,6 +96743,8 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
         var filters_store = this.getReportFiltersStore(),
             filters_search_box = this.getFilterModalSearchBox(),
             search_query = filters_search_box.getValue();
+
+        filters_store.clearFilter();
 
         filters_store.filter(Ext.create('PICS.ux.util.filter.ColumnFilterStoreFilter', {
             value: search_query
@@ -99267,15 +96909,13 @@ Ext.define('PICS.controller.report.DataTable', {
         
         PICS.data.ServerCommunication.loadData(last_page);
     },
-    
+
     openColumnFunctionModal: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            column = cmp.up('menu').activeHeader.column;
+        var column = cmp.up('menu').activeHeader.column;
 
         this.application.fireEvent('opencolumnfunctionmodal', column);
     },
-    
+
     openColumnModal: function (cmp, event, eOpts) {
         this.application.fireEvent('opencolumnmodal');
     },
@@ -99381,50 +97021,51 @@ Ext.define('PICS.controller.report.Filter', {
     init: function() {
         this.control({
             'reportfilter': {
-                render: this.onFilterRender
+                beforerender: this.beforeFilterRender,
+                render: this.renderFilter
             },
             
             // render filter options
             'reportfilteroptions': {
-                afterlayout: this.onFilterOptionsAfterLayout,
-                afterrender: this.onFilterOptionsAfterRender,
-                beforerender: this.onFilterOptionsBeforeRender
+                afterlayout: this.afterFilterOptionsLayout,
+                afterrender: this.afterFilterOptionsRender,
+                beforerender: this.beforeFilterOptionsRender
             },
 
             // collapse filter options
             '#report_filter_options_collapse': {
-                click: this.onFilterOptionsCollapse
+                click: this.collapseFilterOptions
             },
 
             // expand filter options
             '#report_filter_options_expand': {
-                click: this.onFilterOptionsExpand
+                click: this.expandFilterOptions
             },
 
             // add filter
             'reportfilteroptions button[action=add-filter]': {
-                click: this.onAddFilter
+                click: this.addFilter
             },
 
             // show filter formula
             'reportfiltertoolbar button[action=show-filter-formula]': {
-                click: this.onFilterFormulaShow
+                click: this.showFilterFormula
             },
 
             // load filter formula expression
             'reportfilterformula': {
-                beforerender: this.onFilterFormulaBeforeRender
+                beforerender: this.beforeFilterFormulaRender
             },
 
             // save filter formula expression
             'reportfilterformula textfield[name=filter_formula]': {
-                blur: this.onFilterFormulaBlur,
-                specialkey: this.onFilterFormulaInputSpecialKey
+                blur: this.blurFilterFormula,
+                specialkey: this.submitFilterFormula
             },
 
             // hide filter formula
             'reportfilterformula button[action=cancel]': {
-                click: this.onFilterFormulaCancel
+                click: this.cancelFilterFormula
             },
 
             // show filter-number and remove-filter on filter focus
@@ -99435,54 +97076,43 @@ Ext.define('PICS.controller.report.Filter', {
             #report_filters datefield,\
             #report_filters checkbox\
             ': {
-                blur: this.onFilterBlur,
-                focus: this.onFilterFocus
+                blur: this.blurFilter,
+                focus: this.focusFilter
             },
 
             // saving edits to filter store + refresh
-            '#report_filters combobox[name=filter_value]': {
-                select: this.onFilterValueSelect
+            '#report_filters combobox[name=value]': {
+                select: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
-                select: this.onFilterOperatorSelect
+                select: this.selectOperator
             },
 
             // saving edits to filter store + refresh
-            'reportfilterbasedatefilter [name=filter_value]': {
-                select: this.onFilterValueSelect
+            'reportfilterbasedatefilter [name=value]': {
+                select: this.selectValueField
             },
 
             // saving edits to date filter store + refresh
-            '#report_filters datefield[name=filter_value]': {
-                blur: this.onFilterValueDateBlur,
-                specialkey: this.onFilterValueDateSpecialKey
+            '#report_filters datefield[name=value]': {
+                render: this.renderDateField
             },
             
             // saving edits to non-date filter store + refresh
-            '#report_filters [name=filter_value]:not(datefield)': {
-                blur: this.onFilterValueInputBlur,
-                specialkey: this.onFilterValueInputSpecialKey
-            },
-            
-            // saving edits to filter store + refresh
-            'reportfilterbaseuseridfilter [name=filter_field_compare]': {
-                blur: this.onFilterFieldCompareInputBlur
+            '#report_filters [name=value]': {
+                blur: this.blurValueField,
+                specialkey: this.submitValueField
             },
             
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
-                change: this.onFilterValueSelect
+                change: this.selectValueField
             },
 
             // remove filter
-            'reportfilteroptions button[action=remove-filter]': {
-                click: this.onFilterRemove
-            },
-
-            // advanced filter
-            'reportfilteroptions button[action=show-advanced-filter]': {
-                click: this.onAdvancedFilterButtonClick
+            'reportfilteroptions button[action=remove-filter]': {   
+                click: this.removeFilter
             }
          });
 
@@ -99490,138 +97120,119 @@ Ext.define('PICS.controller.report.Filter', {
             refreshfilters: this.refreshFilters,
             scope: this
         });
+
+        Ext.EventManager.onWindowResize(this.updateRemoveButtonPositions, this);
     },
 
     /**
      * Filter Options
      */
 
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    // TODO: This should be removed or refactored - pencil advanced filter is a hack
-    onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter_content = filter_panel.down('reportfilterbaseuseridfilter'),
-            filter = filter_panel.record,
-            el = cmp.getEl(),
-            advanced_button = el.down('.icon-pencil'),
-            advanced_on = el.down('.icon-pencil.selected');
-
-        if (advanced_on) {
-            filter.set('fieldCompare', null);
-            
-            filter_content.createNumberfield(filter);
-            
-            advanced_button.removeCls('selected');
-        } else {
-            filter.set('value', null);
-            
-            advanced_button.addCls('selected');
-            
-            filter_content.createFieldSelect(filter);
-        }
-    },
-    
     // customizes the filter options view after it gets placed by the layout manager
-    onFilterOptionsAfterLayout: function (cmp, eOpts) {
+    afterFilterOptionsLayout: function (cmp, eOpts) {
         // TODO: This is a workaround. Two afterlayouts get called. In the first of them, the view has no filters. Why?
-        var filters = this.getFilters();
+        var filters_view = this.getFilters();
 
-        if (!filters) {
+        if (!filters_view) {
             return;
         }
 
         cmp.updateBodyHeight();
         
         cmp.updateFooterPosition();
+
+        // TODO: ???
+        this.updateRemoveButtonPositions();
     },
 
-    // add filters to the filter options panel before its rendered
-    onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        this.application.fireEvent('refreshfilters');
-    },
-    
+    // TODO: figure out if this should be here
+    // TODO: figure out if this should be here
+    // TODO: figure out if this should be here
     // add the filter formula view after the filter options have been generated
-    onFilterOptionsAfterRender: function (cmp, eOpts) {
+    afterFilterOptionsRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_expression = report.get('filter_expression');
-
+        
         if (filter_expression) {
             cmp.showFormula();
         }
     },
-
-    onFilterOptionsCollapse: function (cmp, event, eOpts) {
-        var filter_options = this.getFilterOptions();
-
-        filter_options.collapse();
-    },
-
-    onFilterOptionsExpand: function (cmp, event, eOpts) {
-        var filter_options = this.getFilterOptions();
-
-        filter_options.expand();
+    
+    // add filters to the filter options panel before its rendered
+    beforeFilterOptionsRender: function (cmp, eOpts) {
+        this.application.fireEvent('refreshfilters');
     },
     
-    onFilterRender: function (cmp, eOpts) {
-        // attach tooltip on the name of each filter
-        cmp.createTooltip();
+    collapseFilterOptions: function (cmp, event, eOpts) {
+        var filter_options_view = this.getFilterOptions();
+
+        filter_options_view.collapse();
     },
 
-    /**
-     * Add Filter
-     */
+    expandFilterOptions: function (cmp, event, eOpts) {
+        var filter_options_view = this.getFilterOptions();
 
-    onAddFilter: function (cmp, event, eOpts) {
-        this.application.fireEvent('openfiltermodal');
+        filter_options_view.expand();
     },
-
+    
     /**
      * Filter Formula
      */
 
-    onFilterFormulaShow: function (cmp, event, eOpts) {
+    beforeFilterFormulaRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filters_view = this.getFilters(),
+            filter_expression = report.get('filter_expression');
+
+        if (filter_expression) {
+            filter_formula_textfield.setValue(report.getFilterExpression());
+        }
+
+        filters_view.showFilterNumbers();
+    },
+
+    blurFilterFormula: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_formula_textfield = this.getFilterFormulaTextfield(),
+            filter_expression = filter_formula_textfield.getValue();
+        
+        report.setFilterExpression(filter_expression);
+
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
+    // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
+    // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
+    cancelFilterFormula: function (cmp, event, eOpts) {
+        var filter_options = cmp.up('reportfilteroptions'),
+            filters_view = this.getFilters(),
+            report_store = this.getReportReportsStore(),
+            report = report_store.first();
+
+        // Empty filter expression
+        report.setFilterExpression('');
+
+        // Hide the filter expression field.
+        filter_options.showToolbar();
+        
+        filters_view.hideFilterNumbers();
+
+        // Refresh the report with the expression no longer applied.
+        PICS.data.ServerCommunication.loadData();
+    },
+    
+    showFilterFormula: function (cmp, event, eOpts) {
         var filter_options = cmp.up('reportfilteroptions');
         
         filter_options.showFormula();
     },
 
-    onFilterFormulaCancel: function (cmp, event, eOpts) {
-        var filter_options = cmp.up('reportfilteroptions'),
-            filters = this.getFilters();
-        
-        filter_options.showToolbar();
-        
-        filters.removeCls('x-active');
-    },
-
-    onFilterFormulaBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_formula_textfield = this.getFilterFormulaTextfield(),
-            filters = this.getFilters(),
-            filter_expression = report.get('filter_expression');
-            
-        if (filter_expression) {
-            filter_formula_textfield.setValue(report.getFilterExpression());
-        }
-
-        if (filters) {
-            filters.addCls('x-active');
-        }
-    },
-
-    onFilterFormulaBlur: function (cmp, event, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_formula_textfield = this.getFilterFormulaTextfield(),
-            filter_expression = filter_formula_textfield.getValue();
-        
-        report.setFilterExpression(filter_expression);
-    },
-
-    onFilterFormulaInputSpecialKey: function (cmp, event) {
+    submitFilterFormula: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
@@ -99634,154 +97245,180 @@ Ext.define('PICS.controller.report.Filter', {
         report.setFilterExpression(filter_expression);
 
         PICS.data.ServerCommunication.loadData();
-    },
-
-    /**
-     * Filters
-     */
-
-    refreshFilters: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            filter_store = report.filters(),
-            filter_options_view = this.getFilterOptions();
-
-        // remove all filter items from the filter options view
-        filter_options_view.removeAll();
-
-        // create new list of filters
-        var filters = Ext.create('PICS.view.report.filter.Filters', {
-            store: filter_store
-        });
-
-        // add new filters
-        filter_options_view.add(filters);
     },
 
     /**
      * Filter
      */
-
-    onFilterBlur: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter');
-        
-        filter_panel.removeCls('x-form-focus');
+    
+    addFilter: function (cmp, event, eOpts) {
+        this.application.fireEvent('openfiltermodal');
     },
-
-    onFilterFocus: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter');
-
-        filter_panel.addCls('x-form-focus');
-    },
-
-    onFilterOperatorSelect: function (cmp, records, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            filter_value_textfield = cmp.next('textfield, inputfield, numberfield'),
-            operator_value = cmp.getSubmitValue();
+    
+    beforeFilterRender: function (cmp, eOpts) {
+        var filter_input = cmp.down('reportfilterbasefilter'),
+            filter_input_form = filter_input.getForm(),
+            is_autocomplete = cmp.down('reportfilterbaseautocomplete'),
+            is_multiselect = cmp.down('reportfilterbasemultiselect');
         
-        filter.set('operator', operator_value);
+        // attach filter record to "filter view form"
+        filter_input_form.loadRecord(cmp.filter);
         
-        if (operator_value == 'Empty') {
-            filter_value_textfield.setValue('');
-            filter_value_textfield.disable();
-        } else {
-            filter_value_textfield.enable();
-        }
-
-        if (filter.get('value') != '') {
-            PICS.data.ServerCommunication.loadData();
+        // dynamically load value store for multiselect and autocomplete
+        if (is_autocomplete) {
+            filter_input.updateValueFieldStore(cmp.filter);
+        } else if (is_multiselect) {
+            filter_input.updateValueFieldStore(cmp.filter);
         }
     },
+    
+    blurFilter: function (cmp, event, eOpts) {
+        var filter_view = cmp.up('reportfilter');
+        
+        filter_view.removeCls('x-form-focus');
+    },
 
-    onFilterRemove: function (cmp, event, eOpts) {
+    blurValueField: function (cmp, event, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm();
+    
+        filter_input_form.updateRecord();
+    },
+    
+    focusFilter: function (cmp, event, eOpts) {
+        var filter_view = cmp.up('reportfilter');
+
+        filter_view.addCls('x-form-focus');
+    },
+    
+    refreshFilters: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_store = report.filters(),
-            filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record;
+            filter_options_view = this.getFilterOptions(),
+            filter_formula = this.getFilterFormula();
+
+        // remove all filter items from the filter options view
+        filter_options_view.removeAll();
+
+        // create new list of filters
+        var filters_view = Ext.create('PICS.view.report.filter.Filters', {
+            store: filter_store
+        });
+
+        // add new filters
+        filter_options_view.add(filters_view);
+
+        if (filter_formula) {
+            filters_view.showFilterNumbers();
+        }
+
+        // TODO: ???
+        this.updateRemoveButtonPositions();
+    },
+    
+    removeFilter: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            filter_store = report.filters(),
+            filter_view = cmp.up('reportfilter'),
+            filter = filter_view.filter,
+            filter_value = filter.get('value');
 
         filter_store.remove(filter);
 
         this.application.fireEvent('refreshfilters');
 
-        if (filter.get('value') != '') {
+        if (filter_value != '') {
             PICS.data.ServerCommunication.loadData();
         }
     },
 
-    onFilterValueDateBlur: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getValue(),
-            // TODO: weird may need some unified date format
-            date = Ext.Date.format(value, 'Y-m-d') || value;
-        
-        filter.set('value', date);
+    renderDateField: function (cmp, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm(),
+            filter = filter_input_form.getRecord(),
+            filter_value = filter.get('value');
+
+        // by-pass setValue validation by modifying dom directly
+        cmp.el.down('input[name="value"]').dom.value = filter_value;
     },
 
-    onFilterValueDateSpecialKey: function (cmp, event) {
+    renderFilter: function (cmp, eOpts) {
+        // attach tooltip on the name of each filter
+        cmp.createTooltip();
+    },
+    
+    selectOperator: function (cmp, records, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm(),
+            filter = filter_input_form.getRecord(),
+            filter_value = filter.get('value');
+            
+        // hide value field depending on operator selected
+        if (typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
+            filter_input_view.updateValueFieldFromOperatorValue();
+        }
+        
+        // update filter record
+        filter_input_form.updateRecord();
+        
+        // refresh report if filter value present
+        if (filter_value != '' && filter_value != null) {
+            PICS.data.ServerCommunication.loadData();
+        }
+    },
+    
+    selectValueField: function (cmp, records, eOpts) {
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm();
+    
+        filter_input_form.updateRecord();
+
+        PICS.data.ServerCommunication.loadData();
+    },
+
+    submitValueField: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
         
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            // TODO: weird may need some unified date format
-            date = Ext.Date.format(value, 'Y-m-d') || value;
-        
-        filter.set('value', date);
+        var filter_input_view = cmp.up('reportfilterbasefilter'),
+            filter_input_form = filter_input_view.getForm();
+    
+        filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();
     },
-    
-    onFilterValueInputBlur: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getSubmitValue();
-        
-        filter.set('value', value);
-    },
 
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    // TODO: TOTALLY WRONG THERE IS NO SUCH THING AS FIELDCOMPARE
-    onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getSubmitValue();
-        
-        filter.set('fieldCompare', value);
-    },
-    
-    onFilterValueInputSpecialKey: function (cmp, event) {
-        if (event.getKey() != event.ENTER) {
-            return false;
+    // TODO: check requirements, but is here to fix view for filters that vertically go past browser height
+    updateRemoveButtonPositions: function () {
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
+
+        if (remove_filter_elements.length) {
+            var filter_options = this.getFilterOptions(),
+                scrollbar_width = Ext.getScrollbarSize().width,
+                scrollbar_left = filter_options.width - scrollbar_width,
+                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
+                button_left = parseInt(remove_filter_elements[0].style.left),
+                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
+
+            if (scrollbar_visible && button_obscured) {
+                button_left = button_left - scrollbar_width;
+                for (var i = 0; i < remove_filter_elements.length; i++) {
+                    remove_filter_elements[i].style.left = button_left + 'px';
+                }
+            }
         }
-        
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getSubmitValue();
-        
-        filter.set('value', value);
-
-        PICS.data.ServerCommunication.loadData();
-    },
-
-    onFilterValueSelect: function (cmp, records, eOpts) {
-        var filter_panel = cmp.up('reportfilter'),
-            filter = filter_panel.record,
-            value = cmp.getSubmitValue();
-        
-        filter.set('value', value);
-
-        PICS.data.ServerCommunication.loadData();
     }
 });
 Ext.define('PICS.controller.report.Header', {
     extend: 'Ext.app.Controller',
 
     refs: [{
+        ref: 'alertMessage',
+        selector: 'reportalertmessage'
+    }, {
         ref: 'pageHeader',
         selector: 'reportpageheader'
     }],
@@ -99808,6 +97445,11 @@ Ext.define('PICS.controller.report.Header', {
                 click: this.openSettingsModal
             }
         });
+        
+        this.application.on({
+            openalertmessage: this.openAlertMessage,
+            scope: this
+        });
 
         this.application.on({
             updatepageheader: this.updatePageHeader,
@@ -99818,6 +97460,23 @@ Ext.define('PICS.controller.report.Header', {
     beforeHeaderRender: function (cmp, eOpts) {
         this.application.fireEvent('updatepageheader');
     },
+    
+    openAlertMessage: function (options) {
+        var alert_message_view = this.getAlertMessage(),
+            title = options.title,
+            html = options.html;
+        
+        if (alert_message_view) {
+            alert_message_view.destroy();
+        }
+        
+        var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+            html: html,
+            title: title
+        });
+        
+        alert_message.show();
+    },
 
     openSettingsModal: function (cmp, e, eOpts) {
         this.application.fireEvent('opensettingsmodal', 'edit');
@@ -99826,10 +97485,18 @@ Ext.define('PICS.controller.report.Header', {
     saveReport: function (cmp, e, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            is_editable = report.get('is_editable');
+            is_editable = report.get('is_editable'),
+            that = this;
 
         if (is_editable) {
-            this.application.fireEvent('savereport');
+            PICS.data.ServerCommunication.saveReport({
+                success_callback: function () {
+                    that.application.fireEvent('openalertmessage', {
+                        title: 'Report Saved',
+                        html: 'to My Reports in Manage Reports.'
+                    });
+                }
+            });
         } else {
             this.application.fireEvent('opensettingsmodal', 'copy');
         }
@@ -99838,208 +97505,9 @@ Ext.define('PICS.controller.report.Header', {
     updatePageHeader: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            page_header = this.getPageHeader();
+            page_header_view = this.getPageHeader();
         
-        page_header.update(report);
-    }
-});
-/**
- * Report Controller
- *
- * Controls report refresh
- */
-Ext.define('PICS.controller.report.Report', {
-    extend: 'Ext.app.Controller',
-    
-    refs: [{
-        ref: 'reportAlertMessage',
-        selector: 'reportalertmessage'
-    }, {
-        ref: 'dataTable',
-        selector: 'reportdatatable'
-    }, {
-        ref: 'reportSettingsModal',
-        selector: 'reportsettingsmodal'
-    }],
-
-    // TODO: Try to move these to app.js.
-    stores: [
-        'report.DataTables',
-        'report.Reports',
-        'report.Columns',
-        'report.Filters'
-    ],
-
-    init: function () {
-        this.application.on({
-            createreport: this.createReport,
-            scope: this
-        });
-        
-        this.application.on({
-            downloadreport: this.downloadReport,
-            scope: this
-        });
-        
-        this.application.on({
-            favoritereport: this.favoriteReport,
-            scope: this
-        });
-        
-        this.application.on({
-            printreport: this.printReport,
-            scope: this
-        });
-
-        this.application.on({
-            savereport: this.saveReport,
-            scope: this
-        });
-        
-        this.application.on({
-            sharereport: this.shareReport,
-            scope: this
-        });
-        
-        this.application.on({
-            unfavoritereport: this.unfavoriteReport,
-            scope: this
-        });
-    },
-
-    createReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            params = report.toRequestParams();
-        
-        Ext.Ajax.request({
-            url: 'ReportApi!copy.action',
-            params: params,
-            success: function (result) {
-                var result = Ext.decode(result.responseText);
-
-                if (result.error) {
-                    Ext.Msg.alert('Status', result.error);
-                } else {
-                    document.location = 'Report.action?report=' + result.reportID;
-                }
-            }
-        });
-    },
-    
-    downloadReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id');
-    
-        //TODO: Change this to a post and include parameters.
-        window.open('ReportData!download.action?report=' + report_id);
-    },
-    
-    favoriteReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id');
-        
-        Ext.Ajax.request({
-            url: 'ManageReports!favorite.action?reportId=' + report_id
-        });
-    },
-    
-    printReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id');
-    
-        //TODO: Change this to a post and include parameters.
-        window.open('ReportData!print.action?report=' + report_id);
-    },
-    
-    saveReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            params = report.toRequestParams(),
-            that = this;
-        
-        Ext.Ajax.request({
-            url: 'ReportApi!save.action',
-            params: params,
-            success: function (result) {
-                var result = Ext.decode(result.responseText);
-
-                if (result.error) {
-                    Ext.Msg.alert('Status', result.error);
-                } else {
-                    var alert_message = that.getReportAlertMessage();
-                    
-                    if (alert_message) {
-                        alert_message.destroy();
-                    }
-                    
-                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
-                        cls: 'alert alert-success',
-                        html: 'to My Reports in Manage Reports.',
-                        title: 'Report Saved'
-                    });
-
-                    alert_message.show();
-                }
-            }
-        });
-    },
-    
-    shareReport: function (options) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_settings_modal = this.getReportSettingsModal(),
-            that = this;
-        
-        Ext.Ajax.request({
-            url: 'ReportSharing!share.action',
-            params: {
-                report: options.report_id,
-                id: options.account_id,
-                type: options.account_type,
-                editable: options.is_editable
-            },
-            success: function (result) {
-                var result = Ext.decode(result.responseText);
-        
-                if (result.error) {
-                    Ext.Msg.alert('Status', result.error);
-                } else {
-                    var alert_message = that.getReportAlertMessage();
-                    
-                    if (alert_message) {
-                        alert_message.destroy();
-                    }
-        
-                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
-                        cls: 'alert alert-success',
-                        title: result.title,
-                        html: result.html
-                    });
-        
-                    alert_message.show();
-                    
-                    report_settings_modal.close();
-                }
-            }
-        });
-    },
-    
-    unfavoriteReport: function () {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id');
-        
-        Ext.Ajax.request({
-            url: 'ManageReports!unfavorite.action?reportId=' + report_id
-        });
-    },
-
-    updatePageTitle: function(title) {
-        document.title = 'PICS - ' + title;
+        page_header_view.update(report);
     }
 });
 Ext.define('PICS.controller.report.SettingsModal', {
@@ -100065,7 +97533,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     stores: [
         'report.Reports'
     ],
-    
+
     views: [
         'PICS.view.report.settings.SettingsModal'
     ],
@@ -100073,26 +97541,26 @@ Ext.define('PICS.controller.report.SettingsModal', {
     init: function () {
         this.control({
             'reportsettingsmodal': {
-                close: this.settingsModalClose
+                close: this.closeSettingsModal
             },
-            
+
             'reportsettingsmodal button[action=cancel]':  {
                 click: this.cancelSettingsModal
             },
-            
+
             'reportsettingsmodaltabs': {
                 tabchange: this.changeSettingsModalTab
             },
-            
+
             'reportsettingsmodal reporteditsetting': {
                 afterrender: this.afterEditSettingRender,
                 beforerender: this.beforeEditSettingRender
             },
-            
+
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
                 click: this.editReport
             },
-            
+
             'reportsettingsmodal reportcopysetting button[action=copy]':  {
                 click: this.copyReport
             },
@@ -100126,7 +97594,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             scope: this
         });
     },
-    
+
     afterEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -100137,7 +97605,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_favorite_toggle.toggleFavorite();
         }
     },
-    
+
     beforeEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -100148,164 +97616,180 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_setting_form.loadRecord(report);
         }
     },
-    
-    settingsModalClose: function (cmp, eOpts) {
+
+    closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm(),
             copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
             copy_setting_form = copy_setting_view.getForm(),
             copy_favorite = copy_setting_view.down('reportfavoritetoggle');
+
+        // reset the edit form
+        edit_setting_form.loadRecord(edit_setting_form.getRecord());
         
-        copy_favorite.toggleUnfavorite();
-        
+        // reset the copy form
         copy_setting_form.reset();
+        
+        // reset the copy favorite regardless
+        copy_favorite.toggleUnfavorite();
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal();
-    
+
         settings_modal_view.close();
     },
-    
+
     changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             title = nextCard.modal_title;
-        
+
         settings_modal_view.setTitle(title);
     },
-    
+
     copyReport: function (cmp, e, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             copy_setting_view = this.getCopySetting(),
             copy_setting_form = copy_setting_view.getForm();
-        
+
         if (copy_setting_form.isValid()) {
             copy_setting_form.updateRecord(report);
         }
-        
-        this.application.fireEvent('createreport');
+
+        PICS.data.ServerCommunication.copyReport();
     },
-    
+
     editReport: function (cmp, e, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
-            
+            edit_setting_form = edit_setting_view.getForm(),
+            that = this;
+
         if (edit_setting_form.isValid()) {
             edit_setting_form.updateRecord();
         }
 
         settings_modal_view.close();
-    
+
         this.application.fireEvent('updatepageheader');
-        
-        this.application.fireEvent('savereport');
+
+        PICS.data.ServerCommunication.saveReport({
+            success_callback: function () {
+                that.application.fireEvent('openalertmessage', {
+                    title: 'Report Saved',
+                    html: 'to My Reports in Manage Reports.'
+                });
+            }
+        });
     },
-    
+
     exportReport: function (cmp, e, eOpts) {
-        this.application.fireEvent('downloadreport');
+        PICS.data.ServerCommunication.exportReport();
     },
 
     favoriteReport: function (cmp, eOpts) {
         var edit_setting_view = this.getEditSetting();
-        
+
         if (edit_setting_view.isVisible()) {
-            this.application.fireEvent('favoritereport');
+            PICS.data.ServerCommunication.favoriteReport();
         }
     },
 
     openSettingsModal: function (action) {
         var settings_modal_view = this.getSettingsModal();
-        
+
         if (!settings_modal_view) {
             settings_modal_view = Ext.create('PICS.view.report.settings.SettingsModal');
         }
-        
+
         settings_modal_view.updateActiveTabFromAction(action);
-    
+
         settings_modal_view.show();
     },
-    
+
     printReport: function (cmp, e, eOpts) {
-        this.application.fireEvent('printreport');
+        PICS.data.ServerCommunication.printReport();
     },
 
     unfavoriteReport: function (cmp, eOpts) {
         var edit_setting_view = this.getEditSetting();
-        
+
         if (edit_setting_view.isVisible()) {
-            this.application.fireEvent('unfavoritereport');
+            PICS.data.ServerCommunication.unfavoriteReport();
         }
     },
-    
+
     /**
      * Share
      */
-    
+
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_id = report.get('id');
-        
+
         cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + report_id;
         cmp.store.load();
     },
-    
+
     onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
-    
+
         if (record) {
             var report_settings_share = this.getShareSetting();
-            
+
             var account = {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
-    
+
             // Save the record data needed for sharing.
             report_settings_share.request_data = {
                 account_id: record.get('result_id'),
                 account_type: record.get('search_type')
             };
-        
+
             // Show the selection.
             report_settings_share.update(account);
         }
     },
-    
+
     onReportModalShareSearchboxSpecialKey: function (cmp, e, eOpts) {
         if (e.getKey() === e.ENTER) {
             var term = cmp.getValue();
-            
+
             this.search(term);
         } else if (e.getKey() === e.BACKSPACE && cmp.getRawValue().length <= 1) {
             cmp.collapse();
         }
     },
-    
+
     onReportModalShareClick: function (cmp, e, eOpts) {
         var report_settings_share = this.getShareSetting(),
             data = report_settings_share.request_data;
-        
+
         // Abort if no account has been selected.
         if (typeof data == 'undefined') {
             return;
         }
-        
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id'),
-            report_settings_share_element = report_settings_share.getEl(),
-            account_id = data.account_id,
-            account_type = data.account_type,
+
+        var report_settings_share_element = report_settings_share.getEl(),
             is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
-    
-        this.application.fireEvent('sharereport', {
-            report_id: report_id,
+            account_id = data.account_id,
+            account_type = data.account_type;
+
+        var options = {
             account_id: account_id,
             account_type: account_type,
-            is_editable: is_editable
-        });
+            is_editable: is_editable,
+            success_callback: function (response) {
+                report_settings_modal.close();
+            }
+        };
+        
+        PICS.data.ServerCommunication.shareReport(options);
     }
 });
 /**
