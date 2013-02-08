@@ -24,7 +24,6 @@ Ext.application({
         'report.DataTable',
         'report.Filter',
         'report.Header',
-        'report.Report',
         'report.SettingsModal'
     ],
 
