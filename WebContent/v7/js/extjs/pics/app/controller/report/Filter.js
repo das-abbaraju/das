@@ -228,8 +228,8 @@ Ext.define('PICS.controller.report.Filter', {
             report_store = this.getReportReportsStore(),
             report = report_store.first();
 
-        // Reset the filter expression to null.
-        report.setFilterExpression(null);
+        // Empty filter expression
+        report.setFilterExpression('');
 
         // Hide the filter expression field.
         filter_options.showToolbar();

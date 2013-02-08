@@ -48,17 +48,9 @@ Ext.define('PICS.model.report.Report', {
     
     // TODO: probably fix this because nichols wrote it
     setFilterExpression: function (filter_expression) {
-        var sanitized_expression = '';
+        var sanitized_expression = this.sanitizeFilterExpression(filter_expression);
 
-        if (filter_expression == '' || filter_expression == null) {
-            this.set('filter_expression', null);
-
-            return false;
-        } else {
-            sanitized_expression = this.sanitizeFilterExpression(filter_expression);
-            
-            this.set('filter_expression', sanitized_expression);
-        }
+        this.set('filter_expression', sanitized_expression);
     },
 
     // TODO write a real grammar and parser for our filter formula DSL
@@ -70,6 +62,10 @@ Ext.define('PICS.model.report.Report', {
             token_count = 0,
             index_num = 0,
             sanitized_expression = '';
+        
+        if (typeof filter_expression != 'string') {
+            return '';
+        }
 
         // Split into tokens
         filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
@@ -80,7 +76,7 @@ Ext.define('PICS.model.report.Report', {
             token = tokens[token_count];
 
             if (token.search(validTokenRegex) === -1) {
-                return false;
+                return '';
             }
 
             if (token === '(') {
@@ -95,91 +91,28 @@ Ext.define('PICS.model.report.Report', {
                 sanitized_expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
                 if (token === '0') {
-                    return false;
+                    return '';
                 }
 
                 // Convert from counting number to index
                 index_num = new Number(token);
                 sanitized_expression += '{' + index_num + '}';
             } else {
-                return false;
+                return '';
             }
 
             if (paren_count < 0) {
-                return false;
+                return '';
             }
         }
 
         if (paren_count !== 0) {
-            return false;
+            return '';
         }
 
         return sanitized_expression;
     },
 
-    /**
-     * Get Report JSON
-     *
-     * Builds a jsonified version of the report to be sent to the server
-     */
-    toJson: function () {
-        var report = {};
-
-        function getStoreType(store) {
-            var className = store.getName(), // store.self.getName()
-                nameSpaces = className.split("."),
-                storeType = nameSpaces[nameSpaces.length-1];
-
-            return storeType;
-        }
-
-        function convertStoreToDataObject(store) {
-            var data = [],
-                mutableFields = store.mutableFields;
-
-            store.each(function (record) {
-                var item = {};
-                
-                record.fields.each(function (field) {
-
-                    var fieldName = record.get(field.name),
-                        storeType = getStoreType(store);
-                    
-                    //if (fieldname && this.mutableFields[store].indexOf(fieldName) != 1) {
-                    if (fieldName && store.mutableFields.indexOf(fieldName) != -1) {
-                        item[fieldName] = fieldName;
-                    }
-                });
-                
-                data.push(item);
-            });
-
-            return data;
-        }
-
-        report = this.data;
-        report.columns = convertStoreToDataObject(this.columns());
-        report.filters = convertStoreToDataObject(this.filters());
-        report.sorts = convertStoreToDataObject(this.sorts());
-
-        return Ext.encode(report);
-    },
-
-    toRequestParams: function () {
-        var report = {};
-
-        report.report = this.get('id');
-        report['report.description'] = this.get('description');
-        report['report.name'] = this.get('name');
-        report['report.parameters'] = this.toJson();
-        report['report.rowsPerPage'] = this.get('rowsPerPage');
-
-        return report;
-    },
-    
-    
-    
-    
     addColumn: function (column) {
         if (Ext.getClassName(column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column');
