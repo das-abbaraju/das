@@ -375,64 +375,62 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			FlagCriteriaOperator fco, OperatorAccount op, Permissions permissions, Database db) throws Exception {
 		Map<Integer, List<ContractorAudit>> auditMap = new HashMap<Integer, List<ContractorAudit>>();
 		if (results.size() > 0) {
-			if (fco.getCriteria().getAuditType() != null) {
-				// Use the operator we're viewing for pulling up
-				// audits/calculating affected contractors -- does it matter who
-				// the flag criteria belongs to?
-				Set<String> conIDs = new HashSet<String>();
-				for (BasicDynaBean row : results) {
-					conIDs.add(row.get("conID").toString());
+			// Use the operator we're viewing for pulling up
+			// audits/calculating affected contractors -- does it matter who
+			// the flag criteria belongs to?
+			Set<String> conIDs = new HashSet<String>();
+			for (BasicDynaBean row : results) {
+				conIDs.add(row.get("conID").toString());
+			}
+			SelectSQL sql2 = new SelectSQL("contractor_audit_operator cao");
+			sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID AND ca.conID IN (" + Strings.implode(conIDs)
+					+ ")");
+			if (op.isOperator())
+				sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
+						+ op.getId());
+
+			sql2.addWhere("cao.visible = 1");
+
+			sql2.addField("ca.auditTypeID");
+			sql2.addField("ca.conID");
+			sql2.addField("cao.status");
+			// Always add the PICS corporate umbrella
+			Set<Integer> viewableOps = new HashSet<Integer>(Account.PICS_CORPORATE);
+			if (op.isOperator()) {
+				// If I'm an operator, show audits created for myself, my
+				// corporate
+				viewableOps.addAll(op.getOperatorHeirarchy());
+			} else {
+				// If I'm corporate, show audits created for myself, my
+				// facilities
+				for (Facility f : op.getOperatorFacilities())
+					viewableOps.add(f.getOperator().getId());
+			}
+
+			sql2.addWhere("cao.opID IN (" + Strings.implode(viewableOps) + ")");
+
+			List<BasicDynaBean> auditResults = db.select(sql2.toString(), false);
+			for (BasicDynaBean row : auditResults) {
+				int conID = Database.toInt(row, "conID");
+				ContractorAudit ca = new ContractorAudit();
+				ca.setAuditType(new AuditType(Database.toInt(row, "auditTypeID")));
+				{
+					ContractorAuditOperator cao = new ContractorAuditOperator();
+					cao.setAudit(ca);
+					cao.setOperator(op);
+					cao.changeStatus(AuditStatus.valueOf(row.get("status").toString()), permissions);
+					ca.setOperators(new ArrayList<ContractorAuditOperator>());
+					ca.getOperators().add(cao);
+
+					ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+					caop.setCao(cao);
+					caop.setOperator(op);
+					cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());
+					cao.getCaoPermissions().add(caop);
 				}
-				SelectSQL sql2 = new SelectSQL("contractor_audit_operator cao");
-				sql2.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID AND ca.conID IN ("
-						+ Strings.implode(conIDs) + ")");
-				if (op.isOperator())
-					sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
-							+ op.getId());
-
-				sql2.addWhere("cao.visible = 1");
-
-				sql2.addField("ca.auditTypeID");
-				sql2.addField("ca.conID");
-				sql2.addField("cao.status");
-				// Always add the PICS corporate umbrella
-				Set<Integer> viewableOps = new HashSet<Integer>(Account.PICS_CORPORATE);
-				if (op.isOperator()) {
-					// If I'm an operator, show audits created for myself, my
-					// corporate
-					viewableOps.addAll(op.getOperatorHeirarchy());
-				} else {
-					// If I'm corporate, show audits created for myself, my
-					// facilities
-					for (Facility f : op.getOperatorFacilities())
-						viewableOps.add(f.getOperator().getId());
-				}
-
-				sql2.addWhere("cao.opID IN (" + Strings.implode(viewableOps) + ")");
-
-				List<BasicDynaBean> auditResults = db.select(sql2.toString(), false);
-				for (BasicDynaBean row : auditResults) {
-					int conID = Database.toInt(row, "conID");
-					ContractorAudit ca = new ContractorAudit();
-					ca.setAuditType(new AuditType(Database.toInt(row, "auditTypeID")));
-					{
-						ContractorAuditOperator cao = new ContractorAuditOperator();
-						cao.setAudit(ca);
-						cao.setOperator(op);
-						cao.changeStatus(AuditStatus.valueOf(row.get("status").toString()), permissions);
-						ca.setOperators(new ArrayList<ContractorAuditOperator>());
-						ca.getOperators().add(cao);
-
-						ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-						caop.setCao(cao);
-						caop.setOperator(op);
-						cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());
-						cao.getCaoPermissions().add(caop);
-					}
-					if (auditMap.get(conID) == null)
-						auditMap.put(conID, new ArrayList<ContractorAudit>());
-					auditMap.get(conID).add(ca);
-				}
+				if (auditMap.get(conID) == null)
+					auditMap.put(conID, new ArrayList<ContractorAudit>());
+				auditMap.get(conID).add(ca);
 			}
 		}
 
