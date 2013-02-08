@@ -4,6 +4,10 @@ Ext.define('PICS.Overrides', {
         'Ext.menu.Menu'
     ]
 }, function () {
+    Ext.log = function (message) {
+        console.log(message);
+    };
+    
     /*
      * This function overrides the default implementation of
      * json writer. Any hasMany relationships will be submitted
