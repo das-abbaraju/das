@@ -8,7 +8,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionList', {
     columns: [{
         xtype: 'templatecolumn',
         dataIndex: 'name',
-        tpl: '<span class="column-function">{key}</span>',
+        tpl: '<span class="column-function">{value}</span>',
         flex: 1
     }],
     enableColumnHide: false,    

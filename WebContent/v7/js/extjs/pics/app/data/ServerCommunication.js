@@ -6,6 +6,8 @@ Ext.define('PICS.data.ServerCommunication', {
             report_store.setProxyForRead();
 
             report_store.loadRawData(json);
+            
+            return report_store;
         }
 
         function loadColumnStore(json) {
@@ -118,7 +120,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl();
+                    url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl();
 
                 // add data table loading mask
                 startDataTableLoading();
@@ -137,7 +139,10 @@ Ext.define('PICS.data.ServerCommunication', {
                             data = response.responseText,
                             json = Ext.JSON.decode(data);
 
-                        loadReportStore(json);
+                        // load the report store
+                        var report_store = loadReportStore(json),
+                            report = report_store.first();
+                        
 
                         // load new results
                         loadDataTableStore(json);
