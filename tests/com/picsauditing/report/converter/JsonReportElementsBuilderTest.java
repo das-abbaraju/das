@@ -153,7 +153,7 @@ public class JsonReportElementsBuilderTest {
 		assertJson(REPORT_ELEMENT_DESCRIPTION, TRANSLATION_PREFIX + description, jsonString);
 
 		assertJson(FILTER_TYPE, fieldType.getFilterType(), jsonString);
-		assertJsonNoQuotes(FILTER_OPERATOR, fieldType.getFilterType().defaultOperator, jsonString);
+		assertJson(FILTER_OPERATOR, fieldType.getFilterType().defaultOperator, jsonString);
 		assertJsonNoQuotes(FILTER_VALUE, "", jsonString);
 		assertJsonNoQuotes(FILTER_COLUMN_COMPARE, null, jsonString);
 	}
