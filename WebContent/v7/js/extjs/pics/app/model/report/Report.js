@@ -46,6 +46,17 @@ Ext.define('PICS.model.report.Report', {
         });
     },
     
+    isNewFilterExpression: function (filter_expression) {
+        var current_expression = this.get('filter_expression'),
+            sanitized_expression = this.sanitizeFilterExpression(filter_expression);
+
+        if (sanitized_expression == current_expression) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     // TODO: probably fix this because nichols wrote it
     setFilterExpression: function (filter_expression) {
         var sanitized_expression = this.sanitizeFilterExpression(filter_expression);
@@ -61,7 +72,9 @@ Ext.define('PICS.model.report.Report', {
             paren_count = 0,
             token_count = 0,
             index_num = 0,
-            sanitized_expression = '';
+            sanitized_expression = '',
+            max_token_value = this.filters().count(),
+            token_value;
         
         if (typeof filter_expression != 'string') {
             return '';
@@ -90,13 +103,13 @@ Ext.define('PICS.model.report.Report', {
             } else if (token.toUpperCase() === 'OR') {
                 sanitized_expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
+                token_value = parseInt(token);
+
+                if (token_value == 0 || token_value > max_token_value) {
                     return '';
                 }
 
-                // Convert from counting number to index
-                index_num = new Number(token);
-                sanitized_expression += '{' + index_num + '}';
+                sanitized_expression += '{' + token_value + '}';
             } else {
                 return '';
             }
