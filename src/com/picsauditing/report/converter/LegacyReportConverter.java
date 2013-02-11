@@ -248,7 +248,6 @@ public class LegacyReportConverter {
 	public Column toColumn(JSONObject json) {
 		Column column = new Column();
 		toElementFromJSON(json, column);
-		column.setSortIndex(Column.DEFAULT_SORT_INDEX);
 		return column;
 	}
 

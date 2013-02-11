@@ -12,7 +12,7 @@ import com.picsauditing.report.fields.PivotDimension;
 public class Column extends ReportElement {
 
 	private int width = DEFAULT_WIDTH;
-	private int sortIndex;
+	private int sortIndex = DEFAULT_SORT_INDEX;
 
 	public static final int MIN_WIDTH = 35;
 	public static final int DEFAULT_WIDTH = 100;
