@@ -26,11 +26,15 @@ public class Column extends ReportElement {
 	}
 
 	public int getWidth() {
-		if (width < 1 && field != null) {
-			return field.getWidth();
+		if (shouldOverrideDefaultWidthWithFieldAnnotation()) {
+			width = field.getWidth();
 		}
 
 		return width;
+	}
+
+	private boolean shouldOverrideDefaultWidthWithFieldAnnotation() {
+		return (width == DEFAULT_WIDTH) && (field != null) && (field.getWidth() > 0);
 	}
 
 	public void setWidth(int width) {

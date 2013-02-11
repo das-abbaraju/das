@@ -132,11 +132,12 @@ public abstract class ReportElement {
 		// FIXME
 		// 1. Why are we clobbering the existing field name?
 		// 2. Why are we tightly coupling our name to the field's name?
-		this.field.setName(name);
+		if (field != null) {
+			this.field.setName(name);
+		}
 	}
 
-	@Transient
-	public boolean isHasAggregateMethod() {
+	public boolean hasAggregateMethod() {
 		if (sqlFunction == null) {
 			return false;
 		}

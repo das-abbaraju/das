@@ -87,14 +87,14 @@ public class SqlBuilder {
 				continue;
 			}
 
-			if (!column.isHasAggregateMethod()) {
+			if (!column.hasAggregateMethod()) {
 				// For example: Don't add in accountID automatically if
 				// contractorName uses an aggregation like COUNT
 				dependentFields.addAll(column.getField().getDependentFields());
 			}
 
 			String columnSql = column.getSql();
-			if (usesGroupBy() && !column.isHasAggregateMethod()) {
+			if (usesGroupBy() && !column.hasAggregateMethod()) {
 				sql.addGroupBy(columnSql);
 			}
 
@@ -135,7 +135,7 @@ public class SqlBuilder {
 
 			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
 			if (field != null) {
-				if (column.isHasAggregateMethod()) {
+				if (column.hasAggregateMethod()) {
 					return true;
 				}
 			}
@@ -157,7 +157,7 @@ public class SqlBuilder {
 			// TODO See if this can be safely added to filter.isValid()
 			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
 				filter.updateCurrentUser(permissions);
-				if (filter.isHasAggregateMethod()) {
+				if (filter.hasAggregateMethod()) {
 					havingFilters.add(filter);
 				} else {
 					whereFilters.add(filter);

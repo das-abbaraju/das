@@ -15,8 +15,8 @@ import com.picsauditing.report.tables.FieldImportance;
 public @interface ReportField {
 
 	FieldType type() default FieldType.String;
-	
-	int width() default 100;
+
+	int width() default 0;
 
 	boolean visible() default true;
 

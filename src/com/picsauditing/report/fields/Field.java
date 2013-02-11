@@ -24,7 +24,7 @@ public class Field {
 	private String text;
 	private String suffix;
 	private String url;
-	private int width = 200;
+	private int width;
 	private String help;
 
 	private Class<?> fieldClass;
