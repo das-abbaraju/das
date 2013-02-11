@@ -96369,6 +96369,17 @@ Ext.define('PICS.model.report.Report', {
         });
     },
     
+    isNewFilterExpression: function (filter_expression) {
+        var current_expression = this.get('filter_expression'),
+            sanitized_expression = this.sanitizeFilterExpression(filter_expression);
+
+        if (sanitized_expression == current_expression) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     // TODO: probably fix this because nichols wrote it
     setFilterExpression: function (filter_expression) {
         var sanitized_expression = this.sanitizeFilterExpression(filter_expression);
@@ -96384,7 +96395,9 @@ Ext.define('PICS.model.report.Report', {
             paren_count = 0,
             token_count = 0,
             index_num = 0,
-            sanitized_expression = '';
+            sanitized_expression = '',
+            max_token_value = this.filters().count(),
+            token_value;
         
         if (typeof filter_expression != 'string') {
             return '';
@@ -96413,13 +96426,13 @@ Ext.define('PICS.model.report.Report', {
             } else if (token.toUpperCase() === 'OR') {
                 sanitized_expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
+                token_value = parseInt(token);
+
+                if (token_value == 0 || token_value > max_token_value) {
                     return '';
                 }
 
-                // Convert from counting number to index
-                index_num = new Number(token);
-                sanitized_expression += '{' + index_num + '}';
+                sanitized_expression += '{' + token_value + '}';
             } else {
                 return '';
             }
@@ -97220,11 +97233,14 @@ Ext.define('PICS.controller.report.Filter', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
-            filter_expression = filter_formula_textfield.getValue();
+            filter_expression = filter_formula_textfield.getValue(),
+            is_new_filter_expression = report.isNewFilterExpression(filter_expression);
         
-        report.setFilterExpression(filter_expression);
+        if (is_new_filter_expression) {
+            report.setFilterExpression(filter_expression);
 
-        PICS.data.ServerCommunication.loadData();
+            PICS.data.ServerCommunication.loadData();
+        }
     },
     
     // TODO: can optimize this by not refreshing the filter if the filter hasn't changed (report dirty flag)
@@ -97234,18 +97250,20 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_options = cmp.up('reportfilteroptions'),
             filters_view = this.getFilters(),
             report_store = this.getReportReportsStore(),
-            report = report_store.first();
-
-        // Empty filter expression
-        report.setFilterExpression('');
+            report = report_store.first(),
+            current_expression = report.get('filter_expression');
 
         // Hide the filter expression field.
         filter_options.showToolbar();
         
         filters_view.hideFilterNumbers();
 
-        // Refresh the report with the expression no longer applied.
-        PICS.data.ServerCommunication.loadData();
+        // Clear the filter expression and reload the report if it isn't already cleared.
+        if (current_expression != '') {
+            report.setFilterExpression('');
+
+            PICS.data.ServerCommunication.loadData();
+        }
     },
     
     showFilterFormula: function (cmp, event, eOpts) {
@@ -97262,11 +97280,13 @@ Ext.define('PICS.controller.report.Filter', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             filter_formula_textfield = this.getFilterFormulaTextfield(),
-            filter_expression = filter_formula_textfield.getValue();
+            filter_expression = filter_formula_textfield.getValue(),
+            is_new_filter_expression = report.isNewFilterExpression(filter_expression);
         
-        report.setFilterExpression(filter_expression);
-
-        PICS.data.ServerCommunication.loadData();
+        if (is_new_filter_expression) {
+            report.setFilterExpression(filter_expression);
+            PICS.data.ServerCommunication.loadData();
+        }
     },
 
     /**
