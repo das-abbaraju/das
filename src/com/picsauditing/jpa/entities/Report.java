@@ -36,7 +36,7 @@ public class Report extends BaseTable {
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
 
-	private List<ReportPermissionUser> reportPermissionUsers;
+	private List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
 	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 	@Deprecated
