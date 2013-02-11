@@ -29,6 +29,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     init: function () {
         this.control({
             'reportsettingsmodal': {
+                beforerender: this.beforeSettingsModalRender,
                 close: this.closeSettingsModal
             },
 
@@ -41,8 +42,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reporteditsetting': {
-                afterrender: this.afterEditSettingRender,
-                beforerender: this.beforeEditSettingRender
+                afterrender: this.afterEditSettingRender
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
@@ -94,17 +94,17 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    beforeEditSettingRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
+    beforeSettingsModalRender: function (cmp, eOpts) {
+            var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             edit_setting_view = this.getEditSetting(),
             edit_setting_form = edit_setting_view.getForm();
-
-        if (edit_setting_view) {
+    
+        if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
         }
     },
-
+    
     closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
             edit_setting_view = this.getEditSetting(),
