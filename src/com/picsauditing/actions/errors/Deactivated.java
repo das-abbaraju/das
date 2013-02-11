@@ -8,6 +8,7 @@ public class Deactivated extends PicsActionSupport {
 
 	@Anonymous
 	public String execute() throws Exception {
+        clearPermissionsSessionAndCookie();
 		return SUCCESS;
 	}
 
