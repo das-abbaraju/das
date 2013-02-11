@@ -69,9 +69,10 @@ public class ReportJson {
 	}
 
 	public static void writeJsonException(JSONObject json, Exception e) {
-		String message = e.getMessage();
-		if (message == null) {
-			message = e.toString();
+		String message = e.toString() + " caused by: ";
+		for (StackTraceElement lineWhereExceptionWasThrown : e.getStackTrace()) {
+			message += lineWhereExceptionWasThrown;
+			break;
 		}
 
 		writeJsonErrorMessage(json, message);
