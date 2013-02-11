@@ -276,7 +276,7 @@ public class MultiYearValueCalculator {
 		int count = 0;
 
 		for (ContractorAudit audit : audits) {
-			if (count < 4 && audit.hasCaoStatus(AuditStatus.Complete)) {
+			if (count < 3 && audit.hasCaoStatus(AuditStatus.Complete)) {
 				// Store the EMR rates into a list for later use
 				for (AuditData answer : audit.getData()) {
 					if (answer.getQuestion().getId() == AuditQuestion.EMR
