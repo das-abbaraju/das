@@ -41,6 +41,9 @@ public class OperatorAccountUserModel extends AbstractModel {
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(accountType.getName().toUpperCase(), accountType);
 		
+		Field accountName = fields.get("AccountName".toUpperCase());
+		accountName.setUrl("FacilitiesEdit.action?operator={AccountID}");
+
 		Field userName = fields.get("UserName".toUpperCase());
 		userName.setUrl("UsersManage.action?user={UserID}");
         
