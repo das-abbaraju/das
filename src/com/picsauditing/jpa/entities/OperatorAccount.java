@@ -72,7 +72,7 @@ public class OperatorAccount extends Account {
 	private BigDecimal discountPercent = BigDecimal.ZERO;
 	private Date discountExpiration;
 	private boolean inPicsConsortium = false;
-	private Integer salesForceID;
+	private String salesForceID;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -659,11 +659,11 @@ public class OperatorAccount extends Account {
 	}
 
 	@ReportField(category = FieldCategory.ClientSitePreferences)
-	public Integer getSalesForceID() {
+	public String getSalesForceID() {
 		return salesForceID;
 	}
 
-	public void setSalesForceID(Integer salesForceID) {
+	public void setSalesForceID(String salesForceID) {
 		this.salesForceID = salesForceID;
 	}
 
