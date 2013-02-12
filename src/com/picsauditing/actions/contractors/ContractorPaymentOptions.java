@@ -5,23 +5,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.jpa.entities.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
-public class ContractorPaymentOptions extends ContractorActionSupport {
+public class ContractorPaymentOptions extends ContractorActionSupport implements Preparable {
+	private final static Logger logger = LoggerFactory.getLogger(ContractorPaymentOptions.class);
+
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
@@ -63,9 +72,18 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		this.subHeading = getText(String.format("%s.title", getScope()));
 	}
 
-	public String execute() throws Exception {
+	@Override
+	public void prepare() throws Exception {
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
+		this.id = Integer.parseInt(ids[0]);
+		
 		this.findContractor();
-
+		if (contractor.getCountry().getCurrency().isCAD()) {
+			initCanadianTaxFee();
+		}
+	}
+	
+	public String execute() throws Exception {
 		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
 			if (contractor.getNonCorporateOperators().size() == 1) {
@@ -89,10 +107,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		contractorAccountDao.save(contractor);
-
-		if (contractor.getCountry().getCurrency().isCAD()) {
-			initCanadianTaxFee();
-		}
 
 		if (!contractor.getPaymentMethod().isCreditCard()) {
 			return SUCCESS;
@@ -158,20 +172,19 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					customer_vault_id, time, key);
 
 			if (response.equals("3")) {
-				PicsLogger.start("CC_Hash_Errors");
-				PicsLogger.log("Hash issues for Contractor id= " + contractor.getIdString());
-				PicsLogger.log("CREDIT CARD HASH PROBLEM: ");
-				PicsLogger.log("CONTRACTOR ID: " + contractor.getIdString());
-				PicsLogger.log("PICS HASH: " + newHash);
-				PicsLogger.log("BASED ON:");
-				PicsLogger.log("    RESPONSE     : " + response);
-				PicsLogger.log("    TRANS ID     : " + transactionid);
-				PicsLogger.log("    CUST VAULT ID: " + customer_vault_id);
-				PicsLogger.log("    TIME         : " + time);
-				PicsLogger.log("BRAINTREE HASH: " + hash);
-				PicsLogger.log("BASED ON:");
-				PicsLogger.log("    CUST VAULT ID: " + customer_vault_id + "\n\n");
-				PicsLogger.stop();
+				logger.info("CC_Hash_Errors");
+				logger.info("Hash issues for Contractor id= " + contractor.getIdString());
+				logger.info("CREDIT CARD HASH PROBLEM: ");
+				logger.info("CONTRACTOR ID: " + contractor.getIdString());
+				logger.info("PICS HASH: " + newHash);
+				logger.info("BASED ON:");
+				logger.info("    RESPONSE     : " + response);
+				logger.info("    TRANS ID     : " + transactionid);
+				logger.info("    CUST VAULT ID: " + customer_vault_id);
+				logger.info("    TIME         : " + time);
+				logger.info("BRAINTREE HASH: " + hash);
+				logger.info("BASED ON:");
+				logger.info("    CUST VAULT ID: " + customer_vault_id + "\n\n");
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
@@ -572,5 +585,4 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String getCanadianTaxFeeMsgKey() {
 		return canadianTaxFeeMsgKey;
 	}
-
 }
