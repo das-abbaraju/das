@@ -115,7 +115,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		if (button != null) {
-			if (categoryID > 0 && permissions.isPicsEmployee()) {
+			if (categoryID > 0 && isUserPermittedToAddRemoveCategory()) {
 				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
 				if ("IncludeCategory".equals(button)) {
 					AuditCatData auditCatData = addManuallyAddedCategory(auditCategory);
@@ -241,6 +241,15 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	private boolean isUserPermittedToAddRemoveCategory() {
+		if (permissions.isPicsEmployee()) {
+			return true;
+		} else if (conAudit.getAuditor() != null) {
+			return permissions.getUserId() == conAudit.getAuditor().getId();
+		}
+		return false;
 	}
 
 	private String determineMessageForUser() {
