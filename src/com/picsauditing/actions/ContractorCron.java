@@ -127,13 +127,15 @@ public class ContractorCron extends PicsActionSupport {
 	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
+
 	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
 
 	@Anonymous
 	public String execute() throws Exception {
-		if (steps == null)
+		if (steps == null) {
 			return SUCCESS;
-		
+		}
+
 		logger.trace("Starting ContractorCron for {}", conID);
 		try {
 			if (conID > 0) {
@@ -146,17 +148,32 @@ public class ContractorCron extends PicsActionSupport {
 				return setUrlForRedirect(redirectUrl);
 			}
 		} catch (Exception e) {
-			logger.trace("ContractorCron failed for conID {} because: {}", conID, e.getMessage());
-			if (Strings.isNotEmpty(redirectUrl)) {
-				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #"
-						+ conID);
-				return setUrlForRedirect(redirectUrl);
+			String exceptionResult = handleException(e);
+			if (Strings.isEmpty(exceptionResult)) {
+				throw e;
 			}
-			throw e;
+
+			return exceptionResult;
 		}
+
 		logger.trace("Finished ContractorCron");
 
 		return SUCCESS;
+	}
+
+	private String handleException(Exception exception) {
+		try {
+			logger.trace("ContractorCron failed for conID {} because: {}", conID, exception.getMessage());
+			if (Strings.isNotEmpty(redirectUrl)) {
+				exceptionService.sendExceptionEmail(permissions, exception,
+						"Error in Contractor Cron calculating account id #" + conID);
+				return setUrlForRedirect(redirectUrl);
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred while sending exception email for ContractorCron. ConID = {}", conID, e);
+		}
+
+		return Strings.EMPTY_STRING;
 	}
 
 	@Anonymous
@@ -182,10 +199,12 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+
 			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
 					contractor.getAuditor() == null) {
 				runCSRAssignment(contractor);
 			}
+
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
 
@@ -213,8 +232,9 @@ public class ContractorCron extends PicsActionSupport {
 						runFlag(co);
 						runWaitingOn(co);
 
-						if (opID > 0)
+						if (opID > 0) {
 							break;
+						}
 					}
 				}
 				runCorporateRollup(contractor, corporateSet);
@@ -277,47 +297,65 @@ public class ContractorCron extends PicsActionSupport {
 				Integer year3 = (Integer) row.get("year3_id");
 
 				ArrayList<Integer> list = new ArrayList<Integer>();
-				if (year1 != null)
+				if (year1 != null) {
 					list.add(year1);
-				if (year2 != null)
-					list.add(year2);
-				if (year3 != null)
-					list.add(year3);
+				}
 
-				if (year1 != null)
+				if (year2 != null) {
+					list.add(year2);
+				}
+
+				if (year3 != null) {
+					list.add(year3);
+				}
+
+				if (year1 != null) {
 					resultMap.put(year1, list);
-				if (year2 != null)
+				}
+
+				if (year2 != null) {
 					resultMap.put(year2, list);
-				if (year3 != null)
+				}
+
+				if (year3 != null) {
 					resultMap.put(year3, list);
+				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while extracting multi-year criteria.", e);
 		}
 	}
 
 	private void setRecalculationToTomorrow(ContractorAccount contractor) {
+		if (contractor == null) {
+			return;
+		}
+
 		try {
 			contractor.setNeedsRecalculation(0);
 			contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 			contractorDAO.save(contractor);
 		} catch (Exception notMuchWeCanDoButLogIt) {
-			logger.error("Error sending email");
+			logger.error("Error setting recalculation for tomorrow on contractor.");
 			logger.error(notMuchWeCanDoButLogIt.getMessage());
 		}
 	}
 
 	private void runBilling(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.Billing))
+		if (!runStep(ContractorCronStep.Billing)) {
 			return;
+		}
+
 		logger.trace("ContractorCron starting Billing");
 		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 	}
 
 	private void runAuditBuilder(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.AuditBuilder))
+		if (!runStep(ContractorCronStep.AuditBuilder)) {
 			return;
+		}
+
 		logger.trace("ContractorCron starting AuditBuilder");
 		auditBuilder.buildAudits(contractor);
 
@@ -358,16 +396,21 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private boolean isCancelImplementationAudit(ContractorAudit audit) {
-		if (!audit.getAuditType().isImplementation())
+		if (!audit.getAuditType().isImplementation()) {
 			return false;
-		if (audit.hasOnlyInvisibleCaos() && audit.getScheduledDate() != null)
+		}
+
+		if (audit.hasOnlyInvisibleCaos() && audit.getScheduledDate() != null) {
 			return true;
+		}
+
 		return false;
 	}
 
 	private void checkLcCor(ContractorAccount contractor) {
-		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			return;
+		}
 
 		boolean isLcCorNotify = false;
 		Calendar cal = Calendar.getInstance();
@@ -398,8 +441,10 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runAuditCategory(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.AuditCategory))
+		if (!runStep(ContractorCronStep.AuditCategory)) {
 			return;
+		}
+
 		logger.trace("ContractorCron starting AuditCategory");
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			final Date lastRecalculation = cAudit.getLastRecalculation();
@@ -413,8 +458,9 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runTradeETL(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.TradeETL))
+		if (!runStep(ContractorCronStep.TradeETL)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting TradeETL");
 		Set<ContractorTrade> trades = contractor.getTrades();
@@ -422,10 +468,11 @@ public class ContractorCron extends PicsActionSupport {
 		List<String> subContract = new ArrayList<String>();
 
 		for (ContractorTrade trade : trades) {
-			if (trade.isSelfPerformed())
+			if (trade.isSelfPerformed()) {
 				selfPerform.add(trade.getTrade().getName().toString());
-			else
+			} else {
 				subContract.add(trade.getTrade().getName().toString());
+			}
 		}
 
 		/*
@@ -447,10 +494,12 @@ public class ContractorCron extends PicsActionSupport {
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
 		for (ContractorOperator co : contractor.getOperators()) {
-			if (co.getOperatorAccount().isRequiresOQ())
+			if (co.getOperatorAccount().isRequiresOQ()) {
 				requiresOQ = true;
-			if (co.getOperatorAccount().isRequiresCompetencyReview())
+			}
+			if (co.getOperatorAccount().isRequiresCompetencyReview()) {
 				requiresCompetency = true;
+			}
 		}
 
 		contractor.setRequiresOQ(false);
@@ -474,15 +523,17 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runContractorETL(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.ContractorETL))
+		if (!runStep(ContractorCronStep.ContractorETL)) {
 			return;
+		}
 		logger.trace("ContractorCron starting ContractorETL");
 		contractorFlagETL.calculate(contractor);
 	}
 
 	private void runContractorScore(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.PICSScore))
+		if (!runStep(ContractorCronStep.PICSScore)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting PicsScore");
 		ContractorScore.calculate(contractor);
@@ -490,8 +541,9 @@ public class ContractorCron extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	private void runFlag(ContractorOperator co) {
-		if (!runStep(ContractorCronStep.Flag))
+		if (!runStep(ContractorCronStep.Flag)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
 		flagDataCalculator.setOperator(co.getOperatorAccount());
@@ -500,17 +552,20 @@ public class ContractorCron extends PicsActionSupport {
 		Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<FlagCriteria, List<FlagDataOverride>>();
 
 		Set<OperatorAccount> corporates = new HashSet<OperatorAccount>();
-		for (Facility f : co.getOperatorAccount().getCorporateFacilities())
+		for (Facility f : co.getOperatorAccount().getCorporateFacilities()) {
 			corporates.add(f.getCorporate());
+		}
 
 		for (FlagDataOverride override : co.getContractorAccount().getFlagDataOverrides()) {
 			if (override.getOperator().equals(co.getOperatorAccount())) {
-				if (!overridesMap.containsKey(override.getCriteria()))
+				if (!overridesMap.containsKey(override.getCriteria())) {
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
+				}
 				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addFirst(override);
 			} else if (corporates.contains(override.getOperator())) {
-				if (!overridesMap.containsKey(override.getCriteria()))
+				if (!overridesMap.containsKey(override.getCriteria())) {
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
+				}
 				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addLast(override);
 			}
 		}
@@ -562,8 +617,9 @@ public class ContractorCron extends PicsActionSupport {
 				Calendar tomorrow = Calendar.getInstance();
 				tomorrow.add(Calendar.DATE, 1);
 				if (!(forceFlagCreatedOn.after(tomorrow) || forceFlagCreatedOn.before(yesterday))) {
-					if (overallColor.equals(conOperator.getForceFlag()))
+					if (overallColor.equals(conOperator.getForceFlag())) {
 						co.setBaselineFlag(overallColor);
+					}
 				}
 			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
@@ -615,8 +671,9 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {
-		if (!runStep(ContractorCronStep.WaitingOn))
+		if (!runStep(ContractorCronStep.WaitingOn)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting WaitingOn for {}", co.getOperatorAccount().getName());
 		WaitingOn waitingOn = null;
@@ -659,15 +716,16 @@ public class ContractorCron extends PicsActionSupport {
 
 	/**
 	 * Calculate and save the recommended flag color for policies
-	 * 
+	 *
 	 * @param contractor
 	 * @throws IOException
 	 * @throws EmailException
 	 * @throws NoUsersDefinedException
 	 */
 	private void runPolicies(ContractorAccount contractor) throws EmailException, IOException, NoUsersDefinedException {
-		if (!runStep(ContractorCronStep.Policies))
+		if (!runStep(ContractorCronStep.Policies)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting Policies");
 		// TODO we might be able to move this to the new FlagCalculator method
@@ -692,9 +750,10 @@ public class ContractorCron extends PicsActionSupport {
 		Set<ContractorAudit> expiringPolicies = getExpiringPolicies(contractor);
 		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = getUnsentWeeklyInsuranceSubscriptions(contractor);
 
-		if (!expiringPolicies.isEmpty() && !unsentWeeklyInsuranceSubscriptions.isEmpty())
+		if (!expiringPolicies.isEmpty() && !unsentWeeklyInsuranceSubscriptions.isEmpty()) {
 			EventSubscriptionBuilder
 					.sendExpiringCertificatesEmail(unsentWeeklyInsuranceSubscriptions, expiringPolicies);
+		}
 	}
 
 	private Set<EmailSubscription> getUnsentWeeklyInsuranceSubscriptions(ContractorAccount contractor)
@@ -711,8 +770,9 @@ public class ContractorCron extends PicsActionSupport {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 				if (!contractorInsuranceSubscription.getTimePeriod().equals(SubscriptionTimePeriod.None)
 						&& (contractorInsuranceSubscription.getLastSent() == null || contractorInsuranceSubscription
-								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
+								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate()))) {
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
+				}
 			}
 		}
 
@@ -736,7 +796,7 @@ public class ContractorCron extends PicsActionSupport {
 	/**
 	 * Returns a map of Policies, where the key is the Audit Type ID and the
 	 * value is a list of ContractorAudits for that Audit Type ID.
-	 * 
+	 *
 	 * @return
 	 */
 	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
@@ -810,8 +870,9 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
-		if (!runStep(ContractorCronStep.CorporateRollup))
+		if (!runStep(ContractorCronStep.CorporateRollup)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting CorporateRollup");
 		// // rolls up every flag color to root
@@ -919,27 +980,30 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void runCSRAssignment(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.CSRAssignment))
+		if (!runStep(ContractorCronStep.CSRAssignment)) {
 			return;
+		}
 
 		logger.trace("ContractorCron starting CsrAssignment");
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
-			if (!assignment.getUser().equals(contractor.getAuditor()))
+			if (!assignment.getUser().equals(contractor.getAuditor())) {
 				contractor.setAuditor(assignment.getUser());
+			}
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * This is so audits like the HSE Competency Submittal can have an auditor
 	 * automatically assigned
-	 * 
+	 *
 	 * @param contractor
 	 */
 	private void runAssignAudit(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.AssignAudit))
+		if (!runStep(ContractorCronStep.AssignAudit)) {
 			return;
+		}
 		logger.trace("ContractorCron starting AssignAudit");
 		// See if the PQF is complete for manual audit auditor assignment
 		boolean pqfCompleteSafetyManualVerified = false;
@@ -948,14 +1012,15 @@ public class ContractorCron extends PicsActionSupport {
 			if (!audit.isExpired()) {
 				if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
 					for (AuditData d : audit.getData()) {
-						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF)
+						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 							pqfCompleteSafetyManualVerified = d.getDateVerified() != null;
+						}
 					}
 				}
 			}
 		}
 
-		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments. 
+		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments.
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {
@@ -1051,11 +1116,14 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private boolean runStep(ContractorCronStep step) {
-		if (step == null || steps == null)
+		if (step == null || steps == null) {
 			return false;
-		for (ContractorCronStep candidate : steps)
-			if (candidate.equals(step) || candidate.equals(ContractorCronStep.All))
+		}
+		for (ContractorCronStep candidate : steps) {
+			if (candidate.equals(step) || candidate.equals(ContractorCronStep.All)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
