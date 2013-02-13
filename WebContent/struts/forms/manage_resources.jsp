@@ -139,7 +139,10 @@ $(function() {
 					<a href="Resources!download.action?id=<s:property value="parentResource.id" />&amp;loc=<s:property value="resource.locale.toString()" />" target="_blank" title="<s:text name="global.ClickToView"/>" ><s:property value="#localeName" /></a>
 				</s:if>
 				<s:else>
-					<s:select name="locale" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))" theme="" />
+					<s:select name="locale"
+                              list="supportedLanguages.stableLanguageLocales"
+                              listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
+                              theme="" />
 					<div class="fieldhelp">
 					<h3><s:text name="ManageResources.Language" /></h3>
 					<s:text name="ManageResources.locale.fieldhelp" />

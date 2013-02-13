@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,12 +28,14 @@ public class PermissionsTest {
 
 	@Mock
 	private HttpServletResponse response;
+	@Mock
+	private LanguageModel languageModel;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		permissions = new Permissions();
+		permissions = new Permissions(languageModel);
 		allInheritedGroupIds = new HashSet<Integer>();
 		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
 	}

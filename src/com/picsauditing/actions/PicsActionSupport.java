@@ -70,6 +70,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String INPUT_ERROR = "inputError";
     public static final String[] DATAFEED_FORMATS = {JSON,XML};
 
+	@Autowired
+	protected AppPropertyDAO propertyDAO;
     @Autowired
     protected BasicDAO dao;
     @Autowired
@@ -295,7 +297,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         }
 
         if (permissions == null) {
-            permissions = new Permissions();
+            permissions = new Permissions(supportedLanguages);
         }
 
         if (permissions.isLoggedIn()) {
@@ -468,7 +470,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
             }
             return permissions;
         } catch (Exception e) {
-            return new Permissions();
+            return new Permissions(supportedLanguages);
         }
     }
 
@@ -1045,9 +1047,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
         // We're using a whitelist strategy because we don't want to pass junk downstream
         String language = Locale.ENGLISH.getDisplayLanguage();
-        if (LocaleController.isLocaleValid(locale)) {
-            language = locale.getDisplayLanguage();
-        }
+
+		if (supportedLanguages.isLanguageStable(locale)) {
+			language = locale.getDisplayLanguage();
+		}
 
         String chatUrl = scheme + "://server.iad.liveperson.net/hc/90511184/" +
                 "?cmd=file" +

@@ -57,12 +57,12 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@After
 	public void tearDown() throws Exception {
 		System.setProperty("pics.env", "");
-        Whitebox.setInternalState(PicsActionSupport.class, "CONFIG",(Object) null);
+		Whitebox.setInternalState(PicsActionSupport.class, "CONFIG", (Object) null);
 	}
 
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
-		Permissions permissions = new Permissions();
+		Permissions permissions = new Permissions(null);
 
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();
@@ -301,6 +301,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
+
 	@Test
 	public void testIsLocalhostEnvironment_noPort() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost"));
@@ -308,6 +309,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
+
 	@Test
 	public void testIsLocalhostEnvironment_8080() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));

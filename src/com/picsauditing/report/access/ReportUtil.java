@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import javax.persistence.EnumType;
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -27,7 +29,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.report.Column;
@@ -202,7 +203,8 @@ public final class ReportUtil {
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
-		Locale[] locales = TranslationActionSupport.getSupportedLocales();
+		LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
+		Locale[] locales = languageModel.getStableLanguageLocales();
 		QueryMethod[] methods = QueryMethod.values();
 		String fileName = "Column translations for DR";
 

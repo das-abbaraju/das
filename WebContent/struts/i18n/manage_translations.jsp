@@ -46,13 +46,13 @@
         
     	From:
     	<s:select
-    		list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+    		list="supportedLanguages.unifiedLanguageList"
     		name="localeFrom"
     		listValue="displayName" />
 
     	To:
     	<s:select
-    		list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+    		list="supportedLanguages.unifiedLanguageList"
     		name="localeTo"
     		listValue="displayName" />
             
@@ -82,7 +82,7 @@
             
     		<span class="clearLink q_box select">
     			<s:select
-    				list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()"
+    				list="supportedLanguages.unifiedLanguageList"
     				multiple="true"
     				name="fromSourceLanguages"
     			/>

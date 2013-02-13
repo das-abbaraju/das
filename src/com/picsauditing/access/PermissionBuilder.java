@@ -3,13 +3,13 @@ package com.picsauditing.access;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PermissionBuilder {
@@ -19,12 +19,13 @@ public class PermissionBuilder {
 	@Autowired
 	private FeatureToggle featureToggle;
 	@Autowired
+	private LanguageModel languageModel;
+	@Autowired
 	private UserDAO dao;
 	
 	public Permissions login(User user) throws Exception {
-		Permissions permissions = new Permissions();
+		Permissions permissions = new Permissions(languageModel);
 		permissions.login(user);
-		LocaleController.setLocaleOfNearestSupported(permissions);
 		build(permissions);
 		return permissions;
 	}

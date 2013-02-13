@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
-<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
-<%@ page import="com.picsauditing.util.LocaleController" %>
-<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -22,8 +19,9 @@
 
     <fieldset>
         <s:if test="configEnvironment || i18nReady">
-            <% String currentLanguage = LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage(); %>
-            <input id="current_locale" type="hidden" value="<%= currentLanguage %>" />
+            <s:set name="static_locale" value="%{@com.picsauditing.actions.TranslationActionSupport@getLocaleStatic()}" />
+            <s:set name="current_language" value="%{supportedLanguages.getNearestStableLocale(#static_locale).displayLanguage}" />
+            <input id="current_locale" type="hidden" value="${current_language}" />
         </s:if>
 
         <div class="form-inline">

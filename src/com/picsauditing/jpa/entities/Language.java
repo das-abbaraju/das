@@ -12,7 +12,7 @@ import java.util.Locale;
 @Entity
 @Table(name = "app_language")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Language extends BaseTranslatable {
+public class Language extends BaseTranslatable implements Comparable<Language> {
 	private Locale locale;
 	private String language;
 	private String country;
@@ -61,5 +61,15 @@ public class Language extends BaseTranslatable {
 	@Transient
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+
+	@Override
+	public int compareTo(Language otherLocale) {
+		return this.locale.toString().compareTo(otherLocale.toString());
+	}
+
+	@Override
+	public String toString() {
+		return this.locale.toString();
 	}
 }

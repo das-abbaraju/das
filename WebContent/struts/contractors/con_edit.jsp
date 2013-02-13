@@ -165,8 +165,9 @@
     								<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
     								<s:select
     									name="contractor.locale"
-    									listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-    									list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+                                        list="supportedLanguages.stableLanguageLocales"
+                                        listValue="displayName"
+                                    />
     							</li>
     						</s:if>
     

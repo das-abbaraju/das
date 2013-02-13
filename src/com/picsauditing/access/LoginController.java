@@ -216,7 +216,7 @@ public class LoginController extends PicsActionSupport {
 
 	private Permissions permissions() {
 		if (permissions == null) {
-			permissions = new Permissions();
+			permissions = new Permissions(supportedLanguages);
 		}
 		
 		return permissions;

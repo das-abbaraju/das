@@ -142,7 +142,7 @@
 
     <!-- Validators -->
     <bean id="ContractorValidator" class="com.picsauditing.validator.ContractorValidator" scope="prototype"/>
-    <bean id="FacilitiesEditValidator" class="com.picsauditing.validator.FacilitiesEditValidator" />
+    <bean id="FacilitiesEditValidator" class="com.picsauditing.validator.FacilitiesEditValidator"/>
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
     <bean id="VATValidator" class="com.picsauditing.validator.VATValidator" scope="prototype"/>
@@ -184,46 +184,49 @@
           class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
     <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
           scope="prototype"/>
-    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
-	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
-	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
-	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
+    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
+    <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator"
+          scope="singleton"/>
+    <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>
+    <bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel"/>
+    <bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
 
-    <bean id="AccountUserAutocompleteService" class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService" />
+    <bean id="AccountUserAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
     <bean id="AuditCategoryAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
+          class="com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
     <bean id="AuditQuestionAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
+          class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
     <bean id="AuditTypeAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
-    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete" />
+          class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
+    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete"/>
     <bean id="ContractorAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
-    <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
-    <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
-    <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService" />
+          class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
+    <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
+    <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService"/>
+    <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService"/>
     <bean id="OperatorTagAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
+          class="com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService"/>
     <bean id="OptionGroupAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
+          class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
     <bean id="OptionValueAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
+          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
+    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel"/>
     <bean id="CountrySubdivisionAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
-    <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
-    <bean id="UserService" class="com.picsauditing.access.UserService" />
-    <bean id="LoginService" class="com.picsauditing.access.LoginService" />
+          class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
+    <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
+    <bean id="UserService" class="com.picsauditing.access.UserService"/>
+    <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
-    <bean id="PaymentObserver" class="com.picsauditing.salecommission.PaymentObserver" />
+    <bean id="PaymentObserver" class="com.picsauditing.salecommission.PaymentObserver"/>
     <bean id="InvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.InvoiceStrategy"/>
-    <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.UpdateInvoiceStrategy" />
+    <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.UpdateInvoiceStrategy"/>
     <bean id="VoidInvoiceCommissionStrategy"
           class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
-    <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy" />
-    <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy" />
+    <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy"/>
+    <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy"/>
 
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>
@@ -234,12 +237,12 @@
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
-	<bean id="taskExecutor"
-		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="corePoolSize" value="5" />
-		<property name="maxPoolSize" value="10" />
-		<property name="queueCapacity" value="25" />
-	</bean>
+    <bean id="taskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="5"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="queueCapacity" value="25"/>
+    </bean>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"
@@ -247,8 +250,7 @@
         <property name="dataSource" ref="jndiDataSource"/>
         <property name="persistenceUnitName" value="punit"/>
         <property name="jpaVendorAdapter">
-            <bean
-                    class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="showSql" value="false"/>
                 <property name="database" value="MYSQL"/>
             </bean>

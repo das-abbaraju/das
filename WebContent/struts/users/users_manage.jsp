@@ -351,7 +351,7 @@
 								<li>
                                     <s:select
 										name="user.locale"
-										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
+										list="supportedLanguages.stableLanguageLocales"
 										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 										theme="form" />
                                 </li>
