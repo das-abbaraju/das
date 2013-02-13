@@ -23,7 +23,9 @@ public class PermissionService {
 
 	private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
 
-	public boolean canUserViewAndCopyReport(Permissions permissions, int reportId) {
+	public boolean canUserViewReport(Permissions permissions, int reportId) {
+		// TODO If it's a PICS report, return true
+
 		try {
 			reportPermissionUserDao.findOneByPermissions(permissions, reportId);
 		} catch (NoResultException nre) {

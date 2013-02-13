@@ -16,10 +16,9 @@ public class ReportPermissionAccount extends BaseTable {
 	public ReportPermissionAccount() {
 	}
 
-	public ReportPermissionAccount(int accountId, Report report) {
+	public ReportPermissionAccount(Account account, Report report) {
 		this.report = report;
-		this.account = new Account();
-		this.account.setId(accountId);
+		this.account = account;
 	}
 
 	@ManyToOne

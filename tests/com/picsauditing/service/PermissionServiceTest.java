@@ -57,7 +57,7 @@ public class PermissionServiceTest {
 	public void testCanUserViewAndCopy_AssociationWithUserReturnsTrue() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
 
-		boolean result = permissionService.canUserViewAndCopyReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
 
 		assertTrue(result);
 	}
@@ -68,7 +68,7 @@ public class PermissionServiceTest {
 		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenReturn(null);
 
-		boolean result = permissionService.canUserViewAndCopyReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
 
 		assertTrue(result);
 	}
@@ -80,7 +80,7 @@ public class PermissionServiceTest {
 		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenReturn(null);
 
-		boolean result = permissionService.canUserViewAndCopyReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
 
 		assertTrue(result);
 	}
@@ -92,7 +92,7 @@ public class PermissionServiceTest {
 		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenThrow(new NoResultException());
 
-		boolean result = permissionService.canUserViewAndCopyReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
 
 		assertFalse(result);
 	}

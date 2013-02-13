@@ -22,9 +22,9 @@ public class ReportPermissionUser extends BaseTable {
 	public ReportPermissionUser() {
 	}
 
-	public ReportPermissionUser(int userId, Report report) {
+	public ReportPermissionUser(User user, Report report) {
 		this.report = report;
-		this.user = new User(userId);
+		this.user = user;
 		this.editable = false;
 	}
 

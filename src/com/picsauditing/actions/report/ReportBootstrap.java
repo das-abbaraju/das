@@ -28,7 +28,7 @@ public class ReportBootstrap extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		if (!permissionService.canUserViewAndCopyReport(permissions, report)) {
+		if (!permissionService.canUserViewReport(permissions, report)) {
 			addActionError(getText(ERROR_MESSAGE_I18N_KEY));
 			return setUrlForRedirect(URL_FOR_REDIRECT_FOR_NOT_VIEWABLE);
 		}

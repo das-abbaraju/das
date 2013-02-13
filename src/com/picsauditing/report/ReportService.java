@@ -32,7 +32,6 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
@@ -68,7 +67,8 @@ public class ReportService {
 
 	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
-		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(userId, reportId, editable);
+		// TODO fix this, probably should be connect*
+		ReportPermissionUser reportPermissionUser = shareReportWithUser(userId, reportId, permissions, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
@@ -76,7 +76,7 @@ public class ReportService {
 	public Report copy(ReportContext reportContext) throws Exception {
 		int userId = reportContext.permissions.getUserId();
 
-		if (!permissionService.canUserViewAndCopyReport(reportContext.permissions, reportContext.reportId)) {
+		if (!permissionService.canUserViewReport(reportContext.permissions, reportContext.reportId)) {
 			throw new Exception("User " + userId + " does not have permission to copy report "
 					+ reportContext.reportId);
 		}
@@ -95,7 +95,7 @@ public class ReportService {
 
 		// This is a new report owned by the user, unconditionally give them edit permission
 		loadOrCreateReportUser(userId, newReport.getId());
-		connectReportPermissionUser(userId, newReport.getId(), true);
+		connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
 	}
@@ -232,6 +232,7 @@ public class ReportService {
 		return reportUsers;
 	}
 
+	// FIXME mostly duplicated by createReportUser
 	private ReportUser createReportUserForReport(int userId, Report report) {
 		ReportUser reportUser = new ReportUser();
 
@@ -291,7 +292,6 @@ public class ReportService {
 	}
 
 	public ReportUser moveFavorite(int userId, int reportId, int magnitude) throws Exception {
-
 		ReportUser reportUser = loadReportUser(userId, reportId);
 		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
 		int currentPosition = reportUser.getSortOrder();
@@ -342,6 +342,7 @@ public class ReportService {
 		return reportUser;
 	}
 
+	// FIXME mostly duplicated by createReportUserForReport
 	private ReportUser createReportUser(int userId, int reportId) {
 		ReportUser reportUser;// Need to connect user to report first
 		Report report = reportDao.find(Report.class, reportId);
@@ -361,16 +362,31 @@ public class ReportService {
 		return maxSortIndex + 1;
 	}
 
-	public ReportPermissionUser connectReportPermissionUser(int userId, int reportId, boolean editable) {
+	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
+			boolean editable) throws ReportPermissionException {
+		if (!permissionService.canUserEditReport(permissions, reportId)) {
+			// TODO translate this
+			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+		}
+
+		return connectReportPermissionUser(shareToUserId, reportId, editable, permissions.getUserId());
+	}
+
+	private ReportPermissionUser connectReportPermissionUser(int shareToUserId, int reportId, boolean editable, int shareFromUserId) {
 		ReportPermissionUser reportPermissionUser;
 
 		try {
-			reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
+			reportPermissionUser = reportPermissionUserDao.findOne(shareToUserId, reportId);
 		} catch (NoResultException nre) {
-			// Need to connect user to report first
-			Report report = reportDao.find(Report.class, reportId);
-			reportPermissionUser = new ReportPermissionUser(userId, report);
-			reportPermissionUser.setAuditColumns(new User(userId));
+			Report report = reportDao.findById(reportId);
+			// TODO use a different DAO
+			User shareToUser = reportDao.find(User.class, shareToUserId);
+			reportPermissionUser = new ReportPermissionUser(shareToUser, report);
+			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
+
+			if (!shareToUser.isGroup()) {
+				loadOrCreateReportUser(shareToUserId, reportId);
+			}
 		}
 
 		reportPermissionUser.setEditable(editable);
@@ -379,15 +395,26 @@ public class ReportService {
 		return reportPermissionUser;
 	}
 
-	public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
+	public ReportPermissionAccount shareReportWithAccount(int accountId, int reportId, Permissions permissions) throws ReportPermissionException {
+		if (!permissionService.canUserEditReport(permissions, reportId)) {
+			// TODO translate this
+			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+		}
+
+		return connectReportPermissionAccount(accountId, reportId, permissions);
+	}
+
+	private ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId,
+			Permissions permissions) {
 		ReportPermissionAccount reportPermissionAccount;
 
 		try {
 			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
 		} catch (NoResultException nre) {
-			// Need to connect user to report first
-			Report report = reportDao.find(Report.class, reportId);
-			reportPermissionAccount = new ReportPermissionAccount(accountId, report);
+			Report report = reportDao.findById(reportId);
+			// TODO use a different DAO
+			Account account = reportDao.find(Account.class, accountId);
+			reportPermissionAccount = new ReportPermissionAccount(account, report);
 			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
 		}
 

@@ -5,6 +5,7 @@ import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 
 public class ReportContext {
+
 	public final JSONObject payloadJson;
 	public final int reportId;
 	public final User user;
@@ -15,7 +16,6 @@ public class ReportContext {
 	public final boolean includeFilters;
 	public int limit = 100;
 	public int pageNumber = 1;
-
 
 	public ReportContext(JSONObject payloadJson, int reportId, User user, Permissions permissions, boolean includeReport, boolean includeData, boolean includeColumns, boolean includeFilters, int limit, int pageNumber) {
 		this.includeColumns = includeColumns;

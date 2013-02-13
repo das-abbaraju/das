@@ -4,8 +4,10 @@ import static com.picsauditing.report.ReportJson.*;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.*;
+
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,9 @@ public class ReportApi extends PicsApiSupport {
 	protected boolean includeColumns;
 	protected boolean includeFilters;
 	protected boolean includeData;
+
+	protected boolean editable;
+	protected int shareId;
 
 	private static final String PRINT = "print";
 
@@ -146,6 +151,96 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
+	public String shareWithUser() {
+		try {
+			reportService.shareReportWithUser(shareId, reportId, permissions, editable);
+
+			writeJsonSuccess(json);
+		} catch (ReportPermissionException rpe) {
+			writeJsonErrorMessage(json, rpe.getMessage());
+		} catch (Exception e) {
+			writeJsonException(json, e);
+		}
+
+		return JSON;
+	}
+
+	public String shareWithAccount() {
+		try {
+			reportService.shareReportWithAccount(shareId, reportId, permissions);
+
+			writeJsonSuccess(json);
+		} catch (ReportPermissionException rpe) {
+			writeJsonErrorMessage(json, rpe.getMessage());
+		} catch (Exception e) {
+			writeJsonException(json, e);
+		}
+
+		return JSON;
+	}
+
+	public String unshare() {
+//		int id = -1;
+//		String type = "";
+//		String dirtyParameter = "";
+//
+//		try {
+//			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
+//			id = Integer.parseInt(dirtyParameter);
+//
+//			if (permissionService.canUserEditReport(permissions, reportId) && id != permissions.getUserId()) {
+//				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type)) {
+//					reportService.disconnectReportPermissionUser(id, reportId);
+//				} else if ("account".equalsIgnoreCase(type)) {
+//					reportService.disconnectReportPermissionAccount(id, reportId);
+//				} else {
+//					throw new IllegalArgumentException("Invalid type for unsharing.");
+//				}
+//
+//				json.put("success", true);
+//			} else {
+//				json.put("success", false);
+//			}
+//		} catch (NumberFormatException nfe) {
+//			logger.error("Bad url parameter(" + dirtyParameter + ")", nfe);
+//			writeJsonException(json, nfe);
+//		} catch (Exception e) {
+//			logger.error("Unexpected exception", e);
+//			writeJsonException(json, e);
+//		}
+
+		return JSON;
+	}
+
+	public String editPermissions() {
+//		int id = -1;
+//		boolean editable = false;
+//		String dirtyParameter = "";
+//
+//		try {
+//			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
+//			id = Integer.parseInt(dirtyParameter);
+//
+//			dirtyParameter = ServletActionContext.getRequest().getParameter("editable");
+//			editable = Boolean.parseBoolean(dirtyParameter);
+//
+//			if (permissionService.canUserEditReport(permissions, report.getId())) {
+//				reportService.setEditPermissions(permissions, id, report.getId(), editable);
+//				json.put("success", true);
+//			} else {
+//				json.put("success", false);
+//			}
+//		} catch (NumberFormatException nfe) {
+//			logger.error("Bad url parameter(" + dirtyParameter + ")", nfe);
+//			writeJsonException(json, nfe);
+//		} catch (Exception e) {
+//			logger.error("Unexpected exception", e);
+//			writeJsonException(json, e);
+//		}
+
+		return JSON;
+	}
+
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
 		writeJsonException(json, sqlException);
 
@@ -186,5 +281,13 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
+	}
+
+	public void setShareId(int shareId) {
+		this.shareId = shareId;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }
