@@ -46,6 +46,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			rows = database.select(sql, true);
 		}
 
+		// todo: move this outta here
 		json.put(ReportJson.RESULTS_TOTAL, database.getAllRows());
 		return rows;
 	}

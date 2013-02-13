@@ -20,7 +20,8 @@ public class ReportDataConverter {
 	
 	private Locale locale;
 	private ReportResults reportResults;
-	
+
+	private static I18nCache i18nCache = I18nCache.getInstance();
 	private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
 	public ReportDataConverter(Collection<Column> columns, List<BasicDynaBean> results) {
@@ -146,7 +147,7 @@ public class ReportDataConverter {
 	}
 
 	private static String getText(String key, Locale locale) {
-		return I18nCache.getInstance().getText(key, locale);
+		return i18nCache.getText(key, locale);
 	}
 
 	public void setLocale(Locale locale) {

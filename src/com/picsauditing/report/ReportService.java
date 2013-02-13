@@ -55,15 +55,84 @@ public class ReportService {
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
 	@Autowired
 	private PermissionService permissionService;
-
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
+	@Autowired
+	private SqlBuilder sqlBuilder;
 
 	// TODO remove this instance variable
 	private ReportDataConverter converter;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 	private static final int MAX_REPORTS_IN_MENU = 10;
+
+	@SuppressWarnings("unchecked")
+	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
+		Report report = createOrLoadReport(reportContext);
+
+		// FIXME this basically initializes a report as well as building SQL
+		SelectSQL sql = sqlBuilder.initializeSql(report, reportContext.permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+
+		// TODO see if this can go before the initializeSql() call into the createReport() function
+		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+
+		JSONObject responseJson = new JSONObject();
+
+		if (reportContext.includeReport) {
+			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.user.getId());
+			responseJson.put(LEVEL_REPORT, reportJson);
+		}
+
+		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
+		if (reportContext.includeColumns) {
+			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
+			responseJson.put(LEVEL_COLUMNS, columnsJson);
+		}
+
+		if (reportContext.includeFilters) {
+			JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
+			responseJson.put(LEVEL_FILTERS, filtersJson);
+		}
+
+		if (reportContext.includeData) {
+			JSONObject dataJson = buildDataJson(report, reportContext, sql);
+			responseJson.put(LEVEL_RESULTS, dataJson);
+		}
+
+		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
+
+		return responseJson;
+	}
+
+	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
+		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
+
+		Report report;
+		if (shouldLoadReportFromJson(reportJson, reportContext.includeData)) {
+			report = buildReportFromJson(reportJson, reportContext.reportId);
+		} else {
+			report = loadReportFromDatabase(reportContext.reportId);
+
+			if (report.hasNoColumnsFiltersOrSorts()) {
+				legacyConvertParametersToReport(report);
+			}
+		}
+
+		report.sortColumns();
+
+		return report;
+	}
+
+	private JSONObject getReportJsonFromPayload(JSONObject payloadJson) {
+		JSONObject reportJson = new JSONObject();
+
+		if (JSONUtilities.isNotEmpty(payloadJson)) {
+			reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
+		}
+
+		return reportJson;
+	}
 
 	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
 			throws NoResultException, NonUniqueResultException, SQLException, Exception {
@@ -456,35 +525,6 @@ public class ReportService {
 		return report;
 	}
 
-	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
-		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
-
-		Report report;
-		if (shouldLoadReportFromJson(reportJson, reportContext.includeData)) {
-			report = buildReportFromJson(reportJson, reportContext.reportId);
-		} else {
-			report = loadReportFromDatabase(reportContext.reportId);
-
-			if (report.hasNoColumnsFiltersOrSorts()) {
-				legacyConvertParametersToReport(report);
-			}
-		}
-
-		report.sortColumns();
-
-		return report;
-	}
-
-	private JSONObject getReportJsonFromPayload(JSONObject payloadJson) {
-		JSONObject reportJson = new JSONObject();
-
-		if (JSONUtilities.isNotEmpty(payloadJson)) {
-			reportJson = (JSONObject) payloadJson.get(ReportJson.LEVEL_REPORT);
-		}
-
-		return reportJson;
-	}
-
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {
 		return JSONUtilities.isNotEmpty(reportJson) && includeData;
 	}
@@ -503,45 +543,6 @@ public class ReportService {
 		}
 
 		return report;
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
-		Report report = createOrLoadReport(reportContext);
-
-		// FIXME this basically initializes a report as well as building SQL
-		SelectSQL sql = new SqlBuilder().initializeSql(report, reportContext.permissions);
-		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
-
-		// TODO see if this can go before the initializeSql() call into the createReport() function
-		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
-
-		JSONObject responseJson = new JSONObject();
-
-		if (reportContext.includeReport) {
-			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.user.getId());
-			responseJson.put(LEVEL_REPORT, reportJson);
-		}
-
-		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
-		if (reportContext.includeColumns) {
-			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_COLUMNS, columnsJson);
-		}
-
-		if (reportContext.includeFilters) {
-			JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_FILTERS, filtersJson);
-		}
-
-		if (reportContext.includeData) {
-			JSONObject dataJson = buildDataJson(report, reportContext, sql);
-			responseJson.put(LEVEL_RESULTS, dataJson);
-		}
-
-		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
-
-		return responseJson;
 	}
 
 	@SuppressWarnings("unchecked")

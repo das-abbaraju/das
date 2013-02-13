@@ -50,6 +50,8 @@ public class ReportJson {
 	public static final String SORT_DIRECTION = "direction";
 
 	public static final String RESULTS_TOTAL = "total";
+	public static final String RESULTS_SQL = "sql";
+	public static final String RESULTS_DATA = "data";
 
 	public static final String EXT_JS_SUCCESS = "success";
 	public static final String EXT_JS_MESSAGE = "message";

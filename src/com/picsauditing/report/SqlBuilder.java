@@ -79,9 +79,9 @@ public class SqlBuilder {
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
 
-			column.setMethodToFieldName();
+			column.setMethodToFieldName();  // todo: investigate: modifies column.field
 
-			column.addFieldCopy(availableFields);
+			column.addFieldCopy(availableFields);  // todo: investigate: modifies column.field
 
 			if (column.getField() == null) {
 				continue;
@@ -111,7 +111,7 @@ public class SqlBuilder {
 			}
 
 			Column column = new Column(fieldName);
-			column.addFieldCopy(availableFields);
+			column.addFieldCopy(availableFields);  // todo: investigate: modifies column.field
 			String columnSql = column.getSql();
 			sql.addField(columnSql + " AS `" + fieldName + "`");
 		}
@@ -152,7 +152,7 @@ public class SqlBuilder {
 		List<Filter> havingFilters = new ArrayList<Filter>();
 
 		for (Filter filter : report.getFilters()) {
-			filter.addFieldCopy(availableFields);
+			filter.addFieldCopy(availableFields);  // todo: investigate: modifies filter.field
 
 			// TODO See if this can be safely added to filter.isValid()
 			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
@@ -181,7 +181,7 @@ public class SqlBuilder {
 		}
 
 		for (Sort sort : report.getSorts()) {
-			sort.addFieldCopy(availableFields);
+			sort.addFieldCopy(availableFields);  // todo: investigate: modifies sort.field
 
 			String fieldName;
 			Column column = getColumnFromFieldName(sort.getName());
@@ -192,7 +192,7 @@ public class SqlBuilder {
 				} else {
 					continue;
 				}
-				sort.setField(field);
+				sort.setField(field);  // todo: investigate: sort column.field
 			} else {
 				fieldName = column.getName();
 			}
