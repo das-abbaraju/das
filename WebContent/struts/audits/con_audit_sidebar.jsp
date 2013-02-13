@@ -43,7 +43,7 @@
 		</a>
 	</li>
 	
-	<s:if test="(permissions.admin || permissions.auditor) && categories.keySet().size > 1">
+	<s:if test="(permissions.admin || permissions.auditor) && conAudit.auditType.categories.size() > 1">
 		<li>
 			<a class="addremove" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
 				<s:text name="Audit.button.AddRemoveCategories" />
