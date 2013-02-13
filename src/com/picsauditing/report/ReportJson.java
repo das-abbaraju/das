@@ -53,6 +53,8 @@ public class ReportJson {
 
 	public static final String EXT_JS_SUCCESS = "success";
 	public static final String EXT_JS_MESSAGE = "message";
+	public static final String EXT_JS_TITLE = "title";
+	public static final String EXT_JS_HTML = "html";
 
 	public static final String DEBUG_SQL = "sql";
 

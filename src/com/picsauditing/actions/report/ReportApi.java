@@ -155,7 +155,21 @@ public class ReportApi extends PicsApiSupport {
 		try {
 			reportService.shareReportWithUser(shareId, reportId, permissions, editable);
 
-			writeJsonSuccess(json);
+			writeJsonShareSuccess(json, getText("Report.ShareSuccess.UserMessage"));
+		} catch (ReportPermissionException rpe) {
+			writeJsonErrorMessage(json, rpe.getMessage());
+		} catch (Exception e) {
+			writeJsonException(json, e);
+		}
+
+		return JSON;
+	}
+
+	public String shareWithGroup() {
+		try {
+			reportService.shareReportWithUser(shareId, reportId, permissions, editable);
+
+			writeJsonShareSuccess(json, getText("Report.ShareSuccess.GroupMessage"));
 		} catch (ReportPermissionException rpe) {
 			writeJsonErrorMessage(json, rpe.getMessage());
 		} catch (Exception e) {
@@ -169,7 +183,7 @@ public class ReportApi extends PicsApiSupport {
 		try {
 			reportService.shareReportWithAccount(shareId, reportId, permissions);
 
-			writeJsonSuccess(json);
+			writeJsonShareSuccess(json, getText("Report.ShareSuccess.AccountMessage"));
 		} catch (ReportPermissionException rpe) {
 			writeJsonErrorMessage(json, rpe.getMessage());
 		} catch (Exception e) {
@@ -253,6 +267,13 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = new ReportContext(payloadJson, reportId, getUser(), permissions, includeReport,
 				includeData, includeColumns, includeFilters, limit, pageNumber);
 		return reportContext;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void writeJsonShareSuccess(JSONObject json, String translatedMessage) {
+		json.put(EXT_JS_TITLE, getText("Report.ShareSuccess.Title"));
+		json.put(EXT_JS_HTML, translatedMessage);
+		json.put(EXT_JS_SUCCESS, true);
 	}
 
 	public void setPage(int page) {
