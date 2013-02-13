@@ -626,9 +626,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public Set<User> getSafetyList() {
         if (safetyList == null) {
             safetyList = new TreeSet<User>();
-            if (permissions.isAdmin() || !permissions.has(OpPerms.AssignAudits))
+            if (permissions.isAdmin() || !permissions.has(OpPerms.AssignAudits)) {
             	safetyList.addAll(userDAO.findByGroup(User.GROUP_SAFETY));
-            else {
+            } else {
             	safetyList.addAll(userDAO.findAuditors(permissions.getAllInheritedGroupIds()));
             }
         }
