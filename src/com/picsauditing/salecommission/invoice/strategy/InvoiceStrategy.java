@@ -174,6 +174,12 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
 		}
 
+		try {
+			contractorAccountDAO.refresh(contractor);
+		} catch (Exception nothingWeCanDo) {
+			nothingWeCanDo.printStackTrace();
+		}
+
 		return clientSiteServiceLevels;
 	}
 
