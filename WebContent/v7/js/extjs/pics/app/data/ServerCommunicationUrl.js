@@ -39,7 +39,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getExportReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportData!download.action?';
+                path = 'ReportApi!download.action?';
             
             var params = {
                 report: report_id
@@ -120,7 +120,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         getPrintReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportData!print.action?';
+                path = 'ReportApi!print.action?';
             
             var params = {
                 report: report_id
