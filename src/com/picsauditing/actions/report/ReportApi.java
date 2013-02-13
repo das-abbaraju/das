@@ -67,8 +67,7 @@ public class ReportApi extends PicsApiSupport {
 		try {
 			Report newReport = reportService.copy(reportContext);
 
-			writeJsonSuccess(json);
-			json.put(REPORT_ID, newReport.getId());
+			writeJsonCopySuccess(json, newReport.getId());
 		} catch (NoRightsException nre) {
 			writeJsonException(json, nre);
 		} catch (Exception e) {
@@ -100,6 +99,7 @@ public class ReportApi extends PicsApiSupport {
 	public String favorite() {
 		try {
 			reportService.favoriteReport(permissions.getUserId(), reportId);
+
 			writeJsonSuccess(json);
 		} catch (NoResultException nre) {
 			writeJsonException(json, nre);
@@ -115,6 +115,7 @@ public class ReportApi extends PicsApiSupport {
 	public String unfavorite() {
 		try {
 			reportService.unfavoriteReport(permissions.getUserId(), reportId);
+
 			writeJsonSuccess(json);
 		} catch (NoResultException nre) {
 			writeJsonException(json, nre);
@@ -143,6 +144,7 @@ public class ReportApi extends PicsApiSupport {
 
 		try {
 			json = reportService.buildJsonResponse(reportContext);
+
 			reportService.downloadReport(report);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
@@ -267,6 +269,12 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = new ReportContext(payloadJson, reportId, getUser(), permissions, includeReport,
 				includeData, includeColumns, includeFilters, limit, pageNumber);
 		return reportContext;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void writeJsonCopySuccess(JSONObject json, int newReportId) {
+		writeJsonSuccess(json);
+		json.put(REPORT_ID, newReportId);
 	}
 
 	@SuppressWarnings("unchecked")
