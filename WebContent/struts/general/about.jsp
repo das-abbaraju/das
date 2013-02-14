@@ -26,7 +26,7 @@
 </s:set>
 
 <div class="product-description">
-    <img src="v7/img/logo/logo-large-alternate.png"/>
+    <img src="v7/img/logo/logo-large.png"/>
 
     <div class="version">
         <a href="#" data-title="${version_detail_tooltip}">Version ${version}</a>
@@ -35,7 +35,7 @@
         Copyright &copy; 2012 PICS
     </div>
 
-    <button class="btn show-privacy-policy">Show Privacy Policy</button>
+    <button class="btn show-privacy-policy"><s:text name="Footer.Privacy" /></button>
 </div>
 
 <div class="row">
