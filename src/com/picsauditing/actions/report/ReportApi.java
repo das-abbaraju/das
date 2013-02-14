@@ -147,14 +147,15 @@ public class ReportApi extends PicsApiSupport {
 		return PRINT;
 	}
 
-	public String download(Report report) {
+	public String download() {
 		JSONObject payloadJson = getJsonFromRequestPayload();
+		reportId = 1;
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			json = reportService.buildJsonResponse(reportContext);
-
-			reportService.downloadReport(report);
+			reportService.downloadReport(reportContext);
+//			json = reportService.buildJsonResponse(reportContext);
+//			reportService.downloadReport(report);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}

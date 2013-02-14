@@ -604,7 +604,21 @@ public class ReportService {
 		converter.convertForPrinting();
 	}
 
-	public void downloadReport(Report report) throws IOException {
+	public void downloadReport(ReportContext reportContext) throws IOException,
+			RecordNotFoundException, ReportValidationException, PicsSqlException {
+		// START COPY/PASTE from buildJsonResponse()
+		Report report = createOrLoadReport(reportContext);
+
+		// FIXME this basically initializes a report as well as building SQL
+		SelectSQL sql = sqlBuilder.initializeSql(report, reportContext.permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+
+		// TODO see if this can go before the initializeSql() call into the createReport() function
+		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+		// ...
+		buildDataJson(report, reportContext, sql);
+		// END COPY/PASTE
+
 		convertForPrinting();
 		HSSFWorkbook workbook = buildWorkbook(report);
 		writeFile(report.getName() + ".xls", workbook);
