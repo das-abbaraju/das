@@ -19,7 +19,7 @@ public class Pagination<E> {
 
 	public static final int MAX_NAV_PAGES = 5;
 
-	public void Initialize(PaginationParameters additionalParameters, Paginatable<E> dataProvider) {
+	public void initialize(PaginationParameters additionalParameters, Paginatable<E> dataProvider) {
 		// Copy autowired parameters from URL request
 		additionalParameters.setPage(parameters.getPage());
 		additionalParameters.setPageSize(parameters.getPageSize());

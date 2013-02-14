@@ -131,7 +131,7 @@ public class ManageReportsService {
 			}
 		} else {
 			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
-			pagination.Initialize(parameters, reportDao);
+			pagination.initialize(parameters, reportDao);
 			reports = pagination.getResults();
 		}
 
