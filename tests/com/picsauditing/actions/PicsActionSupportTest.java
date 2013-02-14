@@ -343,7 +343,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		verify(request).getScheme();
 	}
 
-	@Test
+	@Ignore
 	public void testGetSafetyList_Admin() throws Exception {
 		List<User> picsUsers = new ArrayList<User>();
 		picsUsers.add(createUser());
