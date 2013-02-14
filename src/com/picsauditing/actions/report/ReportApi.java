@@ -9,8 +9,6 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.*;
 
 import com.picsauditing.report.data.ReportResults;
-import com.picsauditing.search.SelectSQL;
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 
 import javax.persistence.NoResultException;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
@@ -133,29 +130,34 @@ public class ReportApi extends PicsApiSupport {
 		return JSON;
 	}
 
-	public String print() throws Exception {
+	public String print() {
 		reportId = 1;   //todo: the frontend guys need to fix their request
-		includeData = true;
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
-		report = reportService.createOrLoadReport(reportContext);
-		SelectSQL sql = reportService.initializeReportAndBuildSql(reportContext, report);
-		List<BasicDynaBean> queryResults = reportService.runQuery(sql, new JSONObject());
-		reportResults = reportService.prepareReportForPrinting(report, reportContext, queryResults);
+		try {
+			report = reportService.createOrLoadReport(reportContext);
+
+			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
+		} catch (Exception e) {
+			// TODO log this
+			logger.error("Error while printing report", e);
+		}
 
 		return PRINT;
 	}
 
 	public String download() {
-		JSONObject payloadJson = getJsonFromRequestPayload();
 		reportId = 1;
+		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			reportService.downloadReport(reportContext);
-//			json = reportService.buildJsonResponse(reportContext);
-//			reportService.downloadReport(report);
+			report = reportService.createOrLoadReport(reportContext);
+
+			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
+
+			reportService.downloadReport(report);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}
