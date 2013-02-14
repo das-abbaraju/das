@@ -131,7 +131,6 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String print() {
-		reportId = 1;   //todo: the frontend guys need to fix their request
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
@@ -148,7 +147,6 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String download() {
-		reportId = 1;
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 

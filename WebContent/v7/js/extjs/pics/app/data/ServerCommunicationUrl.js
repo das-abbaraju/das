@@ -42,7 +42,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi!download.action?';
             
             var params = {
-                report: report_id
+                reportId: report_id
             };
             
             return path + Ext.Object.toQueryString(params);
@@ -123,7 +123,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi!print.action?';
             
             var params = {
-                report: report_id
+                reportId: report_id
             };
             
             return path + Ext.Object.toQueryString(params);
