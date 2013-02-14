@@ -177,7 +177,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		try {
 			contractorAccountDAO.refresh(contractor);
 		} catch (Exception nothingWeCanDo) {
-			nothingWeCanDo.printStackTrace();
+			logger.error("An error occurred while refreshing contractor id = {}", contractor.getId(), nothingWeCanDo);
 		}
 
 		return clientSiteServiceLevels;
