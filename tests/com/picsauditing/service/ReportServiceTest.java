@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -11,6 +11,12 @@ import javax.persistence.NoResultException;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -35,7 +41,7 @@ import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportService;
 import com.picsauditing.util.pagination.Pagination;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -68,6 +74,8 @@ public class ReportServiceTest {
 	@Mock
 	private PermissionService permissionService;
 	@Mock
+	private ManageReportsService manageReportsService;
+	@Mock
 	private SqlBuilder sqlBuilder;
 	@Mock
 	protected I18nCache i18nCache;
@@ -78,8 +86,6 @@ public class ReportServiceTest {
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
-	private static final int MAX_SORT_ORDER = 10;
-	private static final int MAX_FAVORITE_COUNT = 15;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -98,6 +104,7 @@ public class ReportServiceTest {
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
+		setInternalState(reportService, "manageReportsService", manageReportsService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
 
 		when(user.getId()).thenReturn(USER_ID);
@@ -216,26 +223,6 @@ public class ReportServiceTest {
 	}
 
 	@Test
-	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportService.getReportsForSearch(null, permissions, pagination);
-		Set<Integer> set = new HashSet<Integer>();
-		set.add(1294);
-
-		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(permissions);
-	}
-
-	@Test
-	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportService.getReportsForSearch("", permissions, pagination);
-		Set<Integer> set = new HashSet<Integer>();
-		set.add(1294);
-
-		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(permissions);
-	}
-
-	@Test
 	public void testLoadOrCreateReportUser() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
@@ -327,22 +314,6 @@ public class ReportServiceTest {
 		verify(reportPermissionAccountDao).save(reportPermissionAccount);
 		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
 		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testCreateReportFromPayload_WhenPayloadIsNull_ThenItThrowsIllegalArgumentException() throws IllegalArgumentException, ReportValidationException {
-		JSONObject payloadJson = null;
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-
-		reportService.createReportFromPayload(reportContext);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testCreateReportFromPayload_WhenPayloadIsEmpty_ThenItThrowsIllegalArgumentException() throws IllegalArgumentException, ReportValidationException {
-		JSONObject payloadJson = new JSONObject();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-
-		reportService.createReportFromPayload(reportContext);
 	}
 
 	@Test
@@ -507,93 +478,6 @@ public class ReportServiceTest {
 		assertTrue(REPORT_ID == report.getId());
 		verify(reportServiceSpy).validate(report);
 		verify(reportDao).save(report);
-	}
-
-
-	@Test
-	public void testFavoriteReport_shouldSetFavoriteFlag() throws SQLException {
-		ReportUser reportUser = createTestReportUser();
-		reportUser.setFavorite(false);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
-		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
-
-		ReportUser result = reportService.favoriteReport(USER_ID, REPORT_ID);
-
-		assertTrue(result.isFavorite());
-	}
-
-	@Test
-	public void testFavoriteReport_newlyFavoritedReportShouldHaveHighestSortOrder() throws SQLException {
-		ReportUser reportUser = createTestReportUser();
-		reportUser.setFavorite(false);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
-		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
-
-		ReportUser result = reportService.favoriteReport(USER_ID, REPORT_ID);
-
-		assertEquals(MAX_SORT_ORDER + 1, result.getSortOrder());
-	}
-
-	@Test
-	public void testUnfavoriteReport_unfavoritedReportShouldBeRemoved() throws Exception {
-		ReportUser reportUser = createTestReportUser();
-		reportUser.setFavorite(false);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
-		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
-
-		ReportUser result = reportService.unfavoriteReport(USER_ID, REPORT_ID);
-
-		assertFalse(result.isFavorite());
-		assertEquals(0, result.getSortOrder());
-	}
-
-	@Test
-	public void testMoveFavoriteUp() throws Exception {
-		ReportUser reportUser = createTestReportUser();
-		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
-		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
-		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
-
-		ReportUser result = reportService.moveFavoriteUp(USER_ID, REPORT_ID);
-
-		assertEquals(beforeSortOrder + 1, result.getSortOrder());
-		verify(reportUserDao).offsetSortOrderForRange(USER_ID, -1, 4, 4);
-	}
-
-	@Test
-	public void testMoveFavoriteDown() throws Exception {
-		ReportUser reportUser = createTestReportUser();
-		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportUser);
-		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
-		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
-
-		ReportUser result = reportService.moveFavoriteDown(USER_ID, REPORT_ID);
-
-		assertEquals(beforeSortOrder - 1, result.getSortOrder());
-		verify(reportUserDao).offsetSortOrderForRange(USER_ID, 1, 2, 2);
-	}
-
-	private ReportUser createTestReportUser() {
-		ReportUser reportUser = new ReportUser();
-
-		Report report = new Report();
-		report.setName("myReport");
-		reportUser.setReport(report);
-
-		User user = new User("Joe User");
-		user.setId(USER_ID);
-		reportUser.setUser(user);
-
-		return reportUser;
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {

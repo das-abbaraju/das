@@ -11,7 +11,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.ReportService;
+import com.picsauditing.service.ReportService;
 
 public class ReportApiTest extends PicsActionTest {
 

@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.access.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.PicsSqlException;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.converter.ReportBuilder;
 import com.picsauditing.report.converter.JsonReportBuilder;
@@ -19,7 +25,6 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.service.PermissionService;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -39,7 +44,6 @@ import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.pagination.Pagination;
 
 import static com.picsauditing.report.ReportJson.*;
 
@@ -59,9 +63,10 @@ public class ReportService {
 	private LegacyReportConverter legacyReportConverter;
 	@Autowired
 	private SqlBuilder sqlBuilder;
+	@Autowired
+	public ManageReportsService manageReportsService;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
-	private static final int MAX_REPORTS_IN_MENU = 10;
 
 	@SuppressWarnings("unchecked")
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
@@ -107,7 +112,7 @@ public class ReportService {
 	}
 
 	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
-		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
+		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 
 		Report report;
 		if (shouldLoadReportFromJson(reportJson, reportContext.includeData)) {
@@ -125,7 +130,7 @@ public class ReportService {
 		return report;
 	}
 
-	private JSONObject getReportJsonFromPayload(JSONObject payloadJson) {
+	private JSONObject buildReportJsonFromPayload(JSONObject payloadJson) {
 		JSONObject reportJson = new JSONObject();
 
 		if (JSONUtilities.isNotEmpty(payloadJson)) {
@@ -135,12 +140,19 @@ public class ReportService {
 		return reportJson;
 	}
 
-	public void setEditPermissions(Permissions permissions, int userId, int reportId, boolean editable)
-			throws NoResultException, NonUniqueResultException, SQLException, Exception {
-		// TODO fix this, probably should be connect*
-		ReportPermissionUser reportPermissionUser = shareReportWithUser(userId, reportId, permissions, editable);
+	public Report save(ReportContext reportContext) throws Exception {
+		if (!permissionService.canUserEditReport(reportContext.permissions, reportContext.reportId)) {
+			throw new Exception("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
+		}
 
-		reportPermissionUserDao.save(reportPermissionUser);
+		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
+		Report report = createReportFromPayload(reportContext.reportId, reportJson);
+
+		validate(report);
+
+		reportDao.save(report);
+
+		return report;
 	}
 
 	public Report copy(ReportContext reportContext) throws Exception {
@@ -151,7 +163,8 @@ public class ReportService {
 					+ reportContext.reportId);
 		}
 
-		Report newReport = createReportFromPayload(reportContext);
+		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
+		Report newReport = createReportFromPayload(reportContext.reportId, reportJson);
 
 		validate(newReport);
 
@@ -159,8 +172,10 @@ public class ReportService {
 
 		reportDao.save(newReport);
 
-		if (shouldFavorite(reportContext)) {
-			favoriteReport(userId, newReport.getId());
+		if (manageReportsService.shouldFavorite(reportJson)) {
+			ReportUser reportUser = loadOrCreateReportUser(userId, newReport.getId());
+			manageReportsService.favoriteReport(reportUser);
+			reportUserDao.save(reportUser);
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
@@ -168,19 +183,6 @@ public class ReportService {
 		connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
-	}
-
-	private boolean shouldFavorite(ReportContext reportContext) {
-		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
-
-		try {
-			boolean favorite = (Boolean) reportJson.get(REPORT_FAVORITE);
-			return favorite;
-		} catch (Exception e) {
-			// Just eat it!
-		}
-
-		return false;
 	}
 
 	private void prepareNewReportForDatabaseCopy(Report newReport, Permissions permissions) {
@@ -206,36 +208,18 @@ public class ReportService {
 		}
 	}
 
-	public Report save(ReportContext reportContext) throws Exception {
-		if (!permissionService.canUserEditReport(reportContext.permissions, reportContext.reportId)) {
-			throw new Exception("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
-		}
+	protected Report createReportFromPayload(int reportId, JSONObject reportJson) throws IllegalArgumentException, ReportValidationException {
+		Report report = buildReportFromJson(reportJson, reportId);
 
-		Report report = createReportFromPayload(reportContext);
-
-		validate(report);
-
-		reportDao.save(report);
+		report.sortColumns();
 
 		return report;
 	}
 
-	// TODO Remove this method after the next release
-	@Deprecated
-	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
-		if (report == null) {
-			throw new IllegalArgumentException("Report should not be null");
-		}
-
-		reportDao.remove(Column.class, "t.report.id = " + report.getId());
-		report.getColumns().clear();
-		reportDao.remove(Filter.class, "t.report.id = " + report.getId());
-		report.getFilters().clear();
-		reportDao.remove(Sort.class, "t.report.id = " + report.getId());
-		report.getSorts().clear();
-
-		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
-		reportDao.save(report);
+	private Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
+		Report report = ReportBuilder.fromJson(jsonReport);
+		report.setId(reportId);
+		return report;
 	}
 
 	void validate(Report report) throws ReportValidationException {
@@ -261,23 +245,22 @@ public class ReportService {
 		}
 	}
 
-	public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {
-		List<Report> reports = new ArrayList<Report>();
-
-		if (Strings.isEmpty(searchTerm)) {
-			// By default, show the top ten most favorited reports sorted by
-			// number of favorites
-			List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions);
-			for (ReportUser reportUser : reportUsers) {
-				reports.add(reportUser.getReport());
-			}
-		} else {
-			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
-			pagination.Initialize(parameters, reportDao);
-			reports = pagination.getResults();
+	// TODO Remove this method after the next release
+	@Deprecated
+	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
+		if (report == null) {
+			throw new IllegalArgumentException("Report should not be null");
 		}
 
-		return reports;
+		reportDao.remove(Column.class, "t.report.id = " + report.getId());
+		report.getColumns().clear();
+		reportDao.remove(Filter.class, "t.report.id = " + report.getId());
+		report.getFilters().clear();
+		reportDao.remove(Sort.class, "t.report.id = " + report.getId());
+		report.getSorts().clear();
+
+		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
+		reportDao.save(report);
 	}
 
 	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions) throws IllegalArgumentException {
@@ -316,90 +299,6 @@ public class ReportService {
 		return reportUser;
 	}
 
-	public List<ReportUser> getFavorites(int userId) {
-		List<ReportUser> favorites;
-		favorites = reportUserDao.findAllFavorite(userId);
-
-		if (favorites.size() > MAX_REPORTS_IN_MENU) {
-			List<ReportUser> reportUserOverflow = favorites.subList(MAX_REPORTS_IN_MENU, favorites.size());
-			favorites = favorites.subList(0, MAX_REPORTS_IN_MENU);
-		}
-
-		return favorites;
-	}
-
-	public ReportUser favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
-			SQLException {
-		ReportUser reportUser = loadOrCreateReportUser(userId, reportId);
-		favorite(reportUser);
-		return (ReportUser) reportUserDao.save(reportUser);
-	}
-
-	private ReportUser favorite(ReportUser reportUser) throws SQLException {
-		int userId = reportUser.getUser().getId() ;
-		int nextSortIndex = getNextSortIndex(userId);
-		reportUser.setSortOrder(nextSortIndex);
-		reportUser.setFavorite(true);
-
-		return reportUser;
-	}
-
-	public ReportUser unfavoriteReport(int userId, int reportId) {
-		ReportUser unfavoritedReportUser = loadOrCreateReportUser(userId, reportId);
-
-		unfavoritedReportUser.setSortOrder(0);
-		unfavoritedReportUser.setFavorite(false);
-		unfavoritedReportUser = (ReportUser) reportUserDao.save(unfavoritedReportUser);
-		return unfavoritedReportUser;
-	}
-
-	public ReportUser moveFavoriteUp(int userId, int reportId) throws Exception {
-		return moveFavorite(userId, reportId, 1);
-	}
-
-	public ReportUser moveFavoriteDown(int userId, int reportId) throws Exception {
-		return moveFavorite(userId, reportId, -1);
-	}
-
-	public ReportUser moveFavorite(int userId, int reportId, int magnitude) throws Exception {
-		ReportUser reportUser = loadReportUser(userId, reportId);
-		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
-		int currentPosition = reportUser.getSortOrder();
-		int newPosition = currentPosition + magnitude;
-
-		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites) {
-			return reportUser;
-		}
-
-		shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
-
-		reportUser.setSortOrder(newPosition);
-		reportUser = (ReportUser) reportUserDao.save(reportUser);
-		return reportUser;
-	}
-
-	private void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
-		reportUserDao.resetSortOrder(userId);
-
-		int offsetAmount;
-		int offsetRangeBegin;
-		int offsetRangeEnd;
-
-		if (currentPosition < newPosition) {
-			// Moving up in list, displaced reports move down
-			offsetAmount = -1;
-			offsetRangeBegin = currentPosition + 1;
-			offsetRangeEnd = newPosition;
-		} else {
-			// Moving down in list, displaced reports move up
-			offsetAmount = 1;
-			offsetRangeBegin = newPosition;
-			offsetRangeEnd = currentPosition - 1;
-		}
-
-		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
-	}
-
 	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
 		ReportUser reportUser;
 
@@ -425,11 +324,6 @@ public class ReportService {
 
 	public ReportUser loadReportUser(int userId, int reportId) {
 		return reportUserDao.findOne(userId, reportId);
-	}
-
-	private int getNextSortIndex(int userId) {
-		int maxSortIndex = reportUserDao.findMaxSortIndex(userId);
-		return maxSortIndex + 1;
 	}
 
 	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
@@ -512,28 +406,8 @@ public class ReportService {
 		}
 	}
 
-	public Report createReportFromPayload(ReportContext reportContext) throws IllegalArgumentException, ReportValidationException {
-		if (JSONUtilities.isEmpty(reportContext.payloadJson)) {
-			throw new IllegalArgumentException();
-		}
-
-		JSONObject reportJson = getReportJsonFromPayload(reportContext.payloadJson);
-
-		Report report = buildReportFromJson(reportJson, reportContext.reportId);
-
-		report.sortColumns();
-
-		return report;
-	}
-
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {
 		return JSONUtilities.isNotEmpty(reportJson) && includeData;
-	}
-
-	private Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
-		Report report = ReportBuilder.fromJson(jsonReport);
-		report.setId(reportId);
-		return report;
 	}
 
 	private Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {

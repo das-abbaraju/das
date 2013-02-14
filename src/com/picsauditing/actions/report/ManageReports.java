@@ -18,8 +18,9 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.report.ReportService;
 import com.picsauditing.report.ReportUtil;
+import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -28,22 +29,14 @@ import com.picsauditing.util.pagination.PaginationParameters;
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	public static final String LANDING_URL = "ManageReports!favoritesList.action";
-
-	public static final String ALPHA_SORT = "alpha";
-	public static final String DATE_ADDED_SORT = "dateAdded";
-	public static final String LAST_VIEWED_SORT = "lastViewed";
-	public static final String ASC = "ASC";
-	public static final String DESC = "DESC";
-
-	public static final int MAX_REPORTS_IN_MENU = 10;
-
 	@Autowired
 	private ReportService reportService;
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportUserDAO reportUserDao;
+	@Autowired
+	private ManageReportsService manageReportsService;
 
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
@@ -58,6 +51,16 @@ public class ManageReports extends PicsActionSupport {
 	private String direction;
 
 	private HttpServletRequest requestForTesting;
+
+	public static final String LANDING_URL = "ManageReports!favoritesList.action";
+
+	public static final String ALPHA_SORT = "alpha";
+	public static final String DATE_ADDED_SORT = "dateAdded";
+	public static final String LAST_VIEWED_SORT = "lastViewed";
+	public static final String ASC = "ASC";
+	public static final String DESC = "DESC";
+
+	public static final int MAX_REPORTS_IN_MENU = 10;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
@@ -97,7 +100,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteUp() {
 		try {
-			reportService.moveFavoriteUp(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+
+			manageReportsService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
 		} catch (Exception e) {
@@ -109,7 +114,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteDown() {
 		try {
-			reportService.moveFavoriteDown(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+
+			manageReportsService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
 		} catch (Exception e) {
@@ -142,7 +149,7 @@ public class ManageReports extends PicsActionSupport {
 	public String searchList() {
 		reports = new ArrayList<Report>();
 		try {
-			reports = reportService.getReportsForSearch(searchTerm, permissions, getPagination());
+			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 			if (permissions.has(OpPerms.Debug)) {
@@ -158,9 +165,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	/**
-	 * This method has purposely been left empty because we wanted to disable 
+	 * This method has purposely been left empty because we wanted to disable
 	 * this functionality.
-	 * 
+	 *
 	 * @return
 	 */
 	public String removeReportUser() {
@@ -168,9 +175,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	/**
-	 * This method has purposely been left empty because we wanted to disable 
+	 * This method has purposely been left empty because we wanted to disable
 	 * this functionality.
-	 * 
+	 *
 	 * @return
 	 */
 	public String removeReportPermissionUser() {
@@ -178,9 +185,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	/**
-	 * This method has purposely been left empty because we wanted to disable 
+	 * This method has purposely been left empty because we wanted to disable
 	 * this functionality.
-	 * 
+	 *
 	 * @return
 	 */
 	public String deleteReport() {
@@ -189,7 +196,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorite() {
 		try {
-			reportService.favoriteReport(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			manageReportsService.favoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -201,7 +209,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String unfavorite() {
 		try {
-			reportService.unfavoriteReport(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			manageReportsService.unfavoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -213,7 +222,7 @@ public class ManageReports extends PicsActionSupport {
 
 	/**
 	 * Exclusively to export Columns for translations
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -241,8 +250,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	private HttpServletRequest request() {
-		if (requestForTesting != null)
+		if (requestForTesting != null) {
 			return requestForTesting;
+		}
 
 		return getRequest();
 	}
@@ -321,22 +331,25 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String getAlphaSortDirection() {
-		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction))
+		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction)) {
 			return ASC;
+		}
 
 		return DESC;
 	}
 
 	public String getDateAddedSortDirection() {
-		if (!DATE_ADDED_SORT.equals(sort) || ASC.equals(direction))
+		if (!DATE_ADDED_SORT.equals(sort) || ASC.equals(direction)) {
 			return DESC;
+		}
 
 		return ASC;
 	}
 
 	public String getLastViewedSortDirection() {
-		if (!LAST_VIEWED_SORT.equals(sort) || ASC.equals(direction))
+		if (!LAST_VIEWED_SORT.equals(sort) || ASC.equals(direction)) {
 			return DESC;
+		}
 
 		return ASC;
 	}
