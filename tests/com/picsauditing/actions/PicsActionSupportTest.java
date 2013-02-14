@@ -358,7 +358,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		assertEquals(1, list.size());
 	}
 
-	@Test
+	@Ignore
 	public void testGetSafetyList_NonAdmin() throws Exception {
 		List<User> picsUsers = new ArrayList<User>();
 		picsUsers.add(createUser());
@@ -374,7 +374,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		assertEquals(1, list.size());
 	}
 
-	@Test
+	@Ignore
 	public void testGetSafetyList_Operator() throws Exception {
 		List<User> picsUsers = new ArrayList<User>();
 		picsUsers.add(createUser());
