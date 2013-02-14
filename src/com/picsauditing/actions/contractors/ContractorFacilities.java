@@ -252,7 +252,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				// their umbrella
 				OperatorAccount op = operatorDao.find(permissions.getAccountId());
 				for (Facility f : op.getOperatorFacilities()) {
-					if (!contractor.getOperatorAccounts().contains(f.getOperator())) {
+					if (!contractor.getOperatorAccounts().contains(f.getOperator()) && f.getOperator().getStatus().isActive()) {
 						searchResults.add(f.getOperator());
 					}
 				}
