@@ -60,9 +60,6 @@ public class ReportService {
 	@Autowired
 	private SqlBuilder sqlBuilder;
 
-	// TODO remove this instance variable
-	private ReportDataConverter converter;
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 	private static final int MAX_REPORTS_IN_MENU = 10;
 
@@ -568,17 +565,19 @@ public class ReportService {
 		return dataJson;
 	}
 
-	protected ReportResults buildReportResults(Report report, ReportContext reportContext,
-			List<BasicDynaBean> queryResults) {
-		converter = new ReportDataConverter(report.getColumns(), queryResults);
+	protected ReportResults buildReportResults(Report report, ReportContext reportContext, List<BasicDynaBean> queryResults) {
+		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+
 		converter.setLocale(reportContext.permissions.getLocale());
 		converter.convertForExtJS();
-		return converter.getReportResults();
+		ReportResults reportResults = converter.getReportResults();
+
+		return reportResults;
 	}
 
 	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
 	                                              List<BasicDynaBean> queryResults) {
-		converter = new ReportDataConverter(report.getColumns(), queryResults);
+		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());
 		converter.convertForPrinting();
 		return converter.getReportResults();
@@ -609,8 +608,8 @@ public class ReportService {
 		return reportResults;
 	}
 
-	public void downloadReport(Report report) throws IOException {
-		HSSFWorkbook workbook = buildWorkbook(report);
+	public void downloadReport(Report report, ReportResults reportResults) throws IOException {
+		HSSFWorkbook workbook = buildWorkbook(report, reportResults);
 		writeFile(report.getName() + ".xls", workbook);
 	}
 
@@ -618,16 +617,16 @@ public class ReportService {
 		return reportUserDao.findAllFavorite(userId);
 	}
 
-	private HSSFWorkbook buildWorkbook(Report report) {
-		logger.info("Building XLS File");
+	private HSSFWorkbook buildWorkbook(Report report, ReportResults reportResults) {
 		ExcelBuilder builder = new ExcelBuilder();
 		builder.addColumns(report.getColumns());
-		builder.addSheet(report.getName(), converter.getReportResults());
-		return builder.getWorkbook();
+		builder.addSheet(report.getName(), reportResults);
+		HSSFWorkbook workbook = builder.getWorkbook();
+
+		return workbook;
 	}
 
 	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
-		logger.info("Streaming XLS File to response");
 		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();

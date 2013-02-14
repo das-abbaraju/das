@@ -139,7 +139,6 @@ public class ReportApi extends PicsApiSupport {
 
 			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
 		} catch (Exception e) {
-			// TODO log this
 			logger.error("Error while printing report", e);
 		}
 
@@ -155,7 +154,7 @@ public class ReportApi extends PicsApiSupport {
 
 			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
 
-			reportService.downloadReport(report);
+			reportService.downloadReport(report, reportResults);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}
