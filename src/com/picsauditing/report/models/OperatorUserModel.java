@@ -6,6 +6,7 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.UserGroupTable;
 import com.picsauditing.report.tables.UserTable;
@@ -19,10 +20,16 @@ public class OperatorUserModel extends AbstractModel {
     public ModelSpec getJoinSpec() {
         ModelSpec spec = new ModelSpec(null, "User");
         spec.category = FieldCategory.AccountInformation;
-        
-        ModelSpec operator = spec.join(UserTable.Account);
-        operator.category = FieldCategory.AccountInformation;
-        operator.alias = "Operator";
+
+        ModelSpec account = spec.join(UserTable.Account);
+        account.category = FieldCategory.AccountInformation;
+        account.alias = "Account";
+
+        {
+            ModelSpec operator = account.join(AccountTable.Operator);
+            operator.category = FieldCategory.AccountInformation;
+            operator.alias = "Operator";
+        }
 
         ModelSpec loginLog = spec.join(UserTable.LoginLog);
         loginLog.category = FieldCategory.AccountInformation;
@@ -45,7 +52,7 @@ public class OperatorUserModel extends AbstractModel {
     public Map<String, Field> getAvailableFields() {
         Map<String, Field> fields = super.getAvailableFields();
 
-        Field accountType = new Field("OperatorType", "Operator.type", FieldType.AccountType);
+        Field accountType = new Field("AccountType", "Account.type", FieldType.AccountType);
 		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(accountType.getName().toUpperCase(), accountType);
