@@ -5,3 +5,9 @@ $pics_light_blue: #73bbe8;
 $pics_link_blue: #226396;
 $pics_warm_grey: #808285;
 $pics_cool_grey: #f1f1f2;
+
+
+//global bootstrap styles
+.list-striped li:nth-child(even) {
+  background-color: $pics_cool_grey;
+}

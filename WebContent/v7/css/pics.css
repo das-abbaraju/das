@@ -6,6 +6,11 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
+/* line 11, ../sass/pics/_global.scss */
+.list-striped li:nth-child(even) {
+  background-color: #f1f1f2;
+}
+
 /* line 1, ../sass/pics/layout/_layout.scss */
 body {
   padding-top: 55px;
@@ -220,14 +225,18 @@ body {
 #user_searchbox .more-results a {
   font-weight: bold;
 }
-/* line 151, ../sass/pics/layout/_menu.scss */
+/* line 149, ../sass/pics/layout/_menu.scss */
+#user_searchbox .total-results {
+  background-color: #ffffff;
+}
+/* line 153, ../sass/pics/layout/_menu.scss */
 #user_searchbox .total-results p {
   color: #999;
   font-size: 13px;
   margin: 0;
 }
 
-/* line 162, ../sass/pics/layout/_menu.scss */
+/* line 164, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
@@ -235,11 +244,11 @@ body {
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 173, ../sass/pics/layout/_menu.scss */
+  /* line 175, ../sass/pics/layout/_menu.scss */
   .navbar .brand {
     padding-right: 10px;
   }
-  /* line 178, ../sass/pics/layout/_menu.scss */
+  /* line 180, ../sass/pics/layout/_menu.scss */
   .navbar .nav > li > a {
     padding: 16px 10px;
   }

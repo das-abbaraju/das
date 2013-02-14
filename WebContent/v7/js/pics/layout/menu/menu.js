@@ -25,7 +25,7 @@
                 search_query_element.typeahead({
                     items: 10,
                     source: PICS.debounce(this.search, 350),
-                    menu: '<ul id="user_searchbox" class="typeahead dropdown-menu"></ul>',
+                    menu: '<ul id="user_searchbox" class="typeahead dropdown-menu list-striped"></ul>',
                     item: '<li><a href="#"></a></li>'
                 });
 
@@ -35,7 +35,8 @@
                 };
 
                 search_query_element.data('typeahead').render = function (items, total_results) {
-                    var that = this;
+                    var that = this,
+                        results = 0;
 
                     //format items
                     if (!items.length) {
@@ -72,11 +73,14 @@
                             return i[0];
                         });
 
-                        if (total_results > that.options.items) {
+                        // save result length before adding display text
+                        results = items.length;
+
+                        if (results === that.options.items) {
                             items.push($('<li class="more-results"><a href="#">More Results...</a></li>').get(0));
                         }
 
-                        items.push($('<li class="total-results"><p>Displaying ' + items.length + ' of ' + total_results + '</p></li>').get(0));
+                        items.push($('<li class="total-results"><p>Displaying ' + results + ' of ' + total_results + '</p></li>').get(0));
                     }
 
                     items.first().addClass('active');
