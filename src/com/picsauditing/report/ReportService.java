@@ -69,13 +69,7 @@ public class ReportService {
 	@SuppressWarnings("unchecked")
 	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
 		Report report = createOrLoadReport(reportContext);
-
-		// FIXME this basically initializes a report as well as building SQL
-		SelectSQL sql = sqlBuilder.initializeSql(report, reportContext.permissions);
-		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
-
-		// TODO see if this can go before the initializeSql() call into the createReport() function
-		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
 
 		JSONObject responseJson = new JSONObject();
 
@@ -103,6 +97,16 @@ public class ReportService {
 		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
 
 		return responseJson;
+	}
+
+	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report) throws ReportValidationException {
+		// FIXME this basically initializes a report as well as building SQL
+		SelectSQL sql = sqlBuilder.initializeSql(report, reportContext.permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
+
+		// TODO see if this can go before the initializeSql() call into the createReport() function
+		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+		return sql;
 	}
 
 	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
@@ -572,11 +576,19 @@ public class ReportService {
 		return converter.getReportResults();
 	}
 
+	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
+	                                              List<BasicDynaBean> queryResults) {
+		converter = new ReportDataConverter(report.getColumns(), queryResults);
+		converter.setLocale(reportContext.permissions.getLocale());
+		converter.convertForPrinting();
+		return converter.getReportResults();
+	}
+
 	private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
-	protected List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws PicsSqlException {
+	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws PicsSqlException {
 		List<BasicDynaBean> queryResults = null;
 
 		try {

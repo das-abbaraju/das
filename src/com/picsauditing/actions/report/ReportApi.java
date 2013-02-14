@@ -8,6 +8,9 @@ import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.*;
 
+import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.search.SelectSQL;
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 
 import javax.persistence.NoResultException;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
@@ -37,9 +41,10 @@ public class ReportApi extends PicsApiSupport {
 
 	protected boolean editable;
 	protected int shareId;
+	private ReportResults reportResults;
+	private Report report;
 
 	private static final String PRINT = "print";
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
 
 	public String execute() throws Exception {
@@ -129,11 +134,15 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String print() throws Exception {
+		reportId = 1;   //todo: the frontend guys need to fix their request
+		includeData = true;
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
-		json = reportService.buildJsonResponse(reportContext);
-		reportService.convertForPrinting();
+		report = reportService.createOrLoadReport(reportContext);
+		SelectSQL sql = reportService.initializeReportAndBuildSql(reportContext, report);
+		List<BasicDynaBean> queryResults = reportService.runQuery(sql, new JSONObject());
+		reportResults = reportService.prepareReportForPrinting(report, reportContext, queryResults);
 
 		return PRINT;
 	}
@@ -318,5 +327,13 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	public ReportResults getReportResults() {
+		return reportResults;
+	}
+
+	public Report getReport() {
+		return report;
 	}
 }
