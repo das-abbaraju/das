@@ -140,14 +140,40 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             
             return path + Ext.Object.toQueryString(params);
         },
-        
-        getShareReportUrl: function () {
+
+        getShareReportWithAccountUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportSharing!share.action';
+                path = 'ReportApi!shareWithAccount.action?';
             
             var params = {
                 reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareReportWithGroupUrl: function (is_editable) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!shareWithGroup.action?';
+        
+            var params = {
+                reportId: report_id,
+                editable: is_editable
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareReportWithUserUrl: function (is_editable) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!shareWithUser.action?';
+            
+            var params = {
+                reportId: report_id,
+                editable: is_editable
             };
             
             return path + Ext.Object.toQueryString(params);

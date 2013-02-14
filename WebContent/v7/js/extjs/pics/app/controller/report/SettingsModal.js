@@ -111,7 +111,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_setting_form = edit_setting_view.getForm(),
             copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
             copy_setting_form = copy_setting_view.getForm(),
-            copy_favorite = copy_setting_view.down('reportfavoritetoggle');
+            copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
+            share_setting_view = this.getShareSetting(),
+            editable_icon = Ext.select('.icon-edit');
 
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
@@ -121,6 +123,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
+
+        // reset the share modal
+        share_setting_view.update('');
+        editable_icon.removeCls('selected')
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
@@ -226,7 +232,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
 
         if (record) {
-            var report_settings_share = this.getShareSetting();
+            var share_setting_view = this.getShareSetting();
 
             var account = {
                 name: record.get('result_name'),
@@ -234,13 +240,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
             };
 
             // Save the record data needed for sharing.
-            report_settings_share.request_data = {
+            share_setting_view.request_data = {
                 account_id: record.get('result_id'),
                 account_type: record.get('search_type')
             };
 
             // Show the selection.
-            report_settings_share.update(account);
+            share_setting_view.update(account);
         }
     },
 
@@ -255,16 +261,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     onReportModalShareClick: function (cmp, e, eOpts) {
-        var report_settings_share = this.getShareSetting(),
-            data = report_settings_share.request_data;
+        var share_setting_view = this.getShareSetting(),
+            data = share_setting_view.request_data,
+            report_settings_modal = this.getSettingsModal(),
+            that = this;
 
         // Abort if no account has been selected.
         if (typeof data == 'undefined') {
             return;
         }
 
-        var report_settings_share_element = report_settings_share.getEl(),
-            is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
+        var share_setting_view_element = share_setting_view.getEl(),
+            is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
             account_id = data.account_id,
             account_type = data.account_type;
 
@@ -273,7 +281,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
             account_type: account_type,
             is_editable: is_editable,
             success_callback: function (response) {
+                var data = response.responseText,
+                    json = Ext.JSON.decode(data);
+
                 report_settings_modal.close();
+
+                that.application.fireEvent('openalertmessage', {
+                    title: json.title,
+                    html: json.html
+                });
             }
         };
         

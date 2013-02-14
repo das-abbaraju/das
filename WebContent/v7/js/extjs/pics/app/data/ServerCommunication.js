@@ -244,18 +244,29 @@ Ext.define('PICS.data.ServerCommunication', {
                     is_editable = options.is_editable,
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
-                    url = PICS.data.ServerCommunicationUrl.getShareReportUrl();
-                    
-                if (!(account_id && account_type && is_editable)) {
+                    url = '';
+
+                if (!(account_id && account_type && typeof is_editable != 'undefined')) {
                     Ext.Error.raise('Error');
                 }
-                
+
+                switch (account_type) {
+                    case 'account':
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithAccountUrl();
+                        break;
+                    case 'user':
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithUserUrl(is_editable);
+                        break;
+                    case 'group':
+                    default:
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithGroupUrl(is_editable);
+                        break;
+                }
+
                 Ext.Ajax.request({
                     url: url,
                     params: {
-                        id: account_id,
-                        type: account_type,
-                        editable: is_editable
+                        shareId: account_id,
                     },
                     success: success_callback,
                     failure: failure_callback
