@@ -11,9 +11,14 @@
 @import 'blueprint/typography';
 
 @import 'vendor/vendor';
+
+/* Import v7 menu styles */
 @import '../../../v7/sass/pics/layout/menu';
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_navbar';
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_dropdown';
 @import '../../../v7/sass/pics/widgets/twitter-bootstrap/_form';
 @import '../../../v7/sass/pics/layout/environment';
+
+/* Import form styles and overrides */
+@import 'override/form';
 @import 'override/override';

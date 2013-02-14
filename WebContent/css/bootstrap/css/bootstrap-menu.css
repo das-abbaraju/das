@@ -2149,6 +2149,7 @@
   position: fixed;
 }
 
+/* Import v7 menu styles */
 /* line 4, ../../../v7/sass/pics/layout/_menu.scss */
 .navbar .brand {
   background: url(../img/logo/logo-icon.png) no-repeat;
@@ -2439,6 +2440,7 @@ input[type="color"],
     display: inline;
   }
 }
+/* Import form styles and overrides */
 /*
  * Bootstrap v2.2.2
  *
@@ -2952,7 +2954,7 @@ input.search-query {
 }
 
 /*From bootstrap body defaults*/
-/* line 5, ../sass/override/_override.scss */
+/* line 3, ../sass/override/_override.scss */
 .navbar {
   color: #777777;
   font-size: 14px;
@@ -2960,27 +2962,27 @@ input.search-query {
 }
 
 /*Logo URL update*/
-/* line 13, ../sass/override/_override.scss */
+/* line 11, ../sass/override/_override.scss */
 .navbar .brand {
   background: url(../../../v7/img/logo/logo-icon.png) no-repeat;
   background: rgba(0, 0, 0, 0) url(../../../v7/img/logo/logo-icon.svg) no-repeat;
 }
 
 /*PICS Global overrides*/
-/* line 20, ../sass/override/_override.scss */
+/* line 18, ../sass/override/_override.scss */
 body {
-  padding-top: 55px;
-  padding-bottom: 26px;
+  padding-top: 75px;
+  padding-bottom: 46px;
   position: relative;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  /* line 27, ../sass/override/_override.scss */
+  /* line 25, ../sass/override/_override.scss */
   body {
     padding-top: 0;
   }
 }
-/* line 33, ../sass/override/_override.scss */
+/* line 31, ../sass/override/_override.scss */
 a:link,
 a:visited {
   text-decoration: none;
