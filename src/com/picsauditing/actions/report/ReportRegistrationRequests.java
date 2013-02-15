@@ -137,7 +137,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		this.filter = filter;
 	}
 
-	public boolean isAmSales() {
+	public boolean isAccountManagerOrSalesRepresentative() {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 
@@ -147,22 +147,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		addFilterToSQL();
 
-		if (permissions.isPicsEmployee()) {
-			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN user_assignment ua ON ua.country = a.country AND ua.userID = "
-						+ permissions.getUserId() + " AND (a.countrySubdivision = ua.countrySubdivision OR a.zip "
-						+ "BETWEEN ua.postal_start AND ua.postal_end)");
-				legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
-						+ permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
-						+ "BETWEEN ua.postal_start AND ua.postal_end)");
-			}
-
-			if (isAmSales() && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
-						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-				legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
-						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-			}
+		if (isAccountManagerOrSalesRepresentative() && !getFilter().isViewAll()) {
+			sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
+					+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+			legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
+					+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 		}
 
 		if (permissions.isOperatorCorporate()) {
@@ -392,13 +381,12 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		if (permissions.isPicsEmployee()) {
 			getFilter().setShowMarketingUsers(true);
-			getFilter().setShowViewAll(true);
 			getFilter().setShowExcludeOperators(true);
 			getFilter().setShowOperatorTags(true);
-		}
 
-		if (!permissions.hasGroup(User.GROUP_CSR)) {
-			getFilter().setShowLocation(true);
+			if (isAccountManagerOrSalesRepresentative()) {
+				getFilter().setShowViewAll(true);
+			}
 		}
 	}
 }
