@@ -330,7 +330,7 @@ public final class MenuBuilder {
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
 		addLegacyReports(permissions, reportsMenu);
-		
+
 		if (permissions.has(OpPerms.Report)) {
 			MenuComponent adminMenu = reportsMenu.addChild("Administration");
 			adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
