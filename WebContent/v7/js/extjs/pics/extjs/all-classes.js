@@ -92337,24 +92337,14 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
     // custom config
     modal_title: 'Share Report',
     title: '<i class="icon-share icon-large"></i>Share',
-    
-    initComponent: function () {
-        this.callParent(arguments);
-
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
-            this.generateEditableSettings();
-        } else {
-            this.generateNonEditableSettings();
-        }
-    },
 
     listeners: {
         afterrender: function (cmp, eOpts) {
-            var config = PICS.app.configuration;
+            var report_store = Ext.StoreManager.get('report.Reports'),
+                report = report_store.first(),
+                is_editable = report.get('is_editable');
 
-            if (config.isEditable()) {
+            if (is_editable) {
                 this.mon(this.el,'click', this.onAllowEditClick, this, {
                     delegate: '.icon-edit'
                 });
@@ -92362,8 +92352,22 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         }
     },
 
+    initComponent: function () {
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
+
+        if (is_editable) {
+            this.generateEditableSettings();
+        } else {
+            this.generateNonEditableSettings();
+        }
+
+        this.callParent(arguments);
+    },
+
     generateEditableSettings: function () {
-        this.addDocked({
+        this.dockedItems = [{
             xtype: 'toolbar',
             defaults: {
                 margin: '0 0 0 5'
@@ -92386,16 +92390,16 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
                 pack: 'end'
             },
             ui: 'footer'
-        });
+        }];
 
-        this.add({
+        this.items = [{
             xtype: 'sharesearchbox'
-        },{
+        }, {
             xtype: 'component',
-            height: 50,
+            height: 65,
             padding: 6,
             border: 1,
-            margin: '10 0 5 0',
+            margin: '0 0 5 0',
             baseCls: 'selected-account',
             tpl: Ext.create('Ext.XTemplate',
                             '<p>',
@@ -92409,31 +92413,34 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
                             '</p>'
                            ),
             id: 'selected_account'
-        },{
+        }, {
             xtype: 'displayfield',
             fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
             labelSeparator: '',
             value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
-        });
+        }];
 
         this.margin = '0 10 0 10';
         this.layout = 'form';
         this.id = 'report_share'
     },
-    
-    generateNonEditableSettings: function () {
-        this.html = new Ext.Template([
-            "<p class='permission-info'>You do not have permission to share this report</p>",
-            "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to share your duplicate report.</p>"
-        ]);
 
-        this.id = 'share_no_permission';
+    generateNonEditableSettings: function () {
+        this.items = [{
+            xtype: 'component',
+            html:  new Ext.Template([
+             "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
+             "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to share your duplicate report.</p>"
+            ])
+        }];
+
+        this.id = 'report_share_no_permission';        
     },
-    
+
     onAllowEditClick: function (event, target) {
         var edit_icon = Ext.fly(target);
-        
+
         if (edit_icon.hasCls('selected')) {
             edit_icon.removeCls('selected');
         } else {
@@ -92441,9 +92448,10 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         }
     },
 
-    update: function (account) {
-        var c = this.down('#selected_account');
-        c.update(account);
+    updateAccountDisplayfield: function (account_info) {
+        var account_displayfield = this.down('#selected_account');
+
+        account_displayfield.update(account_info);
     }
 });
 Ext.define('PICS.view.report.settings.SettingsModalTabs', {
@@ -97910,7 +97918,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             copy_setting_form = copy_setting_view.getForm(),
             copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
             share_setting_view = this.getShareSetting(),
-            editable_icon = Ext.select('.icon-edit');
+            share_editable_icon = Ext.select('.icon-edit');
 
         // TODO: reject changes
         
@@ -97925,8 +97933,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
         copy_favorite.toggleUnfavorite();
 
         // reset the share modal
-        share_setting_view.update('');
-        editable_icon.removeCls('selected')
+        share_setting_view.updateAccountDisplayfield('');
+        share_editable_icon.removeCls('selected');
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
@@ -98034,7 +98042,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (record) {
             var share_setting_view = this.getShareSetting();
 
-            var account = {
+            var account_info = {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
@@ -98046,7 +98054,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             };
 
             // Show the selection.
-            share_setting_view.update(account);
+            share_setting_view.updateAccountDisplayfield(account_info);
         }
     },
 
@@ -98062,19 +98070,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     onReportModalShareClick: function (cmp, e, eOpts) {
         var share_setting_view = this.getShareSetting(),
-            data = share_setting_view.request_data,
+            request_data = share_setting_view.request_data,
             report_settings_modal = this.getSettingsModal(),
             that = this;
 
         // Abort if no account has been selected.
-        if (typeof data == 'undefined') {
+        if (!request_data) {
             return;
         }
 
         var share_setting_view_element = share_setting_view.getEl(),
             is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
-            account_id = data.account_id,
-            account_type = data.account_type;
+            account_id = request_data.account_id,
+            account_type = request_data.account_type;
 
         var options = {
             account_id: account_id,
@@ -98092,7 +98100,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 });
             }
         };
-        
+
         PICS.data.ServerCommunication.shareReport(options);
     }
 });

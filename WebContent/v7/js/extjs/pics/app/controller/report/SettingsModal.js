@@ -113,7 +113,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             copy_setting_form = copy_setting_view.getForm(),
             copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
             share_setting_view = this.getShareSetting(),
-            editable_icon = Ext.select('.icon-edit');
+            share_editable_icon = Ext.select('.icon-edit');
 
         // TODO: reject changes
         
@@ -128,8 +128,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
         copy_favorite.toggleUnfavorite();
 
         // reset the share modal
-        share_setting_view.update('');
-        editable_icon.removeCls('selected')
+        share_setting_view.updateAccountDisplayfield('');
+        share_editable_icon.removeCls('selected');
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
@@ -237,7 +237,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (record) {
             var share_setting_view = this.getShareSetting();
 
-            var account = {
+            var account_info = {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
@@ -249,7 +249,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             };
 
             // Show the selection.
-            share_setting_view.update(account);
+            share_setting_view.updateAccountDisplayfield(account_info);
         }
     },
 
@@ -265,19 +265,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     onReportModalShareClick: function (cmp, e, eOpts) {
         var share_setting_view = this.getShareSetting(),
-            data = share_setting_view.request_data,
+            request_data = share_setting_view.request_data,
             report_settings_modal = this.getSettingsModal(),
             that = this;
 
         // Abort if no account has been selected.
-        if (typeof data == 'undefined') {
+        if (!request_data) {
             return;
         }
 
         var share_setting_view_element = share_setting_view.getEl(),
             is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
-            account_id = data.account_id,
-            account_type = data.account_type;
+            account_id = request_data.account_id,
+            account_type = request_data.account_type;
 
         var options = {
             account_id: account_id,
@@ -295,7 +295,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 });
             }
         };
-        
+
         PICS.data.ServerCommunication.shareReport(options);
     }
 });

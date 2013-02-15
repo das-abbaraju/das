@@ -9122,22 +9122,22 @@ textarea.x-form-invalid-field {
     font-weight: bold; }
 
 /* line 299, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#share_no_permission p {
+#report_share_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 90%; }
 /* line 308, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#share_no_permission strong {
+#report_share_no_permission strong {
   font-weight: bold; }
 /* line 313, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#share_no_permission .permission-info {
+#report_share_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
 /* line 320, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#share_no_permission .duplicate-info {
+#report_share_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
 
