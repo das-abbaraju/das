@@ -6,5 +6,5 @@ Ext.define('PICS.view.report.alert.Success', {
     id: 'success_message',
     resizable: false,
     shadow: false,
-    width: 250
+    width: 350
 });
