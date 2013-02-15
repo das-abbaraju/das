@@ -310,7 +310,7 @@ public class AuditPercentCalculator {
 		// to increment the count so we can close it.
 		else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
 			verifiedCount++;
-		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217) {
+		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217 || question.getId() == 15353 || question.getId() == 15354) {
 			verifiedCount++;
 		} else if (catData.getAudit().getAuditType().isPqf()) {
 			boolean needsVerification = false;

@@ -85,6 +85,12 @@
             <s:textfield name="operator.dbaName" theme="formhelp"/>
         </li>
 
+        <s:if test="permissions.picsEmployee">
+	        <li>
+	            <s:textfield name="operator.salesForceID" theme="formhelp"/>
+	        </li>
+        </s:if>
+
         <s:if test="permissions.admin">
             <li>
                 <s:select list="statusList" name="operator.status" theme="form" listValue="%{getText(i18nKey)}"/>

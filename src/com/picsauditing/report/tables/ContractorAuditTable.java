@@ -25,6 +25,9 @@ public class ContractorAuditTable extends AbstractTable {
 		Field id = addPrimaryKey();
 		id.setCategory(FieldCategory.Audits);
 
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+		addField(creationDate).setCategory(FieldCategory.Audits);
+
 		Field auditTypeName;
 		auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");

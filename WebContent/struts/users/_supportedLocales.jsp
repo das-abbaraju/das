@@ -2,10 +2,10 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:if test="configEnvironment || i18nReady">
 	<ul class="locales">
-		<s:iterator value="@com.picsauditing.actions.TranslationActionSupport@getSupportedLocales()">
+		<s:iterator value="supportedLanguages.stableLanguagesSansDialect" var="stable_language_key_kalue">
 			<li>
-				<a href="?request_locale=${language}">
-					<s:property value="@com.picsauditing.util.Strings@capitalize(getDisplayLanguage(language))" />
+				<a href="?request_locale=${stable_language_key_kalue.key}">
+					${stable_language_key_kalue.value}
 				</a>
 			</li>
 		</s:iterator>

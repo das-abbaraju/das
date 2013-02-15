@@ -162,19 +162,31 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		ContractorInvoiceState contractorState = InvoiceHelper.buildContractorInvoiceState(invoice);
 
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = new ArrayList<ClientSiteServiceLevel>();
-		for (ContractorOperator clientSite : clientSites) {
-			List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
-			contractor.setOperators(oneClientSite);
+		try {
+			for (ContractorOperator clientSite : clientSites) {
+				List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
+				contractor.setOperators(oneClientSite);
 
-			ContractorResetter.resetContractor(contractor, contractorState);
+				ContractorResetter.resetContractor(contractor, contractorState);
 
-			billingService.calculateContractorInvoiceFees(contractor);
-			List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
+				billingService.calculateContractorInvoiceFees(contractor);
+				List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
 
-			clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
+				clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
+			}
+		} finally {
+			refreshContractorFromDatabase(contractor);
 		}
 
 		return clientSiteServiceLevels;
+	}
+
+	private void refreshContractorFromDatabase(ContractorAccount contractor) {
+		try {
+			contractorAccountDAO.refresh(contractor);
+		} catch (Exception nothingWeCanDo) {
+			logger.error("An error occurred while refreshing contractor id = {}", contractor.getId(), nothingWeCanDo);
+		}
 	}
 
 	private ClientSiteServiceLevel buildFromContractorFees(List<InvoiceItem> invoiceItems, ContractorOperator clientSite) {

@@ -1191,8 +1191,10 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-		this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+		if (this.getFees() != null && this.getFees().containsKey(feeClass)) {
+			this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+			this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+		}
 	}
 
 	private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {

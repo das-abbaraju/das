@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -119,6 +120,8 @@ public class OpenTasksTest extends PicsActionTest {
 	private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
+	@Mock
+	private LanguageModel languageModel;
 	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
@@ -146,6 +149,7 @@ public class OpenTasksTest extends PicsActionTest {
 		super.setupMocks();
 		setUpI18nCacheText();
 
+		Whitebox.setInternalState(openTasks, "supportedLanguages", languageModel);
 		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);

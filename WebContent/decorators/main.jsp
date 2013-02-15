@@ -1,13 +1,10 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
-<%@ page import="java.net.InetAddress" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.sql.Timestamp" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="java.util.Set" %>
 <%@ page import="com.picsauditing.access.MenuBuilder"%>
 <%@ page import="com.picsauditing.access.MenuComponent" %>
 <%@ page import="com.picsauditing.access.OpPerms" %>
@@ -17,15 +14,15 @@
 <%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
-<%@ page import="com.picsauditing.util.LocaleController"%>
 <%@ page import="com.picsauditing.util.AppVersion"%>
+<%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
-<%@ page import="com.picsauditing.util.URLUtils" %>
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ page import="com.picsauditing.security.SessionSecurity" %>
+<%@ page import="com.picsauditing.model.i18n.LanguageModel" %>
 
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
@@ -57,6 +54,8 @@
 		menu = PicsMenu.getMenu(permissions);
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);
 	}
+    
+    LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
 %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
@@ -283,7 +282,7 @@
 							"&amp;imageUrl=" +
 							protocol +
 							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-							LocaleController.getValidLocale(locale).getDisplayLanguage() +
+							languageModel.getNearestStableLocale(locale).getDisplayLanguage() +
 							"/General/3a";
 
 						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
@@ -319,9 +318,9 @@
 		
 								<a id="_lpChatBtn"
 									class="liveperson-chat"
-									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a"
+									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableLocale(locale).getDisplayLanguage() %>/General/3a"
 									target="chat90511184"
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
 		
 									<% if (!Strings.isEmpty(chatIcon)) { %>
 										<img src="<%= chatIcon %>" />
@@ -360,9 +359,9 @@
 						<%  if(item.getName().equals("Online Chat"))  {
 								if (liveChatEnabled) { %>
 								<a id="_lpChatBtn"
-									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a'
+									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableLocale(locale).getDisplayLanguage() %>/General/3a'
 									target='chat90511184'
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 						<% 		}
 							} else {
 							String dataFields = "";

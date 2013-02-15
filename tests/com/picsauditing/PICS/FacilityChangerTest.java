@@ -1,17 +1,5 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
@@ -22,6 +10,17 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class FacilityChangerTest {
 	private FacilityChanger facilityChanger;
@@ -40,14 +39,13 @@ public class FacilityChangerTest {
 
 	@Before
 	public void setup() {
+		MockitoAnnotations.initMocks(this);
 		facilityChanger = new FacilityChanger();
 
 		Permissions permissions = new Permissions();
 		Whitebox.setInternalState(permissions, "accountType", "Contractor");
 
 		facilityChanger.setPermissions(permissions);
-
-		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(facilityChanger, "billingService", billingService);
 		Whitebox.setInternalState(facilityChanger, "contractorAccountDAO", contractorAccountDAO);
@@ -56,13 +54,13 @@ public class FacilityChangerTest {
 		Whitebox.setInternalState(facilityChanger, "auditDataDAO", auditDataDAO);
 		Whitebox.setInternalState(facilityChanger, "accountLevelAdjuster", accountLevelAdjuster);
 	}
-	
+
 	@Test
 	public void testRemove_LoggedInContractor() {
 		try {
 			facilityChanger.setContractor(EntityFactory.makeContractor());
 			facilityChanger.setOperator(EntityFactory.makeOperator());
-			
+
 			Permissions permissions = new Permissions();
 			Whitebox.setInternalState(permissions, "accountType", "Contractor");
 			Whitebox.setInternalState(permissions, "accountStatus", AccountStatus.Active);
@@ -118,7 +116,7 @@ public class FacilityChangerTest {
 	}
 
 	public List<ContractorOperator> buildContractorOperators(ContractorAccount contractor,
-			List<OperatorAccount> operators) {
+															 List<OperatorAccount> operators) {
 		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 
 		for (OperatorAccount operator : operators) {

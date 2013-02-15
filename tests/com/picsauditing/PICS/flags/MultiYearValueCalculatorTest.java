@@ -1,21 +1,20 @@
 package com.picsauditing.PICS.flags;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import com.google.common.collect.Lists;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.FlagCriteria;
 
 @PrepareForTest(MultiYearValueCalculator.class)
 public class MultiYearValueCalculatorTest {
@@ -194,6 +193,88 @@ public class MultiYearValueCalculatorTest {
 		assertEquals("2010, 2011, 2012", oshaResult.getYear());
 		assertEquals("4.0", oshaResult.getAnswer());
 	}
+
+    @Test
+    public void testBuildOshaResult() throws Exception {
+        List<ContractorAudit> annualUpdates = Arrays.asList(
+                mockAnnualUpdateWithEmrData("2010", "1.03"),
+                mockAnnualUpdateWithEmrData("2011", "1"),
+                mockAnnualUpdateWithEmrData("2012", ".94")
+         );
+
+        Map<String, OshaResult> results = Whitebox.invokeMethod(MultiYearValueCalculator.class
+        , "buildOshaResultsList", annualUpdates);
+
+        assertEquals(3, results.size());
+    }
+
+    @Test
+    public void testBuildOshaResult_TwoYearsOfEmrData() throws Exception {
+        List<ContractorAudit> annualUpdates = Arrays.asList(
+                mockAnnualUpdateWithEmrData("2010", "1.03"),
+                mockAnnualUpdateWithEmrData("2011", "1")
+         );
+
+        Map<String, OshaResult> results = Whitebox.invokeMethod(MultiYearValueCalculator.class
+        , "buildOshaResultsList", annualUpdates);
+
+        assertEquals(2, results.size());
+    }
+
+    @Test
+    public void testBuildOshaResult_TwoYearsOfEmrDataWithSkippedYear() throws Exception {
+        List<ContractorAudit> annualUpdates = Arrays.asList(
+                mockAnnualUpdateWithEmrData("2010", "1.03"),
+                mockAnnualUpdateWithEmrData("2012", ".94")
+         );
+
+        Map<String, OshaResult> results = Whitebox.invokeMethod(MultiYearValueCalculator.class
+        , "buildOshaResultsList", annualUpdates);
+
+        assertEquals(2, results.size());
+    }
+
+    @Test
+    public void testBuildOshaResult_FourYearsOfEmrData() throws Exception {
+        List<ContractorAudit> annualUpdates = Arrays.asList(
+                mockAnnualUpdateWithEmrData("2009", "1.07"),
+                mockAnnualUpdateWithEmrData("2010", "1.03"),
+                mockAnnualUpdateWithEmrData("2011", "1"),
+                mockAnnualUpdateWithEmrData("2012", ".94")
+         );
+
+        Map<String, OshaResult> results = Whitebox.invokeMethod(MultiYearValueCalculator.class
+        , "buildOshaResultsList", annualUpdates);
+
+        assertEquals(3, results.size());
+    }
+
+    @Test
+    public void testBuildOshaResult_NoYearsOfData() throws Exception {
+        Map<String, OshaResult> results = Whitebox.invokeMethod(MultiYearValueCalculator.class
+                , "buildOshaResultsList", Collections.emptyList());
+
+        assertEquals(0, results.size());
+    }
+
+    private ContractorAudit mockAnnualUpdateWithEmrData(String year, String emrAnswer) {
+        ContractorAudit annualUpdate = Mockito.mock(ContractorAudit.class);
+        when(annualUpdate.hasCaoStatus(AuditStatus.Complete)).thenReturn(true);
+        when(annualUpdate.getAuditFor()).thenReturn(year);
+
+        AuditQuestion emrQuestion = Mockito.mock(AuditQuestion.class);
+
+        when(emrQuestion.getId()).thenReturn(2034);
+        when(emrQuestion.isVisibleInAudit(annualUpdate)).thenReturn(true);
+
+        AuditData emr = Mockito.mock(AuditData.class);
+        when(emr.getQuestion()).thenReturn(emrQuestion);
+        when(emr.getAnswer()).thenReturn(emrAnswer);
+
+        when(annualUpdate.getData()).thenReturn((Arrays.asList(emr)));
+
+        return annualUpdate;
+    }
 	
 	private List<AuditData> setupAuditDataList() {
 		List<AuditData> auditDataList = new ArrayList<AuditData>();

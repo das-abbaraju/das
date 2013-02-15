@@ -6,8 +6,34 @@ ALTER TABLE `invoice_commission`
 ALTER TABLE `payment_commission` 
 	MODIFY COLUMN `activationPoints` decimal(11,7) NOT NULL;
 
--- account_user inserts
+	
+-- cleanup data in case some has already been added to the database
+-- Delete the payment commissions
+DELETE FROM payment_commission WHERE payment_commission.commissionID IN 
+	(SELECT invoice_commission.id FROM invoice_commission WHERE
+		invoice_commission.invoiceID IN (
+		SELECT invoice.id FROM invoice WHERE invoice.tableType = 'I' 
+		AND invoice.accountID = 40799));
+
+-- Delete the invoice commissions
+DELETE FROM invoice_commission WHERE invoice_commission.invoiceID IN 
+	(SELECT invoice.id FROM invoice WHERE invoice.tableType = 'I' 
+		AND invoice.accountID = 40799);
+		
+-- Delete the invoice payments
+delete from invoice_payment
+	where invoice_payment.invoiceID in (
+		select invoice.id from invoice
+		where invoice.tableType = 'I' and invoice.accountID = 40799
+	);
+	
+-- Delete the invoices
+DELETE FROM invoice WHERE invoice.accountID = 40799 and invoice.qbListID like 'NOLOAD%';
+
+-- delete the account users
 DELETE FROM account_user WHERE accountID = 40798;
+
+-- account_user inserts
 INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, updatedBy, creationDate, updateDate) VALUES (40798, 42683, 'PICSAccountRep', NOW(), NOW(), 100, 53137, 53137, NOW(), NOW());
 INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, updatedBy, creationDate, updateDate) VALUES (40798, 27896, 'PICSAccountRep', NOW(), NOW(), 100, 53137, 53137, NOW(), NOW());
 INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, updatedBy, creationDate, updateDate) VALUES (40798, 36702, 'PICSAccountRep', NOW(), NOW(), 100, 53137, 53137, NOW(), NOW());
@@ -26,7 +52,6 @@ INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPerc
 INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, updatedBy, creationDate, updateDate) VALUES (40798, 21167, 'PICSSalesRep', NOW(), NOW(), 100, 53137, 53137, NOW(), NOW());
 
 -- invoice
-DELETE FROM invoice WHERE invoice.accountID = 40799 and invoice.qbListID like 'NOLOAD%';
 INSERT INTO invoice (accountID, tableType, createdBy, updatedBy, creationDate, updateDate, status, totalAmount, amountApplied, qbSync, qbListID, notes, currency) VALUES (40799, 'I', 53137, 53137, '2011-12-31 00:00:00', '2011-12-31 00:00:00', 'Paid', 0, 0, 0, 'NOLOADFAKEINVOICE', 'THIS IS FOR A HISTORICAL CONTRACTOR COUNT DATA CONVERSION', 'USD');
 
 -- payments

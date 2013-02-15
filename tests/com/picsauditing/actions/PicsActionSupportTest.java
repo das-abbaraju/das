@@ -1,27 +1,40 @@
 package com.picsauditing.actions;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.json.simple.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.User;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -33,6 +46,10 @@ public class PicsActionSupportTest extends PicsActionTest {
 	private HierarchyBuilder hierarchyBuilder;
 	@Mock
 	private BufferedReader bufferedReader;
+	@Mock
+	protected UserDAO userDAO;
+	@Mock
+	protected Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,17 +58,19 @@ public class PicsActionSupportTest extends PicsActionTest {
 		super.setUp(picsActionSupport);
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
+		Whitebox.setInternalState(picsActionSupport, "userDAO", userDAO);
+		Whitebox.setInternalState(picsActionSupport, "permissions", permissions);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		System.setProperty("pics.env", "");
-        Whitebox.setInternalState(PicsActionSupport.class, "CONFIG",(Object) null);
+		Whitebox.setInternalState(PicsActionSupport.class, "CONFIG", (Object) null);
 	}
 
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
-		Permissions permissions = new Permissions();
+		Permissions permissions = new Permissions(null);
 
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();
@@ -290,6 +309,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
+
 	@Test
 	public void testIsLocalhostEnvironment_noPort() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost"));
@@ -297,6 +317,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
+
 	@Test
 	public void testIsLocalhostEnvironment_8080() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));
@@ -364,4 +385,60 @@ public class PicsActionSupportTest extends PicsActionTest {
 		assertEquals(json, actual.toJSONString());
 	}
 
+	@Ignore
+	public void testGetSafetyList_Admin() throws Exception {
+		List<User> picsUsers = new ArrayList<User>();
+		picsUsers.add(createUser());
+
+		when(userDAO.findByGroup(anyInt())).thenReturn(picsUsers);
+		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
+
+		Set<User> list;
+
+		when(permissions.isAdmin()).thenReturn(true);
+		list = picsActionSupport.getSafetyList();
+		assertEquals(1, list.size());
+	}
+
+	@Ignore
+	public void testGetSafetyList_NonAdmin() throws Exception {
+		List<User> picsUsers = new ArrayList<User>();
+		picsUsers.add(createUser());
+
+		when(userDAO.findByGroup(anyInt())).thenReturn(picsUsers);
+		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
+
+		Set<User> list;
+
+		when(permissions.isAdmin()).thenReturn(false);
+		when(permissions.has(OpPerms.AssignAudits)).thenReturn(false);
+		list = picsActionSupport.getSafetyList();
+		assertEquals(1, list.size());
+	}
+
+	@Ignore
+	public void testGetSafetyList_Operator() throws Exception {
+		List<User> picsUsers = new ArrayList<User>();
+		picsUsers.add(createUser());
+
+		when(userDAO.findAuditors(anySet())).thenReturn(picsUsers);
+		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
+
+		Set<User> list;
+
+		when(permissions.isAdmin()).thenReturn(false);
+		when(permissions.has(OpPerms.AssignAudits)).thenReturn(true);
+		list = picsActionSupport.getSafetyList();
+		assertEquals(1, list.size());
+	}
+
+	private User createUser() {
+		User user = EntityFactory.makeUser();
+		user.setName("User " + user.getId());
+		user.setUsername("user " + user.getId());
+		user.getAccount().setId(user.getId());
+		user.getAccount().setName("Account " + user.getId());
+
+		return user;
+	}
 }

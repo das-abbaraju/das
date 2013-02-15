@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 	public String execute() throws Exception {
@@ -20,6 +22,11 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 		sql.addWhere("wf.hasRequirements");
 		sql.addWhere("caf.reviewed = 0");
 		sql.addWhere("a.status = 'Active'");
+		
+		if (permissions.isOperatorCorporate()) {
+			String ids = Strings.implodeForDB(permissions.getAllInheritedGroupIds(), ",");
+			sql.addWhere("(atype.assignAudit IN (" + ids +") or atype.editAudit IN (" + ids + "))");
+		}
 
 		sql.addField("caf.description");
 		sql.addField("caf.creationDate AS uploadDate");

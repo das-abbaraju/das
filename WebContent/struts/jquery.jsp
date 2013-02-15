@@ -1,21 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
-<%@ page import="com.picsauditing.PICS.I18nCache" %>
-<%@ page import="com.picsauditing.util.LocaleController"%>
+<%@ page import="com.picsauditing.model.i18n.LanguageModel" %>
+<%@ page import="com.picsauditing.util.SpringUtils" %>
+<%@ page import="java.util.Locale" %>
 
-<%
-	// Usage: <s:include value="../jquery.jsp" />
-	// Use to include jQuery, jQuery UI, and Gritter (for notifications)
-	// If you just need jQuery, the just include it with the single line
-%>
+<%--
+	Usage: <s:include value="../jquery.jsp" />
+	Use to include jQuery, jQuery UI, and Gritter (for notifications)
+	If you just need jQuery, the just include it with the single line
+--%>
 
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css?v=${version}">
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css?v=${version}" />
 <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css?v=${version}" media="screen" />
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css?v=${version}" media="screen">
 
-<% if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) { %>
-<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage() %>.js?v=${version}"></script>
+<%
+    if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) {
+        Locale locale = TranslationActionSupport.getLocaleStatic();
+        LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
+        // TODO Find a way to avoid using SpringUtils
+%>
+<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= languageModel.getNearestStableLocale(locale).getLanguage() %>.js?v=${version}"></script>
 <% } %>
 
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js?v=${version}"></script>

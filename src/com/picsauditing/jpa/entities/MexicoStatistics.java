@@ -1,6 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,7 +64,16 @@ public class MexicoStatistics extends SafetyStatistics {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<AuditData> getQuestionsToVerify() {
-		// We don't verify this country
-		return Collections.emptyList();
+		List<AuditData> questionsToVerify = new ArrayList<AuditData>();
+
+		questionsToVerify.add(answerMap.get(OshaRateType.Hours));
+		questionsToVerify.add(answerMap.get(OshaRateType.Fatalities));
+		questionsToVerify.add(answerMap.get(OshaRateType.DaysAwayCases));
+		questionsToVerify.add(answerMap.get(OshaRateType.DaysAway));
+		questionsToVerify.add(answerMap.get(OshaRateType.JobTransfersCases));
+		questionsToVerify.add(answerMap.get(OshaRateType.JobTransferDays));
+		questionsToVerify.add(answerMap.get(OshaRateType.OtherRecordables));
+
+		return questionsToVerify;
 	}
 }

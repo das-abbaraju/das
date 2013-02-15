@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 public class EmailBuilderTest {
 	private EmailBuilder builder;
+
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -28,10 +29,6 @@ public class EmailBuilderTest {
 	public void setUp() throws Exception {
 		builder = new EmailBuilder();
 		MockitoAnnotations.initMocks(this);
-
-		permissions = new Permissions();
-		contractorAccount = new ContractorAccount();
-		user = new User();
 	}
 
 	@Test
@@ -45,7 +42,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_Permissions() throws Exception {
-		permissions.setLocale(Locale.SIMPLIFIED_CHINESE);
+		when(permissions.getLocale()).thenReturn(Locale.SIMPLIFIED_CHINESE);
 		builder.addToken("permissions", permissions);
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -55,7 +52,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_PermissionsInstanceOfSomethingElse() throws Exception {
-		permissions.setLocale(Locale.SIMPLIFIED_CHINESE);
+		when(permissions.getLocale()).thenReturn(Locale.SIMPLIFIED_CHINESE);
 		builder.addToken("permissions", "Permissions String");
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -65,7 +62,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_Contractor() throws Exception {
-		contractorAccount.setLocale(Locale.FRENCH);
+		when(contractorAccount.getLocale()).thenReturn(Locale.FRENCH);
 		builder.addToken("contractor", contractorAccount);
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -75,7 +72,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_ContractorInstanceOfSomethingElse() throws Exception {
-		contractorAccount.setLocale(Locale.FRENCH);
+		when(contractorAccount.getLocale()).thenReturn(Locale.FRENCH);
 		builder.addToken("contractor", "Contractor String");
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -85,7 +82,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_User() throws Exception {
-		user.setLocale(Locale.GERMAN);
+		when(user.getLocale()).thenReturn(Locale.GERMAN);
 		builder.addToken("user", user);
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -95,7 +92,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_UserInstanceOfSomethingElse() throws Exception {
-		user.setLocale(Locale.GERMAN);
+		when(user.getLocale()).thenReturn(Locale.GERMAN);
 		builder.addToken("user", "User String");
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -105,7 +102,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_UserNamedPrimaryContact() throws Exception {
-		user.setLocale(Locale.ITALIAN);
+		when(user.getLocale()).thenReturn(Locale.ITALIAN);
 		builder.addToken("primaryContact", user);
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");
@@ -115,7 +112,7 @@ public class EmailBuilderTest {
 
 	@Test
 	public void testGetUserLocale_UserNamedPrimaryContactInstanceOfSomethingElse() throws Exception {
-		user.setLocale(Locale.ITALIAN);
+		when(user.getLocale()).thenReturn(Locale.ITALIAN);
 		builder.addToken("primaryContact", "User named Primary Contact String");
 
 		Locale locale = Whitebox.invokeMethod(builder, "getUserLocale");

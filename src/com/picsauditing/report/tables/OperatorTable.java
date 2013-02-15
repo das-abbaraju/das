@@ -5,6 +5,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class OperatorTable extends AbstractTable {
     public static final String Account = "Account";
     public static final String Reporting = "Reporting";
+    public static final String Parent = "Parent";
 
     public OperatorTable() {
         super("operators");
@@ -16,5 +17,6 @@ public class OperatorTable extends AbstractTable {
                 ReportOnClause.ToAlias + ".type IN ('Operator','Corporate')")));
 
         addOptionalKey(new ReportForeignKey(Reporting, new AccountTable(), new ReportOnClause("reportingID", "id")));
+        addOptionalKey(new ReportForeignKey(Parent, new AccountTable(), new ReportOnClause("parentID", "id")));
     }
 }

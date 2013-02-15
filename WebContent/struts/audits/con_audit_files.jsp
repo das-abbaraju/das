@@ -123,7 +123,7 @@
 									
 									<s:property value="#fileDesc"/>&nbsp;&nbsp;
 									
-									<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
+									<s:if test="(permissions.operatorCorporate && !permissions.auditor) || !#data.requirementOpen">
 										<s:property value="question.requirement" />
 										<s:if test="#data.dateVerified != null">
 											<br/>
@@ -185,7 +185,7 @@
 									</a>
 								</td>
 								<td>
-									<s:if test="permissions.admin || (!reviewed && permissions.userId == createdBy.Id)">
+									<s:if test="permissions.admin || (!reviewed && permissions.userId == createdBy.Id) || (!reviewed && permissions.auditor)">
 										<a class="edit" href="#" onclick="showAuditUpload(<s:property value="conAudit.id"/>,<s:property value="id"/>, null, 0);"><s:text name="button.Edit" /></a>
 									</s:if>
 								</td>

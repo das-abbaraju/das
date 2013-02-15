@@ -11,6 +11,7 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.FlagCriteriaTable;
 import com.picsauditing.report.tables.FlagDataTable;
 
 public class ContractorFlagDataModel extends AbstractModel {
@@ -22,9 +23,6 @@ public class ContractorFlagDataModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "FlagData");
 
-		ModelSpec flagCriteria = spec.join(FlagDataTable.FlagCriteria);
-		flagCriteria.alias = "FlagCriteria";
-		flagCriteria.minimumImportance = FieldImportance.Average;
 		{
 			ModelSpec contractorOperator = spec.join(FlagDataTable.ContractorOperator);
 			contractorOperator.alias = "ContractorFlag";
@@ -33,6 +31,15 @@ public class ContractorFlagDataModel extends AbstractModel {
 			coOperator.alias = "ContractorOperatorOperator";
 			coOperator.minimumImportance = FieldImportance.Required;
 		}
+
+		ModelSpec operatorCriteria = spec.join(FlagDataTable.OperatorCriteria);
+		operatorCriteria.alias = "OperatorCriteria";
+		operatorCriteria.minimumImportance = FieldImportance.Average;
+
+		ModelSpec flagCriteria = spec.join(FlagDataTable.FlagCriteria);
+		flagCriteria.alias = "FlagCriteria";
+		flagCriteria.minimumImportance = FieldImportance.Average;
+		
 		ModelSpec contractor = spec.join(FlagDataTable.Contractor);
 		contractor.alias = "Account";
 		contractor.minimumImportance = FieldImportance.Required;

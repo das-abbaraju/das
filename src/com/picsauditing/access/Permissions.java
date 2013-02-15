@@ -1,8 +1,8 @@
 package com.picsauditing.access;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.util.LocaleController;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 
@@ -68,33 +68,43 @@ public class Permissions implements Serializable {
 
 	private boolean usingDynamicReports;
 	private Date usingDynamicReportsDate;
+	private LanguageModel languageModel;
+    private int primaryCorporateAccountID;
+
+	public Permissions() {
+	}
+
+	public Permissions(LanguageModel languageModel) {
+		this.languageModel = languageModel;
+	}
 
 	public void clear() {
-		userID = 0;
-		loggedIn = false;
-		active = false;
-		username = "";
-		name = "";
-		email = "";
-		phone = "";
-		fax = "";
-		timezone = null;
-		locale = Locale.ENGLISH;
-		accountID = 0;
-		accountName = "";
-		accountType = "";
-		country = "";
-		accountStatus = AccountStatus.Pending;
-		approvesRelationships = false;
-		requiresOQ = false;
-		requiresCompetencyReview = false;
-		canSeeInsurance = false;
+        userID = 0;
+        loggedIn = false;
+        active = false;
+        username = "";
+        name = "";
+        email = "";
+        phone = "";
+        fax = "";
+        timezone = null;
+        locale = Locale.ENGLISH;
+        accountID = 0;
+        accountName = "";
+        accountType = "";
+        country = "";
+        accountStatus = AccountStatus.Pending;
+        approvesRelationships = false;
+        requiresOQ = false;
+        requiresCompetencyReview = false;
+        canSeeInsurance = false;
 
 		generalContractor = false;
 		gcFree = false;
 
 		adminID = 0;
 		topAccountID = 0;
+        primaryCorporateAccountID = 0;
 
 		shadowedUserID = 0;
 		shadowedUserName = "";
@@ -133,10 +143,9 @@ public class Permissions implements Serializable {
 		else
 			country = "";
 
+		setStableLocale(user);
 		setTimeZone(user);
-
 		setAccountPerms(user);
-		LocaleController.setLocaleOfNearestSupported(this);
 
 		usingDynamicReports = user.isUsingDynamicReports();
 		usingDynamicReportsDate = user.getUsingDynamicReportsDate();
@@ -184,15 +193,22 @@ public class Permissions implements Serializable {
 			}
 
 			if (isOperator()) {
-				if (operator.getParent() != null)
+				if (operator.getParent() != null) {
 					topAccountID = operator.getParent().getId();
+                }
 
 				for (Facility facility : operator.getCorporateFacilities()) {
 					corporateParent.add(facility.getCorporate().getId());
 					if (facility.getCorporate().isPrimaryCorporate()) {
 						topAccountID = facility.getCorporate().getId();
+                        primaryCorporateAccountID = topAccountID;
 					}
 				}
+
+                // operator account without a corporate parent (e.g. "U.S. Oil & Refining")
+                if (primaryCorporateAccountID == 0) {
+                    primaryCorporateAccountID = accountID;
+                }
 
 				if (operator.getCanSeeInsurance().isTrue()) {
 					canSeeInsurance = true;
@@ -206,7 +222,15 @@ public class Permissions implements Serializable {
 					operatorChildren.add(operator.getParent().getId());
 				}
 
-				for (Facility facility : operator.getOperatorFacilities()) {
+                // non-Hub accounts won't have a primary in getCorporateFacilities
+                primaryCorporateAccountID = topAccountID;
+                for (Facility facility : operator.getCorporateFacilities()) {
+                    if (facility.getCorporate().isPrimaryCorporate()) {
+                        primaryCorporateAccountID = facility.getCorporate().getId();
+                    }
+                }
+
+                for (Facility facility : operator.getOperatorFacilities()) {
 					operatorChildren.add(facility.getOperator().getId());
 
 					if (facility.getOperator().getCanSeeInsurance().isTrue())
@@ -419,14 +443,17 @@ public class Permissions implements Serializable {
 	private boolean returnUrlIsOk(String returnURL) {
 		boolean isOk = !returnURL
 				.matches("(?iu).*(xml|json|ajax|widget|autocomplete|csv|import|external|download|upload).*\\.action(\\?.*)*");
-		return returnURL != null && returnURL.length() > 0 && isOk;
+        return returnURL != null
+                && returnURL.length() > 0
+                && isOk;
 	}
 
 	public boolean loginRequired(HttpServletResponse response) throws IOException {
 		return loginRequired(response, "");
 	}
 
-	public boolean loginRequired(HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public boolean loginRequired(HttpServletResponse response, HttpServletRequest request)
+            throws IOException {
 		if (AjaxUtils.isAjax(request)) {
 			return loginRequired(response);
 		} else {
@@ -717,4 +744,18 @@ public class Permissions implements Serializable {
 		this.accountType = accountType;
 	}
 
+	private void setStableLocale(User user) {
+		if (languageModel != null) {
+			locale = languageModel.getNearestStableLocale(user.getLocale());
+		}
+
+		locale = Locale.ENGLISH;
+	}
+    public int getPrimaryCorporateAccountID() {
+        return primaryCorporateAccountID;
+    }
+
+    public void setPrimaryCorporateAccountID(int primaryCorporateAccountID) {
+        this.primaryCorporateAccountID = primaryCorporateAccountID;
+    }
 }

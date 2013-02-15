@@ -489,4 +489,17 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query q = em.createNativeQuery(sql);
 		return q.executeUpdate();
 	}
+	
+	@Transactional(propagation = Propagation.NESTED)
+	public int updateLastRecalculationToNow(String conIds) {
+		if (Strings.isEmpty(conIds)) {
+			return 0;
+		}
+		
+		String sql = "UPDATE contractor_info c " + 
+				"SET c.lastRecalculation = NOW() " +
+				"WHERE c.id IN (" + conIds + ")";
+		Query q = em.createNativeQuery(sql);
+		return q.executeUpdate();
+	}
 }
