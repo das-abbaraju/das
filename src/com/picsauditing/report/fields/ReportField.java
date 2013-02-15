@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
@@ -16,7 +17,7 @@ public @interface ReportField {
 
 	FieldType type() default FieldType.String;
 
-	int width() default 0;
+	int width() default Column.DEFAULT_WIDTH;
 
 	boolean visible() default true;
 

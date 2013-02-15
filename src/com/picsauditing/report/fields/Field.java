@@ -9,6 +9,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
@@ -24,7 +25,7 @@ public class Field {
 	private String text;
 	private String suffix;
 	private String url;
-	private int width;
+	private int width = Column.DEFAULT_WIDTH;
 	private String help;
 
 	private Class<?> fieldClass;
