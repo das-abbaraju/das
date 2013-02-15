@@ -285,6 +285,124 @@ public enum QuestionFunction {
 		}
 	},
 	/**
+	 * AUS Total Lost Time Injuries Frequency Rate
+	 * LTIFR = ((Fatalities + Injuries) X 1,000,000) / Total Hours Worked)
+	 */
+	LTIFR_AUS {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("lostTimeInjuries"))
+					|| Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return MISSING_PARAMETER;
+			
+			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			
+			BigDecimal result = null;
+			try {
+				result = fatalities.add(injuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+			
+			return result;
+		}
+	},
+	/**
+	 * AUS Incident Rate
+	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 100) / Employees)
+	 */
+	IR_AUS {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("lostTimeInjuries"))
+					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
+					|| Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return MISSING_PARAMETER;
+			
+			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
+			
+			BigDecimal result = null;
+			try {
+				result = fatalities.add(injuries).add(nonInjuries).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+			
+			return result;
+		}
+	},
+	/**
+	 * AUS Frequency Rate
+	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 1000000) / hours)
+	 */
+	FR_AUS {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("lostTimeInjuries"))
+					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
+					|| Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return MISSING_PARAMETER;
+			
+			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			
+			BigDecimal result = null;
+			try {
+				result = fatalities.add(injuries).add(nonInjuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+			
+			return result;
+		}
+	},
+	/**
+	 * AUS Average Loss Time Rate
+	 * ATLR = Hours Lost / (Fatalities + Lost Time Cases + Non-Lost Time Cases)
+	 */
+	ATLR_AUS {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("lostTimeInjuries"))
+					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
+					|| Strings.isEmpty(params.get("lostHours"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return MISSING_PARAMETER;
+			
+			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal lostHours = new BigDecimal(params.get("lostHours").replace(",", "")).setScale(7);
+			
+			BigDecimal result = null;
+			try {
+				result = lostHours.divide(fatalities.add(injuries).add(nonInjuries), 7, RoundingMode.HALF_UP).setScale(2,RoundingMode.HALF_UP);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+			
+			return result;
+		}
+	},
+	/**
 	 * UK Annual Update Dangerous Occurrences Frequency Rate
 	 * DOFR = (dangerous occurrences / total hours worked) x 100,000 
 	 */	
