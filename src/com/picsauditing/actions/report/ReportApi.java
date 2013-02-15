@@ -178,7 +178,7 @@ public class ReportApi extends PicsApiSupport {
 
 			writeJsonShareSuccess(json, getText("Report.ShareSuccess.UserMessage"));
 		} catch (ReportPermissionException rpe) {
-			writeJsonErrorMessage(json, rpe.getMessage());
+			writeJsonException(json, rpe);
 		} catch (Exception e) {
 			writeJsonException(json, e);
 		}
@@ -192,7 +192,7 @@ public class ReportApi extends PicsApiSupport {
 
 			writeJsonShareSuccess(json, getText("Report.ShareSuccess.GroupMessage"));
 		} catch (ReportPermissionException rpe) {
-			writeJsonErrorMessage(json, rpe.getMessage());
+			writeJsonException(json, rpe);
 		} catch (Exception e) {
 			writeJsonException(json, e);
 		}
@@ -206,7 +206,7 @@ public class ReportApi extends PicsApiSupport {
 
 			writeJsonShareSuccess(json, getText("Report.ShareSuccess.AccountMessage"));
 		} catch (ReportPermissionException rpe) {
-			writeJsonErrorMessage(json, rpe.getMessage());
+			writeJsonException(json, rpe);
 		} catch (Exception e) {
 			writeJsonException(json, e);
 		}

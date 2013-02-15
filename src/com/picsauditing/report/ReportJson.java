@@ -57,6 +57,7 @@ public class ReportJson {
 	public static final String EXT_JS_MESSAGE = "message";
 	public static final String EXT_JS_TITLE = "title";
 	public static final String EXT_JS_HTML = "html";
+	public static final String EXT_JS_DEBUG = "debug";
 
 	public static final String DEBUG_SQL = "sql";
 
@@ -72,6 +73,7 @@ public class ReportJson {
 		json.put(ReportJson.EXT_JS_SUCCESS, true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void writeJsonException(JSONObject json, Exception e) {
 		String message = e.toString() + " caused by: ";
 		for (StackTraceElement lineWhereExceptionWasThrown : e.getStackTrace()) {
@@ -79,7 +81,9 @@ public class ReportJson {
 			break;
 		}
 
-		writeJsonErrorMessage(json, message);
+		json.put(EXT_JS_DEBUG, message);
+
+		writeJsonErrorMessage(json, "There was a problem processing your request");
 	}
 
 	@SuppressWarnings("unchecked")
