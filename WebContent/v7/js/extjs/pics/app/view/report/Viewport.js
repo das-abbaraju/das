@@ -7,7 +7,8 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.layout.Header',
         'PICS.view.report.data-table.DataTable',
         'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.Header'
+        'PICS.view.report.header.Header',
+        'PICS.view.report.alert.Error'
     ],
 
     items: [{

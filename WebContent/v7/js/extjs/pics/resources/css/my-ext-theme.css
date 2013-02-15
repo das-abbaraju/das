@@ -8621,6 +8621,103 @@ textarea.x-form-invalid-field {
   margin: 0px;
   padding: 0px; }
 
+/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message {
+  background: #acf5ac;
+  border: 1px solid #229322;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  left: auto !important;
+  right: 150px !important;
+  top: 63px !important; }
+
+/* line 14, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message_header,
+#success_message-body {
+  background: #acf5ac; }
+
+/* line 19, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message_header {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  line-height: 20px;
+  padding: 14px 14px 0px 14px; }
+
+/* line 26, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message_header_hd-textEl {
+  font-size: 18px; }
+
+/* line 32, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message_header .x-window-header-text,
+#success_message-body {
+  color: #229322; }
+
+/* line 37, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message_header .x-window-header-text {
+  font-weight: bold; }
+
+/* line 42, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_success.scss */
+#success_message-body {
+  border: 0px;
+  -moz-border-radius-bottomleft: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 14px;
+  padding: 0px 14px 14px 14px; }
+
+/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message {
+  background: #fcf3cc;
+  border: 1px solid #e67e1c;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+/* line 11, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message_header,
+#error_message-body {
+  background: #fcf3cc; }
+
+/* line 16, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message_header {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  line-height: 20px;
+  padding: 14px 14px 0px 14px; }
+
+/* line 23, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message_header_hd-textEl {
+  font-size: 18px; }
+
+/* line 29, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message_header .x-window-header-text,
+#error_message-body {
+  color: #e67e1c; }
+
+/* line 34, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message_header .x-window-header-text {
+  font-weight: bold; }
+
+/* line 39, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/alert/_error.scss */
+#error_message-body {
+  border: 0px;
+  -moz-border-radius-bottomleft: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 14px;
+  padding: 0px 14px 14px 14px; }
+
 /* line 22, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #data_table .paging-toolbar {
   background: #73bbe8;
@@ -9091,50 +9188,6 @@ textarea.x-form-invalid-field {
 #report_settings_modal_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
-
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message {
-  background: #acf5ac;
-  border: 1px solid #229322;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  left: auto !important;
-  right: 150px !important;
-  top: 73px !important; }
-
-/* line 13, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message_header,
-#alert_message-body {
-  background: #acf5ac; }
-
-/* line 18, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message_header {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  padding: 5px 5px 0px; }
-
-/* line 25, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message_header .x-window-header-text,
-#alert_message-body {
-  color: #39884c;
-  font-size: 13px; }
-
-/* line 31, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message_header .x-window-header-text {
-  font-weight: bold; }
-
-/* line 36, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_alert-message.scss */
-#alert_message-body {
-  border: 0px;
-  -moz-border-radius-bottomleft: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  padding: 5px; }
 
 /**
  * Button style guide

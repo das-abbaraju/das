@@ -65988,6 +65988,130 @@ Ext.define('Ext.draw.engine.Vml', {
     }
 });
 
+Ext.define('PICS.Ajax', {
+    extend: 'Ext.data.Connection',
+    
+    autoAbort : false,
+    listeners: {
+        // FYI - successfully completed
+        requestcomplete: function (conn, response, options, eOpts) {
+            if (PICS.data.Exception.hasException(response)) {
+                PICS.data.Exception.handleException({
+                    response: response
+                });
+            }
+        },
+
+        // FYI - unsuccessfully completed
+        requestexception: function (conn, response, options, eOpts) {
+            PICS.data.Exception.handleException({
+                response: response
+            });
+        }
+    },
+    singleton: true
+});
+
+Ext.define('PICS.data.Exception', {
+    statics: (function () {
+        // List of user-friendly error messages.
+        var error_codes = {
+            401: {
+                title: 'Server Communication Error',
+                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>'
+            },
+            404: {
+                title: 'Server Communication Error',
+                message: 'File not found.' 
+            },
+            500: {
+                title: 'Server Communication Error',
+                message: 'Server error occurred.'
+            }
+        };
+        
+        var unknown_error = {
+            title: 'Server Communication Error',
+            message: 'Unknown error.'
+        };
+
+        function getErrorFromStatusCode(code) {
+            return error_codes[code] || unknown_error;
+        }
+        
+        function handle2xxException(response, callback) {
+            var response_text = response.responseText;
+            
+            try {
+                var json = Ext.JSON.decode(response_text),
+                    title = json.title,
+                    message = json.message;
+                
+                showException(title, message, callback);
+            } catch (e) {
+                showException('Exception', e.msg, callback);
+            }
+        }
+        
+        function handleNon2xxException(response, callback) {
+            var status_code = response.status,
+                error = getErrorFromStatusCode(status_code),
+                title = error.title,
+                message = error.message;
+            
+            showException(title, message, callback);
+        }
+
+        function has2xxException(response) {
+            var response_text = response && response.responseText,
+                json;
+            
+            try {
+                json = Ext.JSON.decode(response_text);
+            } catch (e) {
+                return false;
+            }
+            
+            return json && json.success == false;
+        }
+
+        function hasNon2xxException(response) {
+            return response && typeof error_codes[response.status] != 'undefined';
+        }
+        
+        function showException(title, message, callback) {
+            var exception = Ext.create('PICS.view.report.alert.Error', {
+                title: title,
+                html: message
+            });
+            
+            exception.on('close', callback);
+            
+            exception.show();
+        }
+        
+        return {
+            handleException: function (options) {
+                var response = options.response,
+                    callback = typeof options.callback == 'function' ? options.callback : function () {};
+                
+                // success: false error
+                if (has2xxException(response)) {
+                    handle2xxException(response, callback);
+                }
+                
+                // status code error
+                if (hasNon2xxException(response)) {
+                    handleNon2xxException(response, callback);
+                }
+            },
+            
+            hasException: function (response) {
+                return has2xxException(response) || hasNon2xxException(response);
+            }
+        };
+    }())
+});
 Ext.define('PICS.data.ServerCommunication', {
     statics: (function () {
         function loadReportStore(json) {
@@ -66063,16 +66187,21 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.setProxyForWrite(url);
 
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data),
-                            report_id = json.id;
-
-                        window.location.href = 'Report.action?report=' + report_id;
-                    },
-                    failure: function (batch, eOpts) {
-                        // TODO: error message - revert?
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_id = json.id;
+    
+                            window.location.href = 'Report.action?report=' + report_id;
+                        }
                     }
                 });
             },
@@ -66086,20 +66215,17 @@ Ext.define('PICS.data.ServerCommunication', {
             favoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
 
-                Ext.Ajax.request({
-                    url: url,
-                    failure: function () {
-                        // TODO: error message - revert?
-                    }
+                PICS.Ajax.request({
+                    url: url
                 });
             },
 
             loadAll: function (options) {
                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
-                    callback = typeof options.callback == 'function' ? options.callback : function () {},
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     scope = options.scope ? options.scope : this;
 
-                Ext.Ajax.request({
+                PICS.Ajax.request({
                     url: url,
                     success: function (response) {
                         var data = response.responseText,
@@ -66113,7 +66239,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                         loadDataTableStore(json);
 
-                        callback.apply(scope, arguments);
+                        success_callback.apply(scope, arguments);
                     }
                 });
             },
@@ -66135,26 +66261,44 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // sync
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
 
-                        // load the report store
-                        var report_store = loadReportStore(json),
-                            report = report_store.first();
-                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+                            
+                            PICS.data.Exception.handleException({
+                                response: response,
+                                callback: function () {
+                                    report.rejectAllChanges();
+                                    
+                                    PICS.data.ServerCommunication.loadData();
+                                }
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data);
 
-                        // load new results
-                        loadDataTableStore(json);
-
-                        // remove data table loading mask
-                        stopDataTableLoading();
-
-                        // refresh grid
-                        updateDataTableView(report);
-
+                            // load the report store
+                            var report_store = loadReportStore(json),
+                                report = report_store.first();
+                            
+                            // TODO: check if needed
+                            // report.commitAllChanges();
+    
+                            // load new results
+                            loadDataTableStore(json);
+    
+                            // remove data table loading mask
+                            stopDataTableLoading();
+    
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
             },
@@ -66166,7 +66310,8 @@ Ext.define('PICS.data.ServerCommunication', {
                     data_table_store = Ext.StoreManager.get('report.DataTables'),
                     page = page ? page : 1,
                     limit = limit ? limit : data_table_store.pageSize,
-                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit);
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit),
+                    that = this;
 
                 // updates the stores limit tracker
                 data_table_store.setLimit(limit);
@@ -66185,20 +66330,42 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // sync
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
-
-                        // load new results
-                        loadDataTableStore(json);
-
-                        // remove data table loading mask
-                        stopDataTableLoading();
-
-                        // refresh grid
-                        updateDataTableView(report);
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+                            
+                            PICS.data.Exception.handleException({
+                                response: response,
+                                callback: function () {
+                                    report.rejectAllChanges();
+                                    
+                                    PICS.data.ServerCommunication.loadData();
+                                }
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data);
+                            
+                            var report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+    
+                            report.commitAllChanges();
+    
+                            // load new results
+                            loadDataTableStore(json);
+    
+                            // remove data table loading mask
+                            stopDataTableLoading();
+    
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
             },
@@ -66213,7 +66380,6 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
-                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
 
                 // flag store as dirty so it will sync data to server
@@ -66223,8 +66389,18 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.setProxyForWrite(url);
 
                 report_store.sync({
-                    success: success_callback,
-                    failure: failure_callback
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            success_callback();
+                        }
+                    }
                 });
             },
             
@@ -66234,18 +66410,29 @@ Ext.define('PICS.data.ServerCommunication', {
                     is_editable = options.is_editable,
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
-                    url = PICS.data.ServerCommunicationUrl.getShareReportUrl();
-                    
-                if (!(account_id && account_type && is_editable)) {
+                    url = '';
+
+                if (!(account_id && account_type && typeof is_editable != 'undefined')) {
                     Ext.Error.raise('Error');
                 }
-                
+
+                switch (account_type) {
+                    case 'account':
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithAccountUrl();
+                        break;
+                    case 'user':
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithUserUrl(is_editable);
+                        break;
+                    case 'group':
+                    default:
+                        url = PICS.data.ServerCommunicationUrl.getShareReportWithGroupUrl(is_editable);
+                        break;
+                }
+
                 Ext.Ajax.request({
                     url: url,
                     params: {
-                        id: account_id,
-                        type: account_type,
-                        editable: is_editable
+                        shareId: account_id,
                     },
                     success: success_callback,
                     failure: failure_callback
@@ -66255,11 +66442,8 @@ Ext.define('PICS.data.ServerCommunication', {
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
-                Ext.Ajax.request({
-                    url: url,
-                    failure: function () {
-                        // TODO: error message - revert?
-                    }
+                PICS.Ajax.request({
+                    url: url
                 });
             }
         };
@@ -66309,7 +66493,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi!download.action?';
             
             var params = {
-                report: report_id
+                reportId: report_id
             };
             
             return path + Ext.Object.toQueryString(params);
@@ -66390,7 +66574,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi!print.action?';
             
             var params = {
-                report: report_id
+                reportId: report_id
             };
             
             return path + Ext.Object.toQueryString(params);
@@ -66407,14 +66591,40 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             
             return path + Ext.Object.toQueryString(params);
         },
-        
-        getShareReportUrl: function () {
+
+        getShareReportWithAccountUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportSharing!share.action';
+                path = 'ReportApi!shareWithAccount.action?';
             
             var params = {
                 reportId: report_id
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareReportWithGroupUrl: function (is_editable) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!shareWithGroup.action?';
+        
+            var params = {
+                reportId: report_id,
+                editable: is_editable
+            };
+            
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareReportWithUserUrl: function (is_editable) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!shareWithUser.action?';
+            
+            var params = {
+                reportId: report_id,
+                editable: is_editable
             };
             
             return path + Ext.Object.toQueryString(params);
@@ -66918,12 +67128,24 @@ Ext.define('Ext.resizer.Splitter', {
     }
 });
 
-Ext.define('PICS.view.report.alert-message.AlertMessage', {
+Ext.define('PICS.view.report.alert.Error', {
     extend: 'Ext.window.Window',
-    alias: 'widget.reportalertmessage',
+    alias: 'widget.reportalerterror',
+
+    closeAction: 'destroy',
+    draggable: false,
+    id: 'error_message',
+    modal: true,
+    resizable: false,
+    shadow: false,
+    width: 500
+});
+Ext.define('PICS.view.report.alert.Success', {
+    extend: 'Ext.window.Window',
+    alias: 'widget.reportalertsuccess',
 
     draggable: false,
-    id: 'alert_message',
+    id: 'success_message',
     resizable: false,
     shadow: false,
     width: 250
@@ -95120,7 +95342,8 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.layout.Header',
         'PICS.view.report.data-table.DataTable',
         'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.Header'
+        'PICS.view.report.header.Header',
+        'PICS.view.report.alert.Error'
     ],
 
     items: [{
@@ -96520,7 +96743,27 @@ Ext.define('PICS.model.report.Report', {
             direction: direction
         });
     },
+
+    commitAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
+
+        filter_store.commitChanges();
+        column_store.commitChanges();
+        sort_store.commitChanges();
+    },
+
+    rejectAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
     
+        filter_store.rejectChanges();
+        column_store.rejectChanges();
+        sort_store.rejectChanges();
+    },
+
     convertColumnsToModelFields: function () {
         var column_store = this.columns(),
             model_fields = [];
@@ -97458,8 +97701,8 @@ Ext.define('PICS.controller.report.Header', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'alertMessage',
-        selector: 'reportalertmessage'
+        ref: 'successMessage',
+        selector: 'reportalertsuccess'
     }, {
         ref: 'pageHeader',
         selector: 'reportpageheader'
@@ -97470,7 +97713,7 @@ Ext.define('PICS.controller.report.Header', {
     ],
              
     views: [
-        'PICS.view.report.alert-message.AlertMessage'
+        'PICS.view.report.alert.Success'
     ],
              
     init: function () {
@@ -97489,7 +97732,7 @@ Ext.define('PICS.controller.report.Header', {
         });
         
         this.application.on({
-            openalertmessage: this.openAlertMessage,
+            opensuccessmessage: this.openSuccessMessage,
             scope: this
         });
 
@@ -97503,21 +97746,21 @@ Ext.define('PICS.controller.report.Header', {
         this.application.fireEvent('updatepageheader');
     },
     
-    openAlertMessage: function (options) {
-        var alert_message_view = this.getAlertMessage(),
+    openSuccessMessage: function (options) {
+        var success_message_view = this.getSuccessMessage(),
             title = options.title,
             html = options.html;
         
-        if (alert_message_view) {
-            alert_message_view.destroy();
+        if (success_message_view) {
+            success_message_view.destroy();
         }
         
-        var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+        var success_message = Ext.create('PICS.view.report.alert.Success', {
             html: html,
             title: title
         });
         
-        alert_message.show();
+        success_message.show();
     },
 
     openSettingsModal: function (cmp, e, eOpts) {
@@ -97533,7 +97776,7 @@ Ext.define('PICS.controller.report.Header', {
         if (is_editable) {
             PICS.data.ServerCommunication.saveReport({
                 success_callback: function () {
-                    that.application.fireEvent('openalertmessage', {
+                    that.application.fireEvent('opensuccessmessage', {
                         title: 'Report Saved',
                         html: 'to My Reports in Manage Reports.'
                     });
@@ -97665,8 +97908,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_setting_form = edit_setting_view.getForm(),
             copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
             copy_setting_form = copy_setting_view.getForm(),
-            copy_favorite = copy_setting_view.down('reportfavoritetoggle');
+            copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
+            share_setting_view = this.getShareSetting(),
+            editable_icon = Ext.select('.icon-edit');
 
+        // TODO: reject changes
+        
+        
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
         
@@ -97675,6 +97923,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
+
+        // reset the share modal
+        share_setting_view.update('');
+        editable_icon.removeCls('selected')
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
@@ -97719,7 +97971,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         PICS.data.ServerCommunication.saveReport({
             success_callback: function () {
-                that.application.fireEvent('openalertmessage', {
+                that.application.fireEvent('opensuccessmessage', {
                     title: 'Report Saved',
                     html: 'to My Reports in Manage Reports.'
                 });
@@ -97780,7 +98032,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
 
         if (record) {
-            var report_settings_share = this.getShareSetting();
+            var share_setting_view = this.getShareSetting();
 
             var account = {
                 name: record.get('result_name'),
@@ -97788,13 +98040,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
             };
 
             // Save the record data needed for sharing.
-            report_settings_share.request_data = {
+            share_setting_view.request_data = {
                 account_id: record.get('result_id'),
                 account_type: record.get('search_type')
             };
 
             // Show the selection.
-            report_settings_share.update(account);
+            share_setting_view.update(account);
         }
     },
 
@@ -97809,16 +98061,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
 
     onReportModalShareClick: function (cmp, e, eOpts) {
-        var report_settings_share = this.getShareSetting(),
-            data = report_settings_share.request_data;
+        var share_setting_view = this.getShareSetting(),
+            data = share_setting_view.request_data,
+            report_settings_modal = this.getSettingsModal(),
+            that = this;
 
         // Abort if no account has been selected.
         if (typeof data == 'undefined') {
             return;
         }
 
-        var report_settings_share_element = report_settings_share.getEl(),
-            is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
+        var share_setting_view_element = share_setting_view.getEl(),
+            is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
             account_id = data.account_id,
             account_type = data.account_type;
 
@@ -97827,7 +98081,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
             account_type: account_type,
             is_editable: is_editable,
             success_callback: function (response) {
+                var data = response.responseText,
+                    json = Ext.JSON.decode(data);
+
                 report_settings_modal.close();
+
+                that.application.fireEvent('openalertmessage', {
+                    title: json.title,
+                    html: json.html
+                });
             }
         };
         

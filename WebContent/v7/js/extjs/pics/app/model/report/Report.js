@@ -197,7 +197,27 @@ Ext.define('PICS.model.report.Report', {
             direction: direction
         });
     },
+
+    commitAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
+
+        filter_store.commitChanges();
+        column_store.commitChanges();
+        sort_store.commitChanges();
+    },
+
+    rejectAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
     
+        filter_store.rejectChanges();
+        column_store.rejectChanges();
+        sort_store.rejectChanges();
+    },
+
     convertColumnsToModelFields: function () {
         var column_store = this.columns(),
             model_fields = [];

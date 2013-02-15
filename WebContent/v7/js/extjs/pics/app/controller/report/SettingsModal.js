@@ -115,6 +115,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
             share_setting_view = this.getShareSetting(),
             editable_icon = Ext.select('.icon-edit');
 
+        // TODO: reject changes
+        
+        
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
         
@@ -171,7 +174,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         PICS.data.ServerCommunication.saveReport({
             success_callback: function () {
-                that.application.fireEvent('openalertmessage', {
+                that.application.fireEvent('opensuccessmessage', {
                     title: 'Report Saved',
                     html: 'to My Reports in Manage Reports.'
                 });

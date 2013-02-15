@@ -2,8 +2,8 @@ Ext.define('PICS.controller.report.Header', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'alertMessage',
-        selector: 'reportalertmessage'
+        ref: 'successMessage',
+        selector: 'reportalertsuccess'
     }, {
         ref: 'pageHeader',
         selector: 'reportpageheader'
@@ -14,7 +14,7 @@ Ext.define('PICS.controller.report.Header', {
     ],
              
     views: [
-        'PICS.view.report.alert-message.AlertMessage'
+        'PICS.view.report.alert.Success'
     ],
              
     init: function () {
@@ -33,7 +33,7 @@ Ext.define('PICS.controller.report.Header', {
         });
         
         this.application.on({
-            openalertmessage: this.openAlertMessage,
+            opensuccessmessage: this.openSuccessMessage,
             scope: this
         });
 
@@ -47,21 +47,21 @@ Ext.define('PICS.controller.report.Header', {
         this.application.fireEvent('updatepageheader');
     },
     
-    openAlertMessage: function (options) {
-        var alert_message_view = this.getAlertMessage(),
+    openSuccessMessage: function (options) {
+        var success_message_view = this.getSuccessMessage(),
             title = options.title,
             html = options.html;
         
-        if (alert_message_view) {
-            alert_message_view.destroy();
+        if (success_message_view) {
+            success_message_view.destroy();
         }
         
-        var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+        var success_message = Ext.create('PICS.view.report.alert.Success', {
             html: html,
             title: title
         });
         
-        alert_message.show();
+        success_message.show();
     },
 
     openSettingsModal: function (cmp, e, eOpts) {
@@ -77,7 +77,7 @@ Ext.define('PICS.controller.report.Header', {
         if (is_editable) {
             PICS.data.ServerCommunication.saveReport({
                 success_callback: function () {
-                    that.application.fireEvent('openalertmessage', {
+                    that.application.fireEvent('opensuccessmessage', {
                         title: 'Report Saved',
                         html: 'to My Reports in Manage Reports.'
                     });

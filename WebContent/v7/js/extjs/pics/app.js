@@ -8,6 +8,8 @@ Ext.application({
 
     requires: [
         'PICS.view.report.Viewport',
+        'PICS.Ajax',
+        'PICS.data.Exception',
         'PICS.data.ServerCommunication',
         'PICS.data.ServerCommunicationUrl',
         'PICS.data.ColumnType',
@@ -28,6 +30,7 @@ Ext.application({
     ],
 
     init: function () {
+
         // Override CSS3BorderRadius value which caused render problems in <IE9 when false.
         Ext.supports['CSS3BorderRadius'] = true;
 
@@ -38,6 +41,7 @@ Ext.application({
     launch: function () {
         // save reference to application
         PICS.app = this;
+
         PICS.app.configuration = {
             isEditable: function () { return true; },
             isFavorite: function () { return true; },
@@ -45,9 +49,9 @@ Ext.application({
                 return true;
             }
         };
-        
+
         PICS.data.ServerCommunication.loadAll({
-            callback: this.createViewport,
+            success_callback: this.createViewport,
             scope: this
         });
     },

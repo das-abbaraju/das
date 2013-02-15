@@ -810,6 +810,16 @@
                     "path": "extjs/src/draw/engine/"
                 },
                 {
+                    "clsName": "PICS.Ajax",
+                    "name": "Ajax.js",
+                    "path": "app/"
+                },
+                {
+                    "clsName": "PICS.data.Exception",
+                    "name": "Exception.js",
+                    "path": "app/data/"
+                },
+                {
                     "clsName": "PICS.data.ServerCommunication",
                     "name": "ServerCommunication.js",
                     "path": "app/data/"
@@ -840,9 +850,14 @@
                     "path": "extjs/src/resizer/"
                 },
                 {
-                    "clsName": "PICS.view.report.alert-message.AlertMessage",
-                    "name": "AlertMessage.js",
-                    "path": "app/view/report/alert-message/"
+                    "clsName": "PICS.view.report.alert.Error",
+                    "name": "Error.js",
+                    "path": "app/view/report/alert/"
+                },
+                {
+                    "clsName": "PICS.view.report.alert.Success",
+                    "name": "Success.js",
+                    "path": "app/view/report/alert/"
                 },
                 {
                     "clsName": "Ext.resizer.BorderSplitter",

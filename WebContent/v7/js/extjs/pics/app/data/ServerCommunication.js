@@ -73,16 +73,21 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.setProxyForWrite(url);
 
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data),
-                            report_id = json.id;
-
-                        window.location.href = 'Report.action?report=' + report_id;
-                    },
-                    failure: function (batch, eOpts) {
-                        // TODO: error message - revert?
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_id = json.id;
+    
+                            window.location.href = 'Report.action?report=' + report_id;
+                        }
                     }
                 });
             },
@@ -96,20 +101,17 @@ Ext.define('PICS.data.ServerCommunication', {
             favoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
 
-                Ext.Ajax.request({
-                    url: url,
-                    failure: function () {
-                        // TODO: error message - revert?
-                    }
+                PICS.Ajax.request({
+                    url: url
                 });
             },
 
             loadAll: function (options) {
                 var url = PICS.data.ServerCommunicationUrl.getLoadAllUrl(),
-                    callback = typeof options.callback == 'function' ? options.callback : function () {},
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     scope = options.scope ? options.scope : this;
 
-                Ext.Ajax.request({
+                PICS.Ajax.request({
                     url: url,
                     success: function (response) {
                         var data = response.responseText,
@@ -123,7 +125,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                         loadDataTableStore(json);
 
-                        callback.apply(scope, arguments);
+                        success_callback.apply(scope, arguments);
                     }
                 });
             },
@@ -145,26 +147,44 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // sync
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
 
-                        // load the report store
-                        var report_store = loadReportStore(json),
-                            report = report_store.first();
-                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+                            
+                            PICS.data.Exception.handleException({
+                                response: response,
+                                callback: function () {
+                                    report.rejectAllChanges();
+                                    
+                                    PICS.data.ServerCommunication.loadData();
+                                }
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data);
 
-                        // load new results
-                        loadDataTableStore(json);
-
-                        // remove data table loading mask
-                        stopDataTableLoading();
-
-                        // refresh grid
-                        updateDataTableView(report);
-
+                            // load the report store
+                            var report_store = loadReportStore(json),
+                                report = report_store.first();
+                            
+                            // TODO: check if needed
+                            // report.commitAllChanges();
+    
+                            // load new results
+                            loadDataTableStore(json);
+    
+                            // remove data table loading mask
+                            stopDataTableLoading();
+    
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
             },
@@ -176,7 +196,8 @@ Ext.define('PICS.data.ServerCommunication', {
                     data_table_store = Ext.StoreManager.get('report.DataTables'),
                     page = page ? page : 1,
                     limit = limit ? limit : data_table_store.pageSize,
-                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit);
+                    url = PICS.data.ServerCommunicationUrl.getLoadDataUrl(page, limit),
+                    that = this;
 
                 // updates the stores limit tracker
                 data_table_store.setLimit(limit);
@@ -195,20 +216,42 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // sync
                 report_store.sync({
-                    success: function (batch, eOpts) {
-                        // TODO: sketchy
-                        var response = batch.operations[0].response,
-                            data = response.responseText,
-                            json = Ext.JSON.decode(data);
-
-                        // load new results
-                        loadDataTableStore(json);
-
-                        // remove data table loading mask
-                        stopDataTableLoading();
-
-                        // refresh grid
-                        updateDataTableView(report);
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data),
+                                report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+                            
+                            PICS.data.Exception.handleException({
+                                response: response,
+                                callback: function () {
+                                    report.rejectAllChanges();
+                                    
+                                    PICS.data.ServerCommunication.loadData();
+                                }
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data);
+                            
+                            var report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+    
+                            report.commitAllChanges();
+    
+                            // load new results
+                            loadDataTableStore(json);
+    
+                            // remove data table loading mask
+                            stopDataTableLoading();
+    
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
             },
@@ -223,7 +266,6 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
-                    failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = PICS.data.ServerCommunicationUrl.getSaveReportUrl();
 
                 // flag store as dirty so it will sync data to server
@@ -233,8 +275,18 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.setProxyForWrite(url);
 
                 report_store.sync({
-                    success: success_callback,
-                    failure: failure_callback
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[0],
+                            response = operation.response || { status: operation.error.status };
+
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            success_callback();
+                        }
+                    }
                 });
             },
             
@@ -276,11 +328,8 @@ Ext.define('PICS.data.ServerCommunication', {
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
-                Ext.Ajax.request({
-                    url: url,
-                    failure: function () {
-                        // TODO: error message - revert?
-                    }
+                PICS.Ajax.request({
+                    url: url
                 });
             }
         };
