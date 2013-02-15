@@ -185,7 +185,7 @@ public class LanguageModel {
 		// TODO: Should English should be listed first? The assumption is yes
 		if (supportedLanguageKeys.contains("en") && supportedLanguageKeys.indexOf("en") > 0) {
 			supportedLanguageKeys.remove("en");
-			supportedLanguageKeys.set(0, "en");
+			supportedLanguageKeys.add(0, "en");
 		}
 	}
 

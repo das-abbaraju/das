@@ -184,4 +184,20 @@ public class LanguageModelTest {
 		assertEquals(mexicanSpanish, stableLanguageLocales.get(1));
 		assertEquals(canadianFrench, stableLanguageLocales.get(2));
 	}
+
+	@Test
+	public void testSetFirstLanguageAsEnglish() throws Exception {
+		List<String> languages = new ArrayList<String>();
+		languages.add(Locale.CHINESE.getLanguage());
+		languages.add(Locale.FRENCH.getLanguage());
+		languages.add(Locale.ENGLISH.getLanguage());
+		languages.add(Locale.GERMAN.getLanguage());
+
+		Whitebox.invokeMethod(languageModel, "setFirstLanguageAsEnglish", languages);
+
+		assertEquals(Locale.ENGLISH.getLanguage(), languages.get(0));
+		assertTrue(languages.contains(Locale.FRENCH.getLanguage()));
+		assertTrue(languages.contains(Locale.GERMAN.getLanguage()));
+		assertTrue(languages.contains(Locale.CHINESE.getLanguage()));
+	}
 }
