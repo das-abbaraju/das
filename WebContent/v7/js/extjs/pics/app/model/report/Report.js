@@ -7,30 +7,25 @@ Ext.define('PICS.model.report.Report', {
     ],
 
     fields: [{
-        // report id
-        name: 'id',
-        type: 'int'
-    }, {
-        // report base (aka mysql view)
-        name: 'modelType',
+        name: 'type',
         type: 'string'
     }, {
-        // report name
         name: 'name',
         type: 'string'
     }, {
-        // report description
         name: 'description',
         type: 'string'
     }, {
-        // query expression used to generate report data aka (1 AND 2) OR 3
-        name: 'filterExpression',
-        type: 'string'
+        name: 'filter_expression',
+        type: 'string',
+        useNull: true
     }, {
-        // report limit
-        name: 'rowsPerPage',
-        type: 'int',
-        defaultValue: 50
+        name: 'is_editable',
+        type: 'boolean',
+        persist: false
+    }, {
+        name: 'is_favorite',
+        type: 'boolean'
     }],
     hasMany: [{
         model: 'PICS.model.report.Column',
@@ -42,147 +37,124 @@ Ext.define('PICS.model.report.Report', {
         model: 'PICS.model.report.Sort',
         name: 'sorts'
     }],
-    
+
     getFilterExpression: function () {
-        var filter_expression = this.get('filterExpression');
+        var filter_expression = this.get('filter_expression');
         
         return filter_expression.replace(/\{([\d]+)\}/g, function (match, p1) {
             return parseInt(p1);
         });
     },
     
+    isNewFilterExpression: function (filter_expression) {
+        var current_expression = this.get('filter_expression'),
+            sanitized_expression = this.sanitizeFilterExpression(filter_expression);
+
+        if (sanitized_expression == current_expression) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     // TODO: probably fix this because nichols wrote it
     setFilterExpression: function (filter_expression) {
-        // Hack: because this is broken
-        if (filter_expression == '') {
-            this.set('filterExpression', filter_expression);
+        var sanitized_expression = this.sanitizeFilterExpression(filter_expression);
 
-            return false;
+        this.set('filter_expression', sanitized_expression);
+    },
+
+    // TODO write a real grammar and parser for our filter formula DSL
+    sanitizeFilterExpression: function (filter_expression) {
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi,
+            tokens = [],
+            token = '',
+            paren_count = 0,
+            token_count = 0,
+            index_num = 0,
+            sanitized_expression = '',
+            max_token_value = this.filters().count(),
+            token_value;
+        
+        if (typeof filter_expression != 'string') {
+            return '';
         }
 
-        // TODO write a real grammar and parser for our filter formula DSL
-
         // Split into tokens
-        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
         filter_expression = filter_expression.replace(validTokenRegex, ' $& ');
-
-        var tokens = filter_expression.trim().split(/ +/);
-        filter_expression = '';
+        tokens = filter_expression.trim().split(/ +/);
 
         // Check for invalid tokens and make sure parens are balanced
-        var parenCount = 0;
-        for (var i = 0; i < tokens.length; i += 1) {
-            var token = tokens[i];
+        for (token_count = 0; token_count < tokens.length; token_count += 1) {
+            token = tokens[token_count];
 
             if (token.search(validTokenRegex) === -1) {
-                return false;
+                return '';
             }
 
             if (token === '(') {
-                parenCount += 1;
-                filter_expression += token;
+                paren_count += 1;
+                sanitized_expression += token;
             } else if (token === ')') {
-                parenCount -= 1;
-                filter_expression += token;
+                paren_count -= 1;
+                sanitized_expression += token;
             } else if (token.toUpperCase() === 'AND') {
-                filter_expression += ' AND ';
+                sanitized_expression += ' AND ';
             } else if (token.toUpperCase() === 'OR') {
-                filter_expression += ' OR ';
+                sanitized_expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
-                    return false;
+                token_value = parseInt(token);
+
+                if (token_value == 0 || token_value > max_token_value) {
+                    return '';
                 }
 
-                // Convert from counting number to index
-                var indexNum = new Number(token);
-                filter_expression += '{' + indexNum + '}';
+                sanitized_expression += '{' + token_value + '}';
             } else {
-                return false;
+                return '';
             }
 
-            if (parenCount < 0) {
-                return false;
+            if (paren_count < 0) {
+                return '';
             }
         }
 
-        if (parenCount !== 0) {
-            return false;
+        if (paren_count !== 0) {
+            return '';
         }
 
-        this.set('filterExpression', filter_expression);
+        return sanitized_expression;
     },
 
-    /**
-     * Get Report JSON
-     *
-     * Builds a jsonified version of the report to be sent to the server
-     */
-    toJson: function () {
-        var report = {};
-
-        function convertStoreToDataObject(store) {
-            var data = [];
-
-            store.each(function (record) {
-                var item = {};
-                
-                record.fields.each(function (field) {
-                    // block to prevent extraneous id from being inject into request parameters
-                    // ???
-                    if (record.get(field.name)) {
-                        item[field.name] = record.get(field.name);
-                    }
-                });
-                
-                data.push(item);
-            });
-
-            return data;
-        }
-
-        report = this.data;
-        report.columns = convertStoreToDataObject(this.columns());
-        report.filters = convertStoreToDataObject(this.filters());
-        report.sorts = convertStoreToDataObject(this.sorts());
-
-        return Ext.encode(report);
-    },
-
-    toRequestParams: function () {
-        var report = {};
-
-        report.report = this.get('id');
-        report['report.description'] = this.get('description');
-        report['report.name'] = this.get('name');
-        report['report.parameters'] = this.toJson();
-        report['report.rowsPerPage'] = this.get('rowsPerPage');
-
-        return report;
-    },
-    
-    
-    
-    
     addColumn: function (column) {
         if (Ext.getClassName(column) != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column');
         }
         
-        var column_store = this.columns();
+        var column_store = this.columns(),
+            new_column = column.getData();
         
-        column_store.add(column);
+        column_store.add(new_column);
+        
+        this.resortColumns();
     },
     
     addColumns: function (columns) {
-        Ext.Array.forEach(columns, function (column) {
+        var new_columns = [];
+        
+        Ext.each(columns, function (column) {
             if (Ext.getClassName(column) != 'PICS.model.report.Column') {
                 Ext.Error.raise('Invalid column');
             }
+            
+            new_columns.push(column.getData());
         });
         
         var column_store = this.columns();
         
-        column_store.add(columns);
+        column_store.add(new_columns);
+        
+        this.resortColumns();
     },
     
     addFilter: function (filter) {
@@ -190,34 +162,62 @@ Ext.define('PICS.model.report.Report', {
             Ext.Error.raise('Invalid filter');
         }
         
-        var filter_store = this.filters();
+        var filter_store = this.filters(),
+            new_filter = filter.getData();
         
-        filter_store.add(filter);
+        filter_store.add(new_filter);
     },
     
     addFilters: function (filters) {
+        var new_filters = [];
+        
         Ext.Array.forEach(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
+            
+            new_filters.push(filter.getData());
         });
         
         var filter_store = this.filters();
         
-        filter_store.add(filters);
+        filter_store.add(new_filters);
     },
     
     addSort: function (column, direction) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
         var sort_store = this.sorts(),
-            available_field = column.getAvailableField(),
-            column_name = available_field.get('name');
+            field_id = column.get('field_id');
         
         sort_store.add({
-            name: column_name,
+            field_id: field_id,
             direction: direction
         });
     },
+
+    commitAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
+
+        filter_store.commitChanges();
+        column_store.commitChanges();
+        sort_store.commitChanges();
+    },
+
+    rejectAllChanges: function () {
+        var filter_store = this.filters(),
+            column_store = this.columns(),
+            sort_store = this.sorts();
     
+        filter_store.rejectChanges();
+        column_store.rejectChanges();
+        sort_store.rejectChanges();
+    },
+
     convertColumnsToModelFields: function () {
         var column_store = this.columns(),
             model_fields = [];
@@ -244,14 +244,6 @@ Ext.define('PICS.model.report.Report', {
         return grid_columns;
     },
     
-    removeColumns: function () {
-        this.columns().removeAll();
-    },
-    
-    removeSorts: function () {
-        this.sorts().removeAll();
-    },
-    
     // reorder columns
     moveColumnByIndex: function (from_index, to_index) {
         var column_store = this.columns(),
@@ -263,17 +255,34 @@ Ext.define('PICS.model.report.Report', {
         });
     
         // splice out the column store - column your moving
-        var spliced_column = columns.splice(from_index, 1);
+        var spliced_column = columns.splice(from_index, 1)[0];
     
         // insert the column store - column to the position you moved it to
         columns.splice(to_index, 0, spliced_column);
     
         // remove all column store records
-        column_store.removeAll();
+        this.removeColumns();
         
-        // re-insert column store records in the new position
-        Ext.each(columns, function (column, index) {
-            column_store.add(column);
+        this.addColumns(columns);
+        
+        this.resortColumns();
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    resortColumns: function () {
+        var column_store = this.columns();
+        
+        column_store.each(function (column, index) {
+            index += 1;
+            
+            column.set('sort', index);
         });
     }
 });

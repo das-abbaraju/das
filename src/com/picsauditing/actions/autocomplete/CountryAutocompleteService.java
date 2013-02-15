@@ -1,5 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,15 +29,15 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 	 * be done using the list of Country ISO Codes against the Country table and
 	 * another query will be run against the Country Table with a join against
 	 * the translations.
-	 * 
+	 *
 	 * If the query String is not a set of ISO Codes, then it is assumed to be a
 	 * Country name and the Country and translations table will be queries for
 	 * that.
-	 * 
+	 *
 	 * The returned Collection will be a unique set of Countries.
 	 */
 	@Override
-	protected Collection<Country> getItems(String search, Permissions permissions) {
+	protected Collection<Country> getItemsForSearch(String search, Permissions permissions) {
 		if (Strings.isEmpty(search)) {
 			return Collections.emptyList();
 		}
@@ -46,7 +47,7 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 		if (queryContainsIsoCodes(search)) {
 			// no need to escape string because it will fail Regex check
 			result.addAll(countryDAO.findWhere("isoCode IN ('" + search + "')"));
-			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%", 
+			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%",
 					RESULT_SET_LIMIT));
 		} else {
 			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search)
@@ -73,5 +74,14 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 	@Override
 	protected Object getValue(Country country, Permissions permissions) {
 		return I18nCache.getInstance().getText(country.getI18nKey(), permissions.getLocale());
+	}
+
+	@Override
+	protected Collection<Country> getItemsForSearchKey(String searchKey, Permissions permissions) {
+		if (Strings.isEmpty(searchKey)) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(this.countryDAO.findbyISO(searchKey));
 	}
 }

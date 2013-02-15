@@ -32,7 +32,7 @@
         <a href="#" data-title="${version_detail_tooltip}">Version ${version}</a>
     </div>
     <div class="copyright">
-        Copyright &copy; 2012 PICS
+        Copyright &copy; 2013 PICS
     </div>
 
     <button class="btn show-privacy-policy"><s:text name="Footer.Privacy" /></button>

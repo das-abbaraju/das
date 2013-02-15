@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
@@ -25,6 +24,7 @@ import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

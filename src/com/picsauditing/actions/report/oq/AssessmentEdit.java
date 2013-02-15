@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

@@ -22,7 +22,6 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -35,6 +34,8 @@ import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -132,11 +133,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     /**
      * Container to hold a file being downloaded by the user.
-     * 
+     *
      * @see com.picsauditing.strutsutil.FileResult
      */
     protected FileDownloadContainer fileContainer = null;
-    
+
     /**
      * Current logged in user
      */
@@ -151,11 +152,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     private Set<User> safetyList;
 
     private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
-
-    @Deprecated
-    public static final String getVersion() {
-        return PicsOrganizerVersion.getVersion();
-    }
 
     public boolean isShowConfigMessage() {
         return !isConfigEnvironment();
@@ -215,7 +211,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         if (CONFIG == null) {
             CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
         }
-        
+
         return CONFIG;
     }
 
@@ -237,10 +233,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
      * then it's more advanced, i.e. a Beta version.
      */
     public boolean isBetaVersion() {
-        int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
-        int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
-
-        return PicsOrganizerVersion.greaterThan(major, minor);
+    	AppVersion dbVersion = new AppVersion(propertyDAO.getProperty("VERSION.major"), propertyDAO.getProperty("VERSION.minor"));
+        return AppVersion.current.greaterThan(dbVersion);
     }
 
     public boolean isConfigurationEnvironment() {
@@ -458,8 +452,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     public OperatorAccount getOperatorAccount() {
         Account operator = getAccount();
-        if (operator.getType().equals("Operator") || operator.getType().equals("Corporate"))
-            return (OperatorAccount) operator;
+        if (operator.getType().equals("Operator") || operator.getType().equals("Corporate")) {
+			return (OperatorAccount) operator;
+		}
         return null;
     }
 
@@ -483,8 +478,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
         DateFormat dateFormat = new SimpleDateFormat(format);
 
-        if (permissions == null || permissions.getTimezone() == null)
-            return dateFormat.format(serverDate);
+        if (permissions == null || permissions.getTimezone() == null) {
+			return dateFormat.format(serverDate);
+		}
 
         dateFormat.setTimeZone(permissions.getTimezone());
 
@@ -515,9 +511,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         long YEARS = DAYS * 365;
 
         String fuzzy = "";
-        if (diff < MINUTES)
-            fuzzy = getText("date.Today");
-        else if (diff < HOURS) {
+        if (diff < MINUTES) {
+			fuzzy = getText("date.Today");
+		} else if (diff < HOURS) {
             long n = diff / MINUTES;
             fuzzy = getTextParameterized("date.fuzzy.minute", n);
         } else if (diff < DAYS) {
@@ -603,8 +599,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     public List<BasicDynaBean> getDepartmentList() throws SQLException {
         String like = ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
-        if (like == null)
-            like = "";
+        if (like == null) {
+			like = "";
+		}
         like = like.trim();
 
         SelectUser sql = new SelectUser();
@@ -655,8 +652,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
      */
     static protected String getFtpDir() {
         String ftpDir = System.getProperty("pics.ftpDir");
-        if (ftpDir != null && ftpDir.length() > 0)
-            return ftpDir;
+        if (ftpDir != null && ftpDir.length() > 0) {
+			return ftpDir;
+		}
 
         try {
             ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
@@ -666,8 +664,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
             logger.error("Error getting ftp dir", exception);
         }
 
-        if (ftpDir != null && ftpDir.length() > 0)
-            return ftpDir;
+        if (ftpDir != null && ftpDir.length() > 0) {
+			return ftpDir;
+		}
 
         return "C:/temp";
     }
@@ -714,11 +713,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public void setJsonArray(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }
-    
+
     public FileDownloadContainer getFileContainer() {
     	return fileContainer;
     }
-    
+
     public void setFileContainer(FileDownloadContainer fileContainer) {
     	this.fileContainer = fileContainer;
     }
@@ -756,8 +755,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     }
 
     public int getDaysLeft(Date invoiceDate) {
-        if (invoiceDate == null)
-            return 0;
+        if (invoiceDate == null) {
+			return 0;
+		}
         Calendar cal = Calendar.getInstance();
         cal.setTime(invoiceDate);
         cal.add(Calendar.DAY_OF_YEAR, 90);
@@ -767,8 +767,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     @SuppressWarnings("rawtypes")
     @Override
     public void setRequest(Map arg0) {
-        if (requestURL == null)
-            requestURL = ServletActionContext.getRequest().getRequestURL().toString();
+        if (requestURL == null) {
+			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
+		}
     }
 
     public String setUrlForRedirect(String url) throws IOException {
@@ -1105,6 +1106,36 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected void addFieldErrorIfMessage(String fieldName, String errorMessageKey) {
 		if (StringUtils.isNotEmpty(errorMessageKey)) {
 			addFieldError(fieldName, getText(errorMessageKey));
+		}
+	}
+
+	protected JSONObject getJsonFromRequestPayload() {
+		JSONObject jsonObject = new JSONObject();
+		HttpServletRequest request = getRequest();
+		if (request == null) {
+			return jsonObject;
+		}
+
+		BufferedReader bufferedReader = null;
+		try {
+			bufferedReader = request.getReader();
+			jsonObject = JSONUtilities.parseJsonFromInput(bufferedReader);
+		} catch (Exception e) {
+			logger.error("There was an sqlException parsing the JSON from the request", e);
+		} finally {
+			closeBufferedReader(bufferedReader);
+		}
+
+		return jsonObject;
+	}
+
+	protected void closeBufferedReader(BufferedReader bufferedReader) {
+		try {
+			if (bufferedReader != null) {
+				bufferedReader.close();
+			}
+		} catch (Exception e) {
+			logger.error("There was an sqlException closing the bufferedReader", e);
 		}
 	}
 

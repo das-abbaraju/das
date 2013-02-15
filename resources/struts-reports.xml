@@ -7,12 +7,8 @@
 			<result>struts/reports/report-bootstrap.jsp</result>
 		</action>
 		
-		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
-		</action>
-		<action name="ReportData" class="com.picsauditing.actions.report.ReportData">
+		<action name="ReportApi" class="com.picsauditing.actions.report.ReportApi">
 			<result name="print">struts/report/print.jsp</result>
-		</action>
-		<action name="ReportSharing" class="com.picsauditing.actions.report.ReportSharing">
 		</action>
 
 		<action name="ReportTester"

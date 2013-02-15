@@ -22,6 +22,7 @@ public interface FeatureToggle {
 	String TOGGLE_TIMEZONE_LOOKUP = "Toggle.TimezoneLookup";
 	String TOGGLE_CSR_SINGLE_ASSIGNMENT = "Toggle.BackgroundProcesses.Csr_SingleAssignment";
 	String TOGGLE_CANONICAL_TIMEZONES = "Toggle.Canonical_Timezone";
+	String TOGGLE_DR_STORAGE_BACKWARDS_COMPATIBILITY = "Toggle.DR_Persistence";
 	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
 	String TOGGLE_USE_NEW_CANADIAN_TAX = "Toggle.UseNewCanadianTax";
 	String TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION = "Toggle.NoteEdit.DoNotUseSwitchToInRestriction";

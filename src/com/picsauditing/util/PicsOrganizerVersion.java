@@ -7,8 +7,9 @@ public class PicsOrganizerVersion {
 
 	@SuppressWarnings("unused")
 	public static final String getVersion() {
-		if (patch > 0)
+		if (patch > 0) {
 			return major + "." + minor + "." + patch;
+		}
 		return major + "." + minor;
 	}
 

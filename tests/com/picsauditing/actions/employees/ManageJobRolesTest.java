@@ -32,7 +32,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
@@ -45,6 +44,7 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
 
 public class ManageJobRolesTest {

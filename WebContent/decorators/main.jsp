@@ -14,6 +14,7 @@
 <%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
+<%@ page import="com.picsauditing.util.AppVersion"%>
 <%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
@@ -26,7 +27,7 @@
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
-	String version = PicsOrganizerVersion.getVersion();
+	String version = AppVersion.current.getVersion();
 	MainPage mainPage = new MainPage(request, session);
 
 	String protocol = mainPage.isPageSecure() ? "https" : "http";
@@ -41,7 +42,7 @@
 		User user = userDao.find(permissions.getUserId());
 
 		if (user != null)
-			useDynamicReports = user.isUsingDynamicReports();
+	useDynamicReports = user.isUsingDynamicReports();
 	}
 
 	MenuComponent menu = new MenuComponent();
@@ -102,6 +103,7 @@
 		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
+        <script type="text/javascript" src="v7\js\extjs\pics\ext-overrides.js"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
 
 		<script type="text/javascript">
@@ -181,6 +183,7 @@
         <nav id="site_navigation"></nav>
         <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
         <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="v7/js/extjs/pics/ext-overrides.js"></script>        
         <script type="text/javascript" src="js/layout/menu.js"></script>
         
         <% } %>

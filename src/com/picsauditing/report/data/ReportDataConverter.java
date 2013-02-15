@@ -11,16 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
-import com.picsauditing.report.fields.QueryMethod;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.util.PicsDateFormat;
 
 public class ReportDataConverter {
-	
-	private final static I18nCache i18nCache = I18nCache.getInstance();
+
 	private Locale locale;
 	private ReportResults reportResults;
-	
+
+	private static I18nCache i18nCache = I18nCache.getInstance();
 	private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
 	public ReportDataConverter(Collection<Column> columns, List<BasicDynaBean> results) {
@@ -43,113 +45,112 @@ public class ReportDataConverter {
 
 	private Object convertValueForJson(ReportCell cell) {
 		Object value = cell.getValue();
-		if (value == null)
+		if (value == null) {
 			return null;
-		Column column = cell.getColumn();
+		}
 
-		if (column != null) {
-			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
-				int month = Integer.parseInt(value.toString());
-				return new DateFormatSymbols(locale).getMonths()[month - 1];
-			}
-			if (column.getFieldName().contains("StatusSubstatus")) {
-				String[] valueString = ((String) value).split(":");
-
-				String statusI18nKey = "AuditStatus." + valueString[0];
-				String statusTranslation = getText(statusI18nKey, locale);
-				String valueTranslated = statusTranslation;
-
-				if (valueString.length > 1) {
-					String subStatusI18nKey = "AuditSubStatus." + valueString[1];
-					String subStatusTranslation = getText(subStatusI18nKey, locale);
-					valueTranslated += ": " + subStatusTranslation;
-				}
-
-				return valueTranslated;
-			}
-
-			if (column.getField() == null) {
-				// This really shouldn't happen but just in case, this message
-				// is better than an NPE
-				return column.getFieldName() + ": Field not available";
-			}
-			
-			if (column.getField().isTranslated()) {
-				String key = column.getField().getI18nKey(value.toString());
-				return getText(key, locale);
-			}
-			
-			DisplayType displayType = column.getField().getType().getDisplayType();
-			if (displayType == DisplayType.Integer) {
-				return value;
-			}
-			
-			if (displayType == DisplayType.Float) {
-				return value;
-			}
-			
-			if (displayType == DisplayType.Boolean) {
-				return value;
+		Object result = convertValueBasedOnCellColumn(cell);
+		if (result == null) {
+			result = convertValueBasedOnType(value);
+			if (result == null) {
+				result = value.toString();
 			}
 		}
 
-		if (value instanceof java.sql.Date) {
-			java.sql.Date valueAsDate = (java.sql.Date) value;
-			return valueAsDate.getTime();
-		}
-		if (value instanceof java.sql.Timestamp) {
-			Timestamp valueAsTimestamp = (Timestamp) value;
-			return valueAsTimestamp.getTime();
-		}
-
-		return value.toString();
+		return result;
 	}
 
 	private Object convertValueForPrinting(ReportCell cell) {
 		Object value = cell.getValue();
-		if (value == null)
+		if (value == null) {
 			return null;
-		
-		Column column = cell.getColumn();
-
-		if (column != null) {
-			logger.info("Converting {} value: {}", cell.getColumn().getFieldName(), value );
-			
-			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
-				int month = Integer.parseInt(value.toString());
-				return new DateFormatSymbols(locale).getMonths()[month - 1];
-			}
-			if (column.getFieldName().contains("StatusSubstatus")) {
-				String[] valueString = ((String) value).split(":");
-
-				String statusI18nKey = "AuditStatus." + valueString[0];
-				String statusTranslation = getText(statusI18nKey, locale);
-				String valueTranslated = statusTranslation;
-
-				if (valueString.length > 1) {
-					String subStatusI18nKey = "AuditSubStatus." + valueString[1];
-					String subStatusTranslation = getText(subStatusI18nKey, locale);
-					valueTranslated += ": " + subStatusTranslation;
-				}
-
-				return valueTranslated;
-			}
-
-			if (column.getField() == null) {
-				// This really shouldn't happen but just in case, this message
-				// is better than an NPE
-				return column.getFieldName() + ": Field not available";
-			}
-			if (column.getField().isTranslated()) {
-				String key = column.getField().getI18nKey(value.toString());
-				return getText(key, locale);
-			}
-			if (column.getField().getType().getDisplayType() == DisplayType.Boolean) {
-				return value;
-			}
 		}
 
-		return value;
+		Object result = convertValueBasedOnCellColumn(cell);
+		if (result == null) {
+			result = value;
+		}
+
+		return result;
+	}
+
+	private Object convertValueBasedOnCellColumn(ReportCell cell) {
+		Column column = cell.getColumn();
+		Object value = cell.getValue();
+		Object result = null;
+
+		if (column == null) {
+			return result;
+		}
+
+		logger.info("Attempting to convert {}, value: {}", column.getName(), value);
+
+		SqlFunction sqlFunction = column.getSqlFunction();
+		if (sqlFunction != null && sqlFunction == SqlFunction.Month) {
+			result = convertValueAsMonth(value);
+		}
+
+		if (column.getName().contains("StatusSubstatus")) {
+			result = convertValueAsTranslatedStatus((String) value);
+		}
+
+		Field field = column.getField();
+		if (field == null) {
+			result = column.getName() + ": Field not available";
+			return result;
+		}
+
+		if (field.isTranslated() && column.hasNoSqlFunction()) {
+			String key = field.getI18nKey(value.toString());
+			result = getText(key, locale);
+		}
+
+		DisplayType displayType = field.getType().getDisplayType();
+		if (displayType == DisplayType.Number) {
+			result = value;
+		}
+
+		if (displayType == DisplayType.Boolean) {
+			result = value;
+		}
+
+		return result;
+	}
+
+	private String convertValueAsMonth(Object value) {
+		int month = Integer.parseInt(value.toString());
+		return new DateFormatSymbols(locale).getMonths()[month - 1];
+	}
+
+	private String convertValueAsTranslatedStatus(String value) {
+		String[] valueString = value.split(":");
+
+		String statusI18nKey = "AuditStatus." + valueString[0];
+		String statusTranslation = getText(statusI18nKey, locale);
+		String valueTranslated = statusTranslation;
+
+		if (valueString.length > 1) {
+			String subStatusI18nKey = "AuditSubStatus." + valueString[1];
+			String subStatusTranslation = getText(subStatusI18nKey, locale);
+			valueTranslated += ": " + subStatusTranslation;
+		}
+
+		return valueTranslated;
+	}
+
+	private String convertValueBasedOnType(Object value) {
+		String result = null;
+
+		if (value instanceof java.sql.Date) {
+			java.sql.Date valueAsDate = (java.sql.Date) value;
+			result = PicsDateFormat.formatDateIsoOrBlank(valueAsDate);
+		}
+
+		if (value instanceof java.sql.Timestamp) {
+			Timestamp valueAsTimestamp = (Timestamp) value;
+			result = PicsDateFormat.formatDateOrBlank(valueAsTimestamp, PicsDateFormat.DateAndTime);
+		}
+		return result;
 	}
 
 	private static String getText(String key, Locale locale) {

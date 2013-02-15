@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -79,8 +80,9 @@ public class StringsTest {
 	}
 
 	private String oldIndexName(String name) {
-		if (name == null)
+		if (name == null) {
 			return null;
+		}
 		name = name.toUpperCase();
 
 		String expression = "[A-Z0-9]+";
@@ -114,8 +116,9 @@ public class StringsTest {
 	}
 
 	private String indexName(String name) {
-		if (name == null)
+		if (name == null) {
 			return null;
+		}
 
 		name = name.toUpperCase();
 		name = name.replaceAll("[\\'\\\"]", "");
@@ -269,5 +272,20 @@ public class StringsTest {
 		assertEquals("A1b2", Strings.stripNonAlphaNumericCharacters("A1,b-\"2\""));
 		assertEquals("FR7QKSpgKId4", Strings.stripNonAlphaNumericCharacters("FR7Q*KS$pg*@KId4"));
 		assertEquals(Strings.EMPTY_STRING, Strings.stripNonAlphaNumericCharacters("!@#$%^&*()"));
+	}
+
+	@Test
+	public void testImplode_WhenIPassInAnEmptyList_ThenItReturnsEmptyString() {
+		assertEquals("", Strings.implode(Collections.EMPTY_LIST));
+	}
+
+	@Test
+	public void testToStringPreserveNull_WhenIPassNull_ThenItReturnsNull() {
+		assertEquals(null, Strings.toStringPreserveNull(null));
+	}
+
+	@Test
+	public void testToString_WhenIPassNull_ThenItReturnsEmptyString() {
+		assertEquals("", Strings.toString(null));
 	}
 }

@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.report.Column;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;

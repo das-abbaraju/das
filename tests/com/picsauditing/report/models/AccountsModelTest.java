@@ -7,7 +7,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.SelectSQL;

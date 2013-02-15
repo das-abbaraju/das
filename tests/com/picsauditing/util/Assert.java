@@ -9,7 +9,7 @@ import junit.framework.ComparisonFailure;
  * are recorded. These methods can be used directly:
  * <code>Assert.assertEqualsToTheSecond(...)</code>, however, they read better
  * if they are referenced through static import:<br/>
- * 
+ *
  * <pre>
  * import static com.picsauditing.util.Assert.*;
  *    ...
@@ -24,11 +24,13 @@ public class Assert {
 	}
 
 	public static void assertEqualsToTheSecond(Date expected, Date actual) {
-		if (expected.getTime() == actual.getTime())
+		if (expected.getTime() == actual.getTime()) {
 			return;
+		}
 		long difference = toSeconds(expected.getTime()) - toSeconds(actual.getTime());
-		if (difference == 0)
+		if (difference == 0) {
 			return;
+		}
 		throw new ComparisonFailure("Dates are " + difference + " seconds apart.", expected.toString(),
 				actual.toString());
 	}
@@ -39,15 +41,17 @@ public class Assert {
 
 	public static void assertContains(String expectedSubstring, String actual) {
 		String adjustedActual = simplifyWhitespace(actual);
-		if (adjustedActual.contains(expectedSubstring))
+		if (adjustedActual.contains(expectedSubstring)) {
 			return;
+		}
 		throw new ComparisonFailure("Substring comparison ", expectedSubstring, actual);
 	}
 
 	public static void assertNotContains(String expectedSubstring, String actual) {
 		String adjustedActual = simplifyWhitespace(actual);
-		if (!adjustedActual.contains(expectedSubstring))
+		if (!adjustedActual.contains(expectedSubstring)) {
 			return;
+		}
 		throw new ComparisonFailure("Substring comparison ", expectedSubstring, actual);
 	}
 
@@ -55,4 +59,11 @@ public class Assert {
 		return s.replace("\n", " ").replace("  ", " ");
 	}
 
+	public static void assertJsonNoQuotes(String property, Object value, String jsonString) {
+		assertContains("\"" + property + "\":" + value, jsonString);
+	}
+
+	public static void assertJson(String property, Object value, String jsonString) {
+		assertContains("\"" + property + "\":\"" + value + "\"", jsonString);
+	}
 }

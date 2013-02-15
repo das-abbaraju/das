@@ -35,7 +35,7 @@ public class PaginationTest {
 		pagination.setParameters(parameters);
 
 		// This is what your code will call
-		pagination.Initialize(parameters, paginationDao);
+		pagination.initialize(parameters, paginationDao);
 	}
 
 	@Test

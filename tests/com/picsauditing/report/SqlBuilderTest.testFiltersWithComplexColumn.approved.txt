@@ -1,0 +1,3 @@
+SELECT YEAR(Account.creationDate) AS `AccountCreationDate__Year`
+FROM accounts AS Account
+WHERE ((YEAR(Account.creationDate) > 2010)) 

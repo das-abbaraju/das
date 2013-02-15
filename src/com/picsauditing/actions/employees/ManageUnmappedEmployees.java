@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AssessmentTestDAO;
@@ -16,6 +15,7 @@ import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.report.RecordNotFoundException;
 
 @SuppressWarnings("serial")
 public class ManageUnmappedEmployees extends AccountActionSupport {

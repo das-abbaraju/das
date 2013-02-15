@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AssessmentResultDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -32,6 +31,7 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")

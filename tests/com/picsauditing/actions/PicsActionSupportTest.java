@@ -1,13 +1,18 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.json.simple.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,17 +23,18 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -38,6 +44,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 	private AppPropertyDAO propertyDAO;
 	@Mock
 	private HierarchyBuilder hierarchyBuilder;
+	@Mock
+	private BufferedReader bufferedReader;
 	@Mock
 	protected UserDAO userDAO;
 	@Mock
@@ -343,6 +351,40 @@ public class PicsActionSupportTest extends PicsActionTest {
 		verify(request).getScheme();
 	}
 
+	@Test
+	public void testGetJsonFromRequestPayload_NullReaderReturnsEmptyJSON() throws Exception {
+		when(request.getReader()).thenReturn(null);
+
+		JSONObject result = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(bufferedReader, never()).close();
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetJsonFromRequestPayload_NullBufferedReaderReturnsEmptyJSON() throws Exception {
+		when(bufferedReader.readLine()).thenReturn(null);
+		when(request.getReader()).thenReturn(bufferedReader);
+
+		JSONObject result = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(bufferedReader, times(1)).close();
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void testGetJsonFromRequestPayload_ParseJsonInRequest() throws Exception {
+		String json = "{\"test\":\"yay it works\"}";
+		BufferedReader spy = Mockito.spy(new BufferedReader(new StringReader(json)));
+
+		when(request.getReader()).thenReturn(spy);
+
+		JSONObject actual = Whitebox.invokeMethod(picsActionSupport, "getJsonFromRequestPayload");
+
+		verify(spy, times(1)).close();
+		assertEquals(json, actual.toJSONString());
+	}
+
 	@Ignore
 	public void testGetSafetyList_Admin() throws Exception {
 		List<User> picsUsers = new ArrayList<User>();
@@ -352,7 +394,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
 
 		Set<User> list;
-		
+
 		when(permissions.isAdmin()).thenReturn(true);
 		list = picsActionSupport.getSafetyList();
 		assertEquals(1, list.size());
@@ -367,7 +409,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
 
 		Set<User> list;
-		
+
 		when(permissions.isAdmin()).thenReturn(false);
 		when(permissions.has(OpPerms.AssignAudits)).thenReturn(false);
 		list = picsActionSupport.getSafetyList();
@@ -383,7 +425,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>());
 
 		Set<User> list;
-		
+
 		when(permissions.isAdmin()).thenReturn(false);
 		when(permissions.has(OpPerms.AssignAudits)).thenReturn(true);
 		list = picsActionSupport.getSafetyList();
@@ -396,7 +438,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		user.setUsername("user " + user.getId());
 		user.getAccount().setId(user.getId());
 		user.getAccount().setName("Account " + user.getId());
-		
+
 		return user;
 	}
 }

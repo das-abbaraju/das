@@ -1,6 +1,6 @@
 package com.picsauditing.util.excel;
 
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 
 public class ExcelColumn {
 	private String name;
@@ -31,7 +31,7 @@ public class ExcelColumn {
 
 	public ExcelColumn(Column reportColumn) {
 		this.reportColumn = reportColumn;
-		this.name = reportColumn.getFieldName();
+		this.name = reportColumn.getName();
 		this.columnHeader = reportColumn.getField().getText();
 		this.cellType = ExcelCellType.convert(reportColumn.getField());
 		this.hidden = !reportColumn.getField().isVisible();

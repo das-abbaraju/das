@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.report.Filter;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorAuditTable;
@@ -66,7 +66,7 @@ public class AccountContractorModel extends AbstractModel {
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.getFieldName().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
+			if (filter.getName().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
 				return filter;
 			}
 		}

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
@@ -31,6 +30,7 @@ import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TranslatableString;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

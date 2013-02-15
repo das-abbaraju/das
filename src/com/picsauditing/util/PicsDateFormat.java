@@ -26,6 +26,7 @@ public abstract class PicsDateFormat {
 	public static final String Time12Hour = "hh:mm a z";
 	public static final String ScheduleAudit = "yyyyMMddHHmm";
 	public static final String Braintree = "yyyyMMddHHmmss";
+	public static final String DateAndTime = "yyyy-MM-dd @ HH:MM z";
 
 	// These exist for backwards compatability for input forms and the parsing thereof
 	@Deprecated
@@ -36,13 +37,17 @@ public abstract class PicsDateFormat {
 	private PicsDateFormat() { }
 
 	public static String formatDateIsoOrBlank(Date date) {
+		return formatDateOrBlank(date, Iso);
+	}
+	
+	public static String formatDateOrBlank(Date date, String format) {
 		try {
-			SimpleDateFormat isoFormat = new SimpleDateFormat(PicsDateFormat.Iso);
-			return isoFormat.format(date);
+			SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+			return dateFormat.format(date);
 		} catch (Exception e) {
 			// We don't care
 		}
 
-		return "";
+		return Strings.EMPTY_STRING;
 	}
 }

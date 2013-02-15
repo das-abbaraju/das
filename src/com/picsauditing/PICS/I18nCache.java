@@ -179,9 +179,7 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	// WARNING: NOT THREAD SAFE!!! (Designed to be called from public API
-	// clear())
-	protected void buildCache() {
+	private void buildCache() {
 		boolean successful = true;
 		StopWatch stopWatch = startBuild();
 

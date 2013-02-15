@@ -2,290 +2,300 @@ Ext.define('PICS.controller.report.SettingsModal', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'reportSettingsModal',
+        ref: 'settingsModal',
         selector: 'reportsettingsmodal'
     }, {
-        ref: 'reportSettingsTabs',
-        selector: 'reportsettingstabs'
+        ref: 'settingsModalTabs',
+        selector: 'reportsettingsmodaltabs'
     }, {
-        ref: 'reportSettingsEdit',
-        selector: 'reportsettingsedit'
+        ref: 'editSetting',
+        selector: 'reporteditsetting'
     }, {
-        ref: 'reportSettingsShare',
-        selector: 'reportsettingsshare'
+        ref: 'copySetting',
+        selector: 'reportcopysetting'
     }, {
-        ref: 'reportSettingsNoPermission',
-        selector: 'reportsettingsmodal #settings_no_permission'
-    }, {
-        ref: 'reportNameEdit',
-        selector: 'reportsettingsedit [name=report_name]'
-    }, {
-        ref: 'reportDescriptionEdit',
-        selector: 'reportsettingsedit [name=report_description]'
-    }, {
-        ref: 'reportNameCopy',
-        selector: 'reportsettingscopy [name=report_name]'
-    }, {
-        ref: 'reportDescriptionCopy',
-        selector: 'reportsettingscopy [name=report_description]'
-    }, {
-        ref: 'editFavoriteToggle',
-        selector: 'reportsettingsedit favoritetoggle'
-    }, {
-        ref: 'copyFavoriteToggle',
-        selector: 'reportsettingscopy favoritetoggle'
+        ref: 'shareSetting',
+        selector: 'reportsharesetting'
     }],
 
     stores: [
         'report.Reports'
     ],
-    
+
     views: [
         'PICS.view.report.settings.SettingsModal'
     ],
 
     init: function () {
         this.control({
-            'reportsettingsmodal tabpanel': {
-                beforerender: this.onReportSettingsTabsBeforeRender
+            'reportsettingsmodal': {
+                beforerender: this.beforeSettingsModalRender,
+                close: this.closeSettingsModal
             },
 
             'reportsettingsmodal button[action=cancel]':  {
-                click: this.onReportModalCancelClick
+                click: this.cancelSettingsModal
             },
 
-            'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender
+            'reportsettingsmodaltabs': {
+                tabchange: this.changeSettingsModalTab
             },
 
-            'reportsettingsmodal favoritetoggle': {
-                favorite: this.onReportFavorite,
-                unfavorite: this.onReportUnFavorite
+            'reportsettingsmodal reporteditsetting': {
+                afterrender: this.afterEditSettingRender
             },
 
-            'reportsettingsmodal reportsettingsedit button[action=edit]':  {
-                click: this.onReportModalEditClick
+            'reportsettingsmodal reporteditsetting button[action=edit]':  {
+                click: this.editReport
             },
 
-            'reportsettingsmodal reportsettingscopy button[action=copy]':  {
-                click: this.onReportModalCopyClick
+            'reportsettingsmodal reportcopysetting button[action=copy]':  {
+                click: this.copyReport
             },
 
-            'reportsettingsmodal #report_settings_tabbar tab': {
-                click: this.onReportModalTabClick
+            'reportsettingsmodal reportfavoritetoggle': {
+                favorite: this.favoriteReport,
+                unfavorite: this.unfavoriteReport
             },
 
             'reportsettingsmodal reportsettingsexport button[action=export]':  {
-                click: this.onReportModalExportClick
+                click: this.exportReport
             },
 
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
-                click: this.onReportModalPrintPreviewClick
+                click: this.printReport
             },
 
-            'reportsettingsmodal reportsettingsshare sharesearchbox': {
+            'reportsettingsmodal reportsharesetting sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
                 specialkey: this.onReportModalShareSearchboxSpecialKey
             },
 
-            'reportsettingsmodal reportsettingsshare button[action=share]': {
+            'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
             }
         });
 
         this.application.on({
-            showsettingsmodal: this.showSettingsModal,
+            opensettingsmodal: this.openSettingsModal,
             scope: this
         });
     },
 
-    getReportId: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first();
-
-        return report.get('id');
-    },
-   
-    onReportFavorite: function () {
-        this.application.fireEvent('favoritereport');
-    },
-
-    onReportUnFavorite: function () {
-        this.application.fireEvent('unfavoritereport');
-    },
-    
-    onReportModalCancelClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal();
-    
-        modal.close();
-    },
-    
-    onReportModalCopyClick: function (cmp, e, eOpts) {
+    afterEditSettingRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = this.getReportNameCopy().getValue(),
-            report_description = this.getReportDescriptionCopy().getValue();
+            is_favorite = report.get('is_favorite'),
+            edit_favorite_toggle = cmp.down('reportfavoritetoggle');
+
+        if (is_favorite) {
+            edit_favorite_toggle.toggleFavorite();
+        }
+    },
+
+    beforeSettingsModalRender: function (cmp, eOpts) {
+            var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm();
     
-        this.setFavoriteStatus('copy');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
-        
-        // form reset
-        // TODO: put this in the view
-        cmp.up('form').getForm().reset();
-        
-        this.application.fireEvent('createreport');
+        if (edit_setting_form) {
+            edit_setting_form.loadRecord(report);
+        }
     },
     
-    onReportModalEditClick: function (cmp, e, eOpts) {
+    closeSettingsModal: function (cmp, eOpts) {
+        var settings_modal_tabs_view = this.getSettingsModalTabs(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm(),
+            copy_setting_view = settings_modal_tabs_view.setActiveTab(1),
+            copy_setting_form = copy_setting_view.getForm(),
+            copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
+            share_setting_view = this.getShareSetting(),
+            editable_icon = Ext.select('.icon-edit');
+
+        // TODO: reject changes
+        
+        
+        // reset the edit form
+        edit_setting_form.loadRecord(edit_setting_form.getRecord());
+        
+        // reset the copy form
+        copy_setting_form.reset();
+        
+        // reset the copy favorite regardless
+        copy_favorite.toggleUnfavorite();
+
+        // reset the share modal
+        share_setting_view.update('');
+        editable_icon.removeCls('selected')
+    },
+
+    cancelSettingsModal: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal();
+
+        settings_modal_view.close();
+    },
+
+    changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            title = nextCard.modal_title;
+
+        settings_modal_view.setTitle(title);
+    },
+
+    copyReport: function (cmp, e, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue();
-    
-        this.setFavoriteStatus('edit');
-    
-        report.set('name', report_name);
-        report.set('description', report_description);
-        
-        this.getReportSettingsModal().close();
-        
-        this.application.fireEvent('updatereportsummary');
-        this.application.fireEvent('savereport');
+            copy_setting_view = this.getCopySetting(),
+            copy_setting_form = copy_setting_view.getForm();
+
+        if (copy_setting_form.isValid()) {
+            copy_setting_form.updateRecord(report);
+        }
+
+        PICS.data.ServerCommunication.copyReport();
     },
-    
-    onReportModalEditBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report_settings_edit = this.getReportSettingsEdit(),
-            report_no_permission_edit = this.getReportSettingsNoPermission();
-    
-        // if there is no form - do nothing
-        if (!report_no_permission_edit) {
-            if (!report_store.isLoaded()) {
-                report_store.on('load', function (store, records, successful, eOpts) {
-                    var report = report_store.first();
-    
-                    report_settings_edit.update(report);
+
+    editReport: function (cmp, e, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            edit_setting_view = this.getEditSetting(),
+            edit_setting_form = edit_setting_view.getForm(),
+            that = this;
+
+        if (edit_setting_form.isValid()) {
+            edit_setting_form.updateRecord();
+        }
+
+        settings_modal_view.close();
+
+        this.application.fireEvent('updatepageheader');
+
+        PICS.data.ServerCommunication.saveReport({
+            success_callback: function () {
+                that.application.fireEvent('opensuccessmessage', {
+                    title: 'Report Saved',
+                    html: 'to My Reports in Manage Reports.'
                 });
-            } else {
-                var report = report_store.first();
-    
-                report_settings_edit.update(report);
             }
+        });
+    },
+
+    exportReport: function (cmp, e, eOpts) {
+        PICS.data.ServerCommunication.exportReport();
+    },
+
+    favoriteReport: function (cmp, eOpts) {
+        var edit_setting_view = this.getEditSetting();
+
+        if (edit_setting_view.isVisible()) {
+            PICS.data.ServerCommunication.favoriteReport();
         }
     },
-    
-    onReportModalTabClick: function (cmp, e, eOpts) {
-        var modal = this.getReportSettingsModal(),
-            title = cmp.card.modal_title;
-    
-        modal.setTitle(title);        
-    },
-    
-    onReportModalExportClick: function (cmp, e, eOpts) {
-        this.application.fireEvent('downloadreport');
-    },
-    
-    onReportModalPrintPreviewClick: function (cmp, e, eOpts) {
-        this.application.fireEvent('printreport');
-    },
-    
-    onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
-        var settings_modal = this.getReportSettingsModal(),
-            title = cmp.getActiveTab().modal_title;
-    
-        settings_modal.setTitle(title);
-    },
-    
-    setFavoriteStatus: function (action) {
-        if (action == 'edit') {
-            favorite_toggle = this.getEditFavoriteToggle();
-        } else if (action == 'copy') {
-            favorite_toggle = this.getCopyFavoriteToggle();
+
+    openSettingsModal: function (action) {
+        var settings_modal_view = this.getSettingsModal();
+
+        if (!settings_modal_view) {
+            settings_modal_view = Ext.create('PICS.view.report.settings.SettingsModal');
         }
-    
-        var is_favorite_on = favorite_toggle.isFavoriteOn();
-    
-        favorite_toggle.saveFavoriteStatus(is_favorite_on);
+
+        settings_modal_view.updateActiveTabFromAction(action);
+
+        settings_modal_view.show();
     },
-    
-    showSettingsModal: function (action) {
-        var settings_modal = Ext.create('PICS.view.report.settings.SettingsModal');
-    
-        if (action == 'edit') {
-            this.getReportSettingsTabs().setActiveTab(0);
-        } else if (action == 'copy') {
-            this.getReportSettingsTabs().setActiveTab(1);
+
+    printReport: function (cmp, e, eOpts) {
+        PICS.data.ServerCommunication.printReport();
+    },
+
+    unfavoriteReport: function (cmp, eOpts) {
+        var edit_setting_view = this.getEditSetting();
+
+        if (edit_setting_view.isVisible()) {
+            PICS.data.ServerCommunication.unfavoriteReport();
         }
-    
-        settings_modal.show();
     },
-    
+
     /**
      * Share
      */
-    
+
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
-        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_id = report.get('id');
+
+        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + report_id;
         cmp.store.load();
     },
-    
+
     onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
-    
+
         if (record) {
-            var report_settings_share = this.getReportSettingsShare();
-            
+            var share_setting_view = this.getShareSetting();
+
             var account = {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
-    
+
             // Save the record data needed for sharing.
-            report_settings_share.request_data = {
+            share_setting_view.request_data = {
                 account_id: record.get('result_id'),
                 account_type: record.get('search_type')
             };
-        
+
             // Show the selection.
-            report_settings_share.update(account);
+            share_setting_view.update(account);
         }
     },
-    
+
     onReportModalShareSearchboxSpecialKey: function (cmp, e, eOpts) {
         if (e.getKey() === e.ENTER) {
             var term = cmp.getValue();
-            
+
             this.search(term);
         } else if (e.getKey() === e.BACKSPACE && cmp.getRawValue().length <= 1) {
             cmp.collapse();
         }
     },
-    
+
     onReportModalShareClick: function (cmp, e, eOpts) {
-        var report_settings_share = this.getReportSettingsShare(),
-            data = report_settings_share.request_data;
-        
+        var share_setting_view = this.getShareSetting(),
+            data = share_setting_view.request_data,
+            report_settings_modal = this.getSettingsModal(),
+            that = this;
+
         // Abort if no account has been selected.
         if (typeof data == 'undefined') {
             return;
         }
-        
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            report_id = report.get('id'),
-            report_settings_share_element = report_settings_share.getEl(),
+
+        var share_setting_view_element = share_setting_view.getEl(),
+            is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
             account_id = data.account_id,
-            account_type = data.account_type,
-            is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
-    
-        this.application.fireEvent('sharereport', {
-            report_id: report_id,
+            account_type = data.account_type;
+
+        var options = {
             account_id: account_id,
             account_type: account_type,
-            is_editable: is_editable
-        });
+            is_editable: is_editable,
+            success_callback: function (response) {
+                var data = response.responseText,
+                    json = Ext.JSON.decode(data);
+
+                report_settings_modal.close();
+
+                that.application.fireEvent('openalertmessage', {
+                    title: json.title,
+                    html: json.html
+                });
+            }
+        };
+        
+        PICS.data.ServerCommunication.shareReport(options);
     }
 });

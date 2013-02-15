@@ -1,0 +1,23 @@
+// report page_header
+$report_page_header_name_text_color: #73bbe8;
+
+$report_page_header_description_text_color: #808285;
+
+#report_page_header
+{
+	padding: 18px 30px;
+}
+
+#report_page_header .name
+{
+	color: $report_page_header_name_text_color;
+	font-size: 30px;
+	font-weight: normal;
+}
+
+#report_page_header .description
+{
+	color: $report_page_header_description_text_color;
+	font-size: 14px;
+	font-weight: normal;
+}

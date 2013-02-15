@@ -23,6 +23,7 @@ import com.picsauditing.security.EncodedMessage;
 public class Strings {
 
 	public static final String EMPTY_STRING = "";
+	public static final String SINGLE_SPACE = " ";
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
@@ -114,6 +115,7 @@ public class Strings {
 		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
 	}
 
+	// FIXME THIS FUNCTION IS NOT USING DELIMITER
 	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
 		return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
 	}
@@ -576,5 +578,21 @@ public class Strings {
 		}
 
 		return EMPTY_STRING;
+	}
+
+	public static String toStringPreserveNull(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		return object.toString();
+	}
+
+	public static String toString(Object object) {
+		if (object == null) {
+			return "";
+		}
+
+		return object.toString();
 	}
 }

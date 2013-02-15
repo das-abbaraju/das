@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,9 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 
-import com.picsauditing.report.Definition;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
@@ -27,14 +28,19 @@ public class Report extends BaseTable {
 	private ModelType modelType;
 	private String name;
 	private String description;
-	private String parameters;
-	private int rowsPerPage = 50;
-	
+	private String filterExpression;
 	private int numTimesFavorited;
-
-	private Definition definition;
-	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 	private String sql;
+
+	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
+	private List<Filter> filters = new ArrayList<Filter>();
+	private List<Sort> sorts = new ArrayList<Sort>();
+
+	private List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
+	@Deprecated
+	private String parameters;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -57,75 +63,33 @@ public class Report extends BaseTable {
 		this.name = name;
 	}
 
+	@Deprecated
 	@ReportField(importance = FieldImportance.Low, width = 400)
+	public String getParameters() {
+		return parameters;
+	}
+
+	@Deprecated
+	public void setParameters(String parameters) {
+		this.parameters = parameters;
+	}
+
+	@Transient
+	// @ReportField(importance = FieldImportance.Average, width = 10)
+	public int getNumTimesFavorited() {
+		return numTimesFavorited;
+	}
+
+	public void setNumTimesFavorited(int numTimesFavorited) {
+		this.numTimesFavorited = numTimesFavorited;
+	}
+
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@ReportField(importance = FieldImportance.Low, width = 400)
-	public String getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSON(boolean full) {
-		JSONObject obj = super.toJSON(full);
-		obj.put("modelType", modelType.toString());
-		obj.put("name", name);
-
-		if (!full)
-			return obj;
-
-		obj.put("description", description);
-
-		Definition defaultDefinition = this.definition;
-		if (defaultDefinition == null) {
-			defaultDefinition = new Definition(parameters);
-		}
-		
-		JSONObject jsonDefinition = defaultDefinition.toJSON(true);
-		obj.putAll(jsonDefinition);
-		
-		return obj;
-	}
-
-	@Transient
-	public Definition getDefinition() {
-		if (definition == null) {
-			definition = new Definition(getParameters());
-		}
-
-		return definition;
-	}
-
-	public void setDefinition(Definition definition) {
-		this.definition = definition;
-	}
-	
-	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
-	public List<ReportUser> getReportUsers() {
-		return reportUsers;
-	}
-
-	public void setReportUsers(List<ReportUser> reportUsers) {
-		this.reportUsers = reportUsers;
-	}
-	
-	@Transient
-	public ReportUser getReportUser(int userId) {
-		for (ReportUser reportUser : reportUsers)
-			if (userId == reportUser.getUser().getId())
-				return reportUser;
-		
-		return null;
 	}
 
 	@Transient
@@ -137,26 +101,146 @@ public class Report extends BaseTable {
 		this.sql = sql;
 	}
 
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<com.picsauditing.jpa.entities.Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<com.picsauditing.jpa.entities.Column> columns) {
+		this.columns = columns;
+	}
+
+	public void addColumn(com.picsauditing.jpa.entities.Column column) {
+		column.setReport(this);
+		columns.add(column);
+	}
+
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<Filter> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(List<Filter> filters) {
+		this.filters = filters;
+	}
+
+	public void addFilter(Filter filter) {
+		filter.setReport(this);
+		filters.add(filter);
+	}
+
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<Sort> getSorts() {
+		return sorts;
+	}
+
+	public void setSorts(List<Sort> sorts) {
+		this.sorts = sorts;
+	}
+
+	public void addSort(Sort sort) {
+		sort.setReport(this);
+		sorts.add(sort);
+	}
+
+	public String getFilterExpression() {
+		return filterExpression;
+	}
+
+	public void setFilterExpression(String filterExpression) {
+		this.filterExpression = filterExpression;
+	}
+
 	@Transient
-	public int getRowsPerPage() {
-		return rowsPerPage;
-	}
+	public boolean isEditableBy(int userId) {
+		// FIXME this is a terrible implementation but we need something to test save and copy
+		for (ReportPermissionUser rpu : reportPermissionUsers) {
+			if (userId == rpu.getUser().getId()) {
+				return rpu.isEditable();
+			}
+		}
 
-	public void setRowsPerPage(int rowsPerPage) {
-		this.rowsPerPage = rowsPerPage;
+		return false;
 	}
 
 	@Transient
-	public int getNumTimesFavorited() {
-		return numTimesFavorited;
+	public boolean isFavoritedBy(int userId) {
+		// FIXME this is a terrible implementation but we need something to test save and copy
+		for (ReportUser ru : reportUsers) {
+			if (userId == ru.getUser().getId()) {
+				return ru.isFavorite();
+			}
+		}
+
+		return false;
 	}
 
-	public void setNumTimesFavorited(int numTimesFavorited) {
-		this.numTimesFavorited = numTimesFavorited;
-	}
-	
 	@Override
 	public String toString() {
 		return name;
 	}
+
+	@Deprecated
+	// TODO this should not be used here
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	public List<ReportUser> getReportUsers() {
+		return reportUsers;
+	}
+
+	public void setReportUsers(List<ReportUser> reportUsers) {
+		this.reportUsers = reportUsers;
+	}
+
+	@Transient
+	@Deprecated
+	// TODO this should not be used here
+	public ReportUser getReportUser(int userId) {
+		for (ReportUser reportUser : reportUsers) {
+			if (userId == reportUser.getUser().getId()) {
+				return reportUser;
+			}
+		}
+
+		return null;
+	}
+
+	public boolean hasNoColumns() {
+		return CollectionUtils.isEmpty(columns);
+	}
+
+	public boolean hasNoColumnsFiltersOrSorts() {
+		return CollectionUtils.isEmpty(columns) && CollectionUtils.isEmpty(filters) && CollectionUtils.isEmpty(sorts);
+	}
+
+	public boolean hasNoModelType() {
+		return modelType == null;
+	}
+
+	@Deprecated
+	public boolean hasParameters() {
+		return parameters != null;
+	}
+
+	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+	public List<ReportPermissionUser> getReportPermissionUsers() {
+		return reportPermissionUsers;
+	}
+
+	public void setReportPermissionUsers(List<ReportPermissionUser> reportPermissionUsers) {
+		this.reportPermissionUsers = reportPermissionUsers;
+	}
+
+	public void sortColumns() {
+		Collections.sort(columns, new Comparator<com.picsauditing.jpa.entities.Column>() {
+			@Override
+			public int compare(com.picsauditing.jpa.entities.Column c1, com.picsauditing.jpa.entities.Column c2) {
+				if (c1.getSortIndex() == c2.getSortIndex()) {
+					return c1.getId() - c2.getId();
+				}
+
+				return c1.getSortIndex() - c2.getSortIndex();
+			}
+		});
+	}
+
 }

@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;

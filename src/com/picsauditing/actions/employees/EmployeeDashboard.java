@@ -17,13 +17,13 @@ import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

@@ -22,20 +22,19 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;
 
 public class ReportDataConverterTest {
+
 	@Mock
 	Database databaseForTesting;
 
-	ReportDataConverter converter;
-	List<BasicDynaBean> queryResults;
-
-	private List<Column> columns;
+	Permissions permissions;
 
 	@AfterClass
 	public static void classTearDown() {
@@ -47,67 +46,76 @@ public class ReportDataConverterTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
-		Permissions permissions = EntityFactory.makePermission();
+		permissions = EntityFactory.makePermission();
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+	}
+
+	@Test
+	public void testConvertQueryResultsToJson_Empty() {
+		List<BasicDynaBean> queryResults = new ArrayList<BasicDynaBean>();
+		JSONArray json = runJsonConverter(queryResults);
+		assertEquals(0, json.size());
+	}
+
+	@Test
+	public void testConvertQueryResultsToJson_Single() {
+		List<BasicDynaBean> queryResults = createAccountQueryList(1);
+		JSONArray json = runJsonConverter(queryResults);
+
+		assertEquals(1, json.size());
+		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 22:01 PST\","
+				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"}]";
+
+		assertEquals(expected, json.toString());
+	}
+
+	@Test
+	public void testConvertQueryResultsToJson_Simple() {
+		List<BasicDynaBean> queryResults = createAccountQueryList(10);
+		JSONArray json = runJsonConverter(queryResults);
+		assertEquals(10, json.size());
+	}
+
+	@Test
+	public void testConvertQueryResultsToPrinting_Single() {
+		List<BasicDynaBean> queryResults = createAccountQueryList(1);
+		ReportResults results = runConverterForPrinting(queryResults);
+
+		assertEquals(1, results.getRows().size());
+		ReportRow row1 = results.getRows().get(0);
+		for (ReportCell cell : row1.getCells()) {
+			String fieldName = cell.getColumn().getName();
+			if ("ContractorMembershipDate".equals(fieldName)) {
+				assertEquals(new java.sql.Date(1234567890), cell.getValue());
+			}
+		}
+	}
+
+	public List<Column> makeColumns(Permissions permissions) {
 		AccountContractorModel model = new AccountContractorModel(permissions);
 		Map<String, Field> availableFields = model.getAvailableFields();
-		columns = new ArrayList<Column>();
+
+		List<Column> columns = new ArrayList<Column>();
 		columns.add(createColumn(availableFields.get("ACCOUNTID")));
 		columns.add(createColumn(availableFields.get("ACCOUNTNAME")));
 		columns.add(createColumn(availableFields.get("ACCOUNTCREATIONDATE")));
 		columns.add(createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE")));
+
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
-		membershipMonth.setFieldName("ContractorMembershipDate__Month");
+		membershipMonth.setName("ContractorMembershipDate__Month");
+		membershipMonth.setSqlFunction(SqlFunction.Month);
 		membershipMonth.getField().setUrl("Test.action?id={AccountZip}");
+
 		columns.add(membershipMonth);
 		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));
+
+		return columns;
 	}
 
 	private Column createColumn(Field field) {
 		Column column = new Column(field.getName());
 		column.setField(field);
 		return column;
-	}
-
-	@Test
-	public void testConvertQueryResultsToJson_Empty() {
-		queryResults = new ArrayList<BasicDynaBean>();
-		JSONArray json = runJsonConverter();
-		assertEquals(0, json.size());
-	}
-
-	@Test
-	public void testConvertQueryResultsToJson_Single() {
-		queryResults = createAccountQueryList(1);
-		JSONArray json = runJsonConverter();
-
-		assertEquals(1, json.size());
-		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":1234567890,"
-				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":1234567890}]";
-		assertEquals(expected, json.toString());
-	}
-
-	@Test
-	public void testConvertQueryResultsToJson_Simple() {
-		queryResults = createAccountQueryList(10);
-
-		JSONArray json = runJsonConverter();
-		assertEquals(10, json.size());
-	}
-
-	@Test
-	public void testConvertQueryResultsToPrinting_Single() {
-		queryResults = createAccountQueryList(1);
-		ReportResults results = runConverterForPrinting();
-
-		assertEquals(1, results.getRows().size());
-		ReportRow row1 = results.getRows().get(0);
-		for (ReportCell cell : row1.getCells()) {
-			String fieldName = cell.getColumn().getFieldName();
-			if ("ContractorMembershipDate".equals(fieldName)) {
-				assertEquals(new java.sql.Date(1234567890), cell.getValue());
-			}
-		}
 	}
 
 	private List<BasicDynaBean> createAccountQueryList(int count) {
@@ -119,7 +127,7 @@ public class ReportDataConverterTest {
 		builder.addProperty("ContractorMembershipDate__Month", Integer.class);
 		builder.addProperty("ContractorLastUpgradeDate", java.sql.Date.class);
 		builder.addProperty("AccountZip", String.class);
-		
+
 		for (int i = 0; i < count; i++) {
 			builder.addRow();
 			long accountID = 1;
@@ -128,6 +136,7 @@ public class ReportDataConverterTest {
 				accountID = Math.round(Math.random() * 1000);
 				currentUnitTime = new Date().getTime();
 			}
+
 			builder.setValue("AccountID", accountID);
 			builder.setValue("AccountName", "Test " + accountID);
 			builder.setValue("AccountCreationDate", new Timestamp(currentUnitTime));
@@ -136,21 +145,28 @@ public class ReportDataConverterTest {
 			builder.setValue("ContractorLastUpgradeDate", null);
 			builder.setValue("AccountZip", "92614");
 		}
+
 		return builder.getRows();
 	}
 
-	private JSONArray runJsonConverter() {
-		converter = new ReportDataConverter(columns, queryResults);
+	private JSONArray runJsonConverter(List<BasicDynaBean> queryResults) {
+		List<Column> columns = makeColumns(permissions);
+
+		ReportDataConverter converter = new ReportDataConverter(columns, queryResults);
 		converter.setLocale(Locale.FRENCH);
 		converter.convertForExtJS();
 		JSONArray json = converter.getReportResults().toJson();
+
 		return json;
 	}
 
-	private ReportResults runConverterForPrinting() {
-		converter = new ReportDataConverter(columns, queryResults);
+	private ReportResults runConverterForPrinting(List<BasicDynaBean> queryResults) {
+		List<Column> columns = makeColumns(permissions);
+
+		ReportDataConverter converter = new ReportDataConverter(columns, queryResults);
 		converter.setLocale(Locale.FRENCH);
 		converter.convertForPrinting();
+
 		return converter.getReportResults();
 	}
 }

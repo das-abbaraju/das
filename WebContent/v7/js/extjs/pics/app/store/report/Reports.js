@@ -1,29 +1,35 @@
-/**
- * Report Store
- *
- * load backend report into local report database via ajax
- * sends backend report from local to server
- */
 Ext.define('PICS.store.report.Reports', {
-	extend : 'PICS.store.report.base.Store',
-	model : 'PICS.model.report.Report',
-
-	autoLoad: true,
-    proxy: {
-        reader: {
-            root: 'report',
-            type: 'json'
-        },
-        timeout: 10000,
-        type: 'ajax'
-    },
-
+    extend : 'PICS.store.report.base.Store',
+    model : 'PICS.model.report.Report',
+    
     constructor: function () {
-        var request_parameters = Ext.Object.fromQueryString(document.location.search);
-        var report_id = request_parameters.report;
-
-        this.proxy.url = '/ReportData!report.action?report=' + report_id;
-
+        this.setProxyForRead();
+        
         this.callParent(arguments);
+    },
+    
+    setProxyForRead: function () {
+        var proxy = {
+            reader: {
+                root: 'report',
+                type: 'json'
+            },
+            type: 'memory'
+        };
+        
+        this.setProxy(proxy);
+    },
+    
+    setProxyForWrite: function (url) {
+        var proxy = {
+            writer: {
+                root: 'report',
+                type: 'json'
+            },
+            type: 'ajax',
+            url: url
+        };
+        
+        this.setProxy(proxy);
     }
 });

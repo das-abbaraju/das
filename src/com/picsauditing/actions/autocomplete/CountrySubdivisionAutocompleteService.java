@@ -1,5 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,12 +17,12 @@ import com.picsauditing.util.Strings;
 public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteService<CountrySubdivision> {
 
 	private static final int COUNTRY_SUBDIVISION_LENGTH = 5;
-	
+
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	@Override
-	protected Collection<CountrySubdivision> getItems(String search, Permissions permissions) {
+	protected Collection<CountrySubdivision> getItemsForSearch(String search, Permissions permissions) {
 		if (Strings.isEmpty(search)) {
 			return Collections.emptyList();
 		}
@@ -29,7 +30,7 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 		Collection<CountrySubdivision> result = new HashSet<CountrySubdivision>();
 
 		// search both iso and translated fields for the 5 letter combinations
-		if (search.length() == COUNTRY_SUBDIVISION_LENGTH) {			
+		if (search.length() == COUNTRY_SUBDIVISION_LENGTH) {
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode = '"
 					+ Strings.escapeQuotes(search) + "'");
 			result.addAll(countrySubdivisionList);
@@ -44,7 +45,7 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 
 			result.addAll(countrySubdivisionList);
 		}
-		
+
 		return result;
 	}
 
@@ -56,5 +57,14 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 	@Override
 	protected Object getValue(CountrySubdivision subdivision, Permissions permissions) {
 		return I18nCache.getInstance().getText(subdivision.getI18nKey(), permissions.getLocale());
+	}
+
+	@Override
+	protected Collection<CountrySubdivision> getItemsForSearchKey(String searchKey, Permissions permissions) {
+		if (Strings.isEmpty(searchKey)) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(countrySubdivisionDAO.find(searchKey));
 	}
 }

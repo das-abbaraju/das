@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Filter;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldImportance;
@@ -21,7 +21,7 @@ public class InvoiceModel extends AbstractModel {
 			ModelSpec account = spec.join(InvoiceTable.Account);
 			account.alias = "Account";
 			account.join(AccountTable.Contact);
-			
+
 			ModelSpec contractor = account.join(AccountTable.Contractor);
 			contractor.alias = "Contractor";
 			contractor.minimumImportance = FieldImportance.Low;

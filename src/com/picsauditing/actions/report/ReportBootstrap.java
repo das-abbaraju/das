@@ -1,9 +1,11 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.model.report.ReportModel;
 
 @SuppressWarnings("serial")
 public class ReportBootstrap extends PicsActionSupport {
@@ -11,9 +13,11 @@ public class ReportBootstrap extends PicsActionSupport {
 	private static final String URL_FOR_REDIRECT_FOR_NOT_VIEWABLE = "ManageReports!favoritesList.action";
 
 	private static final String ERROR_MESSAGE_I18N_KEY = "Report.Error.ViewPermissions";
-	
+
 	@Autowired
-	private ReportModel reportModel;
+	private ReportService reportService;
+	@Autowired
+	private PermissionService permissionService;
 
 	private String name;
 	private int report;
@@ -24,11 +28,11 @@ public class ReportBootstrap extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		if (!reportModel.canUserViewAndCopy(permissions, report)) {
+		if (!permissionService.canUserViewReport(permissions, report)) {
 			addActionError(getText(ERROR_MESSAGE_I18N_KEY));
 			return setUrlForRedirect(URL_FOR_REDIRECT_FOR_NOT_VIEWABLE);
 		}
-		
+
 		name = "Loading Report " + report + " ...";
 
 		return SUCCESS;

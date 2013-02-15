@@ -37,50 +37,50 @@ public class CountryAutocompleteServiceTest {
 	}
 
 	@Test
-	public void testGetItems_EmptyQuery() throws Exception {
-		Collection<Country> results = service.getItems(null, null);
-		
-		assertThat(results, notNullValue());
-		assertTrue(results.isEmpty());
-	}
+		public void testGetItemsForSearch_EmptyQuery() throws Exception {
+			Collection<Country> results = service.getItemsForSearch(null, null);
+			
+			assertThat(results, notNullValue());
+			assertTrue(results.isEmpty());
+		}
 
 	@Test
-	public void testGetItems_HasIsCodesButQueryFindsNone() throws Exception {
-		List<Country> emptyResult = new ArrayList<Country>();
-		when(countryDAO.findWhere(anyString())).thenReturn(emptyResult);
-		
-		Collection<Country> results = service.getItems("non-empty query", null);
-		
-		assertThat(results, notNullValue());
-		assertTrue(results.isEmpty());
-	}
+		public void testGetItemsForSearch_HasIsCodesButQueryFindsNone() throws Exception {
+			List<Country> emptyResult = new ArrayList<Country>();
+			when(countryDAO.findWhere(anyString())).thenReturn(emptyResult);
+			
+			Collection<Country> results = service.getItemsForSearch("non-empty query", null);
+			
+			assertThat(results, notNullValue());
+			assertTrue(results.isEmpty());
+		}
 	
 	@Test
-	public void testGetItems_HasIsoCodesAndQueriesReturnValues() {
-		List<Country> fakeList1 = Arrays.asList(new Country("AB"), new Country("AC"));
-		List<Country> fakeList2 = Arrays.asList(new Country("BC"), new Country("BD"));
-		
-		when(countryDAO.findWhere(anyString())).thenReturn(fakeList1);
-		when(countryDAO.findByTranslatableField(same(Country.class), anyString(), anyInt())).thenReturn(fakeList2);
-				
-		Collection<Country> results = service.getItems("TE,ST", null);
-		
-		assertEquals(4, results.size());
-		
-		Collection<Country> combinedCollection = new ArrayList<Country>(fakeList1);
-		combinedCollection.addAll(fakeList2);
-		
-		boolean equalCollections = Utilities.collectionsAreEqual(results, combinedCollection, new Comparator<Country>() {
-
-			@Override
-			public int compare(Country o1, Country o2) {
-				return o1.getIsoCode().compareTo(o2.getIsoCode());
-			} 
+		public void testGetItemsForSearch_HasIsoCodesAndQueriesReturnValues() {
+			List<Country> fakeList1 = Arrays.asList(new Country("AB"), new Country("AC"));
+			List<Country> fakeList2 = Arrays.asList(new Country("BC"), new Country("BD"));
 			
-		});
-		
-		assertTrue(equalCollections);
-	}
+			when(countryDAO.findWhere(anyString())).thenReturn(fakeList1);
+			when(countryDAO.findByTranslatableField(same(Country.class), anyString(), anyInt())).thenReturn(fakeList2);
+					
+			Collection<Country> results = service.getItemsForSearch("TE,ST", null);
+			
+			assertEquals(4, results.size());
+			
+			Collection<Country> combinedCollection = new ArrayList<Country>(fakeList1);
+			combinedCollection.addAll(fakeList2);
+			
+			boolean equalCollections = Utilities.collectionsAreEqual(results, combinedCollection, new Comparator<Country>() {
+	
+				@Override
+				public int compare(Country o1, Country o2) {
+					return o1.getIsoCode().compareTo(o2.getIsoCode());
+				} 
+				
+			});
+			
+			assertTrue(equalCollections);
+		}
 	
 	@Test
 	public void testQueryContainsIsoCodes_NullOrEmptyQuery() throws Exception {

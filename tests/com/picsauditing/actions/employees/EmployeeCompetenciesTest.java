@@ -28,7 +28,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
@@ -37,6 +36,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
 
 public class EmployeeCompetenciesTest {

@@ -17,7 +17,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.report.Column;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;
@@ -88,7 +88,7 @@ public class ExcelBuilderTest {
 
 	private Column getColumn(String fieldName) {
 		for (Column column : columns) {
-			if (column.getFieldName().equals(fieldName))
+			if (column.getName().equals(fieldName))
 				return column;
 		}
 		throw new RuntimeException("Couldn't find " + fieldName + " in list of columns: " + columns);

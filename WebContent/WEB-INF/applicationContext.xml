@@ -190,6 +190,7 @@
 	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
 	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
 	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
+	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
 
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
@@ -210,8 +211,12 @@
     <bean id="OptionGroupAutocompleteService"
           class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
     <bean id="OptionValueAutocompleteService"
-          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
-    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel"/>
+
+          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
+    <bean id="ReportService" class="com.picsauditing.service.ReportService" />
+    <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService" />
+    <bean id="LegacyReportConverter" class="com.picsauditing.report.converter.LegacyReportConverter" />
+    <bean id="SqlBuilder" class="com.picsauditing.report.SqlBuilder" />
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
