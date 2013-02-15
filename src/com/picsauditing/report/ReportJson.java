@@ -85,6 +85,7 @@ public class ReportJson {
 	@SuppressWarnings("unchecked")
 	public static void writeJsonErrorMessage(JSONObject json, String message) {
 		json.put(ReportJson.EXT_JS_SUCCESS, false);
+		json.put(ReportJson.EXT_JS_TITLE, "Exception");
 		json.put(ReportJson.EXT_JS_MESSAGE, message);
 	}
 
