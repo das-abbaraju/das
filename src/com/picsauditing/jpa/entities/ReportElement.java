@@ -92,11 +92,7 @@ public abstract class ReportElement {
 			return;
 		}
 
-		this.name = name + METHOD_SEPARATOR + sqlFunction;
-
-		if (startOfMethod > -1) {
-			originalName = name.substring(0, startOfMethod);
-		}
+		name += METHOD_SEPARATOR + sqlFunction;
 	}
 
 	@Transient
