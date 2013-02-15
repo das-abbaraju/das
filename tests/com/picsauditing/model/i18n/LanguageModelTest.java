@@ -178,10 +178,10 @@ public class LanguageModelTest {
 
 		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
-		Locale[] stableLanguageLocales = languageModel.getStableLanguageLocales();
+		List<Locale> stableLanguageLocales = languageModel.getStableLanguageLocales();
 		assertNotNull(stableLanguageLocales);
-		assertEquals(britishEnglish, stableLanguageLocales[0]);
-		assertEquals(mexicanSpanish, stableLanguageLocales[1]);
-		assertEquals(canadianFrench, stableLanguageLocales[2]);
+		assertEquals(britishEnglish, stableLanguageLocales.get(0));
+		assertEquals(mexicanSpanish, stableLanguageLocales.get(1));
+		assertEquals(canadianFrench, stableLanguageLocales.get(2));
 	}
 }

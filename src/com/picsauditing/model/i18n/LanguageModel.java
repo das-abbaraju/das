@@ -38,7 +38,7 @@ public class LanguageModel {
 	@Autowired
 	private LanguageProvider languageProvider;
 
-	private Locale[] stableLanguageLocales;
+	private List<Locale> stableLanguageLocales;
 	private List<Language> stableLanguages;
 	private List<Locale> unifiedLanguageList;
 
@@ -81,17 +81,28 @@ public class LanguageModel {
 		return stableLanguages;
 	}
 
-	public Locale[] getStableLanguageLocales() {
+	public List<Locale> getStableLanguageLocales() {
 		if (stableLanguageLocales == null) {
 			List<Language> stableLanguageVariants = getStableLanguages();
-			stableLanguageLocales = new Locale[stableLanguageVariants.size()];
+			stableLanguageLocales = new ArrayList<Locale>();
 
-			for (int index = 0; index < stableLanguageVariants.size(); index++) {
-				stableLanguageLocales[index] = stableLanguageVariants.get(index).getLocale();
+			for (Language stableLanguage : stableLanguageVariants) {
+				stableLanguageLocales.add(stableLanguage.getLocale());
 			}
 		}
 
 		return stableLanguageLocales;
+	}
+
+	public List<Locale> getStableAndBetaLanguageLocales() {
+		List<Language> betaLanguages = getLanguagesByStatus(LanguageStatus.Beta);
+		List<Locale> stableAndBetaLocales = getStableLanguageLocales();
+
+		for (Language betaLanguage : betaLanguages) {
+			stableAndBetaLocales.add(betaLanguage.getLocale());
+		}
+
+		return stableAndBetaLocales;
 	}
 
 	public List<Locale> getUnifiedLanguageList() {
@@ -104,6 +115,15 @@ public class LanguageModel {
 
 				if (Strings.isNotEmpty(stableLanguageWithVariant.getCountry())) {
 					languagesWithVariants.add(stableLanguageWithVariant.getLanguage());
+				}
+			}
+
+			// Add beta languages
+			for (Language betaLanguage : getLanguagesByStatus(LanguageStatus.Beta)) {
+				unifiedLanguageList.add(betaLanguage.getLocale());
+
+				if (Strings.isNotEmpty(betaLanguage.getCountry())) {
+					languagesWithVariants.add(betaLanguage.getLanguage());
 				}
 			}
 
@@ -137,6 +157,16 @@ public class LanguageModel {
 		}
 
 		return Locale.ENGLISH;
+	}
+
+	public List<Language> getLanguagesByStatus(LanguageStatus languageStatus) {
+		List<Language> languagesByStatus = languageProvider.findByStatus(languageStatus);
+
+		if (languagesByStatus == null) {
+			languagesByStatus = Collections.emptyList();
+		}
+
+		return languagesByStatus;
 	}
 
 	private List<String> extractLanguagesFromStableVariants() {

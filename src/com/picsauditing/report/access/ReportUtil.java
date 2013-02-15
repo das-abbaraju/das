@@ -204,7 +204,7 @@ public final class ReportUtil {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
 		LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
-		Locale[] locales = languageModel.getStableLanguageLocales();
+		List<Locale> locales = languageModel.getStableLanguageLocales();
 		QueryMethod[] methods = QueryMethod.values();
 		String fileName = "Column translations for DR";
 

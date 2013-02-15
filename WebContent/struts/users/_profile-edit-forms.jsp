@@ -52,7 +52,7 @@
 				<li>
                     <s:select
                         name="u.locale"
-						list="supportedLanguages.stableLanguageLocales"
+						list="supportedLanguages.stableAndBetaLanguageLocales"
 						listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 						theme="form" />
                 </li>
