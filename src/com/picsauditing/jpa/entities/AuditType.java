@@ -87,6 +87,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	protected ScoreType scoreType;
 	protected User assignAudit;
 	protected User editAudit;
+	protected String assigneeLabel;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -264,6 +265,14 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.editAudit = editAudit;
 	}
 
+	public String getAssigneeLabel() {
+		return assigneeLabel;
+	}
+	
+	public void setAssigneeLabel(String assigneeLabel) {
+		this.assigneeLabel = assigneeLabel;
+	}
+	
 	@OneToMany(mappedBy = "auditType")
 	@OrderBy("number")
 	public List<AuditCategory> getCategories() {

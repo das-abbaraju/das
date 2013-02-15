@@ -51,8 +51,8 @@
 					<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 					<td align="center">Type</td>
 					<td align="center"><a href="javascript: changeOrderBy('form1','createdDate DESC');">Submitted</a></td>
-					<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC');">Safety Professional</a></td>
-					<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');">Closing Safety Professional</a></td>
+					<td align="center"><a href="javascript: changeOrderBy('form1','auditorID DESC');"><s:text name="global.SafetyProfessional" /></a></td>
+					<td align="center"><a href="javascript: changeOrderBy('form1','closingAuditorID DESC,name');"><s:text name="Audit.ClosingAuditor" /></a></td>
 					<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
 					<td align="center">Notes</td>
 					<td></td>
@@ -86,7 +86,7 @@
 						<nobr>
 							<s:select cssClass="blueMain" list="auditorList" listKey="id"
 								listValue="name" value="%{get('closingAuditorID')}"
-								id="%{'auditor_'.concat(get('auditID'))}" headerKey="" headerValue="- Safety Professional -"/>
+								id="%{'auditor_'.concat(get('auditID'))}" headerKey="" headerValue="- Assignee -"/>
 						</nobr>
 					</td>
 					<td class="center">
@@ -111,7 +111,7 @@
 					</td>
 					<td colspan="8">
 						<s:select cssClass="blueMain" list="auditorList" listKey="id" listValue="name" 
-							headerKey="0" headerValue="- Safety Professional -" name="closingAuditor" />
+							headerKey="0" headerValue="- Assignee -" name="closingAuditor" />
 						<s:textarea name="notes" rows="3" cols="15" />
 						<input type="hidden" name="method:saveAll" value="Save All" />
 						<input type="button" class="picsbutton" value="Save All" id="saveAll" />

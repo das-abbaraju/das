@@ -2,7 +2,6 @@ package com.picsauditing.actions.auditType;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,11 +21,13 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.models.audits.TranslationKeysGenerator;
@@ -50,6 +51,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected List<WorkflowStep> steps;
 
 	private List<AuditType> auditTypes = null;
+	
+	private List<String> assigneeLabels = null;
 
 	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
@@ -223,6 +226,16 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
 			} else
 				auditType.setEditPermission(null);
+			if ("".equals(auditType.getAssigneeLabel()))
+				auditType.setAssigneeLabel(null);
+			if (auditType.getAssigneeLabel() != null) {
+				String key = auditType.getAssigneeLabel().trim();
+				if (Strings.isEmpty(key) || key.indexOf(" ") > 0) {
+					addActionError("Invalid key for Label Key For Auditor.  It should have no spaces.");
+					return false;
+				}
+				auditType.setAssigneeLabel(key);
+			}
 			if (workFlowID > 0) {
 				auditType.setWorkFlow(wfDAO.find(workFlowID));
 			} else {
@@ -239,6 +252,26 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
+			
+			if (auditType.getAssigneeLabel() != null) {
+				AppTranslation translation = null;
+				try {
+					translation = dao.findOne(AppTranslation.class, "t.key='Assignee." + auditType.getAssigneeLabel() + "'");
+				} catch (Exception ignore) {
+				}
+				if (translation == null) {
+					translation = new AppTranslation();
+					translation.setKey("Assignee." + auditType.getAssigneeLabel());
+					translation.setLocale("en");
+					translation.setCreatedBy(userDAO.find(permissions.getUserId()));
+					translation.setAuditColumns();
+					translation.setApplicable(true);
+					translation.setSourceLanguage("en");
+					translation.setValue("Assignee");
+					translation.setQualityRating(TranslationQualityRating.Bad);
+					dao.save(translation);
+				}
+			}
 			return true;
 		} catch (Exception e) {
 			addActionError(e.getMessage());
@@ -343,7 +376,13 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		return workFlowList;
 	}
 
+	
 	// GETTERS && SETTERS
+
+	public List<String> getAssigneeLabels() {
+		assigneeLabels = new ArrayList<String>();
+		return assigneeLabels;
+	}
 
 	public int getId() {
 		return id;
