@@ -67148,7 +67148,7 @@ Ext.define('PICS.view.report.alert.Success', {
     id: 'success_message',
     resizable: false,
     shadow: false,
-    width: 250
+    width: 350
 });
 /**
  * Private utility class for Ext.layout.container.Border.
@@ -97863,11 +97863,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 unfavorite: this.unfavoriteReport
             },
 
-            'reportsettingsmodal reportsettingsexport button[action=export]':  {
+            'reportsettingsmodal reportexportsetting button[action=export]':  {
                 click: this.exportReport
             },
 
-            'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
+            'reportsettingsmodal reportprintsetting button[action=print-preview]':  {
                 click: this.printReport
             },
 
@@ -98094,7 +98094,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                 report_settings_modal.close();
 
-                that.application.fireEvent('openalertmessage', {
+                that.application.fireEvent('opensuccessmessage', {
                     title: json.title,
                     html: json.html
                 });
