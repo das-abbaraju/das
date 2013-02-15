@@ -40,6 +40,7 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -64,6 +65,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     protected CountrySubdivisionDAO countrySubdivisionDAO;
     @Autowired
     private FacilitiesEditValidator facilitiesEditValidator;
+    @Autowired
+    private AccountStatusChanges accountStatusChanges;
 
     private String createType;
     private List<Integer> facilities;
@@ -259,6 +262,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
                         newFacilities.add(opAccount);
                     }
 
+                    // Easier to just remove all existing facilities and persist all the new ones
+                    // if we have already validated the Facility?
                     Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
                     while (facList.hasNext()) {
                         Facility opFacilities = facList.next();
@@ -332,13 +337,22 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.setPrimaryContact(userDAO.find(contactID));
         }
 
-        operator.setNeedsIndexing(true);
-        operator = operatorDao.save(operator);
-        id = operator.getId();
+        operator = saveClientSite();
 
         addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[]{operator.getName()}));
 
         return REDIRECT;
+    }
+
+    private OperatorAccount saveClientSite() {
+    	if (operator.getStatus().isDeactivated()) {
+    		String deactivationReason = permissions.getName() + " has deactivated this account.";
+    		accountStatusChanges.deactivateClientSite(operator, permissions, deactivationReason);
+    	}
+
+    	operator.setNeedsIndexing(true);
+        return operatorDao.save(operator);
+//      id = operator.getId();
     }
 
     public String ajaxAutoApproveRelationshipModal() throws Exception {

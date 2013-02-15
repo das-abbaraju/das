@@ -7,12 +7,16 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.picsauditing.PICS.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.InvoiceValidationException;
+import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -100,6 +104,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public String execute() throws Exception, IOException, InvoiceValidationException {
 		if (invoice == null) {
 			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
@@ -224,22 +229,15 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				BillingStatus status = contractor.getBillingStatus();
 				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 						&& (status.isRenewalOverdue() || status.isReactivation())) {
-					contractor.setStatus(AccountStatus.Deactivated);
-					contractor.setRenew(false);
 					if (contractor.getAccountLevel().isBidOnly()) {
 						contractor.setReason("Bid Only Account");
 					}
-					Note note = new Note(contractor, new User(User.SYSTEM),
-							"Automatically inactivating account based on expired membership");
-					note.setNoteCategory(NoteCategory.Billing);
-					note.setCanContractorView(true);
-					note.setViewableById(Account.PicsID);
-					noteDAO.save(note);
 				}
 
 				billingService.calculateContractorInvoiceFees(contractor);
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
+				contractor.setAuditColumns(permissions);
 				contractorAccountDao.save(contractor);
 
 				message = getText("InvoiceDetail.message.CanceledInvoice");

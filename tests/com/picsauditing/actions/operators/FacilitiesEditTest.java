@@ -3,11 +3,10 @@ package com.picsauditing.actions.operators;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -28,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.verification.VerificationMode;
 import org.powermock.reflect.Whitebox;
@@ -41,11 +41,13 @@ import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
@@ -73,6 +75,8 @@ public class FacilitiesEditTest extends PicsTest {
 	private FeatureToggle featureToggle;
 	@Mock
 	private FacilitiesEditValidator facilitiesEditValidator;
+	@Mock
+	private AccountStatusChanges accountStatusChanges;
 
 	@Before
 	public void setUp() throws Exception {
@@ -93,6 +97,7 @@ public class FacilitiesEditTest extends PicsTest {
 		Whitebox.setInternalState(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
 		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditValidator", facilitiesEditValidator);
 		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
+		Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
 
 		// specific call the real method in the FacilitiesEditMode when adding
 		// roles.
@@ -359,5 +364,43 @@ public class FacilitiesEditTest extends PicsTest {
 	// assumption?
 	// A: yes, the security interceptor will force this load. is this enough to
 	// keep this order dependency?
+
+	/**
+	 * Overrides the operator set in the FacilitiesEdit action class in the Setup method so
+	 * we use a Mock instead of a Fake.
+	 *
+	 * Also overrides the operatorDAO used by setup() because the test is trying to set the same
+	 * mock in the FacilitiesEdit and FacilitiesEditModel class.
+	 */
+	private void setupForSaveClientSiteTests(AccountStatus clientSiteStatus) {
+		operatorDAO = Mockito.mock(OperatorAccountDAO.class);
+		Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
+
+		operator = Mockito.mock(OperatorAccount.class);
+		when(operator.getStatus()).thenReturn(clientSiteStatus);
+		facilitiesEdit.setOperator(operator);
+	}
+
+	@Test
+	public void testSaveClientSite_DeactivatedAccount() throws Exception {
+		setupForSaveClientSiteTests(AccountStatus.Deactivated);
+
+		Whitebox.invokeMethod(facilitiesEdit, "saveClientSite");
+
+		verify(accountStatusChanges, times(1)).deactivateClientSite(operator, permissions, permissions.getName() + " has deactivated this account.");
+		verify(operator, times(1)).setNeedsIndexing(true);
+		verify(operatorDAO, times(1)).save(operator);
+	}
+
+	@Test
+	public void testSaveClientSite_ActiveAccount() throws Exception {
+		setupForSaveClientSiteTests(AccountStatus.Active);
+
+		Whitebox.invokeMethod(facilitiesEdit, "saveClientSite");
+
+		verify(accountStatusChanges, never()).deactivateClientSite(any(OperatorAccount.class), any(Permissions.class), anyString());
+		verify(operator, times(1)).setNeedsIndexing(true);
+		verify(operatorDAO, times(1)).save(operator);
+	}
 
 }

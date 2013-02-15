@@ -184,12 +184,12 @@
           class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
     <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
           scope="prototype"/>
-    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
-    <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator"
-          scope="singleton"/>
-    <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>
-    <bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel"/>
-    <bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
+    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
+	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
+	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
+	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
+	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
+	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
 
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>

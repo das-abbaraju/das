@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
@@ -59,6 +60,7 @@ import com.picsauditing.validator.ContractorValidator;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
+
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
@@ -79,8 +81,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-	// @Autowired
-	// protected AuditBuilder auditBuilder;
+	@Autowired
+	private AccountStatusChanges accountStatusChanges;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -102,9 +104,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void prepare() throws Exception {
 		if (permissions.isLoggedIn()) {
 			int conID = 0;
-			if (permissions.isContractor())
+			if (permissions.isContractor()) {
 				conID = permissions.getAccountId();
-			else {
+			} else {
 				permissions.tryPermission(OpPerms.AllContractors);
 				conID = getParameter("id");
 			}
@@ -120,37 +122,43 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters()
 					.get("contractor.country.isoCode");
-			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
+			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0])) {
 				contractor.setCountry(countryDAO.find(countryIsos[0]));
+			}
 
 			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
 					.get("contractor.billingCountry.isoCode");
-			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
+			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0])) {
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
+			}
 
 			defaultConTypeHelpText();
 		}
 	}
 
 	private void defaultConTypeHelpText() {
-		if (contractor.isContractorTypeRequired(ContractorType.Onsite))
+		if (contractor.isContractorTypeRequired(ContractorType.Onsite)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
-		if (contractor.isContractorTypeRequired(ContractorType.Offsite))
+		}
+		if (contractor.isContractorTypeRequired(ContractorType.Offsite)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
-		if (contractor.isContractorTypeRequired(ContractorType.Supplier))
+		}
+		if (contractor.isContractorTypeRequired(ContractorType.Supplier)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
-		if (contractor.isContractorTypeRequired(ContractorType.Transportation))
+		}
+		if (contractor.isContractorTypeRequired(ContractorType.Transportation)) {
 			contractorTypeHelpText += getTextParameterized(
 					"RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Transportation.getI18nKey()),
 					StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
+		}
 	}
 
 	@Before
@@ -160,8 +168,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		findContractor();
 		// Billing CountrySubdivision gets set to an empty string
 		if (contractor.getBillingCountrySubdivision() != null
-				&& Strings.isEmpty(contractor.getBillingCountrySubdivision().getIsoCode()))
+				&& Strings.isEmpty(contractor.getBillingCountrySubdivision().getIsoCode())) {
 			contractor.setBillingCountrySubdivision(null);
+		}
 	}
 
 	public String save() throws Exception {
@@ -219,19 +228,22 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			List<String> nonListOnlyOperators = new ArrayList<String>();
 			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-				if (!co.getOperatorAccount().isAcceptsList())
+				if (!co.getOperatorAccount().isAcceptsList()) {
 					nonListOnlyOperators.add(co.getOperatorAccount().getName());
+				}
 			}
 
-			if (!nonListOnlyOperators.isEmpty())
+			if (!nonListOnlyOperators.isEmpty()) {
 				addActionError(this.getTextParameterized("ContractorEdit.error.OperatorsDoneAcceptList",
 						Strings.implode(nonListOnlyOperators)));
+			}
 		}
 	}
 
 	protected void runContractorValidator() {
-		if (vatId != null)
+		if (vatId != null) {
 			contractor.setVatId(vatId);
+		}
 		for (String error : contractorValidator.validateContractor(contractor)) {
 			addActionError(error);
 		}
@@ -274,8 +286,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		// account for disabled checkboxes not coming though
 		// but only if populated/presented
 		for (ContractorType type : ContractorType.values()) {
-			if (contractor.isContractorTypeRequired(type))
+			if (contractor.isContractorTypeRequired(type)) {
 				conTypes.add(type);
+			}
 		}
 
 		contractor.setAccountTypes(conTypes);
@@ -310,10 +323,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private void addNoteWhenStatusChange() {
 		request = ServletActionContext.getRequest();
 		if (request.getParameter("currentStatus") != null) {
-			// System.out.print(request.getParameter("CurrentStatus"));
-			// System.out.print(contractor.getStatus().toString());
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-				// System.out.print("Should have made a note.");
 				this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
 						+ contractor.getStatus().toString());
 			}
@@ -377,13 +387,15 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				// (very slow operation)
 				// sending email to primary contact if no subscribers
 				// exist
-				if (!subscribed && operator != null && operator.getPrimaryContact() != null)
+				if (!subscribed && operator != null && operator.getPrimaryContact() != null) {
 					emails.add(operator.getPrimaryContact().getEmail());
+				}
 
-				if (emails.size() > 0)
+				if (emails.size() > 0) {
 					emailAddresses.addAll(emails);
-				else
+				} else {
 					addActionError(getTextParameterized("ContractorEdit.error.NoPrimaryContact", operatorID));
+				}
 			}
 
 			if (emailAddresses.size() > 0) {
@@ -397,6 +409,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailBuilder.setBccAddresses(Strings.implode(emailAddresses, ","));
 				emailBuilder.setCcAddresses("");
+				@SuppressWarnings("deprecation")
 				String billingEmail = EmailAddressUtils.getBillingEmail(contractor.getCurrency());
 				emailBuilder.setToAddresses(billingEmail);
 				emailBuilder.setFromAddress(billingEmail);
@@ -439,31 +452,46 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (Strings.isEmpty(contractor.getReason())) {
 			addActionError(getText("ContractorEdit.error.DeactivationReason"));
 		} else {
-			contractor.setRenew(false);
-			if (contractor.isHasFreeMembership())
-				contractor.setStatus(AccountStatus.Deactivated);
+			if (contractorHasNotExpiredYet() && !contractor.isHasFreeMembership()) {
+				return leaveContractorAlone();
+			}
 
-			String expiresMessage = "";
-			if (contractor.getPaymentExpires().after(new Date()))
+			String expiresMessage = Strings.EMPTY_STRING;
+			if (contractorHasNotExpiredYet()) {
 				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
 						contractor.getPaymentExpires());
-			else {
+			} else {
 				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
-				contractor.setStatus(AccountStatus.Deactivated);
 			}
-			contractorAccountDao.save(contractor);
 
-			this.addNote(contractor, "Closed contractor account." + expiresMessage);
+			accountStatusChanges.deactivateContractor(contractor, permissions, "Closed contractor account." + expiresMessage);
 			this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
 		}
+
 		this.subHeading = "Contractor Edit";
+
 		return SUCCESS;
+	}
+
+	private String leaveContractorAlone() {
+		String expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
+				contractor.getPaymentExpires());
+		addNote(contractor, "Closed contractor account." + expiresMessage);
+		addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
+		subHeading = "Contractor Edit";
+
+		return SUCCESS;
+	}
+
+	private boolean contractorHasNotExpiredYet() {
+		return contractor.getPaymentExpires() != null && contractor.getPaymentExpires().after(new Date());
 	}
 
 	public String reactivate() throws Exception {
 		contractor.setRenew(true);
-		if (contractor.isHasFreeMembership())
+		if (contractor.isHasFreeMembership()) {
 			contractor.setStatus(AccountStatus.Active);
+		}
 
 		contractor.setReason("");
 		contractorAccountDao.save(contractor);
@@ -560,11 +588,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		Set<User> switchToSet = new HashSet<User>();
 		// Adding users that can switch to users on account
-		for (User u : primaryContactSet)
+		for (User u : primaryContactSet) {
 			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		}
 		// Adding users that can switch to groups on account
-		for (User u : groupSet)
+		for (User u : groupSet) {
 			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
+		}
 		// Adding all SwitchTo users to primary contacts
 		primaryContactSet.addAll(switchToSet);
 
@@ -580,17 +610,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public boolean isCanEditRiskLevel() {
-		if (contractor.getStatus().isDemo())
+		if (contractor.getStatus().isDemo()) {
 			return true;
-		if (permissions.hasPermission(OpPerms.RiskRank))
+		}
+		if (permissions.hasPermission(OpPerms.RiskRank)) {
 			return true;
+		}
 		return false;
 	}
 
 	public boolean isHasImportPQFAudit() {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired())
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
 				return true;
+			}
 		}
 
 		return false;
@@ -609,8 +642,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			meetsARequiredContractorTypeForThisOperator = false;
 			for (ContractorType conType : operator.getAccountTypes()) {
-				if (conTypes.contains(conType))
+				if (conTypes.contains(conType)) {
 					meetsARequiredContractorTypeForThisOperator = true;
+				}
 			}
 
 			if (!meetsARequiredContractorTypeForThisOperator) {
