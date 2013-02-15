@@ -122,6 +122,10 @@ public abstract class ReportElement {
 		this.sqlFunction = method;
 	}
 
+	public boolean hasNoSqlFunction() {
+		return sqlFunction == null;
+	}
+
 	@Transient
 	public Field getField() {
 		return field;

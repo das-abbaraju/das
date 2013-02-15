@@ -13,11 +13,12 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.util.PicsDateFormat;
 
 public class ReportDataConverter {
-	
+
 	private Locale locale;
 	private ReportResults reportResults;
 
@@ -61,8 +62,9 @@ public class ReportDataConverter {
 
 	private Object convertValueForPrinting(ReportCell cell) {
 		Object value = cell.getValue();
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 
 		Object result = convertValueBasedOnCellColumn(cell);
 		if (result == null) {
@@ -77,34 +79,39 @@ public class ReportDataConverter {
 		Object value = cell.getValue();
 		Object result = null;
 
-		if (column != null) {
-			logger.info("Attempting to convert {}, value: {}", cell.getColumn().getName(), cell.getValue() );
+		if (column == null) {
+			return result;
+		}
 
-			if (column.getSqlFunction() != null && column.getSqlFunction() == SqlFunction.Month) {
-				result = convertValueAsMonth(value);
-			}
+		logger.info("Attempting to convert {}, value: {}", column.getName(), value);
 
-			if (column.getName().contains("StatusSubstatus")) {
-				result = convertValueAsTranslatedStatus((String) value);
-			}
+		SqlFunction sqlFunction = column.getSqlFunction();
+		if (sqlFunction != null && sqlFunction == SqlFunction.Month) {
+			result = convertValueAsMonth(value);
+		}
 
-			if (column.getField() == null) {
-				result = column.getName() + ": Field not available";
-			}
+		if (column.getName().contains("StatusSubstatus")) {
+			result = convertValueAsTranslatedStatus((String) value);
+		}
 
-			if (column.getField().isTranslated()) {
-				String key = column.getField().getI18nKey(value.toString());
-				result = getText(key, locale);
-			}
+		Field field = column.getField();
+		if (field == null) {
+			result = column.getName() + ": Field not available";
+			return result;
+		}
 
-			DisplayType displayType = column.getField().getType().getDisplayType();
-			if (displayType == DisplayType.Number) {
-				result = value;
-			}
+		if (field.isTranslated() && column.hasNoSqlFunction()) {
+			String key = field.getI18nKey(value.toString());
+			result = getText(key, locale);
+		}
 
-			if (displayType == DisplayType.Boolean) {
-				result = value;
-			}
+		DisplayType displayType = field.getType().getDisplayType();
+		if (displayType == DisplayType.Number) {
+			result = value;
+		}
+
+		if (displayType == DisplayType.Boolean) {
+			result = value;
 		}
 
 		return result;
