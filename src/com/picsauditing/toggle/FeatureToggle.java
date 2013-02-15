@@ -24,6 +24,7 @@ public interface FeatureToggle {
 	String TOGGLE_CANONICAL_TIMEZONES = "Toggle.Canonical_Timezone";
 	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
 	String TOGGLE_USE_NEW_CANADIAN_TAX = "Toggle.UseNewCanadianTax";
+	String TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION = "Toggle.NoteEdit.DoNotUseSwitchToInRestriction";
 
 	boolean isFeatureEnabled(String toggleName);
 
