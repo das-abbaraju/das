@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.Account;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,13 @@ public class UserSwitchDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+
+    public List<Account> findAccountsByUserId(int userId) {
+        Query query = em.createQuery("SELECT distinct(a) FROM UserSwitch as us JOIN us.switchTo.account as a WHERE a.status = 'Active' and us.user.id = ?");
+        query.setParameter(1, userId);
+
+        return query.getResultList();
+    }
 
 	public List<UserSwitch> findByUserId(int userId) {
 		Query query = em.createQuery("SELECT u FROM UserSwitch u where u.user.id = ? ORDER BY u.switchTo.name");

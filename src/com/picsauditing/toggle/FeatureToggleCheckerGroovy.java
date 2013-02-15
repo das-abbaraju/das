@@ -99,7 +99,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private String scriptBodyFromProperty(String toggleName) {
 		String featureToggleScript = featureToggleProvider.findFeatureToggle(toggleName);
 		if (featureToggleScript == null) {
-			logger.error("Feature Toggle {} not found", toggleName);
+			logger.info("Feature Toggle {} not found", toggleName);
 		}
 		return featureToggleScript;
 	}

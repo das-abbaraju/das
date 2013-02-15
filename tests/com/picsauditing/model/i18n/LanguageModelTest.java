@@ -1,6 +1,7 @@
 package com.picsauditing.model.i18n;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,13 +76,14 @@ public class LanguageModelTest {
 
 	@Test
 	public void testStableLanguageValues_WithAppLanguageData() throws Exception {
-		Language language1 = mock(Language.class);
-		Language language2 = mock(Language.class);
+		Language language1 = new Language();
+		Language language2 = new Language();
 
-		when(language1.getLocale()).thenReturn(Locale.FRENCH);
-		when(language1.getLanguage()).thenReturn("fr");
-		when(language2.getLocale()).thenReturn(Locale.GERMAN);
-		when(language2.getLanguage()).thenReturn("de");
+		language1.setLocale(Locale.FRENCH);
+		language1.setLanguage(Locale.FRENCH.getLanguage());
+
+		language2.setLocale(Locale.GERMAN);
+		language2.setLanguage(Locale.GERMAN.getLanguage());
 
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language1);
@@ -91,8 +94,8 @@ public class LanguageModelTest {
 		final List<LanguageModel.KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
 		assertNotNull(supportedLanguages);
 		assertEquals(2, supportedLanguages.size());
-		assertEquals(Locale.FRENCH.getLanguage(), supportedLanguages.get(0).getKey());
-		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(1).getKey());
+		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(0).getKey());
+		assertEquals(Locale.FRENCH.getLanguage(), supportedLanguages.get(1).getKey());
 	}
 
 	@Test
@@ -156,17 +159,17 @@ public class LanguageModelTest {
 
 	@Test
 	public void testGetStableLanguageLocales() throws Exception {
-		Language language1 = mock(Language.class);
-		Language language2 = mock(Language.class);
-		Language language3 = mock(Language.class);
+		Language language1 = new Language();
+		Language language2 = new Language();
+		Language language3 = new Language();
 
 		Locale britishEnglish = new Locale("en", "GB");
 		Locale canadianFrench = new Locale("fr", "CA");
 		Locale mexicanSpanish = new Locale("es", "MX");
 
-		when(language1.getLocale()).thenReturn(britishEnglish);
-		when(language2.getLocale()).thenReturn(canadianFrench);
-		when(language3.getLocale()).thenReturn(mexicanSpanish);
+		language1.setLocale(britishEnglish);
+		language2.setLocale(canadianFrench);
+		language3.setLocale(mexicanSpanish);
 
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(language1);
@@ -178,7 +181,7 @@ public class LanguageModelTest {
 		Locale[] stableLanguageLocales = languageModel.getStableLanguageLocales();
 		assertNotNull(stableLanguageLocales);
 		assertEquals(britishEnglish, stableLanguageLocales[0]);
-		assertEquals(canadianFrench, stableLanguageLocales[1]);
-		assertEquals(mexicanSpanish, stableLanguageLocales[2]);
+		assertEquals(mexicanSpanish, stableLanguageLocales[1]);
+		assertEquals(canadianFrench, stableLanguageLocales[2]);
 	}
 }

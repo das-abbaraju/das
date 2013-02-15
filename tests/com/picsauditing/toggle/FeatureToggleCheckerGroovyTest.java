@@ -130,7 +130,7 @@ public class FeatureToggleCheckerGroovyTest {
 		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(null);
 
 		assertFalse(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
-		verify(logger).error(anyString(), eq(toggleName));
+		verify(logger).info(anyString(), eq(toggleName));
 	}
 
 	@Test

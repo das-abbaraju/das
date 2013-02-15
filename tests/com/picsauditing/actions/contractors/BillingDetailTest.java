@@ -1,9 +1,14 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.hasItem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,7 +21,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.picsauditing.PICS.InvoiceValidationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,6 +31,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -38,6 +43,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -52,6 +58,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.PermissionToViewContractor;
+import com.picsauditing.util.Strings;
 
 public class BillingDetailTest extends PicsActionTest {
 	private BillingDetail billingDetail;
@@ -202,6 +209,28 @@ public class BillingDetailTest extends PicsActionTest {
 				.thenReturn(invoice);
 	}
 
+	private void setupForViewPage() {
+		billingDetail.setButton(Strings.EMPTY_STRING);
+		when(invoiceFee.isMembership()).thenReturn(true);
+		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Reactivation);
+		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+				.thenReturn(invoice);
+	}
+
+	private void setupForActivation() {
+		billingDetail.setButton("Activate");
+		when(invoiceFee.isMembership()).thenReturn(true);
+		when(invoiceModel.getSortedClientSiteList(contractor)).thenReturn(NOTE_STRING);
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
+		when(contractor.getPaymentExpires()).thenReturn(twoHundredDaysFromNow);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+		when(billingService.createInvoiceWithItems(contractor, invoiceItems, new User(permissions.getUserId())))
+				.thenReturn(invoice);
+	}
+
 	@Test
 	public void testExecute_Create_HappyPath_NewInvoiceIsAddedToContractorInvoices() throws Exception {
 		setupForCreate();
@@ -266,6 +295,46 @@ public class BillingDetailTest extends PicsActionTest {
 
 		verify(billingService).createInvoiceWithItems(eq(contractor), eq(invoiceItems), any(User.class));
 		assertEquals(PicsActionSupport.BLANK, actionResult);
+	}
+
+	@Test
+	public void testExecute_ViewBillingDetailForBidOnlyContractor() throws Exception {
+		setupForViewPage();
+		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
+
+		String actionResult = billingDetail.execute();
+
+		verify(contractor, times(1)).setReason("Bid Only Account");
+		commonVerifications(actionResult);
+	}
+
+	@Test
+	public void testExecute_ViewBillingDetail() throws Exception {
+		setupForViewPage();
+		when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+
+		String actionResult = billingDetail.execute();
+
+		commonVerifications(actionResult);
+	}
+
+	private void commonVerifications(String actionResult) {
+		assertEquals(AccountStatus.Active, contractor.getStatus());
+		assertEquals(ActionSupport.SUCCESS, actionResult);
+
+		verify(contractor, times(1)).syncBalance();
+		verify(accountDAO, times(1)).save(contractor);
+	}
+
+	@Test
+	public void testExecute_ForActivation() throws Exception {
+		setupForActivation();
+
+		String actionResult = billingDetail.execute();
+
+		assertEquals(ActionSupport.SUCCESS, actionResult);
+		verify(contractor, times(1)).setStatus(AccountStatus.Active);
+		verify(noteDao, times(1)).save(any(Note.class));
 	}
 
 }
