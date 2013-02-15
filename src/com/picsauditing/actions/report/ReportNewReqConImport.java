@@ -156,10 +156,11 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			for (ContractorRegistrationRequest crr : requests) {
 				int matches = findGap(crr);
 				crr.setMatchCount(matches);
+                crrDAO.save(crr);
 
-				if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
-					crr.contactByEmail();
-					prependToRequestNotes(notes, crr);
+                if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
+                    crr.contactByEmail();
+                    prependToRequestNotes(notes, crr);
 					emailHelper.sendInitialEmail(crr, getFtpDir());
 				}
 
