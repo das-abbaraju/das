@@ -31,11 +31,7 @@ private Connection connect = null;
           .executeQuery("select * from testChineseEnglish");
 	  while (resultSet.next()) {
 		  String chinese = resultSet.getString("chinese");
-		  /*
-		  String decomposed = Normalizer.normalize(chinese, Form.NFD);
-		  String english = decomposed.replaceAll("[^\\p{ASCII}]","");
-		  		  System.out.println("Chinese: "+chinese+" / Decomposed: "+decomposed+" / English: "+english);
-		  */
+		  // http://www.deroneriksson.com/tutorials/lessons/how-do-i-convert-chinese-characters-to-their-latin-equivalents.html
 		  Transliterator chineseToLatinTrans = Transliterator.getInstance(CHINESE_TO_LATIN_NO_ACCENTS);
 		  String latinized = chineseToLatinTrans.transliterate(chinese);
 		  System.out.println("Chinese: "+chinese+" / Latinized: "+latinized);
