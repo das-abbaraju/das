@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
-
+// todo: Rename me to ReportModelFactory
 public class ModelFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);

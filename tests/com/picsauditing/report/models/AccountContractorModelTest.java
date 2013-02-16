@@ -1,20 +1,10 @@
 package com.picsauditing.report.models;
 
-import static com.picsauditing.util.Assert.assertContains;
-import static org.junit.Assert.assertEquals;
-
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.search.SelectSQL;
 
 public class AccountContractorModelTest extends ModelTest {
 	private AccountContractorModel model;
@@ -54,18 +44,4 @@ public class AccountContractorModelTest extends ModelTest {
 		checkFields();
 	}
 
-	@Test
-	public void testSqlForOperator() throws Exception {
-		definition.getColumns().add(new Column("AccountCountry"));
-		definition.getColumns().add(new Column("ContractorFlagFlagColor"));
-
-		permissions = EntityFactory.makePermission(EntityFactory.makeUser(OperatorAccount.class));
-		model = new AccountContractorModel(permissions);
-
-		SelectSQL sql = new SqlBuilder().initializeSql(model, definition, permissions);
-		String sqlResult = sql.toString();
-		String expected = "JOIN generalcontractors AS ContractorFlag ON Contractor.id = ContractorFlag.subID AND ContractorFlag.genID = "
-				+ permissions.getAccountId();
-		assertContains(expected, sqlResult);
-	}
 }

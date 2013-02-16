@@ -102,11 +102,9 @@ public class ReportService {
 	}
 
 	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report) throws ReportValidationException {
-		// FIXME this basically initializes a report as well as building SQL
-		SelectSQL sql = sqlBuilder.initializeSql(report, reportContext.permissions);
+		SelectSQL sql = sqlBuilder.initializeReportAndBuildSql(report, reportContext.permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
-		// TODO see if this can go before the initializeSql() call into the createReport() function
 		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
 		return sql;
 	}
@@ -120,6 +118,7 @@ public class ReportService {
 		} else {
 			report = loadReportFromDatabase(reportContext.reportId);
 
+			// todo: Remove me when all reports are converted to new layout on stable
 			if (report.hasNoColumnsFiltersOrSorts()) {
 				legacyConvertParametersToReport(report);
 			}

@@ -1,10 +1,6 @@
 package com.picsauditing.report;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,103 +18,105 @@ import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
 
-	private Report report;
-	private SelectSQL sql;
-	private Map<String, Field> availableFields;
-
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
-	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
-		// FIXME this has nothing to do with building SQL
+	public SelectSQL initializeReportAndBuildSql(Report report, Permissions permissions) throws ReportValidationException {
+		// todo: Consider making the model, including it's available fields, a transient property of the report.
 		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
-		this.report = report;
-		return initializeSql(model, this.report, permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
+		report = initializeReport(report, availableFields, permissions);
+		SelectSQL selectSQL = buildSelectSql(report, availableFields, model);
+
+		return selectSQL;
 	}
 
-	public SelectSQL initializeSql(AbstractModel model, Report report, Permissions permissions)
-			throws ReportValidationException {
-		logger.info("Starting SqlBuilder for " + model);
-		this.report = report;
+	private Report initializeReport(Report report, Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
 
-		sql = new SelectSQL();
+		setColumnProperties(report.getColumns(), availableFields);
+		setFilterProperties(report.getFilters(), availableFields, permissions);
+		setSortProperties(report, availableFields);
 
-		sql.setFromTable(model.getStartingJoin().getTableClause());
+		return report;
+	}
 
-		// FIXME this has nothing to do with building SQL
-		availableFields = model.getAvailableFields();
+	private SelectSQL buildSelectSql(Report report, Map<String, Field> availableFields, AbstractModel model)	throws ReportValidationException {
+		SelectSQL selectSql = new SelectSQL();
+		selectSql.setFromTable(model.getStartingJoin().getTableClause());
 
-		// FIXME this does a lot of extra column stuff not to do with building SQL
-		addFieldsAndGroupBy(report.getColumns());
-		// FIXME this does a lot of extra filter stuff not to do with building SQL
-		addRuntimeFilters(permissions);
-		// FIXME this does a lot of extra sort stuff not to do with building SQL
-		addOrderByClauses(model);
+		addFieldsAndGroupBy(report.getColumns(), selectSql, availableFields);
+		addRuntimeFilters(report, selectSql);
+		addOrderByClause(report, selectSql);
+		addJoins(model.getStartingJoin(), report, selectSql);
+		addWhereClause(model, report, selectSql);
 
-		addJoins(model.getStartingJoin());
+		return selectSql;
+	}
 
+	private void addWhereClause(AbstractModel model, Report report, SelectSQL selectSql) {
 		List<Filter> filters = report.getFilters();
 		String whereClause = model.getWhereClause(filters);
-		sql.addWhere(whereClause);
-
-		logger.debug("SQL: " + sql);
-		logger.info("Completed SqlBuilder");
-		return sql;
+		selectSql.addWhere(whereClause);
 	}
 
-	private void addJoins(ReportJoin parentJoin) {
+	private void addJoins(ReportJoin parentJoin, Report report, SelectSQL selectSql) {
 		for (ReportJoin join : parentJoin.getJoins()) {
 			if (join.isNeeded(report)) {
-				sql.addJoin(join.toJoinClause());
-				addJoins(join);
+				selectSql.addJoin(join.toJoinClause());
+				addJoins(join, report, selectSql);
 			}
 		}
 	}
 
-	private void addFieldsAndGroupBy(List<Column> columns) {
-		// Make sure column has a field(?)
+	private void setColumnProperties(List<Column> columns, Map<String, Field> availableFields) {
+		for (Column column : columns) {
+			column.setMethodToFieldName();
+			column.addFieldCopy(availableFields);
+
+			if (column.getField() == null) {
+				continue;
+			}
+
+			column.setUrlOnFieldIfNecessary();
+		}
+	}
+	private void addFieldsAndGroupBy(List<Column> columns, SelectSQL selectSql, Map<String, Field> availableFields) {
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
-
-			column.setMethodToFieldName();  // todo: investigate: modifies column.field
-
-			column.addFieldCopy(availableFields);  // todo: investigate: modifies column.field
 
 			if (column.getField() == null) {
 				continue;
 			}
 
 			if (!column.hasAggregateMethod()) {
-				// For example: Don't add in accountID automatically if
-				// contractorName uses an aggregation like COUNT
 				dependentFields.addAll(column.getField().getDependentFields());
 			}
 
 			String columnSql = column.getSql();
-			if (usesGroupBy() && !column.hasAggregateMethod()) {
-				sql.addGroupBy(columnSql);
+			if (usesGroupBy(columns, availableFields) && !column.hasAggregateMethod()) {
+				selectSql.addGroupBy(columnSql);
 			}
 
-			sql.addField(columnSql + " AS `" + column.getName() + "`");
+			selectSql.addField(columnSql + " AS `" + column.getName() + "`");
 
-			addDependentFields(dependentFields);
+			addDependentFields(dependentFields, columns, selectSql, availableFields);
 		}
 	}
 
-	private void addDependentFields(Set<String> dependentFields) {
+	private void addDependentFields(Set<String> dependentFields, List<Column> columns, SelectSQL selectSql, Map<String, Field> availableFields) {
 		for (String fieldName : dependentFields) {
-			if (isFieldIncluded(fieldName)) {
+			if (isFieldIncluded(fieldName, columns)) {
 				continue;
 			}
 
 			Column column = new Column(fieldName);
-			column.addFieldCopy(availableFields);  // todo: investigate: modifies column.field
+			column.addFieldCopy(availableFields);
 			String columnSql = column.getSql();
-			sql.addField(columnSql + " AS `" + fieldName + "`");
+			selectSql.addField(columnSql + " AS `" + fieldName + "`");
 		}
 	}
 
-	private boolean isFieldIncluded(String fieldName) {
-		for (Column column : report.getColumns()) {
+	private boolean isFieldIncluded(String fieldName, List<Column> columns) {
+		for (Column column : columns) {
 			if (column.getFieldNameWithoutMethod().equals(fieldName)) {
 				return true;
 			}
@@ -126,8 +124,8 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private boolean usesGroupBy() {
-		for (Column column : report.getColumns()) {
+	private boolean usesGroupBy(List<Column> columns, Map<String, Field> availableFields) {
+		for (Column column : columns) {
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 			if (fieldNameWithoutMethod == null) {
 				continue;
@@ -143,7 +141,21 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private void addRuntimeFilters(Permissions permissions) throws ReportValidationException {
+	private void setFilterProperties(List<Filter> filters, Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
+		if (filters.isEmpty()) {
+			return;
+		}
+
+		for (Filter filter : filters) {
+			filter.addFieldCopy(availableFields);
+
+			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
+				filter.updateCurrentUser(permissions);
+			}
+		}
+	}
+
+	private void addRuntimeFilters(Report report, SelectSQL selectSql) throws ReportValidationException {
 		if (report.getFilters().isEmpty()) {
 			return;
 		}
@@ -152,11 +164,9 @@ public class SqlBuilder {
 		List<Filter> havingFilters = new ArrayList<Filter>();
 
 		for (Filter filter : report.getFilters()) {
-			filter.addFieldCopy(availableFields);  // todo: investigate: modifies filter.field
 
 			// TODO See if this can be safely added to filter.isValid()
 			if (filter.isValid() || (filter.getValues().isEmpty() && filter.getFieldForComparison() == null)) {
-				filter.updateCurrentUser(permissions);
 				if (filter.hasAggregateMethod()) {
 					havingFilters.add(filter);
 				} else {
@@ -167,24 +177,42 @@ public class SqlBuilder {
 
 		String filterExpression = report.getFilterExpression();
 		String whereClause = FilterExpression.parseWhereClause(filterExpression, whereFilters);
-		sql.addWhere(whereClause);
+		selectSql.addWhere(whereClause);
 
 		for (Filter filter : havingFilters) {
 			String filterExp = filter.getSqlForFilter();
-			sql.addHaving(filterExp);
+			selectSql.addHaving(filterExp);
 		}
 	}
 
-	private void addOrderByClauses(AbstractModel model) {
+	private void setSortProperties(Report report, Map<String, Field> availableFields) {
 		if (report.getSorts().isEmpty()) {
 			return;
 		}
 
 		for (Sort sort : report.getSorts()) {
-			sort.addFieldCopy(availableFields);  // todo: investigate: modifies sort.field
+			sort.addFieldCopy(availableFields);
+
+			Column column = getColumnByFieldName(sort.getName(), report.getColumns());
+			if (column == null) {
+				Field field = sort.getField();
+				if (field == null || field.getDatabaseColumnName() == null) {
+					continue;
+				}
+				sort.setField(field);
+			}
+		}
+	}
+
+	private void addOrderByClause(Report report, SelectSQL selectSql) {
+		if (report.getSorts().isEmpty()) {
+			return;
+		}
+
+		for (Sort sort : report.getSorts()) {
 
 			String fieldName;
-			Column column = getColumnFromFieldName(sort.getName());
+			Column column = getColumnByFieldName(sort.getName(), report.getColumns());
 			if (column == null) {
 				Field field = sort.getField();
 				if (field != null && field.getDatabaseColumnName() != null) {
@@ -192,7 +220,6 @@ public class SqlBuilder {
 				} else {
 					continue;
 				}
-				sort.setField(field);  // todo: investigate: sort column.field
 			} else {
 				fieldName = column.getName();
 			}
@@ -201,12 +228,12 @@ public class SqlBuilder {
 				fieldName += " DESC";
 			}
 
-			sql.addOrderBy(fieldName);
+			selectSql.addOrderBy(fieldName);
 		}
 	}
 
-	private Column getColumnFromFieldName(String fieldName) {
-		for (Column column : report.getColumns()) {
+	private Column getColumnByFieldName(String fieldName, List<Column> columns) {
+		for (Column column : columns) {
 			if (column.getName().equals(fieldName)) {
 				return column;
 			}

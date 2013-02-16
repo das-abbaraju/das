@@ -31,7 +31,7 @@ public class ReportTester extends PicsActionSupport {
 			report = dao.find(Report.class, reportID);
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
-			report.setSql(sqlBuilder.initializeSql(report, permissions).toString());
+			report.setSql(sqlBuilder.initializeReportAndBuildSql(report, permissions).toString());
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
 

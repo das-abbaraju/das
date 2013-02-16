@@ -37,13 +37,4 @@ public class AccountsModelTest extends ModelTest {
 		
 		checkFields();
 	}
-
-	@Test
-	public void testSql() throws Exception {
-		definition.getColumns().add(new Column("accountCountry"));
-		SelectSQL sql = new SqlBuilder().initializeSql(model, definition, permissions);
-		String sqlResult = sql.toString();
-		assertContains("SELECT Account.country AS `accountCountry` FROM accounts AS Account", sqlResult);
-		assertFalse(sqlResult.contains("NAICS"));
-	}
 }

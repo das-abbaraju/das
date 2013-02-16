@@ -52,7 +52,7 @@ public class DashboardBuilder {
 			json.put("name", widget.getReport().getName());
 			
 //			SqlBuilder builder = new SqlBuilder();
-//			builder.initializeSql(widget.getReport().getBaseModel());
+//			builder.initializeReportAndBuildSql(widget.getReport().getBaseModel());
 			
 			JSONArray fields = new JSONArray();
 

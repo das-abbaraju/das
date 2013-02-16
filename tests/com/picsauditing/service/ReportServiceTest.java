@@ -41,8 +41,6 @@ import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.service.ReportService;
-import com.picsauditing.util.pagination.Pagination;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
@@ -80,8 +78,6 @@ public class ReportServiceTest {
 	@Mock
 	protected I18nCache i18nCache;
 
-	private Pagination<Report> pagination;
-
 	private LegacyReportConverter legacyReportConverter;
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
@@ -117,7 +113,6 @@ public class ReportServiceTest {
 		when(i18nCache.getText(anyString(), any(Locale.class))).then(translate());
 		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
 		Whitebox.setInternalState(ReportDataConverter.class, "i18nCache", i18nCache);
-
 	}
 
 	@AfterClass
@@ -135,7 +130,7 @@ public class ReportServiceTest {
 		when(report.getModelType()).thenReturn(ModelType.Contractors);
 		when(report.getColumns()).thenReturn(getReportColumns());
 		SelectSQL selectSql = getTestSelectSql();
-		when(sqlBuilder.initializeSql(report, permissions)).thenReturn(selectSql);
+		when(sqlBuilder.initializeReportAndBuildSql(report, permissions)).thenReturn(selectSql);
 		int resultsToBuild = 3;
 		when(reportDao.runQuery(eq(selectSql.toString()), any(JSONObject.class))).thenAnswer(createQueryResults(resultsToBuild));
 		when(permissions.isAdmin()).thenReturn(true);
@@ -356,7 +351,7 @@ public class ReportServiceTest {
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-		mockBasicLegacyReport();
+		setupMockBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
@@ -373,13 +368,11 @@ public class ReportServiceTest {
 		assertEquals(report.isFavoritedBy(USER_ID), resultReport.isFavoritedBy(USER_ID));
 	}
 
-	// TODO rework this test to work with a mocked report
-	@Ignore
 	@Test
-	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportElementsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_andReportIsEmpty_setReportPropertiesFromJsonParameters() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-		mockBasicLegacyReport();
+		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
@@ -396,13 +389,11 @@ public class ReportServiceTest {
 		verifyColumn("AccountCountry", resultReportElementMap);
 	}
 
-	// TODO rework this test to work with a mocked report
-	@Ignore
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-		mockBasicLegacyReport();
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
@@ -415,13 +406,11 @@ public class ReportServiceTest {
 		verifyFilter("AccountStatus", QueryFilterOperator.In, "[Active, Pending]", resultFilterMap);
 	}
 
-	// TODO rework this test to work with a mocked report
-	@Ignore
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_SortsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
-		mockBasicLegacyReport();
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
@@ -510,7 +499,7 @@ public class ReportServiceTest {
 	}
 
 	// A legacy report contains parameters(json), which are used to load reportElements, filters, and sorts.
-	private Report mockBasicLegacyReport() {
+	private void setupMockBasicLegacyReport() {
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(report.getModelType()).thenReturn(ModelType.Contractors);
 		when(report.getName()).thenReturn("fooReport");
@@ -521,7 +510,11 @@ public class ReportServiceTest {
 		when(report.getFilterExpression()).thenReturn("where somecolumn is 'foo'");
 		when(report.isEditableBy(USER_ID)).thenReturn(false);
 		when(report.isFavoritedBy(USER_ID)).thenReturn(false);
+	}
 
+	private Report setupRealLegacyReportWithParameterJson() {
+		Report report = new Report();
+		report.setParameters(getParameterJson());
 		return report;
 	}
 
@@ -529,7 +522,7 @@ public class ReportServiceTest {
 		return "{\"id\":1,\"modelType\":\"Contractors\",\"name\":\"Contractor List\",\"description\":\"Default Contractor List for PICS Employees\",\"filterExpression\":\"\",\"rowsPerPage\":50,\"columns\":[{\"name\":\"AccountName\"},{\"name\":\"AccountStatus\"},{\"name\":\"ContractorMembershipDate\"},{\"name\":\"AccountCity\"},{\"name\":\"ContractorPayingFacilities\"},{\"name\":\"AccountCountrySubdivision\"},{\"name\":\"AccountCountry\"}],\"filters\":[{\"name\":\"AccountName\",\"operator\":\"Contains\"},{\"name\":\"AccountStatus\",\"operator\":\"In\",\"value\":\"Active, Pending\"}],\"sorts\":[{\"name\":\"AccountName\",\"direction\":\"ASC\"}]}";
 	}
 
-	private Report mockBasicReport() {
+	private Report setupMockBasicReport() {
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(report.getModelType()).thenReturn(ModelType.Contractors);
 		when(report.getName()).thenReturn("fooReport");

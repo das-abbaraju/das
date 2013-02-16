@@ -49,7 +49,7 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 	private List<BasicDynaBean> runReport(int reportID, Permissions permissions) throws ReportValidationException,
 			SQLException {
 		report = reportDao.find(Report.class, reportID);
-		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
+		SelectSQL sql = new SqlBuilder().initializeReportAndBuildSql(report, permissions);
 		JSONObject json = new JSONObject();
 		queryResults = reportDao.runQuery(sql.toString(), json);
 
