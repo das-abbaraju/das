@@ -505,6 +505,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(length = 100)
+	@ReportField(type = FieldType.String, width = 125, importance = FieldImportance.Average)
 	public String getDepartment() {
 		return department;
 	}

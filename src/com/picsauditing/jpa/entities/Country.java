@@ -20,7 +20,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
@@ -51,12 +50,13 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 			"MT", "NL", "PT", "SI", "SK" };
 	// The 10 additional countries that are in the European Union, but not in
 	// the EuroZone (i.e. that have not yet adopted the Euro, or never will)
-	private static final String[] EUROPEAN_UNION_ALSO = { "BG", "CZ", "DK", "GB", "GI", "HU", "IT", "LT", "LV", "PL",
+	private static final String[] EUROPEAN_UNION_ALSO = { "BG", "CZ", "DK", "GB", "GI", "HU", "LT", "LV", "PL",
 			"RO", "SE" };
 
 	protected String isoCode;
 	protected TranslatableString name;
 	protected String english;
+	protected String phone;
 	protected Double corruptionPerceptionIndex;
 	protected Currency currency = Currency.USD;
 	protected User csr;
@@ -101,6 +101,15 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	public void setEnglish(String english) {
 		this.english = english;
+	}
+
+	@Column(name = "phone", length = 25)
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public static String convertToCode(String tempCountry) {
@@ -260,7 +269,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	@Transient
 	public boolean isEuroZone() {
 		return (Arrays.binarySearch(EUROZONE, isoCode) >= 0);
-
 	}
 
 	@Transient

@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -24,7 +24,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Transaction;
@@ -41,8 +40,6 @@ public class BillingDetail extends ContractorActionSupport {
 	@Autowired
 	private TransactionDAO transactionDAO;
 	@Autowired
-	private NoteDAO noteDAO;
-	@Autowired
 	private DataObservable saleCommissionDataObservable;
 
 	private BigDecimal invoiceTotal;
@@ -56,9 +53,6 @@ public class BillingDetail extends ContractorActionSupport {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		this.findContractor();
 		billingService.calculateContractorInvoiceFees(contractor);
 
@@ -84,9 +78,9 @@ public class BillingDetail extends ContractorActionSupport {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
 						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
-			
+
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
-			
+
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
@@ -101,16 +95,9 @@ public class BillingDetail extends ContractorActionSupport {
 		BillingStatus status = contractor.getBillingStatus();
 		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 				&& (status.isRenewalOverdue() || status.isReactivation())) {
-			contractor.setStatus(AccountStatus.Deactivated);
-			contractor.setRenew(false);
-			if (contractor.getAccountLevel().isBidOnly())
-				contractor.setReason("Bid Only Account");
-			Note note = new Note(contractor, new User(User.SYSTEM),
-					"Automatically inactivating account based on expired membership");
-			note.setNoteCategory(NoteCategory.Billing);
-			note.setCanContractorView(true);
-			note.setViewableById(Account.PicsID);
-			noteDAO.save(note);
+			if (contractor.getAccountLevel().isBidOnly()) {
+				contractor.setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
+			}
 		}
 
 		contractor.syncBalance();
@@ -122,8 +109,9 @@ public class BillingDetail extends ContractorActionSupport {
 	}
 
 	public OperatorAccount getRequestedBy() {
-		if (contractor.getRequestedBy() != null)
+		if (contractor.getRequestedBy() != null) {
 			requestedBy = opAccountDao.find(contractor.getRequestedBy().getId());
+		}
 
 		return requestedBy;
 	}
@@ -142,14 +130,16 @@ public class BillingDetail extends ContractorActionSupport {
 
 	public List<Transaction> getTransactions() {
 		List<Transaction> transactionList = transactionDAO.findWhere("t.account.id = " + contractor.getId());
-		if (transactionList == null)
+		if (transactionList == null) {
 			return new ArrayList<Transaction>();
+		}
 		return transactionList;
 	}
 
 	public List<ContractorOperator> getNonCorporatePayingOperators() throws Exception {
-		if (contractor == null)
+		if (contractor == null) {
 			findContractor();
+		}
 
 		if (payingOperators == null) {
 			payingOperators = new Grepper<ContractorOperator>() {
@@ -167,8 +157,9 @@ public class BillingDetail extends ContractorActionSupport {
 	}
 
 	public List<ContractorOperator> getNonCorporateFreeOperators() throws Exception {
-		if (contractor == null)
+		if (contractor == null) {
 			findContractor();
+		}
 
 		if (freeOperators == null) {
 			freeOperators = new Grepper<ContractorOperator>() {
@@ -184,7 +175,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 		return freeOperators;
 	}
-	
+
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
 		saleCommissionDataObservable.setChanged();
 		saleCommissionDataObservable.notifyObservers(dataEvent);

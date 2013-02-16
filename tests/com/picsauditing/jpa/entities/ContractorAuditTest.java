@@ -1,17 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -25,8 +22,9 @@ import com.picsauditing.access.Permissions;
 
 public class ContractorAuditTest {
 	private ContractorAudit contractorAudit;
-	
-	@Mock Permissions permissions;
+
+	@Mock
+	Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
@@ -322,15 +320,15 @@ public class ContractorAuditTest {
 		ContractorAuditOperator cao = EntityFactory.makeContractorAuditOperator(contractorAudit);
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		AuditData data = EntityFactory.makeAuditData("Yes", question);
-		
+
 		contractorAudit.setAuditType(auditType);
 		contractorAudit.getData().add(data);
-		
+
 		cao.setPercentVerified(100);
 		question.setId(AuditQuestion.MANUAL_PQF);
 		data.setVerified(true);
 		assertTrue(contractorAudit.isOkayToChangeCaoStatus(cao));
-		
+
 		cao.setPercentVerified(100);
 		question.setId(AuditQuestion.MANUAL_PQF);
 		data.setVerified(false);
@@ -346,29 +344,5 @@ public class ContractorAuditTest {
 		data.setVerified(true);
 		assertFalse(contractorAudit.isOkayToChangeCaoStatus(cao));
 
-	}
-
-	@Test
-	public void testGetApplicableCategories() {
-		setupContractorAuditTestData();
-		when(permissions.isContractor()).thenReturn(true);
-		when(permissions.isAdmin()).thenReturn(true);
-		Map<AuditCategory, AuditCatData> answer = contractorAudit.getApplicableCategories(permissions, null);
-		assertEquals(answer.size(), 1);
-	}
-
-	private void setupContractorAuditTestData() {
-		contractorAudit.setAuditType(EntityFactory.makeAuditType(100));
-		
-		AuditCatData acd;
-		acd = EntityFactory.makeAuditCatData();
-		acd.getCategory().setNumber(1);
-		acd.getCategory().setAuditType(EntityFactory.makeAuditType(100));
-		contractorAudit.getCategories().add(acd);
-		
-		acd = EntityFactory.makeAuditCatData();
-		acd.getCategory().setNumber(2);
-		acd.getCategory().setAuditType(EntityFactory.makeAuditType(101));
-		contractorAudit.getCategories().add(acd);
 	}
 }

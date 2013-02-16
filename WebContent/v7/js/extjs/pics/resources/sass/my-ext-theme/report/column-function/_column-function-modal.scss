@@ -8,7 +8,7 @@ $column_function_modal_header_text_color: #fff;
 
 // column function modal - list
 $column_function_list_background_color: #eaeaea;
-$column_function_list_border_color_bottom: #ccc;
+$column_function_list_border_color: #ccc;
 
 // column function modal - list over
 $column_function_list_over_background_color: #f1f1f2;
@@ -24,6 +24,38 @@ $column_function_modal_footer_border_color_top: #333;
 {
 	border: 1px solid $column_function_modal_border_color;
 	@include border-radius(0px);
+
+	.column_function_list
+	{
+		.x-grid-cell
+		{
+			background: $column_function_list_background_color;
+			border-bottom: 1px solid $column_function_list_border_color;
+			border-left: 0px;
+			border-right: 0px;
+			border-top: 1px solid $column_function_list_border_color;
+			@include border-radius(0px);
+			height: 40px;
+			vertical-align: middle;
+			padding-left: 7px;
+
+			span
+			{
+				font-size: 14px;
+				font-weight: bold;
+			}
+		}
+		
+		.x-grid-row-over .x-grid-cell
+		{
+			background: $column_function_list_over_background_color;
+			border-bottom: 1px solid $column_function_list_over_border_color_bottom;
+			border-left-color: transparent;
+			border-right-color: transparent;
+			border-top: 1px solid $column_function_list_over_border_color_top;			
+			@include box-shadow($column_function_list_over_box_shadow_color 0px 1px 1px);
+		}
+	}
 }
 
 #column_function_modal_header
@@ -41,37 +73,6 @@ $column_function_modal_footer_border_color_top: #333;
 	color: $column_function_modal_header_text_color;
 	font-size: 18px;
 	font-weight: bold;
-}
-
-#column_function_list
-{
-	.x-btn
-	{
-		background: $column_function_list_background_color;
-		border-bottom: 1px solid $column_function_list_border_color_bottom;
-		border-left: 0px;
-		border-right: 0px;
-		@include border-radius(0px);
-		width: 298px;
-		
-		span
-		{
-			font-size: 14px;
-			font-weight: bold;
-		}
-	}
-	
-	.x-btn.x-over,
-	.x-btn.x-pressed
-	{
-		background: $column_function_list_over_background_color;
-		border-bottom: 1px solid $column_function_list_over_border_color_bottom;
-		border-left-color: transparent;
-		border-right-color: transparent;
-		border-top: 1px solid $column_function_list_over_border_color_top;
-		@include box-shadow($column_function_list_over_box_shadow_color 0px 1px 1px);
-		z-index: 1;
-	}
 }
 
 #column_function_modal_footer

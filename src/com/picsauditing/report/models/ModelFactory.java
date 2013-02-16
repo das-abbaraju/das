@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
-
+// todo: Rename me to ReportModelFactory
 public class ModelFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
@@ -13,7 +13,7 @@ public class ModelFactory {
 
 		// We might want to reconsider the naming convention between ModelType
 		// and classes that extend BaseModel
-		// We could make them the same and use reflection
+		// We could make them the same and use reflection or Spring Loader
 
 		if (type.equals(ModelType.Accounts))
 			return new AccountsModel(permissions);
@@ -27,6 +27,8 @@ public class ModelFactory {
 			return new ContractorStatisticsModel(permissions);
 		if (type.equals(ModelType.ContractorAudits))
 			return new AccountContractorAuditModel(permissions);
+		if (type.equals(ModelType.ContractorAuditDatas))
+			return new ContractorAuditDataModel(permissions);
 		if (type.equals(ModelType.ContractorAuditOperators))
 			return new AccountContractorAuditOperatorModel(permissions);
 		if (type.equals(ModelType.ContractorFlagDatas))
@@ -39,6 +41,10 @@ public class ModelFactory {
 			return new InvoiceModel(permissions);
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel(permissions);
+		if (type.equals(ModelType.OperatorAccountUsers))
+			return new OperatorAccountUserModel(permissions);
+		if (type.equals(ModelType.OperatorUsers))
+			return new OperatorUserModel(permissions);
 		if (type.equals(ModelType.PaymentCommissions))
 			return new PaymentCommissionModel(permissions);
 		if (type.equals(ModelType.ReportPermissions))

@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.report.RecordNotFoundException;
 
 public class OperatorActionSupport extends AccountActionSupport {
 	private static final long serialVersionUID = 8967320010000259378L;

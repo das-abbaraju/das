@@ -18,7 +18,6 @@ public class AccountOperatorModelTest extends ModelTest {
 
 		includedFields.add("AccountID");
 		includedFields.add("AccountAddress3");
-		includedFields.add("AccountNaicsCode");
 		includedFields.add("OperatorAutoApproveInsurance");
 		
 		checkFields();

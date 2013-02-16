@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ page import="com.picsauditing.report.access.ReportUtil" %>
+<%@ page import="com.picsauditing.report.ReportUtil" %>
 
 <s:url action="ManageReports" method="myReportsList" var="alpha_sort_url">
     <s:param name="sort">${alphaSort}</s:param>

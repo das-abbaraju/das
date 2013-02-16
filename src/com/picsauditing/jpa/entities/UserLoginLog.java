@@ -11,6 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+
 @Entity
 @Table(name = "loginlog")
 public class UserLoginLog {
@@ -50,6 +54,7 @@ public class UserLoginLog {
 	}
 
 	@Column(nullable = false)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date)
 	public Date getLoginDate() {
 		return loginDate;
 	}

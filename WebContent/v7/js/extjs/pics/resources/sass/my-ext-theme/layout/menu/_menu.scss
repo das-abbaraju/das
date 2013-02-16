@@ -195,7 +195,7 @@ $site_menu_search_more_results_text_color: #333;
 	    }
 	
 	    .name,
-	    .company
+	    .location
 	    {
 	        float: left;
 	        width: 175px;
@@ -212,12 +212,71 @@ $site_menu_search_more_results_text_color: #333;
 	        font-style: italic;
 	    }
 	}
-	
-	.more-results
+
+    .account-demo
+    {
+        font-style: italic;
+
+        em
+        {
+            font-style: italic;
+        }
+    }
+
+    .account-deactivated,
+    .account-inactive
+    {
+       color: #aeaeae;
+    }
+
+    .account-deactivated.x-boundlist-item-over,
+    .account-inactive.x-boundlist-item-over
+    {
+       color: $site_menu_search_icon_search_text_color;
+    }
+
+    .account-deleted
+    {
+        .name,
+        .id,
+        .location,
+        .type
+        {
+            text-decoration: line-through;
+        }
+    }
+    
+	.more-results,
+	.no-results
 	{
-		color: $site_menu_search_more_results_text_color;
-		font-weight: bold;
+        line-height: 15px;
+        overflow: hidden;
+        padding: 5px 15px;
 	}
+
+    .more-results
+    {
+        a
+        {
+            color: #226396;
+            display: block;
+            font-weight: bold;
+            padding: 3px 0px;
+            text-decoration: none;
+        }
+
+        a:hover
+        {
+            color: #73bbe8;
+        }
+
+        p
+        {
+            color: #999;
+            font-size: 13px;
+            margin: 0px;
+        }
+    }
 }
 
 .x-menu-overflow .icon-cog

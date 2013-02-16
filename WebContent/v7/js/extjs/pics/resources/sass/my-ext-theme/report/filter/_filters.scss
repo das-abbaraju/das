@@ -24,11 +24,6 @@ $report_filter_input_border_color: #bcbcbc;
 // report filter - remove button
 $report_filter_remove_filter_text_color: #ac030c;
 
-// report filter - advanced filter button
-$report_filter_advanced_button_color: #dcdcdc;
-$report_filter_advanced_button_hover_color: #ccc;
-$report_filter_advanced_button_selected_color: #76bae7;
-
 #report_filters
 {
 	.filter
@@ -96,37 +91,6 @@ $report_filter_advanced_button_selected_color: #76bae7;
 			line-height: 20px;
 		}
 	}
-
-	.advanced-filter-button
-	{
-		background: none;
-		border: 0px;
-		@include border-radius(0px);
-		display: none;
-		padding: 0px;
-		
-		span
-		{
-			padding: 0px;
-		}
-		
-		.icon-pencil
-		{
-			color: $report_filter_advanced_button_color;
-			font-size: 20px;
-			line-height: 20px;
-			
-			&:hover
-			{
-				color: $report_filter_advanced_button_hover_color;
-			}
-			
-			&.selected
-			{
-				color: $report_filter_advanced_button_selected_color
-			}
-		}
-	}
 }
 
 #report_filters-body
@@ -151,9 +115,7 @@ $report_filter_advanced_button_selected_color: #76bae7;
 }
 
 #report_filters .filter.x-over .remove-filter,
-#report_filters .filter.x-form-focus .remove-filter,
-#report_filters .filter.x-over .advanced-filter-button,
-#report_filters .filter.x-form-focus .advanced-button
+#report_filters .filter.x-form-focus .remove-filter
 {
 	display: block;
 }

@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -49,12 +51,12 @@ import com.picsauditing.util.Strings;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends AbstractIndexableTable implements Comparable<Account>, JSONable {
 
-	static public int NONE = 0;
-	static public int EVERYONE = 1;
-	static public int PRIVATE = 2;
-	static public int PicsID = 1100;
-	static public int PICS_CORPORATE_ID = 14;
-	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11);
+	public static int NONE = 0;
+	public static int EVERYONE = 1;
+	public static int PRIVATE = 2;
+	public static int PicsID = 1100;
+	public static int PICS_CORPORATE_ID = 14;
+	public static List<Integer> PICS_CORPORATE = Collections.unmodifiableList(Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));
 	// Assessment Centers
 	static public int ASSESSMENT_NCCER = 11069;
 
@@ -82,6 +84,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String qbListCAID;
 	protected String qbListUKID;
 	protected String qbListEUID;
+    /**
+     * This reason field is specifically for noting the reason that an account is deactivated
+     */
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
@@ -103,6 +108,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	private int rememberMeTime = 7;
 	private boolean rememberMeTimeEnabled = true;
 	private int passwordSecurityLevelId;
+	private Date deactivationDate;
+	private User deactivatedBy;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -230,10 +237,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getShortZip(String zip) {
-		if (zip.length() >= 5)
+		if (zip.length() >= 5) {
 			return zip.substring(0, 5);
-		else
+		} else {
 			return zip.substring(0, zip.length() - 1);
+		}
 	}
 
 	public void setZip(String zip) {
@@ -247,14 +255,18 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
 		full.append(address);
-		if (!Strings.isEmpty(city))
+		if (!Strings.isEmpty(city)) {
 			full.append(", ").append(city);
-		if (countrySubdivision != null)
+		}
+		if (countrySubdivision != null) {
 			full.append(", ").append(countrySubdivision.getIsoCode());
-		if (country != null && !country.getIsoCode().equals("US"))
+		}
+		if (country != null && !country.getIsoCode().equals("US")) {
 			full.append(", ").append(country.getName());
-		if (!Strings.isEmpty(zip))
+		}
+		if (!Strings.isEmpty(zip)) {
 			full.append(" ").append(zip);
+		}
 
 		return full.toString();
 	}
@@ -266,17 +278,20 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			full.append(city.trim());
 		}
 		if (countrySubdivision != null) {
-			if (full.length() > 0)
+			if (full.length() > 0) {
 				full.append(", ");
+			}
 			full.append(countrySubdivision.getIsoCode());
 		}
 		if (country != null && !country.getIsoCode().equals(currentCountryCode)) {
-			if (full.length() > 0)
+			if (full.length() > 0) {
 				full.append(", ");
-			if (country.getName() == null)
+			}
+			if (country.getName() == null) {
 				full.append(country.getIsoCode());
-			else
+			} else {
 				full.append(country.getName());
+			}
 		}
 
 		return full.toString();
@@ -351,7 +366,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * North American Industry Classification System
 	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-	 * 
+	 *
 	 * @return
 	 */
 	@ManyToOne(optional = false)
@@ -387,7 +402,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
 	 * QuickBooks
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -400,7 +415,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 * 
+	 *
 	 * @return
 	 */
 	public String getQbListID() {
@@ -437,12 +452,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getQbListID(String currencyCode) {
-		if ("CAD".equals(currencyCode))
+		if ("CAD".equals(currencyCode)) {
 			return getQbListCAID();
-		if ("GBP".equals(currencyCode))
+		}
+		if ("GBP".equals(currencyCode)) {
 			return getQbListUKID();
-		if ("EUR".equals(currencyCode))
+		}
+		if ("EUR".equals(currencyCode)) {
 			return getQbListEUID();
+		}
 
 		// return default for other
 		return getQbListID();
@@ -450,7 +468,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
-	 * 
+	 *
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
@@ -486,7 +504,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Operator Qualification regulation, and if Contractor,
 	 * do they work for an operator who does too?
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
@@ -545,7 +563,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work
 	 * for an operator who does too?
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
@@ -575,7 +593,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * The date HSAN accredited the Training Provider to provide training
 	 * services. If HSAN training providers use a lot more custom fields then
 	 * we'll create a new table for this and other fields.
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -611,13 +629,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		List<Employee> activeEmployees = new ArrayList<Employee>();
 
 		for (Employee employee : employees) {
-			if (!employee.isActive())
+			if (!employee.isActive()) {
 				continue;
+			}
 
 			// We need to check the status also because I found a user with a
 			// status of "Deleted" with active=true
-			if (!employee.getStatus().equals(UserStatus.Active))
+			if (!employee.getStatus().equals(UserStatus.Active)) {
 				continue;
+			}
 
 			activeEmployees.add(employee);
 		}
@@ -665,7 +685,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Is Operator or Corporate
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -687,24 +707,29 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Override
 	public int compareTo(Account o) {
-		if (o.getId() == id)
+		if (o.getId() == id) {
 			return 0;
+		}
 		if (!o.getType().equals(type)) {
-			if (this.isAdmin())
+			if (this.isAdmin()) {
 				return -1;
-			if (this.isContractor())
+			}
+			if (this.isContractor()) {
 				return 1;
+			}
 			if (this.isCorporate()) {
-				if (o.isAdmin())
+				if (o.isAdmin()) {
 					return 1;
-				else
+				} else {
 					return -1;
+				}
 			}
 			if (this.isOperator()) {
-				if (o.isContractor())
+				if (o.isContractor()) {
 					return -1;
-				else
+				} else {
 					return 1;
+				}
 			}
 		}
 		return name.compareToIgnoreCase(o.getName());
@@ -760,8 +785,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public Date getLastLogin() {
 		Date d = null;
 		for (User u : users) {
-			if (d == null || (u.getLastLogin() != null && u.getLastLogin().after(d)))
+			if (d == null || (u.getLastLogin() != null && u.getLastLogin().after(d))) {
 				d = u.getLastLogin();
+			}
 		}
 		return d;
 	}
@@ -773,10 +799,12 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getIndexType() {
-		if (type.equals("Corporate"))
+		if (type.equals("Corporate")) {
 			return "CO";
-		if (type.equals("Assessment"))
+		}
+		if (type.equals("Assessment")) {
 			return "AS";
+		}
 		return type.substring(0, 1);
 	}
 
@@ -812,7 +840,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public String getViewLink() {
 		if (this.type.equals("Contractor")) {
 			if (status.isRequested()) {
-				return ("RequestNewContractorAccount.action?requestedContractor=" + this.id);
+				return ("RequestNewContractorAccount.action?contractor=" + this.id);
 			} else {
 				return ("ContractorView.action?id=" + this.id);
 			}
@@ -827,28 +855,36 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public Set<ContractorType> getAccountTypes() {
 		Set<ContractorType> types = new HashSet<ContractorType>();
-		if (isMaterialSupplier())
+		if (isMaterialSupplier()) {
 			types.add(ContractorType.Supplier);
-		if (isOnsiteServices())
+		}
+		if (isOnsiteServices()) {
 			types.add(ContractorType.Onsite);
-		if (isOffsiteServices())
+		}
+		if (isOffsiteServices()) {
 			types.add(ContractorType.Offsite);
-		if (isTransportationServices())
+		}
+		if (isTransportationServices()) {
 			types.add(ContractorType.Transportation);
+		}
 		return types;
 	}
 
 	public void addAccountTypes(List<ContractorType> conTypes) {
 		if (conTypes != null) {
 			for (ContractorType conType : conTypes) {
-				if (conType.equals(ContractorType.Onsite) && !isOnsiteServices())
+				if (conType.equals(ContractorType.Onsite) && !isOnsiteServices()) {
 					setOnsiteServices(true);
-				if (conType.equals(ContractorType.Offsite) && !isOffsiteServices())
+				}
+				if (conType.equals(ContractorType.Offsite) && !isOffsiteServices()) {
 					setOffsiteServices(true);
-				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier())
+				}
+				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
 					setMaterialSupplier(true);
-				if (conType.equals(ContractorType.Transportation) && !isTransportationServices())
+				}
+				if (conType.equals(ContractorType.Transportation) && !isTransportationServices()) {
 					setTransportationServices(true);
+				}
 			}
 		}
 	}
@@ -861,10 +897,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 		boolean value = false;
 		for (ContractorType serviceType : ContractorType.values()) {
-			if (serviceTypes.contains(serviceType))
+			if (serviceTypes.contains(serviceType)) {
 				value = true;
-			else
+			} else {
 				value = false;
+			}
 			switch (serviceType) {
 			case Onsite:
 				setOnsiteServices(value);
@@ -890,8 +927,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public boolean isUsesAccountType(ContractorType type) {
 		for (ContractorType ct : getAccountTypes()) {
-			if (ct.equals(type))
+			if (ct.equals(type)) {
 				return true;
+			}
 		}
 
 		return false;
@@ -1021,6 +1059,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.rememberMeTimeEnabled = rememberMeTimeEnabled;
 	}
 
+	@SuppressWarnings("unused")
 	private int getPasswordSecurityLevelId() {
 		return passwordSecurityLevelId;
 	}
@@ -1028,4 +1067,23 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected void setPasswordSecurityLevelId(int passwordSecurityLevelId) {
 		this.passwordSecurityLevelId = passwordSecurityLevelId;
 	}
+
+	public Date getDeactivationDate() {
+		return deactivationDate;
+	}
+
+	public void setDeactivationDate(Date deactivationDate) {
+		this.deactivationDate = deactivationDate;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "deactivatedBy")
+	public User getDeactivatedBy() {
+		return deactivatedBy;
+	}
+
+	public void setDeactivatedBy(User deactivatedBy) {
+		this.deactivatedBy = deactivatedBy;
+	}
+
 }

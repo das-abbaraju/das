@@ -1,0 +1,2 @@
+SELECT Account.id AS `AccountID`, TRIM(Account.name) AS `AccountName`, Account.status AS `AccountStatus`
+FROM accounts AS Account

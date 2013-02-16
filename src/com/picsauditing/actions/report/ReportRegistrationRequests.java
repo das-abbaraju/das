@@ -1,14 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
@@ -24,6 +15,13 @@ import com.picsauditing.util.ReportFilterNewContractor;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.ServletOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportRegistrationRequests extends ReportActionSupport {
@@ -33,64 +31,10 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 	private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	@Autowired
 	private FeatureToggle featureToggle;
-
 	private SelectSQL sql;
 	private ReportFilterNewContractor filter = new ReportFilterNewContractor();
 	@Deprecated
 	private SelectSQL legacy;
-
-	@RequiredPermission(value = OpPerms.RequestNewContractor)
-	public String execute() throws Exception {
-		if (permissions.isOperatorCorporate()
-				&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
-			DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
-			justInTimeConversion.upgrade();
-		}
-
-		setDefaultFilterDisplay();
-		getFilter().setPermissions(permissions);
-
-		buildQuery();
-
-		List<SelectSQL> unions = new ArrayList<SelectSQL>();
-		if (permissions.isPicsEmployee()) {
-			getFilter().setShowInsideSalesPriority(true);
-			unions.add(legacy);
-		}
-
-		run(sql, unions);
-
-		if (download) {
-			addExcelColumns();
-			String filename = this.getClass().getSimpleName();
-			excelSheet.setName(filename);
-			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
-
-		return SUCCESS;
-	}
-
-	public ReportFilterNewContractor getFilter() {
-		return filter;
-	}
-
-	public void setFilter(ReportFilterNewContractor filter) {
-		this.filter = filter;
-	}
-
-	public boolean isAmSales() {
-		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
-	}
 
 	public static SelectSQL buildAccountQuery() {
 		SelectSQL sql = new SelectSQL("accounts a");
@@ -144,28 +88,70 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		return sql;
 	}
 
+	@RequiredPermission(value = OpPerms.RequestNewContractor)
+	public String execute() throws Exception {
+		if (permissions.isOperatorCorporate()
+				&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
+			justInTimeConversion.upgrade();
+		}
+
+		setDefaultFilterDisplay();
+		getFilter().setPermissions(permissions);
+
+		buildQuery();
+
+		List<SelectSQL> unions = new ArrayList<SelectSQL>();
+		if (permissions.isPicsEmployee()) {
+			getFilter().setShowInsideSalesPriority(true);
+			unions.add(legacy);
+		}
+
+		run(sql, unions);
+
+		if (download) {
+			addExcelColumns();
+			String filename = this.getClass().getSimpleName();
+			excelSheet.setName(filename);
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+			return null;
+		}
+
+		return SUCCESS;
+	}
+
+	public ReportFilterNewContractor getFilter() {
+		return filter;
+	}
+
+	public void setFilter(ReportFilterNewContractor filter) {
+		this.filter = filter;
+	}
+
+	public boolean isAccountManagerOrSalesRepresentative() {
+		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
+	}
+
 	private void buildQuery() {
 		sql = buildAccountQuery();
 		legacy = ReportNewRequestedContractor.buildLegacyQuery();
 
 		addFilterToSQL();
 
-		if (permissions.isPicsEmployee()) {
-			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN user_assignment ua ON ua.country = a.country AND ua.userID = "
-						+ permissions.getUserId() + " AND (a.countrySubdivision = ua.countrySubdivision OR a.zip "
-						+ "BETWEEN ua.postal_start AND ua.postal_end)");
-                legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
-                        + permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
-                        + "BETWEEN ua.postal_start AND ua.postal_end)");
-			}
-
-			if (isAmSales() && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
-						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-                legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
-                        + "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-			}
+		if (isAccountManagerOrSalesRepresentative() && !getFilter().isViewAll()) {
+			sql.addJoin("JOIN account_user au ON au.accountID = c.requestedByID AND au.startDate < NOW() "
+					+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+			legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
+					+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 		}
 
 		if (permissions.isOperatorCorporate()) {
@@ -173,11 +159,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 				getFilter().setShowOperator(true);
 				sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
-                legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
-                        + permissions.getAccountId() + ")");
+				legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+						+ permissions.getAccountId() + ")");
 			} else {
 				sql.addWhere("gc.genID = " + permissions.getAccountId());
-                legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
+				legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
 			}
 		}
 
@@ -190,14 +176,15 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		ReportFilterNewContractor f = getFilter();
 
 		if (filterOn(f.getStartsWith())) {
-			sql.addWhere("a.name LIKE '" + f.getStartsWith() + "%'");
-			legacy.addWhere("cr.name LIKE '" + f.getStartsWith() + "%'");
+			String startsWith = Strings.escapeQuotes(f.getStartsWith());
+			sql.addWhere("a.name LIKE '" + startsWith + "%'");
+			legacy.addWhere("cr.name LIKE '" + startsWith + "%'");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = f.getAccountName().trim();
+			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
 
 			sql.addWhere("a.name LIKE '%" + accountName + "%'");
 			legacy.addWhere("cr.name LIKE '%" + accountName + "%'");
@@ -394,13 +381,12 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		if (permissions.isPicsEmployee()) {
 			getFilter().setShowMarketingUsers(true);
-			getFilter().setShowViewAll(true);
 			getFilter().setShowExcludeOperators(true);
 			getFilter().setShowOperatorTags(true);
-		}
 
-		if (!permissions.hasGroup(User.GROUP_CSR)) {
-			getFilter().setShowLocation(true);
+			if (isAccountManagerOrSalesRepresentative()) {
+				getFilter().setShowViewAll(true);
+			}
 		}
 	}
 }

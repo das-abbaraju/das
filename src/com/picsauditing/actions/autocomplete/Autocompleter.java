@@ -1,23 +1,38 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Map;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.general.Autocomplete;
-import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class Autocompleter extends PicsActionSupport {
 
 	@Autowired
 	private Autocomplete autocomplete;
+	@Autowired
+	private ReportDAO reportDAO;
 
 	private FieldType fieldType;
-	private String searchQuery = "";
+
+	// TODO: we should not have to assign these to empty strings
+	private String searchQuery = Strings.EMPTY_STRING;
+	private String searchKey;
+	private String fieldId;
+	private int reportId;
 
 	private static final Logger logger = LoggerFactory.getLogger(Autocompleter.class);
 
@@ -28,18 +43,26 @@ public class Autocompleter extends PicsActionSupport {
 	@Override
 	public String execute() {
 		try {
+			if (fieldType == null) {
+				fieldType = findFieldType(fieldId);
+			}
+
 			json.put("success", true);
 			switch (fieldType.getFilterType()) {
-				case Autocomplete:
+			case Autocomplete:
+				if (Strings.isNotEmpty(searchKey)) {
+					json = fieldType.getAutocompleteService().searchByKey(searchKey, permissions);
+				} else {
 					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
-					break;
+				}
+				break;
 
-				case ShortList:
-					json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
-					break;
+			case Multiselect:
+				json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
+				break;
 
-				default:
-					throw new Exception(fieldType + " not supported for autocomplete.");
+			default:
+				throw new Exception(fieldType + " not supported for autocomplete.");
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in Autocompleter.", e);
@@ -65,6 +88,27 @@ public class Autocompleter extends PicsActionSupport {
 		return JSON;
 	}
 
+	private FieldType findFieldType(String fieldId) {
+		try {
+			Report report = reportDAO.findById(reportId);
+			if (report == null) {
+				throw new RecordNotFoundException("Report " + reportId + " was not found in the database");
+			}
+
+			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions)
+					.getAvailableFields();
+			Field field = availableFields.get(fieldId.toUpperCase());
+
+			if (field != null) {
+				return field.getType();
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred while finding field for fieldID = {}", fieldId, e);
+		}
+
+		return null;
+	}
+
 	private void writeJsonErrorMessage(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());
@@ -76,5 +120,17 @@ public class Autocompleter extends PicsActionSupport {
 
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
+	}
+
+	public void setSearchKey(String searchKey) {
+		this.searchKey = searchKey;
+	}
+
+	public void setFieldId(String fieldId) {
+		this.fieldId = fieldId;
+	}
+
+	public void setReportId(int reportId) {
+		this.reportId = reportId;
 	}
 }

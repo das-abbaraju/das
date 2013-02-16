@@ -45,7 +45,6 @@ public class AccountUser extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
-	@ReportField(type = FieldType.AccountUser, category = FieldCategory.Commission, importance = FieldImportance.Average)
 	public User getUser() {
 		return user;
 	}
@@ -64,6 +63,7 @@ public class AccountUser extends BaseTable {
 		this.role = role;
 	}
 
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -72,6 +72,7 @@ public class AccountUser extends BaseTable {
 		this.startDate = startDate;
 	}
 
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -80,6 +81,7 @@ public class AccountUser extends BaseTable {
 		this.endDate = endDate;
 	}
 
+	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
 	public int getOwnerPercent() {
 		return ownerPercent;
 	}
@@ -88,6 +90,7 @@ public class AccountUser extends BaseTable {
 		this.ownerPercent = ownerPercent;
 	}
 
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getServiceLevel() {
 		return serviceLevel;
 	}

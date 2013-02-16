@@ -24,6 +24,7 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
+	// TODO find out why this isn't referenced ANYWHERE
 	private boolean visibleOnMyReports;
 
 	public ReportUser() {
@@ -91,7 +92,7 @@ public class ReportUser extends BaseTable {
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-	
+
 	public boolean isVisibleOnMyReports() {
 		return visibleOnMyReports;
 	}
@@ -99,7 +100,7 @@ public class ReportUser extends BaseTable {
 	public void setVisibleOnMyReports(boolean visibleOnMyReports) {
 		this.visibleOnMyReports = visibleOnMyReports;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{" + report.getName() + "}(" + user.getName() + ")";

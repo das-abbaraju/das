@@ -40,7 +40,7 @@ public enum QueryFilterOperator {
 		return true;
 	}
 	
-	public boolean isValueUsed() {
+	public boolean isValueCurrentlySupported() {
 		if (this == Empty)
 			return false;
 		if (this == NotEmpty)

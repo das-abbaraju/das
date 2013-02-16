@@ -1,0 +1,45 @@
+#error_message
+{
+	background: #fcf3cc;
+	border: 1px solid #e67e1c;
+	@include box-shadow(none);
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#error_message_header,
+#error_message-body
+{
+	background: #fcf3cc;
+}
+
+#error_message_header
+{
+	@include box-shadow(none);
+	line-height: 20px;
+	padding: 14px 14px 0px 14px;
+}
+
+#error_message_header_hd-textEl
+{
+	font-size: 18px;
+}
+
+#error_message_header .x-window-header-text,
+#error_message-body
+{
+	color: #e67e1c;
+}
+
+#error_message_header .x-window-header-text
+{
+	font-weight: bold;
+}
+
+#error_message-body
+{
+	border: 0px;
+	@include border-bottom-left-radius(4px);
+	@include border-bottom-right-radius(4px);
+	font-size: 14px;
+	padding: 0px 14px 14px 14px;
+}

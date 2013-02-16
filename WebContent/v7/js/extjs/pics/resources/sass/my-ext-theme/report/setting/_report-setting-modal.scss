@@ -98,7 +98,7 @@
 
 #report_edit,
 #report_copy,
-#settings_no_permission
+#report_edit_no_permission
 {
 	.favorite,
 	.private
@@ -127,7 +127,7 @@
 	}
 }
 
-#settings_no_permission
+#report_edit_no_permission
 {
 	p
 	{
@@ -293,7 +293,7 @@
 	
 }
 
-#share_no_permission
+#report_share_no_permission
 {
 	p
 	{
@@ -327,12 +327,12 @@
  * Tabs
  */
  
-#report_settings_tabbar
+#report_settings_modal_tabbar
 {
 	background: #454545;
 }
 
-#report_settings_tabbar .x-tab
+#report_settings_modal_tabbar .x-tab
 {
 	border: 0px;
 	border-right: 1px solid #333333;
@@ -340,7 +340,7 @@
 	padding: 5px;
 }
 
-#report_settings_tabbar .x-tab button
+#report_settings_modal_tabbar .x-tab button
 {
 	background: #454545;
 	border: 0px;
@@ -348,34 +348,34 @@
 	padding: 0px;
 }
 
-#report_settings_tabbar .x-tab span
+#report_settings_modal_tabbar .x-tab span
 {
 	color: #cccccc;
 }
 
-#report_settings_tabbar .x-over span
+#report_settings_modal_tabbar .x-over span
 {
 	color: #ffffff;
 }
 
-#report_settings_tabbar .x-active
+#report_settings_modal_tabbar .x-active
 {
 	background: #eaeaea;
 	border-top: 0px;
 }
 
-#report_settings_tabbar .x-active button
+#report_settings_modal_tabbar .x-active button
 {
 	background: #eaeaea;
 	cursor: auto;
 }
 
-#report_settings_tabbar .x-active span
+#report_settings_modal_tabbar .x-active span
 {
 	color: #666666;
 }
 
-#report_settings_tabbar .x-tab button i.icon-large
+#report_settings_modal_tabbar .x-tab button i.icon-large
 {
 	display: block;
 	font-size: 17px;

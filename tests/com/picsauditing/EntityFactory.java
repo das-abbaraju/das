@@ -1,63 +1,18 @@
 package com.picsauditing;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserStatus;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.util.hierarchy.GroupHierarchyBuilder;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
+
+import java.util.*;
 
 /**
  * This generates jpa objects that we can then use in our unit testing
- * 
+ *
  * @author Trevor
- * 
  */
 public class EntityFactory {
 
@@ -99,7 +54,7 @@ public class EntityFactory {
 	/**
 	 * Create an active, Medium Risk Level ContractorAccount named Contractor
 	 * Unit Test
-	 * 
+	 *
 	 * @return
 	 */
 	static public ContractorAccount makeContractor() {
@@ -196,7 +151,7 @@ public class EntityFactory {
 
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
-	 * 
+	 *
 	 * @param auditTypeID
 	 * @return
 	 */
@@ -209,7 +164,7 @@ public class EntityFactory {
 
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
-	 * 
+	 *
 	 * @param auditType
 	 * @return
 	 */
@@ -318,7 +273,7 @@ public class EntityFactory {
 
 	/**
 	 * Add an Approved CAO to the passed in ConAudit
-	 * 
+	 *
 	 * @param conAudit
 	 */
 	static public ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
@@ -387,7 +342,7 @@ public class EntityFactory {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return permission;
 	}
 
@@ -411,7 +366,7 @@ public class EntityFactory {
 	}
 
 	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
-			SubscriptionTimePeriod timePeriod) {
+														  SubscriptionTimePeriod timePeriod) {
 		EmailSubscription sub = new EmailSubscription();
 
 		sub.setUser(user);
@@ -493,7 +448,7 @@ public class EntityFactory {
 
 		return flagCriteriaContractor;
 	}
-	
+
 	public static FlagCriteriaOperator makeFlagCriteriaOperator(String hurdle) {
 		FlagCriteriaOperator flagCriterisOperator = new FlagCriteriaOperator();
 		flagCriterisOperator.setId(counter++);
@@ -501,11 +456,11 @@ public class EntityFactory {
 		flagCriterisOperator.setFlag(FlagColor.Red);
 		flagCriterisOperator.setOperator(makeOperator());
 		flagCriterisOperator.setHurdle(hurdle);
-		
-		
+
+
 		return flagCriterisOperator;
 	}
-	
+
 	public static void addUserPermission(Permissions permissions, OpPerms opPerm) {
 		UserAccess userAccess = new UserAccess();
 		userAccess.setOpPerm(opPerm);
@@ -513,7 +468,7 @@ public class EntityFactory {
 		userAccess.setEditFlag(opPerm.usesEdit());
 		userAccess.setDeleteFlag(opPerm.usesDelete());
 		userAccess.setGrantFlag(true);
-		
+
 		permissions.getPermissions().add(userAccess);
 	}
 

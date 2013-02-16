@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -166,6 +167,14 @@ public class FlagDataCalculatorTest {
 		assertNotNull(override);
 
 		// new year adjustments
+		// single fdo for 2011, push to 2 year
+		overrides.clear();
+		addFlagDataOverride(overrides, lastYearCriteria, "2011");
+		Whitebox.setInternalState(calculator, "overrides", overrides);
+		override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
+		assertNull(override);
+		assertNotNull(overrides.get(twoYearCriteria));
+		assertNotNull(overrides.get(twoYearCriteria).get(0));
 		
 		// 2 fdo for 2011 last and 2010 two years; 2011 being retrieved and moved to two years
 		overrides.clear();
@@ -993,7 +1002,7 @@ public class FlagDataCalculatorTest {
 	private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setAccountLevel(AccountLevel.Full);
-		ContractorAudit mockAudit = buildMockAudit(1000, 2012, caoStatus);
+		ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus);
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(mockAudit);
 		contractor.setAudits(audits);

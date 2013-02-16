@@ -11,7 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.util.PicsOrganizerVersion;
+import com.picsauditing.util.AppVersion;
 
 public abstract class FeatureToggleExpressions extends Script {
 
@@ -117,7 +117,7 @@ public abstract class FeatureToggleExpressions extends Script {
 
 	public float versionOfPicsOrg() throws FeatureToggleException {
 		try {
-			return Float.parseFloat(PicsOrganizerVersion.getVersion());
+			return Float.parseFloat(AppVersion.current.getVersion());
 		} catch (Exception e) {
 			throw new FeatureToggleException(e.getMessage());
 		}

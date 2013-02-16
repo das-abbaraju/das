@@ -101,6 +101,14 @@ public class OshaAuditTest {
 	}
 
 	@Test
+	public void testConvertCategoryToOshaType_OshaIsMexico() {
+		OshaType type = OshaAudit.convertCategoryToOshaType(OshaAudit.CAT_ID_MEXICO);
+
+		assertEquals(OshaType.MEXICO, type);
+	}
+
+
+	@Test
 	public void testConvertCategoryToOshaType_OshaAdditionalDoesntReturnNull() {
 		OshaType type = OshaAudit.convertCategoryToOshaType(OshaAudit.CAT_ID_OSHA_ADDITIONAL);
 

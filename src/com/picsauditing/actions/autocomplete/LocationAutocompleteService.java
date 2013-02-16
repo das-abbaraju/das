@@ -19,16 +19,16 @@ import com.picsauditing.util.Strings;
  * TODO: Find out if this class is even working correctly.
  */
 public class LocationAutocompleteService extends AbstractAutocompleteService<Autocompleteable> {
-	
+
 	private static final int ISO_COUNTRY_CODE_LENGTH = 2;
-	
+
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	protected CountryDAO countryDAO;
 
 	@Override
-	protected Collection<Autocompleteable> getItems(String search, Permissions permissions) {
+	protected Collection<Autocompleteable> getItemsForSearch(String search, Permissions permissions) {
 		if (Strings.isEmpty(search)) {
 			return Collections.emptyList();
 		}
@@ -69,5 +69,10 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 	@Override
 	protected Object getValue(Autocompleteable item, Permissions permissions) {
 		return item.getAutocompleteValue();
+	}
+
+	@Override
+	protected Collection<Autocompleteable> getItemsForSearchKey(String searchKey, Permissions permissions) {
+		return getItemsForSearch(searchKey, permissions);
 	}
 }

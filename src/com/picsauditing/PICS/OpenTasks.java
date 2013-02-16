@@ -1,38 +1,21 @@
 package com.picsauditing.PICS;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AssessmentResultStage;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.LcCorPhase;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -59,7 +42,7 @@ public class OpenTasks extends TranslationActionSupport {
 	/**
 	 * Gathers Open Tasks, restricting the list based on user permissions and
 	 * the viewed contractor account.
-	 * 
+	 *
 	 * @param contractor
 	 * @param user
 	 * @return TODO Eliminate the side-effect of having to call
@@ -101,7 +84,7 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 
 		gatherTasksAboutUploadingPqfEmail(); // sets hasImportPQF,
-												// importPQFComplete
+		// importPQFComplete
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutBillingAndPaymentsEmail();
 		}
@@ -129,14 +112,10 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void establishPermissions(User user) {
-		permissions = new Permissions();
-		try {
-			permissions.login(user);
-			LocaleController.setLocaleOfNearestSupported(permissions);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.toString());
-		}
+		ActionContext context = ActionContext.getContext();
+		Map<String, Object> session = context.getSession();
+		permissions = (Permissions) session.get("permissions");
+		permissions.setLocale(supportedLanguages.getNearestStableLocale(permissions.getLocale()));
 
 	}
 
@@ -188,8 +167,8 @@ public class OpenTasks extends TranslationActionSupport {
 	private boolean mustApproveUpdatedAgreement() {
 		return !contractor.isAgreementInEffect()
 				&& (permissions.hasPermission(OpPerms.ContractorBilling)
-						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
-							.hasPermission(OpPerms.ContractorSafety));
+				|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+				.hasPermission(OpPerms.ContractorSafety));
 	}
 
 	private void gatherTasksAboutUploadingPqf() {
@@ -269,7 +248,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 			String auditTypeAndFor = conAudit.getAuditType().getId()
 					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
-					+ ((conAudit.getEmployee() != null)?  conAudit.getEmployee().getId():"");
+					+ ((conAudit.getEmployee() != null) ? conAudit.getEmployee().getId() : "");
 			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
 			if (!isAuditTypeAndForRepeated) {
@@ -331,7 +310,7 @@ public class OpenTasks extends TranslationActionSupport {
 					} else if (carrier.equals("Purolator")) {
 						openTasks.add(getTextParameterized(locale,
 								"ContractorWidget.message.WebcamHasShippedPurolator", contractor.getWebcam()
-										.getTrackingNumber()));
+								.getTrackingNumber()));
 					} else {
 						openTasks.add(getText(locale, "ContractorWidget.message.WebcamHasShippedGeneric"));
 					}
@@ -430,7 +409,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
 				&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit.getAuditType()
-						.getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))
+				.getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))
 				&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
 			if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
@@ -443,7 +422,7 @@ public class OpenTasks extends TranslationActionSupport {
 						effectiveLabel.setTime(conAudit.getEffectiveDateLabel());
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard2",
 								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor, conAudit
-										.getAuditType().getId(), effectiveLabel.get(Calendar.YEAR));
+								.getAuditType().getId(), effectiveLabel.get(Calendar.YEAR));
 					} else {
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID,
 								auditName, showAuditFor, auditFor);
@@ -472,7 +451,7 @@ public class OpenTasks extends TranslationActionSupport {
 						if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
 							text = getTextParameterized(locale, "ContractorWidget.message.UpcomingAuditConductedBy",
 
-							conAudit.getId(), auditName, showAuditor, (conAudit.getAuditor() != null) ? conAudit
+									conAudit.getId(), auditName, showAuditor, (conAudit.getAuditor() != null) ? conAudit
 									.getAuditor().getName() : "", showScheduledDate, conAudit.getScheduledDate());
 						} else if (conAudit.getAuditType().getId() == AuditType.COR) {
 							text = getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
@@ -480,12 +459,12 @@ public class OpenTasks extends TranslationActionSupport {
 							if (!isPreviousValidCorAuditExists(conAudit)) {
 								text += "<br/>"
 										+ getTextParameterized(locale, "ContractorWidget.message.ReviewCORNote",
-												conAudit.getCreationDate());
+										conAudit.getCreationDate());
 							}
 						} else {
 							text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
 
-							conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
+									conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
 									conAudit.getScheduledDate(), showAuditor,
 									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
 							if (conAudit.getAuditType().isImplementation()) {
@@ -507,7 +486,7 @@ public class OpenTasks extends TranslationActionSupport {
 						effectiveLabel.setTime(conAudit.getEffectiveDateLabel());
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard2",
 								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor, conAudit
-										.getAuditType().getId(), effectiveLabel.get(Calendar.YEAR));
+								.getAuditType().getId(), effectiveLabel.get(Calendar.YEAR));
 					} else {
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID,
 								auditName, showAuditFor, auditFor);
@@ -545,7 +524,7 @@ public class OpenTasks extends TranslationActionSupport {
 							auditName, showAuditFor, auditFor);
 					text += "<br/>"
 							+ getTextParameterized(locale, "ContractorWidget.message.ReviewCORNote",
-									conAudit.getCreationDate());
+							conAudit.getCreationDate());
 					openTasks.add(text);
 					addedOpenTask = true;
 				} else {
@@ -597,12 +576,12 @@ public class OpenTasks extends TranslationActionSupport {
 								|| cao.getStatus() == AuditStatus.Resubmit) {
 							needed++;
 						}
-					} 
+					}
 					if (conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT) {
 						if (conAudit.hasCaoStatus(AuditStatus.Resubmitted)
-									|| conAudit .hasCaoStatus(AuditStatus.Incomplete) || conAudit
-									.hasCaoStatus(AuditStatus.Pending))
-									needed++;
+								|| conAudit.hasCaoStatus(AuditStatus.Incomplete) || conAudit
+								.hasCaoStatus(AuditStatus.Pending))
+							needed++;
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
 						if (conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 								&& cao.getStatus().isPending()) {

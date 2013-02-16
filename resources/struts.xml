@@ -245,7 +245,7 @@
         <action name="ContractorBadge"
                 class="com.picsauditing.actions.contractors.ContractorBadge">
             <result>/struts/contractors/contractor_badge.jsp</result>
-            <result name="failed">/struts/errors/404.jsp</result>
+            <result name="failed">/struts/error/404.jsp</result>
         </action>
 
         <action name="AuditPdfConverter"
@@ -590,11 +590,11 @@
         </action>
 
         <action name="AddRemoveCategories"
-                class="com.picsauditing.actions.audits.ContractorAuditController">
+                class="com.picsauditing.actions.audits.AddRemoveCategories">
             <result>struts/audits/addRemoveCategory.jsp</result>
         </action>
         <action name="AddRemoveCategoriesAjax"
-                class="com.picsauditing.actions.audits.ContractorAuditController">
+                class="com.picsauditing.actions.audits.AddRemoveCategories">
             <result>struts/audits/addRemoveCategoryData.jsp</result>
         </action>
 
@@ -1162,6 +1162,11 @@
         <action name="ManageRecommendedCSRAssignments" class="com.picsauditing.actions.ManageRecommendedCSRAssignments">
             <result>struts/csr-assignments/csr-assignments.jsp</result>
         </action>
+
+        <action name="Deactivated" class="com.picsauditing.actions.errors.Deactivated">
+            <result>struts/error/deactivated.jsp</result>
+        </action>
+
     </package>
 
     <!-- Reports & API -->

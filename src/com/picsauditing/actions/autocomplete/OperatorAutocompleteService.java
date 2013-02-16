@@ -1,8 +1,10 @@
 package com.picsauditing.actions.autocomplete;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -15,7 +17,7 @@ public final class OperatorAutocompleteService extends AbstractAutocompleteServi
 	@Autowired
 	private OperatorAccountDAO dao;
 
-	protected Collection<OperatorAccount> getItems(String search, Permissions permissions) {
+	protected Collection<OperatorAccount> getItemsForSearch(String search, Permissions permissions) {
 		if (Strings.isEmpty(search) || noPermissionsToSearch(permissions)) {
 			return Collections.emptyList();
 		}
@@ -53,5 +55,16 @@ public final class OperatorAutocompleteService extends AbstractAutocompleteServi
 	@Override
 	protected Object getValue(OperatorAccount clientSite, Permissions permissions) {
 		return clientSite.getName();
+	}
+
+	@Override
+	protected Collection<OperatorAccount> getItemsForSearchKey(String searchKey, Permissions permissions) {
+		int operatorId = NumberUtils.toInt(searchKey);
+		if (operatorId == 0) {
+			return Collections.emptyList();
+		}
+
+		return Arrays.asList(dao.find(operatorId));
+
 	}
 }

@@ -1,63 +1,28 @@
 package com.picsauditing.actions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.model.i18n.LanguageModel;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
+	@Autowired
+	protected LanguageModel supportedLanguages;
+
+	static final protected String i18nTracing = "i18nTracing";
+	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
 	private Set<String> usedKeys = null;
 	private I18nCache i18nCache = I18nCache.getInstance();
-	static final protected String i18nTracing = "i18nTracing";
-
-	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
-	private static Locale[] supportedLocales = null;
-
-	public static final List<KeyValue> supportedLocaleList = new ArrayList<KeyValue>() {
-		{
-			add(new KeyValue("en", "English"));
-			add(new KeyValue("fr", "Français"));
-			add(new KeyValue("es", "Español"));
-			add(new KeyValue("de", "Deutsch"));
-			add(new KeyValue("sv", "Svenska"));
-			add(new KeyValue("fi", "Suomi"));
-			add(new KeyValue("nl", "Nederlands"));
-			add(new KeyValue("no", "Norsk"));
-			add(new KeyValue("pt", "Português"));
-		}
-	};
-
-	public static Locale[] getSupportedLocales() {
-		if (supportedLocales == null) {
-			supportedLocales = new Locale[supportedLocaleList.size()];
-			for (int i = 0; i < supportedLocales.length; i++) {
-				KeyValue kv = supportedLocaleList.get(i);
-				supportedLocales[i] = new Locale(kv.getKey());
-			}
-		}
-		return supportedLocales;
-	}
 
 	public static Locale getLocaleStatic() {
 		try {
@@ -68,7 +33,6 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	public String getTranslationName(String property) throws SecurityException {
-
 		Map<String, Class<?>> typeMap = mapNameToType(property);
 		Class<?> type = null;
 		Iterator<Entry<String, Class<?>>> iter = typeMap.entrySet().iterator();
@@ -315,6 +279,10 @@ public class TranslationActionSupport extends ActionSupport {
 		return text;
 	}
 
+	public LanguageModel getSupportedLanguages() {
+		return this.supportedLanguages;
+	}
+
 	private void useKey(String key) {
 		if (key == null)
 			throw new RuntimeException("i18n key cannot be NULL");
@@ -361,31 +329,5 @@ public class TranslationActionSupport extends ActionSupport {
 		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(displayNameComparator);
 		sortedTranslationMap.putAll(newTranslationMap);
 		return sortedTranslationMap;
-	}
-	
-	private static class KeyValue {
-		private String key;
-		private String value;
-
-		public KeyValue(String key, String value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
 	}
 }

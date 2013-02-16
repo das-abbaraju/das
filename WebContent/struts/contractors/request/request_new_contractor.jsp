@@ -148,9 +148,8 @@
                         <li class="match-found contact-email"></li>
                         <li>
                             <s:select
-                                    list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-                                    listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-                                    listKey="%{language + (!isStringEmpty(country) ? '_' + country : '')}"
+                                    list="supportedLanguages.stableLanguageLocales"
+                                    listValue="displayName"
                                     name="primaryContact.locale"
                                     theme="formhelp"
                             />
@@ -383,15 +382,15 @@
 							</table>
 						</li>
 					</s:if>
-					
-					<s:include value="operator_required_fields.jsp" />
-					
-					<s:if test="contractor.id > 0">
-						<li id="tag_list">
-							<s:include value="operator_tags.jsp" />
-						</li>
-					</s:if>
-					
+
+                    <s:include value="operator_required_fields.jsp" />
+
+                    <s:if test="contractor.id > 0">
+                        <li id="tag_list">
+                            <s:include value="operator_tags.jsp" />
+                        </li>
+                    </s:if>
+
 					<li>
 						<a href="javascript:;" id="email_preview" class="preview">
 							<s:text name="RequestNewContractor.PreviewEmail" />

@@ -1,0 +1,3 @@
+SELECT Account.status AS `AccountStatus`, COUNT(Account.status) AS `AccountStatus__Count`
+FROM accounts AS Account
+GROUP BY Account.status

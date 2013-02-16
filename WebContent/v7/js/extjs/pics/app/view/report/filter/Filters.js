@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.filter.Filters', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilters'],
+    alias: 'widget.reportfilters',
 
     requires: [
         'PICS.view.report.filter.Filter'
@@ -11,25 +11,35 @@ Ext.define('PICS.view.report.filter.Filters', {
     id: 'report_filters',
 
     initComponent: function () {
-        this.callParent(arguments);
-
-        // filter store
-        if (!this.store) {
+        if (Ext.getClassName(this.store) != 'Ext.data.Store') {
             Ext.Error.raise('Invalid Filter Store');
         }
 
-        var that = this;
-        var index = 1;
+        var index = 1,
+            items = [],
+            that = this;
 
         this.store.each(function (record) {
             var filter = Ext.create('PICS.view.report.filter.Filter', {
                 index: index,
-                record: record
+                filter: record
             });
 
-            that.add(filter);
+            items.push(filter);
 
             index += 1;
         });
+        
+        this.items = items;
+        
+        this.callParent(arguments);
+    },
+    
+    hideFilterNumbers: function () {
+        this.removeCls('x-active');
+    },
+    
+    showFilterNumbers: function () {
+        this.addCls('x-active');
     }
 });

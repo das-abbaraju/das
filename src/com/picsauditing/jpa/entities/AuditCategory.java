@@ -22,6 +22,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -140,6 +142,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Integer)
 	public int getNumber() {
 		return this.number;
 	}
@@ -165,6 +168,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Integer)
 	public int getNumRequired() {
 		return this.numRequired;
 	}
@@ -174,6 +178,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	}
 
 	@Column(length = 50)
+	@ReportField(type = FieldType.String)
 	public String getUniqueCode() {
 		return uniqueCode;
 	}
@@ -182,6 +187,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		this.uniqueCode = uniqueCode;
 	}
 
+	@ReportField(type = FieldType.Float)
 	public float getScoreWeight() {
 		return scoreWeight;
 	}
@@ -199,6 +205,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Integer)
 	public int getNumQuestions() {
 		return this.numQuestions;
 	}
@@ -349,13 +356,31 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		if (cmp != 0)
 			return cmp;
-
+		
+		String[] thisFullNumber = getFullNumber().split("\\.");
+		String[] otherFullNumber = other.getFullNumber().split("\\.");
+		
+		for (int i = 0; i < Math.max(thisFullNumber.length, otherFullNumber.length); i++) {
+			if (thisFullNumber.length-1 < i) 
+				return -1;
+			if (otherFullNumber.length-1 < i)
+				return 1;
+			
+			int thisNumber = Integer.parseInt(thisFullNumber[i]);
+			int otherNumber = Integer.parseInt(otherFullNumber[i]);
+			
+			int numCompare = thisNumber-otherNumber;
+			
+			if (numCompare != 0)
+				return numCompare;
+		}
+		
 		return getFullNumber().compareTo(other.getFullNumber());
 	}
 
 	@Override
 	public String toString() {
-		return getNumber() + " " + name;
+		return getFullNumber() + " " + name;
 	}
 
 	@Transient
@@ -396,5 +421,14 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		}
 
 		return hasMissingChild || getLanguages().isEmpty();
+	}
+
+	@Transient
+	public boolean requiresViewFullPQFPermission() {
+		if (id == WORK_HISTORY)
+			return true;
+		if (id == FINANCIAL_HISTORY)
+			return true;
+		return false;
 	}
 }

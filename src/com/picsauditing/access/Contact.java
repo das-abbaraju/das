@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -12,12 +13,13 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
 public class Contact extends PicsActionSupport {
 	@Autowired
 	private AccountUserDAO accountUserDAO;
+	@Autowired
+	private LanguageModel languageModel;
 
 	private ContractorAccount contractorAccount;
 	private User accountRepUser;
@@ -59,8 +61,6 @@ public class Contact extends PicsActionSupport {
 	
     public String getDisplayLanguage() {
     	Locale locale = getLocaleStatic();
-    	Locale validLocale = LocaleController.getValidLocale(locale);
-    	String displayLanguage = validLocale.getDisplayLanguage();
-    	return displayLanguage;
+		return languageModel.getNearestStableLocale(locale).getDisplayLanguage();
     }
 }

@@ -85,7 +85,8 @@ public enum OpPerms implements Translatable {
 	// We may want to combine ManageCategoryRules and ManageAuditTypeRules
 	ManageAuditTypeRules("Manage AuditType Rules", "Allows user to view and edit Audit Type Rules for Audits and other documents", true, true, true, false, false),
 	ManageAuditWorkFlow("Manage Audit Workflow", "Allows users to view and edit work flows used with Audit Types", true, true, true, false, false),
-
+	ManageCsrAssignment("Manage CSR Assignments", "Allows admins to accept or reject recommended csr assignments", false, false, true, false, false),
+	
 	// Insurance
 	InsuranceCerts("Insurance Certificates", "Allows users to view (Read), upload (Edit), and delete insurance certificates", true, true, true, false, true),
 	InsuranceVerification("Insurance Verification", "Allows users to view the 'Insurance Verification' and 'Expired Insurance Certificates' reports (Read), and verify (Edit) the certificates", true, false, true, false, false),

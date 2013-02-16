@@ -25,7 +25,7 @@
             <a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
                 <s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
             </a>
-            <s:if test="amSales || debugging">
+            <s:if test="accountManagerOrSalesRepresentative || debugging">
                 <a
                     href="javascript:;"
                     title="<s:text name="javascript.OpensInNewWindow" />"

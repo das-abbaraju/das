@@ -360,15 +360,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
             boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
             
 			if (isApplicable) {
-				AuditStatus newStatus = null;
-				if (cao.getStatus().equals(AuditStatus.Submitted)) {
-					newStatus = AuditStatus.Pending;
-				} else if (cao.getStatus().equals(AuditStatus.Resubmitted)
-						|| cao.getStatus().equals(AuditStatus.Complete)) {
-					newStatus = AuditStatus.Resubmit;
-				}
-			
-				if (newStatus != null) {
+                AuditStatus newStatus = newStatusFollowingSafetyManualUpload(cao.getStatus());
+
+                if (newStatus != cao.getStatus()) {
 					ContractorAuditOperatorWorkflow caow = cao.changeStatus(
 							newStatus, permissions);
 					caow.setNotes("New safety manual uploaded");
@@ -385,6 +379,18 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			auditDataDAO.save(signatureData);
 		}
 		auditDao.save(audit);
+    }
+
+    // TODO Move this out of this controller into some model object
+    private AuditStatus newStatusFollowingSafetyManualUpload(AuditStatus currentStatus) {
+        if (currentStatus.equals(AuditStatus.Submitted)) {
+            return AuditStatus.Pending;
+        }
+        if (currentStatus.equals(AuditStatus.Resubmitted)
+                || currentStatus.equals(AuditStatus.Complete)) {
+            return AuditStatus.Resubmit;
+        }
+        return currentStatus;
     }
 
     protected AuditCategoriesBuilder initAuditCategoriesBuilder() {

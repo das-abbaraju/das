@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.struts2.StrutsStatics;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,6 +51,9 @@ public class PicsActionTest {
 	protected I18nCache i18nCache;
 	@Mock
 	protected AppPropertyDAO propertyDAO;
+	@Mock
+	protected LanguageModel languageModel;
+
 	@SuppressWarnings("rawtypes")
 	@Mock
 	private Enumeration enumeration;
@@ -72,6 +76,7 @@ public class PicsActionTest {
 	}
 
 	protected void setObjectUnderTestState(PicsActionSupport controller) {
+		Whitebox.setInternalState(controller, "supportedLanguages", languageModel);
 		Whitebox.setInternalState(controller, "permissions", permissions);
 		Whitebox.setInternalState(controller, "i18nCache", i18nCache);
 		Whitebox.setInternalState(controller, "propertyDAO", propertyDAO);
@@ -95,6 +100,7 @@ public class PicsActionTest {
 		ActionContext.setContext(actionContext);
 		cookies = new Cookie[1];
 		cookies[0] = new Cookie("foo", "foo");
+		when(languageModel.getNearestStableLocale(any(Locale.class))).thenReturn(Locale.ENGLISH);
 		when(request.getCookies()).thenReturn(cookies);
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.example.com/example.html"));
 		when(request.getRequestURI()).thenReturn("/example.html");

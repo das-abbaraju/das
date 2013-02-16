@@ -120,17 +120,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				sql.addWhere("op.id = " + permissions.getAccountId());
 		}
 
-		if (permissions.isPicsEmployee()) {
-			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
-						+ permissions.getUserId());
-				sql.addWhere("(cr.countrySubdivision = ua.countrySubdivision OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
-			}
-
-			if (isAmSales() && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN account_user au ON au.accountID = op.id AND au.startDate < NOW() "
-						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-			}
+		if (isAccountManagerOrSalesRepresentative() && !getFilter().isViewAll()) {
+			sql.addJoin("JOIN account_user au ON au.accountID = op.id AND au.startDate < NOW() "
+					+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 		}
 
 		orderByDefault = "deadline, name";
@@ -140,8 +132,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	private void addFilterToSQL() {
 		ReportFilterNewContractor f = getFilter();
 
-		if (filterOn(f.getStartsWith()))
+		if (filterOn(f.getStartsWith())) {
 			report.addFilter(new SelectFilter("startsWith", "cr.name LIKE '?%'", f.getStartsWith()));
+		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
@@ -276,7 +269,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	}
 
 	@Deprecated
-	public boolean isAmSales() {
+	public boolean isAccountManagerOrSalesRepresentative() {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 
@@ -297,13 +290,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		if (permissions.isPicsEmployee()) {
 			getFilter().setShowMarketingUsers(true);
-			getFilter().setShowViewAll(true);
 			getFilter().setShowExcludeOperators(true);
 			getFilter().setShowOperatorTags(true);
-		}
 
-		if (!permissions.hasGroup(User.GROUP_CSR)) {
-			getFilter().setShowLocation(true);
+			if (isAccountManagerOrSalesRepresentative()) {
+				getFilter().setShowViewAll(true);
+			}
 		}
 	}
 }

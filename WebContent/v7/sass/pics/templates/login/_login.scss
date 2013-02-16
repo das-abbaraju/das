@@ -1,6 +1,5 @@
 #Login__page
 {
-    background: #454545;
     padding-top: 0;
     
     #server_id
@@ -19,7 +18,7 @@
     
     #login_form
     {
-        background: #f1f1f2;
+        background: $pics_cool_grey;
         @include box-shadow(#131313 0px 2px 8px);
         margin: 100px auto 20px;
         padding: 40px 60px;
@@ -42,8 +41,6 @@
 @media (max-width: 480px) {
     #Login__page
     {
-        background: #f1f1f2;
-        
         #login_form
         {
             background: transparent;

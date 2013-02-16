@@ -30,7 +30,7 @@
 			<a href="${request_new_contractor}" class="add" id="AddRegistrationRequest">
 				<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
 			</a>
-			<s:if test="amSales || debugging">
+			<s:if test="accountManagerOrSalesRepresentative || debugging">
 				<s:url action="ReportNewReqConImport" var="import_registration_request" />
 				<a
 					href="javascript:;"

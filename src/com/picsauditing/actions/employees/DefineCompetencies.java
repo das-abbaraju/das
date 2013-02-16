@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.operators.OperatorActionSupport;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.report.RecordNotFoundException;
 
 @SuppressWarnings("serial")
 public class DefineCompetencies extends OperatorActionSupport {

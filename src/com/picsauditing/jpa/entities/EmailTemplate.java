@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +17,16 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "email_template")
 public class EmailTemplate extends BaseTableRequiringLanguages implements java.io.Serializable {
+
+	public static final int POSSIBLE_DUPLICATE_EMAIL_TEMPLATE = 234;
+	public static final int FINAL_TO_OPERATORS_EMAIL_TEMPLATE = 240;
+	public static final int REGISTRATION_REQUEST_FINAL_EMAIL_TEMPLATE = 241;
+	public static final int regReqLastChanceEmailTemplate = 242;
+	public static final int regReqReminderEmailTemplate = 243;
+	public static final int pendingFinalEmailTemplate = 244;
+	public static final int pendingLastChanceEmailTemplate = 245;
+	public static final int pendingReminderEmailTemplate = 246;
+
 	private int accountID;
 	private String templateName = "";
 	private String subject;
@@ -30,8 +39,8 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	private boolean html = false;
 	private boolean translated = false;
 
-	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
-			85, 86));
+	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71,
+			85, 86)));
 
 	@Column(nullable = false)
 	public int getAccountID() {
@@ -129,7 +138,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 
 	@Transient
 	public static final Set<Integer> VALID_DEACTIVATED_EMAILS() {
-		return Collections.unmodifiableSet(PRIVATE_VALID_DEACTIVATED_EMAILS);
+		return PRIVATE_VALID_DEACTIVATED_EMAILS;
 	}
 
 	@Transient

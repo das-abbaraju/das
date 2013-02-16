@@ -1,28 +1,20 @@
 package com.picsauditing.report.fields;
 
+
 public enum FilterType {
-	AccountID(DisplayType.Integer),
-	Autocomplete(DisplayType.String),
-	Boolean,
-	Date,
-	DateTime,
-	Float,
-	Integer,
-	ShortList(DisplayType.String),
-	String,
-	UserID(DisplayType.Integer);
 
-	private DisplayType displayType;
-	
-	private FilterType() {
-		displayType = DisplayType.valueOf(this.toString());
-	}
+	AccountID(QueryFilterOperator.Equals),
+	Autocomplete(QueryFilterOperator.In),
+	Boolean(QueryFilterOperator.Equals),
+	Date(QueryFilterOperator.LessThan),
+	Multiselect(QueryFilterOperator.In),
+	Number(QueryFilterOperator.Equals),
+	String(QueryFilterOperator.Contains),
+	UserID(QueryFilterOperator.Equals);
 
-	private FilterType(DisplayType displayType) {
-		this.displayType = displayType;
-	}
+	public QueryFilterOperator defaultOperator;
 
-	public DisplayType getDisplayType() {
-		return displayType;
+	FilterType(QueryFilterOperator defaultOperator) {
+		this.defaultOperator = defaultOperator;
 	}
 }

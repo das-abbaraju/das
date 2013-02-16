@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Filter;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.FieldCategory;

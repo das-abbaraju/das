@@ -54,14 +54,11 @@ public class PublisherRabbitMqTest {
 		verify(logger, never()).error(anyString(), any(Exception.class));
 	}
 
-	@Test
+	@Test(expected = AmqpException.class)
 	public void testSendCriticalAlertMessage_InvalidFlagChangeIsLogged() throws Exception {
 		doThrow(new AmqpException("test amqp exception")).when(amqpTemplate).convertAndSend(any(FlagChange.class));
 
 		publisherRabbitMq.publish(null);
-
-		verify(amqpTemplate).convertAndSend(any(FlagChange.class));
-		verify(logger).error(anyString(), any(AmqpException.class));
 	}
 
 	public FlagChange getFlagChange() {

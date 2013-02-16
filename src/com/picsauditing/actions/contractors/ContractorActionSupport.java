@@ -24,7 +24,6 @@ import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -49,7 +48,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.EventType;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -57,6 +55,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.Strings;
 
@@ -495,7 +494,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Reviews Audits
 
-			MenuComponent subMenu = new MenuComponent(getText("global.Reviews"), "ContractorDocuments.action?id="
+			MenuComponent subMenu = new MenuComponent(getText("global.ClientReviews"), "ContractorDocuments.action?id="
 					+ id + "#reviews");
 			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
@@ -517,7 +516,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.Reviews")));
+						+ ContractorDocuments.getSafeName(getText("global.ClientReviews")));
 			}
 
 			addSubMenu(menu, subMenu);

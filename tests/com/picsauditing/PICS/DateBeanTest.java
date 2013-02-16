@@ -625,65 +625,65 @@ public class DateBeanTest {
 		assertFalse(DateBean.isMoreThanXMonthsAgo(threeMonthsAgo, 5));
 
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testIsGracePeriodForWCB() throws Exception {
 		// Before grace period
-		Date now = new Date("8/31/2012"); 
+		Date now = new Date("8/31/2012");
 		Boolean result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertFalse(result);
-		
+
 		// start of grace period
-		now = new Date("9/1/2012"); 
+		now = new Date("9/1/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
 
 		// end of year
-		now = new Date("12/31/2012"); 
+		now = new Date("12/31/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
 
 		// start of year
-		now = new Date("1/1/2013"); 
+		now = new Date("1/1/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
-		
+
 		// end of grace period
-		now = new Date("1/30/2013"); 
+		now = new Date("1/31/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertTrue(result);
-		
+
 		// after grace period
-		now = new Date("1/31/2013"); 
+		now = new Date("2/1/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "isGracePeriodForWCB", now);
 		assertFalse(result);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testGetEffectiveWCBYear() throws Exception {
 		Date now = new Date("8/31/2012");
 		Integer result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
-		
+
 		now = new Date("9/1/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
-		
+
 		now = new Date("12/31/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
-		
+
 		now = new Date("1/1/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
-		
-		now = new Date("1/30/2013");
+
+		now = new Date("1/31/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2012, result.intValue());
-		
-		now = new Date("1/31/2013");
+
+		now = new Date("2/1/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2013, result.intValue());
 	}

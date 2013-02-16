@@ -87,7 +87,7 @@
 						</label>
 						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" value="3" />
 						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" 
-							value="1100" />
+							value="defaultRestrictedViewableAccountID" />
 					</li>
 					<li id="liAdditionalText">
 						<label>

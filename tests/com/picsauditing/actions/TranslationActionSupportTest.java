@@ -1,20 +1,22 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import com.picsauditing.PicsTest;
+import com.picsauditing.model.i18n.LanguageModel;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.PicsTest;
+import static org.junit.Assert.assertEquals;
 
 public class TranslationActionSupportTest extends PicsTest {
+	@Mock
+	private LanguageModel languageModel;
 
 	private TranslationActionSupport translationActionSupport;
 
@@ -24,22 +26,6 @@ public class TranslationActionSupportTest extends PicsTest {
 		MockitoAnnotations.initMocks(this);
 
 		translationActionSupport = new TranslationActionSupport();
-	}
-
-	@Test
-	public void testGetSupportedLocales() throws Exception {
-		Locale[] supportedLocales = TranslationActionSupport.getSupportedLocales();
-
-		assertTrue(supportedLocales.length == 9);
-		boolean found = false;
-		Locale searchFor = new Locale("fi");
-		for (int i = 0; i < supportedLocales.length; i++) {
-			if (supportedLocales[i].equals(searchFor)) {
-				found = true;
-				break;
-			}
-		}
-		assertTrue(found);
 	}
 
 	@Test
@@ -60,8 +46,8 @@ public class TranslationActionSupportTest extends PicsTest {
 						"sortTranslationsByLocaleDisplayNames",
 						sortedTranslationMap);
 
-		String[] expectedValues = new String[] { "Dutch", "English", "French",
-				"German", "Norwegian", "Portuguese", "Spanish", "Swedish" };
+		String[] expectedValues = new String[]{"Dutch", "English", "French",
+				"German", "Norwegian", "Portuguese", "Spanish", "Swedish"};
 		int counter = 0;
 		for (Map.Entry<Locale, String> entry : supposedlySortedTranslationMap
 				.entrySet()) {
@@ -78,7 +64,7 @@ public class TranslationActionSupportTest extends PicsTest {
 
 		assertEquals(Locale.ENGLISH, locale);
 	}
-	
+
 	@Test
 	public void testConvertStringToLocale_LanguageAndCountry() throws Exception {
 		Locale locale = Whitebox.invokeMethod(translationActionSupport,
@@ -86,7 +72,7 @@ public class TranslationActionSupportTest extends PicsTest {
 
 		assertEquals(Locale.UK, locale);
 	}
-	
+
 	@Test
 	public void testConvertStringToLocale_LanguageCountryAndExtraJunk() throws Exception {
 		Locale locale = Whitebox.invokeMethod(translationActionSupport,

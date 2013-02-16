@@ -19,6 +19,17 @@ body {
     padding-top: 0;
   }
 }
+/* line 2, ../sass/pics/layout/_simple-layout.scss */
+.simple-layout {
+  background-color: #002441;
+}
+
+@media (max-width: 480px) {
+  /* line 9, ../sass/pics/layout/_simple-layout.scss */
+  .simple-layout {
+    background: #f1f1f2;
+  }
+}
 /* line 2, ../sass/pics/layout/_environment.scss */
 #environment {
   background: #333;
@@ -89,8 +100,8 @@ body {
 }
 /* line 4, ../sass/pics/layout/_menu.scss */
 .navbar .brand {
-  background: url(../img/logo.png) no-repeat;
-  background: rgba(0, 0, 0, 0) url(../img/logo.svg) no-repeat;
+  background: url(../img/logo/logo-icon.png) no-repeat;
+  background: rgba(0, 0, 0, 0) url(../img/logo/logo-icon.svg) no-repeat;
   display: block;
   height: 32px;
   margin: 10px 15px 10px 0;
@@ -179,8 +190,44 @@ body {
   float: right;
   font-style: italic;
 }
+/* line 107, ../sass/pics/layout/_menu.scss */
+#user_searchbox .account-deactivated a,
+#user_searchbox .account-inactive a {
+  color: #aeaeae;
+}
+/* line 113, ../sass/pics/layout/_menu.scss */
+#user_searchbox .account-deactivated a:hover,
+#user_searchbox .account-inactive a:hover {
+  color: #cccccc;
+}
+/* line 119, ../sass/pics/layout/_menu.scss */
+#user_searchbox .account-demo {
+  font-style: italic;
+}
+/* line 129, ../sass/pics/layout/_menu.scss */
+#user_searchbox .account-deleted .name,
+#user_searchbox .account-deleted .id,
+#user_searchbox .account-deleted .location,
+#user_searchbox .account-deleted .type {
+  text-decoration: line-through;
+}
+/* line 136, ../sass/pics/layout/_menu.scss */
+#user_searchbox .no-results,
+#user_searchbox .total-results {
+  padding: 5px 20px;
+}
+/* line 143, ../sass/pics/layout/_menu.scss */
+#user_searchbox .more-results a {
+  font-weight: bold;
+}
+/* line 151, ../sass/pics/layout/_menu.scss */
+#user_searchbox .total-results p {
+  color: #999;
+  font-size: 13px;
+  margin: 0;
+}
 
-/* line 109, ../sass/pics/layout/_menu.scss */
+/* line 162, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
@@ -188,11 +235,11 @@ body {
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 120, ../sass/pics/layout/_menu.scss */
+  /* line 173, ../sass/pics/layout/_menu.scss */
   .navbar .brand {
     padding-right: 10px;
   }
-  /* line 125, ../sass/pics/layout/_menu.scss */
+  /* line 178, ../sass/pics/layout/_menu.scss */
   .navbar .nav > li > a {
     padding: 16px 10px;
   }
@@ -251,6 +298,41 @@ body {
   top: -1px;
 }
 
+/* line 2, ../sass/pics/widgets/pics/_notice.scss */
+.notice {
+  background: #f1f1f2;
+  -webkit-box-shadow: #131313 0px 2px 8px;
+  -moz-box-shadow: #131313 0px 2px 8px;
+  box-shadow: #131313 0px 2px 8px;
+  color: #666;
+  margin: 100px auto 20px;
+  padding: 60px;
+  text-align: center;
+  width: 330px;
+}
+/* line 12, ../sass/pics/widgets/pics/_notice.scss */
+.notice h1 {
+  color: #a84d10;
+  font-weight: normal;
+  margin: 30px 0px;
+}
+/* line 19, ../sass/pics/widgets/pics/_notice.scss */
+.notice p {
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  /* line 27, ../sass/pics/widgets/pics/_notice.scss */
+  .notice {
+    background: transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 30px 10px;
+    width: 100%;
+  }
+}
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert {
   background: #fcf3cc;
@@ -1052,10 +1134,9 @@ hr {
 
 /* line 2, ../sass/pics/templates/login/_login.scss */
 #Login__page {
-  background: #454545;
   padding-top: 0;
 }
-/* line 7, ../sass/pics/templates/login/_login.scss */
+/* line 6, ../sass/pics/templates/login/_login.scss */
 #Login__page #server_id {
   height: 25px;
   position: absolute;
@@ -1063,11 +1144,11 @@ hr {
   top: 0;
   width: 25px;
 }
-/* line 16, ../sass/pics/templates/login/_login.scss */
+/* line 15, ../sass/pics/templates/login/_login.scss */
 #Login__page .login-container {
   text-align: center;
 }
-/* line 21, ../sass/pics/templates/login/_login.scss */
+/* line 20, ../sass/pics/templates/login/_login.scss */
 #Login__page #login_form {
   background: #f1f1f2;
   -webkit-box-shadow: #131313 0px 2px 8px;
@@ -1078,22 +1159,18 @@ hr {
   text-align: left;
   width: 220px;
 }
-/* line 31, ../sass/pics/templates/login/_login.scss */
+/* line 30, ../sass/pics/templates/login/_login.scss */
 #Login__page .register {
   color: #ccc;
   text-decoration: none;
 }
-/* line 37, ../sass/pics/templates/login/_login.scss */
+/* line 36, ../sass/pics/templates/login/_login.scss */
 #Login__page .register:hover {
   color: #73BBE8;
 }
 
 @media (max-width: 480px) {
-  /* line 44, ../sass/pics/templates/login/_login.scss */
-  #Login__page {
-    background: #f1f1f2;
-  }
-  /* line 48, ../sass/pics/templates/login/_login.scss */
+  /* line 45, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form {
     background: transparent;
     -webkit-box-shadow: none;
@@ -1104,16 +1181,16 @@ hr {
     text-align: center;
     width: 100%;
   }
-  /* line 57, ../sass/pics/templates/login/_login.scss */
+  /* line 54, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form .logo {
     width: 50%;
   }
-  /* line 63, ../sass/pics/templates/login/_login.scss */
+  /* line 60, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form #forgot_password,
   #Login__page #login_form .form-actions {
     text-align: center;
   }
-  /* line 69, ../sass/pics/templates/login/_login.scss */
+  /* line 66, ../sass/pics/templates/login/_login.scss */
   #Login__page .register {
     display: none;
   }

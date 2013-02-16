@@ -7,9 +7,21 @@ import com.picsauditing.access.Permissions;
 import javax.persistence.Transient;
 
 public enum AccountStatus implements Translatable, PermissionAware {
-    Active, Pending, Requested, Demo, Deleted, Deactivated, Declined;
+    Active(false),
+	Pending(false),
+	Requested(false),
+	Demo(true),
+	Deleted(true),
+	Deactivated(false),
+	Declined(false);
 
-    public boolean isRequested() {
+	private boolean enforcePermissions;
+
+	AccountStatus(boolean enforcePermissions) {
+		this.enforcePermissions = enforcePermissions;
+	}
+
+	public boolean isRequested() {
         return this == Requested;
     }
 
@@ -71,7 +83,7 @@ public enum AccountStatus implements Translatable, PermissionAware {
     }
 
     public boolean isVisibleTo(Permissions permissions) {
-        if (this == Deleted || this == Demo)
+        if (enforcePermissions)
             return permissions.hasPermission(OpPerms.AllContractors);
 
         return true;

@@ -3,6 +3,7 @@ package com.picsauditing.search;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -113,7 +114,28 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 		}
 
 		JSONArray outputAsJsonArray = convertOutputToJson(output);
+		Comparator<JSONObject> comparator = new Comparator<JSONObject>(){
+			public int compare(JSONObject o1, JSONObject o2) {
+				String value1 = (String) o1.get("account_status");
+				String value2 = (String) o2.get("account_status");
+
+				if (value1.equals("deactivated")) {
+					return 1;
+				}
+				if (value1.equals(value2)) {
+					return 0;
+				}
+				if (value2.equals("deactivated")) {
+					return -1;
+				}
+
+				return 0;
+			};
+		};
+		Collections.sort(outputAsJsonArray, comparator);
+
 		json.put("results", outputAsJsonArray);
+		json.put("total_results", totalRows);
 
 		return JSON;
 	}
@@ -151,6 +173,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 			jsonResult.put("result_id", fields[2]);
 			jsonResult.put("result_name", fields[3]);
 			jsonResult.put("result_at", fields[4]);
+			jsonResult.put("account_status", fields[5].toLowerCase());
 
 			jsonArray.add(jsonResult);
 		}

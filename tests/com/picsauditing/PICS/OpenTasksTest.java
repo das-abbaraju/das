@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +41,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.ibm.icu.util.Calendar;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -66,7 +68,7 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 
-public class OpenTasksTest {
+public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
 	private final String UpdatedAgreement = "Please review the terms of our updated Contractor User Agreement";
@@ -105,8 +107,6 @@ public class OpenTasksTest {
 	@Mock
 	private User user;
 	@Mock
-	private Permissions permissions;
-	@Mock
 	private OperatorAccount operator;
 	@Mock
 	private Workflow workFlow;
@@ -120,6 +120,8 @@ public class OpenTasksTest {
 	private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
+	@Mock
+	private LanguageModel languageModel;
 	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
@@ -144,8 +146,10 @@ public class OpenTasksTest {
 
 		setUpCollections(); // MUST be before mocks
 		setUpMocks();
+		super.setupMocks();
 		setUpI18nCacheText();
 
+		Whitebox.setInternalState(openTasks, "supportedLanguages", languageModel);
 		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
@@ -232,6 +236,7 @@ public class OpenTasksTest {
 	public void testGetOpenTasks_IfOperatorThenWillNotGatherRelationshipTasks() throws Exception {
 		when(operator.getCanSeeInsurance()).thenReturn(YesNo.No);
 		when(user.getAccount()).thenReturn(operator);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
 
@@ -243,7 +248,8 @@ public class OpenTasksTest {
 		when(operator.getCanSeeInsurance()).thenReturn(YesNo.No);
 		when(operator.getType()).thenReturn("Corporate");
 		when(user.getAccount()).thenReturn(operator);
-
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
 
 		verify(contractor, never()).isAgreementInEffect();
@@ -251,19 +257,19 @@ public class OpenTasksTest {
 
 	@Test
 	public void testGetOpenTasks_MustApproveUpdatedAgreement_ContractorBilling() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
+		when(permissions.hasPermission(OpPerms.ContractorBilling)).thenReturn(true);
 		validateMustApproveUpdatedAgreement();
 	}
 
 	@Test
 	public void testGetOpenTasks_MustApproveUpdatedAgreement_ContractorAdmin() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorAdmin);
+		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(true);
 		validateMustApproveUpdatedAgreement();
 	}
 
 	@Test
 	public void testGetOpenTasks_MustApproveUpdatedAgreement_ContractorSafety() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 		validateMustApproveUpdatedAgreement();
 	}
 
@@ -287,7 +293,7 @@ public class OpenTasksTest {
 
 	@Test
 	public void testGetOpenTasks_RequiresTwoUsers_IsContractorAdmin() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorAdmin);
+		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(true);
 
 		validateRequiresTwoUsers();
 	}
@@ -314,7 +320,7 @@ public class OpenTasksTest {
 
 	@Test
 	public void testGetOpenTasks_BidOnlyUpgrade() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorAdmin);
+		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(true);
 		when(contractor.isAgreementInEffect()).thenReturn(true);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
 		when(contractor.getPaymentExpires()).thenReturn(new Date());
@@ -440,7 +446,7 @@ public class OpenTasksTest {
 	}
 
 	private void verifyGenerateInvoice() {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
+		when(permissions.hasPermission(OpPerms.ContractorBilling)).thenReturn(true);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
@@ -452,7 +458,7 @@ public class OpenTasksTest {
 	public void testGetOpenTasks_OpenInvoiceReminderBillingTasksBecauseOutstandingBalanceAndUnpaidInvoice()
 			throws Exception {
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
+		when(permissions.hasPermission(OpPerms.ContractorBilling)).thenReturn(true);
 		when(contractor.getBalance()).thenReturn(OUTSTANDING_BALANCE);
 		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
 
@@ -463,7 +469,7 @@ public class OpenTasksTest {
 
 	@Test
 	public void testGetOpenTasks_UpdatePaymentMethod() throws Exception {
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
+		when(permissions.hasPermission(OpPerms.ContractorBilling)).thenReturn(true);
 		when(contractor.isPaymentMethodStatusValid()).thenReturn(false);
 		when(contractor.isMustPayB()).thenReturn(true);
 
@@ -497,7 +503,7 @@ public class OpenTasksTest {
 	public void testGetOpenTasks_ResubmitPolicy() throws Exception {
 		setUpAuditTask();
 
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something
 																			// not
 																			// Policy
@@ -527,7 +533,7 @@ public class OpenTasksTest {
 		when(auditType.getId()).thenReturn(143);
 		when(auditType.isWCB()).thenReturn(true);
 		when(userAccess.getViewFlag()).thenReturn(Boolean.TRUE);
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorInsurance);
+		when(permissions.hasPermission(OpPerms.ContractorInsurance)).thenReturn(true);
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
 
@@ -561,7 +567,7 @@ public class OpenTasksTest {
 																	// WA_STATE_VERIFICATION
 		when(audit.hasCaoStatus(AuditStatus.Submitted)).thenReturn(true);
 		when(audit.getEffectiveDateLabel()).thenReturn(new Date());
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 	}
 
 	private void setUpAuditTask() {
@@ -580,7 +586,7 @@ public class OpenTasksTest {
 	private void setUpPolicyAuditTask() {
 		setUpAuditTask();
 
-		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorInsurance);
+		when(permissions.hasPermission(OpPerms.ContractorInsurance)).thenReturn(true);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
 	}
 

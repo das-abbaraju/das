@@ -103,7 +103,7 @@
                 </s:if>
             </s:if>
         
-            <s:if test="user.locale.language != 'en'">
+            <s:if test="!supportedLanguages.isLanguageStable(permissions.locale)">
                 <div id="beta_translations_alert">
                     <p>
                         <s:text name="global.BetaTranslations"/>

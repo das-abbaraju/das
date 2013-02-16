@@ -2,10 +2,10 @@ package com.picsauditing.actions.notes;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.picsauditing.dao.*;
+import com.picsauditing.toggle.FeatureToggle;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,10 +16,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
@@ -39,8 +35,12 @@ public class NoteEditor extends AccountActionSupport {
 	private NoteDAO noteDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
+    @Autowired
+    private UserSwitchDAO userSwitchDAO;
+    @Autowired
+    private FeatureToggle featureToggleChecker;
 
-	private String mode = "edit";
+    private String mode = "edit";
 	private Note note;
 	private int viewableBy;
 	private int viewableByOther;
@@ -50,6 +50,7 @@ public class NoteEditor extends AccountActionSupport {
 	private String fileContentType;
 	private String fileFileName;
 	private InputStream inputStream;
+    private int defaultRestrictedViewableAccountID;
 
 	private int employeeID;
 	public static int RESTRICTED_TO = 3;
@@ -183,22 +184,46 @@ public class NoteEditor extends AccountActionSupport {
 		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
 	}
 
-	// ///////////////////////////
-
 	public List<Account> getFacilities() {
-		return new Grepper<Account>() {
-			@Override
-			public boolean check(Account t) {
-				if (permissions.isOperatorCorporate()) {
-					return !Account.PICS_CORPORATE.contains(t.getId());
-				}
+        final List<Account> facilities = new ArrayList<Account>();
+        if (permissions.isOperatorCorporate()) {
+            if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION)) {
+                populateFacilitiesWithPrimaryCorpOnTopAndSwitchTosUnderneath(facilities);
+            } else if (permissions.isCorporate()) {
+                facilities.add(accountDAO.find(permissions.getPrimaryCorporateAccountID()));
+            } else if (permissions.isOperator()) {
+                facilities.add(accountDAO.find(permissions.getAccountId()));
+            }
+        } else {
+            facilities.addAll(accountDAO.findNoteRestrictionOperators(permissions));
+        }
 
-				return true;
-			}
-		}.grep(accountDAO.findNoteRestrictionOperators(permissions));
+        return facilities;
 	}
 
-	public ReportFilterNote getFilter() {
+    private void populateFacilitiesWithPrimaryCorpOnTopAndSwitchTosUnderneath(List<Account> facilities) {
+        Account primaryCorporate = accountDAO.find(permissions.getPrimaryCorporateAccountID());
+        addSwitchToAccountsSkipPimaryCorporate(facilities, primaryCorporate);
+        Collections.sort(facilities, new Comparator<Account>() {
+            @Override
+            public int compare(Account o1, Account o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+        facilities.add(0, primaryCorporate);
+    }
+
+    private void addSwitchToAccountsSkipPimaryCorporate(final List<Account> facilities, Account primaryCorporate) {
+        facilities.addAll(new Grepper<Account>() {
+            @Override
+            public boolean check(Account t) {
+                return !facilities.contains(t);
+            }
+        }.grep(userSwitchDAO.findAccountsByUserId(permissions.getUserId())));
+        facilities.remove(primaryCorporate);
+    }
+
+    public ReportFilterNote getFilter() {
 		return filter;
 	}
 
@@ -298,4 +323,18 @@ public class NoteEditor extends AccountActionSupport {
 	public String getAccountType() {
 		return getText("AccountType." + accountDAO.find(id).getType());
 	}
+
+    public int getDefaultRestrictedViewableAccountID() {
+        if (permissions.isCorporate()) {
+            return permissions.getPrimaryCorporateAccountID();
+        } else if (permissions.isOperator()) {
+            if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION)) {
+                return permissions.getPrimaryCorporateAccountID();
+            } else {
+                return permissions.getAccountId();
+            }
+        } else {
+            return permissions.getTopAccountID();
+        }
+    }
 }

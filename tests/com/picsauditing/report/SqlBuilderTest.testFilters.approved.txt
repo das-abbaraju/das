@@ -1,0 +1,3 @@
+SELECT TRIM(Account.name) AS `AccountName`
+FROM accounts AS Account
+WHERE ((Account.nameIndex LIKE 'TREVORS%')) 

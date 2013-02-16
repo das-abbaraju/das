@@ -1,13 +1,13 @@
-// report data column - boolean
-$report_data_column_boolean_text_color: #666;
+// data table column - boolean
+$data_table_column_boolean_text_color: #666;
 
-#report_data
+#data_table
 {
 	.x-grid-cell-inner
 	{
 		.icon-ok
 		{
-			color: $report_data_column_boolean_text_color;
+			color: $data_table_column_boolean_text_color;
 		}
 		
 		.icon-flag.clear

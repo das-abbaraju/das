@@ -19,10 +19,10 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.ContractorAuditCategories;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -47,6 +47,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -88,19 +89,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected void findConAudit() throws RecordNotFoundException, NoRightsException {
 		conAudit = auditDao.find(auditID);
-		if (conAudit == null)
+		if (conAudit == null) {
 			throw new RecordNotFoundException("Audit " + this.auditID);
+		}
 
 		contractor = conAudit.getContractorAccount();
 		id = contractor.getId();
-		if (permissions.isContractor() && id != permissions.getAccountId())
+		if (permissions.isContractor() && id != permissions.getAccountId()) {
 			throw new NoRightsException("Contractors can only view their own audits");
+		}
 
-		if (!checkPermissionToView())
+		if (!checkPermissionToView()) {
 			throw new NoRightsException("No Rights to View this Contractor");
+		}
 
-		if (!conAudit.isVisibleTo(permissions))
+		if (!conAudit.isVisibleTo(permissions)) {
 			throw new NoRightsException(conAudit.getAuditType().getName().toString());
+		}
 
 	}
 
@@ -136,21 +141,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
 						operators.add(facility.getOperator());
 					}
-				} else
+				} else {
 					operators.add(getOperatorAccount());
+				}
 
 				requiredCategories = builder.calculate(conAudit, operators);
 			}
 
-			categories = conAudit.getApplicableCategories(permissions, requiredCategories);
+			categories = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories, conAudit.getCategories());
 		}
 		return categories;
 	}
 
 	public boolean isHasSafetyManual() {
 		hasManual = getDataForSafetyManual();
-		if (hasManual == null || hasManual.size() == 0)
+		if (hasManual == null || hasManual.size() == 0) {
 			return false;
+		}
 		return true;
 	}
 
@@ -161,16 +168,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		Map<Integer, AuditData> answers = auditDataDAO.findAnswersForSafetyManual(conAudit.getContractorAccount()
 				.getId(), questionID);
-		if (answers == null || answers.size() == 0)
+		if (answers == null || answers.size() == 0) {
 			return null;
+		}
 		return answers;
 	}
 
 	public Map<Integer, AuditData> getSafetyManualLink() {
-		if (hasManual != null)
+		if (hasManual != null) {
 			return hasManual;
-		else
+		} else {
 			hasManual = getDataForSafetyManual();
+		}
 		return hasManual;
 	}
 
@@ -184,10 +193,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public List<ContractorAuditOperator> getViewableOperators(Permissions permissions) {
 		List<ContractorAuditOperator> viewableCaos = new ArrayList<ContractorAuditOperator>();
-		if (systemEdit && !permissions.isOperatorCorporate())
+		if (systemEdit && !permissions.isOperatorCorporate()) {
 			viewableCaos = conAudit.getSortedOperators();
-		else
+		} else {
 			viewableCaos = conAudit.getViewableOperators(permissions);
+		}
 		for (ContractorAuditOperator cao : viewableCaos) {
 			// Even though Resubmit is a valid Status for Flags, an audit in
 			// Resubmit still needs to be completed and verified,
@@ -208,8 +218,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 			if (permissions.isOperatorCorporate()) {
-				if (permissions.getVisibleAccounts().contains(caop.getOperator().getId()))
+				if (permissions.getVisibleAccounts().contains(caop.getOperator().getId())) {
 					caops.add(caop);
+				}
 			} else {
 				caops.add(caop);
 			}
@@ -234,27 +245,31 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!actionStatus.isEmpty()) {
 			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
 					.hasNext();) {
-				if (!(en.next().getValue().size() > 1))
+				if (!(en.next().getValue().size() > 1)) {
 					en.remove();
+				}
 			}
 		}
 	}
 
 	public boolean canPerformAction(ContractorAuditOperator cao, WorkflowStep workflowStep) {
 		if (cao.getPercentComplete() < 100) {
-			if (cao.getPercentVerified() < 100)
+			if (cao.getPercentVerified() < 100) {
 				// This is confusing...We need to document this better
 				return false;
-			if (!cao.getStatus().isSubmitted())
+			}
+			if (!cao.getStatus().isSubmitted()) {
 				// Explain this in English...
 				return false;
+			}
 		}
 
 		AuditType type = conAudit.getAuditType();
 		AuditStatus newStatus = workflowStep.getNewStatus();
 
-		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100)
+		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100) {
 			return false;
+		}
 
 		// admins can perform any action
 		if (permissions.seesAllContractors()) {
@@ -270,24 +285,29 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
-			if (newStatus.isSubmitted())
+			if (newStatus.isSubmitted()) {
 				return true;
+			}
 			// contractor can always move to resubmitted
-			if (newStatus.isResubmitted())
+			if (newStatus.isResubmitted()) {
 				return true;
+			}
 			// if Single Step Workflow (Pending to Complete)
-			if (newStatus.isComplete() && workflowStep.getWorkflow().getId() == 1)
+			if (newStatus.isComplete() && workflowStep.getWorkflow().getId() == 1) {
 				return true;
+			}
 		}
 		// Auditor for this audit can perform all actions
-		if (conAudit.getAuditor() != null && conAudit.getAuditor().getId() == permissions.getUserId())
+		if (conAudit.getAuditor() != null && conAudit.getAuditor().getId() == permissions.getUserId()) {
 			return true;
+		}
 		return false;
 	}
 
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
-		if (caoSteps == null || caoSteps.isEmpty())
+		if (caoSteps == null || caoSteps.isEmpty()) {
 			getValidSteps();
+		}
 
 		return caoSteps.get(caoID);
 	}
@@ -300,8 +320,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
 			if (conAudit.getAuditType().isCorIecWaState() && !permissions.isAdmin()
-					&& step.getNewStatus().isResubmitted())
+					&& step.getNewStatus().isResubmitted()) {
 				return false;
+			}
 
 			if (!canContractorSubmitPQF(step)) {
 				return false;
@@ -350,30 +371,36 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanEditAudit() {
 		AuditType type = conAudit.getAuditType();
 
-		if (type.getClassType().isPolicy() && permissions.isAdmin())
+		if (type.getClassType().isPolicy() && permissions.isAdmin()) {
 			return true;
-		if (conAudit.isExpired())
+		}
+		if (conAudit.isExpired()) {
 			return false;
+		}
 
 		if (type.getClassType().isPolicy()) {
 			// we don't want the contractors to edit the effective dates on the
 			// old policy
 			if (conAudit.willExpireSoon()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted))
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted)) {
 					return false;
+				}
 			}
 		}
 
 		// Auditors can edit their assigned audits
 		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
-				&& permissions.getUserId() == conAudit.getAuditor().getId())
+				&& permissions.getUserId() == conAudit.getAuditor().getId()) {
 			return true;
+		}
 
-		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPqf())
+		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPqf()) {
 			return true;
+		}
 
-		if (permissions.seesAllContractors())
+		if (permissions.seesAllContractors()) {
 			return true;
+		}
 
 		if (permissions.isContractor()) {
 			boolean canEdit = type.isCanContractorEdit();
@@ -391,8 +418,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 
 			if (type.getClassType().isAudit() && !type.isAnnualAddendum()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 					canEdit = false;
+				}
 			}
 
 			return canEdit;
@@ -407,7 +435,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return false;
 			}
 		}
-		
+
 		if (type.getEditPermission() != null) {
 			if (permissions.hasPermission(type.getEditPermission())) {
 				return true;
@@ -427,25 +455,29 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
-			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId()))
+			if (conAudit.getAuditor() != null && (conAudit.getAuditor().getId() == permissions.getUserId())) {
 				return true;
+			}
 		}
 
 		return false;
 	}
 
 	public boolean isCanEditCao() {
-		if (permissions.hasPermission(OpPerms.CaoEdit))
+		if (permissions.hasPermission(OpPerms.CaoEdit)) {
 			return true;
+		}
 		return false;
 	}
 
 	public boolean isCanEditCao(ContractorAuditOperator cao) {
 		if (isCanEditCao()) {
-			if (permissions.isAdmin())
+			if (permissions.isAdmin()) {
 				return true;
-			if (permissions.isOperatorCorporate() && conAudit.getAuditType().getClassType().isPolicy())
+			}
+			if (permissions.isOperatorCorporate() && conAudit.getAuditType().getClassType().isPolicy()) {
 				return !cao.getOperator().isInPicsConsortium();
+			}
 		}
 		return false;
 	}
@@ -454,50 +486,58 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().isAnnualAddendum()) {
 			return false;
 		} else {
-			if (cao.getStatus().isSubmittedResubmitted())
+			if (cao.getStatus().isSubmittedResubmitted()) {
 				return true;
-			else
+			} else {
 				return false;
+			}
 		}
 	}
 
 	public boolean isShowCompleteBar(ContractorAuditOperator cao) {
 		if (conAudit.getAuditType().isAnnualAddendum()) {
-			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit))
+			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
 				return true;
-			else
+			} else {
 				return false;
+			}
 		}
 
-		if (cao.getStatus().before(AuditStatus.Complete))
+		if (cao.getStatus().before(AuditStatus.Complete)) {
 			return true;
-
-		else
+		} else {
 			return false;
+		}
 	}
 
 	public boolean isCanVerifyAudit() {
-		if (!permissions.isAuditor() && !permissions.hasGroup(959))
+		if (!permissions.isAuditor() && !permissions.hasGroup(959)) {
 			return false;
+		}
 
-		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep())
+		if (!conAudit.getAuditType().getWorkFlow().isHasSubmittedStep()) {
 			return false;
+		}
 
-		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 			return true;
+		}
 
 		return false;
 	}
 
 	public boolean isCanVerifyPqf() {
-		if (!permissions.hasPermission(OpPerms.AuditVerification))
+		if (!permissions.hasPermission(OpPerms.AuditVerification)) {
 			return false;
+		}
 
-		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
+		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum()) {
 			return false;
+		}
 
-		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+		if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 			return true;
+		}
 
 		return false;
 	}
@@ -520,8 +560,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanSchedule() {
-		if (conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
+		if (conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin())) {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
+		}
 		return false;
 	}
 
@@ -538,30 +579,35 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	private boolean isMatchingOldAudit(ContractorAudit conAudit, ContractorAudit ca) {
-		if (!ca.getAuditType().equals(conAudit.getAuditType()))
+		if (!ca.getAuditType().equals(conAudit.getAuditType())) {
 			return false;
-		if (ca.getId() == conAudit.getId())
+		}
+		if (ca.getId() == conAudit.getId()) {
 			return false;
-		if (ca.isExpired())
+		}
+		if (ca.isExpired()) {
 			return false;
-		if (ca.getEffectiveDate().after(conAudit.getEffectiveDate()))
+		}
+		if (ca.getEffectiveDate().after(conAudit.getEffectiveDate())) {
 			return false;
-		if (ca.hasCaoStatus(AuditStatus.Complete))
+		}
+		if (ca.hasCaoStatus(AuditStatus.Complete)) {
 			return false;
+		}
 		return true;
 	}
 
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {
 		if (cao.getAudit().getAuditType().isWCB()) {
-			auditSetWCBExpiresDate(cao, status);
 			return;
 		}
 
 		if (status.isSubmittedResubmitted()) {
-			if (cao.getAudit().getExpiresDate() == null)
+			if (cao.getAudit().getExpiresDate() == null) {
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
-			else if (cao.getAudit().getAuditType().isRenewable())
+			} else if (cao.getAudit().getAuditType().isRenewable()) {
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
+			}
 		}
 		if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
 			AuditType auditType = cao.getAudit().getAuditType();
@@ -583,49 +629,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 	}
 
-	/**
-	 * Only set the expiration date for the WCB if it has a status of "Approved"
-	 * for all the CAOs
-	 * 
-	 * @param audit
-	 */
-	private void auditSetWCBExpiresDate(ContractorAuditOperator updatedCao, AuditStatus newStatus) {
-		ContractorAudit audit = updatedCao.getAudit();
-		if (CollectionUtils.isEmpty(audit.getOperators())) {
-			return;
-		}
-
-		boolean allCaosAreApproved = true;
-		for (ContractorAuditOperator cao : audit.getOperators()) {
-			// we need to do this here because the modified CAO has not been
-			// persisted yet, so the status
-			// to check is the newStatus, not the cao's status
-			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible()
-					&& !(newStatus.isApproved() || newStatus.isNotApplicable())) {
-				allCaosAreApproved = false;
-			} else if (cao.getId() != updatedCao.getId() && cao.isVisible()
-					&& !(cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())) {
-				allCaosAreApproved = false;
-			}
-		}
-
-		if (allCaosAreApproved) {
-			audit.setExpiresDate(DateBean.getWCBExpirationDate(audit.getAuditFor()));
-		} else {
-			audit.setExpiresDate(null);
-		}
-	}
-
 	protected Date getAuditExpirationDate() {
 		Integer months = conAudit.getAuditType().getMonthsToExpire();
 		if (months == null) {
 			// check months first, then do date if empty
 			return DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(new Date()));
 		} else if (months > 0) {
-			if (conAudit.getAuditType().getClassType().isPqf())
+			if (conAudit.getAuditType().getClassType().isPqf()) {
 				return DateBean.setToEndOfDay(DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months)));
-			else
+			} else {
 				return DateBean.setToEndOfDay(DateBean.addMonths(new Date(), months));
+			}
 		} else {
 			return null;
 		}
@@ -640,15 +654,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 			newNote.setAuditColumns(permissions);
 			String summary = "Changed Status for " + cao.getAudit().getAuditType().getName().toString() + "("
 					+ cao.getAudit().getId() + ") ";
-			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
+			if (!Strings.isEmpty(cao.getAudit().getAuditFor())) {
 				summary += " for " + cao.getAudit().getAuditFor();
+			}
 			summary += " from " + prevStatus + " to " + cao.getStatus();
 			newNote.setSummary(summary);
 
-			if (cao.getAudit().getAuditType().getClassType().isPolicy())
+			if (cao.getAudit().getAuditType().getClassType().isPolicy()) {
 				newNote.setNoteCategory(NoteCategory.Insurance);
-			else
+			} else {
 				newNote.setNoteCategory(NoteCategory.Audits);
+			}
 
 			newNote.setViewableBy(cao.getOperator());
 
@@ -672,10 +688,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
-		if (categories.get(auditCategory).isApplies())
+		if (categories.get(auditCategory).isApplies()) {
 			return true;
-		if (!categories.get(auditCategory.getParent()).isApplies())
+		}
+		if (!categories.get(auditCategory.getParent()).isApplies()) {
 			return true;
+		}
 		return false;
 	}
 
@@ -722,15 +740,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		public float getPercentComplete() {
 			int percent = (int) ((answered * 1f / total) * 100);
-			if (total == 0 || percent > 100)
+			if (total == 0 || percent > 100) {
 				return 100;
+			}
 			return percent;
 		}
 
 		public float getPercentVerified() {
 			int percent = (int) ((verified * 1f / total) * 100);
-			if (total == 0 || percent > 100)
+			if (total == 0 || percent > 100) {
 				return 100;
+			}
 			return percent;
 		}
 	}
@@ -744,8 +764,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public List<CategoryNode> getCategoryNodes() {
-		if (categoryNodes == null)
+		if (categoryNodes == null) {
 			categoryNodes = createCategoryNodes(conAudit.getAuditType().getTopCategories());
+		}
 
 		return categoryNodes;
 	}
@@ -803,8 +824,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isEveryCAOCompleteOrHigher() {
 		boolean allComplete = true;
 		for (ContractorAuditOperator cao : conAudit.getViewableOperators(permissions)) {
-			if (!cao.getStatus().after(AuditStatus.Resubmitted))
+			if (!cao.getStatus().after(AuditStatus.Resubmitted)) {
 				allComplete = false;
+			}
 		}
 
 		return allComplete;
@@ -813,9 +835,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	/**
 	 * This method is used to determine if a user has the ability to edit a
 	 * category.
-	 * 
+	 *
 	 * @param category
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isCanEditCategory(AuditCategory category) throws RecordNotFoundException, NoRightsException {
@@ -828,8 +850,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		 * allowed to edit the sub-categories of these audits.
 		 */
 		if (permissions.isContractor() && category.getAuditType().getId() == AuditType.HSE_COMPETENCY
-				&& category.getParent() != null)
+				&& category.getParent() != null) {
 			return false;
+		}
 
 		if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
 			auditCategoryRuleCache.initialize(auditRuleDAO);
@@ -849,31 +872,34 @@ public class AuditActionSupport extends ContractorActionSupport {
 		 * If the user can see the category and has the 'Edit' view, they are
 		 * allowed to edit the audit.
 		 */
-		if (!conAudit.getAuditType().getClassType().isPolicy())
+		if (!conAudit.getAuditType().getClassType().isPolicy()) {
 			return true;
+		}
 
 		/*
 		 * Single CAO audits (in this case, policies) are editable by the owners
 		 * of that CAO
 		 */
 		if (conAudit.getOperatorsVisible().size() == 1
-				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
+				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId())) {
 			return true;
+		}
 
 		/*
 		 * Contractors are only allowed to edit the limits and policy
 		 * information BEFORE the policy is submitted. Once the policy is
 		 * submitted we "lock" down these categories to prevent contractors from
 		 * changing them.
-		 * 
+		 *
 		 * Contractors are still allowed to edit the attached certificates of
 		 * this policy. For example, when the contractors add a new facility
 		 * they should be allowed to add their certificate to that operator's
 		 * insurance category.
 		 */
 		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
-			if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete, true) && !permissions.isAdmin())
+			if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete, true) && !permissions.isAdmin()) {
 				return false;
+			}
 		}
 
 		return true;
@@ -881,8 +907,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	private void setCategoryBuilderToSpecificCao(AuditCategoriesBuilder builder, ContractorAuditOperator cao) {
 		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 			operators.add(caop.getOperator());
+		}
 		builder.calculate(conAudit, operators);
 	}
 }

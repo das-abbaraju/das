@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.util.JSONUtilities;
 import org.json.simple.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,13 +72,13 @@ public class AuditRejectionLookupTest extends PicsActionTest {
 	@Test
 	public void testPopulateJsonArray_EmptyList() throws Exception {
 		JSONArray result = Whitebox.invokeMethod(auditRejectionLookup, "populateJsonArray", new ArrayList<AuditRejectionCode>());
-		assertEquals("[]", result.toJSONString());	
+		assertEquals(JSONUtilities.EMPTY_JSON_ARRAY, result.toJSONString());
 	}
 	
 	@Test
 	public void testPopulateJsonArray_NullList() throws Exception {
 		JSONArray result = Whitebox.invokeMethod(auditRejectionLookup, "populateJsonArray", (Object[]) null);
-		assertEquals("[]", result.toJSONString());
+		assertEquals(JSONUtilities.EMPTY_JSON_ARRAY, result.toJSONString());
 	}
 	
 	private List<AuditRejectionCode> buildMockListRejectionCodes() {

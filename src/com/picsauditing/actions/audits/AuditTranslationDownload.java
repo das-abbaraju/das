@@ -23,9 +23,9 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.report.Column;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;
@@ -66,7 +66,7 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 		Column reportColumn = new Column(fieldName);
 		reportColumn.setField(new Field(fieldName, "", FieldType.String));
 		reportColumn.getField().setText(columnLabel);
-		reportColumns.put(reportColumn.getFieldName(), reportColumn);
+		reportColumns.put(reportColumn.getName(), reportColumn);
 		excelBuilder.getColumns().add(new ExcelColumn(reportColumn));
 	}
 

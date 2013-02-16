@@ -4,13 +4,13 @@
 <li>
 	<s:select
 		disabled="%{permissions.operator}"
-		headerKey="0" 
-		headerValue="RequestNewContractor.header.SelectAnOperator" 
+		headerKey="0"
+		headerValue="RequestNewContractor.header.SelectAnOperator"
 		id="operator_list"
 		label="ContractorAccount.requestedBy"
 		list="operatorList"
 		listKey="id"
-		listValue="name" 
+		listValue="name"
 		name="requestRelationship.operatorAccount"
 		required="true"
 		theme="formhelp"

@@ -1,33 +1,31 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
+import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
-public class Field implements JSONAware {
+public class Field {
 
 	private static final Pattern FIELD_VARIABLE_PATTERN = Pattern.compile("\\{(\\w+)\\}");
-	
+
 	private FieldType type = FieldType.String;
 	private String name;
 	private FieldCategory category = FieldCategory.General;
+	private String categoryTranslation;
 	private String text;
 	private String suffix;
 	private String url;
-	private int width = 200;
+	private int width = Column.DEFAULT_WIDTH;
 	private String help;
 
 	private Class<?> fieldClass;
@@ -39,22 +37,27 @@ public class Field implements JSONAware {
 	private String postTranslation;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
-	private Map<String,String> functions = new TreeMap<String, String>();
 
 	public Field(ReportField annotation) {
 		type = annotation.type();
 		width = annotation.width();
-		url = annotation.url();
+
+		if (Strings.isEmpty(annotation.url())) {
+			url = null;
+		} else {
+			url = annotation.url();
+		}
+
 		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
 		visible = annotation.visible();
 		filterable = annotation.filterable();
 		sortable = annotation.sortable();
 		importance = annotation.importance();
-		
+
 		preTranslation = annotation.i18nKeyPrefix();
 		postTranslation = annotation.i18nKeySuffix();
-		if (type.getFilterType() == FilterType.ShortList && Strings.isEmpty(preTranslation)) {
+		if (type.getFilterType() == FilterType.Multiselect && Strings.isEmpty(preTranslation)) {
 			preTranslation = type.toString();
 		}
 	}
@@ -70,55 +73,8 @@ public class Field implements JSONAware {
 		if (type == null) {
 			throw new RuntimeException("type is required when creating Fields");
 		}
+
 		this.type = type;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSONObject() {
-		// TODO Move this to SimpleColumn.js toGridColumn
-		JSONObject json = new JSONObject();
-		json.put("name", name);
-		json.put("text", text);
-		json.put("help", help);
-
-		if (width > 0)
-			json.put("width", width);
-		
-		if (visible)
-			json.put("visible", visible);
-		
-		if (filterable)
-			json.put("filterable", filterable);
-		
-		if (sortable)
-			json.put("sortable", sortable);
-
-		if (!Strings.isEmpty(url))
-			json.put("url", url);
-
-		// TODO these will change when we refactor the "handshake"
-		json.put("fieldType", type.toString());
-		json.put("filterType", type.getFilterType().toString());
-		// TODO convert List to ShortList in JavaScript
-		// TODO convert type to displayType in JavaScript
-		json.put("displayType", type.toString().toLowerCase());
-		json.put("type", type.toString().toLowerCase());
-		
-		JSONArray functionsArray = new JSONArray();
-		for (String key : functions.keySet()) {
-			JSONObject translatedFunction = new JSONObject();
-			translatedFunction.put("key", key);
-			translatedFunction.put("value", functions.get(key));
-			functionsArray.add(translatedFunction);
-		}
-		
-		json.put("functions", functionsArray);
-
-		return json;
-	}
-
-	public String toJSONString() {
-		return toJSONObject().toJSONString();
 	}
 
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
@@ -130,18 +86,20 @@ public class Field implements JSONAware {
 	public String getI18nKey(String value) {
 		String key = value;
 
-		if (!Strings.isEmpty(preTranslation))
+		if (!Strings.isEmpty(preTranslation)) {
 			key = preTranslation + "." + key;
+		}
 
-		if (!Strings.isEmpty(postTranslation))
+		if (!Strings.isEmpty(postTranslation)) {
 			key = key + "." + postTranslation;
+		}
 
 		return key;
 	}
 
 	public Set<String> getDependentFields() {
 		Set<String> dependent = new HashSet<String>();
-		if (!Strings.isEmpty(url)) {
+		if (Strings.isNotEmpty(url)) {
 			Matcher urlFieldMatcher = FIELD_VARIABLE_PATTERN.matcher(url);
 
 			while (urlFieldMatcher.find()) {
@@ -153,8 +111,9 @@ public class Field implements JSONAware {
 	}
 
 	public boolean isTranslated() {
-		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation))
+		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation)) {
 			return false;
+		}
 
 		return true;
 	}
@@ -162,7 +121,21 @@ public class Field implements JSONAware {
 	public FieldType getType() {
 		return type;
 	}
-	
+
+	public void setType(FieldType type) {
+		this.type = type;
+	}
+
+	@Transient
+	public DisplayType getDisplayType() {
+		return type.getDisplayType();
+	}
+
+	@Transient
+	public FilterType getFilterType() {
+		return type.getFilterType();
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -228,6 +201,15 @@ public class Field implements JSONAware {
 		return this;
 	}
 
+	@Transient
+	public String getCategoryTranslation() {
+		return categoryTranslation;
+	}
+
+	public void setCategoryTranslation(String categoryTranslation) {
+		this.categoryTranslation = categoryTranslation;
+	}
+
 	public void setPreTranslation(String preTranslation) {
 		this.preTranslation = preTranslation;
 	}
@@ -242,11 +224,13 @@ public class Field implements JSONAware {
 	}
 
 	public boolean canUserSeeQueryField(Permissions permissions) {
-		if (requiredPermission == null)
+		if (requiredPermission == null) {
 			return true;
+		}
 
-		if (requiredPermission.isNone())
+		if (requiredPermission.isNone()) {
 			return true;
+		}
 
 		return permissions.hasPermission(requiredPermission);
 	}
@@ -267,6 +251,7 @@ public class Field implements JSONAware {
 		return postTranslation;
 	}
 
+	// TODO: This is very questionable
 	public boolean isVisible() {
 		return visible;
 	}
@@ -290,21 +275,13 @@ public class Field implements JSONAware {
 	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
 	}
-	
+
 	public FieldImportance getImportance() {
 		return importance;
 	}
 
 	public void setImportance(FieldImportance importance) {
 		this.importance = importance;
-	}
-
-	public Map<String, String> getFunctions() {
-		return functions;
-	}
-
-	public void setFunctions(Map<String, String> functions) {
-		this.functions = functions;
 	}
 
 	public Field clone() {
@@ -323,7 +300,6 @@ public class Field implements JSONAware {
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
-		copiedField.functions = functions;
 		return copiedField;
 	}
 

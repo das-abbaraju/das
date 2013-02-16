@@ -27,6 +27,8 @@ import org.json.simple.JSONObject;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -54,6 +56,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int COHS_KEPT_ID = 2066;
 	static public final int UK_HSE_KEPT_ID = 9106;
 	static public final int EMR_KEPT_ID = 2033;
+	static public final int MEXICO_KEPT_ID = 15337;
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
@@ -140,6 +143,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Integer)
 	public int getNumber() {
 		return this.number;
 	}
@@ -167,6 +171,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.String)
 	public String getQuestionType() {
 		return this.questionType;
 	}
@@ -186,6 +191,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isHasRequirement() {
 		return hasRequirement;
 	}
@@ -203,6 +209,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isRequired() {
 		return required;
 	}

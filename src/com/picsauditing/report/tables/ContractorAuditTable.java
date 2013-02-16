@@ -10,6 +10,8 @@ public class ContractorAuditTable extends AbstractTable {
 	public static final String Type = "Type";
 	public static final String Auditor = "Auditor";
 	public static final String ClosingAuditor = "ClosingAuditor";
+	public static final String Data = "Data";
+
 	/**
 	 * This is here ONLY for use when the audit type only has a single cao such
 	 * as Welcome Calls, Manual Audits, Implementation Audits, and PQF Specfic.
@@ -22,6 +24,9 @@ public class ContractorAuditTable extends AbstractTable {
 		addFields(ContractorAudit.class);
 		Field id = addPrimaryKey();
 		id.setCategory(FieldCategory.Audits);
+
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+		addField(creationDate).setCategory(FieldCategory.Audits);
 
 		Field auditTypeName;
 		auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
@@ -57,5 +62,10 @@ public class ContractorAuditTable extends AbstractTable {
 				new ReportOnClause("id", "auditID")));
 		caoKey.setCategory(FieldCategory.Audits);
 		caoKey.setMinimumImportance(FieldImportance.Required);
+
+		ReportForeignKey data = addOptionalKey(new ReportForeignKey(Data, new AuditDataTable(),
+				new ReportOnClause("id", "auditID")));
+		data.setCategory(FieldCategory.Audits);
+		data.setMinimumImportance(FieldImportance.Required);
 	}
 }

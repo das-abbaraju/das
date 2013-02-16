@@ -5,10 +5,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.PICS.InvoiceService;
 
 @SuppressWarnings("serial")
 @Entity
@@ -237,6 +246,15 @@ public class InvoiceFee extends BaseTable {
 
 	public void setSubdivisionFee(InvoiceFeeCountry subdivisionFee) {
 		this.subdivisionFee = subdivisionFee;
+	}
+
+	@Transient
+	public boolean isTax() {
+		if (InvoiceService.TAX_FEE_CLASSES.contains(feeClass)) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
