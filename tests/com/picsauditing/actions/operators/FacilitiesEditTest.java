@@ -387,7 +387,9 @@ public class FacilitiesEditTest extends PicsTest {
 
 		Whitebox.invokeMethod(facilitiesEdit, "saveClientSite");
 
-		verify(accountStatusChanges, times(1)).deactivateClientSite(operator, permissions, permissions.getName() + " has deactivated this account.");
+		verify(accountStatusChanges, times(1)).deactivateClientSite(operator, permissions,
+                AccountStatusChanges.OPERATOR_MANUALLY_DEACTIVATED_REASON,
+                permissions.getName() + " has deactivated this account.");
 		verify(operator, times(1)).setNeedsIndexing(true);
 		verify(operatorDAO, times(1)).save(operator);
 	}
@@ -398,7 +400,8 @@ public class FacilitiesEditTest extends PicsTest {
 
 		Whitebox.invokeMethod(facilitiesEdit, "saveClientSite");
 
-		verify(accountStatusChanges, never()).deactivateClientSite(any(OperatorAccount.class), any(Permissions.class), anyString());
+		verify(accountStatusChanges, never()).deactivateClientSite(any(OperatorAccount.class),
+                any(Permissions.class), anyString(), anyString());
 		verify(operator, times(1)).setNeedsIndexing(true);
 		verify(operatorDAO, times(1)).save(operator);
 	}

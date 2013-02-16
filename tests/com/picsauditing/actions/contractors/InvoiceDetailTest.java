@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -130,7 +131,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 
 		String actionResult = invoiceDetail.execute();
 
-		verify(contractor, times(1)).setReason("Bid Only Account");
+		verify(contractor, times(1)).setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
 		verify(invoice, times(1)).setStatus(TransactionStatus.Void);
 		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
 	}

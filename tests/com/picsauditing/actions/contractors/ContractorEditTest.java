@@ -346,7 +346,7 @@ public class ContractorEditTest extends PicsActionTest {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionErrors());
 		verify(accountStatusChanges, never()).deactivateContractor(any(ContractorAccount.class),
-				any(Permissions.class), anyString());
+				any(Permissions.class), anyString(), anyString());
 	}
 
 	private void setupForDeactivateTest(Date paymentExpires, boolean freeMembership) {
@@ -364,7 +364,7 @@ public class ContractorEditTest extends PicsActionTest {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionMessages());
 		verify(accountStatusChanges, times(1)).deactivateContractor(any(ContractorAccount.class),
-				any(Permissions.class), anyString());
+				any(Permissions.class), anyString(), anyString());
 	}
 
 	@Test
@@ -376,7 +376,7 @@ public class ContractorEditTest extends PicsActionTest {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionMessages());
 		verify(accountStatusChanges, times(1)).deactivateContractor(any(ContractorAccount.class),
-				any(Permissions.class), anyString());
+				any(Permissions.class), anyString(), anyString());
 	}
 
 	@Test

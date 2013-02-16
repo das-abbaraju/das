@@ -50,26 +50,28 @@ public class AccountStatusChangesTest {
 	public void testValidation_NullClientSite() throws Exception {
 		Account account = null;
 
-		Whitebox.invokeMethod(accountStatusChanges, "validation", account, "Some Reason.");
+		Whitebox.invokeMethod(accountStatusChanges, "validate", account, "Some Reason.");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidation_NoDeactivationReason() throws Exception {
 		Account account = new Account();
 
-		Whitebox.invokeMethod(accountStatusChanges, "validation", account, null);
+		Whitebox.invokeMethod(accountStatusChanges, "validate", account, null);
 	}
 
 	@Test
 	public void testDeactivateClientSite() {
-		accountStatusChanges.deactivateClientSite(clientSite, permissions, "No longer with PICS.");
+		accountStatusChanges.deactivateClientSite(clientSite, permissions, AccountStatusChanges.DOES_NOT_WORK_FOR_OPERATOR_REASON,
+                "No longer with PICS.");
 
 		verifyDeactivation(clientSite);
 	}
 
 	@Test
 	public void testDeactivateContractor() {
-		accountStatusChanges.deactivateContractor(contractor, permissions, "Delinquent account.");
+		accountStatusChanges.deactivateContractor(contractor, permissions,AccountStatusChanges.PAYMENTS_NOT_CURRENT_REASON,
+                "Delinquent account.");
 
 		verify(contractor, times(1)).setRenew(false);
 		verifyDeactivation(contractor);
@@ -77,6 +79,7 @@ public class AccountStatusChangesTest {
 
 	private void verifyDeactivation(Account account) {
 		verify(account, times(1)).setStatus(AccountStatus.Deactivated);
+        verify(account, times(1)).setReason(anyString());
 		verify(account, times(1)).setDeactivatedBy(any(User.class));
 		verify(account, times(1)).setDeactivationDate(any(Date.class));
 		verify(noteDAO, times(1)).save(any(Note.class));

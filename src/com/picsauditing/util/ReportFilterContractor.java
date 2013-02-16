@@ -5,6 +5,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.account.AccountStatusChanges;
 
 import java.util.*;
 
@@ -592,19 +593,20 @@ public class ReportFilterContractor extends ReportFilterAccount {
         Locale locale = getLocaleStatic();
 
         Map<String, String> deactivationReasons = new HashMap<String, String>();
-        deactivationReasons.put("ChargeBack", cache.getText("Filters.status.Deactivation.ChargeBack", locale));
-        deactivationReasons.put("Did not Complete PICS process",
+        deactivationReasons.put(AccountStatusChanges.CHARGEBACK_REASON,
+                cache.getText("Filters.status.Deactivation.ChargeBack", locale));
+        deactivationReasons.put(AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
                 cache.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
-        deactivationReasons.put("Does not work for operator",
+        deactivationReasons.put(AccountStatusChanges.DOES_NOT_WORK_FOR_OPERATOR_REASON,
                 cache.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
-        deactivationReasons.put("Duplicate/Merged Account",
+        deactivationReasons.put(AccountStatusChanges.DUPLICATE_MERGED_ACCOUNT_REASON,
                 cache.getText("Filters.status.Deactivation.DuplicateMerged", locale));
-        deactivationReasons.put("Operator Exemption",
+        deactivationReasons.put(AccountStatusChanges.OPERATOR_EXEMPTION_REASON,
                 cache.getText("Filters.status.Deactivation.OperatorExemption", locale));
-        deactivationReasons.put("Payments not Current",
+        deactivationReasons.put(AccountStatusChanges.PAYMENTS_NOT_CURRENT_REASON,
                 cache.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
-        deactivationReasons
-                .put("Bid Only Account", cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
+        deactivationReasons.put(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON,
+                cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
         return Collections.unmodifiableMap(deactivationReasons);
     }
 

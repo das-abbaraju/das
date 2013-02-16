@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -301,14 +302,12 @@ public class CronTest {
 		return contractor;
 	}
 
-	private void verifyContractor(ContractorAccount contractor, boolean isBidOnly) {
-		if (isBidOnly) {
-			verify(contractor, times(1)).setReason("Bid Only Account");
-		}
+    private void verifyContractor(ContractorAccount contractor, boolean isBidOnly) {
+        String reason = isBidOnly ? AccountStatusChanges.BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
 
-		verify(contractor, times(1)).syncBalance();
-		verify(contractor, times(1)).setAuditColumns(Cron.system);
-		verify(accountStatusChanges, times(1)).deactivateContractor(contractor, null,
-				"Automatically inactivating account based on expired membership");
-	}
+        verify(contractor, times(1)).syncBalance();
+        verify(contractor, times(1)).setAuditColumns(Cron.system);
+        verify(accountStatusChanges, times(1)).deactivateContractor(contractor, null, reason,
+                "Automatically inactivating account based on expired membership");
+    }
 }

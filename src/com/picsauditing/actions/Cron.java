@@ -90,7 +90,7 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-	@Autowired
+    @Autowired
 	protected AppPropertyDAO appPropDao;
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
@@ -375,13 +375,11 @@ public class Cron extends PicsActionSupport {
 		String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 		List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 		for (ContractorAccount contractor : conAcctList) {
-			if (contractor.getAccountLevel().isBidOnly()) {
-				contractor.setReason("Bid Only Account");
-			}
-
+            final String reason = contractor.getAccountLevel().isBidOnly() ? AccountStatusChanges
+                    .BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
 			contractor.syncBalance();
 			contractor.setAuditColumns(system);
-			accountStatusChanges.deactivateContractor(contractor, permissions,
+			accountStatusChanges.deactivateContractor(contractor, permissions, reason,
 					"Automatically inactivating account based on expired membership");
 		}
 	}
@@ -1175,7 +1173,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		for (ContractorAccount contractor : deactivateList) {
-			accountStatusChanges.deactivateContractor(contractor, permissions,
+			accountStatusChanges.deactivateContractor(contractor, permissions, AccountStatusChanges.DEACTIVATED_PENDING_ACCOUNT_REASON,
 					"Account has been deactivated, this account has been pending for 90 days without payment.");
 		}
 	}

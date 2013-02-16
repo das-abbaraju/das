@@ -1,13 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,7 +55,7 @@ import com.picsauditing.validator.ContractorValidator;
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 
-	@Autowired
+    @Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
 	protected ContractorValidator contractorValidator;
@@ -448,32 +442,42 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	public String deactivate() throws Exception {
-		if (Strings.isEmpty(contractor.getReason())) {
-			addActionError(getText("ContractorEdit.error.DeactivationReason"));
-		} else {
-			if (contractorHasNotExpiredYet() && !contractor.isHasFreeMembership()) {
-				return leaveContractorAlone();
-			}
+    public String deactivate() throws Exception {
+        subHeading = "Contractor Edit";
 
-			String expiresMessage = Strings.EMPTY_STRING;
-			if (contractorHasNotExpiredYet()) {
-				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
-						contractor.getPaymentExpires());
-			} else {
-				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
-			}
+        if (Strings.isEmpty(contractor.getReason())) {
+            addActionError(getText("ContractorEdit.error.DeactivationReason"));
+            return SUCCESS;
+        }
 
-			accountStatusChanges.deactivateContractor(contractor, permissions, "Closed contractor account." + expiresMessage);
-			this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
-		}
+        if (contractorHasNotExpiredYet() && !contractor.isHasFreeMembership()) {
+            return leaveContractorAlone();
+        }
 
-		this.subHeading = "Contractor Edit";
+        String expiresMessage = Strings.EMPTY_STRING;
+        String expiresMessage_en = Strings.EMPTY_STRING;
+        String reason = Strings.EMPTY_STRING;
+        if (contractorHasNotExpiredYet()) {
+            expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
+                    contractor.getPaymentExpires());
+            expiresMessage_en = this.getTextParameterized(Locale.ENGLISH,"ContractorEdit.message.AccountExpires",
+                    contractor.getPaymentExpires());
+            reason = AccountStatusChanges.ACCOUNT_ABOUT_TO_EXPIRE_REASON;
+        } else {
+            expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
+            expiresMessage_en = getText(Locale.ENGLISH,"ContractorEdit.message.AccountDeactivated");
+            reason = AccountStatusChanges.ACCOUNT_EXPIRED_REASON;
+        }
 
-		return SUCCESS;
-	}
+        accountStatusChanges.deactivateContractor(contractor, permissions, reason,
+                expiresMessage_en);
+        this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
 
-	private String leaveContractorAlone() {
+
+        return SUCCESS;
+    }
+
+    private String leaveContractorAlone() {
 		String expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
 				contractor.getPaymentExpires());
 		addNote(contractor, "Closed contractor account." + expiresMessage);

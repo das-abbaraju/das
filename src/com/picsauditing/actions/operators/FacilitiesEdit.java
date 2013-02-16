@@ -347,7 +347,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private OperatorAccount saveClientSite() {
     	if (operator.getStatus().isDeactivated()) {
     		String deactivationReason = permissions.getName() + " has deactivated this account.";
-    		accountStatusChanges.deactivateClientSite(operator, permissions, deactivationReason);
+    		accountStatusChanges.deactivateClientSite(operator, permissions,
+                    AccountStatusChanges.OPERATOR_MANUALLY_DEACTIVATED_REASON,
+                    deactivationReason);
     	}
 
     	operator.setNeedsIndexing(true);

@@ -3,6 +3,7 @@ package com.picsauditing.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,7 +40,7 @@ public class CopyContractorInfo extends AccountActionSupport {
 				fromRequestedContractor.setStatus(AccountStatus.Deleted);
 				fromRequestedContractor.setName(String.format("%s (DUPLICATE OF #%d)", toContractorAccount.getName(),
 						toContractorAccount.getId()));
-				fromRequestedContractor.setReason("Duplicate/Merged Account");
+				fromRequestedContractor.setReason(AccountStatusChanges.DUPLICATE_MERGED_ACCOUNT_REASON);
 				dao.save(fromRequestedContractor);
 			}
 
