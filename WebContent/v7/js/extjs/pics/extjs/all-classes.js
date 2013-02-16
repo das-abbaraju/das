@@ -97918,7 +97918,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             copy_setting_form = copy_setting_view.getForm(),
             copy_favorite = copy_setting_view.down('reportfavoritetoggle'),
             share_setting_view = this.getShareSetting(),
-            share_editable_icon = Ext.select('.icon-edit');
+            share_editable_icon = Ext.select('.icon-edit'),
+            report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            is_editable = report.get('is_editable');
 
         // TODO: reject changes
         
@@ -97933,8 +97936,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
         copy_favorite.toggleUnfavorite();
 
         // reset the share modal
-        share_setting_view.updateAccountDisplayfield('');
-        share_editable_icon.removeCls('selected');
+        if (is_editable) {
+            share_setting_view.updateAccountDisplayfield('');
+            share_editable_icon.removeCls('selected');
+        }
     },
 
     cancelSettingsModal: function (cmp, e, eOpts) {
