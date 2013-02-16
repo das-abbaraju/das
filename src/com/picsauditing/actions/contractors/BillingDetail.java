@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -95,7 +96,7 @@ public class BillingDetail extends ContractorActionSupport {
 		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 				&& (status.isRenewalOverdue() || status.isReactivation())) {
 			if (contractor.getAccountLevel().isBidOnly()) {
-				contractor.setReason("Bid Only Account");
+				contractor.setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
 			}
 		}
 

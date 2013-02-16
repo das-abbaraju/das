@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
@@ -50,7 +51,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 	public String deactivateDuplicate() throws Exception {
 		if (duplicate != null) {
 			duplicate.setName(String.format("%s (DUPLICATE OF #%d)", original.getName(), original.getId()));
-			duplicate.setReason("Duplicate/Merged Account");
+			duplicate.setReason(AccountStatusChanges.DUPLICATE_MERGED_ACCOUNT_REASON);
 			duplicate.setStatus(AccountStatus.Deleted);
 			duplicate.setAuditColumns(permissions);
 			dao.save(duplicate);

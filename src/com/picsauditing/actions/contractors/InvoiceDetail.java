@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,7 +231,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 						&& (status.isRenewalOverdue() || status.isReactivation())) {
 					if (contractor.getAccountLevel().isBidOnly()) {
-						contractor.setReason("Bid Only Account");
+						contractor.setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
 					}
 				}
 

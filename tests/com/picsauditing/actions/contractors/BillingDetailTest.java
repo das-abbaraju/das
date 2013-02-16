@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -304,7 +305,7 @@ public class BillingDetailTest extends PicsActionTest {
 
 		String actionResult = billingDetail.execute();
 
-		verify(contractor, times(1)).setReason("Bid Only Account");
+		verify(contractor, times(1)).setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
 		commonVerifications(actionResult);
 	}
 

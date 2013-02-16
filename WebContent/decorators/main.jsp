@@ -15,7 +15,6 @@
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.util.AppVersion"%>
-<%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
 <%@ page import="com.picsauditing.search.Database" %>
