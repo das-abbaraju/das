@@ -23,7 +23,7 @@ public class AccountTimezonePopulatorController extends PicsActionSupport {
 
 	public String startConversion() throws Exception {
 		checkPermissions();
-		if (conversionIsNotRunning()) {
+		if (conversionIsNotRunning() && accountAndUserTimezonePopulator.getTotalAccountsWillRun() > 0) {
 			taskExecutor.execute(accountAndUserTimezonePopulator);
 		}
 		return SUCCESS;

@@ -45,6 +45,8 @@ public class AccountTimezonePopulator implements Runnable {
 			infoMessage = "Exceeded the 24 hour period limit of Google Maps API. We can't run.";
 			isPopulatorRunning = false;
 		} else {
+			totalAccounts = 0;
+			infoMessage = "Nothing to report";
 			doRun();
 		}
 	}
@@ -56,6 +58,10 @@ public class AccountTimezonePopulator implements Runnable {
 		List<ContractorAccount> contractors = contractorsWithNullTimezones();
 		populateContractorTimezones(contractors);
 		isPopulatorRunning = false;
+		infoMessage = "Done.";
+		if (exceededOurDailyMapApiCount()) {
+			infoMessage += " We exceeded the google daily allotment, so we only completed those that did not need lookup.";
+		}
 	}
 
 	private boolean exceededOurDailyMapApiCount() {
@@ -97,8 +103,12 @@ public class AccountTimezonePopulator implements Runnable {
 			} else if (countrySub != null && TimeZoneUtil.COUNTRY_SUB_TO_TIME_ZONE.containsKey(countrySub.getIsoCode())) {
 				setTimezoneFromCountrySubdivision(contractor, countrySub);
 			} else {
-				setTimezoneFromLookup(contractor);
-				incrementLookupCount();
+				if (!exceededOurDailyMapApiCount()) {
+					setTimezoneFromLookup(contractor);
+					incrementLookupCount();
+				} else {
+					logger.error("Google timezone lookup has exceeded the daily lookup count. We'll keep running, but only for ones we don't need to lookup via google");
+				}
 			}
 		}
 	}

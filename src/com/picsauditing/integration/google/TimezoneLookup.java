@@ -45,6 +45,8 @@ public class TimezoneLookup extends GoogleApiOverHttp {
 			String status = (String) response.get("status");
 			if ("OK".equalsIgnoreCase(status)) {
 				timeZoneId = (String) response.get("timeZoneId");
+			} else {
+				logger.error("Google returned a non-OK status, response was: {}", response);
 			}
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Cannot get timezone, invalid response incoding: {}", e.getMessage());
