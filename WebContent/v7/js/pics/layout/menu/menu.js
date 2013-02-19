@@ -25,7 +25,7 @@
                 search_query_element.typeahead({
                     items: 10,
                     source: PICS.debounce(this.search, 350),
-                    menu: '<ul id="user_searchbox" class="typeahead dropdown-menu list-striped"></ul>',
+                    menu: '<ul id="user_searchbox" class="typeahead dropdown-menu dropdown-striped"></ul>',
                     item: '<li><a href="#"></a></li>'
                 });
 
@@ -76,6 +76,7 @@
                         // save result length before adding display text
                         results = items.length;
 
+                        // if the results are the same as the default
                         if (results === that.options.items) {
                             items.push($('<li class="more-results"><a href="#">More Results...</a></li>').get(0));
                         }

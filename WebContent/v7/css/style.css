@@ -8270,12 +8270,6 @@ ol.linenums li {
  * @date: 2012-07-09
  */
 
-/* line 11, ../sass/pics/_global.scss */
-
-.list-striped li:nth-child(even) {
-  background-color: #f1f1f2;
-}
-
 /* line 1, ../sass/pics/layout/_layout.scss */
 
 body {
@@ -9229,6 +9223,12 @@ dd {
   font-weight: bold;
   color: #999;
   text-transform: uppercase;
+}
+
+/* line 25, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+
+.dropdown-striped li:nth-child(even) {
+  background-color: #f1f1f2;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
