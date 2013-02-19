@@ -9,17 +9,20 @@
     <div class='version-detail-tooltip'>
         <ul class='unstyled'>
             <li>
-                <span><s:text name="global.OperatingSystem.Acronym"/>:</span> <s:property value="operatingSystem"/>
+                <span><s:text name="global.OperatingSystem.Acronym"/>:</span> ${operatingSystem}
             </li>
             <li>
-                <span><s:text name="global.Browser"/>:</span> <s:property value="browserName"/>
+                <span><s:text name="global.Browser"/>:</span> ${browserName}
             </li>
             <li>
-                <span><s:text name="global.ServerEnvironment"/>:</span> <s:property value="picsEnvironment"/>
+                <span><s:text name="global.ServerEnvironment"/>:</span>${picsEnvironment}
             </li>
             <li>
                 <span><s:text name="Login.Server"/>:</span> DB@<s:property
                     value="@com.picsauditing.search.Database@getDatabaseName()"/>
+            </li>
+            <li>
+                <span><s:text name="global.ServerTime"/>:</span>${systemTime}
             </li>
         </ul>
     </div>
