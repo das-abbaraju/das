@@ -133,12 +133,6 @@ public class I18nCacheThreadTest implements I18nCacheBuildAware {
 		startAndVerify(threads);
 	}
 
-	@Test(expected=java.lang.AssertionError.class)
-	public void testThreadsafe_BuildCacheNotSynchronized_WillFail() throws Exception {
-		List<Thread> threads = createUnSafeThreads(THREAD_COUNT);
-		startAndVerify(threads);
-	}
-
 	private void startAndVerify(List<Thread> threads) {
 		startThreads(threads);
 		
@@ -154,25 +148,6 @@ public class I18nCacheThreadTest implements I18nCacheBuildAware {
 		for (Thread thread : threads) {
 			thread.start();
 		}
-	}
-	
-	private List<Thread> createUnSafeThreads(int threadCount) {
-		List<Thread> threads = new ArrayList<Thread>();
-		for (int count = 0; count < threadCount; count++) {
-			threads.add(new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						i18nCache.buildCache();
-					} catch (Exception e) {
-						System.out.println("Thread exception during JUnit test!");
-					}
-				}
-			}));
-		}
-
-		return threads;
 	}
 	
 	private List<Thread> createSafeThreads(int threadCount) {
