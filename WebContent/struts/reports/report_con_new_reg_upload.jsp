@@ -43,7 +43,9 @@
 									<s:text name="global.File" />
 								</label>
 								<s:file name="file" value="%{file}" size="50"></s:file>
-								<br />
+                                <br />
+                                <s:checkbox name="forceUpload" label="ReportNewReqConImport.ForceUpload" theme="formhelp" />
+                                <br />
 								<br />
 								<input
 									type="button"

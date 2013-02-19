@@ -1,48 +1,30 @@
 package com.picsauditing.actions.report;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.ContractorAppIndexSearch;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.SearchEngine;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
-
 	@Autowired
 	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
@@ -58,14 +40,18 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
 	private UserDAO userDAO;
 
+	private boolean forceUpload = false;
 	private File file;
 	private String fileContentType = null;
 	private String fileFileName = null;
 	private String fileName = null;
-
 	private Workbook workbook;
+	private ContractorAppIndexSearch contractorAppIndexSearch;
 
 	public String save() throws Exception {
+		Database database = new Database();
+		contractorAppIndexSearch = new ContractorAppIndexSearch(permissions);
+
 		String extension = null;
 		if (file != null && file.length() > 0) {
 			extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
@@ -82,6 +68,14 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	public boolean isForceUpload() {
+		return forceUpload;
+	}
+
+	public void setForceUpload(boolean forceUpload) {
+		this.forceUpload = forceUpload;
 	}
 
 	public File getFile() {
@@ -136,14 +130,22 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					}
 
 					// skip empty row: Assuming that no company name = empty row
-					if (getValue(row, RegistrationRequestColumn.Name) == null) {
+					if (Strings.isEmpty((String) getValue(row, RegistrationRequestColumn.Name))) {
 						continue;
 					}
 
 					ContractorRegistrationRequest request = createdRegistrationRequest(row);
 					checkRequestForErrors(row.getRowNum(), request);
 
-					requests.add(request);
+					int matches = findGap(request);
+					request.setMatchCount(matches);
+
+					if (matches == 0 || forceUpload) {
+						requests.add(request);
+					} else {
+						addActionMessage(getTextParameterized("ReportNewReqConImport.DuplicatesFound", matches,
+								row.getRowNum() + 1, request.getName()));
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -154,17 +156,15 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		if (getActionErrors().size() == 0) {
 			String notes = "Sent initial contact email.";
 			for (ContractorRegistrationRequest crr : requests) {
-				int matches = findGap(crr);
-				crr.setMatchCount(matches);
-                crrDAO.save(crr);
-
-                if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
-                    crr.contactByEmail();
-                    prependToRequestNotes(notes, crr);
-					emailHelper.sendInitialEmail(crr, getFtpDir());
-				}
-
 				crrDAO.save(crr);
+
+				if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
+					crr.contactByEmail();
+					prependToRequestNotes(notes, crr);
+					emailHelper.sendInitialEmail(crr, getFtpDir());
+
+					crrDAO.save(crr);
+				}
 			}
 
 			if (permissions.isOperatorCorporate()
@@ -223,7 +223,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		// Country Subdivision
 		String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
 
-		if (!subdivision.contains("-")) {
+		if (subdivision != null && !subdivision.contains("-")) {
 			if (request.getCountry() != null) {
 				subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
 			}
@@ -273,45 +273,30 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	}
 
 	private int findGap(ContractorRegistrationRequest newContractor) {
-		List<String> searchTerms = new ArrayList<String>();
+		Set<ContractorAppIndexSearch.SearchResult> results = new HashSet<ContractorAppIndexSearch.SearchResult>();
 
-		if (!Strings.isEmpty(newContractor.getName()))
-			searchTerms.add(newContractor.getName());
-		if (!Strings.isEmpty(newContractor.getAddress()))
-			searchTerms.add(newContractor.getAddress());
-		if (!Strings.isEmpty(newContractor.getPhone()))
-			searchTerms.add(newContractor.getPhone());
-		if (!Strings.isEmpty(newContractor.getEmail()))
-			searchTerms.add(newContractor.getEmail());
-		if (!Strings.isEmpty(newContractor.getContact()))
-			searchTerms.add(newContractor.getContact());
-
-		String term = Strings.implode(searchTerms, " ");
-
-		List<String> unusedTerms = new ArrayList<String>();
-
-		SearchEngine searchEngine = new SearchEngine(permissions);
-
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
-		Database db = new Database();
-		List<String> termsArray = searchEngine.sortSearchTerms(searchEngine.buildTerm(term, false, false), true);
-
-		while (results.isEmpty() && termsArray.size() > 0) {
-			String query = searchEngine.buildQuery(null, termsArray, "i1.indexType = 'C'", null, 20, false, true);
-			try {
-				results = db.select(query, false);
-			} catch (SQLException e) {
-				logger.error("Error running query in RequestNewCon");
-				logger.error("{}", e.getCause());
-				return 0;
+		try {
+			if (!Strings.isEmpty(newContractor.getName())) {
+				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getName(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
 			}
 
-			if (!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()) {
-				unusedTerms.addAll(searchEngine.getNullTerms());
-				termsArray.removeAll(searchEngine.getNullTerms());
+			if (!Strings.isEmpty(newContractor.getAddress())) {
+				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getAddress(), ContractorAppIndexSearch.INDEX_TYPE_CONTRACTOR));
 			}
 
-			termsArray = termsArray.subList(0, termsArray.size() - 1);
+			if (!Strings.isEmpty(newContractor.getPhone())) {
+				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getPhone(), ContractorAppIndexSearch.INDEX_TYPE_USER));
+			}
+
+			if (!Strings.isEmpty(newContractor.getEmail())) {
+				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getEmail(), ContractorAppIndexSearch.INDEX_TYPE_USER));
+			}
+
+			if (!Strings.isEmpty(newContractor.getContact())) {
+				results.addAll(contractorAppIndexSearch.searchOn(newContractor.getContact(), ContractorAppIndexSearch.INDEX_TYPE_USER));
+			}
+		} catch (SQLException sqlException) {
+			logger.error("Error searching for matching contractors", sqlException);
 		}
 
 		return results.size();
@@ -322,24 +307,24 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		if (cell != null) {
 			try {
 				switch (column) {
-				case Country:
-					return countryDAO.find(cell.getRichStringCellValue().getString());
-				case RequestedBy:
-					return operatorAccountDAO.find((int) cell.getNumericCellValue());
-				case RequestedByUser:
-					return userDAO.find((int) cell.getNumericCellValue());
-				case Deadline:
-					return cell.getDateCellValue();
-				default:
-					if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-						return cell.getNumericCellValue();
-					} else {
-						return cell.getRichStringCellValue().getString();
-					}
+					case Country:
+						return countryDAO.find(cell.getRichStringCellValue().getString());
+					case RequestedBy:
+						return operatorAccountDAO.find((int) cell.getNumericCellValue());
+					case RequestedByUser:
+						return userDAO.find((int) cell.getNumericCellValue());
+					case Deadline:
+						return cell.getDateCellValue();
+					default:
+						if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+							return cell.getNumericCellValue();
+						} else {
+							return cell.getRichStringCellValue().getString();
+						}
 				}
 			} catch (Exception exception) {
 				logger.error("Exception trying to parse cell {} in row {} from file {}\n{}",
-						new Object[] { column.ordinal(), row.getRowNum(), fileFileName, exception });
+						new Object[]{column.ordinal(), row.getRowNum(), fileFileName, exception});
 				addActionError(String.format("Could not parse cell %d in row %d as %s", column, row.getRowNum(),
 						column.toString()));
 			}
