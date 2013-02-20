@@ -1,6 +1,13 @@
-// 1) Replace the following from your Servers / Tomcat / server.xml
-			<Context docBase="picsWeb2" path="/picsWeb2" reloadable="true" source="org.eclipse.jst.j2ee.server:picsWeb2"/></Host>
-// with this:
+// 1) Your Tomcat server.xml file needs to have a <Context> tag for PICSORG that contains resource definitions for
+//    jdbc/pics and jdbc/picsro (read only).
+//
+//    In Eclipse, Use Open Resource (Ctrl-Shift-R) to open "server.xml". You'll find an existing <Context> tag there.
+//    Replace it with the following one. (Note: be sure to leave the trailing </Host> closing tag.)
+//
+//    For IntelliJ, you'll be using a Tomcat instance that is installed separately. Find where that Tomcat instance
+//    is installed and edit the conf/server.xml file directly.  Insert the following <Context ...> snippet at the end,
+//    just above the </Host> closing tag.
+//
 				<Context docBase="PICSORG" path="/" reloadable="false"
 					source="org.eclipse.jst.j2ee.server:PICSORG">
 					<Resource name="jdbc/pics" auth="Container" type="javax.sql.DataSource"
@@ -22,11 +29,13 @@
 			</Host>
 
 // 2) Add the following to the end of your server VM arguments:
-// (To navigate to the VM arguments: Run-->Open Run Dialog-->Arguments.VMArguments)
+//    The -Dsk is for the session cookie
+//    IMPORTANT: The -Xms and -Xmx switchs do NOT use an equals sign. The other switches do.
+//    (In Eclipse, To navigate to the VM arguments: Run-->Open Run Dialog-->Arguments.VMArguments)
+//    (In IntelliJ, Edit Config Options --> Your Tomcat7 config --> Server tab | VM Options field.
 
-	-XX:MaxPermSize=256m
+	-Xms384m -Xmx512m -XX:MaxPermSize=256m
 	-Dpics.debug=1
-	// This is for the session cookie
 	-Dsk="9KuRXTx0cnuZefrt0EIfXd1MFqKvMY9x7OSub0B1EGLpR69b1Z+sdB7p6PT3Sy5rhl6qXKYyINdPJoHMWCqBNQ=="
 	-Dpics.autoLogin=941
 
