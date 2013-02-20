@@ -31,6 +31,7 @@ public class ManageReportsService {
 
 		reportUser.setSortOrder(nextSortIndex);
 		reportUser.setFavorite(true);
+		reportUser = (ReportUser) reportUserDao.save(reportUser);
 
 		return reportUser;
 	}

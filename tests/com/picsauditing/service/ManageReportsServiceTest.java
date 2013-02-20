@@ -55,6 +55,7 @@ public class ManageReportsServiceTest {
 	public void testFavoriteReport_shouldSetFavoriteFlag() throws SQLException {
 		ReportUser reportUser = createTestReportUser();
 		reportUser.setFavorite(false);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
 
 		ReportUser result = manageReportsService.favoriteReport(reportUser);
 
@@ -66,6 +67,7 @@ public class ManageReportsServiceTest {
 		ReportUser reportUser = createTestReportUser();
 		reportUser.setFavorite(false);
 		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
 
 		ReportUser result = manageReportsService.favoriteReport(reportUser);
 
