@@ -61,9 +61,10 @@
 	</field>
 	
 	<field name="contractor.countrySubdivision">
-		<field-validator type="required">
-			<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
-		</field-validator>
+        <field-validator type="fieldexpression">
+            <param name="expression"><![CDATA[ !countrySubdivisionMissing ]]></param>
+            <message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+        </field-validator>
 	</field>
 
 	<field name="requestRelationship.operatorAccount">

@@ -214,7 +214,7 @@
 							/>
 						</li>
 						<li id="country_subdivision">
-							<s:if test="contractor.country != null">
+							<s:if test="contractor.country != null && contractor.country.hasCountrySubdivisions">
 								<s:select
 									id="countrySubdivision_sel"
 									label="%{contractor.country.isoCode == 'CA' ? 'global.Province' : 'CountrySubdivision'}"

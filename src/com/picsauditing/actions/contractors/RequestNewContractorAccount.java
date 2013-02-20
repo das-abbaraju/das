@@ -262,6 +262,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return false;
 	}
 
+	public boolean isCountrySubdivisionMissing() {
+		if (contractor != null && contractor.getCountry() != null) {
+			return contractor.getCountry().isHasCountrySubdivisions() && contractor.getCountrySubdivision() == null;
+		}
+
+		return true;
+	}
+
 	private void initializeRequest() {
 		if (contractor.getId() == 0) {
 			contractor.setStatus(AccountStatus.Requested);

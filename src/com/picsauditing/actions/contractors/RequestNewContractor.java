@@ -1,15 +1,15 @@
 package com.picsauditing.actions.contractors;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SearchEngine;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,28 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.RegistrationRequestEmailHelper;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SearchEngine;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class RequestNewContractor extends AccountActionSupport {
@@ -496,13 +476,11 @@ public class RequestNewContractor extends AccountActionSupport {
 		if (Strings.isEmpty(newContractor.getContact()))
 			addActionError(getText("RequestNewContractor.error.FillContactName"));
 
-		if (newContractor.getCountry() == null)
+		if (newContractor.getCountry() == null) {
 			addActionError(getText("RequestNewContractor.error.SelectCountry"));
-		else if (newContractor.getCountry().getIsoCode().equals("US")
-				|| newContractor.getCountry().getIsoCode().equals("CA")) {
-			if (newContractor.getCountrySubdivision() == null
-					|| Strings.isEmpty(newContractor.getCountrySubdivision().getIsoCode()))
-				addActionError(getText("RequestNewContractor.error.SelectCountrySubdivision"));
+		} else if (newContractor.getCountry().isHasCountrySubdivisions() && (newContractor.getCountrySubdivision() == null
+				|| Strings.isEmpty(newContractor.getCountrySubdivision().getIsoCode()))) {
+			addActionError(getText("RequestNewContractor.error.SelectCountrySubdivision"));
 		}
 
 		if (Strings.isEmpty(newContractor.getPhone()))
@@ -584,8 +562,8 @@ public class RequestNewContractor extends AccountActionSupport {
 						dao.save(contractorTag);
 					}
 				} catch (Exception exception) {
-					LOG.error("Error with transfering tag {} from request {} to contractor {}\n{}", new Object[] {
-							tagID, newContractor.getId(), newContractor.getContractor().getId(), exception });
+					LOG.error("Error with transfering tag {} from request {} to contractor {}\n{}", new Object[]{
+							tagID, newContractor.getId(), newContractor.getContractor().getId(), exception});
 				}
 			}
 		}
