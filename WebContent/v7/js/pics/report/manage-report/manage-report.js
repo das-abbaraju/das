@@ -23,7 +23,7 @@ PICS.define('report.manage-report.ManageReport', {
             }
             
             PICS.ajax({
-                url: 'ManageReports!favorite.action',
+                url: 'ReportApi!favorite.action',
                 data: {
                     reportId: report_id
                 },
@@ -46,7 +46,7 @@ PICS.define('report.manage-report.ManageReport', {
             }
             
             PICS.ajax({
-                url: 'ManageReports!unfavorite.action',
+                url: 'ReportApi!unfavorite.action',
                 data: {
                     reportId: report_id
                 },

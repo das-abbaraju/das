@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-02-19
+/*! Picsorganizer - v0.1.0 - 2013-02-20
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -2921,7 +2921,7 @@ PICS.define('report.manage-report.ManageReport', {
             }
             
             PICS.ajax({
-                url: 'ManageReports!favorite.action',
+                url: 'ReportApi!favorite.action',
                 data: {
                     reportId: report_id
                 },
@@ -2944,7 +2944,7 @@ PICS.define('report.manage-report.ManageReport', {
             }
             
             PICS.ajax({
-                url: 'ManageReports!unfavorite.action',
+                url: 'ReportApi!unfavorite.action',
                 data: {
                     reportId: report_id
                 },
