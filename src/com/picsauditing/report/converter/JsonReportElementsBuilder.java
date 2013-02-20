@@ -3,6 +3,7 @@ package com.picsauditing.report.converter;
 import static com.picsauditing.report.ReportJson.*;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -10,6 +11,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 
 @SuppressWarnings("unchecked")
@@ -50,7 +52,11 @@ public class JsonReportElementsBuilder {
 
 		json.put(COLUMN_TYPE, field.getDisplayType().name());
 		json.put(COLUMN_URL, field.getUrl());
-		json.put(COLUMN_SQL_FUNCTION, null);
+		JSONArray sqlFunctionArray = new JSONArray();
+		for (SqlFunction sqlFunction : field.getType().getSqlFunctions()) {
+			sqlFunctionArray.add(sqlFunction.toString());
+		}
+		json.put(COLUMN_SQL_FUNCTION, sqlFunctionArray);
 		json.put(COLUMN_WIDTH, field.getWidth());
 		json.put(COLUMN_SORTABLE, field.isSortable());
 

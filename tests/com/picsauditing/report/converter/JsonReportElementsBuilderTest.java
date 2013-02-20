@@ -110,7 +110,8 @@ public class JsonReportElementsBuilderTest {
 
 		assertJson(COLUMN_TYPE, field.getDisplayType().name(), jsonString);
 		assertJson(COLUMN_URL, url, jsonString);
-		assertJsonNoQuotes(COLUMN_SQL_FUNCTION, null, jsonString);
+		// See TypeFactoryTest for a more thorough unit test on SQL Functions
+		assertContains(COLUMN_SQL_FUNCTION + ":[\"", jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
 	}
@@ -157,5 +158,4 @@ public class JsonReportElementsBuilderTest {
 		assertJsonNoQuotes(FILTER_VALUE, "", jsonString);
 		assertJsonNoQuotes(FILTER_COLUMN_COMPARE, null, jsonString);
 	}
-
 }
