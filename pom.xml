@@ -231,6 +231,7 @@
                             <exclude>org/nace/webservices/services/*.class</exclude>
                             <exclude>com/intuit/developer/**/*.class</exclude>
                             <exclude>com/picsauditing/access/PicsMenu.class</exclude>
+                            <exclude>com/picsauditing/util/Base64.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
