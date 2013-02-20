@@ -1,14 +1,5 @@
 package com.picsauditing.actions.notes;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
-
-import com.picsauditing.dao.*;
-import com.picsauditing.toggle.FeatureToggle;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
@@ -16,16 +7,23 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterNote;
-import com.picsauditing.util.SpringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends AccountActionSupport {
@@ -37,6 +35,8 @@ public class NoteEditor extends AccountActionSupport {
 	private EmployeeDAO employeeDAO;
     @Autowired
     private UserSwitchDAO userSwitchDAO;
+    @Autowired
+    private ContractorAccountDAO contractorDAO;
     @Autowired
     private FeatureToggle featureToggleChecker;
 
@@ -142,8 +142,6 @@ public class NoteEditor extends AccountActionSupport {
 
 	protected void updateInternalSalesInfo(Permissions permissions, Account account) {
 		if (permissions.hasGroup(User.GROUP_ISR) && account.isContractor()) {
-			ContractorAccountDAO contractorDAO = SpringUtils
-					.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
 			ContractorAccount ca = contractorDAO.find(account.getId());
 			ca.setLastContactedByInsideSales(permissions.getUserId());
 			contractorDAO.save(ca);
@@ -184,6 +182,7 @@ public class NoteEditor extends AccountActionSupport {
 		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
 	}
 
+    // used in jsp
 	public List<Account> getFacilities() {
         final List<Account> facilities = new ArrayList<Account>();
         if (permissions.isOperatorCorporate()) {
