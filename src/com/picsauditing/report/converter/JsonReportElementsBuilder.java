@@ -53,9 +53,17 @@ public class JsonReportElementsBuilder {
 		json.put(COLUMN_TYPE, field.getDisplayType().name());
 		json.put(COLUMN_URL, field.getUrl());
 		
-		// TODO: This does not match column-functions.json.
+		json.put(COLUMN_SQL_FUNCTION, sqlFunctionJson(field, locale));
+		json.put(COLUMN_WIDTH, field.getWidth());
+		json.put(COLUMN_SORTABLE, field.isSortable());
+
+		return json;
+	}
+
+	private static JSONArray sqlFunctionJson(Field field, Locale locale) {
 		JSONArray sqlFunctionArray = new JSONArray();
 
+		// TODO: This does not match column-functions.json.
 		for (SqlFunction sqlFunction : field.getType().getSqlFunctions()) {
 
 			JSONObject sqlFunctionKeyValue = new JSONObject();
@@ -64,12 +72,7 @@ public class JsonReportElementsBuilder {
 					ReportUtil.getText(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name(), locale));
 			sqlFunctionArray.add(sqlFunctionKeyValue);
 		}
-
-		json.put(COLUMN_SQL_FUNCTION, sqlFunctionArray);
-		json.put(COLUMN_WIDTH, field.getWidth());
-		json.put(COLUMN_SORTABLE, field.isSortable());
-
-		return json;
+		return sqlFunctionArray;
 	}
 
 	private static JSONObject fieldToFilterJson(Field field) {
