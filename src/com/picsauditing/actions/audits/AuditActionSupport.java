@@ -280,7 +280,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			if (type.getEditPermission() != null) {
 				return permissions.hasPermission(type.getEditPermission());
-			}
+			} else if (type.getEditAudit() != null) {
+                Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+                return groupIds.contains(type.getEditAudit().getId());
+            }
 		}
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
