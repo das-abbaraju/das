@@ -1,33 +1,26 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
+import java.util.*;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.when;
 
 public class AuditActionSupportTest extends PicsTest {
-	private AuditActionSupport test;
+    private static final Integer OPERTOR_GROUP_ID = 44;
+    private AuditActionSupport test;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -44,8 +37,12 @@ public class AuditActionSupportTest extends PicsTest {
 		test = new AuditActionSupport();
 		autowireEMInjectedDAOs(test);
 		PicsTestUtil.forceSetPrivateField(test, "permissions", permissions);
+        Set<Integer> groupIds = new TreeSet<Integer>();
+        groupIds.add(OPERTOR_GROUP_ID);
+        when(permissions.getAllInheritedGroupIds()).thenReturn(groupIds);
 
-		contractor = EntityFactory.makeContractor();
+
+        contractor = EntityFactory.makeContractor();
 		operator = EntityFactory.makeOperator();
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
@@ -124,8 +121,51 @@ public class AuditActionSupportTest extends PicsTest {
 		when(permissions.seesAllContractors()).thenReturn(true);
 
 		WorkflowStep step = createWorkflowStep(AuditStatus.Submitted, AuditStatus.Approved);
-		Boolean value = Whitebox.invokeMethod(test, "canPerformAction", cao, step);
+		Boolean value = Whitebox.invokeMethod(test, "canPerformAction", audit.getOperators().get(0), step);
 		assertTrue(value);
-	}
+
+        audit = createOperatorAudit(OPERTOR_GROUP_ID);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+        cao = audit.getOperators().get(0);
+        cao.setPercentComplete(100);
+        when(permissions.seesAllContractors()).thenReturn(false);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        step = createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, step);
+        assertTrue(value);
+
+        audit = createOperatorAudit(1);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+        cao = audit.getOperators().get(0);
+        cao.setPercentComplete(100);
+        when(permissions.seesAllContractors()).thenReturn(false);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+        step = createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted);
+        value = Whitebox.invokeMethod(test, "canPerformAction", cao, step);
+        assertFalse(value);
+    }
+
+    private ContractorAudit createOperatorAudit(int auditorGroupId) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+
+        User group = EntityFactory.makeUser();
+        group.setId(auditorGroupId);
+        group.setIsGroup(YesNo.Yes);
+        audit.getAuditType().setEditAudit(group);
+
+        EntityFactory.addCao(audit, operator);
+        Workflow workflow = new Workflow();
+        workflow.setId(3);
+
+        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+        steps.add(createWorkflowStep(null, AuditStatus.Pending));
+        steps.add(createWorkflowStep(AuditStatus.Pending, AuditStatus.Submitted));
+        steps.add(createWorkflowStep(AuditStatus.Submitted, AuditStatus.Complete));
+
+        workflow.setSteps(steps);
+        audit.getAuditType().setWorkFlow(workflow);
+
+        return audit;
+    }
 
 }
