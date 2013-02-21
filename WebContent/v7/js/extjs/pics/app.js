@@ -50,6 +50,14 @@ Ext.application({
             }
         };
 
+        PICS.app.updateDocumentTitle = function () {
+            var report_store = Ext.StoreManager.get('report.Reports'),
+                report = report_store.first(),
+                report_name = report.get('name');
+
+            document.title = report_name;
+        },
+
         PICS.data.ServerCommunication.loadAll({
             success_callback: this.createViewport,
             scope: this
@@ -64,6 +72,8 @@ Ext.application({
                     var loading = Ext.get('loading_page');
 
                     if(loading) {
+                        PICS.app.updateDocumentTitle();
+
                         loading.remove();
                     }
                 }

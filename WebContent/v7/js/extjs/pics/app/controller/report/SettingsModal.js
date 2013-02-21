@@ -173,12 +173,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_setting_form.updateRecord();
         }
 
-        settings_modal_view.close();
-
-        this.application.fireEvent('updatepageheader');
-
         PICS.data.ServerCommunication.saveReport({
             success_callback: function () {
+
+                PICS.app.updateDocumentTitle();
+
+                that.application.fireEvent('updatepageheader');
+
+                settings_modal_view.close();
+
                 that.application.fireEvent('opensuccessmessage', {
                     title: 'Report Saved',
                     html: 'to My Reports in Manage Reports.'
