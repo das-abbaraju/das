@@ -25,8 +25,11 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.SqlFunction;
 
 public class ReportUtilTest {
 
@@ -103,6 +106,24 @@ public class ReportUtilTest {
 		assertContains("\"key\":1", json.toString());
 		assertContains("\"key\":2", json.toString());
 		assertContains("\"key\":3", json.toString());
+	}
+
+	@Test
+	public void testAddTranslatedLabelsToReportParameters_ColumnWithFunctionTranslation() throws ClassNotFoundException {
+		Permissions permissions = EntityFactory.makePermission();
+
+		Report report = new Report();
+		Column column = new Column();
+		report.addColumn(column);
+		
+		Field accountName = new Field("AccountName__Count");
+		column.setField(accountName);
+		column.setSqlFunction(SqlFunction.Count);
+		column.setName("AccountName__Count");
+		
+		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
+		
+		assertEquals("translation:[Report.Function.Count, en]: translation:[Report.AccountName, en]", report.getColumns().get(0).getField().getText());
 	}
 
 	private Answer<String> returnMockTranslation() {

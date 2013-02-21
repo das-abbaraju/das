@@ -68,13 +68,12 @@ public final class ReportUtil {
 	}
 
 	public static void addTranslatedLabelsToReportParameters(Report report, Locale locale) {
-		addTranslationLabelsToFields(report, locale);
+		addTranslationLabelsToColumns(report, locale);
 		addTranslationLabelsToFilters(report, locale);
 		addTranslationLabelsToSorts(report, locale);
 	}
 
-	// TODO rename to addTranslationLabelsToColumns
-	private static void addTranslationLabelsToFields(Report report, Locale locale) {
+	private static void addTranslationLabelsToColumns(Report report, Locale locale) {
 		if (CollectionUtils.isEmpty(report.getColumns())) {
 			return;
 		}
@@ -83,20 +82,22 @@ public final class ReportUtil {
 			Field field = column.getField();
 
 			if (field == null) {
+				
 				field = new Field(column.getFieldNameWithoutMethod());
 				column.setField(field);
 			}
 
-			// field.setName(column.getFieldNameWithoutMethod());
-			// field.setName(column.getName());
-
-			if (column.getSqlFunction() != null) {
-				// field.setTranslationPrefixAndSuffix(null, null);
-				String functionTranslation = getText(REPORT_FUNCTION_KEY_PREFIX + column.getSqlFunction().toString(), locale);
-				field.setText(functionTranslation + ": " + field.getText());
-			}
-
 			translateField(field, locale);
+			
+			if (column.getSqlFunction() != null) {
+				field.setName(column.getFieldNameWithoutMethod());
+				field.setTranslationPrefixAndSuffix(null, null);
+				String functionTranslation = getText(REPORT_FUNCTION_KEY_PREFIX + column.getSqlFunction().toString(), locale);
+				field.setText(functionTranslation + ": " + translateLabel(field, locale));
+				field.setHelp(translateHelp(field, locale));
+				field.setName(column.getName());
+			}
+			
 		}
 	}
 
@@ -317,6 +318,7 @@ public final class ReportUtil {
 		return permissions;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions) throws ClassNotFoundException {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
@@ -339,6 +341,7 @@ public final class ReportUtil {
 		return json;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static Object getKeyForEnum(FieldType fieldType, Enum enumValue) {
 		if (fieldType.getEnumType() == EnumType.ORDINAL) {
 			return enumValue.ordinal();
@@ -347,6 +350,7 @@ public final class ReportUtil {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static Object getValueForEnum(Enum enumValue, Locale locale) {
 		if (enumValue instanceof Translatable) {
 			return getText(((Translatable) enumValue).getI18nKey(), locale);
