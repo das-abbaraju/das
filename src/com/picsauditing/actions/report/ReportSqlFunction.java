@@ -38,7 +38,7 @@ public class ReportSqlFunction extends PicsApiSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static JSONArray sqlFunctionJson(Field field, Locale locale) {
+	private JSONArray sqlFunctionJson(Field field, Locale locale) {
 		JSONArray sqlFunctionArray = new JSONArray();
 
 		for (SqlFunction sqlFunction : field.getType().getSqlFunctions()) {
@@ -46,7 +46,7 @@ public class ReportSqlFunction extends PicsApiSupport {
 			JSONObject sqlFunctionKeyValue = new JSONObject();
 			sqlFunctionKeyValue.put(ReportJson.SQL_FUNCTIONS_KEY, sqlFunction.name());
 			sqlFunctionKeyValue.put(ReportJson.SQL_FUNCTIONS_VALUE,
-					ReportUtil.getText(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name(), locale));
+					getText(locale, ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name()));
 			sqlFunctionArray.add(sqlFunctionKeyValue);
 		}
 		return sqlFunctionArray;
