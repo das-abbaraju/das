@@ -52,6 +52,10 @@ public class ReportJson {
 	public static final String RESULTS_TOTAL = "total";
 	public static final String RESULTS_SQL = "sql";
 	public static final String RESULTS_DATA = "data";
+	
+	public static final String SQL_FUNCTIONS = "sql_functions";
+	public static final String SQL_FUNCTIONS_KEY = "key";
+	public static final String SQL_FUNCTIONS_VALUE = "value";
 
 	public static final String EXT_JS_SUCCESS = "success";
 	public static final String EXT_JS_MESSAGE = "message";
