@@ -38,4 +38,6 @@ public class ReportSqlFunctionTest extends PicsActionTest {
 	
 		assertContains("Report.Function.GroupConcat", json.toString());
 	}
+	
+	// TODO: Test the following: Accounts Date, Number, Boolean. Also pick out another model type to test
 }
