@@ -196,6 +196,10 @@ public class Filter extends ReportElement {
 			}
 		}
 
+		if (filterType == FilterType.Autocomplete) {
+			return "'" + Strings.escapeQuotes(filterValue) + "'";
+		}
+
 		throw new RuntimeException(field.getType().getFilterType() + " has no filter calculation defined yet");
 	}
 
