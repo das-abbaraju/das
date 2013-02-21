@@ -4,13 +4,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.approvaltests.Approvals;
-import org.approvaltests.reporters.JunitReporter;
-import org.approvaltests.reporters.UseReporter;
 import org.junit.Test;
 
 import com.picsauditing.util.Strings;
 
-@UseReporter(JunitReporter.class)
+//@UseReporter(JunitReporter.class)
 public class TypeFactoryTest {
 
 	@Test
