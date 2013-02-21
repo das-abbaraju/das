@@ -13,6 +13,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionList', {
     }],
     enableColumnHide: false,    
     hideHeaders: true,
+    maxHeight: 200,
     rowLines: false,
     store: 'report.ColumnFunctions'
 });

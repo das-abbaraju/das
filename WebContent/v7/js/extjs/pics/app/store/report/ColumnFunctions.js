@@ -6,7 +6,7 @@ Ext.define('PICS.store.report.ColumnFunctions', {
     setProxyForRead: function (url) {
         var proxy = {
             reader: {
-                root: 'column_functions',
+                root: 'sql_functions',
                 type: 'json'
             },
             type: 'ajax',

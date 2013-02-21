@@ -76853,7 +76853,7 @@ Ext.define('PICS.store.report.ColumnFunctions', {
     setProxyForRead: function (url) {
         var proxy = {
             reader: {
-                root: 'column_functions',
+                root: 'sql_functions',
                 type: 'json'
             },
             type: 'ajax',
@@ -90036,6 +90036,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionList', {
     }],
     enableColumnHide: false,    
     hideHeaders: true,
+    maxHeight: 200,
     rowLines: false,
     store: 'report.ColumnFunctions'
 });
