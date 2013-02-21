@@ -248,7 +248,7 @@
 		    							</pics:toggle>
 		   							</s:if>
 		   							<s:else>
-	    								<s:url method="add" var="add_contractor">
+	    								<s:url method="add" var="add_contractor" action="NewContractorSearch">
 	    									<s:param name="contractor">
 	    										${row.get('id')}
 	    									</s:param>

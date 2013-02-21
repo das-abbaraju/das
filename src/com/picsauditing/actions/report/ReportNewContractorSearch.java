@@ -273,7 +273,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailSender.send(emailQueue);
 		}
 
-		return SUCCESS;
+		return setUrlForRedirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
+		+ "&filter.tradeInformation=true");
 	}
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
