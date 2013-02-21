@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<% String version = com.picsauditing.actions.PicsActionSupport.getVersion(); %>
+<% String version = com.picsauditing.util.AppVersion.current.getVersion(); %>
 <html>
 <head>
   <title><s:text name="ContractorPricing.title"></s:text></title>

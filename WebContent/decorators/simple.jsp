@@ -1,5 +1,5 @@
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
-<%@ page import="com.picsauditing.actions.PicsActionSupport" %>
+<%@ page import="com.picsauditing.util.AppVersion"%>
 <%@ page language="java" errorPage="/exception_handler.jsp" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -12,11 +12,11 @@
 		<meta http-equiv="Expires" content="0" />
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=PicsActionSupport.getVersion()%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=PicsActionSupport.getVersion()%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=PicsActionSupport.getVersion()%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=AppVersion.current.getVersion()%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=AppVersion.current.getVersion()%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=AppVersion.current.getVersion()%>" />
 		
-		<script type="text/javascript" src="js/pics_main.js?v=<%=PicsActionSupport.getVersion()%>"></script>
+		<script type="text/javascript" src="js/pics_main.js?v=<%=AppVersion.current.getVersion()%>"></script>
 		
 		<style type="text/css">
 		#content {
