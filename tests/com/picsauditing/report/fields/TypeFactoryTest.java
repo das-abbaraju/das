@@ -4,10 +4,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Test;
 
 import com.picsauditing.util.Strings;
 
+@UseReporter(DiffReporter.class)
 public class TypeFactoryTest {
 
 	@Test
@@ -21,6 +24,7 @@ public class TypeFactoryTest {
 		actual.append("\t");
 		actual.append("SqlFunctions");
 		actual.append("\n");
+
 		for (FieldType fieldType : FieldType.values()) {
 			actual.append(fieldType.toString());
 			actual.append("\t");
@@ -32,6 +36,7 @@ public class TypeFactoryTest {
 			actual.append(Strings.implode(sortedSqlFunctions));
 			actual.append("\n");
 		}
-//		Approvals.verify(actual.toString());
+
+		Approvals.verify(actual.toString());
 	}
 }
