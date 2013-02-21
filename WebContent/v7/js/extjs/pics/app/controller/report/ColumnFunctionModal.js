@@ -7,6 +7,7 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     }],
 
     stores: [
+        'report.Reports',
         'report.ColumnFunctions'
     ],
 
@@ -43,12 +44,16 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     },
 
     openColumnFunctionModal: function (column) {
-        var field_id = column.get('field_id'),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_type = report.get('type'),
+            field_id = column.get('field_id'),
             column_function_store = this.getReportColumnFunctionsStore(),
-            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(field_id);
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id);
         
         column_function_store.setProxyForRead(url);
         
+        // TODO: errors caught???
         column_function_store.load(function (records, operation, success) {
             if (success) {
                 var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {

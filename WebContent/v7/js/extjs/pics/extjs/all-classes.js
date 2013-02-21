@@ -66455,62 +66455,63 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'Autocompleter.action?';
-            
+
             var params = {
                 reportId: report_id,
                 fieldId: field_id,
                 searchKey: search_key
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getCopyReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!copy.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
-        getColumnFunctionUrl: function (field_id) {
-            var path = 'v7/js/extjs/pics/app/data/column-functions.json?';
+
+        getColumnFunctionUrl: function (report_type, field_id) {
+            var path = 'ReportSqlFunction.action?';
             
             var params = {
+                type: report_type,
                 fieldId: field_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getExportReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!download.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getFavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!favorite.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getLoadAllUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
@@ -66526,12 +66527,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
 
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getLoadReportAndDataUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi.action?';
-            
+
             var params = {
                 reportId: report_id,
                 includeReport: true,
@@ -66540,12 +66541,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
 
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getLoadDataUrl: function (page, limit) {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi.action?';
-            
+
             var params = {
                 reportId: report_id,
                 includeData: true,
@@ -66555,40 +66556,41 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
 
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getMultiSelectUrl: function (field_id) {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'Autocompleter.action?';
-            
+
             var params = {
-                fieldType: field_id
+                reportId: report_id,
+                fieldId: field_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getPrintReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!print.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!save.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
 
@@ -66596,11 +66598,11 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!shareWithAccount.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
 
@@ -66608,12 +66610,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!shareWithGroup.action?';
-        
+
             var params = {
                 reportId: report_id,
                 editable: is_editable
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
 
@@ -66621,24 +66623,24 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!shareWithUser.action?';
-            
+
             var params = {
                 reportId: report_id,
                 editable: is_editable
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
-        
+
         getUnfavoriteReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!unfavorite.action?';
-            
+
             var params = {
                 reportId: report_id
             };
-            
+
             return path + Ext.Object.toQueryString(params);
         },
     }
@@ -90070,70 +90072,6 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
         id: 'column_function_modal_footer'
     }]
 });
-Ext.define('PICS.controller.report.ColumnFunctionModal', {
-    extend: 'Ext.app.Controller',
-
-    refs: [{
-        ref: 'columnFunctionModal',
-        selector: 'reportcolumnfunctionmodal'
-    }],
-
-    stores: [
-        'report.ColumnFunctions'
-    ],
-
-    views: [
-        'PICS.view.report.modal.column-function.ColumnFunctionModal'
-    ],
-
-    init: function () {
-        this.control({
-            'reportcolumnfunctionlist': {
-                cellclick: this.onCellClick
-            }
-        });
-
-        this.application.on({
-            opencolumnfunctionmodal: this.openColumnFunctionModal,
-            scope: this
-        });
-    },
-
-    onCellClick: function (cmp, td, cellIndex, record, tr, rowIndex, e, eOpts) {
-        var column_function_modal = this.getColumnFunctionModal(),
-            column = column_function_modal.column,
-            column_function_key = record.get('key');
-
-        // set the method on the column store - column
-        column.set('sql_function', column_function_key);
-
-        // destroy modal for next use (generate with correct column)
-        column_function_modal.close();
-        
-        // refresh report
-        PICS.data.ServerCommunication.loadReportAndData();
-    },
-
-    openColumnFunctionModal: function (column) {
-        var field_id = column.get('field_id'),
-            column_function_store = this.getReportColumnFunctionsStore(),
-            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(field_id);
-        
-        column_function_store.setProxyForRead(url);
-        
-        column_function_store.load(function (records, operation, success) {
-            if (success) {
-                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
-                    column: column
-                });
-                
-                column_function_modal.show();
-            } else {
-                // TODO: throw error
-            }
-        });
-    }
-});
 /**
  * An internally used DataView for {@link Ext.form.field.ComboBox ComboBox}.
  */
@@ -97060,6 +96998,75 @@ Ext.define('PICS.controller.report.ColumnFilterModal', {
 
         // Display the modal.
         filter_modal.show();
+    }
+});
+Ext.define('PICS.controller.report.ColumnFunctionModal', {
+    extend: 'Ext.app.Controller',
+
+    refs: [{
+        ref: 'columnFunctionModal',
+        selector: 'reportcolumnfunctionmodal'
+    }],
+
+    stores: [
+        'report.Reports',
+        'report.ColumnFunctions'
+    ],
+
+    views: [
+        'PICS.view.report.modal.column-function.ColumnFunctionModal'
+    ],
+
+    init: function () {
+        this.control({
+            'reportcolumnfunctionlist': {
+                cellclick: this.onCellClick
+            }
+        });
+
+        this.application.on({
+            opencolumnfunctionmodal: this.openColumnFunctionModal,
+            scope: this
+        });
+    },
+
+    onCellClick: function (cmp, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+        var column_function_modal = this.getColumnFunctionModal(),
+            column = column_function_modal.column,
+            column_function_key = record.get('key');
+
+        // set the method on the column store - column
+        column.set('sql_function', column_function_key);
+
+        // destroy modal for next use (generate with correct column)
+        column_function_modal.close();
+        
+        // refresh report
+        PICS.data.ServerCommunication.loadReportAndData();
+    },
+
+    openColumnFunctionModal: function (column) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_type = report.get('type'),
+            field_id = column.get('field_id'),
+            column_function_store = this.getReportColumnFunctionsStore(),
+            url = PICS.data.ServerCommunicationUrl.getColumnFunctionUrl(report_type, field_id);
+        
+        column_function_store.setProxyForRead(url);
+        
+        // TODO: errors caught???
+        column_function_store.load(function (records, operation, success) {
+            if (success) {
+                var column_function_modal = Ext.create('PICS.view.report.modal.column-function.ColumnFunctionModal', {
+                    column: column
+                });
+                
+                column_function_modal.show();
+            } else {
+                // TODO: throw error
+            }
+        });
     }
 });
 Ext.define('PICS.controller.report.DataTable', {

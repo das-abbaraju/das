@@ -1335,11 +1335,6 @@
                     "path": "app/view/report/modal/column-function/"
                 },
                 {
-                    "clsName": "PICS.controller.report.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/controller/report/"
-                },
-                {
                     "clsName": "Ext.view.BoundList",
                     "name": "BoundList.js",
                     "path": "extjs/src/view/"
@@ -1542,6 +1537,11 @@
                 {
                     "clsName": "PICS.controller.report.ColumnFilterModal",
                     "name": "ColumnFilterModal.js",
+                    "path": "app/controller/report/"
+                },
+                {
+                    "clsName": "PICS.controller.report.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
                     "path": "app/controller/report/"
                 },
                 {
