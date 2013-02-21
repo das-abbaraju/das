@@ -3,7 +3,7 @@ package com.picsauditing.report.converter;
 import static com.picsauditing.report.ReportJson.*;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +24,7 @@ public class JsonReportElementsBuilder {
 		for (Field field : fields) {
 			if (field.isVisible() && field.canUserSeeQueryField(permissions)) {
 				ReportUtil.translateField(field, permissions.getLocale());
-				JSONObject columnJson = fieldToColumnJson(field);
+				JSONObject columnJson = fieldToColumnJson(field, permissions.getLocale());
 				jsonArray.add(columnJson);
 			}
 		}
@@ -47,15 +47,24 @@ public class JsonReportElementsBuilder {
 		return jsonArray;
 	}
 
-	private static JSONObject fieldToColumnJson(Field field) {
+	private static JSONObject fieldToColumnJson(Field field, Locale locale) {
 		JSONObject json = fieldToCommonJson(field);
 
 		json.put(COLUMN_TYPE, field.getDisplayType().name());
 		json.put(COLUMN_URL, field.getUrl());
+		
+		// TODO: This does not match column-functions.json.
 		JSONArray sqlFunctionArray = new JSONArray();
+
 		for (SqlFunction sqlFunction : field.getType().getSqlFunctions()) {
-			sqlFunctionArray.add(sqlFunction.toString());
+
+			JSONObject sqlFunctionKeyValue = new JSONObject();
+			sqlFunctionKeyValue.put("key", sqlFunction.name());
+			sqlFunctionKeyValue.put("value",
+					ReportUtil.getText(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name(), locale));
+			sqlFunctionArray.add(sqlFunctionKeyValue);
 		}
+
 		json.put(COLUMN_SQL_FUNCTION, sqlFunctionArray);
 		json.put(COLUMN_WIDTH, field.getWidth());
 		json.put(COLUMN_SORTABLE, field.isSortable());

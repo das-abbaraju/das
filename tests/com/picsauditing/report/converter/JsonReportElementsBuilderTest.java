@@ -99,6 +99,10 @@ public class JsonReportElementsBuilderTest {
 		when(i18nCache.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + fieldName);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
+		when(i18nCache.getText(eq(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + "Count"), any(Locale.class))).thenReturn("Count");
+		when(i18nCache.getText(eq(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + "CountDistinct"), any(Locale.class))).thenReturn("CountDistinct");
+		when(i18nCache.getText(eq(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + "Max"), any(Locale.class))).thenReturn("Max");
+		when(i18nCache.getText(eq(ReportUtil.REPORT_FUNCTION_KEY_PREFIX + "Min"), any(Locale.class))).thenReturn("Min");
 
 		JSONArray jsonArray = JsonReportElementsBuilder.buildColumns(reportModel, permissions);
 		String jsonString = jsonArray.toString();
@@ -111,7 +115,7 @@ public class JsonReportElementsBuilderTest {
 		assertJson(COLUMN_TYPE, field.getDisplayType().name(), jsonString);
 		assertJson(COLUMN_URL, url, jsonString);
 		// See TypeFactoryTest for a more thorough unit test on SQL Functions
-		assertContains(COLUMN_SQL_FUNCTION + ":[\"", jsonString);
+		assertContains(COLUMN_SQL_FUNCTION + "\":[{\"value\":\"", jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
 	}

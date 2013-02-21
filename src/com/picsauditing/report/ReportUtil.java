@@ -50,7 +50,7 @@ public final class ReportUtil {
 	public static final String HELP_KEY_SUFFIX = ".help";
 	public static final String REPORT_KEY_PREFIX = "Report.";
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
-	private static final String REPORT_FUNCTION_KEY_PREFIX = "Report.Function.";
+	public static final String REPORT_FUNCTION_KEY_PREFIX = "Report.Function.";
 
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
