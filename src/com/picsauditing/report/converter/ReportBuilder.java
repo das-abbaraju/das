@@ -163,7 +163,7 @@ public class ReportBuilder {
 		toElementFromJSON(json, filter);
 		filter.setOperator(parseOperator(json));
 		filter.setValue(Strings.toString(json.get(FILTER_VALUE)));
-		parseAdvancedFilter(json);
+		filter.setFieldForComparison(parseAdvancedFilter(json));
 
 		return filter;
 	}
@@ -186,20 +186,20 @@ public class ReportBuilder {
 	}
 
 	private static QueryFilterOperator parseOperator(JSONObject json) {
-		String object = (String) json.get(FILTER_OPERATOR);
-		if (Strings.isEmpty(object)) {
+		String operatorString = (String) json.get(FILTER_OPERATOR);
+		if (Strings.isEmpty(operatorString)) {
 			return QueryFilterOperator.Equals;
 		}
 
-		return QueryFilterOperator.valueOf(object.toString());
+		return QueryFilterOperator.valueOf(operatorString);
 	}
 
 	private static Field parseAdvancedFilter(JSONObject json) {
-		String advancedFilterOption = (String) json.get(FILTER_COLUMN_COMPARE);
-		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false")) {
+		String columnCompare = (String) json.get(FILTER_COLUMN_COMPARE);
+		if (Strings.isEmpty(columnCompare) || columnCompare.equals("false")) {
 			return null;
 		}
 
-		return new Field(advancedFilterOption.toString());
+		return new Field(columnCompare);
 	}
 }

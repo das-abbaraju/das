@@ -281,7 +281,8 @@ public class LegacyReportConverter {
 		toElementFromJSON(json, filter);
 		filter.setOperator(parseOperator(json));
 		filter.setValues(parseValues(json));
-		parseAdvancedFilter(json);
+		filter.setFieldForComparison(parseAdvancedFilter(json));
+
 		return filter;
 	}
 
@@ -350,6 +351,6 @@ public class LegacyReportConverter {
 			return null;
 		}
 
-		return new Field(advancedFilterOption.toString());
+		return new Field(advancedFilterOption);
 	}
 }

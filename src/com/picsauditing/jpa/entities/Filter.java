@@ -35,6 +35,7 @@ public class Filter extends ReportElement {
 	private QueryFilterOperator operator;
 	private String value = "";
 	private String columnCompare;
+	@Deprecated
 	private Field fieldForComparison;
 
 	@Deprecated
@@ -256,18 +257,31 @@ public class Filter extends ReportElement {
 		return columnCompare;
 	}
 
-	public void setColumnCompare(String name) {
-		this.columnCompare = name;
+	public void setColumnCompare(String columnCompare) {
+		this.columnCompare = columnCompare;
+
+		// This is to load correctly from the DB until we remove fieldForComparison
+		if (fieldForComparison == null) {
+			fieldForComparison = new Field(columnCompare);
+		}
 	}
 
+	// FIXME this is mainly used to check if it's null
+	// i.e. whether this filter has a column compare or not
+	@Deprecated
 	@Transient
 	public Field getFieldForComparison() {
 		return fieldForComparison;
 	}
 
+	// TODO set column compare directly instead of setting the fieldForComparison
+	@Deprecated
 	public void setFieldForComparison(Field fieldForComparison) {
 		this.fieldForComparison = fieldForComparison;
-		setColumnCompare(fieldForComparison.getName());
+
+		if (fieldForComparison != null) {
+			setColumnCompare(fieldForComparison.getName());
+		}
 	}
 
 	@Override

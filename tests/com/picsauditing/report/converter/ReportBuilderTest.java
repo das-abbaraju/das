@@ -9,8 +9,11 @@ import org.json.simple.JSONValue;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 
@@ -69,6 +72,39 @@ public class ReportBuilderTest {
 		assertEquals(name, column.getName());
 		assertEquals(sqlFunction, column.getSqlFunction());
 		assertEquals(width, column.getWidth());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFromJson_WhenJsonFilterParametersArePassedIn_ThenMembersAreSetOnFilter() throws ReportValidationException {
+		int id = 123;
+		QueryFilterOperator operator = QueryFilterOperator.BeginsWith;
+		String value = "This is a value";
+		String columnCompare = "compare_column";
+
+		JSONObject filterJson = new JSONObject();
+		filterJson.put(REPORT_ID, id);
+		filterJson.put(FILTER_OPERATOR, operator.toString());
+		filterJson.put(FILTER_VALUE, value);
+		filterJson.put(FILTER_COLUMN_COMPARE, columnCompare);
+
+		JSONArray filtersJson = new JSONArray();
+		filtersJson.add(filterJson);
+
+		JSONObject reportJson = makeMinimalReportJson();
+		reportJson.put(REPORT_FILTERS, filtersJson);
+
+		Report report = ReportBuilder.fromJson(reportJson);
+		assertEquals(1, report.getFilters().size());
+
+		Filter filter = report.getFilters().get(0);
+		assertEquals(id, filter.getId());
+		assertEquals(operator, filter.getOperator());
+		assertEquals(value, filter.getValue());
+		assertEquals(columnCompare, filter.getColumnCompare());
+		Field fieldForComparision = filter.getFieldForComparison();
+		assertEquals(columnCompare, fieldForComparision.getName());
+		assertEquals(columnCompare, fieldForComparision.getDatabaseColumnName());
 	}
 
 	private JSONObject makeMinimalReportJson() {
