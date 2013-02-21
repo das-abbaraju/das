@@ -322,19 +322,17 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
-					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
 					|| Strings.isEmpty(params.get("employees"))
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
-			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
 			
 			BigDecimal result = null;
 			try {
-				result = fatalities.add(injuries).add(nonInjuries).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2);
+				result = fatalities.add(injuries).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
@@ -352,19 +350,17 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
-					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
 					|| Strings.isEmpty(params.get("totalHours"))
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
-			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
 			
 			BigDecimal result = null;
 			try {
-				result = fatalities.add(injuries).add(nonInjuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
+				result = fatalities.add(injuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
@@ -382,19 +378,17 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
-					|| Strings.isEmpty(params.get("nonLostTimeInjuries"))
 					|| Strings.isEmpty(params.get("lostHours"))
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
-			BigDecimal nonInjuries = new BigDecimal(params.get("nonLostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal lostHours = new BigDecimal(params.get("lostHours").replace(",", "")).setScale(7);
 			
 			BigDecimal result = null;
 			try {
-				result = lostHours.divide(fatalities.add(injuries).add(nonInjuries), 7, RoundingMode.HALF_UP).setScale(2,RoundingMode.HALF_UP);
+				result = lostHours.divide(fatalities.add(injuries), 7, RoundingMode.HALF_UP).setScale(2,RoundingMode.HALF_UP);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
