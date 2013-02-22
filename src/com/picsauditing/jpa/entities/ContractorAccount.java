@@ -1191,32 +1191,32 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
     private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (this.getFees() != null && this.getFees().containsKey(feeClass)) {
-            this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-            this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+        if (fees != null && fees.containsKey(feeClass)) {
+            fees.get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+            fees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
         }
     }
 
     private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-        if (this.getFees() != null) {
-            this.getFees().get(fee.getFeeClass()).setCurrentLevel(fee);
-            this.getFees().get(fee.getFeeClass()).setCurrentAmount(amount);
+        if (fees != null) {
+            fees.get(fee.getFeeClass()).setCurrentLevel(fee);
+            fees.get(fee.getFeeClass()).setCurrentAmount(amount);
         }
     }
 
     @Transient
     public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (this.getFees() != null) {
-            this.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-            this.getFees().get(feeClass).setNewAmount(BigDecimal.ZERO);
+        if (fees != null) {
+            fees.get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+            fees.get(feeClass).setNewAmount(BigDecimal.ZERO);
         }
     }
 
     @Transient
     public void setNewFee(InvoiceFee fee, BigDecimal amount) {
-        if (this.getFees() != null) {
-            this.getFees().get(fee.getFeeClass()).setNewLevel(fee);
-            this.getFees().get(fee.getFeeClass()).setNewAmount(amount);
+        if (fees != null) {
+            fees.get(fee.getFeeClass()).setNewLevel(fee);
+            fees.get(fee.getFeeClass()).setNewAmount(amount);
         }
     }
 
