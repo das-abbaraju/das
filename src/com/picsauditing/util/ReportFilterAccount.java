@@ -300,14 +300,14 @@ public class ReportFilterAccount extends ReportFilter {
 
 	private CountrySubdivisionDAO countrySubdivisionDAO() {
 		if (countrySubdivisionDAOForTests == null) {
-			return (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+			return SpringUtils.getBean(SpringUtils.COUNTRY_SUBDIVISION_DAO);
 		}
 		return countrySubdivisionDAOForTests;
 	}
 
 	private CountryDAO countryDAO() {
 		if (countryDAOForTests == null) {
-			return (CountryDAO) SpringUtils.getBean("CountryDAO");
+			return SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
 		}
 		return countryDAOForTests;
 	}

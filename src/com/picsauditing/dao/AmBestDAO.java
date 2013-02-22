@@ -16,7 +16,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AmBestDAO extends PicsDAO {
 	private final static Logger logger = LoggerFactory.getLogger(AmBestDAO.class);
-	
+
 	@Transactional(propagation = Propagation.NESTED)
 	public AmBest save(AmBest o) {
 		if (o.getAmBestId() == 0) {
@@ -37,8 +37,9 @@ public class AmBestDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AmBest row = find(id);
-		if (row != null)
+		if (row != null) {
 			em.remove(row);
+		}
 	}
 
 	public AmBest find(int id) {
@@ -49,18 +50,18 @@ public class AmBestDAO extends PicsDAO {
 		Query q = em.createQuery("SELECT ab FROM AmBest ab WHERE ab.naic = ?");
 		q.setParameter(1, naic);
 
-		List<AmBest> list = (List<AmBest>) q.getResultList();
+		List<AmBest> list = q.getResultList();
 		if (list != null && list.size() > 0) {
-			if(list.size() == 1)
+			if(list.size() == 1) {
 				return list.get(0);
-			else {
+			} else {
 				for(AmBest amBest : list) {
 					if(amBest.getRatingCode() < 70) {
 						return amBest;
 					}
 				}
 			}
-		}	
+		}
 		return null;
 	}
 
@@ -77,7 +78,7 @@ public class AmBestDAO extends PicsDAO {
 	static public AmBest getAmBest(String naic) {
 		AmBest amb;
 		try {
-			AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+			AmBestDAO amBestDAO = SpringUtils.getBean(SpringUtils.AM_BEST_DAO);
 			amb = amBestDAO.findByNaic(naic);
 			return amb;
 		} catch (Exception e) {
@@ -94,8 +95,9 @@ public class AmBestDAO extends PicsDAO {
 	static public String parseCompany(String fullCompany) {
 		int start = fullCompany.lastIndexOf("(");
 		int end = fullCompany.lastIndexOf(")");
-		if (start < 1 || end < 1 || start > end)
+		if (start < 1 || end < 1 || start > end) {
 			return fullCompany;
+		}
 
 		return fullCompany.substring(0, start).trim();
 	}

@@ -82,13 +82,13 @@ public final class ReportUtil {
 			Field field = column.getField();
 
 			if (field == null) {
-				
+
 				field = new Field(column.getFieldNameWithoutMethod());
 				column.setField(field);
 			}
 
 			translateField(field, locale);
-			
+
 			if (column.getSqlFunction() != null) {
 				field.setName(column.getFieldNameWithoutMethod());
 				field.setTranslationPrefixAndSuffix(null, null);
@@ -97,7 +97,7 @@ public final class ReportUtil {
 				field.setHelp(translateHelp(field, locale));
 				field.setName(column.getName());
 			}
-			
+
 		}
 	}
 
@@ -196,7 +196,7 @@ public final class ReportUtil {
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
-		LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
+		LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
 		List<Locale> locales = languageModel.getStableLanguageLocales();
 		SqlFunction[] methods = SqlFunction.values();
 		String fileName = "Column translations for DR";

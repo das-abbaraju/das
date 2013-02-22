@@ -247,7 +247,7 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	public List<AuditType> getViewableAuditsList() {
-		AuditTypeDAO auditTypeDao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		AuditTypeDAO auditTypeDao = SpringUtils.getBean(SpringUtils.AUDIT_TYPE_DAO);
 
 		return auditTypeDao.findWhere("t.id IN (" + Strings.implode(permissions.getVisibleAuditTypes()) + ")");
 	}

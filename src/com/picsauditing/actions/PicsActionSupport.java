@@ -457,7 +457,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public Account getAccount() {
         if (account == null) {
             loadPermissions();
-            AccountDAO dao = SpringUtils.getBean("AccountDAO");
+            AccountDAO dao = SpringUtils.getBean(SpringUtils.ACCOUNT_DAO);
             account = dao.find(permissions.getAccountId(), permissions.getAccountType());
         }
         return account;
