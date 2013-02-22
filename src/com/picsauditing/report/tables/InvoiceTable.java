@@ -7,12 +7,13 @@ import com.picsauditing.report.fields.FieldType;
 public class InvoiceTable extends AbstractTable {
 
 	public static final String Account = "Account";
+	public static final String Item = "Item";
 
 	public InvoiceTable() {
 		super("invoice");
 		addFields(Invoice.class);
 		addCurrency();
-		
+
 		Field invoiceStatus = new Field("Status", "status", FieldType.TransactionStatus);
 		invoiceStatus.setCategory(FieldCategory.Invoicing);
 		invoiceStatus.setWidth(100);
@@ -28,7 +29,8 @@ public class InvoiceTable extends AbstractTable {
 		invoiceAmountApplied.setWidth(100);
 		addField(invoiceAmountApplied);
 
-		Field daysLeft = new Field("DaysLeft", "DATEDIFF(ADDDATE(" + ReportOnClause.ToAlias + ".dueDate, 90),NOW())", FieldType.Integer);
+		Field daysLeft = new Field("DaysLeft", "DATEDIFF(ADDDATE(" + ReportOnClause.ToAlias + ".dueDate, 90),NOW())",
+				FieldType.Integer);
 		daysLeft.setCategory(FieldCategory.Invoicing);
 		daysLeft.setWidth(100);
 		addField(daysLeft);
@@ -38,7 +40,7 @@ public class InvoiceTable extends AbstractTable {
 		Field currency = new Field("Currency", "currency", FieldType.String);
 		currency.setCategory(FieldCategory.Invoicing);
 		addField(currency);
-		
+
 		Field invoiceID = new Field("InvoiceID", "id", FieldType.Number);
 		invoiceID.setCategory(FieldCategory.Invoicing);
 		addField(invoiceID);
@@ -48,6 +50,9 @@ public class InvoiceTable extends AbstractTable {
 		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(),
 				new ReportOnClause("accountID"));
 		addRequiredKey(accountJoin);
+		accountJoin.setMinimumImportance(FieldImportance.Average);
+
+		addRequiredKey(new ReportForeignKey(Item, new InvoiceItemTable(), new ReportOnClause("id", "invoiceID")));
 		accountJoin.setMinimumImportance(FieldImportance.Average);
 	}
 }

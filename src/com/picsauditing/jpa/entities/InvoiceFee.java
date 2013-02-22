@@ -18,6 +18,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
 
 @SuppressWarnings("serial")
 @Entity
@@ -101,6 +104,7 @@ public class InvoiceFee extends BaseTable {
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.FeeClass)
 	public FeeClass getFeeClass() {
 		return feeClass;
 	}

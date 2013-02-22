@@ -23,7 +23,7 @@ public class ContractorTable extends AbstractTable {
 	public ContractorTable() {
 		super("contractor_info");
 		addFields(ContractorAccount.class);
-		
+
 		addContractorFee(FeeClass.DocuGUARD);
 		addContractorFee(FeeClass.AuditGUARD);
 		addContractorFee(FeeClass.InsureGUARD);
@@ -55,7 +55,7 @@ public class ContractorTable extends AbstractTable {
 		ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
 				new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
 		pqfKey.setMinimumImportance(FieldImportance.Required);
-		
+
 		ReportForeignKey welcomeCallKey = addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
 				new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.WELCOME)));
 		welcomeCallKey.setMinimumImportance(FieldImportance.Required);

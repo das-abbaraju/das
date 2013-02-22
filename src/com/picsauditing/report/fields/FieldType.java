@@ -32,6 +32,7 @@ public enum FieldType {
 	Currency(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, Currency.class, EnumType.STRING),
 	Date(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
 	DateTime(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
+	FeeClass(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FeeClass.class, EnumType.STRING),
 	FlagColor(FilterType.Multiselect, DisplayType.Flag, SqlFunctionProfile.Boolean, FlagColor.class, EnumType.STRING),
 	FlagCriteriaOptionCode(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FlagCriteriaOptionCode.class, EnumType.STRING),
 	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
