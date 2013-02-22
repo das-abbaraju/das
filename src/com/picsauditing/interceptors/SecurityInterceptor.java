@@ -51,8 +51,8 @@ public class SecurityInterceptor extends AbstractInterceptor {
         CheckSecurityState securityState = new CheckSecurityState(action, method);
 
         validateAllowedCombinationOfSecurityAnnotations(securityState);
-        checkValidUserOfApiMethod(securityState);
         checkMethodAllowsAnonymousUse(securityState);
+        checkValidUserOfApiMethod(securityState);
         checkUserAbleToLogin(securityState);
         checkUserHasRequiredPermissionIfAnyRequired(securityState);
         securityState.resolveFindings();
@@ -60,21 +60,38 @@ public class SecurityInterceptor extends AbstractInterceptor {
     }
 
     private void validateAllowedCombinationOfSecurityAnnotations(CheckSecurityState securityState) {
-        if (securityState.anonymousAllowed && (securityState.requiresPermissions || securityState.apiAllowed)) {
+        if (anonymousInInvalidCombination(securityState)) {
             securityState.invokable = Boolean.FALSE;
             securityState.rejectionReason = new SecurityException("Invalid combination of security annotations defined. An Action cannot be" +
-                    " both Anonymous and either API or RequiresPermissions.");
+                    " both Anonymous and either API or RequiresPermissions or ApiOrRequiredPermission.");
+        }
+        if (apiOrRequiredInInvalidCombination(securityState)) {
+            securityState.invokable = Boolean.FALSE;
+            securityState.rejectionReason = new SecurityException("Invalid combination of security annotations defined. An Action cannot be" +
+                    " both ApiOrRequiredPermission and either API or RequiresPermissions.");
         }
     }
 
+    private boolean apiOrRequiredInInvalidCombination(CheckSecurityState securityState) {
+        return securityState.requiresApiOrRequiredPermissions && (securityState.requiresPermissions || securityState.requiresApi);
+    }
+
+    private boolean anonymousInInvalidCombination(CheckSecurityState securityState) {
+        return securityState.anonymousAllowed &&
+                (securityState.requiresPermissions || securityState.requiresApi || securityState.requiresApiOrRequiredPermissions);
+    }
+
     private void checkValidUserOfApiMethod(CheckSecurityState securityState) {
-        if (securityState.invokable == KEEP_LOOKING && securityState.apiAllowed) {
+        if (securityState.invokable == KEEP_LOOKING && (securityState.requiresApi || securityState.requiresApiOrRequiredPermissions)) {
             try {
                 // isApiUser() attempts a "soft" login of the user associated with the API key
                 if (securityState.action.isApiUser()) {
                     securityState.invokable = Boolean.TRUE;
                 } else {
-                    securityState.rejectionReason = new AjaxNotLoggedInException();
+                    if (securityState.requiresApi) {
+                        securityState.invokable = Boolean.FALSE;
+                    }
+                    determineNotLoggedInException(securityState);
                 }
             } catch (AjaxNotLoggedInException e) {
                 securityState.rejectionReason = e;
@@ -96,21 +113,26 @@ public class SecurityInterceptor extends AbstractInterceptor {
             if (!loginSuccessful) {
                 securityState.invokable = Boolean.FALSE;
                 if (securityState.rejectionReason == null) {
-                    if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
-                        securityState.rejectionReason = new AjaxNotLoggedInException();
-                    } else {
-                        securityState.rejectionReason = new NotLoggedInException();
-                    }
+                    determineNotLoggedInException(securityState);
                 }
             }
         }
     }
 
+    private void determineNotLoggedInException(CheckSecurityState securityState) {
+        if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+            securityState.rejectionReason = new AjaxNotLoggedInException();
+        } else {
+            securityState.rejectionReason = new NotLoggedInException();
+        }
+    }
+
     private void checkUserHasRequiredPermissionIfAnyRequired(CheckSecurityState securityState) {
-        if (securityState.invokable == KEEP_LOOKING && securityState.requiresPermissions) {
+        if (securityState.invokable == KEEP_LOOKING &&
+                (securityState.requiresPermissions || securityState.requiresApiOrRequiredPermissions)) {
             try {
-                RequiredPermission requiredPermission = securityState.method.getAnnotation(RequiredPermission.class);
-                securityState.action.tryPermissions(requiredPermission.value(), requiredPermission.type());
+                AccessPermission requiredPermission = requiredPermission(securityState);
+                securityState.action.tryPermissions(requiredPermission.getOpPerm(), requiredPermission.getOpType());
                 securityState.invokable = Boolean.TRUE;
             } catch (NoRightsException e) {
                 securityState.invokable = Boolean.FALSE;
@@ -120,21 +142,34 @@ public class SecurityInterceptor extends AbstractInterceptor {
 
     }
 
+    private AccessPermission requiredPermission(CheckSecurityState securityState) {
+        if (securityState.requiresPermissions) {
+            RequiredPermission permission =  securityState.method.getAnnotation(RequiredPermission.class);
+            return new AccessPermission(permission.value(), permission.type());
+        } else if (securityState.requiresApiOrRequiredPermissions) {
+            ApiOrRequiredPermission permission = securityState.method.getAnnotation(ApiOrRequiredPermission.class);
+            return new AccessPermission(permission.value(), permission.type());
+        }
+        return new AccessPermission();
+    }
+
     private class CheckSecurityState {
-        Boolean invokable = KEEP_LOOKING;
-        Exception rejectionReason = null;
-        Method method = null;
-        SecurityAware action = null;
+        public Boolean invokable = KEEP_LOOKING;
+        public Exception rejectionReason = null;
+        public Method method = null;
+        public SecurityAware action = null;
         public boolean anonymousAllowed;
         public boolean requiresPermissions;
-        boolean apiAllowed;
+        public boolean requiresApiOrRequiredPermissions;
+        public boolean requiresApi;
 
         public CheckSecurityState(SecurityAware action, Method method) {
             this.action = action;
             this.method = method;
             anonymousAllowed = method.isAnnotationPresent(Anonymous.class);
             requiresPermissions = method.isAnnotationPresent(RequiredPermission.class);
-            apiAllowed = method.isAnnotationPresent(Api.class);
+            requiresApiOrRequiredPermissions = method.isAnnotationPresent(ApiOrRequiredPermission.class);
+            requiresApi = method.isAnnotationPresent(Api.class);
         }
 
         public void resolveFindings() {

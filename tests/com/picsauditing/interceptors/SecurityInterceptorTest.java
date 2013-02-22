@@ -48,7 +48,52 @@ public class SecurityInterceptorTest extends PicsActionTest {
         when(userDAO.findByApiKey(apiKey)).thenReturn(user);
 
         Whitebox.setInternalState(action, "permissionBuilder", permissionBuilder);
-        Whitebox.setInternalState(action, "permissions", permissions);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiOrRequiresPermissions_UserIsNotApiUserHasRequiredPermission() throws Exception {
+        action.setApiKey(null);
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doNothing().when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType)Matchers.any());
+        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertThat(e, is(nullValue()));
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiOrRequiresPermissions_UserIsApiUserDoesNotHaveRequiredPermission() throws Exception {
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
+        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertThat(e, is(nullValue()));
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiOrRequiresPermissions_UserHasNeither() throws Exception {
+        action.setApiKey(null);
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
+        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof NoRightsException);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiOrRequiresPermissions_UserHasBoth() throws Exception {
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doNothing().when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType)Matchers.any());
+        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertThat(e, is(nullValue()));
     }
 
     @Test
@@ -72,6 +117,14 @@ public class SecurityInterceptorTest extends PicsActionTest {
         assertThat(e, is(nullValue()));
     }
 
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiAndApiOrRequiresPermissions() throws Exception {
+        Method method = action.getClass().getMethod("executeApiAndApiOrRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof SecurityException);
+    }
 
     @Test
     public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsAnonymousAndRequiresPermissions() throws Exception {
@@ -92,15 +145,28 @@ public class SecurityInterceptorTest extends PicsActionTest {
     }
 
     @Test
-    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiAndRequiresPermissions_UserIsNotApiUserDoesNotHaveRequiredPermission() throws Exception {
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiAndRequiresPermissions_UserIsNotApiUserDoesNotHaveRequiredPermission_NotAjax() throws Exception {
         action.setApiKey(null);
         when(permissions.loginRequired(response, request)).thenReturn(true);
         doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
-        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+        Method method = action.getClass().getMethod("executeApiAndRequiredPermission");
 
         Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
 
-        assertTrue(e instanceof NoRightsException);
+        assertTrue(e instanceof NotLoggedInException);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiAndRequiresPermissions_UserIsNotApiUserDoesNotHaveRequiredPermission_Ajax() throws Exception {
+        action.setApiKey(null);
+        when(request.getHeader("X-Requested-With")).thenReturn("XMLHttpRequest");
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
+        Method method = action.getClass().getMethod("executeApiAndRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof AjaxNotLoggedInException);
     }
 
     @Test
@@ -108,7 +174,31 @@ public class SecurityInterceptorTest extends PicsActionTest {
         action.setApiKey(null);
         when(permissions.loginRequired(response, request)).thenReturn(true);
         doNothing().when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType)Matchers.any());
-        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+        Method method = action.getClass().getMethod("executeApiAndRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof NotLoggedInException);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodRequiresPermissions_UserNotAbleToLogin() throws Exception {
+        action.setApiKey(null);
+        when(permissions.loginRequired(response, request)).thenReturn(false);
+        doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
+        Method method = action.getClass().getMethod("executeRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof NotLoggedInException);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodRequiresPermissions_UserIsNotApiUserHasRequiredPermission() throws Exception {
+        action.setApiKey(null);
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doNothing().when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType)Matchers.any());
+        Method method = action.getClass().getMethod("executeRequiredPermission");
 
         Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
 
@@ -116,8 +206,20 @@ public class SecurityInterceptorTest extends PicsActionTest {
     }
 
     @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodRequiresPermissions_UserIsNotApiUserDoesNotHaveRequiredPermission() throws Exception {
+        action.setApiKey(null);
+        when(permissions.loginRequired(response, request)).thenReturn(true);
+        doThrow(new NoRightsException("foo")).when(permissions).tryPermission((OpPerms) Matchers.any(), (OpType) Matchers.any());
+        Method method = action.getClass().getMethod("executeRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof NoRightsException);
+    }
+
+    @Test
     public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsApiAndRequiresPermissions_ApiUser() throws Exception {
-        Method method = action.getClass().getMethod("executeApiOrRequiredPermission");
+        Method method = action.getClass().getMethod("executeApiAndRequiredPermission");
 
         Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
 

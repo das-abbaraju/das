@@ -1,9 +1,6 @@
 package com.picsauditing.interceptors;
 
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.Api;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.PicsApiSupport;
 
 public class ActionClassToTestSecurityInterceptor extends PicsApiSupport {
@@ -24,7 +21,18 @@ public class ActionClassToTestSecurityInterceptor extends PicsApiSupport {
 
     @Api
     @RequiredPermission(value = OpPerms.EditNotes)
+    public String executeApiAndRequiredPermission() {
+        return SUCCESS;
+    }
+
+    @ApiOrRequiredPermission(value = OpPerms.EditNotes)
     public String executeApiOrRequiredPermission() {
+        return SUCCESS;
+    }
+
+    @Api
+    @ApiOrRequiredPermission(value = OpPerms.EditNotes)
+    public String executeApiAndApiOrRequiredPermission() {
         return SUCCESS;
     }
 
