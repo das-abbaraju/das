@@ -616,7 +616,7 @@ public class ContractorAccountTest {
         try {
             Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
         } catch (NullPointerException npe) {
-            fail();
+            fail("threw unexpected null pointer exception");
         }
     }
 
@@ -626,7 +626,7 @@ public class ContractorAccountTest {
         try {
             Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
         } catch (NullPointerException npe) {
-            fail();
+            fail("threw unexpected null pointer exception");
         }
     }
 
@@ -636,7 +636,7 @@ public class ContractorAccountTest {
         try {
             Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
         } catch (NullPointerException npe) {
-            fail();
+            fail("threw unexpected null pointer exception");
         }
     }
 
@@ -646,7 +646,7 @@ public class ContractorAccountTest {
         try {
             Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
         } catch (NullPointerException npe) {
-            fail();
+            fail("threw unexpected null pointer exception");
         }
     }
 
