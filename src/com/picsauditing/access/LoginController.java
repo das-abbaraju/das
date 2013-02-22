@@ -2,14 +2,15 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.security.auth.login.*;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -102,8 +103,9 @@ public class LoginController extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	@Anonymous
 	public String ajax() throws Exception {
-		if (!AjaxUtils.isAjax(getRequest()))
+		if (!AjaxUtils.isAjax(getRequest())) {
 			return BLANK;
+		}
 
 		execute();
 
@@ -166,7 +168,7 @@ public class LoginController extends PicsActionSupport {
 	private String switchBack() throws Exception {
 		loadPermissions(false);
 		switchToUser = 0;
-		
+
 		int originalUser = getClientSessionOriginalUserID();
 		if (originalUser > 0) {
 			user = userDAO.find(originalUser);
@@ -175,7 +177,7 @@ public class LoginController extends PicsActionSupport {
 			permissions.setAdminID(0);
 			ActionContext.getContext().getSession().put("permissions", permissions);
 		}
-		
+
 		return setRedirectUrlPostLogin();
 	}
 
@@ -232,7 +234,7 @@ public class LoginController extends PicsActionSupport {
 		if (permissions == null) {
 			permissions = new Permissions(supportedLanguages);
 		}
-		
+
 		return permissions;
 	}
 
@@ -362,7 +364,7 @@ public class LoginController extends PicsActionSupport {
 		String preLoginUrl = getPreLoginUrl();
 		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(preLoginUrl, user);
 		String redirectURL = determineRedirectUrlFromHomePageType(preLoginUrl, homePageType);
-		
+
 		if (Strings.isNotEmpty(redirectURL)) {
 			return setUrlForRedirect(redirectURL);
 		}
@@ -380,7 +382,7 @@ public class LoginController extends PicsActionSupport {
 			redirectURL = step.getUrl();
 			break;
 		case HomePage:
-			if (user.isUsingDynamicReports()) {
+			if (user.isUsingVersion7Menus()) {
 				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
 				redirectURL = MenuBuilder.getHomePage(menu, permissions);
 			} else {
@@ -432,8 +434,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private void logAttempt() throws Exception {
-		if (user == null)
+		if (user == null) {
 			return;
+		}
 
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());

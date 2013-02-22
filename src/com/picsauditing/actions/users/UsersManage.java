@@ -84,7 +84,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-	private boolean usingDynamicReports = false;
+	private boolean usingVersion7Menus = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 	private Locale selectedLanguage;
@@ -289,11 +289,12 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		try {
-			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
+			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
 				user.getAccount().setPrimaryContact(user);
+			}
 			// auto indexing, no longer need to call it.
 			// user.setNeedsIndexing(true);
-			user.setUsingDynamicReports(isUsingDynamicReports());
+			user.setUsingVersion7Menus(isUsingVersion7Menus());
 			user = userDAO.save(user);
 			userDAO.refresh(user);
 
@@ -593,9 +594,9 @@ public class UsersManage extends PicsActionSupport {
 		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
 		String jSessionID = "";
 		if (cookiesA != null) {
-			for (int i = 0; i < cookiesA.length; i++) {
-				if (cookiesA[i].getName().equals("JSESSIONID")) {
-					jSessionID = cookiesA[i].getValue();
+			for (Cookie element : cookiesA) {
+				if (element.getName().equals("JSESSIONID")) {
+					jSessionID = element.getValue();
 				}
 			}
 		}
@@ -623,8 +624,9 @@ public class UsersManage extends PicsActionSupport {
 
 		// Make sure we can edit users in this account
 		if (permissions.getAccountId() != account.getId()) {
-			if (!permissions.getOperatorChildren().contains(account.getId()))
+			if (!permissions.getOperatorChildren().contains(account.getId())) {
 				permissions.tryPermission(OpPerms.AllOperators);
+			}
 		}
 
 		// checking to see if primary account user is set
@@ -901,11 +903,13 @@ public class UsersManage extends PicsActionSupport {
 			sql.addOrderBy("name");
 			sql.addWhere("accountID = " + account.getId());
 			sql.addWhere("username not like 'DELETE-%'");
-			if ("Yes".equals(isGroup) || "No".equals(isGroup))
+			if ("Yes".equals(isGroup) || "No".equals(isGroup)) {
 				sql.addWhere("isGroup = '" + isGroup + "'");
+			}
 
-			if ("Yes".equals(isActive) || "No".equals(isActive))
+			if ("Yes".equals(isActive) || "No".equals(isActive)) {
 				sql.addWhere("isActive = '" + isActive + "'");
+			}
 
 			userList = db.select(sql.toString(), false);
 		}
@@ -916,8 +920,9 @@ public class UsersManage extends PicsActionSupport {
 		List<OpPerms> list = new ArrayList<OpPerms>();
 		for (com.picsauditing.access.UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
-			if (perm.isGrantFlag())
+			if (perm.isGrantFlag()) {
 				list.add(perm.getOpPerm());
+			}
 		}
 
 		for (UserAccess perm : user.getOwnedPermissions()) {
@@ -931,8 +936,9 @@ public class UsersManage extends PicsActionSupport {
 
 	public List<User> getAddableGroups() {
 		List<User> list = new ArrayList<User>();
-		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
+		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) {
 			return list;
+		}
 
 		// for now, just add all groups in your account to the
 		list = userDAO.findByAccountID(account.getId(), "Yes", "Yes");
@@ -954,8 +960,9 @@ public class UsersManage extends PicsActionSupport {
 				for (User group : nonPicsGroups) {
 					// Add the groups owned by PICS but that are for
 					// Operator/Corporate/Contractors/etc
-					if (!group.getName().startsWith("PICS") && !list.contains(group))
+					if (!group.getName().startsWith("PICS") && !list.contains(group)) {
 						list.add(group);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -982,8 +989,9 @@ public class UsersManage extends PicsActionSupport {
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
 
-		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
+		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) {
 			return list;
+		}
 
 		if (permissions.hasPermission(OpPerms.AllOperators) || permissions.hasGroup(user.getId())) {
 			// I'm an admin or I'm a member of this group
@@ -1009,10 +1017,12 @@ public class UsersManage extends PicsActionSupport {
 
 			@Override
 			public int compare(UserGroup o1, UserGroup o2) {
-				if (o1 == null)
+				if (o1 == null) {
 					return -1;
-				if (o2 == null)
+				}
+				if (o2 == null) {
 					return 1;
+				}
 				return o1.getGroup().getName().compareTo(o2.getGroup().getName());
 			}
 		};
@@ -1023,10 +1033,12 @@ public class UsersManage extends PicsActionSupport {
 
 			@Override
 			public int compare(UserGroup o1, UserGroup o2) {
-				if (o1 == null)
+				if (o1 == null) {
 					return -1;
-				if (o2 == null)
+				}
+				if (o2 == null) {
 					return 1;
+				}
 				return o1.getUser().compareTo(o2.getUser());
 			}
 		};
@@ -1035,9 +1047,10 @@ public class UsersManage extends PicsActionSupport {
 	public List<BasicDynaBean> getAccountList() throws SQLException {
 		if (user != null) {
 			if (permissions.isAdmin()) {
-				String like = (String) ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
-				if (like == null)
+				String like = ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
+				if (like == null) {
 					like = "";
+				}
 
 				// don't use hibernate to pull up accounts
 				SelectAccount sql = new SelectAccount();
@@ -1062,8 +1075,9 @@ public class UsersManage extends PicsActionSupport {
 	public boolean isCsr() {
 		if (user != null && !user.isGroup()) {
 			for (UserGroup userGroup : user.getGroups()) {
-				if (userGroup.getGroup().isGroup() && userGroup.getGroup().getId() == User.GROUP_CSR)
+				if (userGroup.getGroup().isGroup() && userGroup.getGroup().getId() == User.GROUP_CSR) {
 					return true;
+				}
 			}
 		}
 
@@ -1080,8 +1094,9 @@ public class UsersManage extends PicsActionSupport {
 					Iterator<UserGroup> iterator = csrs.iterator();
 					while (iterator.hasNext()) {
 						UserGroup currentUserGroup = iterator.next();
-						if (currentUserGroup.equals(userGroup) || currentUserGroup.getUser().isGroup())
+						if (currentUserGroup.equals(userGroup) || currentUserGroup.getUser().isGroup()) {
 							iterator.remove();
+						}
 					}
 
 					sortCSRsByName(csrs);
@@ -1112,12 +1127,12 @@ public class UsersManage extends PicsActionSupport {
 		this.newUser = newUser;
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 	public void removeUserAccess(OpPerms perm) {
@@ -1138,8 +1153,9 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public boolean isHasProfileEdit() {
-		if (user.getAccount().isContractor())
+		if (user.getAccount().isContractor()) {
 			return true;
+		}
 
 		for (UserAccess userAccess : user.getPermissions()) {
 			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {

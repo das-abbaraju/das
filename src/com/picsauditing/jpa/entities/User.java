@@ -106,9 +106,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Locale locale = Locale.ENGLISH;
 	private String department;
 	private String apiKey;
-	private boolean usingDynamicReports;
+	private boolean usingVersion7Menus;
 	private int assignmentCapacity;
-	private Date usingDynamicReportsDate;
+	private Date usingVersion7MenusDate;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -895,21 +895,23 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return this.hasPermission(opPerm, OpType.View);
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	@Column(name = "usingDynamicReports")
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getUsingDynamicReportsDate() {
-		return usingDynamicReportsDate;
+	@Column(name = "usingDynamicReportsDate")
+	public Date getUsingVersion7MenusDate() {
+		return usingVersion7MenusDate;
 	}
 
-	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
-		this.usingDynamicReportsDate = usingDynamicReportsDate;
+	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
+		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
 	@Transient
@@ -940,6 +942,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return (this.apiKey != null) && hasPermission(OpPerms.RestApi, OpType.View);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Transient
 	public InputValidator getInputValidator() {
 		if (inputValidator == null) {

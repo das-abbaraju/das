@@ -51,7 +51,7 @@ public class ProfileEdit extends PicsActionSupport {
 	private List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 
 	private boolean goEmailSub = false;
-	private boolean usingDynamicReports = false;
+	private boolean usingVersion7Menus = false;
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -84,7 +84,7 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-		u.setUsingDynamicReports(isUsingDynamicReports());
+		u.setUsingVersion7Menus(isUsingVersion7Menus());
 
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
@@ -274,12 +274,12 @@ public class ProfileEdit extends PicsActionSupport {
 		return goEmailSub;
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 }

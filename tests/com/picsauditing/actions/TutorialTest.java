@@ -40,26 +40,26 @@ public class TutorialTest extends PicsActionTest {
 
     @Test
     public void testExecute_UpdateFirstTimeUser() throws Exception {
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(null);
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
         when(userDAO.find(anyInt())).thenReturn(new User());
 
         String result = tutorial.navigationMenu();
 
-        verify(permissions, times(1)).setUsingDynamicReportsDate(any(Date.class));
+        verify(permissions, times(1)).setUsingVersion7MenusDate(any(Date.class));
         verify(userDAO, times(1)).save(any(User.class));
         assertEquals("navigation-menu", result);
     }
 
     @Test
     public void testExecute_NotUpdateFirstTimeUser() throws Exception {
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(new Date());
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(new Date());
 
         String result = tutorial.navigationMenu();
 
         verifyZeroInteractions(userDAO);
-        verify(permissions, never()).setUsingDynamicReportsDate(any(Date.class));
+        verify(permissions, never()).setUsingVersion7MenusDate(any(Date.class));
         assertEquals("navigation-menu", result);
     }
 

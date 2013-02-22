@@ -40,8 +40,8 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
         }
 
         return (permissions.isLoggedIn()
-                && permissions.getUsingDynamicReportsDate() == null
-                && permissions.isUsingDynamicReports());
+                && permissions.getUsingVersion7MenusDate() == null
+                && permissions.isUsingVersion7Menus());
     }
 
 }

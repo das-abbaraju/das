@@ -66,8 +66,8 @@ public class Permissions implements Serializable {
 	private int shadowedUserID;
 	private String shadowedUserName;
 
-	private boolean usingDynamicReports;
-	private Date usingDynamicReportsDate;
+	private boolean usingVersion7Menus;
+	private Date usingVersion7MenusDate;
 	private LanguageModel languageModel;
     private int primaryCorporateAccountID;
 
@@ -149,8 +149,8 @@ public class Permissions implements Serializable {
 		setTimeZone(user);
 		setAccountPerms(user);
 
-		usingDynamicReports = user.isUsingDynamicReports();
-		usingDynamicReportsDate = user.getUsingDynamicReportsDate();
+		usingVersion7Menus = user.isUsingVersion7Menus();
+		usingVersion7MenusDate = user.getUsingVersion7MenusDate();
 	}
 
 	public void setTimeZone(User user) {
@@ -696,20 +696,20 @@ public class Permissions implements Serializable {
 		this.sessionCookieTimeoutInSeconds = seconds;
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
-	public Date getUsingDynamicReportsDate() {
-		return usingDynamicReportsDate;
+	public Date getUsingVersion7MenusDate() {
+		return usingVersion7MenusDate;
 	}
 
-	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
-		this.usingDynamicReportsDate = usingDynamicReportsDate;
+	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
+		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {

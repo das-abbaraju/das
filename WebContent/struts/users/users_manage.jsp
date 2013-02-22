@@ -425,7 +425,7 @@
 							<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 								<li>
 									<label> <s:text name="User.useDynamicReport" /></label> 			
-									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 
+									<s:checkbox id="usingVersion7Menus" name="usingVersion7Menus" value="user.usingVersion7Menus" />		 
 																
 								</li>
 							</pics:toggle>
