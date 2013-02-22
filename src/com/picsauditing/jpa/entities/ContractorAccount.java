@@ -1190,29 +1190,35 @@ public class ContractorAccount extends Account implements JSONable {
 			membershipDate = null;
 	}
 
-	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		if (this.getFees() != null && this.getFees().containsKey(feeClass)) {
-			this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-			this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
-		}
-	}
+    private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+        if (this.getFees() != null && this.getFees().containsKey(feeClass)) {
+            this.getFees().get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+            this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+        }
+    }
 
-	private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-		this.getFees().get(fee.getFeeClass()).setCurrentLevel(fee);
-		this.getFees().get(fee.getFeeClass()).setCurrentAmount(amount);
-	}
+    private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
+        if (this.getFees() != null) {
+            this.getFees().get(fee.getFeeClass()).setCurrentLevel(fee);
+            this.getFees().get(fee.getFeeClass()).setCurrentAmount(amount);
+        }
+    }
 
-	@Transient
-	public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		this.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-		this.getFees().get(feeClass).setNewAmount(BigDecimal.ZERO);
-	}
+    @Transient
+    public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+        if (this.getFees() != null) {
+            this.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+            this.getFees().get(feeClass).setNewAmount(BigDecimal.ZERO);
+        }
+    }
 
-	@Transient
-	public void setNewFee(InvoiceFee fee, BigDecimal amount) {
-		this.getFees().get(fee.getFeeClass()).setNewLevel(fee);
-		this.getFees().get(fee.getFeeClass()).setNewAmount(amount);
-	}
+    @Transient
+    public void setNewFee(InvoiceFee fee, BigDecimal amount) {
+        if (this.getFees() != null) {
+            this.getFees().get(fee.getFeeClass()).setNewLevel(fee);
+            this.getFees().get(fee.getFeeClass()).setNewAmount(amount);
+        }
+    }
 
 	@Transient
 	public boolean isHasMembershipChanged() {
