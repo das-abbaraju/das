@@ -20,6 +20,8 @@ public enum OshaType implements Translatable {
 	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null),
 	MEXICO(OshaAudit.CAT_ID_MEXICO, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, 
 			OshaRateType.Fatalities, OshaRateType.Hours }),
+    AUSTRALIA(OshaAudit.CAT_ID_AUSTRALIA, new OshaRateType[] { OshaRateType.LTIFR, OshaRateType.IR, OshaRateType.FR, OshaRateType.ATLR,
+            OshaRateType.Fatalities, OshaRateType.Hours }),
 	EMR(OshaAudit.CAT_ID_EMR, new OshaRateType[] { OshaRateType.EMR });
 	
 

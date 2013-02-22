@@ -21,6 +21,7 @@ public class OshaAudit implements OshaVisitable {
     public static final int CAT_ID_FRANCE_NRIS = 1691; // France
     public static final int CAT_ID_MEXICO = 3165; // Mexico
     public static final int CAT_ID_EMR = 152; // EMR
+    public static final int CAT_ID_AUSTRALIA = 3325; // Australia
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
