@@ -247,6 +247,9 @@ public final class MenuBuilder {
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
 		MenuComponent manageMenu = menubar.addChild(getText("menu.Manage"));
 
+		if (permissions.hasPermission(OpPerms.SearchContractors)) {
+			manageMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
+		}
 		if (permissions.hasPermission(OpPerms.ManageCorporate) || permissions.hasPermission(OpPerms.ManageOperators)
 				|| permissions.hasPermission(OpPerms.ManageAssessment))
 			manageMenu.addChild("Client Accounts",
@@ -370,9 +373,6 @@ public final class MenuBuilder {
 		} else {
 			legacyMenu.addChild(getText("ReportNewRequestedContractor.title"), "ReportNewRequestedContractor.action",
 					"ReportNewRequestedContractor");
-		}
-		if (permissions.hasPermission(OpPerms.SearchContractors)) {
-			legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
 		}
 		if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
 			legacyMenu.addChild(getText("ArchivedContractorAccounts.title"), "ArchivedContractorAccounts.action",
