@@ -6,6 +6,7 @@ import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,10 @@ public class ContractorAccountTest {
 	private InvoiceFee bidOnlyInvoiceFee;
 	@Mock
 	private InvoiceFee listOnlyinvoiceFee;
+    @Mock
+    private InvoiceFeeDAO feeDao;
+    @Mock
+    private InvoiceFee randomFee;
 
 
 	public ContractorAccountTest() {
@@ -507,7 +513,7 @@ public class ContractorAccountTest {
 		testOperators.add(CO_1);
 		testOperator2.setParent(testOperator3);
 		contractorUnderTest.setOperators(testOperators);
-		assertTrue(contractorUnderTest.onlyWorksFor(new int[] { TEST_OPERATOR_3_ID, TEST_OPERATOR_1_ID }));
+		assertTrue(contractorUnderTest.onlyWorksFor(new int[]{TEST_OPERATOR_3_ID, TEST_OPERATOR_1_ID}));
 	}
 
 	@Test
@@ -603,6 +609,46 @@ public class ContractorAccountTest {
 		// assertTrue(classUnderTest.isValidVAT());
 		// verify(mockValidator, never()).validated(anyString());
 	}
+
+    @Test
+    public void testClearCurrentFee() throws Exception {
+        contractorUnderTest.setFees(null);
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
+        } catch (NullPointerException npe) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testSetCurrentFee() throws Exception {
+        contractorUnderTest.setFees(null);
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testClearNewFee() throws Exception {
+        contractorUnderTest.setFees(null);
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
+        } catch (NullPointerException npe) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testSetNewFee() throws Exception {
+        contractorUnderTest.setFees(null);
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail();
+        }
+    }
 
 	@After
 	public void cleanup() {
