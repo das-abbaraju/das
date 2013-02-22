@@ -13,7 +13,7 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PermissionBuilder {
-	
+
 	@Autowired
 	private HierarchyBuilder hierarchyBuilder;
 	@Autowired
@@ -22,7 +22,7 @@ public class PermissionBuilder {
 	private LanguageModel languageModel;
 	@Autowired
 	private UserDAO dao;
-	
+
 	public Permissions login(User user) throws Exception {
 		Permissions permissions = new Permissions(languageModel);
 		permissions.login(user);
@@ -31,24 +31,19 @@ public class PermissionBuilder {
 	}
 
 	public void build(Permissions permissions) {
-		Set<Integer> groupIDs;
-		
-		// TODO: Remove this section once all issues are resolved with the Group Hierarchy
+		Set<Integer> groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
 		Set<Integer> allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
-		
-		if (useInheritedGroups()) {
-			groupIDs = allInheritedGroupIds;
-		} else {
-			// TODO remove this section after we're able to finish the testing
-			// on Group Inheritance
-			groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
+
+		// This is just for safety, in case something breaks we don't find
+		if (!useInheritedGroups()) {
+			allInheritedGroupIds = groupIDs;
 		}
-		
+
 		permissions.getAllInheritedGroupIds().clear();
-		permissions.getAllInheritedGroupIds().addAll(groupIDs);
-		
-		permissions.getGroupIds().clear();
-		permissions.getGroupIds().addAll(allInheritedGroupIds);
+		permissions.getAllInheritedGroupIds().addAll(allInheritedGroupIds);
+
+		permissions.getDirectlyRelatedGroupIds().clear();
+		permissions.getDirectlyRelatedGroupIds().addAll(groupIDs);
 	}
 
 	private boolean useInheritedGroups() {

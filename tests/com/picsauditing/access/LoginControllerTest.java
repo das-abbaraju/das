@@ -85,6 +85,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
 		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", hierarchyBuilder);
+		Whitebox.setInternalState(permissionBuilder, "dao", userDAO);
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
@@ -100,6 +101,7 @@ public class LoginControllerTest extends PicsActionTest {
 		when(switchUser.getAccount()).thenReturn(switchAccount);
 		when(request.getServerName()).thenReturn("www.picsorganizer.com");
 		when(userDAO.findName(anyString())).thenReturn(user);
+		when(userDAO.find(941)).thenReturn(user);
 		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
 //		when(userDAO.find(anyInt())).thenReturn(user);
 //		when(user.getId()).thenReturn(1);
@@ -342,7 +344,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
 		when(user.getId()).thenReturn(NOT_ZERO);
 		when(user.getLocale()).thenReturn(Locale.ENGLISH);
-		
+
 		loginController.setButton("reset");
 		loginController.execute();
 
@@ -355,7 +357,7 @@ public class LoginControllerTest extends PicsActionTest {
 		when(i18nCache.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
 		when(i18nCache.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg()))
 				.thenReturn("Password incorrect");
-		
+
 		loginController.setButton("reset");
 		loginController.execute();
 
@@ -381,7 +383,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(loginController, "logAttempt");
 		ArgumentCaptor<UserLoginLog> captor = ArgumentCaptor.forClass(UserLoginLog.class);
-		
+
 		verify(loginLogDAO).save(captor.capture());
 
 		UserLoginLog log = captor.getValue();
@@ -411,9 +413,9 @@ public class LoginControllerTest extends PicsActionTest {
 		when(cookie.getName()).thenReturn("from");
 		when(cookie.getValue()).thenReturn("\"/Home.action");
 		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
-		
+
 		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
-		
+
 		assertFalse(urlPreLogin.contains("\""));
 	}
 

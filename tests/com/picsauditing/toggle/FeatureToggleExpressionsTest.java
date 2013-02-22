@@ -23,6 +23,7 @@ import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.User;
@@ -47,6 +48,8 @@ public class FeatureToggleExpressionsTest {
 	private AppPropertyDAO appPropertyDAO;
 	@Mock
 	private FeatureToggle featureToggle;
+	@Mock
+	private UserDAO userDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -64,11 +67,13 @@ public class FeatureToggleExpressionsTest {
 		when(currentUser.getLocale()).thenReturn(Locale.ENGLISH);
 
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
-		
+
 		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggle);
 		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", getHierarchyBuilder(groups));
-		
+		Whitebox.setInternalState(permissionBuilder, "dao", userDAO);
+
 		when(binding.getVariable("appPropertyDAO")).thenReturn(appPropertyDAO);
+		when(userDAO.find(currentUser.getId())).thenReturn(currentUser);
 	}
 
 	private void addUserGroup(int id, String name) {
@@ -80,32 +85,32 @@ public class FeatureToggleExpressionsTest {
 		group.setGroup(user);
 		groups.add(group);
 	}
-	
+
 	private HierarchyBuilder getHierarchyBuilder(final List<UserGroup> groups) {
 		return new AbstractBreadthFirstSearchBuilder() {
-			
+
 			@Override
 			protected List<Integer> getIdsForAllParentEntities(List<Integer> entities) {
 				return Collections.emptyList();
 			}
-			
+
 			@Override
 			protected List<Integer> findAllParentEntityIds(int id) {
 				List<Integer> groupIds = new ArrayList<Integer>();
 				for (UserGroup group : groups) {
 					groupIds.add(group.getGroup().getId());
 				}
-				
+
 				return groupIds;
 			}
 		};
 	}
-	
+
 	private void performLogin(User user) throws Exception {
 		permissions = permissionBuilder.login(user);
 		when(binding.getVariable("permissions")).thenReturn(permissions);
 	}
-	
+
 	@Test
 	public void testReleaseToApplicationAudienceLevel_NobodyLevelIsFalse() throws Exception {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("3");
@@ -150,14 +155,14 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testReleaseToApplicationAudienceLevel_DevByLevelInt() throws Exception {
-		
+
 	}
 
 	@Test
 	public void testReleaseToUserAudienceLevel_DevByLevelInt() throws Exception {
 		addUserGroup(User.GROUP_DEVELOPER, "Developer");
 
-		performLogin(currentUser);		
+		performLogin(currentUser);
 
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(1));
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(2));
@@ -350,18 +355,18 @@ public class FeatureToggleExpressionsTest {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("NAN");
 		featureToggleExpressions.applicationBetaLevel();
 	}
-	
+
 	@Test
 	public void testHasPermission_Happy() throws Exception {
 		performLogin(currentUser);
 		assertFalse(featureToggleExpressions.hasPermission("RestApi"));
 	}
-	
+
 	@Test(expected = FeatureToggleException.class)
 	public void testHasPermission_NoSuchPermission() throws Exception {
 		assertFalse(featureToggleExpressions.hasPermission("NoSuchPermission"));
 	}
-	
+
 	private class FeatureToggleExpressionsTestable extends FeatureToggleExpressions {
 
 		@Override

@@ -123,8 +123,9 @@ public class Permissions implements Serializable {
 	public void login(User user) {
 		clear();
 		userID = user.getId();
-		if (userID == 0)
+		if (userID == 0) {
 			return;
+		}
 
 		loggedIn = true;
 		forcePasswordReset = user.isForcePasswordReset();
@@ -138,10 +139,11 @@ public class Permissions implements Serializable {
 		locale = user.getLocale();
 		shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
 		shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
-		if (user.getAccount().getCountry() != null)
+		if (user.getAccount().getCountry() != null) {
 			country = user.getAccount().getCountry().getIsoCode();
-		else
+		} else {
 			country = "";
+		}
 
 		setStableLocale(user);
 		setTimeZone(user);
@@ -233,8 +235,9 @@ public class Permissions implements Serializable {
                 for (Facility facility : operator.getOperatorFacilities()) {
 					operatorChildren.add(facility.getOperator().getId());
 
-					if (facility.getOperator().getCanSeeInsurance().isTrue())
+					if (facility.getOperator().getCanSeeInsurance().isTrue()) {
 						canSeeInsurance = true;
+					}
 				}
 			}
 		}
@@ -275,15 +278,7 @@ public class Permissions implements Serializable {
 		return allInheritedGroupIds;
 	}
 
-	/**
-	 * This method was added so it will ALWAYS return the entire set of
-	 * inherited groups. Added because we had some issues with the effects of
-	 * everything else throughout the site. Never to be used with hasGroup().
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public Set<Integer> getGroupIds() {
+	public Set<Integer> getDirectlyRelatedGroupIds() {
 		return groupIds;
 	}
 
@@ -354,7 +349,7 @@ public class Permissions implements Serializable {
 	/**
 	 * This gets the shadowed user from the User object, if it's set. Otherwise
 	 * this returns the user's own id
-	 * 
+	 *
 	 * @return user ID or shadowed user ID
 	 */
 	public int getShadowedUserID() {
@@ -367,7 +362,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
-	 * 
+	 *
 	 * @param opPerm
 	 *            OSHA, ContractorDetails, UserAdmin, etc
 	 * @param oType
@@ -376,16 +371,18 @@ public class Permissions implements Serializable {
 	 */
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
 		for (UserAccess perm : permissions) {
-			if (opPerm.isForContractor() && isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
+			if (opPerm.isForContractor() && isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin) {
 				return true;
+			}
 
 			if (opPerm == perm.getOpPerm()) {
-				if (oType == OpType.Edit)
+				if (oType == OpType.Edit) {
 					return perm.isEditFlag();
-				else if (oType == OpType.Delete)
+				} else if (oType == OpType.Delete) {
 					return perm.isDeleteFlag();
-				else if (oType == OpType.Grant)
+				} else if (oType == OpType.Grant) {
 					return perm.isGrantFlag();
+				}
 
 				// Default to OpType.View
 				return perm.isViewFlag();
@@ -408,8 +405,9 @@ public class Permissions implements Serializable {
 	}
 
 	public void tryPermission(OpPerms opPerm, OpType oType) throws NoRightsException {
-		if (hasPermission(opPerm, oType))
+		if (hasPermission(opPerm, oType)) {
 			return;
+		}
 
 		throw new NoRightsException(opPerm, oType);
 	}
@@ -419,8 +417,9 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean loginRequired(HttpServletResponse response, String returnURL) throws IOException {
-		if (loggedIn)
+		if (loggedIn) {
 			return true;
+		}
 
 		addReturnToCookieIfGoodUrl(response, returnURL);
 
@@ -458,8 +457,9 @@ public class Permissions implements Serializable {
 			return loginRequired(response);
 		} else {
 			String url = request.getRequestURI();
-			if (request.getQueryString() != null)
+			if (request.getQueryString() != null) {
 				url += "?" + request.getQueryString();
+			}
 
 			return loginRequired(response, url);
 		}
@@ -491,7 +491,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * True if operator or corporate
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isOperatorCorporate() {
@@ -552,15 +552,17 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Is the logged in user an non-PICS employee auditor?
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isOnlyAuditor() {
-		if (!isPicsEmployee())
+		if (!isPicsEmployee()) {
 			return false;
+		}
 
-		if (isAdmin())
+		if (isAdmin()) {
 			return false;
+		}
 
 		return hasGroup(User.GROUP_AUDITOR);
 	}
@@ -624,7 +626,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * user.getAccount().getCountry().getIsoCode()
-	 * 
+	 *
 	 * @return
 	 */
 	public String getCountry() {
@@ -652,15 +654,18 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean canSeeAudit(AuditType auditType) {
-		if (isContractor())
+		if (isContractor()) {
 			return auditType.isCanContractorView();
+		}
 
-		if (isPicsEmployee())
+		if (isPicsEmployee()) {
 			return true;
+		}
 
 		if (isOperatorCorporate()) {
-			if (!auditType.isCanOperatorView())
+			if (!auditType.isCanOperatorView()) {
 				return false;
+			}
 
 			return getVisibleAuditTypes().contains(auditType.getId());
 		}
@@ -704,22 +709,26 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
-		if (hasPermission(OpPerms.AuditRuleAdmin))
+		if (hasPermission(OpPerms.AuditRuleAdmin)) {
 			return true;
+		}
 
 		if (operator != null) {
-			if (isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending()))
+			if (isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending())) {
 				return true;
+			}
 
 			for (AccountUser accUser : operator.getAccountUsers()) {
-				if (accUser.getUser().getId() == getUserId())
+				if (accUser.getUser().getId() == getUserId()) {
 					return true;
+				}
 			}
 
 			for (OperatorAccount child : operator.getOperatorChildren()) {
 				for (AccountUser childAccUser : child.getAccountUsers()) {
-					if (childAccUser.getUser().getId() == getUserId())
+					if (childAccUser.getUser().getId() == getUserId()) {
 						return true;
+					}
 				}
 			}
 		}

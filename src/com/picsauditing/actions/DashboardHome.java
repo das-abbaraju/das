@@ -8,7 +8,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class DashboardHome extends PicsActionSupport {
-	
+
 	private int id = 0;
 	private Dashboard dashboard = null;
 
@@ -19,13 +19,14 @@ public class DashboardHome extends PicsActionSupport {
 	}
 
 	private void findDashboard() {
-		Set<Integer> validUserGroups = permissions.getAllInheritedGroupIds();
+		Set<Integer> validUserGroups = permissions.getDirectlyRelatedGroupIds();
 		validUserGroups.add(permissions.getUserId());
 
 		if (id > 0) {
 			dashboard = dao.find(Dashboard.class, id);
-			if (dashboard != null && validUserGroups.contains(dashboard.getUser().getId()))
+			if (dashboard != null && validUserGroups.contains(dashboard.getUser().getId())) {
 				return;
+			}
 		}
 
 		String myDashboardWhereClause = "user.id IN (" + Strings.implode(validUserGroups) + ")";

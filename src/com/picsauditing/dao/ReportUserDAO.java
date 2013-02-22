@@ -72,8 +72,9 @@ public class ReportUserDAO extends PicsDAO {
 
 			ReportUser reportUser = new ReportUser(0, report);
 			Object favorite = result.get("favorite");
-			if (favorite != null)
+			if (favorite != null) {
 				reportUser.setFavorite(Boolean.parseBoolean(favorite.toString()));
+			}
 			reportUsers.add(reportUser);
 		}
 
@@ -127,7 +128,6 @@ public class ReportUserDAO extends PicsDAO {
 		query.executeUpdate();
 	}
 
-	@SuppressWarnings("deprecation")
 	public static SelectSQL setupSqlForSearchFilterQuery(Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
@@ -143,7 +143,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
-				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGroupIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 
