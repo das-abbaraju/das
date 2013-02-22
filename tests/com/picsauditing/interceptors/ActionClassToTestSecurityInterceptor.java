@@ -33,5 +33,10 @@ public class ActionClassToTestSecurityInterceptor extends PicsApiSupport {
     public String executeAnonymousAndRequiredPermission() {
         return SUCCESS;
     }
+    @Anonymous
+    @Api
+    public String executeAnonymousAndApi() {
+        return JSON;
+    }
 
 }

@@ -58,7 +58,7 @@ public class SecurityInterceptorTest extends PicsActionTest {
 
         Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
 
-        assertTrue(e instanceof SecurityException);
+        assertTrue(e instanceof AjaxNotLoggedInException);
     }
 
     @Test
@@ -76,6 +76,15 @@ public class SecurityInterceptorTest extends PicsActionTest {
     @Test
     public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsAnonymousAndRequiresPermissions() throws Exception {
         Method method = action.getClass().getMethod("executeAnonymousAndRequiredPermission");
+
+        Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
+
+        assertTrue(e instanceof SecurityException);
+    }
+
+    @Test
+    public void checkSecurityAnnotationsLoggingInAsNecessary_MethodIsAnonymousAndApi() throws Exception {
+        Method method = action.getClass().getMethod("executeAnonymousAndApi");
 
         Exception e = securityInterceptor.checkSecurityAnnotationsLoggingInAsNecessary(action,method);
 
@@ -125,7 +134,7 @@ public class SecurityInterceptorTest extends PicsActionTest {
     }
 
     @Test
-    public void checkSecurityAnnotationsLoggingInAsNecessaryTest_APICall_with_NoAPIKey() throws Exception {
+    public void checkSecurityAnnotationsLoggingInAsNecessary_apiCallWithNoAPIKey() throws Exception {
         action.setApiKey(null);
         when(request.getHeader("X-Requested-With")).thenReturn("XMLHttpRequest");
         Method method = action.getClass().getMethod("executeApi");
