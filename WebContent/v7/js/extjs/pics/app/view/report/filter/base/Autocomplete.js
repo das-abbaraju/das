@@ -3,7 +3,7 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
     alias: 'widget.reportfilterbaseautocomplete',
     
     cls: 'autocomplete',
-    
+
     createOperatorField: function () {
         return {
             xtype: 'hiddenfield',
@@ -31,7 +31,7 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             filter_value = filter.get('value'),
             value_field = this.down('combobox'),
             url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id, filter_value);
-        
+
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             fields: [{
@@ -41,6 +41,7 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
                 name: 'value',
                 type: 'string'
             }],
+            initialSelectionMade: false,
             proxy: {
                 type: 'ajax',
                 url: url,
@@ -52,7 +53,14 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    value_field.select(filter_value);
+                    if (filter_value && !this.initialSelectionMade) {
+
+                        value_field.select(filter_value);
+
+                        this.initialSelectionMade = true;
+
+                        this.proxy.url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id);
+                    }
                 }
             }
         });
