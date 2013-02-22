@@ -1,6 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
@@ -14,7 +14,7 @@ public class FlagDataOverrideTable extends AbstractTable {
 
 	public FlagDataOverrideTable() {
 		super("flag_data_override");
-		addFields(FlagData.class);
+		addFields(FlagDataOverride.class);
 
 		Field createdBy = new Field("CreatedBy", "createdBy", FieldType.UserID);
 		createdBy.setImportance(FieldImportance.Required);
@@ -23,10 +23,6 @@ public class FlagDataOverrideTable extends AbstractTable {
 		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
 		creationDate.setImportance(FieldImportance.Required);
 		addField(creationDate).setCategory(FieldCategory.CompanyStatistics);
-
-		Field updateDate = new Field("UpdateDate", "updateDate", FieldType.Date);
-		updateDate.setImportance(FieldImportance.Required);
-		addField(updateDate).setCategory(FieldCategory.CompanyStatistics);
 	}
 
 	public void addJoins() {

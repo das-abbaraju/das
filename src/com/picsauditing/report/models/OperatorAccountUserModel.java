@@ -6,6 +6,7 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.AccountUserTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;

@@ -29,6 +29,11 @@ public class AccountOperatorModel extends AbstractModel {
 		parent.category = FieldCategory.AccountInformation;
 		parent.alias = "ParentCorporation";
 		parent.minimumImportance = FieldImportance.Required;
+
+		ModelSpec parentOperator = parent.join(AccountTable.Operator);
+		parentOperator.category = FieldCategory.AccountInformation;
+		parentOperator.alias = "parentOperator";
+
 		return spec;
 	}
 

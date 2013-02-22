@@ -8,10 +8,10 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.FlagCriteriaTable;
 import com.picsauditing.report.tables.FlagDataTable;
 
 public class ContractorFlagDataModel extends AbstractModel {
@@ -30,6 +30,9 @@ public class ContractorFlagDataModel extends AbstractModel {
 			ModelSpec coOperator = contractorOperator.join(ContractorOperatorTable.Operator);
 			coOperator.alias = "ContractorOperatorOperator";
 			coOperator.minimumImportance = FieldImportance.Required;
+			ModelSpec operator = coOperator.join(AccountTable.Operator);
+			operator.alias = "Operator";
+
 		}
 
 		ModelSpec operatorCriteria = spec.join(FlagDataTable.OperatorCriteria);
@@ -43,7 +46,8 @@ public class ContractorFlagDataModel extends AbstractModel {
 		ModelSpec contractor = spec.join(FlagDataTable.Contractor);
 		contractor.alias = "Account";
 		contractor.minimumImportance = FieldImportance.Required;
-		spec.join(FlagDataTable.Override);
+		ModelSpec override = spec.join(FlagDataTable.Override);
+		override.minimumImportance = FieldImportance.Required;
 
 		return spec;
 	}

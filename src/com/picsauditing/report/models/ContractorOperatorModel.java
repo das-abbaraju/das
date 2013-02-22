@@ -22,7 +22,9 @@ public class ContractorOperatorModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, CONTRACTOR_OPERATOR);
-		spec.join(ContractorOperatorTable.Operator);
+		ModelSpec opAccount = spec.join(ContractorOperatorTable.Operator);
+		ModelSpec operator = opAccount.join(AccountTable.Operator);
+		operator.alias = "Operator";
 
 		{
 			ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
