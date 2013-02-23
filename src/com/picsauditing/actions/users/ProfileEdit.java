@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -92,9 +94,20 @@ public class ProfileEdit extends PicsActionSupport {
 		u = dao.save(u);
 		dao.refresh(u);
 
+		// We have to redirect to refresh the locale, if it has been changed
+		return redirect();
+	}
+
+	private String redirect() throws IOException {
+		if (isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null) {
+			// if the user makes it to this point, we know their user information was saved properly.
+			permissions.setUsingVersion7Menus(true);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+			return setUrlForRedirect("Tutorial!navigationMenu.action");
+		}
+
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 
-		// We have to redirect to refresh the locale, if it has been changed
 		return setUrlForRedirect("ProfileEdit.action");
 	}
 

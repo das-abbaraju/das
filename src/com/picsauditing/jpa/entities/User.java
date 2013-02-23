@@ -106,9 +106,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Locale locale = Locale.ENGLISH;
 	private String department;
 	private String apiKey;
+	private boolean usingDynamicReports;
+	private Date usingDynamicReportsDate;
 	private boolean usingVersion7Menus;
-	private int assignmentCapacity;
 	private Date usingVersion7MenusDate;
+	private int assignmentCapacity;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -895,23 +897,49 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return this.hasPermission(opPerm, OpType.View);
 	}
 
-	@Column(name = "usingDynamicReports")
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
+
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
+	}
+
+	public Date getUsingDynamicReportsDate() {
+		return usingDynamicReportsDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public void setusingDynamicReportsDate(Date usingDynamicReportsDate) {
+		this.usingDynamicReportsDate = usingDynamicReportsDate;
+	}
+
 	public boolean isUsingVersion7Menus() {
+		if (usingDynamicReports) {
+			this.usingVersion7Menus = usingDynamicReports;
+		}
+
 		return usingVersion7Menus;
 	}
 
 	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingDynamicReports = usingVersion7Menus;
 		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "usingDynamicReportsDate")
 	public Date getUsingVersion7MenusDate() {
+		if (usingDynamicReportsDate != null) {
+			usingVersion7MenusDate = usingDynamicReportsDate;
+		}
+
 		return usingVersion7MenusDate;
 	}
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
+		System.out.println(usingVersion7MenusDate);
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
+		this.usingDynamicReportsDate = usingVersion7MenusDate;
 	}
 
 	@Transient

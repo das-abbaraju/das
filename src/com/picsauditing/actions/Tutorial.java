@@ -17,8 +17,8 @@ public class Tutorial extends PicsActionSupport {
 		loadPermissions(false);
 
 		// prevent repeated updates to the using dynamic reports date
-		if (isFirstTimeDynamicReportUser()) {
-			setUsingDynamicReportsDate();
+		if (isFirstTimeVersion7MenuUser()) {
+			setUsingVersion7MenuDate();
 		}
 
 		return "navigation-menu";
@@ -35,17 +35,17 @@ public class Tutorial extends PicsActionSupport {
 	 *
 	 * @return
 	 */
-	private boolean isFirstTimeDynamicReportUser() {
+	private boolean isFirstTimeVersion7MenuUser() {
 		return (permissions.isUsingVersion7Menus() && permissions.getUsingVersion7MenusDate() == null);
 	}
 
-	private void setUsingDynamicReportsDate() {
-		Date usingDynamicReportsDate = new Date();
+	private void setUsingVersion7MenuDate() {
+		Date usingVersion7MenuDate = new Date();
 
-		permissions.setUsingVersion7MenusDate(usingDynamicReportsDate);
+		permissions.setUsingVersion7MenusDate(usingVersion7MenuDate);
 
 		User user = userDAO.find(permissions.getUserId());
-		user.setUsingVersion7MenusDate(usingDynamicReportsDate);
+		user.setUsingVersion7MenusDate(usingVersion7MenuDate);
 		userDAO.save(user);
 	}
 }

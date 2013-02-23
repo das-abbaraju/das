@@ -188,8 +188,8 @@
         <jsp:include page="/struts/layout/_environment.jsp" />
         
         <%
-                	if (useVersion7Menus) {
-                %>
+            if (useVersion7Menus) {
+        %>
             <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
             <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
             <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}" />
