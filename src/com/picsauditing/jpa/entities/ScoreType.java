@@ -1,5 +1,5 @@
 package com.picsauditing.jpa.entities;
 
 public enum ScoreType {
-	Actual, Percent, Weighted;
+	Actual, Percent, Weighted, Aggregate;
 }

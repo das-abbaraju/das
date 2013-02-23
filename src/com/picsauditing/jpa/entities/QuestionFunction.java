@@ -558,7 +558,13 @@ public enum QuestionFunction {
 			}
 			return lowestCpi;
 		}
-	}
+	},
+    AUDIT_SCORE {
+        @Override
+        public Object calculate(FunctionInput input) {
+            return null;
+        }
+    }
 ;
 	// This a special value if none of the countries listed have a CPI value.
 	// The CPI scale goes from 0 - 10, with 0 being most corrupt. We don't want
