@@ -19,6 +19,7 @@ CountrySubdivision	Autocomplete	String	Count,CountDistinct,GroupConcat,Max,Min,L
 Currency	Multiselect	String	Count,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase
 Date	Date	String	Count,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour
 DateTime	Date	String	Count,CountDistinct,GroupConcat,Max,Min,LowerCase,UpperCase,Month,Year,YearMonth,WeekDay,Hour,Date
+FeeClass	Multiselect	String	Count,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase
 FlagColor	Multiselect	Flag	Count,CountDistinct,Max,Min
 FlagCriteriaOptionCode	Multiselect	String	Count,CountDistinct,GroupConcat,Max,Min,Length,LowerCase,UpperCase
 Float	Number	Number	Count,CountDistinct,Max,Min,Average,Round,Sum,StdDev
