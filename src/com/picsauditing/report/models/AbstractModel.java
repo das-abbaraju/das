@@ -14,10 +14,11 @@ import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.ReportForeignKey;
 import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 
 public abstract class AbstractModel {
 	public static final String ACCOUNT = "Account";
-	
+
 	ReportJoin startingJoin;
 	protected Permissions permissions;
 	protected PermissionQueryBuilder permissionQueryBuilder;
@@ -41,8 +42,9 @@ public abstract class AbstractModel {
 		join.setFromAlias(modelSpec.fromAlias);
 		join.setAlias(modelSpec.alias);
 
-		if (modelSpec.category != null)
+		if (modelSpec.category != null) {
 			join.setCategory(modelSpec.category);
+		}
 
 		for (ModelSpec childSpec : modelSpec.joins) {
 			ReportForeignKey key = getKey(toTable, childSpec.key);
@@ -70,7 +72,7 @@ public abstract class AbstractModel {
 		ReportOnClause onClause = key.getOnClause();
 		String onClauseSql = onClause.toSql(fromAlias, childJoin.getAlias(), permissions);
 		childJoin.setOnClause(onClauseSql);
-		
+
 		childJoin.setMinimumImportance(key.getMinimumImportance());
 		if (childSpec.minimumImportance != null) {
 			logger.debug("Overriding minimum importance " + childJoin.getAlias() + " to " + childSpec.minimumImportance);
@@ -81,7 +83,7 @@ public abstract class AbstractModel {
 			logger.debug("Overriding category from ForeignKey " + childJoin.getAlias() + " to " + key.getCategory());
 			childJoin.setCategory(key.getCategory());
 		}
-		
+
 		if (childSpec.category != null) {
 			logger.debug("Overriding category from ModelSpec " + childJoin.getAlias() + " to " + childSpec.category);
 			childJoin.setCategory(childSpec.category);
@@ -90,7 +92,7 @@ public abstract class AbstractModel {
 	}
 
 	abstract ModelSpec getJoinSpec();
-	
+
 	public ReportJoin getStartingJoin() {
 		return startingJoin;
 	}
@@ -110,6 +112,6 @@ public abstract class AbstractModel {
 		permissionQueryBuilder = new PermissionQueryBuilder(permissions);
 		permissionQueryBuilder.setAccountAlias(ACCOUNT);
 
-		return "";
+		return Strings.EMPTY_STRING;
 	}
 }

@@ -1,13 +1,22 @@
 package com.picsauditing.report.models;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountUserTable;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
 import com.picsauditing.report.tables.PaymentCommissionTable;
+import com.picsauditing.util.Strings;
 
 public class PaymentCommissionModel extends AbstractModel {
 
@@ -71,9 +80,17 @@ public class PaymentCommissionModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
-		
-		Field commissionuser = fields.get("AccountUserUser".toUpperCase());
-		commissionuser.setDatabaseColumnName("user.name");
+
+		Field commissionUser = fields.get("UserName".toUpperCase());
+		if (commissionUser != null) {
+			commissionUser.setDatabaseColumnName("user.name");
+			commissionUser.setName("AccountUserUser");
+			commissionUser.setCategory(FieldCategory.Commission);
+			commissionUser.setImportance(FieldImportance.Required);
+		}
+
+		fields.put("ACCOUNTUSERUSER", commissionUser);
+		fields.remove("USERNAME");
 
 		removeUnnecessaryFields(fields);
 
@@ -103,6 +120,18 @@ public class PaymentCommissionModel extends AbstractModel {
 		availableFields.remove("INVOICEPONUMBER");
 		availableFields.remove("INVOICEPAIDDATE");
 		availableFields.remove("INVOICECOMMISSIONREVENUEPERCENT");
+	}
+
+	@Override
+	public String getWhereClause(List<Filter> filters) {
+		String whereClause = super.getWhereClause(filters);
+
+		Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+		if (CollectionUtils.isNotEmpty(groupIds) && !groupIds.contains(User.GROUP_MANAGER)) {
+			whereClause += Strings.EMPTY_STRING + "AccountUser.userID = " + permissions.getUserId();
+		}
+
+		return whereClause;
 	}
 
 }
