@@ -41,10 +41,10 @@
 		<tbody>
 			<s:iterator value="data" status="stat">
 				<tr>
-					<td style="text-align: center;">
-						<s:if test="isOperatorCanChangeWorkStatus(get('workStatus'))">
-							<input id="conid_co<s:property value="get('id')"/>" type="checkbox" class="massCheckable" name="conids" value="<s:property value="get('id')"/>"/>
-						</s:if>
+					<td class="center">
+                        <s:if test="isOperatorCanChangeWorkStatus(get('workStatus'))">
+                            <input id="conid_co<s:property value="get('id')"/>" type="checkbox" class="massCheckable" name="conids" value="<s:property value="get('id')"/>"/>
+                        </s:if>
 					</td>
 					<td>
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>" rel="ContractorQuick.action?id=<s:property value="get('id')"/>" class="contractorQuick" title="<s:property value="get('name')" />">
@@ -65,25 +65,24 @@
 			
 			<tr>
 				<td class="center">
-					<center>
-						<input title="ContractorApproval.CheckAll" type="checkbox" id="selectAll" />
-						<br />
-						<s:text name="ContractorApproval.SelectAll" />
-					</center>
+					<input title="ContractorApproval.CheckAll" type="checkbox" id="selectAll" />
+					<br />
+					<s:text name="ContractorApproval.SelectAll" />
 				</td>
 				<td>
-					<div style="height:28px;">
-						<s:text name="ContractorApproval.ChangeStatusTo" />
-						
-						<s:radio 
-							list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('AccountStatus.Pending')}" 
-							name="workStatus"
-							theme="pics"
-							cssClass="workStatus inline"
-						/>
-					</div>
-					<s:text name="global.Notes" />: <s:textarea name="operatorNotes" cols="20" rows="4"/>&nbsp;&nbsp;&nbsp;&nbsp;
-					<br clear="all"/><br/>
+                    <s:text name="ContractorApproval.ChangeStatusTo" />
+
+					<s:radio
+						list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('AccountStatus.Pending')}" 
+						name="workStatus"
+						theme="pics"
+						cssClass="workStatus inline"
+					/>
+
+                    <label for="operatorNotes"><s:text name="global.Notes" />:
+                        <s:textarea id="operatorNotes" name="operatorNotes" cols="20" rows="4"/>
+                    </label>
+
 					<div class="buttons">
 						<a class="picsbutton positive" href="#" id="saveChanges"><s:text name="ContractorApproval.SaveChanges" /></a>
 					</div>
