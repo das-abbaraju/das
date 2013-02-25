@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.PicsSqlException;
@@ -22,8 +25,11 @@ import com.picsauditing.report.converter.ReportBuilder;
 import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
@@ -65,6 +71,8 @@ public class ReportService {
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ManageReportsService manageReportsService;
+
+	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
@@ -506,6 +514,41 @@ public class ReportService {
 		workbook.write(outstream);
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
+	}
+
+	public JSONObject buildSqlFunctionsJson(ModelType modelType, String fieldId, Permissions permissions) throws Exception {
+		AbstractModel model = ModelFactory.build(modelType, permissions);
+		Field field = model.getAvailableFields().get(fieldId.toUpperCase());
+
+		if (field == null) {
+			throw new Exception("Unable to find field for field_id: " + fieldId.toUpperCase());
+		}
+
+		Set<SqlFunction> sqlFunctions = field.getType().getSqlFunctions();
+		JSONObject sqlFunctionsJson = sqlFunctionsToJson(sqlFunctions, permissions.getLocale());
+
+		return sqlFunctionsJson;
+	}
+
+	@SuppressWarnings("unchecked")
+	private JSONObject sqlFunctionsToJson(Set<SqlFunction> sqlFunctions, Locale locale) {
+		JSONObject sqlFunctionsJson = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+
+		for (SqlFunction sqlFunction : sqlFunctions) {
+			JSONObject json = new JSONObject();
+
+			json.put(ReportJson.SQL_FUNCTIONS_KEY, sqlFunction.name());
+			String key = ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name();
+			String translatedValue = i18nCache.getText(key, locale);
+			json.put(ReportJson.SQL_FUNCTIONS_VALUE, translatedValue);
+
+			jsonArray.add(json);
+		}
+
+		sqlFunctionsJson.put(ReportJson.SQL_FUNCTIONS, jsonArray);
+
+		return sqlFunctionsJson;
 	}
 
 }
