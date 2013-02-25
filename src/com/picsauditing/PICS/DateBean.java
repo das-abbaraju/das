@@ -625,7 +625,7 @@ public class DateBean {
 		}
 
 		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);
-		cal = setDefaultsForMonth(cal, Calendar.MARCH);
+		cal = setDefaultsForMonth(cal, Calendar.MARCH, 15);
 
 		return cal.getTime();
 	}
@@ -637,7 +637,7 @@ public class DateBean {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
-		cal = setDefaultsForMonth(cal, Calendar.MARCH);
+		cal = setDefaultsForMonth(cal, Calendar.MARCH, 15);
 
 		return cal.getTime();
 	}
@@ -648,7 +648,7 @@ public class DateBean {
 		}
 
 		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);
-		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY);
+		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY, 1);
 
 		return calendar.getTime();
 	}
@@ -661,9 +661,9 @@ public class DateBean {
 		return calendar;
 	}
 
-	protected static Calendar setDefaultsForMonth(Calendar calendar, int month) {
+	protected static Calendar setDefaultsForMonth(Calendar calendar, int month, int dayOfMonth) {
 		calendar.set(Calendar.MONTH, month);
-		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);

@@ -416,7 +416,7 @@ public class DateBeanTest {
 		Calendar result = Calendar.getInstance();
 		result.setTime(marchOfThatYear);
 
-		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(15, result.get(Calendar.DATE));
 		assertEquals(Calendar.MARCH, result.get(Calendar.MONTH));
 		assertEquals(calendar.get(Calendar.YEAR) + 1, result.get(Calendar.YEAR));
 	}
@@ -433,7 +433,7 @@ public class DateBeanTest {
 		Calendar result = Calendar.getInstance();
 		result.setTime(marchOfThatYear);
 
-		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(15, result.get(Calendar.DATE));
 		assertEquals(Calendar.MARCH, result.get(Calendar.MONTH));
 		assertEquals(calendar.get(Calendar.YEAR) + 1, result.get(Calendar.YEAR));
 		assertEquals(result.get(Calendar.HOUR_OF_DAY), 23);
@@ -453,7 +453,7 @@ public class DateBeanTest {
 		Calendar result = Calendar.getInstance();
 		result.setTime(marchOfThatYear);
 
-		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(15, result.get(Calendar.DATE));
 		assertEquals(Calendar.MARCH, result.get(Calendar.MONTH));
 		assertEquals(calendar.get(Calendar.YEAR), result.get(Calendar.YEAR));
 	}
