@@ -57,16 +57,11 @@ public class AuditDataSave extends AuditActionSupport {
 	protected static final int OSHA_INCIDENT_QUESTION_ID = 8838;
 	protected static final int COHS_INCIDENT_QUESTION_ID = 8840;
 
-	// protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new
-	// int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
 	protected static final Set<Integer> OSHA_INCIDENT_RELATED_QUESTION_IDS = Collections
 			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8812, 8813, 8814, 8815, 8816, 8817)));
 	protected static final Set<Integer> COHS_INCIDENT_RELATED_QUESTION_IDS = Collections
 			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847, 11117,
 					11118)));
-	// protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new
-	// int[] { 8841, 8842, 8843, 8844, 11119, 8845,
-	// 8846, 8847, 11117, 11118 };
 
 	private AuditData auditData = null;
 	private String[] multiAnswer;
@@ -93,9 +88,11 @@ public class AuditDataSave extends AuditActionSupport {
 		try {
 			getUser();
 			AuditData databaseCopy = null;
-			if (auditData.getId() > 0) {
+			if (auditData != null && auditData.getId() > 0) {
 				databaseCopy = auditDataDAO.find(auditData.getId());
 			} else {
+				if (auditData == null)
+					throw new Exception("Missing Audit Data");
 				if (auditData.getAudit() == null)
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
