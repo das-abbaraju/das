@@ -27,8 +27,8 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getColumnFunctionUrl: function (report_type, field_id) {
-            var path = 'ReportSqlFunction.action?';
-            
+            var path = 'ReportApi!buildSqlFunctions.action?';
+
             var params = {
                 type: report_type,
                 fieldId: field_id
