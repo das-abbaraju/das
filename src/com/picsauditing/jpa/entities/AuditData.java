@@ -264,6 +264,20 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return scorePercentage;
 	}
 
+    @Transient
+    public float getStraightScoreValue() {
+        float straightScoreValue = 0f;
+        if (answer != null && isMultipleChoice()) {
+            for (AuditOptionValue value : question.getOption().getValues()) {
+                if (answer.equals(value.getIdentifier())) {
+                    straightScoreValue = value.getScore();
+                    break;
+                }
+            }
+        }
+        return straightScoreValue;
+    }
+
 	@Transient
 	public float getScoreValue() {
 		return Math.round(getScorePercentage() * question.getScoreWeight());

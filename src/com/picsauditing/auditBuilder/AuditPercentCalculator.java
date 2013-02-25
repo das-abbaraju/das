@@ -9,29 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditQuestionFunction;
-import com.picsauditing.jpa.entities.AuditQuestionFunctionWatcher;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.QuestionFunctionType;
-import com.picsauditing.jpa.entities.ScoreType;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -46,13 +29,13 @@ public class AuditPercentCalculator {
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
-	
+
 	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
 
 	/**
 	 * Calculate the percent complete for all questions in this category
-	 * 
+	 *
 	 * @param catData
 	 */
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -96,11 +79,16 @@ public class AuditPercentCalculator {
 				for (AuditQuestionFunction function : question.getFunctions()) {
 					if (function.getType() == QuestionFunctionType.Calculation) {
 						if (!target.isAnswered() || function.isOverwrite()) {
-							Object calculation = function.calculate(currentWatcherAnswers);
-							if (calculation != null) {
-								results = calculation.toString();
-								break;
-							}
+                            if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
+                                results = String.valueOf(catData.getAudit().getScore());
+                            }
+                            else {
+                                Object calculation = function.calculate(currentWatcherAnswers);
+                                if (calculation != null) {
+                                    results = calculation.toString();
+                                    break;
+                                }
+                            }
 						}
 					}
 				}
@@ -121,16 +109,16 @@ public class AuditPercentCalculator {
 			if (questionIDs.contains(answer.getQuestion().getId()))
 				requiredAnswers.add(answer);
 		AnswerMap answers = new AnswerMap(requiredAnswers);
-		
+
 		// Get a list of questions/answers for this category
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 
 			if (question.isValidQuestion(validDate)) {
 				AuditQuestion questionBeingReviewed = question;
 				boolean isRequired = questionBeingReviewed.isRequired();;
-				 
+
 				AuditData answer = answers.get(questionBeingReviewed.getId());
-				
+
 				circularRequiredQuestionIds.clear();
 				while (questionBeingReviewed != null) {
 					if (questionBeingReviewed.getRequiredQuestion() != null && questionBeingReviewed.getRequiredAnswer() != null) {
@@ -162,7 +150,7 @@ public class AuditPercentCalculator {
 							if (!questionBeingReviewed.isVisible(otherAnswer))
 								isRequired = false;
 						}
-						
+
 						// is visible question visible
 						AuditQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
 						circularVisualQuestionIds.clear();
@@ -171,7 +159,7 @@ public class AuditPercentCalculator {
 								if (!questionVisibilityParent.isVisible(answers.get(questionVisibilityParent.getVisibleQuestion().getId())))
 									isRequired = false;
 							}
-							
+
 							if (circularVisualQuestionIds.contains(questionVisibilityParent.getId())) {
 								logger.warn("Circular visible questions detected with question id {}", questionVisibilityParent.getId());
 								break;
@@ -180,10 +168,10 @@ public class AuditPercentCalculator {
 							questionVisibilityParent = questionVisibilityParent.getVisibleQuestion();
 						}
 					}
-					
-					if (!isRequired) 
+
+					if (!isRequired)
 						break;
-					
+
 					if (circularRequiredQuestionIds.contains(questionBeingReviewed.getId())) {
 						logger.warn("Circular required questions detected with question id {}", questionBeingReviewed.getId());
 						break;
@@ -234,7 +222,7 @@ public class AuditPercentCalculator {
 	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {
 		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
 		Date validDate = catData.getAudit().getValidDate();
-		
+
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			if (question.isValidQuestion(validDate)) {
 				for (AuditQuestionFunction aqf : question.getFunctions())
@@ -243,24 +231,24 @@ public class AuditPercentCalculator {
 							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
 			}
 		}
-		
+
 		return functionWatcherQuestionIds;
 	}
-	
+
 	private Set<Integer> collectQuestionIdsFromAuditCatData(AuditCatData catData) {
 		Set<Integer> questionIDs = new HashSet<Integer>();
-		
+
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
 
 			if (question.getRequiredQuestion() != null) {
 				questionIDs.addAll(collectChainOfRequiredQuestionIds(question));
 			}
-			
+
 			if (question.getVisibleQuestion() != null) {
-				questionIDs.addAll(collectChainOfVisibleQuestionIds(question));			
+				questionIDs.addAll(collectChainOfVisibleQuestionIds(question));
 			}
-		}	
+		}
 		return questionIDs;
 	}
 
@@ -279,7 +267,7 @@ public class AuditPercentCalculator {
 		}
 		return questionIDs;
 	}
-	
+
 	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
 		Set<Integer> questionIDs = new HashSet<Integer>();
 		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<Integer>();
@@ -295,7 +283,7 @@ public class AuditPercentCalculator {
 		}
 		return questionIDs;
 	}
-	
+
 	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
 		AuditQuestion question = answer.getQuestion();
 		// Anything that requires verification, should be
@@ -349,7 +337,7 @@ public class AuditPercentCalculator {
 
 	/**
 	 * For each CAO, roll up all the category complete stats to calculate the percent complete for the cao
-	 * 
+	 *
 	 * @param conAudit
 	 * @param recalcCats
 	 */
@@ -395,7 +383,7 @@ public class AuditPercentCalculator {
 					answered += data.getRequiredCompleted();
 					verified += data.getNumVerified();
 
-					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent || 
+					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent ||
 							conAudit.getAuditType().getScoreType() == ScoreType.Actual) {
 						if (data.getScorePossible() > 0) {
 							score += data.getScore();
@@ -466,7 +454,20 @@ public class AuditPercentCalculator {
 		if (conAudit.getAuditType().getScoreType() == ScoreType.Weighted) {
 			calculateWeightedScore(conAudit);
 		}
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Aggregate) {
+            calculateStraightAggregate(conAudit);
+        }
 	}
+
+    private void calculateStraightAggregate(ContractorAudit scoredAudit){
+        float runningTotal = 0;
+        for (AuditData auditData: scoredAudit.getData()) {
+            runningTotal += auditData.getStraightScoreValue();
+        }
+        int score = Math.round(runningTotal);
+        // TODO Technical Debt: Update the database and remove this code.
+        scoredAudit.setScore(score > 127 ? 127 : score);
+    }
 
 	private void calculateWeightedScore(ContractorAudit ca) {
 		float cumulativeScore = 0f;
