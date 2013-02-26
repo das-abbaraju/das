@@ -191,6 +191,6 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             };
 
             return path + Ext.Object.toQueryString(params);
-        },
+        }
     }
 });

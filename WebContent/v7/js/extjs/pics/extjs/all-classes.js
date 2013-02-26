@@ -66432,7 +66432,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 Ext.Ajax.request({
                     url: url,
                     params: {
-                        shareId: account_id,
+                        shareId: account_id
                     },
                     success: success_callback,
                     failure: failure_callback
@@ -66642,7 +66642,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             };
 
             return path + Ext.Object.toQueryString(params);
-        },
+        }
     }
 });
 Ext.define('PICS.data.ColumnType', {
