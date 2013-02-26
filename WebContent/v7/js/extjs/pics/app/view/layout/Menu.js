@@ -12,7 +12,8 @@ Ext.define('PICS.view.layout.Menu', {
     id: 'site_menu',
     padding: 0,
 
-    autoLoad: {
+    loader: {
+        autoLoad: true,
         url: '/Menu.action',
 
         renderer: function (loader, response, active) {
