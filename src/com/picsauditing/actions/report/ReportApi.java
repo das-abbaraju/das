@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.*;
 
 import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportService;
 
@@ -46,6 +47,9 @@ public class ReportApi extends PicsApiSupport {
 	protected int shareId;
 	private ReportResults reportResults;
 	private Report report;
+
+	private ModelType type;
+	private String fieldId;
 
 	private static final String PRINT = "print";
 	private static final Logger logger = LoggerFactory.getLogger(ReportApi.class);
@@ -214,6 +218,18 @@ public class ReportApi extends PicsApiSupport {
 		return JSON;
 	}
 
+	public String buildSqlFunctions() {
+		try {
+			json = reportService.buildSqlFunctionsJson(type, fieldId, permissions);
+
+			writeJsonSuccess(json);
+		} catch (Exception e) {
+			writeJsonException(json, e);
+		}
+
+		return JSON;
+	}
+
 	private void handleSqlException(PicsSqlException sqlException) throws Exception {
 		writeJsonException(json, sqlException);
 
@@ -284,4 +300,13 @@ public class ReportApi extends PicsApiSupport {
 	public Report getReport() {
 		return report;
 	}
+
+	public void setType(ModelType type) {
+		this.type = type;
+	}
+
+	public void setFieldId(String fieldId) {
+		this.fieldId = fieldId;
+	}
+
 }

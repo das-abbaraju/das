@@ -1,33 +1,18 @@
 package com.picsauditing.oshadisplay;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaRateType;
-import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Numbers;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 /**
  * This class is used for displaying safety statistics on the contractor

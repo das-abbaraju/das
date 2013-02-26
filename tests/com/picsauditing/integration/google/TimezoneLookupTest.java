@@ -37,13 +37,11 @@ public class TimezoneLookupTest {
 
 		Whitebox.setInternalState(timezone, "httpClient", httpClient);
 		Whitebox.setInternalState(timezone, "httpMethod", httpMethod);
-
 	}
 
 	@Test
 	public void foo() throws Exception {
 		DateTimeZone zone = DateTimeZone.forID("US/Pacific");
-		System.out.println(zone.getID());
 	}
 
 	@Test

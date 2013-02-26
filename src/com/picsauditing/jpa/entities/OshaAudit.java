@@ -34,7 +34,7 @@ public class OshaAudit implements OshaVisitable {
                     CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
     public static final Set<Integer> DISPLAY_SAFETY_STATISTICS_CATEGORY_IDS =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
-                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO)));
+                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -73,6 +73,9 @@ public class OshaAudit implements OshaVisitable {
             case CAT_ID_MEXICO:
                 type = OshaType.MEXICO;
                 break;
+            case CAT_ID_AUSTRALIA:
+                type = OshaType.AUSTRALIA;
+                break;
         }
 
         return type;
@@ -103,6 +106,7 @@ public class OshaAudit implements OshaVisitable {
         displaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
         displaySafetyStatisticsMap.put(OshaType.EMR, false);
         displaySafetyStatisticsMap.put(OshaType.MEXICO, false);
+        displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, false);
         for (AuditCatData category : getCategories()) {
             if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
@@ -116,6 +120,9 @@ public class OshaAudit implements OshaVisitable {
             }
             if (category.getCategory().getId() == CAT_ID_MEXICO) {
                 displaySafetyStatisticsMap.put(OshaType.MEXICO, category.isApplies());
+            }
+            if (category.getCategory().getId() == CAT_ID_AUSTRALIA) {
+                displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, category.isApplies());
             }
         }
     }
@@ -166,6 +173,8 @@ public class OshaAudit implements OshaVisitable {
                 safetyStatistics = new EmrStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.MEXICO) {
                 safetyStatistics = new MexicoStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.AUSTRALIA) {
+                safetyStatistics = new AustraliaStatistics(year, contractorAudit.getData(), category.isApplies());
             }
 
             if (safetyStatistics != null) {

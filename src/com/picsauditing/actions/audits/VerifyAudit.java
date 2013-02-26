@@ -170,6 +170,8 @@ public class VerifyAudit extends AuditActionSupport {
 		int questionid = auditQuestion.getId();
 		if (questionid == 2447 || questionid == 2448 || questionid == 15353 || questionid == 15354)
 			return false;
+        if ("Calculation".equals(auditQuestion.getQuestionType()))
+            return false;
 		for (AuditCategory ac : auditQuestion.getCategory().getChildren()) {
 			if (ac.getTopParent().getId() != AuditCategory.CITATIONS)
 				return true;
