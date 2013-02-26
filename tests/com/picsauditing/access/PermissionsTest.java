@@ -3,16 +3,17 @@ package com.picsauditing.access;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,4 +135,41 @@ public class PermissionsTest {
 		assertFalse(permissions.belongsToGroups());
 	}
 
+	@Test
+	public void testSetStableLocale_LanguageModelIsNotNullAndLocaleIsStable() throws Exception {
+		Locale german = Locale.GERMAN;
+
+		User user = mock(User.class);
+		when(languageModel.getNearestStableLocale(german)).thenReturn(german);
+		when(user.getLocale()).thenReturn(german);
+
+		Whitebox.invokeMethod(permissions, "setStableLocale", user);
+
+		assertEquals(german, permissions.getLocale());
+	}
+
+	@Test
+	public void testSetStableLocale_LanguageModelIsNotNullAndLocaleIsNotStable() throws Exception {
+		Locale german = Locale.GERMAN;
+		Locale english = Locale.ENGLISH;
+
+		User user = mock(User.class);
+		when(languageModel.getNearestStableLocale(german)).thenReturn(english);
+		when(user.getLocale()).thenReturn(german);
+
+		Whitebox.invokeMethod(permissions, "setStableLocale", user);
+
+		assertEquals(english, permissions.getLocale());
+	}
+
+	@Test
+	public void testSetStableLocale_LanguageModelIsNull() throws Exception {
+		User user = mock(User.class);
+		when(user.getLocale()).thenReturn(Locale.GERMAN);
+
+		Whitebox.setInternalState(permissions, "languageModel", (LanguageModel) null);
+		Whitebox.invokeMethod(permissions, "setStableLocale", user);
+
+		assertEquals(Locale.ENGLISH, permissions.getLocale());
+	}
 }

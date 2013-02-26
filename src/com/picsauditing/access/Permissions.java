@@ -756,9 +756,9 @@ public class Permissions implements Serializable {
 	private void setStableLocale(User user) {
 		if (languageModel != null) {
 			locale = languageModel.getNearestStableLocale(user.getLocale());
+		} else {
+			locale = Locale.ENGLISH;
 		}
-
-		locale = Locale.ENGLISH;
 	}
     public int getPrimaryCorporateAccountID() {
         return primaryCorporateAccountID;
