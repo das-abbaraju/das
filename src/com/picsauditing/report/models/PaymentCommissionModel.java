@@ -10,6 +10,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountUserTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
@@ -87,6 +88,7 @@ public class PaymentCommissionModel extends AbstractModel {
 			commissionUser.setName("AccountUserUser");
 			commissionUser.setCategory(FieldCategory.Commission);
 			commissionUser.setImportance(FieldImportance.Required);
+			commissionUser.setType(FieldType.AccountUser);
 		}
 
 		fields.put("ACCOUNTUSERUSER", commissionUser);
