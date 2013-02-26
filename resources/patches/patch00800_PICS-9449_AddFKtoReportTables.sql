@@ -1,3 +1,5 @@
+# PICS-9449_AddFKtoReportTables.sql
+
 # report_column FK back to report table
 CREATE INDEX FK_report_column ON report_column (reportID);
 
