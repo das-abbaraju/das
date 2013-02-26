@@ -234,8 +234,6 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("totalHours"))
-					|| Strings.isEmpty(params.get("nonMajorInjuries"))
-					|| MISSING_PARAMETER.equals((params.get("nonMajorInjuries")))
 					|| Strings.isEmpty(params.get("majorInjuries"))
 					|| MISSING_PARAMETER.equals((params.get("majorInjuries")))
 					|| Strings.isEmpty(params.get("fatalities")))
@@ -244,9 +242,8 @@ public enum QuestionFunction {
 			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
-			BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries").replace(",", "")).setScale(7);
-					
-			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(nonMajorInjuries));
+
+			BigDecimal totalIncidents = fatalities.add(majorInjuries);
 			
 			BigDecimal result;
 			try {
