@@ -11,9 +11,6 @@
 			<result name="print">struts/report/print.jsp</result>
 		</action>
 
-		<action name="ReportSqlFunction" class="com.picsauditing.actions.report.ReportSqlFunction">
-		</action>
-
 		<action name="ReportTester"
 			class="com.picsauditing.actions.report.ReportTester">
 			<result>struts/report/report-tester.jsp</result>
