@@ -2,7 +2,7 @@ DELETE FROM app_properties
 	WHERE property IN ('Toggle.DynamicReports_v2', 'Toggle.DynamicReports');
 	
 ALTER TABLE `users` 
-    ADD COLUMN `usingVersion7Menus` tinyint(4) NOT NULL AFTER `usingDynamicReportsDate`,
+    ADD COLUMN `usingVersion7Menus` tinyint(4) DEFAULT 0 NOT NULL AFTER `usingDynamicReportsDate`,
     ADD COLUMN `usingVersion7MenusDate` datetime NULL AFTER `usingVersion7Menus`;
     
     
