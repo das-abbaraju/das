@@ -911,6 +911,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Deprecated
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
+
+		if (usingDynamicReports) {
+			this.usingVersion7Menus = usingDynamicReports;
+		}
 	}
 
 	/**
@@ -928,25 +932,31 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Temporal(TemporalType.DATE)
 	public void setusingDynamicReportsDate(Date usingDynamicReportsDate) {
 		this.usingDynamicReportsDate = usingDynamicReportsDate;
+
+		if (usingDynamicReportsDate != null) {
+			this.usingVersion7MenusDate = usingDynamicReportsDate;
+		}
 	}
 
 	public boolean isUsingVersion7Menus() {
-		if (usingDynamicReports) {
-			this.usingVersion7Menus = usingDynamicReports;
+		if (isUsingDynamicReports()) {
+			this.usingVersion7Menus = isUsingDynamicReports();
 		}
 
 		return usingVersion7Menus;
 	}
 
 	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
-		this.usingDynamicReports = usingVersion7Menus;
 		this.usingVersion7Menus = usingVersion7Menus;
+		if (usingVersion7Menus) {
+			this.usingDynamicReports = usingVersion7Menus;
+		}
 	}
 
 	@Temporal(TemporalType.DATE)
 	public Date getUsingVersion7MenusDate() {
-		if (usingDynamicReportsDate != null) {
-			usingVersion7MenusDate = usingDynamicReportsDate;
+		if (getUsingDynamicReportsDate() != null) {
+			usingVersion7MenusDate = getUsingDynamicReportsDate();
 		}
 
 		return usingVersion7MenusDate;
@@ -954,7 +964,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
-		this.usingDynamicReportsDate = usingVersion7MenusDate;
+
+		if (this.usingVersion7MenusDate != null) {
+			this.usingDynamicReportsDate = usingVersion7MenusDate;
+		}
 	}
 
 	@Transient
