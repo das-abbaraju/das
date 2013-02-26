@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class AccountOperatorModel extends AbstractModel {
 
+	public static final String ACCOUNT_TYPE = "AccountType";
+
 	public AccountOperatorModel(Permissions permissions) {
 		super(permissions, new AccountTable());
 	}
@@ -44,10 +46,10 @@ public class AccountOperatorModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("FacilitiesEdit.action?operator={AccountID}");
 
-		Field accountType = new Field("AccountType", "Account.type", FieldType.AccountType);
+		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setCategory(FieldCategory.AccountInformation);
-		accountType.setTranslationPrefixAndSuffix("AccountType", "");
-		fields.put(accountType.getName().toUpperCase(), accountType);
+		accountType.setTranslationPrefixAndSuffix(ACCOUNT_TYPE, "");
+		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 
 		return fields;
 	}

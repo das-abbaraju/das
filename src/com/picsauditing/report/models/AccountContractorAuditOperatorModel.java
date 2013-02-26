@@ -16,6 +16,7 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
+	public static final String CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL = "ContractorsRequiringAnnualUpdateEmail";
 	private static final String AUDIT_OPERATOR = "AuditOperator";
 	private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
@@ -31,32 +32,31 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
 		operatorAccount.alias = "AuditOperatorAccount";
 		operatorAccount.category = FieldCategory.ClientSiteMonitoringAnAudit;
-		{
-			ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
-			conAudit.alias = "Audit";
-			// Let's try to set the categories on the entity fields
-			// conAudit.category = FieldCategory.Audits;
-			conAudit.join(ContractorAuditTable.Type);
-			conAudit.join(ContractorAuditTable.Auditor);
-			conAudit.join(ContractorAuditTable.ClosingAuditor);
-			{
-				ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
-				contractor.alias = "Contractor";
-				contractor.minimumImportance = FieldImportance.Average;
-				contractor.category = FieldCategory.AccountInformation;
-				ModelSpec account = contractor.join(ContractorTable.Account);
-				account.alias = AbstractModel.ACCOUNT;
-				account.minimumImportance = FieldImportance.Average;
-				account.category = FieldCategory.AccountInformation;
 
-				if (permissions.isOperatorCorporate()) {
-					ModelSpec flag = contractor.join(ContractorTable.Flag);
-					flag.alias = CONTRACTOR_OPERATOR;
-					flag.minimumImportance = FieldImportance.Average;
-					flag.category = FieldCategory.AccountInformation;
-				}
-			}
+		ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
+		conAudit.alias = "Audit";
+		// Let's try to set the categories on the entity fields
+		// conAudit.category = FieldCategory.Audits;
+		conAudit.join(ContractorAuditTable.Type);
+		conAudit.join(ContractorAuditTable.Auditor);
+		conAudit.join(ContractorAuditTable.ClosingAuditor);
+
+		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
+		contractor.alias = "Contractor";
+		contractor.minimumImportance = FieldImportance.Average;
+		contractor.category = FieldCategory.AccountInformation;
+		ModelSpec account = contractor.join(ContractorTable.Account);
+		account.alias = AbstractModel.ACCOUNT;
+		account.minimumImportance = FieldImportance.Average;
+		account.category = FieldCategory.AccountInformation;
+
+		if (permissions.isOperatorCorporate()) {
+			ModelSpec flag = contractor.join(ContractorTable.Flag);
+			flag.alias = CONTRACTOR_OPERATOR;
+			flag.minimumImportance = FieldImportance.Average;
+			flag.category = FieldCategory.AccountInformation;
 		}
+
 		return spec;
 	}
 
@@ -67,8 +67,9 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 
 		String where = permissionQueryBuilder.buildWhereClause();
 
-		if (!where.isEmpty())
+		if (!where.isEmpty()) {
 			where += " AND ";
+		}
 
 		where += "AuditOperator.visible = 1";
 
@@ -76,8 +77,9 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 			// TODO: This looks like it can be further improved. Find a way to
 			// do this without having to implode all of the ids.
 			String opIDs = permissions.getAccountIdString();
-			if (permissions.isCorporate())
+			if (permissions.isCorporate()) {
 				opIDs = Strings.implode(permissions.getOperatorChildren());
+			}
 
 			where += "\n AND " + AUDIT_OPERATOR
 					+ ".id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs + "))";
@@ -93,13 +95,13 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
 		Field contractorsRequiringAnnualUpdateEmail = new Field(
-				"ContractorsRequiringAnnualUpdateEmail",
+				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
 				"(Audit.auditTypeID = 1 AND AuditOperator.status = 'Resubmit') " +
 				"OR (Audit.auditTypeID = 11 AND Audit.auditFor = 2012 AND AuditOperator.status = 'Pending') " +
 				"OR (AuditType.classType = 'PQF' AND DATE(Audit.expiresDate) = '2013-03-15' AND AuditOperator.status = 'Pending')",
 				FieldType.Boolean);
 		contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
-		fields.put(contractorsRequiringAnnualUpdateEmail.getName().toUpperCase(), contractorsRequiringAnnualUpdateEmail);
+		fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);
 
 		return fields;
 	}

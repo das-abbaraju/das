@@ -7,8 +7,8 @@ public class PaymentCommissionModelTest extends ModelTest {
 	private PaymentCommissionModel model;
 
 	@Before
-	public void setup() {
-		super.setup();
+	public void setUp() {
+		super.setUp();
 		model = new PaymentCommissionModel(permissions);
 	}
 

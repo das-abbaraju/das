@@ -7,8 +7,8 @@ public class AccountContractorAuditModelTest extends ModelTest {
 	private AccountContractorAuditModel model;
 
 	@Before
-	public void setup() {
-		super.setup();
+	public void setUp() {
+		super.setUp();
 		model = new AccountContractorAuditModel(permissions);
 	}
 

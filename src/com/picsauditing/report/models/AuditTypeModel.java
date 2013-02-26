@@ -17,18 +17,17 @@ public class AuditTypeModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec auditType = new ModelSpec(null, "AuditType");
 		auditType.join(AuditTypeTable.Operator);
-		{
-			ModelSpec createdBy = auditType.join(AuditTypeTable.CreatedBy);
-			createdBy.join(UserTable.Account).minimumImportance = FieldImportance.Required;
-		}
-		
-		
+
+		ModelSpec createdBy = auditType.join(AuditTypeTable.CreatedBy);
+		createdBy.join(UserTable.Account).minimumImportance = FieldImportance.Required;
+
 		return auditType;
 	}
 
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
+
 		Field auditTypeName = fields.get("AuditTypeName".toUpperCase());
 		auditTypeName.setUrl("ManageAuditType.action?id={AuditTypeID}");
 

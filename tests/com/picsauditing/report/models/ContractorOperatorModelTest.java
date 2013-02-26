@@ -7,8 +7,8 @@ public class ContractorOperatorModelTest extends ModelTest {
     private ContractorOperatorModel model;
 
     @Before
-    public void setup() {
-        super.setup();
+    public void setUp() {
+        super.setUp();
         model = new ContractorOperatorModel(permissions);
     }
 

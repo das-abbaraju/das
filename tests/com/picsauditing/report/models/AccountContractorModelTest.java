@@ -10,8 +10,8 @@ public class AccountContractorModelTest extends ModelTest {
 	private AccountContractorModel model;
 
 	@Before
-	public void setup() {
-		super.setup();
+	public void setUp() {
+		super.setUp();
 		model = new AccountContractorModel(permissions);
 	}
 

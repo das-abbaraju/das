@@ -7,6 +7,7 @@ import com.picsauditing.report.tables.ReportPermissionView;
 import com.picsauditing.report.tables.ReportTable;
 
 public class ReportPermissionModel extends AbstractModel {
+
 	public ReportPermissionModel(Permissions permissions) {
 		super(permissions, new ReportTable());
 	}
@@ -20,12 +21,12 @@ public class ReportPermissionModel extends AbstractModel {
 		ModelSpec permission = report.join(ReportTable.Permission);
 		permission.alias = "Permission";
 		permission.minimumImportance = FieldImportance.Average;
-		
+
 		ModelSpec user = permission.join(ReportPermissionView.User);
 		user.minimumImportance = FieldImportance.Required;
 		user.alias = "User";
 		user.category = FieldCategory.AccountInformation;
-		
+
 		ModelSpec account = permission.join(ReportPermissionView.Account);
 		account.minimumImportance = FieldImportance.Required;
 		account.alias = "Account";

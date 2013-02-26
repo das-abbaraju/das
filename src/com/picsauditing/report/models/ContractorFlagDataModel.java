@@ -16,6 +16,9 @@ import com.picsauditing.report.tables.FlagDataTable;
 
 public class ContractorFlagDataModel extends AbstractModel {
 
+	public static final String FLAG_CRITERIA_LABEL = "FlagCriteriaLabel";
+	public static final String FLAG_CRITERIA_DESCRIPTION = "FlagCriteriaDescription";
+
 	public ContractorFlagDataModel(Permissions permissions) {
 		super(permissions, new FlagDataTable());
 	}
@@ -23,17 +26,16 @@ public class ContractorFlagDataModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "FlagData");
 
-		{
-			ModelSpec contractorOperator = spec.join(FlagDataTable.ContractorOperator);
-			contractorOperator.alias = "ContractorFlag";
-			contractorOperator.minimumImportance = FieldImportance.Average;
-			ModelSpec coOperator = contractorOperator.join(ContractorOperatorTable.Operator);
-			coOperator.alias = "ContractorOperatorOperator";
-			coOperator.minimumImportance = FieldImportance.Required;
-			ModelSpec operator = coOperator.join(AccountTable.Operator);
-			operator.alias = "Operator";
+		ModelSpec contractorOperator = spec.join(FlagDataTable.ContractorOperator);
+		contractorOperator.alias = "ContractorFlag";
+		contractorOperator.minimumImportance = FieldImportance.Average;
 
-		}
+		ModelSpec coOperator = contractorOperator.join(ContractorOperatorTable.Operator);
+		coOperator.alias = "ContractorOperatorOperator";
+		coOperator.minimumImportance = FieldImportance.Required;
+
+		ModelSpec operator = coOperator.join(AccountTable.Operator);
+		operator.alias = "Operator";
 
 		ModelSpec operatorCriteria = spec.join(FlagDataTable.OperatorCriteria);
 		operatorCriteria.alias = "OperatorCriteria";
@@ -42,10 +44,11 @@ public class ContractorFlagDataModel extends AbstractModel {
 		ModelSpec flagCriteria = spec.join(FlagDataTable.FlagCriteria);
 		flagCriteria.alias = "FlagCriteria";
 		flagCriteria.minimumImportance = FieldImportance.Average;
-		
+
 		ModelSpec contractor = spec.join(FlagDataTable.Contractor);
 		contractor.alias = "Account";
 		contractor.minimumImportance = FieldImportance.Required;
+
 		ModelSpec override = spec.join(FlagDataTable.Override);
 		override.minimumImportance = FieldImportance.Required;
 
@@ -59,16 +62,16 @@ public class ContractorFlagDataModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
-		Field flagCriteriaLabel = new Field("FlagCriteriaLabel", "FlagCriteria.id", FieldType.String);
+		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
 		flagCriteriaLabel.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
-		fields.put(flagCriteriaLabel.getName().toUpperCase(), flagCriteriaLabel);
+		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);
 
-		Field flagCriteriaDescription = new Field("FlagCriteriaDescription", "FlagCriteria.id", FieldType.String);
+		Field flagCriteriaDescription = new Field(FLAG_CRITERIA_DESCRIPTION, "FlagCriteria.id", FieldType.String);
 		flagCriteriaDescription.setCategory(FieldCategory.CompanyStatistics);
 		flagCriteriaDescription.setTranslationPrefixAndSuffix("FlagCriteria", "description");
 		flagCriteriaDescription.setWidth(500);
-		fields.put(flagCriteriaDescription.getName().toUpperCase(), flagCriteriaDescription);
+		fields.put(FLAG_CRITERIA_DESCRIPTION.toUpperCase(), flagCriteriaDescription);
 
 		return fields;
 	}

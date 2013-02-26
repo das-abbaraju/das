@@ -11,21 +11,22 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceTable;
 
 public class InvoiceModel extends AbstractModel {
+
 	public InvoiceModel(Permissions permissions) {
 		super(permissions, new InvoiceTable());
 	}
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "Invoice");
-		{
-			ModelSpec account = spec.join(InvoiceTable.Account);
-			account.alias = "Account";
-			account.join(AccountTable.Contact);
 
-			ModelSpec contractor = account.join(AccountTable.Contractor);
-			contractor.alias = "Contractor";
-			contractor.minimumImportance = FieldImportance.Low;
-		}
+		ModelSpec account = spec.join(InvoiceTable.Account);
+		account.alias = "Account";
+		account.join(AccountTable.Contact);
+
+		ModelSpec contractor = account.join(AccountTable.Contractor);
+		contractor.alias = "Contractor";
+		contractor.minimumImportance = FieldImportance.Low;
+
 		return spec;
 	}
 
@@ -37,8 +38,10 @@ public class InvoiceModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
+
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
+
 		return fields;
 	}
 }

@@ -26,17 +26,14 @@ public class ContractorOperatorModel extends AbstractModel {
 		ModelSpec operator = opAccount.join(AccountTable.Operator);
 		operator.alias = "Operator";
 
-		{
-			ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
-			contractor.alias = "Contractor";
-			contractor.minimumImportance = FieldImportance.Average;
-			{
-				ModelSpec account = contractor.join(ContractorTable.Account);
-				account.alias = "Account";
-				account.minimumImportance = FieldImportance.Average;
-				account.join(AccountTable.Contact);
-			}
-		}
+		ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
+		contractor.alias = "Contractor";
+		contractor.minimumImportance = FieldImportance.Average;
+
+		ModelSpec account = contractor.join(ContractorTable.Account);
+		account.alias = "Account";
+		account.minimumImportance = FieldImportance.Average;
+		account.join(AccountTable.Contact);
 
 		return spec;
 	}
@@ -57,19 +54,19 @@ public class ContractorOperatorModel extends AbstractModel {
 		if (permissions.isAdmin()) {
 			return "";
 		}
-		
+
 		if (permissions.isContractor()) {
 			return CONTRACTOR_OPERATOR + ".subID = " + permissions.getAccountId();
 		}
-		
+
 		if (permissions.isOperator()) {
 			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
 		}
-		
+
 		if (permissions.isCorporate()) {
 			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren(), ",") + ")";
 		}
-		
+
 		return "1 = 0";
 	}
 }

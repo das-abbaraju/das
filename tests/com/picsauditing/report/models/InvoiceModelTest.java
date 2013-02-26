@@ -10,8 +10,8 @@ public class InvoiceModelTest extends ModelTest {
 	private InvoiceModel model;
 
 	@Before
-	public void setup() {
-		super.setup();
+	public void setUp() {
+		super.setUp();
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
 		model = new InvoiceModel(permissions);
 	}

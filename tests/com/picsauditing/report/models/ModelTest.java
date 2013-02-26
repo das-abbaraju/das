@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 
 abstract public class ModelTest {
+
 	protected Permissions permissions;
 	protected Report report = new Report();
 	protected Map<String, Field> availableFields;
@@ -23,7 +24,7 @@ abstract public class ModelTest {
 	protected Set<String> excludedFields;
 
 	@Before
-	protected void setup() {
+	protected void setUp() {
 		permissions = EntityFactory.makePermission();
 		availableFields = new HashMap<String, Field>();
 		includedFields = new HashSet<String>();
@@ -31,10 +32,6 @@ abstract public class ModelTest {
 	}
 
 	protected void checkFields() {
-//		for (Field field : availableFields.values()) {
-//			System.out.println(field.getName());
-//		}
-		
 		for (String fieldName : includedFields) {
 			assertTrue(fieldName + " was missing from availableFields",
 					availableFields.containsKey(fieldName.toUpperCase()));

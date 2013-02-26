@@ -20,15 +20,16 @@ public class ContractorStatisticsModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec contractor = new ModelSpec(null, "Contractor");
-		{
-			ModelSpec account = contractor.join(ContractorTable.Account);
-			account.alias = "Account";
-			account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
-		}
+
+		ModelSpec account = contractor.join(ContractorTable.Account);
+		account.alias = "Account";
+		account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+
 		if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.join(ContractorOperatorTable.ForcedByUser).category = FieldCategory.ContactInformation;
 		}
+
 		ModelSpec statistics = contractor.join(ContractorTable.ContractorStatistics);
 		statistics.alias = "ContractorStatistics";
 		statistics.category = FieldCategory.CompanyStatistics;
@@ -68,8 +69,10 @@ public class ContractorStatisticsModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
+
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
+
 		return fields;
 	}
 }

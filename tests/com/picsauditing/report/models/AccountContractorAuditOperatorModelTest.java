@@ -1,16 +1,22 @@
 package com.picsauditing.report.models;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.report.fields.Field;
 
 public class AccountContractorAuditOperatorModelTest extends ModelTest {
+
 	private AccountContractorAuditOperatorModel model;
 
 	@Before
-	public void setup() {
-		super.setup();
+	public void setUp() {
+		super.setUp();
+
 		model = new AccountContractorAuditOperatorModel(permissions);
 	}
 
@@ -19,12 +25,29 @@ public class AccountContractorAuditOperatorModelTest extends ModelTest {
 		availableFields = model.getAvailableFields();
 
 		excludedFields.add("ContractorOperatorFlagColor");
-		
 		excludedFields.add("AccountContactName");
+
 		includedFields.add("AuditID");
 		includedFields.add("AuditClosingAuditorName");
 
 		checkFields();
+	}
+
+	@Test
+	public void testAccountContractorAuditOperatorModel_FieldNamesShouldNotChange() {
+		// If you change these values, you will break reports in the database because we
+		// store the field name and use it to lookup an available field.
+		// If you must change these values, change the entities in the database as well.
+		assertEquals("ContractorsRequiringAnnualUpdateEmail", AccountContractorAuditOperatorModel.CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL);
+	}
+
+	@Test
+	public void testAccountContractorAuditOperatorModel_FieldIndexedByExpectedKey() {
+		Map<String, Field> fields = model.getAvailableFields();
+
+		Field field = fields.get("ContractorsRequiringAnnualUpdateEmail".toUpperCase());
+		assertNotNull(field);
+		assertEquals("ContractorsRequiringAnnualUpdateEmail", field.getName());
 	}
 
 }

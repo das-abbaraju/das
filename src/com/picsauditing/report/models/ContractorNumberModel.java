@@ -22,20 +22,20 @@ public class ContractorNumberModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec contractorNumber = new ModelSpec(null, "OperatorContractorNumber");
 
-		{
-			ModelSpec contractor = contractorNumber.join(ContractorNumberTable.Contractor);
-			contractor.alias = "Contractor";
-			{
-				ModelSpec account = contractor.join(ContractorTable.Account);
-				account.alias = "Account";
-				account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
-				account.join(AccountTable.Naics);
-			}
-			if (permissions.isOperatorCorporate()) {
-				contractor.join(ContractorTable.Flag);
-			}
-			contractor.join(ContractorTable.CustomerService);
+		ModelSpec contractor = contractorNumber.join(ContractorNumberTable.Contractor);
+		contractor.alias = "Contractor";
+
+		ModelSpec account = contractor.join(ContractorTable.Account);
+		account.alias = "Account";
+		account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+		account.join(AccountTable.Naics);
+
+		if (permissions.isOperatorCorporate()) {
+			contractor.join(ContractorTable.Flag);
 		}
+
+		contractor.join(ContractorTable.CustomerService);
+
 		return contractorNumber;
 	}
 
@@ -45,7 +45,7 @@ public class ContractorNumberModel extends AbstractModel {
 		permissionQueryBuilder.setContractorOperatorAlias("ContractorFlag");
 
 		Filter accountStatusFilter = getValidAccountStatusFilter(filters);
-		
+
 		if (accountStatusFilter != null) {
 			for (String filterValue : accountStatusFilter.getValues()) {
 				AccountStatus filterStatus = AccountStatus.valueOf(filterValue);
@@ -73,6 +73,7 @@ public class ContractorNumberModel extends AbstractModel {
 
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
+
 		return fields;
 	}
 }

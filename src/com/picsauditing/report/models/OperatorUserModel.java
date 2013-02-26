@@ -13,7 +13,9 @@ import com.picsauditing.report.tables.UserTable;
 
 public class OperatorUserModel extends AbstractModel {
 
-    public OperatorUserModel(Permissions permissions) {
+    public static final String ACCOUNT_TYPE = "AccountType";
+
+	public OperatorUserModel(Permissions permissions) {
         super(permissions, new UserTable());
     }
 
@@ -25,26 +27,22 @@ public class OperatorUserModel extends AbstractModel {
         account.category = FieldCategory.AccountInformation;
         account.alias = "Account";
 
-        {
-            ModelSpec operator = account.join(AccountTable.Operator);
-            operator.category = FieldCategory.AccountInformation;
-            operator.alias = "Operator";
-        }
+        ModelSpec operator = account.join(AccountTable.Operator);
+        operator.category = FieldCategory.AccountInformation;
+        operator.alias = "Operator";
 
         ModelSpec loginLog = spec.join(UserTable.LoginLog);
         loginLog.category = FieldCategory.AccountInformation;
         loginLog.alias = "LoginLog";
 
-        {
-            ModelSpec userGroup = spec.join(UserTable.Group);
-            userGroup.category = FieldCategory.AccountInformation;
-            userGroup.alias = "UserGroup";
-            {
-                ModelSpec group = userGroup.join(UserGroupTable.Group);
-                group.category = FieldCategory.AccountInformation;
-                group.alias = "Groups";
-            }
-        }
+        ModelSpec userGroup = spec.join(UserTable.Group);
+        userGroup.category = FieldCategory.AccountInformation;
+        userGroup.alias = "UserGroup";
+
+        ModelSpec group = userGroup.join(UserGroupTable.Group);
+        group.category = FieldCategory.AccountInformation;
+        group.alias = "Groups";
+
         return spec;
     }
 
@@ -52,14 +50,14 @@ public class OperatorUserModel extends AbstractModel {
     public Map<String, Field> getAvailableFields() {
         Map<String, Field> fields = super.getAvailableFields();
 
-        Field accountType = new Field("AccountType", "Account.type", FieldType.AccountType);
+        Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
-		fields.put(accountType.getName().toUpperCase(), accountType);
-		
+		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
+
 		Field userName = fields.get("UserName".toUpperCase());
 		userName.setUrl("UsersManage.action?user={UserID}");
-        
+
 		return fields;
     }
 }

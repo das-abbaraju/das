@@ -5,6 +5,7 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.ReportTable;
 
 public class ReportModel extends AbstractModel {
+
 	public ReportModel(Permissions permissions) {
 		super(permissions, new ReportTable());
 	}
