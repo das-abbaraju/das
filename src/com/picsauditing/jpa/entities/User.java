@@ -897,18 +897,34 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return this.hasPermission(opPerm, OpType.View);
 	}
 
+	/**
+	 * Deprecated in favor of isUsingVersion7Menus()
+	 */
+	@Deprecated
 	public boolean isUsingDynamicReports() {
 		return usingDynamicReports;
 	}
 
+	/**
+	 * Deprecated in favor of setUsingVersion7Menus()
+	 */
+	@Deprecated
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
 	}
 
+	/**
+	 * Deprecated in favor of getUsingVersion7MenusDate()
+	 */
+	@Deprecated
 	public Date getUsingDynamicReportsDate() {
 		return usingDynamicReportsDate;
 	}
 
+	/**
+	 * Deprecated in favor of setUsingVersion7MenusDate()
+	 */
+	@Deprecated
 	@Temporal(TemporalType.DATE)
 	public void setusingDynamicReportsDate(Date usingDynamicReportsDate) {
 		this.usingDynamicReportsDate = usingDynamicReportsDate;
@@ -937,7 +953,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
-		System.out.println(usingVersion7MenusDate);
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
 		this.usingDynamicReportsDate = usingVersion7MenusDate;
 	}
