@@ -838,17 +838,12 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getViewLink() {
-		if (this.type.equals("Contractor")) {
-			if (status.isRequested()) {
-				return ("RequestNewContractorAccount.action?contractor=" + this.id);
-			} else {
-				return ("ContractorView.action?id=" + this.id);
-			}
-		} else if (this.type.equals("Operator") || this.type.equals("Corporate")) {
+		if (this.type.equals("Operator") || this.type.equals("Corporate")) {
 			return ("FacilitiesEdit.action?operator=" + this.id);
 		} else if (this.type.equals("Assessment")) {
 			return ("AssessmentCenterEdit.action?center=" + this.id);
 		}
+
 		return "";
 	}
 
