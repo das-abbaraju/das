@@ -35,7 +35,7 @@ Ext.define('PICS.view.report.settings.share.UserSearch', {
                     '</li>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     listeners: {
@@ -69,7 +69,7 @@ Ext.define('PICS.view.report.settings.share.UserSearch', {
             url: 'SearchBox!userJson.action',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             }
         }
     },
