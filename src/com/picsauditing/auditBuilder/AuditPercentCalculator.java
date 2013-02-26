@@ -338,6 +338,10 @@ public class AuditPercentCalculator {
 				|| categoryId == OshaAudit.CAT_ID_MSHA) {
 			verifiedCount++;
 		}
+
+        if ("Calculation".equals(question.getQuestionType()))
+            verifiedCount++;
+
 		return verifiedCount;
 	}
 

@@ -57,6 +57,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int UK_HSE_KEPT_ID = 9106;
 	static public final int EMR_KEPT_ID = 2033;
 	static public final int MEXICO_KEPT_ID = 15337;
+    static public final int AUSTRALIA_KEPT_ID = 15214;
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
