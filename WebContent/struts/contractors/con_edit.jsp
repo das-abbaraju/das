@@ -250,7 +250,7 @@
     						
     						<li>
     							<label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
-    							<s:property value="contractor.naics.code"/>
+    							<s:property value="contractor.topTradesNaicsCode"/>
     						</li>
     						<li>
     							<label><s:text name="ContractorEdit.SoleProprietor.heading"/>:</label>

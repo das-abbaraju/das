@@ -57,8 +57,9 @@
 						rel="${preview_contractor_trade}"
 						class="trade trade-cloud-<s:property value="tradeCssMap.get(#con_trade)"/> btn<s:if test="#con_trade.id == [1].trade.id"> primary</s:if>"
 						title="${con_trade.trade.name}">
-						${con_trade.trade.name}
-					</a>
+						${con_trade.trade.name}  <s:if test="#con_trade.id == contractor.topTrade.id"> *</s:if>
+
+                    </a>
 				</li>
 			</s:iterator>
 		</ul>

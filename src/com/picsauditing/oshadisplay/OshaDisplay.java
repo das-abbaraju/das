@@ -277,8 +277,9 @@ public class OshaDisplay {
 					+ fco.getCriteria().getComparison()
 					+ " "
 					+ Strings.formatDecimalComma(Double.toString(hurdle / 100
-							* naicsDao.getIndustryAverage(false, contractor.getNaics()))) + "</nobr>";
-		} else if (OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
+							* Utilities.getIndustryAverage(false, contractor))) + "</nobr>";
+
+ 		} else if (OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
 			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 			return "<nobr class=\""
 					+ fco.getFlag()
