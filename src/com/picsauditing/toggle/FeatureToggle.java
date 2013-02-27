@@ -27,6 +27,7 @@ public interface FeatureToggle {
 	String TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION = "Toggle.NoteEdit.DoNotUseSwitchToInRestriction";
 	String TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD = "Toggle.ShowReviewDocInAuditGUARD";
 	String TOGGLE_SHOW_DR_REPORTS = "Toggle.ShowUserDR";
+	String TOGGLE_USE_NEW_USER_MENU_COLUMN = "Toggle.UseVersion7MenuColumns";
 
 	boolean isFeatureEnabled(String toggleName);
 

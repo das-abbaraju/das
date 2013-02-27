@@ -47,6 +47,7 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.SpringUtils;
@@ -911,10 +912,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Deprecated
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
-
-		if (usingDynamicReports) {
-			this.usingVersion7Menus = usingDynamicReports;
-		}
 	}
 
 	/**
@@ -932,42 +929,43 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Temporal(TemporalType.DATE)
 	public void setusingDynamicReportsDate(Date usingDynamicReportsDate) {
 		this.usingDynamicReportsDate = usingDynamicReportsDate;
-
-		if (usingDynamicReportsDate != null) {
-			this.usingVersion7MenusDate = usingDynamicReportsDate;
-		}
 	}
 
 	public boolean isUsingVersion7Menus() {
-		if (isUsingDynamicReports()) {
-			this.usingVersion7Menus = isUsingDynamicReports();
+		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
+			return isUsingDynamicReports();
 		}
 
 		return usingVersion7Menus;
 	}
 
 	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
-		this.usingVersion7Menus = usingVersion7Menus;
-		if (usingVersion7Menus) {
+		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
 			this.usingDynamicReports = usingVersion7Menus;
 		}
+
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 	@Temporal(TemporalType.DATE)
 	public Date getUsingVersion7MenusDate() {
-		if (getUsingDynamicReportsDate() != null) {
-			usingVersion7MenusDate = getUsingDynamicReportsDate();
+		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
+			return getUsingDynamicReportsDate();
 		}
 
 		return usingVersion7MenusDate;
 	}
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
-		this.usingVersion7MenusDate = usingVersion7MenusDate;
-
-		if (this.usingVersion7MenusDate != null) {
+		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
 			this.usingDynamicReportsDate = usingVersion7MenusDate;
 		}
+
+		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
 	@Transient
