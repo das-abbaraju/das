@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 public class UsersManageTest extends PicsActionTest {
 
-	private static int NOT_GROUP_CSR = User.GROUP_CSR++;
+	private static int NOT_GROUP_CSR = User.GROUP_CSR + 1;
 	private static int INVALID_USER_ID = 0;
 	private UsersManage usersManage;
 	private List<UserGroup> userGroups;

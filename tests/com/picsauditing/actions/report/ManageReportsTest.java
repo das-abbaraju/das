@@ -1,25 +1,5 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.reflect.Whitebox;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportDAO;
@@ -27,28 +7,57 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.search.Database;
 import com.picsauditing.service.ReportService;
-import com.picsauditing.strutsutil.AjaxUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ManageReportsTest {
 
-	ManageReports manageReports;
+    private static final int USER_ID = 37;
 
-	@Mock private ReportService reportService;
-	@Mock private ReportDAO reportDao;
-	@Mock private ReportUserDAO reportUserDao;
-	@Mock private Permissions permissions;
-	@Mock private I18nCache i18nCache;
-	@Mock private Database databaseForTesting;
-	@Mock private HttpServletRequest httpRequest;
+	private ManageReports manageReports;
 
-	private static final int USER_ID = 37;
+    @Mock
+    private ReportService reportService;
+    @Mock
+    private ReportDAO reportDao;
+    @Mock
+    private ReportUserDAO reportUserDao;
+    @Mock
+    private Permissions permissions;
+    @Mock
+    private I18nCache i18nCache;
+    @Mock
+    private HttpServletRequest httpRequest;
 
-	@Before
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
+    }
+
+    @AfterClass
+    public static void classTearDown() throws Exception {
+        Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+    }
+
+    @Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(AjaxUtils.class);
-		PowerMockito.mockStatic(ManageReports.class);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+        MockitoAnnotations.initMocks(this);
 
 		manageReports = new ManageReports();
 

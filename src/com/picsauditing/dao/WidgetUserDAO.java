@@ -13,7 +13,12 @@ import com.picsauditing.jpa.entities.WidgetUser;
 
 @SuppressWarnings("unchecked")
 public class WidgetUserDAO extends PicsDAO {
-	@Transactional(propagation = Propagation.NESTED)
+    protected static final int PICS_EMPLOYEE_WIDGETS_TO_INHERIT = 941;
+    protected static final int ONLY_AUDITOR_WIDGETS_TO_INHERIT = 910;
+    protected static final int OPERATOR_WIDGETS_TO_INHERIT = 616;
+    protected static final int CORPORATE_WIDGETS_TO_INHERIT = 646;
+
+    @Transactional(propagation = Propagation.NESTED)
 	public WidgetUser save(WidgetUser o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -43,19 +48,28 @@ public class WidgetUserDAO extends PicsDAO {
 		query.setParameter(2, permissions.getUserId());
 		// user specific widgets / not groups
 
-		permissions.getAccountType();
-		if (permissions.isPicsEmployee())
-			query.setParameter(1, 941); // tallred
-		if (permissions.hasGroup(959))
-			query.setParameter(1, 959); // For CSRs
-		if (permissions.isOnlyAuditor())
-			query.setParameter(1, 910); // ddooly
-		if (permissions.isOperator())
-			query.setParameter(1, 616); // kevin.dyer
-		if (permissions.isCorporate())
-			query.setParameter(1, 646); // shellcorporate
-		if (permissions.isContractor())
+        // start with an all employee default
+		if (permissions.isPicsEmployee()) {
+			query.setParameter(1, PICS_EMPLOYEE_WIDGETS_TO_INHERIT); // tallred
+        }
+        // adjust for CSRs
+		if (permissions.hasDirectlyRelatedGroup(User.GROUP_CSR)) {
+			query.setParameter(1, User.GROUP_CSR); // For CSRs
+        }
+        // non-PICS employee auditor
+		if (permissions.isOnlyAuditor()) {
+			query.setParameter(1, ONLY_AUDITOR_WIDGETS_TO_INHERIT); // ddooly
+        }
+		if (permissions.isOperator()) {
+			query.setParameter(1, OPERATOR_WIDGETS_TO_INHERIT); // kevin.dyer
+        }
+		if (permissions.isCorporate()) {
+			query.setParameter(1, CORPORATE_WIDGETS_TO_INHERIT); // shellcorporate
+        }
+        // TODO: I think this can be removed as Contractors go to ContractorView and don't come through here
+		if (permissions.isContractor()) {
 			query.setParameter(1, 1); // contractor
+        }
 
 		return query.getResultList();
 	}

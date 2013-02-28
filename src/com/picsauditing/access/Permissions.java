@@ -473,7 +473,11 @@ public class Permissions implements Serializable {
 		return CollectionUtils.isEmpty(allInheritedGroupIds) ? false : allInheritedGroupIds.contains(groupId);
 	}
 
-	public boolean isContractor() {
+    public boolean hasDirectlyRelatedGroup(Integer groupId) {
+        return CollectionUtils.isEmpty(groupIds) ? false : groupIds.contains(groupId);
+    }
+
+    public boolean isContractor() {
 		return "Contractor".equals(accountType);
 	}
 

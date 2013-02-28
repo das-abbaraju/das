@@ -30,7 +30,7 @@ public class PermissionBuilder {
 		return permissions;
 	}
 
-	public void build(Permissions permissions) {
+	private void build(Permissions permissions) {
 		Set<Integer> groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
 		Set<Integer> allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
 

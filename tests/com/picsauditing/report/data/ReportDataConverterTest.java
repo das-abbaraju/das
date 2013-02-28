@@ -1,6 +1,6 @@
 package com.picsauditing.report.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -63,10 +63,10 @@ public class ReportDataConverterTest {
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 22:01 PST\","
-				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"}]";
+		String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:01 [PM]ST\","
+				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
 
-		assertEquals(expected, json.toString());
+		assertTrue(json.toString().matches(expected));
 	}
 
 	@Test
