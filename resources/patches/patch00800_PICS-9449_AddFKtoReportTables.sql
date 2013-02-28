@@ -1,7 +1,7 @@
 -- PICS-9449_AddFKtoReportTables.sql
 
 -- report_column FK back to report table
--- CREATE INDEX FK_report_column ON report_column (reportID);
+CREATE INDEX FK_report_column ON report_column (reportID);
 
 ALTER TABLE report_column ADD CONSTRAINT `FK_report_column` FOREIGN KEY (`reportID`) REFERENCES `report` (`id`) ON DELETE CASCADE;
 
