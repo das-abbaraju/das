@@ -685,12 +685,19 @@ public class AuditDataSave extends AuditActionSupport {
 		AuditQuestion question = databaseCopy.getQuestion();
 		String answer = auditData.getAnswer();
 
-		if ("ESignature".equals(questionType)) {
+        if ("ESignature".equals(questionType)) {
 			if (eSignatureName == null && eSignatureTitle == null && !Strings.isEmpty(answer) && answer.contains(" / ")) {
 				String[] esig = answer.split(" / ");
 				eSignatureName = esig[0];
 				eSignatureTitle = esig[1];
 			}
+
+            if (eSignatureName == null && eSignatureTitle == null) {
+//            if ("-".equals(eSignatureName) && "-".equals(eSignatureTitle)) {
+                auditData.setAnswer("");
+                auditData.setComment("");
+                return true;
+            }
 
 			if (Strings.isEmpty(eSignatureName)) {
 				addActionError(getText("AuditData.ESignature.name.missing"));
@@ -709,15 +716,16 @@ public class AuditDataSave extends AuditActionSupport {
 			auditData.setComment(getIP());
 		}
 
-		if ("Tagit".equals(questionType) && "[]".equals(answer)) {
+        // Null or blank answers are always OK
+        if (Strings.isEmpty(answer)) {
+            return true;
+        }
+
+        if ("Tagit".equals(questionType) && "[]".equals(answer)) {
 			auditData.setAnswer("");
 			return true;
 		}
 
-		// Null or blank answers are always OK
-		if (Strings.isEmpty(answer))
-			return true;
-		
 		if ("Date".equals(questionType)) {
 			return isDateValid(auditData);
 		}

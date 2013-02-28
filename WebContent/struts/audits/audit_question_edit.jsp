@@ -38,7 +38,7 @@
 				<s:if test="!isStringEmpty(#a.answer)">
 					<a href="#" class="reset-answer"><s:text name="global.Reset" /></a>
 				</s:if>
-				
+
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
 					
@@ -139,7 +139,7 @@
 
 		<s:if test="#q.questionType == 'ESignature'">
 			<div class="esignature">
-				<s:if test="#a.answer != null">
+				<s:if test="!isStringEmpty(#a.answer)">
 					<s:set name="esignature_edit" value="%{'display: none'}" />
 				</s:if>
 				<s:else>
@@ -160,24 +160,32 @@
 					<s:submit type="button" value="%{getText('QuestionType.ESignature.sign')}" cssClass="question-save" />
 				</div>
 				
-				<s:if test="#a.answer != null">
+				<s:if test="!isStringEmpty(#a.answer)">
 					<div class="view">
 						<div class="name">
 							<span><s:text name="QuestionType.ESignature.label.NameTitle" />:</span> ${a.answer}
 						</div>
 
-						<div class="date">
-							<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-						</div>
+                        <s:if test="!isStringEmpty(#a.answer)">
+						    <div class="date">
+							    <span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+						    </div>
+                        </s:if>
 						
 						<div class="ip">
 							<span><s:text name="Login.IPAddress" />:</span> ${a.comment}
 						</div>
 						
 						<a href="javascript:;" class="edit-esignature"><s:text name="global.Edit" /></a>
-					</div>
+
+                        <s:if test="!isStringEmpty(#a.answer)">
+                            <br/><a href="#" class="reset-answer"><s:text name="global.Reset" /></a>
+                        </s:if>
+
+                    </div>
 				</s:if>
-			</div>
+
+            </div>
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Tagit'">

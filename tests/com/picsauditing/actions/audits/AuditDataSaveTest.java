@@ -122,6 +122,21 @@ public class AuditDataSaveTest {
 		assertEquals("2026-01-31", format.format(date));
 	}
 
+    @Test
+    public void testESignatureReset() throws Exception {
+        AuditData auditData = EntityFactory.makeAuditData(null);
+        auditData.setComment(null);
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        question.setQuestionType("ESignature");
+        auditData.setQuestion(question);
+
+        Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, auditData);
+        assertTrue(result);
+        assertTrue(auditData.getComment().equals(""));
+        assertTrue(auditData.getAnswer().equals(""));
+
+    }
+
 	@Test
 	public void testCheckUniqueCode_PolicyEffectiveDate() throws Exception {
 		Date date;
