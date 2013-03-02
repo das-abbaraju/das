@@ -50,6 +50,7 @@ import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.validator.InputValidator;
 
 @SuppressWarnings("serial")
@@ -471,8 +472,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public EmailSubscription getEmailSubscription(Subscription subscription) {
 		for (EmailSubscription emailSub : subscriptions) {
-			if (emailSub.getSubscription() == subscription)
+			if (emailSub.getSubscription() == subscription) {
 				return emailSub;
+			}
 		}
 		return null;
 	}
@@ -516,13 +518,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * This is a total HACK!! But we can add it to the DB later or something
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
 	public Location getLocation() {
-		if (account.getId() != Account.PicsID)
+		if (account.getId() != Account.PicsID) {
 			return null;
+		}
 
 		switch (id) {
 		case 938: // Jake Fazeli
@@ -590,8 +593,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		// READ the permissions assigned directly to this THIS user/group
 		for (UserAccess perm : ownedPermissions) {
-			if (perm != null)
+			if (perm != null) {
 				add(permissions, perm, true);
+			}
 		}
 
 		stopwatch.stop();
@@ -609,8 +613,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
 	static private void add(Set<UserAccess> permissions, UserAccess connectPerm, boolean overrideBoth) {
-		if (connectPerm == null || connectPerm.getOpPerm() == null)
+		if (connectPerm == null || connectPerm.getOpPerm() == null) {
 			return;
+		}
 
 		// Create a disconnected copy of UserAccess (perm)
 		UserAccess perm = new UserAccess(connectPerm);
@@ -625,28 +630,36 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 					logger.info(" overriding previous values (these are ownedPermissions)");
 					// Override the previous settings, regardless if Granting or
 					// Revoking
-					if (perm.getViewFlag() != null)
+					if (perm.getViewFlag() != null) {
 						origPerm.setViewFlag(perm.getViewFlag());
-					if (perm.getEditFlag() != null)
+					}
+					if (perm.getEditFlag() != null) {
 						origPerm.setEditFlag(perm.getEditFlag());
-					if (perm.getDeleteFlag() != null)
+					}
+					if (perm.getDeleteFlag() != null) {
 						origPerm.setDeleteFlag(perm.getDeleteFlag());
-					if (perm.getGrantFlag() != null)
+					}
+					if (perm.getGrantFlag() != null) {
 						origPerm.setGrantFlag(perm.getGrantFlag());
+					}
 				} else {
 					logger.info(" optimistic granting (merging with sibling perms)");
 					// Optimistic Granting
 					// if the user has two groups with the same perm type,
 					// and one grants but the other revokes, then the users WILL
 					// be granted the right
-					if (perm.getViewFlag() != null && perm.getViewFlag())
+					if (perm.getViewFlag() != null && perm.getViewFlag()) {
 						origPerm.setViewFlag(true);
-					if (perm.getEditFlag() != null && perm.getEditFlag())
+					}
+					if (perm.getEditFlag() != null && perm.getEditFlag()) {
 						origPerm.setEditFlag(true);
-					if (perm.getDeleteFlag() != null && perm.getDeleteFlag())
+					}
+					if (perm.getDeleteFlag() != null && perm.getDeleteFlag()) {
 						origPerm.setDeleteFlag(true);
-					if (perm.getGrantFlag() != null && perm.getGrantFlag())
+					}
+					if (perm.getGrantFlag() != null && perm.getGrantFlag()) {
 						origPerm.setGrantFlag(true);
+					}
 				}
 				return;
 			}
@@ -661,20 +674,23 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public int compareTo(User o) {
 		if (!this.isActive.equals(o.getIsActive())) {
 			// Sort Active before Inactive
-			if (this.isActiveB())
+			if (this.isActiveB()) {
 				return -1;
-			else
+			} else {
 				return 1;
+			}
 		}
 		int accounts = this.account.compareTo(o.getAccount());
-		if (accounts != 0)
+		if (accounts != 0) {
 			return accounts;
+		}
 		if (!this.isGroup.equals(o.getIsGroup())) {
 			// Sort Groups before Users
-			if (this.isGroup())
+			if (this.isGroup()) {
 				return -1;
-			else
+			} else {
 				return 1;
+			}
 		}
 
 		return this.name.compareToIgnoreCase(o.getName());
@@ -722,7 +738,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
-	 * 
+	 *
 	 * @param opPerm
 	 * @param grantorID
 	 *            who is granting the permission
@@ -749,10 +765,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public String getIndexType() {
-		if (this.isGroup())
+		if (this.isGroup()) {
 			return "G";
-		else
+		} else {
 			return "U";
+		}
 	}
 
 	@Override
@@ -772,10 +789,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
 	public String getType() {
-		if (this.isGroup())
+		if (this.isGroup()) {
 			return "GROUP";
-		else
+		} else {
 			return "USER";
+		}
 	}
 
 	@Transient
@@ -803,15 +821,16 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * In UsersManage, another user (non-group) is inserted into this user's
 	 * groups for shadowing
-	 * 
+	 *
 	 * @return shadowed user or null
 	 */
 	@Transient
 	public User getShadowedUser() {
 		// Pull up any non-group this user is shadowing
 		for (UserGroup ug : getGroups()) {
-			if (!ug.getGroup().isGroup())
+			if (!ug.getGroup().isGroup()) {
 				return ug.getGroup();
+			}
 		}
 
 		return null;
@@ -820,8 +839,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public EmailSubscription getSubscription(Subscription subscription) {
 		for (EmailSubscription emailSubscription : getSubscriptions()) {
-			if (emailSubscription.getSubscription().equals(subscription))
+			if (emailSubscription.getSubscription().equals(subscription)) {
 				return emailSubscription;
+			}
 		}
 
 		return null;
@@ -830,7 +850,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * Enables subscription if disabled or creates subscription if it does not
 	 * exist.
-	 * 
+	 *
 	 * @param subscription
 	 * @return
 	 */
@@ -852,15 +872,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
 		for (UserAccess perm : getPermissions()) {
-			if (opPerm.isForContractor() && getAccount().isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
+			if (opPerm.isForContractor() && getAccount().isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin) {
 				return true;
+			}
 			if (opPerm == perm.getOpPerm()) {
-				if (oType == OpType.Edit)
+				if (oType == OpType.Edit) {
 					return perm.getEditFlag();
-				else if (oType == OpType.Delete)
+				} else if (oType == OpType.Delete) {
 					return perm.getDeleteFlag();
-				else if (oType == OpType.Grant)
+				} else if (oType == OpType.Grant) {
 					return perm.getGrantFlag();
+				}
 				// Default to OpType.View
 				return perm.getViewFlag();
 			}
@@ -919,18 +941,27 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Transient
+	public InputValidator getInputValidator() {
+		if (inputValidator == null) {
+			inputValidator = SpringUtils.getBean("InputValidator");
+		}
+
+		return inputValidator;
+	}
+
+	@Transient
 	public boolean isUsernameValid(String username) {
-		return inputValidator.isUsernameValid(username);
+		return getInputValidator().isUsernameValid(username);
 	}
 
 	@Transient
 	public boolean containsOnlySafeCharacters(String str) {
-		return inputValidator.containsOnlySafeCharacters(str);
+		return getInputValidator().containsOnlySafeCharacters(str);
 	}
 
 	@Transient
 	public boolean isUsernameNotTaken(String username) {
 		// TODO see if we want to pass something other than 0 in
-		return !inputValidator.isUsernameTaken(username, 0);
+		return !getInputValidator().isUsernameTaken(username, 0);
 	}
 }
