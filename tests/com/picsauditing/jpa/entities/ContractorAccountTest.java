@@ -16,12 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ContractorAccountTest {
 	private ContractorAccount contractor;
@@ -78,6 +73,12 @@ public class ContractorAccountTest {
 		contractorUnderTest = new ContractorAccount();
 		testOperators = new ArrayList<ContractorOperator>();
 	}
+
+
+    @After
+    public void cleanup() {
+        testOperator2.setParent(null);
+    }
 
 	private void setupFees(boolean bidOnly, boolean listOnly) {
 		fees = new HashMap<FeeClass, ContractorFee>();
@@ -611,7 +612,7 @@ public class ContractorAccountTest {
 	}
 
     @Test
-    public void testClearCurrentFee() throws Exception {
+    public void testClearCurrentFee_NullFees() throws Exception {
         contractorUnderTest.setFees(null);
         try {
             Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
@@ -621,7 +622,17 @@ public class ContractorAccountTest {
     }
 
     @Test
-    public void testSetCurrentFee() throws Exception {
+    public void testClearCurrentFee_EmptyFees() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
+    @Test
+    public void testSetCurrentFee_NullFees() throws Exception {
         contractorUnderTest.setFees(null);
         try {
             Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
@@ -631,7 +642,30 @@ public class ContractorAccountTest {
     }
 
     @Test
-    public void testClearNewFee() throws Exception {
+    public void testSetCurrentFee_EmptyFees() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
+    @Test
+    public void testSetCurrentFee_NullFee() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {{
+            put(FeeClass.InsureGUARD, new ContractorFee());
+        }
+        });
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", (InvoiceFee)null, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
+    @Test
+    public void testClearNewFee_NullFees() throws Exception {
         contractorUnderTest.setFees(null);
         try {
             Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
@@ -641,7 +675,17 @@ public class ContractorAccountTest {
     }
 
     @Test
-    public void testSetNewFee() throws Exception {
+    public void testClearNewFee_EmptyFees() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
+    @Test
+    public void testSetNewFee_NullFees() throws Exception {
         contractorUnderTest.setFees(null);
         try {
             Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
@@ -650,8 +694,27 @@ public class ContractorAccountTest {
         }
     }
 
-	@After
-	public void cleanup() {
-		testOperator2.setParent(null);
-	}
+    @Test
+    public void testSetNewFee_EmptyFees() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
+    @Test
+    public void testSetNewFee_NullFee() throws Exception {
+        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {{
+            put(FeeClass.InsureGUARD, new ContractorFee());
+        }
+        });
+        try {
+            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", (InvoiceFee)null, BigDecimal.TEN);
+        } catch (NullPointerException npe) {
+            fail("threw unexpected null pointer exception");
+        }
+    }
+
 }

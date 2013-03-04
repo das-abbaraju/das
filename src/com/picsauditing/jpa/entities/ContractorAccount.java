@@ -1198,7 +1198,7 @@ public class ContractorAccount extends Account implements JSONable {
     }
 
     private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null  && fee != null && fees.containsKey(fee.getFeeClass())) {
+        if (fees != null  && fee != null && fee.getFeeClass() != null && fees.containsKey(fee.getFeeClass())) {
             fees.get(fee.getFeeClass()).setCurrentLevel(fee);
             fees.get(fee.getFeeClass()).setCurrentAmount(amount);
         }
@@ -1214,7 +1214,7 @@ public class ContractorAccount extends Account implements JSONable {
 
     @Transient
     public void setNewFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null && fee != null && fees.containsKey(fee.getFeeClass())) {
+        if (fees != null && fee != null && fee.getFeeClass() != null && fees.containsKey(fee.getFeeClass())) {
             fees.get(fee.getFeeClass()).setNewLevel(fee);
             fees.get(fee.getFeeClass()).setNewAmount(amount);
         }
