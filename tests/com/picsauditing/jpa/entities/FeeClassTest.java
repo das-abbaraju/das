@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.when;
 public class FeeClassTest {
 	private FeeClass feeClass;
 	private ContractorAccount contractor;
+    private int ID_FOR_MOCKS;
 
     @Mock
     private ContractorAccount mockContractor;
@@ -57,9 +60,82 @@ public class FeeClassTest {
         when(mockContractor.getOperatorAccounts()).thenReturn(operatorList);
         when(mockContractor.getCountry()).thenReturn(mockCountry);
         when(mockCountry.getAmount(mockFee)).thenReturn(FULL_AMOUNT);
+        ID_FOR_MOCKS = 100;
 	}
 
-	@Test
+    /*
+        Tests for isAllExclusionsApplicable are not complete as I just read that we will be removing
+        the exclusion logic (any time after 1/1/2013 -
+     */
+    @Test
+    public void testIsAllExclusionsApplicable_NotUpgradeNotExclusion() throws Exception {
+        ContractorFee currentLevel = commonSetupCurrentContractorFee(FeeClass.InsureGUARD);
+        InvoiceFee newLevel = commonSetupNewInvoiceFee(FeeClass.InsureGUARD);
+
+        OperatorAccount topOperatorAccount = operatorAccount(unusedIdNotInExclusions());
+
+        Set<OperatorAccount> operators = commonSetupOperatorAccountsWithTopAccount(topOperatorAccount);
+
+        when(currentLevel.willBeUpgradedBy(newLevel)).thenReturn(false);
+
+        boolean result = FeeClass.InsureGUARD.isAllExclusionsApplicable(mockContractor, newLevel, operators);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsAllExclusionsApplicable_IsUpgradeNotExclusion() throws Exception {
+        ContractorFee currentLevel = commonSetupCurrentContractorFee(FeeClass.InsureGUARD);
+        InvoiceFee newLevel = commonSetupNewInvoiceFee(FeeClass.InsureGUARD);
+
+        OperatorAccount topOperatorAccount = operatorAccount(unusedIdNotInExclusions());
+
+        Set<OperatorAccount> operators = commonSetupOperatorAccountsWithTopAccount(topOperatorAccount);
+
+        when(currentLevel.willBeUpgradedBy(newLevel)).thenReturn(true);
+
+        boolean result = FeeClass.InsureGUARD.isAllExclusionsApplicable(mockContractor, newLevel, operators);
+
+        assertFalse(result);
+    }
+
+    private Set<OperatorAccount> commonSetupOperatorAccountsWithTopAccount(OperatorAccount topOperatorAccount) {
+        OperatorAccount operator = mock(OperatorAccount.class);
+        Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+        operators.add(operator);
+        when(operator.getTopAccount()).thenReturn(topOperatorAccount);
+        return operators;
+    }
+
+    private InvoiceFee commonSetupNewInvoiceFee(FeeClass feeClass) {
+        InvoiceFee newLevel = mock(InvoiceFee.class);
+        when(newLevel.getFeeClass()).thenReturn(feeClass);
+        return newLevel;
+    }
+
+    private ContractorFee commonSetupCurrentContractorFee(FeeClass feeClass) {
+        Map<FeeClass, ContractorFee> fees = new HashMap<FeeClass, ContractorFee>();
+        ContractorFee currentLevel = mock(ContractorFee.class);
+        fees.put(feeClass, currentLevel);
+        when(mockContractor.getFees()).thenReturn(fees);
+        return currentLevel;
+    }
+
+    private OperatorAccount operatorAccount(int id) {
+        OperatorAccount operatorAccount = mock(OperatorAccount.class);
+        when(operatorAccount.getId()).thenReturn(id);
+        return  operatorAccount;
+    }
+
+    private int unusedIdNotInExclusions() {
+        Map<Integer, Date> exclusions = FeeClass.InsureGUARD.getExclusions();
+        while (exclusions.containsKey(ID_FOR_MOCKS)) {
+            ID_FOR_MOCKS++;
+        }
+        return ID_FOR_MOCKS;
+    }
+
+    @Test
 	public void testIsInsuranceExcludedFor_ListOnlyContractor() {
 		feeClass = FeeClass.InsureGUARD;
 

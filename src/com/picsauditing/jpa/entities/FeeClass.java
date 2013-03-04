@@ -154,7 +154,10 @@ public enum FeeClass implements Translatable {
 	// grow
 	public boolean isAllExclusionsApplicable(ContractorAccount contractor, InvoiceFee newLevel,
 			Set<OperatorAccount> operators) {
-		boolean isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
+		boolean isUpgrade = false;
+        if (contractor.getFees() != null && newLevel.getFeeClass() != null && contractor.getFees().containsKey(newLevel.getFeeClass())) {
+            isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
+        }
 		Map<Integer, Date> exclusions = getExclusions();
 
 		for (OperatorAccount operator : operators) {

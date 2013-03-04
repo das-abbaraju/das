@@ -1198,7 +1198,7 @@ public class ContractorAccount extends Account implements JSONable {
     }
 
     private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null) {
+        if (fees != null  && fee != null && fees.containsKey(fee.getFeeClass())) {
             fees.get(fee.getFeeClass()).setCurrentLevel(fee);
             fees.get(fee.getFeeClass()).setCurrentAmount(amount);
         }
@@ -1206,7 +1206,7 @@ public class ContractorAccount extends Account implements JSONable {
 
     @Transient
     public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (fees != null) {
+        if (fees != null && fees.containsKey(feeClass)) {
             fees.get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
             fees.get(feeClass).setNewAmount(BigDecimal.ZERO);
         }
@@ -1214,7 +1214,7 @@ public class ContractorAccount extends Account implements JSONable {
 
     @Transient
     public void setNewFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null) {
+        if (fees != null && fee != null && fees.containsKey(fee.getFeeClass())) {
             fees.get(fee.getFeeClass()).setNewLevel(fee);
             fees.get(fee.getFeeClass()).setNewAmount(amount);
         }
@@ -1703,7 +1703,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * @param contractor
 	 * @return Null if no unpaid invoices exist
 	 */
 	@Transient
