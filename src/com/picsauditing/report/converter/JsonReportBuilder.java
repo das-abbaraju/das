@@ -7,15 +7,20 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {
+
+	private static final Logger logger = LoggerFactory.getLogger(JsonReportBuilder.class);
 
 	public static JSONObject buildReportJson(Report report, int userId) {
 		JSONObject json = new JSONObject();
@@ -43,7 +48,11 @@ public class JsonReportBuilder {
 		JSONArray jsonArray = new JSONArray();
 
 		for (Column column : columns) {
-			jsonArray.add(columnToJson(column));
+			try {
+				jsonArray.add(columnToJson(column));
+			} catch (ReportValidationException rve) {
+				logger.error(rve.getMessage());
+			}
 		}
 
 		json.put(REPORT_COLUMNS, jsonArray);
@@ -53,7 +62,11 @@ public class JsonReportBuilder {
 		JSONArray jsonArray = new JSONArray();
 
 		for (Filter filter : filters) {
-			jsonArray.add(filterToJson(filter));
+			try {
+				jsonArray.add(filterToJson(filter));
+			} catch (ReportValidationException rve) {
+				logger.error(rve.getMessage());
+			}
 		}
 
 		json.put(REPORT_FILTERS, jsonArray);
@@ -69,7 +82,7 @@ public class JsonReportBuilder {
 		json.put(REPORT_SORTS, jsonArray);
 	}
 
-	private static JSONObject columnToJson(Column column) {
+	private static JSONObject columnToJson(Column column) throws ReportValidationException {
 		JSONObject json = elementToCommonJson(column);
 
 		json.put(COLUMN_TYPE, column.getField().getDisplayType().name());
@@ -82,7 +95,7 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static JSONObject filterToJson(Filter filter) {
+	private static JSONObject filterToJson(Filter filter) throws ReportValidationException {
 		JSONObject json = elementToCommonJson(filter);
 
 		json.put(FILTER_TYPE, filter.getField().getFilterType().name());
@@ -118,8 +131,12 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static JSONObject elementToCommonJson(ReportElement element) {
+	private static JSONObject elementToCommonJson(ReportElement element) throws ReportValidationException {
 		JSONObject json = new JSONObject();
+
+		if (element.getField() == null) {
+			throw new ReportValidationException("Field with name '" + element.getName() + "' was not loaded correctly. The field name in the database (report_column, etc.) probably hasn't been updated to match.");
+		}
 
 		// TODO sort out these member variable names
 		json.put(REPORT_ID, element.getId());

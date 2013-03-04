@@ -203,6 +203,34 @@ public class JsonReportBuilderTest {
 		assertJson(SORT_DIRECTION, Sort.ASCENDING, jsonString);
 	}
 
+	@Test
+	public void testBuildReportJson_WhenColumnsFieldIsNull_ThenNoExceptionIsThrown() {
+		mockMinimalReport();
+
+		Column column = new Column();
+		column.setField(null);
+
+		List<Column> columns = new ArrayList<Column>();
+		columns.add(column);
+		when(report.getColumns()).thenReturn(columns);
+
+		JsonReportBuilder.buildReportJson(report, USER_ID);
+	}
+
+	@Test
+	public void testBuildReportJson_WhenFiltersFieldIsNull_ThenNoExceptionIsThrown() {
+		mockMinimalReport();
+
+		Filter filter = new Filter();
+		filter.setField(null);
+
+		List<Filter> filters = new ArrayList<Filter>();
+		filters.add(filter);
+		when(report.getFilters()).thenReturn(filters);
+
+		JsonReportBuilder.buildReportJson(report, USER_ID);
+	}
+
 	public void mockMinimalReport() {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
 	}
