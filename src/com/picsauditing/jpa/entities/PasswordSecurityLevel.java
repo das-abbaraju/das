@@ -4,7 +4,8 @@ public enum PasswordSecurityLevel {
 
     Normal(0, 5, false, false, 0, 0, 0),
     High(1, 7, false, true, 3, 0, 4),
-    Maximum(2, 8, true, true, 3, 12, 0);
+    Maximum(2, 8, true, true, 3, 12, 0),
+    IOL(3, 5, false, false, 1, 12, 0);
 
     public int dbValue;
     public int minLength;

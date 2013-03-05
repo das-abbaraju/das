@@ -8,7 +8,7 @@ public class PasswordSecurityLevelTest {
 
     @Test
     public void testValues() throws Exception {
-        assertTrue(PasswordSecurityLevel.values().length == 3);
+        assertTrue(PasswordSecurityLevel.values().length == 4);
 
         assertTrue(PasswordSecurityLevel.Normal.dbValue == 0);
         assertTrue(PasswordSecurityLevel.Normal.minLength == 5);
@@ -33,6 +33,14 @@ public class PasswordSecurityLevelTest {
         assertTrue(PasswordSecurityLevel.Maximum.expirationMonths == 3);
         assertTrue(PasswordSecurityLevel.Maximum.monthsOfHistoryToDisallow == 12);
         assertTrue(PasswordSecurityLevel.Maximum.entriesOfHistoryToDisallow == 0);
+
+        assertTrue(PasswordSecurityLevel.IOL.dbValue == 3);
+        assertTrue(PasswordSecurityLevel.IOL.minLength == 5);
+        assertTrue(PasswordSecurityLevel.IOL.enforceMixedCase == false);
+        assertTrue(PasswordSecurityLevel.IOL.enforceSpecialCharacter == false);
+        assertTrue(PasswordSecurityLevel.IOL.expirationMonths == 1);
+        assertTrue(PasswordSecurityLevel.IOL.monthsOfHistoryToDisallow == 12);
+        assertTrue(PasswordSecurityLevel.IOL.entriesOfHistoryToDisallow == 0);
     }
 
 	@Test
@@ -40,6 +48,7 @@ public class PasswordSecurityLevelTest {
 		assertFalse(PasswordSecurityLevel.Normal.enforceMonthsOfHistory());
 		assertFalse(PasswordSecurityLevel.High.enforceMonthsOfHistory());
 		assertTrue(PasswordSecurityLevel.Maximum.enforceMonthsOfHistory());
+		assertTrue(PasswordSecurityLevel.IOL.enforceMonthsOfHistory());
 	}
 
     @Test
@@ -47,6 +56,7 @@ public class PasswordSecurityLevelTest {
         assertFalse(PasswordSecurityLevel.Normal.enforceEntriesOfHistory());
 	    assertTrue(PasswordSecurityLevel.High.enforceEntriesOfHistory());
 	    assertFalse(PasswordSecurityLevel.Maximum.enforceEntriesOfHistory());
+	    assertFalse(PasswordSecurityLevel.IOL.enforceEntriesOfHistory());
     }
 
 	@Test
@@ -54,6 +64,7 @@ public class PasswordSecurityLevelTest {
 		assertFalse(PasswordSecurityLevel.Normal.enforceHistory());
 		assertTrue(PasswordSecurityLevel.High.enforceHistory());
 		assertTrue(PasswordSecurityLevel.Maximum.enforceHistory());
+		assertTrue(PasswordSecurityLevel.IOL.enforceHistory());
 	}
 
     @Test
@@ -61,6 +72,7 @@ public class PasswordSecurityLevelTest {
         assertEquals(PasswordSecurityLevel.Normal, PasswordSecurityLevel.fromDbValue(0));
         assertEquals(PasswordSecurityLevel.High, PasswordSecurityLevel.fromDbValue(1));
         assertEquals(PasswordSecurityLevel.Maximum, PasswordSecurityLevel.fromDbValue(2));
+        assertEquals(PasswordSecurityLevel.IOL, PasswordSecurityLevel.fromDbValue(3));
     }
 
     @Test
