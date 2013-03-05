@@ -92,6 +92,9 @@ public class AccountTest {
         assertEquals(PasswordSecurityLevel.Maximum, account.getPasswordSecurityLevel());
 
         account.setPasswordSecurityLevelId(3);
+        assertEquals(PasswordSecurityLevel.IOL, account.getPasswordSecurityLevel());
+
+        account.setPasswordSecurityLevelId(99);
         assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
     }
 
