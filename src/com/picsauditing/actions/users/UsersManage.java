@@ -276,6 +276,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0) {
+            setUserResetHash();
 			addActionMessage(sendActivationEmail(user, permissions));
 		}
 
@@ -1184,9 +1185,8 @@ public class UsersManage extends PicsActionSupport {
 		userDAO.save(user);
 	}
 
-	// TODO consolidate email to one class, or at the very least pull it into a
-	// service
-	public String sendActivationEmail(User user, Permissions permission) {
+	// TODO Technical Debt: PICS-9613
+	protected String sendActivationEmail(User user, Permissions permission) {
 		try {
 			String serverName = ServletActionContext.getRequest().getServerName();
 
@@ -1195,7 +1195,6 @@ public class UsersManage extends PicsActionSupport {
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			String confirmLink = "https://" + serverName + "/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
