@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
+import com.ibm.icu.util.Currency;
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -244,13 +245,7 @@ public class QBWebConnectorSvcSkeleton {
 					throw e;
 				}
 
-				try {
-					String decomposed = Normalizer.normalize(qbXml, Form.NFKD);
-					String accentsGone = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-					qbXml = accentsGone;
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				qbXml = fixCharactersForQuickBooksSpecification(qbXml);
 
 				PicsLogger.log(sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
 				response.setSendRequestXMLResult(qbXml);
@@ -259,6 +254,20 @@ public class QBWebConnectorSvcSkeleton {
 
 		stop();
 		return response;
+	}
+
+	private String fixCharactersForQuickBooksSpecification(String qbXml) {
+		try {
+			qbXml = replaceNonUSLatinCharactersWithUSEquivalents(qbXml);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return qbXml;
+	}
+
+	private String replaceNonUSLatinCharactersWithUSEquivalents(String qbXml) {
+		return Normalizer.normalize(qbXml, Form.NFKD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
 
 	@SuppressWarnings({ "unused", "deprecation" })

@@ -233,11 +233,19 @@ public class QBXmlAdaptor {
 		return billAddress;
 	}
 
-	static public CurrencyRef updateCurrencyRef(ContractorAccount contractor, CurrencyRef currencyRef) {
+	public static CurrencyRef updateCurrencyRef(ContractorAccount contractor, CurrencyRef currencyRef) {
 		if (contractor.getCountry().getCurrency().isEUR()) {
 			currencyRef.setFullName("Euro");
 		}
 
 		return currencyRef;
+	}
+
+	protected static String replaceCurrencySymbols(String value) {
+		for (com.picsauditing.jpa.entities.Currency currency : com.picsauditing.jpa.entities.Currency.values()) {
+			value = value.replaceAll(currency.getSymbol(), currency.getDisplay());
+		}
+
+		return value;
 	}
 }
