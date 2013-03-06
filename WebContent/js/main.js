@@ -22,8 +22,6 @@
 		
 		REGISTRATION.contractor_country.init();
 		
-		REGISTRATION.field_validate.init();
-		
 		REGISTRATION.help_text.init();
 		
 		REGISTRATION.language_dropdown.init();
