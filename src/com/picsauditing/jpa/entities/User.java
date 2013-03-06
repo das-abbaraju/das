@@ -34,8 +34,6 @@ import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
@@ -121,9 +119,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<Report> reports = new ArrayList<Report>();
 	private List<Locale> spokenLanguages = new ArrayList<Locale>();
 	private List<String> countriesServiced = new ArrayList<String>();
-
-	@Autowired
-	private InputValidator inputValidator;
 
 	@Transient
 	public boolean isSuperUser() {
@@ -942,11 +937,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public InputValidator getInputValidator() {
-		if (inputValidator == null) {
-			inputValidator = SpringUtils.getBean("InputValidator");
-		}
-
-		return inputValidator;
+		return SpringUtils.getBean("InputValidator");
 	}
 
 	@Transient

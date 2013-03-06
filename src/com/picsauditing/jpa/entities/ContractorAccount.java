@@ -37,8 +37,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
@@ -145,14 +143,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private LowMedHigh insideSalesPriority = LowMedHigh.None;
 	private String registrationHash;
 
-	private InputValidator inputValidator;
-
-	@Autowired
-	private VATValidator vatValidator;
-
-	@Autowired
-	private CountryDAO countryDao;
-
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
@@ -187,7 +177,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate
 	 * accounts or Deleted/Deactivated Operators
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -195,8 +185,9 @@ public class ContractorAccount extends Account implements JSONable {
 		List<OperatorAccount> list = new ArrayList<OperatorAccount>();
 		for (ContractorOperator co : operators) {
 			if (co.getOperatorAccount().isOperator() && !co.getOperatorAccount().getStatus().isDeactivated()
-					&& !co.getOperatorAccount().getStatus().isDeleted())
+					&& !co.getOperatorAccount().getStatus().isDeleted()) {
 				list.add(co.getOperatorAccount());
+			}
 		}
 		Collections.sort(list);
 		return list;
@@ -474,8 +465,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isPaymentMethodStatusValid() {
-		if (paymentMethod == null)
+		if (paymentMethod == null) {
 			return false;
+		}
 		if (paymentMethod.isCreditCard()) {
 			return isCcValid();
 		}
@@ -485,7 +477,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Set to true if we have a credit card on file
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing)
@@ -508,8 +500,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isCcValid() {
-		if (!ccOnFile)
+		if (!ccOnFile) {
 			return false;
+		}
 
 		return isCcExpired();
 	}
@@ -545,7 +538,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The Payment methods are Credit Card and Check
-	 * 
+	 *
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -561,7 +554,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the contractor was invoiced for their most recent
 	 * activation/reactivation fee
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -589,7 +582,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee. This should NEVER be null.
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -606,7 +599,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Used to determine if we need to calculate the flagColor, audits and
 	 * billing
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNeedsRecalculation() {
@@ -624,13 +617,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public void incrementRecalculation(int increment) {
-		if (increment > 0 && this.needsRecalculation + increment < MAX_RECALC)
+		if (increment > 0 && this.needsRecalculation + increment < MAX_RECALC) {
 			this.needsRecalculation += increment;
+		}
 	}
 
 	/**
 	 * Sets the date and time when the calculator ran
-	 * 
+	 *
 	 * @return
 	 */
 	public Date getLastRecalculation() {
@@ -689,8 +683,9 @@ public class ContractorAccount extends Account implements JSONable {
 		Iterator<ContractorOperatorNumber> iterator = visibleContractorOperatorNumbers.iterator();
 
 		while (iterator.hasNext()) {
-			if (!iterator.next().isVisibleTo(permissions))
+			if (!iterator.next().isVisibleTo(permissions)) {
 				iterator.remove();
+			}
 		}
 
 		return visibleContractorOperatorNumbers;
@@ -796,13 +791,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * All contractors should update their trades every 6 months
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
 	public boolean isNeedsTradesUpdated() {
-		if (tradesUpdated == null)
+		if (tradesUpdated == null) {
 			return true;
+		}
 
 		Calendar daysAgo = Calendar.getInstance();
 		daysAgo.add(Calendar.MONTH, -6);
@@ -837,16 +833,18 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isPaymentOverdue() {
-		for (Invoice invoice : getInvoices())
+		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()
-					&& invoice.getDueDate() != null && invoice.getDueDate().before(new Date()))
+					&& invoice.getDueDate() != null && invoice.getDueDate().before(new Date())) {
 				return true;
+			}
+		}
 		return false;
 	}
 
 	/**
 	 * Uses the OshaVisitor to gather all the data
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -854,8 +852,9 @@ public class ContractorAccount extends Account implements JSONable {
 		if (oshaOrganizer == null) {
 			oshaOrganizer = new OshaOrganizer();
 			for (OshaAudit audit : this.getOshaAudits()) {
-				if (audit.isVerified())
+				if (audit.isVerified()) {
 					audit.accept(oshaOrganizer);
+				}
 			}
 		}
 
@@ -947,7 +946,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The last day someone added a facility to this contractor. This is used to
 	 * prorate upgrade amounts
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -1003,18 +1002,21 @@ public class ContractorAccount extends Account implements JSONable {
 		 */
 		balance = BigDecimal.ZERO;
 		for (Invoice invoice : getInvoices()) {
-			if (!invoice.getStatus().isVoid())
+			if (!invoice.getStatus().isVoid()) {
 				balance = balance.add(invoice.getTotalAmount());
+			}
 		}
 
 		for (Refund refund : getRefunds()) {
-			if (!refund.getStatus().isVoid())
+			if (!refund.getStatus().isVoid()) {
 				balance = balance.add(refund.getTotalAmount());
+			}
 		}
 
 		for (Payment payment : getPayments()) {
-			if (!payment.getStatus().isVoid())
+			if (!payment.getStatus().isVoid()) {
 				balance = balance.subtract(payment.getTotalAmount());
+			}
 		}
 
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
@@ -1147,7 +1149,7 @@ public class ContractorAccount extends Account implements JSONable {
 									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
 								}
 							});
-							
+
 							PaymentApplied payment = sortedPaymentList.get(0);
 
 							membershipDate = payment.getCreationDate();
@@ -1170,24 +1172,33 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 
-		if (!foundListOnlyMembership)
+		if (!foundListOnlyMembership) {
 			clearCurrentFee(FeeClass.ListOnly, feeDAO);
-		if (!foundBidOnlyMembership)
+		}
+		if (!foundBidOnlyMembership) {
 			clearCurrentFee(FeeClass.BidOnly, feeDAO);
-		if (!foundDocuGUARDMembership)
+		}
+		if (!foundDocuGUARDMembership) {
 			clearCurrentFee(FeeClass.DocuGUARD, feeDAO);
-		if (!foundAuditGUARDMembership)
+		}
+		if (!foundAuditGUARDMembership) {
 			clearCurrentFee(FeeClass.AuditGUARD, feeDAO);
-		if (!foundInsureGUARDMembership)
+		}
+		if (!foundInsureGUARDMembership) {
 			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
-		if (!foundEmployeeGUARDMembership)
+		}
+		if (!foundEmployeeGUARDMembership) {
 			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
-		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee)
+		}
+		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee) {
 			clearCurrentFee(FeeClass.ImportFee, feeDAO);
-		if (!foundPaymentExpires)
+		}
+		if (!foundPaymentExpires) {
 			paymentExpires = creationDate;
-		if (!foundMembershipDate)
+		}
+		if (!foundMembershipDate) {
 			membershipDate = null;
+		}
 	}
 
     private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
@@ -1223,8 +1234,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isHasMembershipChanged() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (this.getFees().get(feeClass).isHasChanged())
+			if (this.getFees().get(feeClass).isHasChanged()) {
 				return true;
+			}
 		}
 
 		return false;
@@ -1233,8 +1245,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isHasUpgrade() {
 		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (this.getFees().get(feeClass).isUpgrade())
+			if (this.getFees().get(feeClass).isUpgrade()) {
 				return true;
+			}
 		}
 
 		return false;
@@ -1248,7 +1261,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel();
 	 * con.getFees().getDocuGUARD().getNewLevel();
-	 * 
+	 *
 	 * @return
 	 */
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -1344,7 +1357,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
-	 * 
+	 *
 	 * @return A String of the current Billing Status
 	 */
 	@Transient
@@ -1375,12 +1388,14 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean currentListOrBidOnly = false;
 		for (FeeClass feeClass : getFees().keySet()) {
 			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
-					&& !feeClass.equals(FeeClass.ListOnly))
+					&& !feeClass.equals(FeeClass.ListOnly)) {
 				upgrade = true;
+			}
 			if ((this.getFees().get(feeClass).getCurrentLevel().isBidonly() || this.getFees().get(feeClass)
 					.getCurrentLevel().isListonly())
-					&& !this.getFees().get(feeClass).getCurrentLevel().isFree())
+					&& !this.getFees().get(feeClass).getCurrentLevel().isFree()) {
 				currentListOrBidOnly = true;
+			}
 		}
 
 		if (upgrade) {
@@ -1439,8 +1454,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean hasAuditWithOnlyInvisibleCaos() {
 		for (ContractorAudit audit : this.audits) {
-			if (audit.hasOnlyInvisibleCaos())
+			if (audit.hasOnlyInvisibleCaos()) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -1492,8 +1508,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isAgreementInEffect() {
-		if (agreementDate == null)
+		if (agreementDate == null) {
 			return false;
+		}
 
 		return agreementDate.after(USER_AGREEMENT_CHANGED);
 	}
@@ -1507,8 +1524,9 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean isFinanciallyReadyForAudits() {
 		double halfMembership = 0.0;
 		for (FeeClass feeClass : this.getFees().keySet()) {
-			if (!this.getFees().get(feeClass).getCurrentLevel().isFree() && feeClass.isMembership())
+			if (!this.getFees().get(feeClass).getCurrentLevel().isFree() && feeClass.isMembership()) {
 				halfMembership += this.getFees().get(feeClass).getCurrentAmount().doubleValue();
+			}
 		}
 		halfMembership *= 0.5;
 
@@ -1555,8 +1573,9 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			if (fee.getFeeClass().isMembership())
+			if (fee.getFeeClass().isMembership()) {
 				newTotal = newTotal.add(fee.getNewAmount());
+			}
 		}
 
 		return newTotal;
@@ -1566,8 +1585,9 @@ public class ContractorAccount extends Account implements JSONable {
 	public BigDecimal getCurrentMembershipAmount() {
 		BigDecimal currentTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
-			if (fee.getFeeClass().isMembership())
+			if (fee.getFeeClass().isMembership()) {
 				currentTotal = currentTotal.add(fee.getCurrentAmount());
+			}
 		}
 
 		return currentTotal;
@@ -1579,14 +1599,13 @@ public class ContractorAccount extends Account implements JSONable {
 		// or is Material Supplier who only works for CEDA
 		if (isMaterialSupplierOnly()
 				&& (getProductRisk().equals(LowMedHigh.Low) || onlyWorksFor(new int[] { OperatorAccount.CEDA_CANADA,
-						OperatorAccount.CEDA_USA })))
+						OperatorAccount.CEDA_USA }))) {
 			return true;
-		// Low Safety Risk Offsite Services
-		else if (isOffsiteServices() && !isOnsiteServices() && getSafetyRisk().equals(LowMedHigh.Low))
+		} else if (isOffsiteServices() && !isOnsiteServices() && getSafetyRisk().equals(LowMedHigh.Low)) {
 			return true;
-		// Sole Proprietors which are Offsite or Material Supplier
-		else if (getSoleProprietor() && !isOnsiteServices() && (isOffsiteServices() || isMaterialSupplier()))
+		} else if (getSoleProprietor() && !isOnsiteServices() && (isOffsiteServices() || isMaterialSupplier())) {
 			return true;
+		}
 
 		return false;
 	}
@@ -1599,8 +1618,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean onlyWorksFor(List<OperatorAccount> operators) {
 		Set<Integer> IDs = new HashSet<Integer>(operators.size());
-		for (OperatorAccount operator : operators)
+		for (OperatorAccount operator : operators) {
 			IDs.add(operator.getId());
+		}
 		return onlyWorksFor(IDs);
 	}
 
@@ -1612,8 +1632,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean onlyWorksFor(int[] operatorIDs) {
 		Set<Integer> IDs = new HashSet<Integer>(operatorIDs.length);
-		for (int id : operatorIDs)
+		for (int id : operatorIDs) {
 			IDs.add(id);
+		}
 		return onlyWorksFor(IDs);
 	}
 
@@ -1624,14 +1645,17 @@ public class ContractorAccount extends Account implements JSONable {
 		// So long as the operators for this contractor are a subset of the
 		// parameter list,
 		// this method will return true.
-		if (getOperatorAccounts().isEmpty())
+		if (getOperatorAccounts().isEmpty()) {
 			return false;
-		for (OperatorAccount operator : getOperatorAccounts())
+		}
+		for (OperatorAccount operator : getOperatorAccounts()) {
 			if (!operatorIDs.contains(operator.getId())) {
-				if (operator.getParent() != null && operatorIDs.contains(operator.getParent().getId()))
+				if (operator.getParent() != null && operatorIDs.contains(operator.getParent().getId())) {
 					continue;
+				}
 				return false;
 			}
+		}
 		return true;
 	}
 
@@ -1643,8 +1667,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isHasPaymentExpired() {
-		if (getPaymentExpires() == null)
+		if (getPaymentExpires() == null) {
 			return true;
+		}
 
 		return new Date().after(getPaymentExpires());
 	}
@@ -1669,15 +1694,17 @@ public class ContractorAccount extends Account implements JSONable {
 				}
 			}
 			return sum / activitySum;
-		} else
+		} else {
 			return 0;
+		}
 	}
 
 	@Transient
 	public boolean hasWiaCriteria() {
 		for (FlagCriteriaContractor fcc : flagCriteria) {
-			if (OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
+			if (OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType())) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -1686,8 +1713,9 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean hasWiaCriteria(OshaType ot) {
 		for (FlagCriteriaContractor fcc : flagCriteria) {
 			if (ot.equals(fcc.getCriteria().getOshaType())
-					&& OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
+					&& OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType())) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -1722,9 +1750,11 @@ public class ContractorAccount extends Account implements JSONable {
 		// any Operators
 		List<Integer> importPQFEligibleOperators = new ArrayList<Integer>();
 
-		for (OperatorAccount operator : getOperatorAccounts())
-			if (importPQFEligibleOperators.contains(operator.getTopAccount().getId()))
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			if (importPQFEligibleOperators.contains(operator.getTopAccount().getId())) {
 				return true;
+			}
+		}
 
 		return false;
 	}
@@ -1773,8 +1803,9 @@ public class ContractorAccount extends Account implements JSONable {
 		Set<ContractorType> contractorTypes = getAccountTypes();
 
 		for (ContractorType opType : operator.getAccountTypes()) {
-			if (contractorTypes.contains(opType))
+			if (contractorTypes.contains(opType)) {
 				meetsOperatorsRequirements = true;
+			}
 		}
 
 		return meetsOperatorsRequirements;
@@ -1783,8 +1814,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public ContractorOperator getContractorOperatorForOperator(OperatorAccount operator) {
 		for (ContractorOperator op : getOperators()) {
-			if (op.getOperatorAccount().getId() == operator.getId())
+			if (op.getOperatorAccount().getId() == operator.getId()) {
 				return op;
+			}
 		}
 
 		return null;
@@ -1793,8 +1825,9 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isWorksForOperator(int operator) {
 		for (OperatorAccount operatorAccount : getOperatorAccounts()) {
-			if (operatorAccount.getId() == operator)
+			if (operatorAccount.getId() == operator) {
 				return true;
+			}
 		}
 
 		return false;
@@ -1905,11 +1938,11 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isValidVAT(String vat) {
-		Country registrationCountry = countryDao.findbyISO(getCountry().getIsoCode());
+		Country registrationCountry = getCountryDao().findbyISO(getCountry().getIsoCode());
 
-		if (vatValidator.shouldValidate(registrationCountry)) {
+		if (getVatValidator().shouldValidate(registrationCountry)) {
 			try {
-				vatValidator.validated(vat);
+				getVatValidator().validated(vat);
 			} catch (Exception e) {
 				return false;
 			}
@@ -2019,11 +2052,17 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public InputValidator getInputValidator() {
-		if (inputValidator == null) {
-			inputValidator = SpringUtils.getBean("InputValidator");
-		}
+		return SpringUtils.getBean("InputValidator");
+	}
 
-		return inputValidator;
+	@Transient
+	public VATValidator getVatValidator() {
+		return SpringUtils.getBean("VATValidator");
+	}
+
+	@Transient
+	public CountryDAO getCountryDao() {
+		return SpringUtils.getBean("CountryDAO");
 	}
 
 	@Transient
