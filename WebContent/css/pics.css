@@ -1646,3 +1646,10 @@ div.blockDialog {
 {
 	background-color: inherit;
 }
+
+/* approve contractor form */
+#approveContractorForm #operatorNotes
+{
+    margin: 10px 0px;
+    vertical-align: middle;
+}
