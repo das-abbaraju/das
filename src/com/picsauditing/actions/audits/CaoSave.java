@@ -266,7 +266,10 @@ public class CaoSave extends AuditActionSupport {
 		
 		if (conAudit != null)
 			getValidSteps();
-			
+
+		if (getActionErrors().size() > 0)
+			return SUCCESS;
+
 		if (viewCaoTable)
 			return "caoTable";
 		else
@@ -415,9 +418,11 @@ public class CaoSave extends AuditActionSupport {
 			if (step.isNoteRequired() && Strings.isEmpty(note))
 				addActionError("You must enter a note" + forString);
 
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+
 			if (step.getNewStatus().isSubmittedResubmitted()) {
 				if (cao.getPercentComplete() < 100)
-					addActionError("Please complete all required questions" + forString);
+					addActionError("Please complete all required questions" + forString + ". Please click Recalculate to update percent complete.");
 			}
 		}
 	}
