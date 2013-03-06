@@ -22,6 +22,7 @@ public class OshaAudit implements OshaVisitable {
     public static final int CAT_ID_MEXICO = 3165; // Mexico
     public static final int CAT_ID_EMR = 152; // EMR
     public static final int CAT_ID_AUSTRALIA = 3325; // Australia
+	public static final int CAT_ID_IRElAND = 3428; // Ireland
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
@@ -34,7 +35,7 @@ public class OshaAudit implements OshaVisitable {
                     CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
     public static final Set<Integer> DISPLAY_SAFETY_STATISTICS_CATEGORY_IDS =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
-                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA)));
+                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -76,6 +77,9 @@ public class OshaAudit implements OshaVisitable {
             case CAT_ID_AUSTRALIA:
                 type = OshaType.AUSTRALIA;
                 break;
+	        case CAT_ID_IRElAND:
+		        type = OshaType.IRELAND;
+		        break;
         }
 
         return type;
