@@ -19,14 +19,17 @@ import java.util.List;
 
 public class InsertInvoices extends CustomerAdaptor {
 
+	public static String getWhereClause(String qbID, String currency) {
+		return "i.account." + qbID + " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
+				+ "AND i.account." + qbID + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
+				+ currency + "'";
+	}
+
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				"i.account." + currentSession.getQbID()
-						+ " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-						+ "AND i.account." + currentSession.getQbID() + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
-						+ currentSession.getCurrencyCode() + "'", 10);
+				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
 
 		// no work to do
 		if (invoices.size() == 0) {
@@ -124,7 +127,7 @@ public class InsertInvoices extends CustomerAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
-//		logger.error("XML after marshalling: " + writer.toString());
+		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
 
 	}

@@ -8,12 +8,21 @@ import java.util.Map;
 
 public class GetInvoicesForUpdate extends InvoiceAdaptor {
 
+	public static String getWhereClause(String qbID, String currency) {
+		return "i.account."
+				+ qbID
+				+ " IS NOT NULL AND i.qbListID IS NOT NULL"
+				+ " AND i.account."
+				+ qbID
+				+ " NOT LIKE 'NOLOAD%' AND i.qbListID NOT LIKE 'NOLOAD%' AND i.account.status != 'Demo' AND i.qbSync = true AND i.currency LIKE '"
+				+ currency + "'";
+	}
+
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "i.account."+currentSession.getQbID()+" IS NOT NULL AND i.qbListID IS NOT NULL" +
-				" AND i.account."+currentSession.getQbID()+" NOT LIKE 'NOLOAD%' AND i.qbListID NOT LIKE 'NOLOAD%' AND i.account.status != 'Demo' AND i.qbSync = true AND i.currency LIKE '"+currentSession.getCurrencyCode()+"'";
-		List<Invoice> invoices = getInvoiceDao().findWhere(where, 10);
+		List<Invoice> invoices = getInvoiceDao().findWhere(
+				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
 
 		if (invoices.size() > 0) {
 			currentSession.getPossibleInvoiceUpdates().addAll(invoices);

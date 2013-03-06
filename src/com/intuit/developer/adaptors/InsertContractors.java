@@ -20,6 +20,12 @@ import java.util.List;
 public class InsertContractors extends CustomerAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(InsertContractors.class);
+	
+	public static String getWhereClause(String qbID, String currency) {
+		return "a.qbSync = true AND a." + qbID
+		+ " IS NULL AND a.status = 'Active' AND a.country.currency = '"
+		+ currency + "'";
+	}
 
 	// FIXME This is practically identical to the same method in
 	// UpdateContractors.java
@@ -27,9 +33,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true AND a." + currentSession.getQbID()
-						+ " IS NULL AND a.status = 'Active' AND a.country.currency = '"
-						+ currentSession.getCurrencyCode() + "'");
+				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()));
 
 		// no work to do
 		if (CollectionUtils.isEmpty(contractors)) {

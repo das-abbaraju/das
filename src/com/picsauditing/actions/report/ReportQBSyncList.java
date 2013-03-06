@@ -2,6 +2,12 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import com.intuit.developer.adaptors.GetContractorsForUpdate;
+import com.intuit.developer.adaptors.GetInvoicesForUpdate;
+import com.intuit.developer.adaptors.GetPaymentsForUpdate;
+import com.intuit.developer.adaptors.InsertContractors;
+import com.intuit.developer.adaptors.InsertInvoices;
+import com.intuit.developer.adaptors.InsertPayments;
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,45 +84,28 @@ public class ReportQBSyncList extends PicsActionSupport {
 		}
 
 		// see InsertContractors
-		contractorInsert = contractorAccountDAO.findWhere("a.qbSync = true and a." + getQBListID(currency)
-				+ " is null and a.country.currency = '" + currency + "'");
+		contractorInsert = contractorAccountDAO.findWhere(InsertContractors.getWhereClause(getQBListID(currency),
+				currency.toString()));
 
 		// see InsertInvoices
-		invoiceInsert = invoiceDAO.findWhere("i.account." + getQBListID(currency)
-				+ " is not null AND i.account.country.currency = '" + currency
-				+ "' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null " + "AND i.account."
-				+ getQBListID(currency) + " not like 'NOLOAD%' AND i.currency = '" + currency + "'", 10);
+		invoiceInsert = invoiceDAO.findWhere(InsertInvoices.getWhereClause(getQBListID(currency), currency.toString()),
+				10);
 
 		// see InsertPayments
-		paymentInsert = paymentDAO.findWhere("p.account." + getQBListID(currency)
-				+ " is not null AND p.account.country.currency = '" + currency
-				+ "' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null " + "AND p.account."
-				+ getQBListID(currency) + " not like 'NOLOAD%' AND p.currency = '" + currency + "'", 10);
+		paymentInsert = paymentDAO.findWhere(InsertPayments.getWhereClause(getQBListID(currency), currency.toString()),
+				10);
 
 		// see GetContractorsForUpdate
-		contractorUpdate = contractorAccountDAO.findWhere("a." + getQBListID(currency)
-				+ " is not null and a.country.currency = '" + currency + "' and a." + getQBListID(currency)
-				+ " not like 'NOLOAD%' and a.qbSync = true");
+		contractorUpdate = contractorAccountDAO.findWhere(GetContractorsForUpdate.getWhereClause(getQBListID(currency),
+				currency.toString()));
 
 		// see GetInvoicesForUpdate
-		invoiceUpdate = invoiceDAO
-				.findWhere(
-						"i.account."
-								+ getQBListID(currency)
-								+ " is not null AND i.account.country.currency = '"
-								+ currency
-								+ "' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency = '"
-								+ currency + "'", 10);
+		invoiceUpdate = invoiceDAO.findWhere(
+				GetInvoicesForUpdate.getWhereClause(getQBListID(currency), currency.toString()), 10);
 
 		// see GetPaymentsForUpdate
-		paymentUpdate = paymentDAO
-				.findWhere(
-						"p.account."
-								+ getQBListID(currency)
-								+ " is not null AND p.account.country.currency = '"
-								+ currency
-								+ "' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency = '"
-								+ currency + "'", 10);
+		paymentUpdate = paymentDAO.findWhere(
+				GetPaymentsForUpdate.getWhereClause(getQBListID(currency), currency.toString()), 10);
 
 		lastError = emailQueueDAO.getQuickbooksError();
 
@@ -168,7 +157,8 @@ public class ReportQBSyncList extends PicsActionSupport {
 	}
 
 	/**
-	 * TODO: Need to fix how we store qbListIDs and break them into another table or store them more intelligently.
+	 * TODO: Need to fix how we store qbListIDs and break them into another
+	 * table or store them more intelligently.
 	 * 
 	 * @param currency
 	 * @return

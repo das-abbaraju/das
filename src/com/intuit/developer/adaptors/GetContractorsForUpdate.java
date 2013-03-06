@@ -10,13 +10,17 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class GetContractorsForUpdate extends CustomerAdaptor {
 
+	public static String getWhereClause(String qbID, String currency) {
+		return "a." + qbID + " IS NOT NULL and a." + qbID
+				+ " NOT LIKE 'NOLOAD%' AND a.qbSync = true AND a.status != 'Demo' AND a.country.currency = '"
+				+ currency + "'";
+	}
+
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a." + currentSession.getQbID() + " IS NOT NULL and a." + currentSession.getQbID()
-						+ " NOT LIKE 'NOLOAD%' AND a.qbSync = true AND a.status != 'Demo' AND a.country.currency = '"
-						+ currentSession.getCurrencyCode() + "'");
+				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()));
 
 		if (contractors.size() > 0) {
 			currentSession.getPossibleUpdates().addAll(contractors);

@@ -1,5 +1,12 @@
 package com.intuit.developer.adaptors;
 
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.Unmarshaller;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.QBXML;
@@ -8,23 +15,19 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentQueryRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
 import com.picsauditing.util.log.PicsLogger;
 
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class GetPaymentsForUpdate extends PaymentAdaptor {
+
+	public static String getWhereClause(String qbID, String currency) {
+		return "p.account." + qbID + " IS NOT NULL AND p.qbListID IS NOT NULL" + " AND p.account." + qbID
+				+ " NOT LIKE 'NOLOAD%' AND p.qbListID NOT LIKE 'NOLOAD%'"
+				+ " AND p.account.status != 'Demo' AND p.qbSync = true AND p.currency LIKE '" + currency + "'";
+	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "p.account." + currentSession.getQbID() + " IS NOT NULL AND p.qbListID IS NOT NULL"
-				+ " AND p.account." + currentSession.getQbID()
-				+ " NOT LIKE 'NOLOAD%' AND p.qbListID NOT LIKE 'NOLOAD%'"
-				+ " AND p.account.status != 'Demo' AND p.qbSync = true AND p.currency LIKE '"
-				+ currentSession.getCurrencyCode() + "'";
-		List<Payment> payments = getPaymentDao().findWhere(where, 10);
+		List<Payment> payments = getPaymentDao().findWhere(
+				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
 
 		if (payments.size() > 0) {
 			currentSession.getPossiblePaymentUpdates().addAll(payments);
