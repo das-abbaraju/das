@@ -31,7 +31,7 @@ public class InputValidator {
     public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
 
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
-    public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
+    public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
 
     public static final String USERNAME_REGEX = "[\\w+._@-]+";
 
