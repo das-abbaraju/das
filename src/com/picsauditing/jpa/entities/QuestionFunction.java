@@ -394,6 +394,38 @@ public enum QuestionFunction {
 		}
 	},
 	/**
+	 * Ireland Incident Rate
+	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 100) / Employees)
+	 */
+	IR_IRELAND {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("majorOver"))
+					|| Strings.isEmpty(params.get("majorUnder"))
+					|| Strings.isEmpty(params.get("minor"))
+					|| Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return MISSING_PARAMETER;
+
+			BigDecimal majorOver = new BigDecimal(params.get("majorOver").replace(",", "")).setScale(7);
+			BigDecimal majorUnder = new BigDecimal(params.get("majorUnder").replace(",", "")).setScale(7);
+			BigDecimal minor = new BigDecimal(params.get("minor").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
+
+			BigDecimal result = null;
+			try {
+				result = fatalities.add(majorOver).add(majorUnder).add(minor).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+	},
+	/**
 	 * UK Annual Update Dangerous Occurrences Frequency Rate
 	 * DOFR = (dangerous occurrences / total hours worked) x 100,000 
 	 */	
