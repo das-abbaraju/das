@@ -309,7 +309,7 @@
 						<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 							<li>
 								<label><s:property value="#auditData.question.name" escape="false"/></label>
-								<s:textfield name="oshaQuestion_%{#auditData.question.id}" value="%{#auditData.answer}" cssClass="oshanum" />
+                                <input type="text" name="oshaQuestion_${auditData.question.id}" value="${auditData.answer}" class="oshanum" />
 							</li>	
 						</s:iterator>	
 					</ol>
@@ -362,7 +362,7 @@
 						<s:iterator value="osha.getQuestionsToVerify('UK_HSE')" id="auditData">
 							<li>
 								<label><s:property value="#auditData.question.name" escape="false"/></label>
-								<s:textfield name="oshaQuestion_%{#auditData.question.id}" value="%{#auditData.answer}" cssClass="oshanum" />
+                                <input type="text" name="oshaQuestion_${auditData.question.id}" value="${auditData.answer}" class="oshanum" />
 							</li>	
 						</s:iterator>	
 					</ol>

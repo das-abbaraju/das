@@ -73,54 +73,60 @@
 		}
 		
 		function toggleOSHAVerify(oshaId, oshaType) {
-		    var verify;
-		    
-			startThinking({
-			    div: 'status_' + oshaId
-		    });
-			
-			if ($('#verify_' + oshaId).val() == 'Verify') {
-				verify = true;
-			} else {
-				verify = false;	
+            var osha_data = $('.osha-verification input').serializeArray(),
+                osha_form = $('#verification_audit .osha-verification'),
+                errors = osha_form.find('.error'),
+                verify;
+
+			function sendOSHAVerification() {
+                startThinking({
+                    div: 'status_' + oshaId
+                });
+
+                $.getJSON('AuditToggleOSHAVerifyAjax.action', $.param(osha_data), function(json){
+                        stopThinking({div:'status_'+oshaId});
+
+                        $('#verified_' + oshaId).toggle();
+
+                        if (json.who) {
+                            $('#verify_' + oshaId ).val('Unverify');
+                            $('#verify_details_' + oshaId).text(json.dateVerified + ' by ' + json.who);
+                        } else {
+                            $('#verify_' + oshaId ).val('Verify');
+                        }
+
+                        setApproveButton(json.percentVerified);
+
+                        stopThinking({div:'status_'+oshaId});
+                        startThinking({div: 'caoActionArea'});
+
+                        $('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': oshaId});
+                    }
+                );
 			}
-			
-			var osha_data = $('.osha-verification input').serializeArray();
-			osha_data.push({
-			    name: 'audit',
-			    value: oshaId
-			}, {
-			    name: 'oshaType',
-			    value: oshaType
-			}, {
-			    name: 'verify',
-			    value: verify
-			});
-			
-			$.getJSON('AuditToggleOSHAVerifyAjax.action', $.param(osha_data), function(json){
-					stopThinking({div:'status_'+oshaId});
-					
-					$('#verified_' + oshaId).toggle();
-					
-					if (json.who) {
-						$('#verify_' + oshaId ).val('Unverify');
-						$('#verify_details_' + oshaId).text(json.dateVerified + ' by ' + json.who);
-					} else {
-						$('#verify_' + oshaId ).val('Verify');
-					}
-					
-					setApproveButton(json.percentVerified);
-					
-					stopThinking({div:'status_'+oshaId});
-					startThinking({div: 'caoActionArea'});
-					
-					$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': oshaId});
-				}
-			);
-	
-			return false;
+
+            verify = ($('#verify_' + oshaId).val() == 'Verify') ? true : false;
+
+            osha_data.push({
+                name: 'audit',
+                value: oshaId
+            }, {
+                name: 'oshaType',
+                value: oshaType
+            }, {
+                name: 'verify',
+                value: verify
+            });
+
+			//check for errors
+            if (errors.length > 0) {
+                //errors.siblings('input').focus();
+                errors.closest('li').addClass('fieldhelp-focused');
+            } else {
+                sendOSHAVerification();
+            }
 		}
-		
+
 		function setComment(auditId, questionId, answerId, categoryId ) {
 			startThinking({div:'status_'+questionId});
 	

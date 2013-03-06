@@ -229,7 +229,7 @@
 					<s:iterator value="annualUpdates">
 						<td class="center">
 							<s:if test="hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted')">
-								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
+                                <input type="button" value="Verify" class="verifyAudit" data-id="<s:property value="id" />" />
 							</s:if>
 						</td>
 					</s:iterator>
