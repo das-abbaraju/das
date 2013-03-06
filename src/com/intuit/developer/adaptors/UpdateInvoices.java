@@ -15,6 +15,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -27,6 +28,7 @@ import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.quickbooks.qbxml.SalesTaxCodeRef;
 import com.picsauditing.quickbooks.qbxml.TxnVoidRqType;
 import com.picsauditing.quickbooks.qbxml.TxnVoidRsType;
 import com.picsauditing.util.SpringUtils;
@@ -55,7 +57,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 		Map<String, Object> thisInvoiceParms = null;
 
-		InvoiceDAO invoiceDao = (InvoiceDAO) SpringUtils.getBean("InvoiceDAO");
+		InvoiceDAO invoiceDao = SpringUtils.getBean("InvoiceDAO");
 
 		// easy way to rollback changes in the live environment
 		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useOldVoidLogic");
@@ -66,7 +68,8 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 		int x = 0;
 
-		// unlike the customer feed, the invoice data is keyed by OUR invoice.id field
+		// unlike the customer feed, the invoice data is keyed by OUR invoice.id
+		// field
 		for (String thePk : data.keySet()) {
 
 			thisInvoiceParms = data.get(thePk);
@@ -139,7 +142,6 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 					if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 						for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
-
 							InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
 							lineItem.setTxnLineID("-1");
@@ -158,6 +160,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 							lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 							invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
+
+							setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(factory, invoiceJPA,
+									item, lineItem);
 						}
 					}
 
@@ -234,7 +239,6 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 						if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 							for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
-
 								InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
 								lineItem.setTxnLineID("-1");
@@ -253,6 +257,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 								lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 								invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
+
+								setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(factory,
+										invoiceJPA, item, lineItem);
 							}
 						}
 
@@ -269,9 +276,19 @@ public class UpdateInvoices extends CustomerAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
-//		logger.error("XML after marshalling: " + writer.toString());
+		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
+	}
 
+	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory,
+			Invoice invoice, InvoiceItem item, InvoiceLineMod lineItem) {
+		if (item.getInvoiceFee() == null || item.getInvoiceFee().isTax() || invoice.getCurrency() != Currency.CAD) {
+			return;
+		}
+
+		SalesTaxCodeRef salesTaxCodeRef = factory.createSalesTaxCodeRef();
+		salesTaxCodeRef.setFullName("E"); // this is for the exception
+		lineItem.setSalesTaxCodeRef(salesTaxCodeRef);
 	}
 
 	@Override
@@ -327,7 +344,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 						// if( invoiceJPA.getQbPaymentListID() == null ) {
 						// currentSession.getPaymentsToInsert().add(invoiceJPA);
 						// }
-						// else if( ! invoiceJPA.getQbPaymentListID().startsWith("NOLOAD") ){
+						// else if( !
+						// invoiceJPA.getQbPaymentListID().startsWith("NOLOAD")
+						// ){
 						// currentSession.getPossiblePaymentUpdates().add(invoiceJPA);
 						// }
 						// }

@@ -35,7 +35,7 @@ public class QBWebConnectorSvcSkeleton {
 	protected QBSession currentSession = null;
 
 	private static Map<String, QBSession> sessions = new HashMap<String, QBSession>();
-	
+
 	private final Logger LOG = LoggerFactory.getLogger(QBWebConnectorSvcSkeleton.class);
 
 	@SuppressWarnings({ "unused", "deprecation" })
@@ -56,7 +56,7 @@ public class QBWebConnectorSvcSkeleton {
 				return null;
 			}
 
-			AppPropertyDAO appPropsDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+			AppPropertyDAO appPropsDao = SpringUtils.getBean("AppPropertyDAO");
 
 			String maxSessionsString = appPropsDao.find("PICSQBLOADER.maxSessions").getValue();
 			String sessionTimeoutString = appPropsDao.find("PICSQBLOADER.sessionTimeout").getValue();
@@ -84,7 +84,7 @@ public class QBWebConnectorSvcSkeleton {
 
 			if (("PICSQBLOADER".equals(authenticate.getStrUserName())
 					|| "PICSQBLOADERCAN".equals(authenticate.getStrUserName())
-					|| "PICSQBLOADERUK".equals(authenticate.getStrUserName()) 
+					|| "PICSQBLOADERUK".equals(authenticate.getStrUserName())
 					|| "PICSQBLOADEREU".equals(authenticate.getStrUserName())
 					|| "PICSQBLOADERDKK".equals(authenticate.getStrUserName())
 					|| "PICSQBLOADERSEK".equals(authenticate.getStrUserName())
@@ -93,11 +93,11 @@ public class QBWebConnectorSvcSkeleton {
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
 				QBSession session = setUpSession(authenticate);
-				
+
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
 				PicsLogger.log("login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId);
-				
+
 				currentSession = session;
 
 				if (!shouldWeRunThisStep()) {
@@ -415,8 +415,9 @@ public class QBWebConnectorSvcSkeleton {
 
 		AppProperty find = appPropsDao.find("PICSQBLOADER.doStep." + currentSession.getCurrentStep());
 
-		if (find == null || find.getValue() == null)
+		if (find == null || find.getValue() == null) {
 			return false;
+		}
 
 		return find.getValue().equals("Y");
 	}
@@ -428,7 +429,7 @@ public class QBWebConnectorSvcSkeleton {
 		} while (!shouldWeRunThisStep() && currentSession.getCurrentStep() != QBIntegrationWorkFlow.Finished);
 
 	}
-	
+
 	private static String guid() {
 		EthernetAddress ethernetAddress = EthernetAddress.fromInterface();
 		TimeBasedGenerator uuid_gen = Generators.timeBasedGenerator(ethernetAddress);

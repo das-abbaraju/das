@@ -3,6 +3,7 @@ package com.intuit.developer.adaptors;
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -114,6 +115,8 @@ public class InsertInvoices extends CustomerAdaptor {
 						lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 						invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
+
+						setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(factory, invoiceJPA, item, lineItem);
 					}
 				}
 
@@ -130,6 +133,17 @@ public class InsertInvoices extends CustomerAdaptor {
 		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
 
+	}
+
+	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
+			InvoiceLineAdd lineItem) {
+		if (item.getInvoiceFee() == null || item.getInvoiceFee().isTax() || invoice.getCurrency() != Currency.CAD) {
+			return;
+		}
+
+		SalesTaxCodeRef salesTaxCodeRef = factory.createSalesTaxCodeRef();
+		salesTaxCodeRef.setFullName("E"); // this is for the exception
+		lineItem.setSalesTaxCodeRef(salesTaxCodeRef);
 	}
 
 	@Override

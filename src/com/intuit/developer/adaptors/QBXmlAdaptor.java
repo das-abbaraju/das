@@ -66,14 +66,14 @@ public class QBXmlAdaptor {
 
 		Marshaller createMarshaller = jc.createMarshaller();
 		createMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		
-		// This is for the stupidity of QuickBooks, delete under penalty of death while 
+
+		// This is for the stupidity of QuickBooks, delete under penalty of death while
 		// we are still using QuickBooks.
 		AppProperty property = getAppPropertyDao().find(AppProperty.QB_JAXB_ENCODING);
 		if ("Y".equals(property.getValue())) {
 			createMarshaller.setProperty(Marshaller.JAXB_ENCODING, "US-ASCII"); // PICS-7937
 		}
-		
+
 		return createMarshaller;
 	}
 
@@ -86,29 +86,33 @@ public class QBXmlAdaptor {
 	}
 
 	protected ContractorAccountDAO getContractorDao() {
-		if (contractorDao == null)
+		if (contractorDao == null) {
 			contractorDao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		}
 
 		return contractorDao;
 	}
 
 	protected InvoiceDAO getInvoiceDao() {
-		if (invoiceDao == null)
+		if (invoiceDao == null) {
 			invoiceDao = (InvoiceDAO) SpringUtils.getBean("InvoiceDAO");
+		}
 
 		return invoiceDao;
 	}
 
 	protected InvoiceItemDAO getInvoiceItemDao() {
-		if (invoiceItemDao == null)
+		if (invoiceItemDao == null) {
 			invoiceItemDao = (InvoiceItemDAO) SpringUtils.getBean("InvoiceItemDAO");
+		}
 
 		return invoiceItemDao;
 	}
 
 	protected AppPropertyDAO getAppPropertyDao() {
-		if (appPropertyDao == null)
+		if (appPropertyDao == null) {
 			appPropertyDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+		}
 
 		return appPropertyDao;
 	}
@@ -130,8 +134,9 @@ public class QBXmlAdaptor {
 	}
 
 	static public String nullSafeSubString(String in, int start, int end) {
-		if (in == null)
+		if (in == null) {
 			return "";
+		}
 
 		if (in.length() < start + end) {
 			return in.substring(start);
@@ -141,34 +146,43 @@ public class QBXmlAdaptor {
 	}
 
 	static public String nullSafeZip(String zipCode, Country country) {
-		if (country == null)
+		if (country == null) {
 			return nullSafeSubString(zipCode, 0, 9);
-		if (country.isUS())
+		}
+		if (country.isUS()) {
 			return nullSafeSubString(zipCode, 0, 6);
-		if (country.isCanada())
+		}
+		if (country.isCanada()) {
 			return nullSafeSubString(zipCode, 0, 7);
-		if (country.isFrance())
+		}
+		if (country.isFrance()) {
 			return nullSafeSubString(zipCode, 0, 8);
+		}
 
 		return nullSafeSubString(zipCode, 0, 9);
 	}
 
 	static public String nullSafeCity(String city, Country country) {
-		if (country == null)
+		if (country == null) {
 			return nullSafeSubString(city, 0, 23);
-		if (country.isUS())
+		}
+		if (country.isUS()) {
 			return nullSafeSubString(city, 0, 26);
-		if (country.isCanada())
+		}
+		if (country.isCanada()) {
 			return nullSafeSubString(city, 0, 25);
-		if (country.isFrance())
+		}
+		if (country.isFrance()) {
 			return nullSafeSubString(city, 0, 24);
+		}
 
 		return nullSafeSubString(city, 0, 23);
 	}
 
 	static public String nullSafePhoneFormat(String in) {
-		if (in == null)
+		if (in == null) {
 			return "";
+		}
 
 		in = in.trim();
 		in = in.replaceAll("  ", " ");
@@ -183,37 +197,39 @@ public class QBXmlAdaptor {
 		return nullSafeSubString(in, 0, 20);
 	}
 
-	static public BillAddress updateBillAddress(ContractorAccount contractor, BillAddress billAddress) {
+	public static BillAddress updateBillAddress(ContractorAccount contractor, BillAddress billAddress) {
 		if (!Strings.isEmpty(contractor.getBillingAddress()) && !Strings.isEmpty(contractor.getBillingCity())) {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2("c/o "
 					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 37));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
-			billAddress.setCity(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()));
+			billAddress.setCity(nullSafeSubString(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()), 0, 41));
 			if (contractor.getBillingCountrySubdivision() != null) {
 				String isoCode = contractor.getBillingCountrySubdivision().getIsoCode();
-				billAddress.setState(StringUtils.substring(isoCode, -2));
+				billAddress.setState(nullSafeSubString(StringUtils.substring(isoCode, -2), 0, 21));
 			}
-			billAddress.setPostalCode(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()));
+			billAddress.setPostalCode(nullSafeSubString(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()), 0, 13));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			User primary = null;
-			if (contractor.getPrimaryContact() != null)
+			if (contractor.getPrimaryContact() != null) {
 				primary = contractor.getPrimaryContact();
-			else
+			} else {
 				primary = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+			}
 
 			billAddress.setAddr2(nullSafeSubString(primary.getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
-			billAddress.setCity(nullSafeCity(contractor.getCity(), contractor.getCountry()));
+			billAddress.setCity(nullSafeSubString(nullSafeCity(contractor.getCity(), contractor.getCountry()), 0, 41));
 			if (contractor.getCountrySubdivision() != null) {
 				String isoCode = contractor.getCountrySubdivision().getIsoCode();
-				billAddress.setState(StringUtils.substring(isoCode, -2));
+				billAddress.setState(nullSafeSubString(StringUtils.substring(isoCode, -2), 0, 21));
 			}
-			billAddress.setPostalCode(nullSafeZip(contractor.getZip(), contractor.getCountry()));
+			billAddress.setPostalCode(nullSafeSubString(nullSafeZip(contractor.getZip(), contractor.getCountry()), 0, 13));
 		}
-		if (contractor.getCountry() != null)
+		if (contractor.getCountry() != null) {
 			billAddress.setCountry(contractor.getCountry().getIsoCode());
+		}
 		return billAddress;
 	}
 
