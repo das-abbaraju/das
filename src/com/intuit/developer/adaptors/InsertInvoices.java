@@ -101,10 +101,7 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 					for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
-						if (skipCanadianTax(invoiceJPA, item)) {
-							continue;
-						}
-						
+				
 						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
 
 						lineItem.setItemRef(factory.createItemRef());
@@ -136,11 +133,6 @@ public class InsertInvoices extends CustomerAdaptor {
 		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
 
-	}
-	
-	private boolean skipCanadianTax(Invoice invoiceJPA, InvoiceItem item) {
-		return item.getInvoiceFee() != null && item.getInvoiceFee().isTax()
-				&& invoiceJPA.getCurrency().isCAD() && !invoiceJPA.isQbSyncWithTax();
 	}
 
 	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
@@ -188,11 +180,6 @@ public class InsertInvoices extends CustomerAdaptor {
 						connected.setQbListID(invoiceRet.getTxnID());
 						connected.setQbSync(false);
 						
-						if (!connected.isQbSyncWithTax()) {
-							connected.setQbSyncWithTax(true);
-							connected.setQbSync(true);
-						}
-
 						// if( connected.isPaid() ) {
 						// currentSession.getPaymentsToInsert().add(connected);
 						// }
