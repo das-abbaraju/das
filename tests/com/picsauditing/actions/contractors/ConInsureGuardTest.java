@@ -1,28 +1,25 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.search.Database;
 
-public class ConInsureGuardTest {
+public class ConInsureGuardTest extends PicsActionTest {
 
 	private ConInsureGuard conInsureGuard;
 
@@ -39,26 +36,16 @@ public class ConInsureGuardTest {
 	@Mock
 	private Certificate certificate;
 
-	@Mock
-	private Database databaseForTesting;
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-
 		conInsureGuard = new ConInsureGuard();
-		Whitebox.invokeMethod(conInsureGuard, "initializeMaps");
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test
 	public void testAssociateClientSitesWithCertificate_AddsNewClientSites() throws Exception {
+		Whitebox.invokeMethod(conInsureGuard, "initializeMaps");
 		when(tString.toString()).thenReturn("abc");
 		when(auditCategory.getName()).thenReturn(tString);
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
@@ -74,7 +61,7 @@ public class ConInsureGuardTest {
 
 		Whitebox.invokeMethod(conInsureGuard, "associateClientSitesWithCertificate", audits, certificates, certificate);
 
-		verify(certificates).put(eq(certificate), (List<String>) anyObject());
+		verify(certificates).put(eq(certificate), anyListOf(String.class));
 	}
 
 }

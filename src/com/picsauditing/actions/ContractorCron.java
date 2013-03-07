@@ -40,6 +40,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -136,13 +137,25 @@ public class ContractorCron extends PicsActionSupport {
 			return SUCCESS;
 		}
 
+		if (conID <= 0) {
+			addActionError("You must supply a contractor id.");
+			return SUCCESS;
+		}
+
+		ContractorAccount contractor = contractorDAO.find(conID);
+		if (contractor == null) {
+			addActionError("Could not find contractor #" + conID);
+			return SUCCESS;
+		}
+
+		if (!shouldRunContractorCron(contractor.getStatus())) {
+			addActionMessage("We don't run the cron on requested or declined contractors.");
+			return SUCCESS;
+		}
+
 		logger.trace("Starting ContractorCron for {}", conID);
 		try {
-			if (conID > 0) {
-				run(conID, opID);
-			} else {
-				addActionError("You must supply a contractor id.");
-			}
+			run(contractor, opID);
 
 			if (!Strings.isEmpty(redirectUrl)) {
 				return setUrlForRedirect(redirectUrl);
@@ -185,13 +198,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	@Transactional
-	private void run(int conID, int opID) throws Exception {
-		ContractorAccount contractor = contractorDAO.find(conID);
-		if (contractor == null) {
-			this.addActionError("Could not find contractor #" + conID);
-			return;
-		}
-
+	protected void run(ContractorAccount contractor, int opID) throws Exception {
 		try {
 			runBilling(contractor);
 			runAuditBuilder(contractor);
@@ -1085,6 +1092,19 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		return description;
+	}
+
+	// TODO This should be in a service
+	private boolean shouldRunContractorCron(AccountStatus contractorStatus) {
+		if (contractorStatus == AccountStatus.Requested) {
+			return false;
+		}
+
+		if (contractorStatus == AccountStatus.Declined) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public int getConID() {
