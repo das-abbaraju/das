@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -15,10 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.access.MenuComponent;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
@@ -33,16 +37,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EventType;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import org.mockito.internal.util.reflection.Whitebox;
 
 public class ContractorActionSupportTest extends PicsTest {
 	ContractorActionSupport contractorActionSupport;
@@ -184,4 +179,42 @@ public class ContractorActionSupportTest extends PicsTest {
 		contractorActionSupport.reviewCategories(EventType.Locations);
 		verify(auditBuilder, times(1)).buildAudits(contractor);
 	}
+
+    @Test
+    // This test covers ticket: PICS-9473
+    public void testGetAuditMenu_OperatorViewingPendingContractorAccount() {
+        Permissions permissions = Mockito.mock(Permissions.class);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+
+        contractor = Mockito.mock(ContractorAccount.class);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+
+        ContractorActionSupport contractorActionSupport = new ContractorActionSupport();
+
+        contractorActionSupport.setContractor(contractor);
+        Whitebox.setInternalState(contractorActionSupport, "permissions", permissions);
+
+        List<MenuComponent> result = contractorActionSupport.getAuditMenu();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    // This test covers ticket: PICS-9473
+    public void testGetAuditMenu_OperatorViewingRequestedContractorAccount() {
+        Permissions permissions = Mockito.mock(Permissions.class);
+        when(permissions.isOperatorCorporate()).thenReturn(true);
+
+        contractor = Mockito.mock(ContractorAccount.class);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Requested);
+
+        ContractorActionSupport contractorActionSupport = new ContractorActionSupport();
+
+        contractorActionSupport.setContractor(contractor);
+        Whitebox.setInternalState(contractorActionSupport, "permissions", permissions);
+
+        List<MenuComponent> result = contractorActionSupport.getAuditMenu();
+
+        assertTrue(result.isEmpty());
+    }
 }

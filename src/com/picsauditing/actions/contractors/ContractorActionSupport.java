@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.struts2.ServletActionContext;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
@@ -35,26 +36,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.EventType;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.Strings;
@@ -274,6 +255,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * 
 	 * @return
 	 */
+    // TODO Technical Debt: PICS-9664
 	public List<MenuComponent> getAuditMenu() {
 		final int MAX_MENU_ITEM = 10;
 		boolean addMoreMenu = false;
@@ -285,6 +267,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
 		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
+
+        // PICS-9473 Operators should not be able to view a Pending/Requested Contractor's PQF or Flag
+        if (permissions.isOperatorCorporate() && (contractor.getStatus() == AccountStatus.Pending ||
+                contractor.getStatus() == AccountStatus.Requested)) {
+            return menu;
+        }
 
 		// Sort audits, by throwing them into a tree set and sorting them by
 		// display and then name
@@ -337,7 +325,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().isPqf()) {
+				if (audit.getAuditType().getClassType().isPqf() && contractor.getStatus().equals("Active")) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 						if (subMenu.getChildren().size() < MAX_MENU_ITEM || audit.getAuditType().isPqf()) {
@@ -364,7 +352,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id);
 			}
-			menu.add(subMenu);
+            menu.add(subMenu);
+
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
