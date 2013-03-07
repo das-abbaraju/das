@@ -111,6 +111,7 @@ public class OshaAudit implements OshaVisitable {
         displaySafetyStatisticsMap.put(OshaType.EMR, false);
         displaySafetyStatisticsMap.put(OshaType.MEXICO, false);
         displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, false);
+	    displaySafetyStatisticsMap.put(OshaType.IRELAND, false);
         for (AuditCatData category : getCategories()) {
             if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
@@ -128,6 +129,9 @@ public class OshaAudit implements OshaVisitable {
             if (category.getCategory().getId() == CAT_ID_AUSTRALIA) {
                 displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, category.isApplies());
             }
+	        if (category.getCategory().getId() == CAT_ID_IRElAND) {
+		        displaySafetyStatisticsMap.put(OshaType.IRELAND, category.isApplies());
+	        }
         }
     }
 

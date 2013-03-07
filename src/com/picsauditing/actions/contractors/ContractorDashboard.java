@@ -1,78 +1,26 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.google.common.base.Objects;
 import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.access.GeneralContractorNotApprovedException;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.FlagCriteriaContractorDAO;
-import com.picsauditing.dao.FlagDataDAO;
-import com.picsauditing.dao.NaicsDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.ContractorWatch;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.access.*;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
@@ -343,9 +291,9 @@ public class ContractorDashboard extends ContractorActionSupport {
                 if (audit.isDataExpectedAnswer(AuditQuestion.AUSTRALIA_KEPT_ID,
                         "Yes"))
                     displayOsha.put(OshaType.AUSTRALIA, true);
-//				if (audit.isDataExpectedAnswer(AuditQuestion.IRELAND_KEPT_ID,
-//						"Yes"))
-//					displayOsha.put(OshaType.IRELAND, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.IRELAND_KEPT_ID,
+						"Yes"))
+					displayOsha.put(OshaType.IRELAND, true);
 			}
 		}
 	}

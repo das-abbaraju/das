@@ -235,7 +235,6 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("totalHours"))
 					|| Strings.isEmpty(params.get("majorInjuries"))
-					|| MISSING_PARAMETER.equals((params.get("majorInjuries")))
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
