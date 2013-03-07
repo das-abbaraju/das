@@ -38,7 +38,7 @@
 					</s:if>
 					<tr>
 						<td class="center" colspan="2">
-							<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.name"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
+                            <input type="button" value="Verify <s:property value="auditType.name"/>" class="verify-audit" data-id="<s:property value="id" />" />
 						</td>
 					</tr>	
 				</s:if>
@@ -229,7 +229,7 @@
 					<s:iterator value="annualUpdates">
 						<td class="center">
 							<s:if test="hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted')">
-                                <input type="button" value="Verify" class="verifyAudit" data-id="<s:property value="id" />" />
+                                <input type="button" value="Verify" class="verify-audit" data-id="<s:property value="id" />" />
 							</s:if>
 						</td>
 					</s:iterator>

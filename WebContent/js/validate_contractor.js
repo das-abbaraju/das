@@ -2,10 +2,10 @@
     PICS.define('audit.VerifyController', {
         methods: {
             init: function () {
-                if ($('#verification_audit').length > 0) {
+                if ($('#VerifyView__page').length > 0) {
                     var that = this;
 
-                    $('.verifyAudit').on('click', function (event) {
+                    $('.verify-audit').on('click', function (event) {
                         that.loadAudit(event);
                     });
                 }
