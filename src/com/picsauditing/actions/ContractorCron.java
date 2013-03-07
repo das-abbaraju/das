@@ -247,18 +247,20 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 
-			if (steps != null && steps.length > 0) {
-				if (opID == 0 && steps[0] == ContractorCronStep.All) {
-					contractor.setNeedsRecalculation(0);
-					contractor.setLastRecalculation(new Date());
-				}
-				contractorDAO.save(contractor);
-				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
-						+ " successfully");
-			}
+            // must be done before the save, or the calculation will be lost
+            runContractorScore(contractor);
 
-			runPolicies(contractor);
-			runContractorScore(contractor);
+            if (steps != null && steps.length > 0) {
+                if (opID == 0 && steps[0] == ContractorCronStep.All) {
+                    contractor.setNeedsRecalculation(0);
+                    contractor.setLastRecalculation(new Date());
+                }
+                contractorDAO.save(contractor);
+                addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
+						+ " successfully");
+            }
+
+            runPolicies(contractor);
 
 		} catch (Exception continueUpTheStack) {
 			setRecalculationToTomorrow(contractor);

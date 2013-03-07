@@ -11,9 +11,10 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 
 public class ContractorScore {
+    public static final int BASE_SCORE = 500;
 
 	static public void calculate(ContractorAccount contractor) {
-		float score = 500;
+		float score = BASE_SCORE;
 		List<ContractorAudit> roseburgAudits = new ArrayList<ContractorAudit>();
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (!conAudit.isExpired()) {
