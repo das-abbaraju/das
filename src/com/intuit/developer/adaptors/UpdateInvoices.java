@@ -142,6 +142,10 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 					if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 						for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
+							if (skipCanadianTax(invoiceJPA, item)) {
+								continue;
+							}
+
 							InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
 							lineItem.setTxnLineID("-1");
@@ -239,6 +243,10 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 						if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 							for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
+								if (skipCanadianTax(invoiceJPA, item)) {
+									continue;
+								}
+								
 								InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
 								lineItem.setTxnLineID("-1");
@@ -278,6 +286,11 @@ public class UpdateInvoices extends CustomerAdaptor {
 		m.marshal(xml, writer);
 		// logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
+	}
+
+	private boolean skipCanadianTax(Invoice invoiceJPA, InvoiceItem item) {
+		return item.getInvoiceFee() != null && item.getInvoiceFee().isTax()
+				&& invoiceJPA.getCurrency().isCAD() && !invoiceJPA.isQbSyncWithTax();
 	}
 
 	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory,
@@ -339,6 +352,10 @@ public class UpdateInvoices extends CustomerAdaptor {
 					if (invoiceId != 0) {
 						invoiceJPA.setQbSync(false);
 
+						if (!invoiceJPA.isQbSyncWithTax()) {
+							invoiceJPA.setQbSyncWithTax(true);
+							invoiceJPA.setQbSync(true);
+						}
 						// if( invoiceJPA.isPaid() ) {
 						//
 						// if( invoiceJPA.getQbPaymentListID() == null ) {
@@ -395,6 +412,11 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 						if (invoiceId != 0) {
 							invoiceJPA.setQbSync(false);
+
+							if (!invoiceJPA.isQbSyncWithTax()) {
+								invoiceJPA.setQbSyncWithTax(true);
+								invoiceJPA.setQbSync(true);
+							}
 						}
 
 					} catch (Exception e) {
@@ -442,6 +464,11 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 						if (invoiceId != 0) {
 							invoiceJPA.setQbSync(false);
+
+							if (!invoiceJPA.isQbSyncWithTax()) {
+								invoiceJPA.setQbSyncWithTax(true);
+								invoiceJPA.setQbSync(true);
+							}
 						}
 
 					} catch (Exception e) {

@@ -38,6 +38,7 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
 	private BigDecimal totalCommissionEligibleFees;
+	protected boolean qbSyncWithTax;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
@@ -95,6 +96,14 @@ public class Invoice extends Transaction {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public boolean isQbSyncWithTax() {
+		return qbSyncWithTax;
+	}
+
+	public void setQbSyncWithTax(boolean qbSyncWithTax) {
+		this.qbSyncWithTax = qbSyncWithTax;
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
