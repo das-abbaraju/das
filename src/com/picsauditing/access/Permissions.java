@@ -757,13 +757,6 @@ public class Permissions implements Serializable {
 		this.accountType = accountType;
 	}
 
-	private void setStableLocale(User user) {
-		if (languageModel != null) {
-			locale = languageModel.getNearestStableLocale(user.getLocale());
-		} else {
-			locale = Locale.ENGLISH;
-		}
-	}
     public int getPrimaryCorporateAccountID() {
         return primaryCorporateAccountID;
     }
@@ -771,4 +764,12 @@ public class Permissions implements Serializable {
     public void setPrimaryCorporateAccountID(int primaryCorporateAccountID) {
         this.primaryCorporateAccountID = primaryCorporateAccountID;
     }
+
+	private void setStableLocale(User user) {
+		if (languageModel != null) {
+			locale = languageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
+		} else {
+			locale = Locale.US;
+		}
+	}
 }

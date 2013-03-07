@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -446,7 +447,11 @@ public class Registration extends ContractorActionSupport {
 		user.setActive(true);
 		user.setAccount(contractor);
 		user.setTimezone(contractor.getTimezone());
-		user.setLocale(ActionContext.getContext().getLocale());
+
+		Locale locale = ActionContext.getContext().getLocale();
+		String country = user.getAccount().getCountry().getIsoCode();
+		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale, country));
+
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);
 		user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);

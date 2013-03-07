@@ -35,6 +35,8 @@ import java.util.*;
  * "Unified Language List" = is how we'll refer to a merged list of the previous 2.
  */
 public class LanguageModel {
+	public static final Locale ENGLISH_US = Locale.US;
+
 	@Autowired
 	private LanguageProvider languageProvider;
 
@@ -142,21 +144,23 @@ public class LanguageModel {
 		return unifiedLanguageList;
 	}
 
-	public Locale getNearestStableLocale(Locale locale) {
-		// Search if it's in our list of stable locales
-		for (Locale stableLocale : getStableLanguageLocales()) {
-			if (stableLocale.equals(locale)) {
-				return locale;
-			}
-		}
-		// Maybe this specific variant isn't supported?
-		for (KeyValue languageValue : getStableLanguagesSansDialect()) {
-			if (languageValue.getKey().equals(locale.getLanguage())) {
-				return new Locale(languageValue.getKey());
-			}
+	public Locale getNearestStableAndBetaLocale(Locale locale) {
+		return getNearestStableAndBetaLocale(locale, null);
+	}
+
+	public Locale getNearestStableAndBetaLocale(Locale locale, String country) {
+		Locale nearestStableLocale = getMatchingStableLocale(locale);
+
+		if (nearestStableLocale == null && Strings.isNotEmpty(country)) {
+			Locale localeWithCountry = new Locale(locale.getLanguage(), country);
+			nearestStableLocale = getMatchingStableLocale(localeWithCountry);
 		}
 
-		return Locale.ENGLISH;
+		if (nearestStableLocale == null) {
+			nearestStableLocale = ENGLISH_US;
+		}
+
+		return nearestStableLocale;
 	}
 
 	public List<Language> getLanguagesByStatus(LanguageStatus languageStatus) {
@@ -208,10 +212,21 @@ public class LanguageModel {
 		}
 
 		Language english = new Language();
-		english.setLocale(Locale.ENGLISH);
-		english.setLanguage(Locale.ENGLISH.getLanguage());
+		english.setLocale(ENGLISH_US);
+		english.setLanguage(ENGLISH_US.getLanguage());
+		english.setCountry(ENGLISH_US.getCountry());
 
 		stableLanguages.add(english);
+	}
+
+	private Locale getMatchingStableLocale(Locale locale) {
+		for (Locale stableLocale : getStableAndBetaLanguageLocales()) {
+			if (stableLocale.equals(locale)) {
+				return locale;
+			}
+		}
+
+		return null;
 	}
 
 	public class KeyValue {

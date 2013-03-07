@@ -61,6 +61,6 @@ public class Contact extends PicsActionSupport {
 	
     public String getDisplayLanguage() {
     	Locale locale = getLocaleStatic();
-		return languageModel.getNearestStableLocale(locale).getDisplayLanguage();
+		return languageModel.getNearestStableAndBetaLocale(locale).getDisplayLanguage();
     }
 }

@@ -151,7 +151,6 @@ public class ProfileEdit extends PicsActionSupport {
 	 * @throws Exception
 	 */
 	private String checkProfileEditLogin() throws Exception {
-
 		loadPermissions();
 
 		/*
@@ -180,6 +179,11 @@ public class ProfileEdit extends PicsActionSupport {
 		if (!permissions.hasPermission(OpPerms.EditProfile)) {
 			addActionError(getText("ProfileEdit.error.MissingEditProfile"));
 			return BLANK;
+		}
+
+		// Update invalid locale to valid one
+		if (!supportedLanguages.getStableAndBetaLanguageLocales().contains(u.getLocale())) {
+			u.setLocale(supportedLanguages.getNearestStableAndBetaLocale(u.getLocale()));
 		}
 
 		return null;

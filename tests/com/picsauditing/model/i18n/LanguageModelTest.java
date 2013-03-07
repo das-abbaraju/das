@@ -99,10 +99,10 @@ public class LanguageModelTest {
 	}
 
 	@Test
-	public void testGetStableLanguageVariants_NoAppLanguageDataMeansEnglishOnlyNoVariants() throws Exception {
+	public void testGetStableLanguageVariants_NoAppLanguageDataMeansEnglishUnitedStatesOnly() throws Exception {
 		assertNotNull(languageModel.getStableLanguages());
 		assertEquals(1, languageModel.getStableLanguages().size());
-		assertNull(languageModel.getStableLanguages().get(0).getCountry());
+		assertEquals("US", languageModel.getStableLanguages().get(0).getCountry());
 	}
 
 	@Test

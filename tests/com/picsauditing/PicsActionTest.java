@@ -100,7 +100,7 @@ public class PicsActionTest {
 		ActionContext.setContext(actionContext);
 		cookies = new Cookie[1];
 		cookies[0] = new Cookie("foo", "foo");
-		when(languageModel.getNearestStableLocale(any(Locale.class))).thenReturn(Locale.ENGLISH);
+		when(languageModel.getNearestStableAndBetaLocale(any(Locale.class))).thenReturn(Locale.US);
 		when(request.getCookies()).thenReturn(cookies);
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.example.com/example.html"));
 		when(request.getRequestURI()).thenReturn("/example.html");

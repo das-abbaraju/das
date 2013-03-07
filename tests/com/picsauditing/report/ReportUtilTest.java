@@ -87,11 +87,16 @@ public class ReportUtilTest {
 		JSONArray results = (JSONArray)json.get("result");
 
 		assertEquals(5, results.size());
-		assertContains("{\"value\":\"translation:[AccountStatus.Active, en]\",\"key\":\"Active\"}", json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Pending, en]\",\"key\":\"Pending\"}", json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Requested, en]\",\"key\":\"Requested\"}", json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Deactivated, en]\",\"key\":\"Deactivated\"}", json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Declined, en]\",\"key\":\"Declined\"}", json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Active, en_US]\",\"key\":\"Active\"}",
+				json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Pending, en_US]\",\"key\":\"Pending\"}",
+				json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Requested, en_US]\",\"key\":\"Requested\"}",
+				json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Deactivated, en_US]\",\"key\":\"Deactivated\"}",
+				json.toJSONString());
+		assertContains("{\"value\":\"translation:[AccountStatus.Declined, en_US]\",\"key\":\"Declined\"}",
+				json.toJSONString());
 	}
 
 	@Test
@@ -123,7 +128,8 @@ public class ReportUtilTest {
 		
 		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
 		
-		assertEquals("translation:[Report.Function.Count, en]: translation:[Report.AccountName, en]", report.getColumns().get(0).getField().getText());
+		assertEquals("translation:[Report.Function.Count, en_US]: translation:[Report.AccountName, en_US]",
+				report.getColumns().get(0).getField().getText());
 	}
 
 	private Answer<String> returnMockTranslation() {

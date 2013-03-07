@@ -115,7 +115,7 @@ public class OpenTasks extends TranslationActionSupport {
 		ActionContext context = ActionContext.getContext();
 		Map<String, Object> session = context.getSession();
 		permissions = (Permissions) session.get("permissions");
-		permissions.setLocale(supportedLanguages.getNearestStableLocale(permissions.getLocale()));
+		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
 
 	}
 

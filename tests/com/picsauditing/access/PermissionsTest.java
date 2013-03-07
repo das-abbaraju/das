@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,14 +15,18 @@ import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.util.SpringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
 
 public class PermissionsTest {
@@ -28,9 +34,13 @@ public class PermissionsTest {
 	private Set<Integer> allInheritedGroupIds;
 
 	@Mock
+	private Account account;
+	@Mock
 	private HttpServletResponse response;
 	@Mock
 	private LanguageModel languageModel;
+	@Mock
+	private User user;
 
 	@Before
 	public void setUp() throws Exception {
@@ -39,11 +49,15 @@ public class PermissionsTest {
 		permissions = new Permissions(languageModel);
 		allInheritedGroupIds = new HashSet<Integer>();
 		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
+
+		Country country = mock(Country.class);
+		when(account.getCountry()).thenReturn(country);
+		when(country.getIsoCode()).thenReturn(Locale.US.getCountry());
+		when(user.getAccount()).thenReturn(account);
 	}
 
 	@Test
 	public void testAddReturnToCookieIfGoodUrl_LeadingQuote() throws Exception {
-
 		Whitebox.invokeMethod(permissions, "addReturnToCookieIfGoodUrl", response, "\"/Home.action");
 
 		ArgumentCaptor<Cookie> argument = ArgumentCaptor.forClass(Cookie.class);
@@ -139,8 +153,7 @@ public class PermissionsTest {
 	public void testSetStableLocale_LanguageModelIsNotNullAndLocaleIsStable() throws Exception {
 		Locale german = Locale.GERMAN;
 
-		User user = mock(User.class);
-		when(languageModel.getNearestStableLocale(german)).thenReturn(german);
+		when(languageModel.getNearestStableAndBetaLocale(eq(german), anyString())).thenReturn(german);
 		when(user.getLocale()).thenReturn(german);
 
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
@@ -153,8 +166,7 @@ public class PermissionsTest {
 		Locale german = Locale.GERMAN;
 		Locale english = Locale.ENGLISH;
 
-		User user = mock(User.class);
-		when(languageModel.getNearestStableLocale(german)).thenReturn(english);
+		when(languageModel.getNearestStableAndBetaLocale(eq(german), anyString())).thenReturn(english);
 		when(user.getLocale()).thenReturn(german);
 
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
@@ -164,12 +176,11 @@ public class PermissionsTest {
 
 	@Test
 	public void testSetStableLocale_LanguageModelIsNull() throws Exception {
-		User user = mock(User.class);
 		when(user.getLocale()).thenReturn(Locale.GERMAN);
 
 		Whitebox.setInternalState(permissions, "languageModel", (LanguageModel) null);
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
 
-		assertEquals(Locale.ENGLISH, permissions.getLocale());
+		assertEquals(Locale.US, permissions.getLocale());
 	}
 }
