@@ -325,6 +325,12 @@ public class FlagDataCalculator {
 									return false;
 							}
 
+                            if (criteria.getQuestion().getAuditType().getId() == AuditType.ANNUALADDENDUM) {
+                                if (!ca.getAuditFor().equals(criteria.getMultiYearScope().getAuditFor())) {
+                                    continue;
+                                }
+                            }
+
 							List<ContractorAuditOperator> caos = ca.getOperators();
 							if (ca.getAuditType().isWCB()) {
 								caos = findCaosForCurrentWCB(con, criteria.getQuestion().getAuditType());

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -998,8 +997,55 @@ public class FlagDataCalculatorTest {
 		
 		assertFalse(result);
 	}
-	
-	private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
+
+    // This test covers the issue: PICS-9623
+    @Test
+    public void testIsFlagged_AnnualUpdateQuestion() throws Exception {
+        ContractorAudit annualUpdate2012 = EntityFactory.makeAnnualUpdate(11, contractor, "2012");
+        mockContractorAuditOperator(annualUpdate2012, AuditStatus.Complete);
+
+        ContractorAudit annualUpdate2011 = EntityFactory.makeAnnualUpdate(11, contractor, "2011");
+        mockContractorAuditOperator(annualUpdate2011, AuditStatus.Pending);
+
+        ContractorAudit annualUpdate2010 = EntityFactory.makeAnnualUpdate(11, contractor, "2010");
+        mockContractorAuditOperator(annualUpdate2010, AuditStatus.Pending);
+
+
+        List<ContractorAudit> annualUpdatesInSpecificOrder = new ArrayList<ContractorAudit>();
+        annualUpdatesInSpecificOrder.add(0, annualUpdate2010);
+        annualUpdatesInSpecificOrder.add(1, annualUpdate2011);
+        annualUpdatesInSpecificOrder.add(2, annualUpdate2012);
+
+        contractor.setAudits(annualUpdatesInSpecificOrder);
+
+
+        lastYearCriteria.setQuestion(EntityFactory.makeAuditQuestion());
+        lastYearCriteria.getQuestion().getCategory().setAuditType(EntityFactory.makeAuditType(11));
+        lastYearCriteria.setRequiredStatus(AuditStatus.Submitted);
+        lastYearCriteria.setMultiYearScope(MultiYearScope.LastYearOnly);
+        lastYearCriteria.setDataType("string");
+
+        FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(lastYearCriteria);
+        FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(lastYearCriteria, contractor);
+
+        calculator.setOperator(operator);
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+        assertTrue(result);
+    }
+
+    private void mockContractorAuditOperator(ContractorAudit contractorAudit, AuditStatus auditStatus) {
+        ContractorAuditOperator contractorAuditOperator2012 = Mockito.mock(ContractorAuditOperator.class);
+
+        when(contractorAuditOperator2012.getAudit()).thenReturn(contractorAudit);
+        when(contractorAuditOperator2012.getStatus()).thenReturn(auditStatus);
+        when(contractorAuditOperator2012.isVisible()).thenReturn(true);
+        when(contractorAuditOperator2012.hasCaop(operator.getId())).thenReturn(true);
+
+        contractorAudit.setOperators(Arrays.asList(contractorAuditOperator2012));
+    }
+
+
+    private ContractorAccount buildFakeContractorAccount(AuditStatus caoStatus) {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setAccountLevel(AccountLevel.Full);
 		ContractorAudit mockAudit = buildMockAudit(1000, yearForCurrentWCB(), caoStatus);
@@ -1105,5 +1151,5 @@ public class FlagDataCalculatorTest {
 		when(cao.getStatus()).thenReturn(caoStatus);
 				
 		return audit;
-	}		
+	}
 }
