@@ -82328,7 +82328,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
 
     operator_store: [
         ['LessThan', 'before'],
-        ['GreaterThan', 'after'],
+        ['GreaterThanOrEquals', 'on or after'],
         ['Empty', 'is empty']
     ],
     
