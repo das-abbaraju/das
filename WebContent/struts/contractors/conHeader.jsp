@@ -5,6 +5,15 @@
 <s:include value="../jquery.jsp" />
 
 <script type="text/javascript">
+function saveAuditor(auditorId) {
+    var data = {
+        'contractorAudit': $('#auditID').val(),
+        'auditor.id': auditorId
+    };
+    $('#auditorAssignmentDate').load('AuditAssignmentUpdateAjax.action', data, function(text, status) {
+            }
+    );
+}
 $(function() {
 	$('.sysEditDate').datepicker({
 		changeMonth: true,
@@ -438,15 +447,24 @@ function loadStatus(caoID, addUserNote){
 										</s:else>
 									</s:else>
 								</label>
-								
-								<s:if test="conAudit.auditor.id > 0">
-									<s:property value="conAudit.auditor.name" />
-								</s:if>
-								<s:else>
-									<a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
-										<s:text name="Audit.message.NotAssigned" />
-									</a>
-								</s:else>
+
+                                <s:if test="userPermittedToAssignAudit" >
+                                    <div id="auditorAssignmentDate" style="display:none"></div>
+                                    <s:select  onchange="saveAuditor(this.value)"  cssClass="blueMain" list="safetyList"
+                                           listValue="name" value="conAudit.auditor" headerKey="-1" headerValue="- Not Assigned -" />
+                                </s:if>
+                                <s:else>
+                                    <s:if test="conAudit.auditor.id > 0">
+									    <s:property value="conAudit.auditor.name" />
+								    </s:if>
+                                    <s:else>
+                                        <a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
+                                            <s:text name="Audit.message.NotAssigned" />
+                                        </a>
+                                    </s:else>
+                                </s:else>
+
+
 							</li>
 						</s:if>
 						

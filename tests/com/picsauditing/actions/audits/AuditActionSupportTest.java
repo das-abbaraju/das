@@ -4,6 +4,8 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -110,6 +112,29 @@ public class AuditActionSupportTest extends PicsTest {
 
 		return (date1.getYear() == date2.getYear() && date1.getMonth() == date2.getMonth() && date1.getDate() == date2
 				.getDate());
+	}
+
+	@Test
+	public void testIsUserPermittedToAssignAudit() {
+		ContractorAudit conAudit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
+		User assignerGroup = EntityFactory.makeUser();
+		assignerGroup.setIsGroup(YesNo.Yes);
+		conAudit.getAuditType().setAssignAudit(assignerGroup);
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+
+		User otherGroup = EntityFactory.makeUser();
+		otherGroup.setIsGroup(YesNo.Yes);
+
+		when(permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)).thenReturn(false);
+		assertFalse(test.isUserPermittedToAssignAudit());
+
+		when(permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)).thenReturn(true);
+		when(permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())).thenReturn(false);
+		assertFalse(test.isUserPermittedToAssignAudit());
+
+		when(permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)).thenReturn(true);
+		when(permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())).thenReturn(true);
+		assertTrue(test.isUserPermittedToAssignAudit());
 	}
 
 	@Test

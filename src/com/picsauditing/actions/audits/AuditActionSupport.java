@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.picsauditing.access.OpType;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -369,6 +370,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public Collection<AuditSubStatus> getAuditSubStatuses() {
 		return new ArrayList<AuditSubStatus>(Arrays.asList(AuditSubStatus.values()));
+	}
+
+	public boolean isUserPermittedToAssignAudit() {
+		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)
+				&& (conAudit.getAuditType().getAssignAudit() == null
+				|| permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())))
+			return true;
+		return false;
 	}
 
 	public boolean isCanEditAudit() {

@@ -64,6 +64,16 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (auditor.getId() == 0) {
 			return SUCCESS;
 		}
+		if (auditor.getId() == -1) {
+			if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)) {
+				contractorAudit.setAuditor(null);
+				contractorAudit.setAuditorConfirm(null);
+				contractorAudit.setContractorConfirm(null);
+				contractorAudit.setAssignedDate(null);
+				dao.save(contractorAudit);
+			}
+			return SUCCESS;
+		}
 		auditor = userDao.find(auditor.getId());
 
 		if (contractorAudit.getAuditType().isScheduled()) {
