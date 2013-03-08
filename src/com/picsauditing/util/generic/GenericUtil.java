@@ -4,14 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GenericUtil {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(GenericUtil.class);
-	
+
+	static Logger loggerForTesting;
+
 	/**
 	 * Provided to create an instance of a generic type.  This should be used when
 	 * you are in a Generic method that requires a new instance of a type to be
-	 * created during runtime, but the 
-	 * 
+	 * created during runtime, but the
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -19,14 +21,22 @@ public class GenericUtil {
 		if (type == null) {
 			return null;
 		}
-		
+
 		try {
 			return type.newInstance();
 		} catch (Exception e) {
-			logger.warn("Error while creating a new instance of class type {}", type.getName(), e);
+			getLogger().warn("Error while creating a new instance of class type {}", type.getName(), e);
 		}
-		
+
 		return null;
+	}
+
+	private static Logger getLogger() {
+		if (loggerForTesting == null) {
+			return logger;
+		}
+
+		return loggerForTesting;
 	}
 
 }

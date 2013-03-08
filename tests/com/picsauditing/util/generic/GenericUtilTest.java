@@ -21,12 +21,12 @@ public class GenericUtilTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-//		GenericUtil.loggerForTesting = loggerForTesting;
+		GenericUtil.loggerForTesting = loggerForTesting;
 	}
 
 	@AfterClass
 	public static void classTearDown() throws Exception {
-//		GenericUtil.loggerForTesting = null;
+		GenericUtil.loggerForTesting = null;
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class GenericUtilTest {
 	@Test
 	public void testNewInstance_CannotCreateNewInstance_NullIsReturned() {
 		Logger logger = Mockito.mock(Logger.class);
-//		GenericUtil.loggerForTesting = logger;
+		GenericUtil.loggerForTesting = logger;
 
 		try {
 			TestClass result = GenericUtil.newInstance(TestClass.class);
