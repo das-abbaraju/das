@@ -97814,7 +97814,7 @@ Ext.define('PICS.controller.report.Header', {
                 success_callback: function () {
                     that.application.fireEvent('opensuccessmessage', {
                         title: 'Report Saved',
-                        html: 'to My Reports in Manage Reports.'
+                        html: 'to My Reports in Reports Manager.'
                     });
                 }
             });
@@ -98017,7 +98017,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                 that.application.fireEvent('opensuccessmessage', {
                     title: 'Report Saved',
-                    html: 'to My Reports in Manage Reports.'
+                    html: 'to My Reports in Reports Manager.'
                 });
             }
         });
