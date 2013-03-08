@@ -8298,13 +8298,19 @@ textarea.x-form-invalid-field {
 #report_page_header .name {
   color: #73bbe8;
   font-size: 30px;
-  font-weight: normal; }
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
 
-/* line 19, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_page-header.scss */
+/* line 22, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_page-header.scss */
 #report_page_header .description {
   color: #808285;
   font-size: 14px;
-  font-weight: normal; }
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
 
 /* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/header/_actions.scss */
 #report_actions {
