@@ -46,8 +46,6 @@ public class GenericUtilTest {
 
 	@Test
 	public void testNewInstance_CannotCreateNewInstance_NullIsReturned() {
-		fail("Purposely failing");
-		
 		Logger logger = Mockito.mock(Logger.class);
 		GenericUtil.loggerForTesting = logger;
 
