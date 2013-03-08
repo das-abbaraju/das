@@ -104,7 +104,7 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // saving edits to filter store + refresh
-            'reportfilterbasedatefilter [name=value]': {
+            'reportfilterbasedate [name=value]': {
                 select: this.selectValueField
             },
 
