@@ -64,6 +64,7 @@ public class ManageReports extends PicsActionSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
+	@Override
 	public String execute() {
 		try {
 			setUrlForRedirect(LANDING_URL);
@@ -74,7 +75,7 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
-	public String favoritesList() {
+	public String favorites() {
 		try {
 			reportUsers = reportUserDao.findAllFavorite(permissions.getUserId());
 
@@ -96,6 +97,60 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return "favorites";
+	}
+
+	public String myReports() {
+		try {
+			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
+		} catch (IllegalArgumentException iae) {
+			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(reportUsers)) {
+			reportUsers = new ArrayList<ReportUser>();
+		}
+
+		if (AjaxUtils.isAjax(request())) {
+			return "myReportsList";
+		}
+
+		return "myReports";
+	}
+
+	public String search() {
+		reports = new ArrayList<Report>();
+		try {
+			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!searchList.action", e);
+			if (permissions.has(OpPerms.Debug)) {
+				addActionError(e.getMessage());
+			}
+		}
+
+		if (AjaxUtils.isAjax(request())) {
+			return "searchList";
+		}
+
+		return "search";
+	}
+
+	public String ownedBy() {
+		if (AjaxUtils.isAjax(request())) {
+			return "ownedByList";
+		}
+
+		return "ownedBy";
+	}
+
+	public String sharedWith() {
+		if (AjaxUtils.isAjax(request())) {
+			return "sharedWithList";
+		}
+
+		return "sharedWith";
 	}
 
 	public String moveFavoriteUp() {
@@ -124,44 +179,6 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return redirectToPreviousView();
-	}
-
-	public String myReportsList() {
-		try {
-			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
-		} catch (IllegalArgumentException iae) {
-			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
-		}
-
-		if (CollectionUtils.isEmpty(reportUsers)) {
-			reportUsers = new ArrayList<ReportUser>();
-		}
-
-		if (AjaxUtils.isAjax(request())) {
-			return "myReportsList";
-		}
-
-		return "myReports";
-	}
-
-	public String searchList() {
-		reports = new ArrayList<Report>();
-		try {
-			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!searchList.action", e);
-			if (permissions.has(OpPerms.Debug)) {
-				addActionError(e.getMessage());
-			}
-		}
-
-		if (AjaxUtils.isAjax(request())) {
-			return "searchList";
-		}
-
-		return "search";
 	}
 
 	/**
@@ -328,45 +345,5 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setPagination(Pagination<Report> pagination) {
 		this.pagination = pagination;
-	}
-
-	public String getAlphaSortDirection() {
-		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction)) {
-			return ASC;
-		}
-
-		return DESC;
-	}
-
-	public String getDateAddedSortDirection() {
-		if (!DATE_ADDED_SORT.equals(sort) || ASC.equals(direction)) {
-			return DESC;
-		}
-
-		return ASC;
-	}
-
-	public String getLastViewedSortDirection() {
-		if (!LAST_VIEWED_SORT.equals(sort) || ASC.equals(direction)) {
-			return DESC;
-		}
-
-		return ASC;
-	}
-
-	public String getAlphaSort() {
-		return ALPHA_SORT;
-	}
-
-	public String getDateAddedSort() {
-		return DATE_ADDED_SORT;
-	}
-
-	public String getLastViewedSort() {
-		return LAST_VIEWED_SORT;
-	}
-
-	public String getMyReportsUrl() {
-		return LANDING_URL;
 	}
 }

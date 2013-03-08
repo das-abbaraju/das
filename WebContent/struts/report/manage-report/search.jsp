@@ -8,7 +8,7 @@
     <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
 
-<s:include value="/struts/report/manage-report/_report-menu.jsp" />
+<s:include value="/struts/report/manage-report/_menu.jsp" />
 
 <h4 class="report-subtitle"><s:text name="ManageReports.search.subtitle" /></h4>
 

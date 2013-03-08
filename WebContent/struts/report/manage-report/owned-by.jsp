@@ -6,10 +6,10 @@
     <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
 
-<s:include value="/struts/report/manage-report/_report-menu.jsp" />
+<s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<h4 class="report-subtitle"><s:text name="ManageReports.favorites.subtitle" /></h4>
+<h4 class="report-subtitle"><s:text name="ManageReports.ownedBy.subtitle" /></h4>
 
-<div id="report_favorites">
-    <s:include value="/struts/report/manage-report/_favorites-list.jsp" />
-</div>
+<s:include value="/struts/report/manage-report/_filter.jsp">
+    <s:param name="method">ownedBy</s:param>
+</s:include>
