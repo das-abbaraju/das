@@ -11,29 +11,29 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBBean implements InitializingBean {
-	
+
 	private static final String PICS_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/pics";
 	private static final String PICS_READ_ONLY_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/picsro";
-	
+
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
-	
+
 	// volatile to use as part of the double-locking pattern
 	static volatile DataSource staticDataSource;
 	static volatile DataSource readOnlyDataSource;
 	static AtomicInteger instantiationCount = new AtomicInteger(0);
 	static AtomicInteger readOnlyDataSourceInstantiationCount = new AtomicInteger(0);
-	
+
 	/**
-	 * Enforce the singleton nature of this class by making the 
-	 * constructor private 
+	 * Enforce the singleton nature of this class by making the
+	 * constructor private
 	 */
 	private DBBean() {}
-	
+
 	/**
 	 * Use double-locking to improve the performance and ensure that only one
 	 * instance of the staticDataSource is created.
-	 * 
+	 *
 	 * @return
 	 * @throws SQLException
 	 */
@@ -53,14 +53,14 @@ public class DBBean implements InitializingBean {
 				}
 			}
 		}
-		
+
 		return result.getConnection();
 	}
-	
+
 	/**
 	 * Use double-locking to improve the performance and ensure that only one
 	 * instance of the readOnlyDataSource is created.
-	 * 
+	 *
 	 * @return
 	 * @throws SQLException
 	 */
@@ -71,7 +71,7 @@ public class DBBean implements InitializingBean {
 				dataSource = readOnlyDataSource;
 				if (dataSource == null) {
 					try {
-						readOnlyDataSource = dataSource = getJdbcReadOnlyPics();
+						readOnlyDataSource = dataSource = new PICSDBLocator().getDataSource(PICS_READ_ONLY_JDBC_RESOURCE_NAME);
 						DBBean.readOnlyDataSourceInstantiationCount.getAndIncrement();
 					} catch (NamingException ne) {
 						ne.printStackTrace();
@@ -80,27 +80,23 @@ public class DBBean implements InitializingBean {
 				}
 			}
 		}
-		
+
 		return dataSource.getConnection();
 	}
 
 	private static DataSource getJdbcPics() throws NamingException {
 		if (dataSource == null) {
-			return (DataSource) getServiceLocator().getDataSource(PICS_JDBC_RESOURCE_NAME);
+			return getServiceLocator().getDataSource(PICS_JDBC_RESOURCE_NAME);
 		}
-		
+
 		return dataSource;
 	}
-	
-	private static DataSource getJdbcReadOnlyPics() throws NamingException {
-		return (DataSource) getServiceLocator().getDataSource(PICS_READ_ONLY_JDBC_RESOURCE_NAME);
-	}
-	
+
 	private static com.picsauditing.PICS.PICSDBLocator getServiceLocator() {
 		if (serviceLocator == null) {
 			serviceLocator = new com.picsauditing.PICS.PICSDBLocator();
 		}
-		
+
 		return serviceLocator;
 	}
 
@@ -112,7 +108,7 @@ public class DBBean implements InitializingBean {
 		assert dataSource != null;
 		staticDataSource = dataSource;
 	}
-	
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		DBBean.dataSource = dataSource;
