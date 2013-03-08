@@ -95250,6 +95250,13 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
         menu.name = 'data_table_header_menu';
 
+        // Hack solution to apparent ExtJS bug causing mis-alignment of the menu
+        // with columns whose right edge is cut off by the right edge of the grid panel.
+        menu.on('afterrender', function (menu) {
+            menu.hide();
+            menu.show();
+        });
+
         menu.add({
             name: 'sort_asc',
             text: 'Sort Ascending'
@@ -95268,7 +95275,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             text: 'Remove'
         });
     },
-    
+
     // column header height is dictated by the height of the rownumberer column
     // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
