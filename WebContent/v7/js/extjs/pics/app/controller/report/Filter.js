@@ -373,19 +373,21 @@ Ext.define('PICS.controller.report.Filter', {
     selectOperator: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm(),
+            operator = cmp.value,
+            value_field = cmp.next('[name=value]'),
             filter = filter_input_form.getRecord(),
             filter_value = filter.get('value');
-            
+
         // hide value field depending on operator selected
         if (typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
-            filter_input_view.updateValueFieldFromOperatorValue();
+            filter_input_view.updateValueFieldFromOperatorValue(operator);
         }
         
         // update filter record
         filter_input_form.updateRecord();
-        
-        // refresh report if filter value present
-        if (filter_value != '' && filter_value != null) {
+
+        // refresh report if filter value present--whether explicit or implied.
+        if ((value_field && value_field.isHidden()) || (filter_value != null && filter_value != '')) {
             PICS.data.ServerCommunication.loadData();
         }
     },
