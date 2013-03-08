@@ -93,13 +93,6 @@ public class InputValidatorTest {
 	}
 
 	@Test
-	public void testContainsOnlySafeCharacters_AmpersandReturnsFalse() {
-		boolean result = inputValidator.containsOnlySafeCharacters("&");
-
-		assertFalse(result);
-	}
-
-	@Test
 	public void testContainsOnlySafeCharacters_BacktickReturnsFalse() {
 		boolean result = inputValidator.containsOnlySafeCharacters("`");
 
