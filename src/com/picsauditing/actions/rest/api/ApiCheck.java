@@ -1,9 +1,9 @@
 package com.picsauditing.actions.rest.api;
 
+import com.picsauditing.access.ApiRequired;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.access.Api;
 import com.picsauditing.actions.PicsApiSupport;
 
 public class ApiCheck extends PicsApiSupport implements ParameterAware {
@@ -19,7 +19,7 @@ public class ApiCheck extends PicsApiSupport implements ParameterAware {
 	}
 
 	@Override
-	@Api
+	@ApiRequired
 	public String execute() {
 		json = new JSONObject();
 		json.put("ApiCheck", (getValueToEcho()>0)?"Success":"Fail");

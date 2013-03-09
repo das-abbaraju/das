@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Api;
+import com.picsauditing.access.ApiRequired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsApiSupport;
@@ -23,7 +23,7 @@ public class ProcessCommission extends PicsApiSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ProcessCommission.class);
 
 	@SuppressWarnings("unchecked")
-	@Api
+	@ApiRequired
 	@RequiredPermission(value = OpPerms.SalesCommission)
 	@Override
 	public String execute() {

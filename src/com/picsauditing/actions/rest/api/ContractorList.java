@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -16,15 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Api;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.access.ApiRequired;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.report.ReportApi;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.search.Database;
 
 @SuppressWarnings("serial")
 public class ContractorList extends PicsActionSupport implements ParameterAware {
@@ -54,7 +46,7 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 	}
 
 	@Override
-	@Api
+	@ApiRequired
 	public String execute() {
 		if (USE_DYNAMIC_REPORTS) {
 			try {
