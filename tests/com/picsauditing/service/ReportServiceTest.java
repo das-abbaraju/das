@@ -314,7 +314,9 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
 
@@ -324,10 +326,12 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, false, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
 		legacyReportConverter = mock(LegacyReportConverter.class);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+		when(permissions.getUserId()).thenReturn(USER_ID);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
 
@@ -337,10 +341,12 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
 		legacyReportConverter = mock(LegacyReportConverter.class);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+		when(permissions.getUserId()).thenReturn(USER_ID);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
 
@@ -350,7 +356,7 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		setupMockBasicLegacyReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
@@ -364,14 +370,12 @@ public class ReportServiceTest {
 		assertEquals(report.getDescription(), resultReport.getDescription());
 		assertEquals(report.getSql(), resultReport.getSql());
 		assertEquals(report.getFilterExpression(), resultReport.getFilterExpression());
-		assertEquals(report.isEditableBy(USER_ID), resultReport.isEditableBy(USER_ID));
-		assertEquals(report.isFavoritedBy(USER_ID), resultReport.isFavoritedBy(USER_ID));
 	}
 
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_andReportIsEmpty_setReportPropertiesFromJsonParameters() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
@@ -392,7 +396,7 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
@@ -409,7 +413,7 @@ public class ReportServiceTest {
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_SortsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, null, false, true, false, false, 0, 0);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		Report report = setupRealLegacyReportWithParameterJson();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
@@ -508,8 +512,6 @@ public class ReportServiceTest {
 		when(report.getDescription()).thenReturn("A basic report for testing");
 		when(report.getSql()).thenReturn("select * from dual");
 		when(report.getFilterExpression()).thenReturn("where somecolumn is 'foo'");
-		when(report.isEditableBy(USER_ID)).thenReturn(false);
-		when(report.isFavoritedBy(USER_ID)).thenReturn(false);
 	}
 
 	private Report setupRealLegacyReportWithParameterJson() {
@@ -531,8 +533,6 @@ public class ReportServiceTest {
 		when(report.getDescription()).thenReturn("A basic report for testing");
 		when(report.getSql()).thenReturn("select * from dual");
 		when(report.getFilterExpression()).thenReturn("where somecolumn is 'foo'");
-		when(report.isEditableBy(USER_ID)).thenReturn(false);
-		when(report.isFavoritedBy(USER_ID)).thenReturn(false);
 
 		Column column = new Column();
 		List<Column> columns = new ArrayList<Column>();

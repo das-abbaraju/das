@@ -31,7 +31,7 @@ public class Report extends BaseTable {
 	private String filterExpression;
 	private int numTimesFavorited;
 	private String sql;
-
+	
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
@@ -149,30 +149,6 @@ public class Report extends BaseTable {
 
 	public void setFilterExpression(String filterExpression) {
 		this.filterExpression = filterExpression;
-	}
-
-	@Transient
-	public boolean isEditableBy(int userId) {
-		// FIXME this is a terrible implementation but we need something to test save and copy
-		for (ReportPermissionUser rpu : reportPermissionUsers) {
-			if (userId == rpu.getUser().getId()) {
-				return rpu.isEditable();
-			}
-		}
-
-		return false;
-	}
-
-	@Transient
-	public boolean isFavoritedBy(int userId) {
-		// FIXME this is a terrible implementation but we need something to test save and copy
-		for (ReportUser ru : reportUsers) {
-			if (userId == ru.getUser().getId()) {
-				return ru.isFavorite();
-			}
-		}
-
-		return false;
 	}
 
 	@Override

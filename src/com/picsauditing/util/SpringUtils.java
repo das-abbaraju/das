@@ -16,6 +16,9 @@ import org.springframework.util.Assert;
  * 
  */
 public class SpringUtils implements ApplicationContextAware {
+	
+	public static final String PermissionService = "PermissionService";
+	public static final String ReportService = "ReportService";
 
 	private static ApplicationContext applicationContext;
 	
