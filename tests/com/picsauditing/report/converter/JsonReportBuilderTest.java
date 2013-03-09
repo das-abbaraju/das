@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -74,11 +75,11 @@ public class JsonReportBuilderTest {
 		JsonReportBuilder.reportService = reportService;
 	}
 	
-//	@After
-//	public void tearDown() {
-//		JsonReportBuilder.permissionService = null;
-//		JsonReportBuilder.reportService = null;
-//	}
+	@After
+	public void tearDown() {
+		JsonReportBuilder.permissionService = null;
+		JsonReportBuilder.reportService = null;
+	}
 
 	@Test
 	public void testBuildReportJson_WhenReportFieldsAreSet_ThenTheyreWrittenToJson() {
