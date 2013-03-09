@@ -10,6 +10,6 @@
 
 <h4 class="report-subtitle"><s:text name="ManageReports.ownedBy.subtitle" /></h4>
 
-<s:include value="/struts/report/manage-report/_filter.jsp">
-    <s:param name="method">ownedBy</s:param>
-</s:include>
+<div id="owned_by_reports_container">
+    <s:include value="/struts/report/manage-report/_owned-by.jsp" />
+</div>

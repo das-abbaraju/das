@@ -1,29 +1,29 @@
-PICS.define('report.manage-report.FavoritesListController', {
+PICS.define('report.manage-report.FavoritesController', {
     methods: {
         init: function () {
-            if ($('#ManageReports_favoritesList_page').length) {
+            if ($('#ManageReports_favorites_page').length > 0) {
                 var that = this,
-                    report_favorites_element = $('#report_favorites');
+                    favorite_reports = $('#favorite_reports_container');
                 
                 $('.dropdown-toggle').dropdown();
                 
-                report_favorites_element.delegate('.delete', 'click', function (event) {
+                favorite_reports.on('click', '.delete', function (event) {
                     that.onDeleteClick.apply(that, [event]);
                 });
                 
-                report_favorites_element.delegate('.favorite', 'click', function (event) {
+                favorite_reports.on('click', '.favorite', function (event) {
                     that.onFavoriteClick.apply(that, [event]);
                 });
                 
-                report_favorites_element.delegate('.move-down', 'click', function (event) {
+                favorite_reports.on('click', '.move-down', function (event) {
                     that.onMoveDownClick.apply(that, [event]);
                 });
                 
-                report_favorites_element.delegate('.move-up', 'click', function (event) {
+                favorite_reports.on('click', '.move-up', function (event) {
                     that.onMoveUpClick.apply(that, [event]);
                 });
                 
-                report_favorites_element.delegate('.remove', 'click', function (event) {
+                favorite_reports.on('click', '.remove', function (event) {
                     that.onRemoveClick.apply(that, [event]);
                 });
             }
@@ -36,9 +36,7 @@ PICS.define('report.manage-report.FavoritesListController', {
             element.closest('.report').fadeOut(750, function () {
                 PICS.ajax({
                     url: element.attr('href'),
-                    success: function (data, textStatus, jqXHR) {
-                        that.refreshFavoritesList();
-                    }
+                    success: that.refreshFavorites
                 });
             });
             
@@ -50,7 +48,7 @@ PICS.define('report.manage-report.FavoritesListController', {
                 icon = element.find('.icon-star');
             
             if (icon.hasClass('selected')) {
-                this.unfavorite(element, icon);
+                this.unfavoriteReport(element, icon);
             }
             
             event.preventDefault();
@@ -62,9 +60,7 @@ PICS.define('report.manage-report.FavoritesListController', {
             
             PICS.ajax({
                 url: element.attr('href'),
-                success: function (data, textStatus, jqXHR) {
-                    that.refreshFavoritesList();
-                }
+                success: that.refreshFavorites
             });
             
             event.preventDefault();
@@ -76,9 +72,7 @@ PICS.define('report.manage-report.FavoritesListController', {
             
             PICS.ajax({
                 url: element.attr('href'),
-                success: function (data, textStatus, jqXHR) {
-                    that.refreshFavoritesList();
-                }
+                success: that.refreshFavorites
             });
             
             event.preventDefault();
@@ -91,33 +85,29 @@ PICS.define('report.manage-report.FavoritesListController', {
             element.closest('.report').fadeOut(750, function () {
                 PICS.ajax({
                     url: element.attr('href'),
-                    success: function (data, textStatus, jqXHR) {
-                        that.refreshFavoritesList();
-                    }
+                    success: that.refreshFavorites
                 });
             });
             
             event.preventDefault();
         },
         
-        refreshFavoritesList: function () {
+        refreshFavorites: function () {
             PICS.ajax({
-                url: 'ManageReports!favoritesList.action',
+                url: 'ManageReports!favorites.action',
                 success: function (data, textStatus, jqXHR) {
-                    $('#report_favorites').html(data);
+                    $('#favorite_reports_container').html(data);
                 }
             });
         },
         
-        unfavorite: function (element, icon) {
+        unfavoriteReport: function (element, icon) {
             var body = $('body'),
                 report_id = element.attr('data-id'),
                 that = this;
             
             function success(data, textStatus, jqXHR) {
-                element.closest('.report').fadeOut(750, function () {
-                    that.refreshFavoritesList();
-                });
+                element.closest('.report').fadeOut(750, that.refreshFavorites);
             }
             
             var params = [

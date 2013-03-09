@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:set name="search_term_placeholder" value="%{getText('ManageReports.search.searchReports')}" />
+<s:set var="search_term_placeholder" value="%{getText('ManageReports.search.searchReports')}" />
+<s:url action="ManageReports" method="search" var="manage_report_search_url" />
 
 <s:include value="/struts/layout/_page-header.jsp">
     <s:param name="title"><s:text name="ManageReports.title" /></s:param>
@@ -13,11 +14,13 @@
 <h4 class="report-subtitle"><s:text name="ManageReports.search.subtitle" /></h4>
 
 <div id="report_search">
-    <s:form id="report_search_form" action="ManageReports!searchList.action" method="get" cssClass="form-inline">
+    <form id="report_search_form" class="form-inline" action="${manage_report_search_url}">
         <i class="icon-search icon-large"></i>
 
         <input type="text" name="searchTerm" value="${searchTerm}" placeholder="${search_term_placeholder}" class="search-query" />
-    </s:form>
+    </form>
 </div>
 
-<s:include value="/struts/report/manage-report/_search-list.jsp"></s:include>
+<div id="search_reports_container">
+    <s:include value="/struts/report/manage-report/_search.jsp" />
+</div>

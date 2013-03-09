@@ -1,7 +1,7 @@
 PICS.define('report.manage-report.ManageReport', {
     methods: {
         init: function () {
-            if ($('#ManageReports_myReportsList_page').length || $('#ManageReports_favoritesList_page').length) {
+            if ($('#ManageReports_myReports_page').length || $('#ManageReports_favorites_page').length) {
                 var body = $('body');
                 
                 body.on('report-favorite', this.favorite);
@@ -14,13 +14,8 @@ PICS.define('report.manage-report.ManageReport', {
                 throw 'Missing report id';
             }
             
-            if (typeof success != 'function') {
-                success = function (data, textStatus, jqXHR) {};
-            }
-            
-            if (typeof error != 'function') {
-                error = function (jqXHR, textStatus, errorThrown) {};
-            }
+            var success = typeof success == 'function' ? success : function () {},
+                error = typeof error == 'function' ? error : function () {};
             
             PICS.ajax({
                 url: 'ReportApi!favorite.action',
@@ -37,13 +32,8 @@ PICS.define('report.manage-report.ManageReport', {
                 throw 'Missing report id';
             }
             
-            if (typeof success != 'function') {
-                success = function (data, textStatus, jqXHR) {};
-            }
-            
-            if (typeof error != 'function') {
-                error = function (jqXHR, textStatus, errorThrown) {};
-            }
+            var success = typeof success == 'function' ? success : function () {},
+                error = typeof error == 'function' ? error : function () {};
             
             PICS.ajax({
                 url: 'ReportApi!unfavorite.action',

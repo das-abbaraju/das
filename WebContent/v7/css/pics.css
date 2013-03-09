@@ -1465,7 +1465,7 @@ hr {
    */
 }
 /* line 12, ../sass/pics/templates/report/manage-report/_favorites.scss */
-#ManageReports_favorites_page h3 {
+#ManageReports_favorites_page #report_favorites_overflow h1 {
   border-bottom: 1px solid #ccc;
   color: #999;
   font-size: 18px;

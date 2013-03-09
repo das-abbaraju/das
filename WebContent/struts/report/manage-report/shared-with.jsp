@@ -10,6 +10,6 @@
 
 <h4 class="report-subtitle"><s:text name="ManageReports.sharedWith.subtitle" /></h4>
 
-<s:include value="/struts/report/manage-report/_filter.jsp">
-    <s:param name="method">sharedWith</s:param>
-</s:include>
+<div id="shared_with_reports_container">
+    <s:include value="/struts/report/manage-report/_shared-with.jsp" />
+</div>

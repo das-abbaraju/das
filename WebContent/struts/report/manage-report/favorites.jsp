@@ -10,6 +10,6 @@
 
 <h4 class="report-subtitle"><s:text name="ManageReports.favorites.subtitle" /></h4>
 
-<div id="report_favorites">
-    <s:include value="/struts/report/manage-report/_favorites-list.jsp" />
+<div id="favorite_reports_container">
+    <s:include value="/struts/report/manage-report/_favorites.jsp" />
 </div>

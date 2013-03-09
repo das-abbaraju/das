@@ -1,12 +1,19 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.search.Database;
-import com.picsauditing.service.ReportService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,49 +22,46 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.search.Database;
+import com.picsauditing.service.ReportService;
 
 public class ManageReportsTest {
 
-    private static final int USER_ID = 37;
+	private static final int USER_ID = 37;
 
 	private ManageReports manageReports;
 
-    @Mock
-    private ReportService reportService;
-    @Mock
-    private ReportDAO reportDao;
-    @Mock
-    private ReportUserDAO reportUserDao;
-    @Mock
-    private Permissions permissions;
-    @Mock
-    private I18nCache i18nCache;
-    @Mock
-    private HttpServletRequest httpRequest;
+	@Mock
+	private ReportService reportService;
+	@Mock
+	private ReportDAO reportDao;
+	@Mock
+	private ReportUserDAO reportUserDao;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private I18nCache i18nCache;
+	@Mock
+	private HttpServletRequest httpRequest;
 
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
-    }
+	@BeforeClass
+	public static void setupClass() throws Exception {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
+	}
 
-    @AfterClass
-    public static void classTearDown() throws Exception {
-        Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-    }
+	@AfterClass
+	public static void classTearDown() throws Exception {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+	}
 
-    @Before
+	@Before
 	public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.initMocks(this);
 
 		manageReports = new ManageReports();
 
@@ -90,7 +94,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.favoritesList();
+		String result = manageReports.favorites();
 
 		assertEquals("favoritesList", result);
 	}
@@ -103,7 +107,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.favoritesList();
+		String result = manageReports.favorites();
 
 		assertEquals("favorites", result);
 	}
@@ -113,7 +117,7 @@ public class ManageReportsTest {
 		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(null);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		manageReports.favoritesList();
+		manageReports.favorites();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
 	}
@@ -126,7 +130,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.myReportsList();
+		String result = manageReports.myReports();
 
 		assertEquals("myReportsList", result);
 	}
@@ -139,7 +143,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.myReportsList();
+		String result = manageReports.myReports();
 
 		assertEquals("myReports", result);
 	}
@@ -149,7 +153,7 @@ public class ManageReportsTest {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		manageReports.myReportsList();
+		manageReports.myReports();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
 	}
@@ -162,7 +166,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.searchList();
+		String result = manageReports.search();
 
 		assertEquals("searchList", result);
 	}
@@ -175,7 +179,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		String result = manageReports.searchList();
+		String result = manageReports.search();
 
 		assertEquals("search", result);
 	}
@@ -186,7 +190,7 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		manageReports.searchList();
+		manageReports.search();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
 	}
@@ -197,16 +201,16 @@ public class ManageReportsTest {
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
-		manageReports.searchList();
+		manageReports.search();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
 	}
 
 	private void setUpI18nCacheText() {
 		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH)))
-				.thenReturn(true);
+		.thenReturn(true);
 
 		when(i18nCache.getText(eq("ManageReports.message.NoFavorites"), eq(Locale.ENGLISH), any()))
-				.thenReturn("No Favorites.");
+		.thenReturn("No Favorites.");
 	}
 }

@@ -1,7 +1,7 @@
-PICS.define('report.manage-report.SearchListController', {
+PICS.define('report.manage-report.SearchController', {
     methods: {
         init: function () {
-            if ($('#ManageReports_searchList_page').length) {
+            if ($('#ManageReports_search_page').length > 0) {
                 $('#report_search_form input[type=text]').on('keyup', PICS.debounce(this.onSearchKeyup, 250));
             }
         },
@@ -10,13 +10,12 @@ PICS.define('report.manage-report.SearchListController', {
             var element = $(this);
             
             PICS.ajax({
-                url: 'ManageReports!searchList.action',
-                type: 'GET',
+                url: 'ManageReports!search.action',
                 data: {
                     searchTerm: element.val()
                 },
                 success: function (data, textStatus, jqXHR) {
-                    $('#report_search_list').replaceWith(data);
+                    $('#search_reports_container').html(data);
                 }
             });
         }
