@@ -507,7 +507,7 @@ public class BillingCalculatorSingle {
 
 		// Actual prorated Upgrade
 		Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor.getLastUpgradeDate();
-		double daysUntilExpiration = DateBean.getDateDifference(upgradeDate, contractor.getPaymentExpires());
+		double daysUntilExpiration = DateBean.daysBetween(upgradeDate, contractor.getPaymentExpires());
 		if (daysUntilExpiration > 365) {
 			daysUntilExpiration = 365.0;
 		}

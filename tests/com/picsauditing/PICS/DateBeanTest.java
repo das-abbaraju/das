@@ -687,4 +687,33 @@ public class DateBeanTest {
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
 		assertEquals(2013, result.intValue());
 	}
+
+    @Test
+    public void testDaysBetween_EndOfYearToNewYear() {
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(Calendar.DAY_OF_MONTH, 1);
+        startDate.set(Calendar.MONTH, 0);
+        startDate.set(Calendar.YEAR, 2008);
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(Calendar.DAY_OF_MONTH, 31);
+        endDate.set(Calendar.MONTH, 11);
+        endDate.set(Calendar.YEAR, 2007);
+        int daysBetween = DateBean.daysBetween(startDate.getTime(), endDate.getTime());
+        assertEquals(-1, daysBetween);
+    }
+
+    @Test
+    public void testDaysBetween_StartOfMonthToStartOfNextMonth() {
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(Calendar.DAY_OF_MONTH, 1);
+        startDate.set(Calendar.MONTH, 0);
+        startDate.set(Calendar.YEAR, 2008);
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(Calendar.DAY_OF_MONTH, 1);
+        endDate.set(Calendar.MONTH, 1);
+        endDate.set(Calendar.YEAR, 2008);
+        int daysBetween = DateBean.daysBetween(startDate.getTime(), endDate.getTime());
+        assertEquals(31, daysBetween);
+    }
+
 }

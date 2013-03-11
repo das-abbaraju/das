@@ -13,6 +13,7 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -210,7 +211,7 @@ public class DateBean {
 			now.setTime(date);
 		}
 
-		if (getDateDifference(wcbYearStart.getTime(), now.getTime()) < 0) {
+		if (daysBetween(wcbYearStart.getTime(), now.getTime()) < 0) {
 			return "" + wcbYearStart.get(Calendar.YEAR);
 		}
 
@@ -489,7 +490,7 @@ public class DateBean {
 	}
 
 	public static boolean isSameDate(Date firstDate, Date secondDate) {
-		return (getDateDifference(firstDate, secondDate) == 0);
+		return (daysBetween(firstDate, secondDate) == 0);
 	}
 
 	/**
@@ -498,10 +499,9 @@ public class DateBean {
 	 * 1/1/08 and 12/31/07 = -1
 	 * @return days between the two dates
 	 */
-	public static int getDateDifference(Date firstDate, Date secondDate) {
-		long msApart = secondDate.getTime() - firstDate.getTime();
-
-		return (int) (msApart / (24 * 60 * 60 * 1000));
+	public static int daysBetween(Date startDate, Date endDate) {
+        Days d = Days.daysBetween(new DateTime(startDate), new DateTime(endDate));
+        return d.getDays();
 	}
 
 	/**
@@ -511,7 +511,7 @@ public class DateBean {
 	public static int getDateDifference(Date firstDate) {
 		Calendar cal = Calendar.getInstance();
 
-		return DateBean.getDateDifference(cal.getTime(), firstDate);
+		return DateBean.daysBetween(cal.getTime(), firstDate);
 	}
 
 	public static Date parseDate(String dateString) {
@@ -803,8 +803,8 @@ public class DateBean {
 		sunday.setTime(startDate);
 		sunday.set(Calendar.DAY_OF_WEEK, 1);
 
-		int closestmonth = DateBean.getDateDifference(startDate, month.getTime());
-		int closestsunday = DateBean.getDateDifference(startDate, sunday.getTime());
+		int closestmonth = DateBean.daysBetween(startDate, month.getTime());
+		int closestsunday = DateBean.daysBetween(startDate, sunday.getTime());
 
 		if (closestmonth > closestsunday) {
 			return month.getTime();

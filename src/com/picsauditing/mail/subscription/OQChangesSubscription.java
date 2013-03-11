@@ -29,7 +29,7 @@ public class OQChangesSubscription extends SubscriptionBuilder {
 		Map<String, Object> tokens = new HashMap<String, Object>();
 
 		try {
-			daysAgo = DateBean.getDateDifference(subscription.getTimePeriod().getComparisonDate(), new Date());
+			daysAgo = DateBean.daysBetween(subscription.getTimePeriod().getComparisonDate(), new Date());
 			this.a = subscription.getUser().getAccount();
 
 			List<BasicDynaBean> dataCriteria = getChangedCriteriaList();
