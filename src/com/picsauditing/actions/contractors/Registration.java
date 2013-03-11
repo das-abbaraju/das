@@ -14,7 +14,6 @@ import java.util.Vector;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,13 +177,6 @@ public class Registration extends ContractorActionSupport {
 	}
 
 	@Anonymous
-	public String ajaxValidatePlaceholder() {
-		// Stub
-		return SUCCESS;
-	}
-
-	@Anonymous
-	@SkipValidation
 	public String createAccount() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
