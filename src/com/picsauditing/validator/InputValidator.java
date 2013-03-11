@@ -18,17 +18,23 @@ public class InputValidator {
     @Autowired
     private ContractorAccountDAO contractorAccountDao;
 
+    private static final int MIN_STRING_LENGTH = 2;
     private static final int MAX_STRING_LENGTH = 100;
 
     public static final String NO_ERROR = "";
     public static final String REQUIRED_KEY = "JS.Validation.Required";
+    public static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
     public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
     public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
+    public static final String INVALID_VAT_ID_KEY = "JS.Validation.InvalidVAT";
     public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
     public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
     public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
     public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
     public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+    public static final String PASSWORD_CANNOT_BE_USERNAME_KEY = "JS.Validation.CannotBeUsername";
+    public static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
 
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
     public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>`\"].*";
@@ -161,7 +167,19 @@ public class InputValidator {
     }
 
     public String validateName(String name, boolean required) {
-    	return validateString(name, required, true, true, false, false, false);
+    	return validateString(name, required, false, true, true, false, false, false);
+    }
+
+    public String validateCompanyName(String name) {
+    	return validateCompanyName(name, true);
+    }
+
+    public String validateCompanyName(String name, boolean required) {
+		if (isCompanyNameTaken(name)) {
+			return COMPANY_NAME_EXISTS_KEY;
+		}
+
+    	return validateString(name, required, true, true, true, false, false, false);
     }
 
     public String validateUsername(String username) {
@@ -169,7 +187,7 @@ public class InputValidator {
     }
 
     public String validateUsername(String username, boolean required) {
-    	return validateString(username, required, true, true, true, false, false);
+    	return validateString(username, required, false, true, true, true, false, false);
     }
 
     public String validateEmail(String email) {
@@ -177,7 +195,7 @@ public class InputValidator {
     }
 
     public String validateEmail(String email, boolean required) {
-    	return validateString(email, required, true, true, false, true, false);
+    	return validateString(email, required, false, true, true, false, true, false);
     }
 
     public String validatePhoneNumber(String phoneNumber) {
@@ -185,11 +203,11 @@ public class InputValidator {
     }
 
     public String validatePhoneNumber(String phoneNumber, boolean required) {
-    	return validateString(phoneNumber, required, true, true, false, false, true);
+    	return validateString(phoneNumber, required, false, true, true, false, false, true);
     }
 
-    private String validateString(String str, boolean required, boolean maxLengthCheck, boolean dangerousCharsCheck,
-    		boolean usernameCheck, boolean emailFormatCheck, boolean phoneFormatCheck) {
+    private String validateString(String str, boolean required, boolean minLengthCheck, boolean maxLengthCheck,
+    		boolean dangerousCharsCheck, boolean usernameCheck, boolean emailFormatCheck, boolean phoneFormatCheck) {
 
     	if (StringUtils.isEmpty(str)) {
     		if (required) {
@@ -197,6 +215,10 @@ public class InputValidator {
     		}
 
     		return NO_ERROR;
+    	}
+
+    	if (minLengthCheck && str.length() < MIN_STRING_LENGTH) {
+    		return MIN_2_CHARS_KEY;
     	}
 
     	if (maxLengthCheck && str.length() > MAX_STRING_LENGTH) {

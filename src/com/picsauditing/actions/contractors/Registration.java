@@ -10,7 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -52,11 +55,18 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
-	private static Logger logger = LoggerFactory.getLogger(Registration.class);
+
+	private User user;
+	private String username;
+	private String confirmPassword;
+	private String registrationKey;
+	private int requestID;
+	private CountrySubdivision countrySubdivision;
 
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
@@ -81,13 +91,10 @@ public class Registration extends ContractorActionSupport {
 	@Autowired
 	@Qualifier("CsrAssignmentPublisher")
 	private Publisher csrAssignmentPublisher;
+	@Autowired
+	private InputValidator inputValidator;
 
-	private User user;
-	private String username;
-	private String confirmPassword;
-	private String registrationKey;
-	private int requestID;
-	private CountrySubdivision countrySubdivision;
+	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
 	@Anonymous
 	@Override
@@ -166,6 +173,13 @@ public class Registration extends ContractorActionSupport {
 	}
 
 	@Anonymous
+	public String ajaxValidatePlaceholder() {
+		// Stub
+		return SUCCESS;
+	}
+
+	@Anonymous
+	@SkipValidation
 	public String createAccount() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
@@ -173,6 +187,11 @@ public class Registration extends ContractorActionSupport {
 			return SUCCESS;
 		}
 		permissions = null;
+
+		validateInput();
+		if (hasFieldErrors()) {
+			return INPUT_ERROR;
+		}
 
 		setupUserData();
 		setupContractorData();
@@ -204,6 +223,88 @@ public class Registration extends ContractorActionSupport {
 		csrAssignmentPublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
+	}
+
+	private void validateInput() {
+		// Contractor Account
+		String errorMessageKey = inputValidator.validateCompanyName(contractor.getName());
+		addFieldErrorIfMessage("contractor.name", errorMessageKey);
+
+		Country country = contractor.getCountry();
+		String countryIso = "";
+		if (country != null) {
+			countryIso = country.getIsoCode();
+		}
+
+		errorMessageKey = inputValidator.validateName(countryIso);
+		addFieldErrorIfMessage("contractor.country.isoCode", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateName(contractor.getAddress());
+		addFieldErrorIfMessage("contractor.address", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateName(contractor.getCity());
+		addFieldErrorIfMessage("contractor.city", errorMessageKey);
+
+		if (shouldRequireZipCode(contractor.getCountry())) {
+			errorMessageKey = inputValidator.validateName(contractor.getZip());
+			addFieldErrorIfMessage("contractor.zip", errorMessageKey);
+		}
+
+		if (!isValidVAT(contractor.getVatId(), contractor.getCountry())) {
+			addFieldErrorIfMessage("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
+		}
+
+		// User
+		errorMessageKey = inputValidator.validateName(user.getName());
+		addFieldErrorIfMessage("user.name", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateEmail(user.getEmail());
+		addFieldErrorIfMessage("user.email", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone());
+		addFieldErrorIfMessage("user.phone", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateUsername(user.getUsername());
+		addFieldErrorIfMessage("user.username", errorMessageKey);
+		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), 0);
+		addFieldErrorIfMessage("user.username", errorMessageKey);
+
+		if (StringUtils.equals(user.getPassword(), user.getUsername())) {
+			addFieldErrorIfMessage("user.password", InputValidator.PASSWORD_CANNOT_BE_USERNAME_KEY);
+		}
+
+		if (!StringUtils.equals(user.getPassword(), confirmPassword)) {
+			addFieldErrorIfMessage("confirmPassword", InputValidator.PASSWORDS_MUST_MATCH_KEY);
+		}
+	}
+
+	private boolean shouldRequireZipCode(Country country) {
+		if (country == null) {
+			return false;
+		}
+
+		// Carryover from existing XML validation
+		if (StringUtils.equals("AE", country.getIsoCode())) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isValidVAT(String vat, Country country) {
+		if (vatValidator.shouldValidate(country)) {
+			try {
+				vatValidator.validated(vat);
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		if (StringUtils.isNotEmpty(vat)) {
+			return inputValidator.containsOnlySafeCharacters(vat);
+		}
+
+		return true;
 	}
 
 	public ContractorAccount getContractor() {

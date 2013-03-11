@@ -112,6 +112,23 @@ public class InputValidatorTest {
 	}
 
 	@Test
+	public void testValidateCompanyName_LessThanTwoCharacters_ReturnsNotEmpty() {
+		String errorMessageKey = inputValidator.validateCompanyName("Q");
+
+		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
+	}
+
+	@Test
+	public void testValidateCompanyName_ChecksIfCompanyNameExists() {
+		InputValidator inputValidatorSpy = spy(inputValidator);
+		String companyName = "ABC Company";
+
+		inputValidatorSpy.validateCompanyName(companyName);
+
+		verify(inputValidatorSpy).isCompanyNameTaken(companyName);
+	}
+
+	@Test
 	public void testValidateUsername_Null_ReturnsNotEmpty() {
 		String errorMessageKey = inputValidator.validateUsername(null);
 
