@@ -41,6 +41,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
@@ -64,17 +65,19 @@ public class JsonReportBuilderTest {
 	private PermissionService permissionService;
 	@Mock
 	private ReportService reportService;
+	@Mock
+	private Account account;
 
 	private static final int USER_ID = 123;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		
+
 		JsonReportBuilder.permissionService = permissionService;
 		JsonReportBuilder.reportService = reportService;
 	}
-	
+
 	@After
 	public void tearDown() {
 		JsonReportBuilder.permissionService = null;
@@ -99,7 +102,7 @@ public class JsonReportBuilderTest {
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
 		when(reportService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -149,7 +152,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -203,7 +206,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -239,7 +242,7 @@ public class JsonReportBuilderTest {
 		sorts.add(sort);
 		when(report.getSorts()).thenReturn(sorts);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -259,7 +262,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 	}
 
 	@Test
@@ -273,11 +276,17 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
+		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 	}
 
 	public void mockMinimalReport() {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
+	}
+
+	private User buildFakeUser(int userId) {
+		User user = new User(userId);
+		user.setAccount(account);
+		return user;
 	}
 
 }
