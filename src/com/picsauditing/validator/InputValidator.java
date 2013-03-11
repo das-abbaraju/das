@@ -33,7 +33,6 @@ public class InputValidator {
     public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
     public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
     public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
-    public static final String PASSWORD_CANNOT_BE_USERNAME_KEY = "JS.Validation.CannotBeUsername";
     public static final String PASSWORDS_MUST_MATCH_KEY = "JS.Validation.PasswordsMustMatch";
 
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)

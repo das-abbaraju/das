@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Vector;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -56,6 +58,7 @@ import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.PasswordValidator;
 import com.picsauditing.validator.VATValidator;
 
 @SuppressWarnings("serial")
@@ -93,6 +96,8 @@ public class Registration extends ContractorActionSupport {
 	private Publisher csrAssignmentPublisher;
 	@Autowired
 	private InputValidator inputValidator;
+	@Autowired
+	private PasswordValidator passwordValidator;
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
@@ -269,8 +274,9 @@ public class Registration extends ContractorActionSupport {
 		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
 
-		if (StringUtils.equals(user.getPassword(), user.getUsername())) {
-			addFieldErrorIfMessage("user.password", InputValidator.PASSWORD_CANNOT_BE_USERNAME_KEY);
+		Vector<String> errors = passwordValidator.validatePassword(user, user.getPassword());
+		if (CollectionUtils.isNotEmpty(errors)) {
+			addFieldError("user.password", errors.get(0));
 		}
 
 		if (!StringUtils.equals(user.getPassword(), confirmPassword)) {
