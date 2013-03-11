@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,8 @@ public class IrelandStatistics extends SafetyStatistics{
 	answerMap.put(OshaRateType.Hours, makeZeroAnswerData(QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR));
 
 	for (AuditData answer : data) {
+		if (Strings.isEmpty(answer.getAnswer()))
+			continue;
 		if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
 			continue;
 		if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR && categoryApplies) {

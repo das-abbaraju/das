@@ -1,20 +1,21 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertEquals;
+import com.picsauditing.EntityFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.picsauditing.EntityFactory;
+import static org.junit.Assert.assertEquals;
 
 public class UkStatisticsTest {
+	private List<AuditData> list;
+	private UkStatistics stat;
 
 	@Before
 	public void setUp() throws Exception {
+		list = new ArrayList<AuditData>();
 	}
 
 	@Test
@@ -48,4 +49,20 @@ public class UkStatisticsTest {
 		
 	}
 
+	@Test
+	public void testEmptyGetStats() {
+		AuditQuestion question = new AuditQuestion();
+		question.setId(9060);
+
+		AuditData data;
+		data = EntityFactory.makeAuditData("", question);
+		list.add(data);
+
+		stat = new UkStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.IFR), "0");
+
+		data.setAnswer(null);
+		stat = new UkStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.IFR), "0");
+	}
 }

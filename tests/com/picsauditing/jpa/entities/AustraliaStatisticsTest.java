@@ -47,5 +47,21 @@ public class AustraliaStatisticsTest {
         assertEquals(stat.getStats(OshaRateType.LTIFR), "14000");
     }
 
+	@Test
+	public void testEmptyGetStats() {
+		AuditQuestion atlrQuestion = new AuditQuestion();
+		atlrQuestion.setId(AustraliaStatistics.QUESTION_ID_ATLR_FOR_THE_GIVEN_YEAR);
+
+		AuditData data;
+		data = EntityFactory.makeAuditData("", atlrQuestion);
+		list.add(data);
+
+		stat = new AustraliaStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.ATLR), "0");
+
+		data.setAnswer(null);
+		stat = new AustraliaStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.ATLR), "0");
+	}
 
 }

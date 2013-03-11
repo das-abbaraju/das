@@ -47,4 +47,21 @@ public class MexicoStatisticsTest {
 		assertEquals(stat.getStats(OshaRateType.LwcrAbsolute), "14000");
 	}
 
+	@Test
+	public void testEmptyGetStats() {
+		AuditQuestion question = new AuditQuestion();
+		question.setId(MexicoStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
+
+		AuditData data;
+		data = EntityFactory.makeAuditData("", question);
+		list.add(data);
+
+		stat = new MexicoStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.TrirAbsolute), "0");
+
+		data.setAnswer(null);
+		stat = new MexicoStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.TrirAbsolute), "0");
+	}
+
 }

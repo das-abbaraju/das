@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,6 +26,10 @@ public class UkStatistics extends SafetyStatistics{
 		answerMap.put(OshaRateType.LTIFR, makeZeroAnswerData(11689));
 
 		for (AuditData answer: data) {
+			if (Strings.isEmpty(answer.getAnswer()))
+				continue;
+			if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
+				continue;
 			if (answer.getQuestion().getId() == 9060 && categoryApplies) {
 				answerMap.put(OshaRateType.IFR, answer);
 			}

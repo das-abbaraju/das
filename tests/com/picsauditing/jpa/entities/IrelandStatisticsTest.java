@@ -47,5 +47,21 @@ public class IrelandStatisticsTest {
 		assertEquals(stat.getStats(OshaRateType.IR), "14000");
 	}
 
+	@Test
+	public void testEmptyGetStats() {
+		AuditQuestion question = new AuditQuestion();
+		question.setId(IrelandStatistics.QUESTION_ID_AFR_FOR_THE_GIVEN_YEAR);
+
+		AuditData data;
+		data = EntityFactory.makeAuditData("", question);
+		list.add(data);
+
+		stat = new IrelandStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.IFR), "0");
+
+		data.setAnswer(null);
+		stat = new IrelandStatistics(2011, list, true);
+		assertEquals(stat.getStats(OshaRateType.IFR), "0");
+	}
 
 }

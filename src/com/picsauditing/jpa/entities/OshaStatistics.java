@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +42,10 @@ public class OshaStatistics extends SafetyStatistics {
 		answerMap.put(OshaRateType.SeverityRate, makeZeroAnswerData(QUESTION_ID_PICS_SEVERITY_RATE_FOR_THE_GIVEN_YEAR));
 
 		for (AuditData answer : data) {
+			if (Strings.isEmpty(answer.getAnswer()))
+				continue;
+			if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
+				continue;
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.TrirAbsolute, answer);
 				answerMap.put(OshaRateType.TrirNaics, answer);
