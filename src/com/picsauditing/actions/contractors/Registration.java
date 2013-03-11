@@ -266,7 +266,7 @@ public class Registration extends ContractorActionSupport {
 
 		errorMessageKey = inputValidator.validateUsername(user.getUsername());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
-		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), 0);
+		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
 
 		if (StringUtils.equals(user.getPassword(), user.getUsername())) {
