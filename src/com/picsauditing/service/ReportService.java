@@ -1,5 +1,12 @@
 package com.picsauditing.service;
 
+import static com.picsauditing.report.ReportJson.DEBUG_SQL;
+import static com.picsauditing.report.ReportJson.LEVEL_COLUMNS;
+import static com.picsauditing.report.ReportJson.LEVEL_DATA;
+import static com.picsauditing.report.ReportJson.LEVEL_FILTERS;
+import static com.picsauditing.report.ReportJson.LEVEL_REPORT;
+import static com.picsauditing.report.ReportJson.LEVEL_RESULTS;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,29 +17,6 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.servlet.ServletOutputStream;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.PicsSqlException;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportContext;
-import com.picsauditing.report.ReportJson;
-import com.picsauditing.report.ReportUtil;
-import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.converter.JsonReportElementsBuilder;
-import com.picsauditing.report.converter.ReportBuilder;
-import com.picsauditing.report.converter.JsonReportBuilder;
-import com.picsauditing.report.data.ReportDataConverter;
-import com.picsauditing.report.data.ReportResults;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.SqlFunction;
-import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
-import com.picsauditing.report.models.ModelType;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.excel.ExcelBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -43,15 +27,46 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportPermissionAccount;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.PicsSqlException;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.SqlBuilder;
+import com.picsauditing.report.converter.JsonReportBuilder;
+import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.converter.LegacyReportConverter;
+import com.picsauditing.report.converter.ReportBuilder;
+import com.picsauditing.report.data.ReportDataConverter;
+import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ModelType;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
-
-import static com.picsauditing.report.ReportJson.*;
+import com.picsauditing.util.excel.ExcelBuilder;
 
 public class ReportService {
 
@@ -72,7 +87,7 @@ public class ReportService {
 	@Autowired
 	public ManageReportsService manageReportsService;
 
-	private static I18nCache i18nCache = I18nCache.getInstance();
+	private I18nCache i18nCache;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
@@ -84,7 +99,7 @@ public class ReportService {
 		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.user.getId());
+			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions);
 			responseJson.put(LEVEL_REPORT, reportJson);
 		}
 
@@ -131,7 +146,7 @@ public class ReportService {
 				legacyConvertParametersToReport(report);
 			}
 		}
-
+		
 		report.sortColumns();
 
 		return report;
@@ -540,7 +555,7 @@ public class ReportService {
 
 			json.put(ReportJson.SQL_FUNCTIONS_KEY, sqlFunction.name());
 			String key = ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name();
-			String translatedValue = i18nCache.getText(key, locale);
+			String translatedValue = getI18nCache().getText(key, locale);
 			json.put(ReportJson.SQL_FUNCTIONS_VALUE, translatedValue);
 
 			jsonArray.add(json);
@@ -551,4 +566,27 @@ public class ReportService {
 		return sqlFunctionsJson;
 	}
 
+	public boolean isUserFavoriteReport(Permissions permissions, int reportId) {
+		try {
+			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
+
+			if (reportUser == null) {
+				return false;
+			}
+
+			return reportUser.isFavorite();
+		} catch (NoResultException nre) {
+
+		}
+
+		return false;
+	}
+	
+	private I18nCache getI18nCache() {
+		if (i18nCache == null) {
+			return I18nCache.getInstance();
+		}
+		
+		return i18nCache;
+	}
 }

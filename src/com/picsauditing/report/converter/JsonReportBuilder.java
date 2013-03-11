@@ -9,23 +9,32 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportService;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {
 
 	private static final Logger logger = LoggerFactory.getLogger(JsonReportBuilder.class);
+	
+	// FOR TESTING ONLY
+	protected static PermissionService permissionService;
+	protected static ReportService reportService;
 
-	public static JSONObject buildReportJson(Report report, int userId) {
+	public static JSONObject buildReportJson(Report report, Permissions permissions) {
 		JSONObject json = new JSONObject();
 
-		addReportLevelData(json, report, userId);
+		addReportLevelData(json, report, permissions);
 
 		addColumns(json, report.getColumns());
 		addFilters(json, report.getFilters());
@@ -34,14 +43,28 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static void addReportLevelData(JSONObject json, Report report, int userId) {
+	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
 		json.put(REPORT_DESCRIPTION, report.getDescription());
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		json.put(REPORT_EDITABLE, report.isEditableBy(userId));
-		json.put(REPORT_FAVORITE, report.isFavoritedBy(userId));
+		
+		
+		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
+		json.put(REPORT_FAVORITE, getReportService().isUserFavoriteReport(permissions, report.getId()));
+	}
+	
+	public static PermissionService getPermissionService() {
+		if (permissionService == null)
+			return SpringUtils.getBean(SpringUtils.PermissionService);
+		return permissionService;
+	}
+
+	public static ReportService getReportService() {
+		if (reportService == null)
+			return SpringUtils.getBean(SpringUtils.ReportService);
+		return reportService;
 	}
 
 	private static void addColumns(JSONObject json, List<Column> columns) {

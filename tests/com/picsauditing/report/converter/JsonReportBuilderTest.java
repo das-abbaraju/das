@@ -1,39 +1,84 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.util.Assert.*;
-import static com.picsauditing.report.ReportJson.*;
-import static org.mockito.Mockito.*;
+import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
+import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
+import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
+import static com.picsauditing.report.ReportJson.COLUMN_URL;
+import static com.picsauditing.report.ReportJson.COLUMN_WIDTH;
+import static com.picsauditing.report.ReportJson.FILTER_COLUMN_COMPARE;
+import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
+import static com.picsauditing.report.ReportJson.FILTER_TYPE;
+import static com.picsauditing.report.ReportJson.FILTER_VALUE;
+import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
+import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_CATEGORY;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
+import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
+import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
+import static com.picsauditing.report.ReportJson.REPORT_ID;
+import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
+import static com.picsauditing.report.ReportJson.REPORT_NAME;
+import static com.picsauditing.report.ReportJson.REPORT_SORTS;
+import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
+import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertJson;
+import static com.picsauditing.util.Assert.assertJsonNoQuotes;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.report.converter.JsonReportBuilder;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportService;
 
 public class JsonReportBuilderTest {
 
 	@Mock
 	private Report report;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private PermissionService permissionService;
+	@Mock
+	private ReportService reportService;
 
 	private static final int USER_ID = 123;
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+		
+		JsonReportBuilder.permissionService = permissionService;
+		JsonReportBuilder.reportService = reportService;
+	}
+	
+	@After
+	public void tearDown() {
+		JsonReportBuilder.permissionService = null;
+		JsonReportBuilder.reportService = null;
 	}
 
 	@Test
@@ -43,18 +88,18 @@ public class JsonReportBuilderTest {
 		ModelType modelType = ModelType.Contractors;
 		String description = "This is a test report";
 		String filterExpression = "{1} AND {2}";
-		boolean editable = true;
-		boolean favorite = true;
+		boolean editable = false;
+		boolean favorite = false;
 
 		when(report.getId()).thenReturn(reportId);
 		when(report.getName()).thenReturn(reportName);
 		when(report.getModelType()).thenReturn(modelType);
 		when(report.getDescription()).thenReturn(description);
 		when(report.getFilterExpression()).thenReturn(filterExpression);
-		when(report.isEditableBy(USER_ID)).thenReturn(editable);
-		when(report.isFavoritedBy(USER_ID)).thenReturn(favorite);
+		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
+		when(reportService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -104,7 +149,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -158,7 +203,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -194,7 +239,7 @@ public class JsonReportBuilderTest {
 		sorts.add(sort);
 		when(report.getSorts()).thenReturn(sorts);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, USER_ID);
+		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -214,7 +259,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JsonReportBuilder.buildReportJson(report, USER_ID);
+		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 	}
 
 	@Test
@@ -228,7 +273,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JsonReportBuilder.buildReportJson(report, USER_ID);
+		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(new User(USER_ID)));
 	}
 
 	public void mockMinimalReport() {
