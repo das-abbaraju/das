@@ -138,7 +138,7 @@ public class ContractorAccountTest {
 	}
 
 	private BillingStatus commonCancelledRenewed90DaysPastPaymentExpires() {
-		contractorUnderTest.setPaymentExpires(DateBean.addDays(new Date(), -91));
+		contractorUnderTest.setPaymentExpires(DateBean.addDays(new Date(), -92));
 		// must have at least one paying facility or it'll be current
 		contractorUnderTest.setPayingFacilities(1);
 		contractorUnderTest.setStatus(AccountStatus.Active);
