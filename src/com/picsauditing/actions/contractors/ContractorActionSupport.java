@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import org.apache.struts2.ServletActionContext;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
@@ -63,6 +64,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private NoteDAO noteDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
@@ -456,7 +459,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					+ id + "#auditguard");
 			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
+				if (displayAuditUnderAuditGUARDMenu(audit)) {
 					if (subMenu.getChildren().size() < MAX_MENU_ITEM
 							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
@@ -534,6 +537,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 			menuItem.setCssClass("done");
 
 		return menuItem;
+	}
+
+	private boolean displayAuditUnderAuditGUARDMenu(ContractorAudit audit) {
+		AuditTypeClass classType = audit.getAuditType().getClassType();
+		if (classType.equals(AuditTypeClass.Audit)) {
+			return true;
+		} else if (classType.equals(AuditTypeClass.Review) &&
+				featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

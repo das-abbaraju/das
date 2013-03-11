@@ -207,6 +207,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 	}
 
 	public static String getSafeName(String name) {
+		if (name == null)
+			return null;
 		return name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
 	}
 

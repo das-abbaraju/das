@@ -10,14 +10,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -71,6 +69,8 @@ public class ContractorActionSupportTest extends PicsTest {
 	private NoteDAO noteDAO;
 	@Mock
 	private AuditPercentCalculator auditPercentCalculator;
+	@Mock
+	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
@@ -90,6 +90,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "permissions", permissions);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditPercentCalculator", auditPercentCalculator);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditBuilder", auditBuilder);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "featureToggle", featureToggle);
 
 		eventQuestions = new ArrayList<AuditData>();
 		for (int i = 0; i < 3; i++) {
@@ -213,8 +214,56 @@ public class ContractorActionSupportTest extends PicsTest {
         contractorActionSupport.setContractor(contractor);
         Whitebox.setInternalState(contractorActionSupport, "permissions", permissions);
 
-        List<MenuComponent> result = contractorActionSupport.getAuditMenu();
-
-        assertTrue(result.isEmpty());
+	    List<MenuComponent> result = contractorActionSupport.getAuditMenu();
+	    assertTrue(result.isEmpty());
     }
+
+	@Test
+	public void testGetAuditMenu_ReviewDocuments() {
+		Permissions permissions = Mockito.mock(Permissions.class);
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
+
+		contractor = Mockito.mock(ContractorAccount.class);
+
+		ContractorAudit conAudit = EntityFactory.makeContractorAudit(200, contractor);
+		audit.setEffectiveDate(new Date());
+		conAudit.getAuditType().setClassType(AuditTypeClass.Review);
+		conAudit.getAuditType().setCanContractorView(true);
+		conAudit.setContractorAccount(contractor);
+		List<ContractorAudit> list = new ArrayList<ContractorAudit>();
+		list.add(conAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		ContractorAuditOperator cao = EntityFactory.addCao(conAudit, operator);
+		cao.setStatus(AuditStatus.Pending);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setOperator(operator);
+		cao.getCaoPermissions().add(caop);
+		ContractorOperator co = new ContractorOperator();
+		co.setOperatorAccount(operator);
+		List<ContractorOperator> ops = new ArrayList<ContractorOperator>();
+		ops.add(co);
+
+		when(contractor.getAudits()).thenReturn(list);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+		when(contractor.getOperators()).thenReturn(ops);
+		when(contractor.getNonCorporateOperators()).thenReturn(ops);
+
+		ContractorActionSupport contractorActionSupport = new ContractorActionSupport();
+
+		contractorActionSupport.setContractor(contractor);
+		Whitebox.setInternalState(contractorActionSupport, "permissions", permissions);
+		Whitebox.setInternalState(contractorActionSupport, "featureToggle", featureToggle);
+
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD)).thenReturn(true);
+		List<MenuComponent> result = contractorActionSupport.getAuditMenu();
+		assertTrue(result.size() == 3);
+		assertTrue(result.get(1).getChildren().size() == 1);
+		assertTrue(result.get(2).getChildren().size() == 1);
+
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD)).thenReturn(false);
+		result = contractorActionSupport.getAuditMenu();
+		assertTrue(result.size() == 2);
+		assertTrue(result.get(1).getChildren().size() == 1);
+	}
 }

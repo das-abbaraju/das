@@ -26,6 +26,7 @@ public interface FeatureToggle {
 	String TOGGLE_READ_ONLY_DATASOURCE = "Toggle.Read_Only_DataSource";
 	String TOGGLE_USE_NEW_CANADIAN_TAX = "Toggle.UseNewCanadianTax";
 	String TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION = "Toggle.NoteEdit.DoNotUseSwitchToInRestriction";
+	String TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD = "Toggle.ShowReviewDocInAuditGUARD";
 
 	boolean isFeatureEnabled(String toggleName);
 
