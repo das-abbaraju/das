@@ -148,6 +148,9 @@ public class ContractorAccount extends Account implements JSONable {
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
 
+	// this is for testing only
+	private InvoiceFeeDAO invoiceFeeDAO = null;
+
 	public ContractorAccount() {
 		this.type = "Contractor";
 	}
@@ -1023,7 +1026,7 @@ public class ContractorAccount extends Account implements JSONable {
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
-		InvoiceFeeDAO feeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO feeDAO = getInvoiceFeeDAO();
 
 		boolean foundListOnlyMembership = false;
 		boolean foundBidOnlyMembership = false;
@@ -1252,8 +1255,16 @@ public class ContractorAccount extends Account implements JSONable {
 		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
 	}
 
+	private InvoiceFeeDAO getInvoiceFeeDAO() {
+		if (invoiceFeeDAO == null) {
+			return SpringUtils.getBean("InvoiceFeeDAO");
+		}
+
+		return invoiceFeeDAO;
+	}
+
 	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
-		InvoiceFeeDAO invoiceFeeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO invoiceFeeDAO = getInvoiceFeeDAO();
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
 	}
 
