@@ -328,7 +328,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().isPqf() && contractor.getStatus().equals("Active")) {
+				if (audit.getAuditType().getClassType().isPqf()) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 						if (subMenu.getChildren().size() < MAX_MENU_ITEM || audit.getAuditType().isPqf()) {
