@@ -6,12 +6,17 @@ import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.VATValidator;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -38,14 +43,17 @@ public class ContractorAccountTest {
 	@Mock
 	private ContractorFee listOnlyFee;
 	@Mock
+	private Country country;
+	@Mock
 	private InvoiceFee bidOnlyInvoiceFee;
 	@Mock
 	private InvoiceFee listOnlyinvoiceFee;
-    @Mock
-    private InvoiceFeeDAO feeDao;
-    @Mock
-    private InvoiceFee randomFee;
-
+	@Mock
+	private InvoiceFeeDAO feeDao;
+	@Mock
+	private InvoiceFee randomFee;
+	@Mock
+	private CountryDAO countryDAO;
 
 	public ContractorAccountTest() {
 		testOperator1.setId(TEST_OPERATOR_1_ID);
@@ -72,17 +80,22 @@ public class ContractorAccountTest {
 		contractor = EntityFactory.makeContractor();
 		contractorUnderTest = new ContractorAccount();
 		testOperators = new ArrayList<ContractorOperator>();
+
+		Whitebox.setInternalState(contractorUnderTest, "invoiceFeeDAO", feeDao);
+		Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
+		Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
+		Whitebox.setInternalState(contractorUnderTest, "vatValidator", new VATValidator());
 	}
 
-
-    @After
-    public void cleanup() {
-        testOperator2.setParent(null);
-    }
+	@After
+	public void cleanup() {
+		testOperator2.setParent(null);
+	}
 
 	private void setupFees(boolean bidOnly, boolean listOnly) {
 		fees = new HashMap<FeeClass, ContractorFee>();
-		// all contractors have bid only and list only fees, they may just be hidden and $0
+		// all contractors have bid only and list only fees, they may just be
+		// hidden and $0
 		fees.put(FeeClass.BidOnly, bidOnlyFee);
 		fees.put(FeeClass.ListOnly, listOnlyFee);
 		when(bidOnlyFee.getCurrentLevel()).thenReturn(bidOnlyInvoiceFee);
@@ -514,7 +527,7 @@ public class ContractorAccountTest {
 		testOperators.add(CO_1);
 		testOperator2.setParent(testOperator3);
 		contractorUnderTest.setOperators(testOperators);
-		assertTrue(contractorUnderTest.onlyWorksFor(new int[]{TEST_OPERATOR_3_ID, TEST_OPERATOR_1_ID}));
+		assertTrue(contractorUnderTest.onlyWorksFor(new int[] { TEST_OPERATOR_3_ID, TEST_OPERATOR_1_ID }));
 	}
 
 	@Test
@@ -601,120 +614,123 @@ public class ContractorAccountTest {
 		assertFalse(contractorUnderTest.isListOnlyEligible());
 	}
 
-	@Ignore("TODO: fix this test to run")
 	@Test
 	public void testValidVat_isUK() throws Exception {
-		// when(contractor.getCountry()).thenReturn(new Country("GB"));
-		// when(mockCountryDao.findbyISO(anyString())).thenReturn(new
-		// Country("GB"));
-		// assertTrue(classUnderTest.isValidVAT());
-		// verify(mockValidator, never()).validated(anyString());
+		when(country.getIsoCode()).thenReturn("GB");
+		contractorUnderTest.setCountry(country);
+		when(countryDAO.findbyISO("GB")).thenReturn(country);
+
+		boolean result = contractorUnderTest.isValidVAT("12345");
+
+		assertTrue(result);
 	}
 
-    @Test
-    public void testClearCurrentFee_NullFees() throws Exception {
-        contractorUnderTest.setFees(null);
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testClearCurrentFee_NullFees() throws Exception {
+		contractorUnderTest.setFees(null);
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testClearCurrentFee_EmptyFees() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testClearCurrentFee_EmptyFees() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "clearCurrentFee", FeeClass.InsureGUARD, feeDao);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetCurrentFee_NullFees() throws Exception {
-        contractorUnderTest.setFees(null);
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetCurrentFee_NullFees() throws Exception {
+		contractorUnderTest.setFees(null);
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetCurrentFee_EmptyFees() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetCurrentFee_EmptyFees() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", randomFee, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetCurrentFee_NullFee() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {{
-            put(FeeClass.InsureGUARD, new ContractorFee());
-        }
-        });
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", (InvoiceFee)null, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetCurrentFee_NullFee() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {
+			{
+				put(FeeClass.InsureGUARD, new ContractorFee());
+			}
+		});
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setCurrentFee", (InvoiceFee) null, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testClearNewFee_NullFees() throws Exception {
-        contractorUnderTest.setFees(null);
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testClearNewFee_NullFees() throws Exception {
+		contractorUnderTest.setFees(null);
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testClearNewFee_EmptyFees() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testClearNewFee_EmptyFees() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "clearNewFee", FeeClass.InsureGUARD, feeDao);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetNewFee_NullFees() throws Exception {
-        contractorUnderTest.setFees(null);
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetNewFee_NullFees() throws Exception {
+		contractorUnderTest.setFees(null);
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetNewFee_EmptyFees() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetNewFee_EmptyFees() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setNewFee", randomFee, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
-    @Test
-    public void testSetNewFee_NullFee() throws Exception {
-        contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {{
-            put(FeeClass.InsureGUARD, new ContractorFee());
-        }
-        });
-        try {
-            Whitebox.invokeMethod(contractorUnderTest, "setNewFee", (InvoiceFee)null, BigDecimal.TEN);
-        } catch (NullPointerException npe) {
-            fail("threw unexpected null pointer exception");
-        }
-    }
+	@Test
+	public void testSetNewFee_NullFee() throws Exception {
+		contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>() {
+			{
+				put(FeeClass.InsureGUARD, new ContractorFee());
+			}
+		});
+		try {
+			Whitebox.invokeMethod(contractorUnderTest, "setNewFee", (InvoiceFee) null, BigDecimal.TEN);
+		} catch (NullPointerException npe) {
+			fail("threw unexpected null pointer exception");
+		}
+	}
 
 }

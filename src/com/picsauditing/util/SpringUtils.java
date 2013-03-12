@@ -16,10 +16,9 @@ import org.springframework.util.Assert;
  *
  */
 public class SpringUtils implements ApplicationContextAware {
-	
+
 	public static final String PermissionService = "PermissionService";
 	public static final String ReportService = "ReportService";
-
 	public static final String BILLING_STATUS_PROVIDER_BEAN_NAME = "BillingStatusProvider";
 	public static final String BRAIN_TREE_SERVICE_BEAN_NAME = "BrainTreeService";
 	public static final String COUNTRY_DAO_BEAN_NAME = "CountryDAO";
