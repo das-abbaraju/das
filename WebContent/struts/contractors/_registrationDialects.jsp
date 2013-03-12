@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:if test="supportedLanguages.getDialectCountriesBasedOn(language).size() > 0">
-    <div id="dialect_container">
+    <div>
         <label for="dialect_selection" data-content="Help text for dialect">
             Dialect
         </label>

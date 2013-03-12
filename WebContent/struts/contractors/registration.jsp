@@ -136,10 +136,10 @@
                             listValue="value"
                             name="language"
                             value="language"
-                            id="Registration_language"
+                            id="registration_language"
                         />
                     </li>
-                    <li id="Registration_dialect">
+                    <li id="registration_dialect">
                         <s:include value="_registrationDialects.jsp" />
                     </li>
 					<li>
