@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
 public class AuditActionSupportTest extends PicsTest {
-    private static final Integer OPERTOR_GROUP_ID = 44;
+    private static final Integer OPERATOR_GROUP_ID = 44;
     private AuditActionSupport test;
 
 	private ContractorAccount contractor;
@@ -40,7 +40,7 @@ public class AuditActionSupportTest extends PicsTest {
 		autowireEMInjectedDAOs(test);
 		PicsTestUtil.forceSetPrivateField(test, "permissions", permissions);
         Set<Integer> groupIds = new TreeSet<Integer>();
-        groupIds.add(OPERTOR_GROUP_ID);
+        groupIds.add(OPERATOR_GROUP_ID);
         when(permissions.getAllInheritedGroupIds()).thenReturn(groupIds);
 
 
@@ -49,6 +49,30 @@ public class AuditActionSupportTest extends PicsTest {
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
 
+	}
+
+	@Test
+	public void testIsCanEditAudit() {
+		ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+		audit.getAuditType().setClassType(AuditTypeClass.Audit);
+		audit.getAuditType().setHasAuditor(true);
+		audit.getAuditType().setCanContractorEdit(false);
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+		User group = new User();
+		group.setIsGroup(YesNo.Yes);
+
+		when(permissions.isAdmin()).thenReturn(true);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		assertTrue(test.isCanEditAudit());
+
+		audit.getAuditType().setEditAudit(group);
+		assertFalse(test.isCanEditAudit());
+
+		group.setId(OPERATOR_GROUP_ID);
+		when(permissions.hasGroup(OPERATOR_GROUP_ID)).thenReturn(true);
+		audit.getAuditType().setEditAudit(group);
+		assertTrue(test.isCanEditAudit());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -149,7 +173,7 @@ public class AuditActionSupportTest extends PicsTest {
 		Boolean value = Whitebox.invokeMethod(test, "canPerformAction", audit.getOperators().get(0), step);
 		assertTrue(value);
 
-        audit = createOperatorAudit(OPERTOR_GROUP_ID);
+        audit = createOperatorAudit(OPERATOR_GROUP_ID);
         PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
         cao = audit.getOperators().get(0);
         cao.setPercentComplete(100);
