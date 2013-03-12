@@ -59,7 +59,10 @@ function closePage() {
 					<p><s:text name="AuditDataUpload.WillReplaceFile"></s:text></p>
 				</s:if>
 				<s:file name="file" size="15%"></s:file>
-				<div>
+                <p style="font-style:normal;"><s:text name="global.maxFileUploadBytes">
+                    <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
+                </s:text></p>
+                <div>
 					<s:submit method="uploadFile" value="%{getText('button.UploadFile')}" cssClass="picsbutton positive"></s:submit>
 				</div>
 			</td>

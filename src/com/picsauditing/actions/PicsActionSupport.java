@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.users.ChangePassword;
@@ -9,6 +10,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -29,15 +31,20 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
 
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
@@ -87,6 +94,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     private String actionMessageHeader;
     private String alertMessageHeader;
     private String actionErrorHeader;
+
+	private long maxFileUploadBytes;
 
     protected String requestURL = null;
 
@@ -1139,4 +1148,17 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
+	public long getMaxFileUploadBytes() {
+		return maxFileUploadBytes;
+	}
+
+	@Inject("struts.multipart.maxSize")
+	public void setMaxFileUploadBytes(String value) {
+		this.maxFileUploadBytes = Long.parseLong(value);
+	}
+
+	public String getMaxFileUploadMBytes() {
+		Double max = new Double(maxFileUploadBytes / (1024 * 1024));
+		return max.toString();
+	}
 }
