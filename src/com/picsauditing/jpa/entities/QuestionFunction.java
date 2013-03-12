@@ -416,7 +416,7 @@ public enum QuestionFunction {
 
 			BigDecimal result = null;
 			try {
-				result = fatalities.add(majorOver).add(majorUnder).add(minor).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100000)).setScale(2);
+				result = fatalities.add(majorOver).add(majorUnder).add(minor).divide(employees, 7, RoundingMode.HALF_UP).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
