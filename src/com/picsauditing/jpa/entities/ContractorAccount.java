@@ -148,9 +148,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
 
-	// this is for testing only
-	private InvoiceFeeDAO invoiceFeeDAO = null;
-
 	public ContractorAccount() {
 		this.type = "Contractor";
 	}
@@ -1256,11 +1253,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	private InvoiceFeeDAO getInvoiceFeeDAO() {
-		if (invoiceFeeDAO == null) {
-			return SpringUtils.getBean("InvoiceFeeDAO");
-		}
-
-		return invoiceFeeDAO;
+		return SpringUtils.getBean("InvoiceFeeDAO");
 	}
 
 	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
