@@ -57,7 +57,7 @@
                 <section class="overview">
                     <h1>Report's Name and Description</h1>
                     <p>
-                        The title of your report and its description will always appear at the top-left of the page. If you own the report, or have edit permissions, you can change this to better suit the data at any time. Just access your repotr's settings&hellip;
+                        The title of your report and its description will always appear at the top-left of the page. If you own the report, or have edit permissions, you can change this to better suit the data at any time. Just access your report's settings&hellip;
                     </p>
                 </section>
             </div>
