@@ -90,6 +90,7 @@ public class ProfileEdit extends PicsActionSupport {
 		permissions.setLocale(u.getLocale());
 
 		u = dao.save(u);
+		dao.refresh(u);
 
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 

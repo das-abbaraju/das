@@ -295,6 +295,7 @@ public class UsersManage extends PicsActionSupport {
 			// user.setNeedsIndexing(true);
 			user.setUsingDynamicReports(isUsingDynamicReports());
 			user = userDAO.save(user);
+			userDAO.refresh(user);
 
 			if (!user.isGroup()) {
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
@@ -756,7 +757,7 @@ public class UsersManage extends PicsActionSupport {
 	 * checking for in order for this to return true, because we are checking
 	 * that another user will have the same role after this user has been
 	 * updated.
-	 * 
+	 *
 	 * @param account
 	 * @param user
 	 * @return
@@ -1261,7 +1262,7 @@ public class UsersManage extends PicsActionSupport {
 	public List<Country> getSortedCountriesServiced() {
 		List<String> countries = user.getCountriesServiced();
 		List<Country> listOfCountriesServiced = new ArrayList<Country>();
-		
+
 		for (String countryString: countries) {
 			listOfCountriesServiced.add(countryDAO.findbyISO(countryString));
 		}
@@ -1269,7 +1270,7 @@ public class UsersManage extends PicsActionSupport {
 		Collections.sort(listOfCountriesServiced);
 		return listOfCountriesServiced;
 	}
-	
+
 	public List<Country> getSortedCountryList() {
 		List<Country> countryList = countryDAO.findAll();
 		Collections.sort(countryList, new Comparator<Country>() {
@@ -1285,7 +1286,7 @@ public class UsersManage extends PicsActionSupport {
 		return countryList;
 	}
 
-	
+
 	public Locale getRemoveLanguage() {
 		return removeLanguage;
 	}
@@ -1313,8 +1314,8 @@ public class UsersManage extends PicsActionSupport {
 	public String addLanguage() {
 		user.getSpokenLanguages().add(selectedLanguage);
 		userDAO.save(user);
-		
-		
+
+
 		return SUCCESS;
 	}
 
@@ -1334,12 +1335,12 @@ public class UsersManage extends PicsActionSupport {
 
 	public String addCountry() {
 		List<String> countriesServiced = user.getCountriesServiced();
-		
+
 		if (countriesServiced.contains(selectedCountry)) {
 			this.addActionError("Country Already Selected");
 			return SUCCESS;
 		}
-		
+
 		countriesServiced.add(selectedCountry);
 		userDAO.save(user);
 

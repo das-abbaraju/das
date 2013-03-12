@@ -201,6 +201,7 @@ public class Registration extends ContractorActionSupport {
 		// requires id for user to exist to seed the password properly
 		user.setEncryptedPassword(user.getPassword());
 		userDAO.save(user);
+		userDAO.refresh(user);
 
 		contractor.setAgreedBy(user);
 		contractor.setPrimaryContact(user);
