@@ -88,18 +88,24 @@ public class Payment extends Transaction {
 	@Transient
 	public List<PaymentAppliedToInvoice> getInvoices() {
 		List<PaymentAppliedToInvoice> list = new ArrayList<PaymentAppliedToInvoice>();
-		for(PaymentApplied pa : getApplied())
-			if (pa.getClass().getSimpleName().equals("PaymentAppliedToInvoice"))
+		for(PaymentApplied pa : getApplied()) {
+			if (pa.getClass().getSimpleName().equals("PaymentAppliedToInvoice")) {
 				list.add((PaymentAppliedToInvoice)pa);
+			}
+		}
+
 		return list;
 	}
 
 	@Transient
 	public List<PaymentAppliedToRefund> getRefunds() {
 		List<PaymentAppliedToRefund> list = new ArrayList<PaymentAppliedToRefund>();
-		for(PaymentApplied pa : getApplied())
-			if (pa.getClass().getSimpleName().equals("PaymentAppliedToRefund"))
-				list.add((PaymentAppliedToRefund)pa);
+		for(PaymentApplied pa : getApplied()) {
+			if (pa.getClass().getSimpleName().equals("PaymentAppliedToRefund")) {
+				list.add((PaymentAppliedToRefund) pa);
+			}
+		}
+
 		return list;
 	}
 

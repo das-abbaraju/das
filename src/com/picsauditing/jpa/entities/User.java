@@ -34,6 +34,7 @@ import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
@@ -120,6 +121,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<Locale> spokenLanguages = new ArrayList<Locale>();
 	private List<String> countriesServiced = new ArrayList<String>();
 
+	// Specifically for testing, DO NOT @Autowired
+	private InputValidator inputValidator;
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -136,6 +140,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.id = id;
 	}
 
+	@SuppressWarnings("deprecation")
 	public User(User u, boolean copyAll) {
 		if (copyAll) {
 			this.id = u.getId();
@@ -937,9 +942,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public InputValidator getInputValidator() {
-		return SpringUtils.getBean("InputValidator");
+		if (inputValidator == null) {
+			return SpringUtils.getBean("InputValidator");
+		}
+
+		return inputValidator;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Transient
 	public boolean isUsernameValid(String username) {
 		return getInputValidator().isUsernameValid(username);

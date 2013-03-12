@@ -87,29 +87,30 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	@RequiredPermission(value = OpPerms.AllContractors)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if ("findcc".equals(button)) {
 			creditCard = paymentService.getCreditCard(id);
 			method = PaymentMethod.CreditCard;
 			return SUCCESS;
 		}
 
-		if (contractor == null)
+		if (contractor == null) {
 			findContractor();
+		}
 
-		if (method == null)
+		if (method == null) {
 			method = contractor.getPaymentMethod();
+		}
 
 		if (payment == null || payment.getId() == 0) {
 			// Useful during development, we can remove this later
-			for (Invoice invoice : contractor.getInvoices())
+			for (Invoice invoice : contractor.getInvoices()) {
 				invoice.updateAmountApplied();
+			}
 		} else {
 			payment.updateAmountApplied();
-			for (PaymentAppliedToInvoice ip : payment.getInvoices())
+			for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
 				ip.getInvoice().updateAmountApplied();
+			}
 
 			// Activate the contractor if an activation invoice is fully applied
 			// (this will occur on the redirect)
@@ -179,7 +180,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						// or void manually.
 						payment.setStatus(TransactionStatus.Unpaid);
 						paymentDAO.save(payment);
-						
+
 						notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.PAYMENT));
 
 						return SUCCESS;
@@ -198,7 +199,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					addActionError("You can't delete a payment that has already been synced with QuickBooks.");
 					return SUCCESS;
 				}
-				
+
 				notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
 				paymentDAO.remove(payment);
 
@@ -228,13 +229,13 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 			}
-			
+
 			if (button.startsWith("Refund")) {
 				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("You can't refund negative amounts");
 					return SUCCESS;
 				}
-				
+
 				if (refundAmount.compareTo(payment.getBalance()) > 0) {
 					addActionError("You can't refund more than the remaining balance");
 					return SUCCESS;
@@ -257,7 +258,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setQbSync(true);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
-					
+
 					notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REFUND));
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
@@ -267,8 +268,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			if (amountApplyMap.size() > 0) {
 				boolean collected = false;
-				if ("Save".equals(button))
+				if ("Save".equals(button)) {
 					button = "apply";
+				}
 
 				if ("Collect Payment".equals(button)) {
 					collected = true;
@@ -315,8 +317,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 									// Email Receipt to Contractor
 									try {
-										if (collected)
+										if (collected) {
 											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn, getUser());
+										}
 									} catch (Exception e) {
 										/**
 										 * The above can throw an exception if a
@@ -331,7 +334,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									}
 								}
 							}
-							
+
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
 									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
@@ -346,7 +349,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.updateAmountApplied();
 			payment.setQbSync(true);
 			paymentDAO.save(payment);
-			
+
 			notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
 			if (message != null) {
@@ -357,8 +360,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		for (Invoice invoice : contractor.getInvoices()) {
-			if (!amountApplyMap.containsKey(invoice.getId()))
+			if (!amountApplyMap.containsKey(invoice.getId())) {
 				amountApplyMap.put(invoice.getId(), BigDecimal.ZERO.setScale(2));
+			}
 		}
 
 		return SUCCESS;
@@ -379,20 +383,26 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		for (Invoice appliedInvoice : appliedInvoices) {
-			if (isAllInvoicesSameCurrency && !appliedInvoice.getCurrency().equals(overallInvoiceCurrency))
+			if (isAllInvoicesSameCurrency && !appliedInvoice.getCurrency().equals(overallInvoiceCurrency)) {
 				isAllInvoicesSameCurrency = false;
+			}
 		}
 
 		return isAllInvoicesSameCurrency ? overallInvoiceCurrency : contractor.getCountry().getCurrency();
 	}
 
+	/**
+	 * Returns a list of invoices to apply a payment to.
+	 */
 	private List<Invoice> getAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
 		List<Invoice> appliedInvoices = new ArrayList<Invoice>();
 
 		for (Invoice invoice : contractor.getInvoices()) {
-			if (amountApplyMap.get(invoice.getId()) != null)
+			if (amountApplyMap.get(invoice.getId()) != null) {
 				appliedInvoices.add(invoice);
+			}
 		}
+
 		return appliedInvoices;
 	}
 
@@ -402,11 +412,13 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			PaymentAppliedToInvoice pa = iterInvoice.next();
 			paymentDAO.removePaymentInvoice(pa, getUser());
 		}
+
 		Iterator<PaymentAppliedToRefund> iterRefund = payment.getRefunds().iterator();
 		while (iterRefund.hasNext()) {
 			PaymentAppliedToRefund pa = iterRefund.next();
 			paymentDAO.removePaymentRefund(pa, getUser());
 		}
+
 		payment.getInvoices().clear();
 		payment.getRefunds().clear();
 	}
@@ -420,12 +432,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public boolean isHasUnpaidInvoices() {
-		if (payment != null && !payment.getStatus().isUnpaid())
+		if (payment != null && !payment.getStatus().isUnpaid()) {
 			return false;
+		}
 
 		for (Invoice invoice : contractor.getInvoices()) {
-			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid())
+			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()) {
 				return true;
+			}
 		}
 
 		return false;
@@ -474,8 +488,9 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public String getTransactionCondition() {
-		if (transactionCondition != null)
+		if (transactionCondition != null) {
 			return transactionCondition;
+		}
 
 		try {
 			return paymentService.getTransactionCondition(payment.getTransactionID());
@@ -491,7 +506,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	public void setChangePaymentMethodOnAccount(boolean changePaymentMethodOnAccount) {
 		this.changePaymentMethodOnAccount = changePaymentMethodOnAccount;
 	}
-	
+
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
 		salesCommissionDataObservable.setChanged();
 		salesCommissionDataObservable.notifyObservers(dataEvent);
