@@ -2,7 +2,10 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<title><s:text name="Contact.title" /></title>
+<head>
+    <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css?v=${version}" media="screen" />
+    <title><s:text name="Contact.title" /></title>
+</head>
 
 <h1><s:text name="Contact.title" /></h1>
 
