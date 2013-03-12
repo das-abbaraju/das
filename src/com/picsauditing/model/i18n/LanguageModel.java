@@ -1,5 +1,7 @@
 package com.picsauditing.model.i18n;
 
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
 import com.picsauditing.util.Strings;
@@ -37,6 +39,8 @@ import java.util.*;
 public class LanguageModel {
 	public static final Locale ENGLISH = Locale.US;
 
+	@Autowired
+	private CountryDAO countryDAO;
 	@Autowired
 	private LanguageProvider languageProvider;
 
@@ -171,6 +175,17 @@ public class LanguageModel {
 		}
 
 		return languagesByStatus;
+	}
+
+	public List<Country> getDialectCountriesBasedOn(String language) {
+		List<Language> dialects = languageProvider.findDialectsByLanguage(language);
+		List<Country> countries = new ArrayList<Country>();
+
+		for (Language dialect : dialects) {
+			countries.add(countryDAO.findbyISO(dialect.getCountry()));
+		}
+
+		return countries;
 	}
 
 	private List<String> extractLanguagesFromStableVariants() {

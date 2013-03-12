@@ -67,6 +67,8 @@ public class Registration extends ContractorActionSupport {
 	private String username;
 	private String confirmPassword;
 	private String registrationKey;
+	private String language;
+	private String dialect;
 	private int requestID;
 	private CountrySubdivision countrySubdivision;
 
@@ -173,6 +175,18 @@ public class Registration extends ContractorActionSupport {
 			}
 		}
 
+		// SET LOCALE
+		if (Strings.isEmpty(language)) {
+			Locale locale = ActionContext.getContext().getLocale();
+			language = locale.getLanguage();
+			dialect = locale.getCountry();
+		}
+
+		return SUCCESS;
+	}
+
+	@Anonymous
+	public String dialects() {
 		return SUCCESS;
 	}
 
@@ -353,6 +367,22 @@ public class Registration extends ContractorActionSupport {
 
 	public void setRegistrationKey(String registrationKey) {
 		this.registrationKey = registrationKey;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getDialect() {
+		return dialect;
+	}
+
+	public void setDialect(String dialect) {
+		this.dialect = dialect;
 	}
 
 	@Override
@@ -553,9 +583,17 @@ public class Registration extends ContractorActionSupport {
 		user.setAccount(contractor);
 		user.setTimezone(contractor.getTimezone());
 
-		Locale locale = ActionContext.getContext().getLocale();
-		String country = user.getAccount().getCountry().getIsoCode();
-		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale, country));
+		Locale locale = Locale.US;
+
+		if (Strings.isNotEmpty(language)) {
+			if (Strings.isNotEmpty(dialect)) {
+				locale = new Locale(language, dialect);
+			} else {
+				locale = new Locale(language);
+			}
+		}
+
+		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale));
 
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);
