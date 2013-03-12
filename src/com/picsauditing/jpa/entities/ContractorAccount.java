@@ -31,6 +31,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -1208,28 +1209,86 @@ public class ContractorAccount extends Account implements JSONable {
         }
     }
 
-    private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null  && fee != null && fee.getFeeClass() != null && fees.containsKey(fee.getFeeClass())) {
-            fees.get(fee.getFeeClass()).setCurrentLevel(fee);
-            fees.get(fee.getFeeClass()).setCurrentAmount(amount);
-        }
-    }
+	private void setNewContractorFeeOnContractor(FeeClass fee, BigDecimal amount) {
+		InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(fee, 0);
+		setNewContractorFeeOnContractor(invoiceFee, amount);
+	}
 
-    @Transient
-    public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (fees != null && fees.containsKey(feeClass)) {
-            fees.get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-            fees.get(feeClass).setNewAmount(BigDecimal.ZERO);
-        }
-    }
+	private void setNewContractorFeeOnContractor(InvoiceFee invoiceFee, BigDecimal amount) {
+		if (invoiceFee == null || invoiceFee.getFeeClass() == null) {
+			return;
+		}
 
-    @Transient
-    public void setNewFee(InvoiceFee fee, BigDecimal amount) {
-        if (fees != null && fee != null && fee.getFeeClass() != null && fees.containsKey(fee.getFeeClass())) {
-            fees.get(fee.getFeeClass()).setNewLevel(fee);
-            fees.get(fee.getFeeClass()).setNewAmount(amount);
-        }
-    }
+		ContractorFee contractorFee = buildContractorFee(invoiceFee, amount);
+
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (contractorFees == null) {
+			contractorFees = new TreeMap<FeeClass, ContractorFee>();
+			setFees(contractorFees);
+		}
+
+		contractorFees.put(invoiceFee.getFeeClass(), contractorFee);
+	}
+
+	private ContractorFee buildContractorFee(InvoiceFee invoiceFee, BigDecimal amount) {
+		ContractorFee contractorFee = new ContractorFee();
+		contractorFee.setAuditColumns(getUpdatedBy());
+		contractorFee.setContractor(this);
+		contractorFee.setFeeClass(invoiceFee.getFeeClass());
+		contractorFee.setCurrentLevel(invoiceFee);
+		contractorFee.setNewLevel(invoiceFee);
+		contractorFee.setCurrentAmount(amount);
+		contractorFee.setNewAmount(amount);
+		return contractorFee;
+	}
+
+	private boolean isMissingFee(InvoiceFee invoiceFee) {
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		return invoiceFee == null || invoiceFee.getFeeClass() == null
+				|| isMissingFee(contractorFees, invoiceFee.getFeeClass());
+	}
+
+	private boolean isMissingFee(Map<FeeClass, ContractorFee> contractorFees, FeeClass fee) {
+		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
+	}
+
+	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
+		InvoiceFeeDAO invoiceFeeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
+	}
+
+	private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (isMissingFee(fee)) {
+			setNewContractorFeeOnContractor(fee, amount);
+		} else {
+			contractorFees.get(fee.getFeeClass()).setCurrentLevel(fee);
+			contractorFees.get(fee.getFeeClass()).setCurrentAmount(amount);
+		}
+	}
+
+	@Transient
+	public void clearNewFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (isMissingFee(contractorFees, feeClass)) {
+			setNewContractorFeeOnContractor(feeClass, BigDecimal.ZERO);
+		} else {
+			InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(feeClass, 0);
+			contractorFees.get(feeClass).setNewLevel(invoiceFee);
+			contractorFees.get(feeClass).setNewAmount(BigDecimal.ZERO);
+		}
+	}
+
+	@Transient
+	public void setNewFee(InvoiceFee invoiceFee, BigDecimal amount) {
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (isMissingFee(invoiceFee)) {
+			setNewContractorFeeOnContractor(invoiceFee, amount);
+		} else {
+			contractorFees.get(invoiceFee.getFeeClass()).setNewLevel(invoiceFee);
+			contractorFees.get(invoiceFee.getFeeClass()).setNewAmount(amount);
+		}
+	}
 
 	@Transient
 	public boolean isHasMembershipChanged() {

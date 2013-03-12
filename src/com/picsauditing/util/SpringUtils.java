@@ -16,14 +16,12 @@ import org.springframework.util.Assert;
  *
  */
 public class SpringUtils implements ApplicationContextAware {
-	
+
 	public static final String PermissionService = "PermissionService";
 	public static final String ReportService = "ReportService";
 
-	public static final String BILLING_STATUS_PROVIDER_BEAN_NAME = "BillingStatusProvider";
 	public static final String BRAIN_TREE_SERVICE_BEAN_NAME = "BrainTreeService";
 	public static final String COUNTRY_DAO_BEAN_NAME = "CountryDAO";
-	public static final String FEE_CALCULATOR_BEAN_NAME = "FeeCalculator";
 	public static final String INPUT_VALIDATOR_BEAN_NAME = "InputValidator";
 	public static final String INVOICE_FEE_DAO_BEAN_NAME = "InvoiceFeeDAO";
 	public static final String VAT_VALIDATOR_BEAN_NAME = "VATValidator";
