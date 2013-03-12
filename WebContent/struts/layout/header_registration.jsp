@@ -38,16 +38,4 @@
 		<s:include value="/struts/layout/chat.jsp" />
 	</s:if>
 	
-	<s:if test="actionName == 'Registration'">
-		<s:form id="locale" cssClass="locale-form">
-			<s:select
-				label=""
-				list="supportedLanguages.stableLanguagesSansDialect"
-				listKey="key"
-				listValue="value"
-				name="request_locale"
-				value="locale"
-			/>
-		</s:form>
-	</s:if>
 </header>
