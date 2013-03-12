@@ -163,16 +163,54 @@
 
 	REGISTRATION.language_dropdown = {
 		init: function () {
-			$('select[name=request_locale]').bind('change', this.events.change);
+		    var that = this,
+		        registration_page = $('#Registration__page');
+
+		    if (registration_page.length) {
+                registration_page.on('change', '#dialect_selection', function (event) {
+                    that.setDialect.call(that, event);
+                });
+
+                registration_page.on('change', '#registration_language', function (event) {
+                    that.getDialectList.call(that, event);
+                });
+		    }
 		},
 
-		events: {
-			change: function (event) {
-				var element = $(this);
+        getDialectList: function (event) {
+            var element = $(event.currentTarget),
+                that = this;
 
-				element.closest('form').submit();
-			}
-		}
+            PICS.ajax({
+                url: 'RegistrationAjax.action',
+                data: {
+                    language: element.val()
+                },
+                success: function (data, textStatus, jqXHR) {
+                    var dialect_dropdown = $.trim(data),  //trim carriage returns
+                        dialect_container_element = $('#registration_dialect');
+
+                    //if no dialects, refresh page
+                    if (dialect_dropdown.length > 0) {
+                        dialect_container_element.html(dialect_dropdown);
+                    } else {
+                        dialect_container_element.remove('div');
+                        element.closest('form').submit();
+                    }
+                }
+            });
+        },
+
+        setDialect: function (event, base_language) {
+            var element = $(event.currentTarget),
+                dialect = element.val(),
+                language = $('#registration_language').val(),
+                request_locale = $("#request_locale");
+
+            request_locale.val(language + "_" + dialect);
+
+            element.closest('form').submit();
+        }
 	};
 
 	// make payment help text displayed on hover of ? tips
