@@ -148,6 +148,12 @@ public class ContractorAccount extends Account implements JSONable {
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
 
+	// This is only for testing, do not autowire these
+	private InvoiceFeeDAO invoiceFeeDAO;
+	private InputValidator inputValidator;
+	private VATValidator vatValidator;
+	private CountryDAO countryDAO;
+
 	public ContractorAccount() {
 		this.type = "Contractor";
 	}
@@ -568,10 +574,10 @@ public class ContractorAccount extends Account implements JSONable {
 		this.membershipDate = membershipDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	/*
+	/**
 	 * The date the contractor last reviewed their facility list
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getViewedFacilities() {
 		return viewedFacilities;
 	}
@@ -1023,7 +1029,7 @@ public class ContractorAccount extends Account implements JSONable {
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
-		InvoiceFeeDAO feeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO feeDAO = getInvoiceFeeDAO();
 
 		boolean foundListOnlyMembership = false;
 		boolean foundBidOnlyMembership = false;
@@ -1144,7 +1150,8 @@ public class ContractorAccount extends Account implements JSONable {
 							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
 									.isReactivation())) {
 						if (invoice.getPayments().size() > 0) {
-							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(invoice.getPayments());
+							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(
+									invoice.getPayments());
 							Collections.sort(invoice.getPayments(), new Comparator<PaymentApplied>() {
 								public int compare(PaymentApplied paymentOne, PaymentApplied paymentTwo) {
 									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
@@ -1202,12 +1209,12 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 	}
 
-    private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (fees != null && fees.containsKey(feeClass)) {
-            fees.get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-            fees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
-        }
-    }
+	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+		if (fees != null && fees.containsKey(feeClass)) {
+			fees.get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
+			fees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+		}
+	}
 
 	private void setNewContractorFeeOnContractor(FeeClass fee, BigDecimal amount) {
 		InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(fee, 0);
@@ -1252,12 +1259,8 @@ public class ContractorAccount extends Account implements JSONable {
 		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
 	}
 
-//	private InvoiceFeeDAO getInvoiceFeeDAO() {
-//		return SpringUtils.getBean("InvoiceFeeDAO");
-//	}
-
 	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
-		InvoiceFeeDAO invoiceFeeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO invoiceFeeDAO = getInvoiceFeeDAO();
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
 	}
 
@@ -1896,6 +1899,8 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
+	// TODO: Remove this if it is not being used.
+	@SuppressWarnings("unused")
 	private void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
@@ -2115,17 +2120,38 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public InputValidator getInputValidator() {
-		return SpringUtils.getBean("InputValidator");
+		if (inputValidator == null) {
+			return SpringUtils.getBean("InputValidator");
+		}
+
+		return inputValidator;
 	}
 
 	@Transient
 	public VATValidator getVatValidator() {
-		return SpringUtils.getBean("VATValidator");
+		if (vatValidator == null) {
+			return SpringUtils.getBean("VATValidator");
+		}
+
+		return vatValidator;
 	}
 
 	@Transient
 	public CountryDAO getCountryDao() {
-		return SpringUtils.getBean("CountryDAO");
+		if (countryDAO == null) {
+			return SpringUtils.getBean("CountryDAO");
+		}
+
+		return countryDAO;
+	}
+
+	@Transient
+	private InvoiceFeeDAO getInvoiceFeeDAO() {
+		if (invoiceFeeDAO == null) {
+			return SpringUtils.getBean("InvoiceFeeDAO");
+		}
+
+		return invoiceFeeDAO;
 	}
 
 	@Transient

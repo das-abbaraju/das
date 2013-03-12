@@ -6,7 +6,11 @@ import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.validator.InputValidator;
+import com.picsauditing.validator.VATValidator;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,6 +40,8 @@ public class ContractorAccountTest {
 	@Mock
 	private ContractorFee bidOnlyFee;
 	@Mock
+	private Country country;
+	@Mock
 	private ContractorFee listOnlyFee;
 	@Mock
 	private InvoiceFee bidOnlyInvoiceFee;
@@ -45,6 +51,8 @@ public class ContractorAccountTest {
     private InvoiceFeeDAO feeDao;
     @Mock
     private InvoiceFee randomFee;
+    @Mock
+    private CountryDAO countryDAO;
 
 
 	public ContractorAccountTest() {
@@ -72,6 +80,11 @@ public class ContractorAccountTest {
 		contractor = EntityFactory.makeContractor();
 		contractorUnderTest = new ContractorAccount();
 		testOperators = new ArrayList<ContractorOperator>();
+
+		Whitebox.setInternalState(contractorUnderTest, "invoiceFeeDAO", feeDao);
+		Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
+		Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
+		Whitebox.setInternalState(contractorUnderTest, "vatValidator", new VATValidator());
 	}
 
 
@@ -604,11 +617,13 @@ public class ContractorAccountTest {
 	@Ignore("TODO: fix this test to run")
 	@Test
 	public void testValidVat_isUK() throws Exception {
-		// when(contractor.getCountry()).thenReturn(new Country("GB"));
-		// when(mockCountryDao.findbyISO(anyString())).thenReturn(new
-		// Country("GB"));
-		// assertTrue(classUnderTest.isValidVAT());
-		// verify(mockValidator, never()).validated(anyString());
+		when(country.getIsoCode()).thenReturn("GB");
+		 when(countryDAO.findbyISO("GB")).thenReturn(country);
+		 contractorUnderTest.setCountry(country);
+
+		 boolean validationResult = contractorUnderTest.isValidVAT("145798");
+
+		 assertTrue(validationResult);
 	}
 
     @Test
@@ -664,7 +679,6 @@ public class ContractorAccountTest {
         }
     }
 
-    @Ignore
     @Test
     public void testClearNewFee_NullFees() throws Exception {
         contractorUnderTest.setFees(null);
@@ -675,7 +689,6 @@ public class ContractorAccountTest {
         }
     }
 
-    @Ignore
     @Test
     public void testClearNewFee_EmptyFees() throws Exception {
         contractorUnderTest.setFees(new TreeMap<FeeClass, ContractorFee>());
