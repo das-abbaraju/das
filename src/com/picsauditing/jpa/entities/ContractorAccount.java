@@ -1023,7 +1023,7 @@ public class ContractorAccount extends Account implements JSONable {
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
-		InvoiceFeeDAO feeDAO = getInvoiceFeeDAO();
+		InvoiceFeeDAO feeDAO = SpringUtils.getBean("InvoiceFeeDAO");
 
 		boolean foundListOnlyMembership = false;
 		boolean foundBidOnlyMembership = false;
@@ -1252,12 +1252,12 @@ public class ContractorAccount extends Account implements JSONable {
 		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
 	}
 
-	private InvoiceFeeDAO getInvoiceFeeDAO() {
-		return SpringUtils.getBean("InvoiceFeeDAO");
-	}
+//	private InvoiceFeeDAO getInvoiceFeeDAO() {
+//		return SpringUtils.getBean("InvoiceFeeDAO");
+//	}
 
 	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
-		InvoiceFeeDAO invoiceFeeDAO = getInvoiceFeeDAO();
+		InvoiceFeeDAO invoiceFeeDAO = SpringUtils.getBean("InvoiceFeeDAO");
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
 	}
 
