@@ -1183,36 +1183,48 @@ public class ContractorAccount extends Account implements JSONable {
 		if (!foundListOnlyMembership) {
 			clearCurrentFee(FeeClass.ListOnly, feeDAO);
 		}
+
 		if (!foundBidOnlyMembership) {
 			clearCurrentFee(FeeClass.BidOnly, feeDAO);
 		}
+
 		if (!foundDocuGUARDMembership) {
 			clearCurrentFee(FeeClass.DocuGUARD, feeDAO);
 		}
+
 		if (!foundAuditGUARDMembership) {
 			clearCurrentFee(FeeClass.AuditGUARD, feeDAO);
 		}
+
 		if (!foundInsureGUARDMembership) {
 			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
 		}
+
 		if (!foundEmployeeGUARDMembership) {
 			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
 		}
+
 		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee) {
 			clearCurrentFee(FeeClass.ImportFee, feeDAO);
 		}
+
 		if (!foundPaymentExpires) {
 			paymentExpires = creationDate;
 		}
+
 		if (!foundMembershipDate) {
 			membershipDate = null;
 		}
 	}
 
 	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-		if (fees != null && fees.containsKey(feeClass)) {
-			fees.get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-			fees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (isMissingFee(contractorFees, feeClass)) {
+			setNewContractorFeeOnContractor(feeClass, BigDecimal.ZERO);
+		} else {
+			InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(feeClass, 0);
+			contractorFees.get(feeClass).setCurrentLevel(invoiceFee);
+			contractorFees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
 		}
 	}
 
