@@ -52,7 +52,7 @@ public class ManageReports extends PicsActionSupport {
 
 	private HttpServletRequest requestForTesting;
 
-	public static final String LANDING_URL = "ManageReports!favoritesList.action";
+	public static final String LANDING_URL = "ManageReports!favorites.action";
 
 	public static final String ALPHA_SORT = "alpha";
 	public static final String DATE_ADDED_SORT = "dateAdded";

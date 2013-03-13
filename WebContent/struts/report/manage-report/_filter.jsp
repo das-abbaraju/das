@@ -37,7 +37,13 @@
 </s:url>
 
 <div id="manage_report_filter" class="btn-group">
-    <a href="${alpha_sort_url}" class="btn ${is_alpha_filter_active_class}"><s:text name="ManageReports.myReports.alphabetical" /></a>
-    <a href="${date_added_sort_url}" class="btn ${is_date_filter_active_class}"><s:text name="ManageReports.myReports.dateAdded" /></a>
-    <a href="${last_viewed_sort_url}" class="btn ${is_last_viewed_filter_active_class}"><s:text name="ManageReports.myReports.lastViewed" /></a>
+    <a href="${alpha_sort_url}" class="btn ${is_alpha_filter_active_class}">
+        <s:text name="ManageReports.myReports.alphabetical" />
+    </a>
+    <a href="${date_added_sort_url}" class="btn ${is_date_filter_active_class}">
+        <s:text name="ManageReports.myReports.dateAdded" />
+    </a>
+    <a href="${last_viewed_sort_url}" class="btn ${is_last_viewed_filter_active_class}">
+        <s:text name="ManageReports.myReports.lastViewed" />
+    </a>
 </div>
