@@ -769,7 +769,7 @@ public class Permissions implements Serializable {
 		if (languageModel != null) {
 			locale = languageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
 		} else {
-			locale = Locale.US;
+			locale = LanguageModel.ENGLISH;
 		}
 	}
 }

@@ -35,7 +35,7 @@ import java.util.*;
  * "Unified Language List" = is how we'll refer to a merged list of the previous 2.
  */
 public class LanguageModel {
-	public static final Locale ENGLISH_US = Locale.US;
+	public static final Locale ENGLISH = Locale.US;
 
 	@Autowired
 	private LanguageProvider languageProvider;
@@ -157,7 +157,7 @@ public class LanguageModel {
 		}
 
 		if (nearestStableLocale == null) {
-			nearestStableLocale = ENGLISH_US;
+			nearestStableLocale = ENGLISH;
 		}
 
 		return nearestStableLocale;
@@ -212,9 +212,9 @@ public class LanguageModel {
 		}
 
 		Language english = new Language();
-		english.setLocale(ENGLISH_US);
-		english.setLanguage(ENGLISH_US.getLanguage());
-		english.setCountry(ENGLISH_US.getCountry());
+		english.setLocale(ENGLISH);
+		english.setLanguage(ENGLISH.getLanguage());
+		english.setCountry(ENGLISH.getCountry());
 
 		stableLanguages.add(english);
 	}

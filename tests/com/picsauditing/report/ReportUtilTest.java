@@ -1,5 +1,30 @@
 package com.picsauditing.report;
 
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.search.Database;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
+
+import java.util.Arrays;
+import java.util.Locale;
+
 import static com.picsauditing.util.Assert.assertContains;
 import static com.picsauditing.util.Assert.assertNotContains;
 import static org.junit.Assert.assertEquals;
@@ -8,28 +33,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Locale;
-
-import com.picsauditing.search.Database;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.junit.*;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.SqlFunction;
 
 public class ReportUtilTest {
 
@@ -66,7 +69,7 @@ public class ReportUtilTest {
 		Permissions permissions = EntityFactory.makePermission();
 
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
-		JSONArray results = (JSONArray)json.get("result");
+		JSONArray results = (JSONArray) json.get("result");
 
 		assertEquals(7, FieldType.AccountStatus.getEnumClass().getEnumConstants().length);
 		assertEquals(5, results.size());
@@ -84,19 +87,17 @@ public class ReportUtilTest {
 		Permissions permissions = EntityFactory.makePermission();
 
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
-		JSONArray results = (JSONArray)json.get("result");
+		JSONArray results = (JSONArray) json.get("result");
+
+		String format = "{\"value\":\"translation:[AccountStatus.%1$s, " + LanguageModel.ENGLISH.toString()
+				+ "]\"," + "\"key\":\"%1$s\"}";
 
 		assertEquals(5, results.size());
-		assertContains("{\"value\":\"translation:[AccountStatus.Active, en_US]\",\"key\":\"Active\"}",
-				json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Pending, en_US]\",\"key\":\"Pending\"}",
-				json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Requested, en_US]\",\"key\":\"Requested\"}",
-				json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Deactivated, en_US]\",\"key\":\"Deactivated\"}",
-				json.toJSONString());
-		assertContains("{\"value\":\"translation:[AccountStatus.Declined, en_US]\",\"key\":\"Declined\"}",
-				json.toJSONString());
+		assertContains(String.format(format, "Active"), json.toJSONString());
+		assertContains(String.format(format, "Pending"), json.toJSONString());
+		assertContains(String.format(format, "Requested"), json.toJSONString());
+		assertContains(String.format(format, "Deactivated"), json.toJSONString());
+		assertContains(String.format(format, "Declined"), json.toJSONString());
 	}
 
 	@Test
@@ -104,7 +105,7 @@ public class ReportUtilTest {
 		Permissions permissions = EntityFactory.makePermission();
 
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.LowMedHigh, permissions);
-		JSONArray results = (JSONArray)json.get("result");
+		JSONArray results = (JSONArray) json.get("result");
 
 		assertEquals(4, results.size());
 		assertContains("\"key\":0", json.toString());
@@ -120,15 +121,18 @@ public class ReportUtilTest {
 		Report report = new Report();
 		Column column = new Column();
 		report.addColumn(column);
-		
+
 		Field accountName = new Field("AccountName__Count");
 		column.setField(accountName);
 		column.setSqlFunction(SqlFunction.Count);
 		column.setName("AccountName__Count");
-		
+
 		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
-		
-		assertEquals("translation:[Report.Function.Count, en_US]: translation:[Report.AccountName, en_US]",
+
+		String locale = LanguageModel.ENGLISH.toString();
+
+		assertEquals("translation:[Report.Function.Count, " + locale + "]: translation:[Report.AccountName, "
+				+ locale + "]",
 				report.getColumns().get(0).getField().getText());
 	}
 

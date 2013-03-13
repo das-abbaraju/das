@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.servlet.http.Cookie;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.model.i18n.LanguageModel;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +65,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private HierarchyBuilder hierarchyBuilder;
 	@Mock
 	private UserService userService;
+	@Mock
+	private LanguageModel languageModel;
 
 	private LoginService loginService = new LoginService();
 
@@ -94,6 +99,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(loginService, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
+		Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
@@ -455,6 +461,36 @@ public class LoginControllerTest extends PicsActionTest {
 
 	}
 
+	@Test
+	public void testLogout_BetaLanguageDefaultsLocaleToEnglish() throws Exception {
+		Locale germany = Locale.GERMANY;
+
+		ActionContext.getContext().setLocale(germany);
+		when(languageModel.isLanguageStable(germany)).thenReturn(false);
+		when(permissions.getLocale()).thenReturn(germany);
+
+		Whitebox.invokeMethod(loginController, "logout");
+
+		assertTrue(session.isEmpty());
+		verify(permissions).clear();
+		assertEquals(LanguageModel.ENGLISH, ActionContext.getContext().getLocale());
+	}
+
+	@Test
+	public void testLogout_StableLanguageKeepsSameLocale() throws Exception {
+		Locale italy = Locale.ITALY;
+
+		ActionContext.getContext().setLocale(italy);
+		when(languageModel.isLanguageStable(italy)).thenReturn(true);
+		when(permissions.getLocale()).thenReturn(italy);
+
+		Whitebox.invokeMethod(loginController, "logout");
+
+		assertTrue(session.isEmpty());
+		verify(permissions).clear();
+		assertEquals(italy, ActionContext.getContext().getLocale());
+	}
+
 	private void normalLoginSetup() {
 		loginController.setButton("login");
 		loginController.setUsername("test");
@@ -471,5 +507,4 @@ public class LoginControllerTest extends PicsActionTest {
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
 		when(userService.isUserActive(user)).thenReturn(true);
 	}
-
 }

@@ -52,7 +52,7 @@ public class PermissionsTest {
 
 		Country country = mock(Country.class);
 		when(account.getCountry()).thenReturn(country);
-		when(country.getIsoCode()).thenReturn(Locale.US.getCountry());
+		when(country.getIsoCode()).thenReturn(LanguageModel.ENGLISH.getCountry());
 		when(user.getAccount()).thenReturn(account);
 	}
 
@@ -181,6 +181,6 @@ public class PermissionsTest {
 		Whitebox.setInternalState(permissions, "languageModel", (LanguageModel) null);
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
 
-		assertEquals(Locale.US, permissions.getLocale());
+		assertEquals(LanguageModel.ENGLISH, permissions.getLocale());
 	}
 }

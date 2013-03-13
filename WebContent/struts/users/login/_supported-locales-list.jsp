@@ -9,5 +9,5 @@
     id="supported_locales"
     name="request_locale"
     tabindex="1"
-    value="locale"
+    value="%{locale.language}"
 />

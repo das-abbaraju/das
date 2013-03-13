@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -143,9 +145,21 @@ public class LoginController extends PicsActionSupport {
 	public String logout() throws Exception {
 		loadPermissions(false); // FIXME: (maybe) why are we loading permissions
 								// only to clear them and invalidate a session?
+
+		Locale userLocale = permissions.getLocale();
+
 		permissions.clear();
 		invalidateSession();
 		clearPicsOrgCookie();
+
+		// If the user was using a beta language, default back to English because
+		// only stable languages are available on the main language dropdown
+		if (!supportedLanguages.isLanguageStable(userLocale))
+		{
+			// TODO: Does this also need to happen in any other login situation?
+			ActionContext.getContext().setLocale(LanguageModel.ENGLISH);
+		}
+
 		return SUCCESS;
 	}
 

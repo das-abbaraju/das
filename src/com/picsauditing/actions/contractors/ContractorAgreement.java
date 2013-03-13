@@ -5,10 +5,11 @@ import java.util.Locale;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.model.i18n.LanguageModel;
 
 @SuppressWarnings("serial")
 public class ContractorAgreement extends ContractorActionSupport {
-	Locale request_locale = Locale.US;
+	Locale request_locale = LanguageModel.ENGLISH;
 
 	@Anonymous
 	public String execute() throws Exception {

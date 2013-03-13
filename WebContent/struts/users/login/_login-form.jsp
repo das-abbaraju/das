@@ -19,19 +19,14 @@
 
     <fieldset>
         <s:if test="configEnvironment || i18nReady">
-            <s:set name="static_locale" value="%{@com.picsauditing.actions.TranslationActionSupport@getLocaleStatic()}" />
-            <s:set name="current_language" value="%{supportedLanguages.getNearestStableLocale(#static_locale).displayLanguage}" />
-            <input id="current_locale" type="hidden" value="${current_language}" />
+            <div class="form-inline">
+                <label for="supported_locales">
+                    <i class="icon-globe"></i>
+                </label>
+
+                <s:include value="_supported-locales-list.jsp" />
+            </div>
         </s:if>
-
-        <div class="form-inline">
-            <label for="supported_locales">
-                <i class="icon-globe"></i>
-            </label>
-            
-            <s:include value="_supported-locales-list.jsp" />
-        </div>
-
         <s:include value="_login-form-fields.jsp"/>
     </fieldset>
 </s:form>
