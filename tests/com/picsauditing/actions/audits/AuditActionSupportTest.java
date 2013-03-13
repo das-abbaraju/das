@@ -16,8 +16,8 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class AuditActionSupportTest extends PicsTest {
@@ -154,11 +154,13 @@ public class AuditActionSupportTest extends PicsTest {
 		assertFalse(test.isUserPermittedToAssignAudit());
 
 		when(permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)).thenReturn(true);
-		when(permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())).thenReturn(false);
+		when(permissions.getAllInheritedGroupIds()).thenReturn(new TreeSet<Integer>());
 		assertFalse(test.isUserPermittedToAssignAudit());
 
+		TreeSet<Integer> set = new TreeSet<Integer>();
+		set.add(conAudit.getAuditType().getAssignAudit().getId());
 		when(permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)).thenReturn(true);
-		when(permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())).thenReturn(true);
+		when(permissions.getAllInheritedGroupIds()).thenReturn(set);
 		assertTrue(test.isUserPermittedToAssignAudit());
 	}
 
