@@ -144,6 +144,7 @@ public class AuditActionSupportTest extends PicsTest {
 		User assignerGroup = EntityFactory.makeUser();
 		assignerGroup.setIsGroup(YesNo.Yes);
 		conAudit.getAuditType().setAssignAudit(assignerGroup);
+		conAudit.getAuditType().setHasAuditor(true);
 		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
 
 		User otherGroup = EntityFactory.makeUser();
