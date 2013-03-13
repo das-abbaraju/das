@@ -71,7 +71,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				contractorAudit.setAuditorConfirm(null);
 				contractorAudit.setContractorConfirm(null);
 				contractorAudit.setAssignedDate(null);
-				dao.save(contractorAudit);
+				contractorAudit= dao.save(contractorAudit);
+				dao.clear();
 			}
 			return SUCCESS;
 		}
@@ -96,8 +97,10 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (!newManualAudit)
 			contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
 
-		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit))
-			dao.save(contractorAudit);
+		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)) {
+			contractorAudit = dao.save(contractorAudit);
+			dao.clear();
+		}
 
 		if (contractorAudit.getAssignedDate() != null) {
 			output = new SimpleDateFormat(PicsDateFormat.Datetime12Hour).format(contractorAudit.getAssignedDate());
