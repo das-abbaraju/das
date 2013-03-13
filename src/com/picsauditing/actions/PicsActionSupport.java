@@ -1161,4 +1161,5 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		Double max = new Double(maxFileUploadBytes / (1024 * 1024));
 		return max.toString();
 	}
+
 }
