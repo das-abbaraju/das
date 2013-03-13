@@ -45,8 +45,12 @@ public class PasswordValidator extends BasicTranslationSupport {
     }
 
     private void enforceAccountPasswordPreferences(User user, String newPassword, Vector<String> errorMessages) {
+    	PasswordSecurityLevel passwordSecurityLevel = PasswordSecurityLevel.Normal;
+
         Account account = user.getAccount();
-        PasswordSecurityLevel passwordSecurityLevel = account.getPasswordSecurityLevel();
+        if (account != null) {
+        	passwordSecurityLevel = account.getPasswordSecurityLevel();
+        }
 
         if (newPassword.length() < passwordSecurityLevel.minLength) {
             errorMessages.addElement(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, passwordSecurityLevel.minLength));

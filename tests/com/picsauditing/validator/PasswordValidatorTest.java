@@ -26,13 +26,14 @@ import static org.mockito.Mockito.when;
 
 public class PasswordValidatorTest {
 
-    private User user;
-    private Vector<String> errorMessages;
-    private PasswordValidator passwordValidator;
-    private List<PasswordHistory> recentEntries;
+	private PasswordValidator passwordValidator;
+
 	@Mock private I18nCache i18nCache;
 	@Mock PasswordDAO passwordDAO;
 
+	private User user;
+	private Vector<String> errorMessages;
+	private List<PasswordHistory> recentEntries;
 
 	@Before
     public void setUp() throws Exception {
@@ -55,7 +56,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_validNormalCases() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "joes1";
 
@@ -74,7 +74,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_validMaximumCases() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Maximum);
         String newPassword = "joeSix$1";
 
@@ -84,7 +83,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_cannotUseUsername() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "joeSixpack";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
@@ -95,7 +93,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_mustAlwaysContainDigitsAndLetters() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "joeSixpack";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
@@ -117,7 +114,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_cannotReuseCurrentPassword() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "joeSixpack";
         user.setPassword(encryptPassword(newPassword));
@@ -129,7 +125,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_basic_Normal() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "1234";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
@@ -140,7 +135,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_basic_High() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.High);
         String newPassword = "sixpa";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
@@ -153,7 +147,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_basic_Maximum() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Maximum);
         String newPassword = "sixpa";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
@@ -166,7 +159,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_passwordHistory_Normal() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Normal);
 
         String newPassword = "hello1";
@@ -176,7 +168,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_passwordHistory_High() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.High);
 
         String newPassword = "hello1";
@@ -190,7 +181,6 @@ public class PasswordValidatorTest {
 
     @Test
     public void testValidatePassword_passwordHistory_Maximum() throws Exception {
-
         setupTestUser(PasswordSecurityLevel.Maximum);
 
         String newPassword = "hello1";
@@ -200,6 +190,13 @@ public class PasswordValidatorTest {
         newPassword = "hello6";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
         assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
+    }
+
+    @Test
+    public void testValidatePassword_WhenUserHasNoAccount_ThenNoExceptionIsThrown() {
+    	user.setAccount(null);
+
+    	passwordValidator.validatePassword(user, "dontcare123");
     }
 
     private void setupTestUser(PasswordSecurityLevel passwordSecurityLevel) {
