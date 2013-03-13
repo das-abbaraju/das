@@ -392,7 +392,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)
 				&& (conAudit.getAuditType().getAssignAudit() == null
-				|| permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())))
+				|| permissions.getAllInheritedGroupIds().contains(conAudit.getAuditType().getAssignAudit().getId())))
 			return true;
 		return false;
 	}

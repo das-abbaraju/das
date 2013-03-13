@@ -420,10 +420,10 @@ function loadStatus(caoID, addUserNote){
 								<s:date name="conAudit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 						</s:if>
-						
-						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
+
+						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
 							<li>
-								<label><s:text name="Audit.ClosingAuditor" />:</label>
+								<label><s:text name="global.Closing" /> <s:property value='professionalLabel' />:</label>
 								<s:property value="conAudit.closingAuditor.name" />
 							</li>
 						</s:if>
