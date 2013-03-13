@@ -51,21 +51,23 @@
                         </li>
                     </s:if>
                 
-                    <%-- get pages, iterate over pages, 1 to 4; if iterating over the current page, then don't put a link --%>
+                    <%-- get pages, iterate over pages, 1 to 4; if iterating over the current page, then disable the link --%>
                     <s:iterator var="pageNumber" value="pagination.getNavPages()">
                         <s:url action="ManageReports" method="searchList" var="page_url" includeParams="all">
                             <s:param name="pagination.parameters.page">${pageNumber}</s:param>
                             <s:param name="searchTerm">${searchTerm}</s:param>
                         </s:url>
                         
-                        <li>
-                            <s:if test="%{#pageNumber != pagination.getPage()}">
+                        <s:if test="%{#pageNumber != pagination.getPage()}">
+                            <li>
                                 <a href="${page_url}">${pageNumber}</a>
-                            </s:if>
-                            <s:else>
-                                <span class="active">${pageNumber}</span>
-                            </s:else>
-                        </li>
+                            </li>
+                        </s:if>
+                        <s:else>
+                            <li class="active">
+                                <a href="#">${pageNumber}</a>
+                            </li>                                    
+                        </s:else>
                     </s:iterator>
     
                     <s:if test="pagination.hasNextPage()">

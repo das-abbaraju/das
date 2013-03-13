@@ -910,21 +910,58 @@ hr {
   overflow: visible;
 }
 
-/* line 3, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 18, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
   line-height: 28px;
   width: auto;
 }
 
-/* line 9, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
-.pagination a {
+/* line 25, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+.pagination ul > li > a,
+.pagination ul > li > span {
+  background-color: gainsboro;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  color: #333;
+  border: 1px solid #bcbcbc;
+  border-left-width: 0;
+  box-shadow: inset 0 1px 1px #fff;
+  -moz-box-shadow: inset 0 1px 1px #fff;
+  -webkit-box-shadow: inset 0 1px 1px #fff;
+  color: #666666;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
+}
+
+/* line 38, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+.pagination ul > li > a:hover {
+  background-color: #e3e3e3;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6f6f7), color-stop(100%, #e3e3e3));
+  background-image: -webkit-linear-gradient(#f6f6f7, #e3e3e3);
+  background-image: -moz-linear-gradient(#f6f6f7, #e3e3e3);
+  background-image: -o-linear-gradient(#f6f6f7, #e3e3e3);
+  background-image: linear-gradient(#f6f6f7, #e3e3e3);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6f6f7, endColorstr=#e3e3e3);
+}
+
+/* line 49, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+.pagination ul > .active > a,
+.pagination ul > .active > span,
+.pagination ul > .active > a:hover,
+.pagination ul > .active > span:hover {
+  background-color: #e5e5e5;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e0e0e1), color-stop(100%, #cecece));
+  background-image: -webkit-linear-gradient(#e0e0e1, #cecece);
+  background-image: -moz-linear-gradient(#e0e0e1, #cecece);
+  background-image: -o-linear-gradient(#e0e0e1, #cecece);
+  background-image: linear-gradient(#e0e0e1, #cecece);
+  color: #454545;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#e0e0e1, endColorstr=#cecece);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */

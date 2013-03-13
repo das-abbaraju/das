@@ -1,3 +1,18 @@
+$inactive_background_color: #dcdcdc;
+$inactive_border_color: #bcbcbc;
+$inactive_bottom_gradient_color: #dcdcdc;
+$inactive_font_color: #666666;
+$inactive_top_gradient_color: #f1f1f2;
+
+$inactive_hover_background_color: #e3e3e3;
+$inactive_hover_bottom_gradient_color: #e3e3e3;
+$inactive_hover_top_gradient_color: #f6f6f7;
+
+$active_background_color: #e5e5e5;
+$active_bottom_gradient_color: #cecece;
+$active_font_color: #454545;
+$active_top_gradient_color: #e0e0e1;
+
 .pagination li [class^=icon-],
 .pagination li [class*=icon-]
 {
@@ -5,8 +20,38 @@
 	width: auto;
 }
 
-.pagination a
+.pagination ul > li > a,
+.pagination ul > li > span
 {
-	@include background-image(linear-gradient(#f1f1f2, #dcdcdc));
-	color: #333;
+  background-color: $inactive_background_color;
+  @include background-image(linear-gradient($inactive_top_gradient_color, $inactive_bottom_gradient_color));
+  border: 1px solid $inactive_border_color;
+  border-left-width: 0;
+  box-shadow: inset 0 1px 1px #fff;
+  -moz-box-shadow: inset 0 1px 1px #fff;
+  -webkit-box-shadow: inset 0 1px 1px #fff;
+  color: $inactive_font_color;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$inactive_top_gradient_color}, endColorstr=#{$inactive_bottom_gradient_color});
+}
+
+.pagination ul > li > a:hover
+{
+  background-color: $inactive_hover_background_color;
+  @include background-image(linear-gradient($inactive_hover_top_gradient_color, $inactive_hover_bottom_gradient_color));
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$inactive_hover_top_gradient_color}, endColorstr=#{$inactive_hover_bottom_gradient_color});
+}
+
+.pagination ul > .active > a,
+.pagination ul > .active > span,
+.pagination ul > .active > a:hover,
+.pagination ul > .active > span:hover
+
+{
+  background-color: $active_background_color;
+  @include background-image(linear-gradient($active_top_gradient_color, $active_bottom_gradient_color));
+  color: $active_font_color;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$active_top_gradient_color}, endColorstr=#{$active_bottom_gradient_color});
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
