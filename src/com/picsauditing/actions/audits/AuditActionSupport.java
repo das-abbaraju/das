@@ -83,6 +83,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected List<CategoryNode> categoryNodes;
 
+	private String professionalLabel = "";
+
 	public String execute() throws Exception {
 		this.findConAudit();
 		return SUCCESS;
@@ -107,6 +109,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!conAudit.isVisibleTo(permissions)) {
 			throw new NoRightsException(conAudit.getAuditType().getName().toString());
 		}
+
+		if (Strings.isEmpty(conAudit.getAuditType().getAssigneeLabel()))
+			professionalLabel = getText("Assignee.SafetyProfessional");
+		else
+			professionalLabel = getText("Assignee." + conAudit.getAuditType().getAssigneeLabel());
 
 	}
 
@@ -336,6 +343,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return true;
 	}
 
+	public String getProfessionalLabel() {
+		return professionalLabel;
+	}
+
 	private boolean canContractorSubmitPQF(WorkflowStep step) {
 		if (step.getNewStatus().isSubmitted() && !permissions.hasGroup(10)
 				&& CollectionUtils.isEmpty(contractor.getTrades())) {
@@ -373,6 +384,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isUserPermittedToAssignAudit() {
+		if (!conAudit.getAuditType().isHasAuditor())
+			return false;
+		if (conAudit.isExpired())
+			return false;
+		if (conAudit.hasCaoStatus(AuditStatus.Complete))
+			return false;
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)
 				&& (conAudit.getAuditType().getAssignAudit() == null
 				|| permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())))

@@ -269,7 +269,10 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 					translation.setSourceLanguage("en");
 					translation.setValue("Assignee");
 					translation.setQualityRating(TranslationQualityRating.Bad);
-					dao.save(translation);
+					try {
+						dao.save(translation);
+					} catch (Exception ignore) {
+					}
 				}
 			}
 			return true;

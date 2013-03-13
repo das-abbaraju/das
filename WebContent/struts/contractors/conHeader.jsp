@@ -439,16 +439,16 @@ function loadStatus(caoID, addUserNote){
 										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
-										<s:if test="conAudit.auditType.assigneeLabel = null" >
+										<s:if test="conAudit.auditType.assigneeLabel == null" >
 											<s:text name="global.SafetyProfessional" />:
 										</s:if>
 										<s:else>
-											<s:text name="Assignee.QualityProfessional" />:
+                                            <s:property value='professionalLabel' />:
 										</s:else>
 									</s:else>
 								</label>
 
-                                <s:if test="userPermittedToAssignAudit" >
+                                <s:if test="userPermittedToAssignAudit && !(conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy'))" >
                                     <div id="auditorAssignmentDate" style="display:none"></div>
                                     <s:select  onchange="saveAuditor(this.value)"  cssClass="blueMain" list="safetyList"
                                            listValue="name" value="conAudit.auditor" headerKey="-1" headerValue="- Not Assigned -" />
