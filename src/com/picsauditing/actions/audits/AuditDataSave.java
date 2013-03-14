@@ -686,14 +686,15 @@ public class AuditDataSave extends AuditActionSupport {
 		String answer = auditData.getAnswer();
 
         if ("ESignature".equals(questionType)) {
-			if (eSignatureName == null && eSignatureTitle == null && !Strings.isEmpty(answer) && answer.contains(" / ")) {
-				String[] esig = answer.split(" / ");
-				eSignatureName = esig[0];
-				eSignatureTitle = esig[1];
+			if (eSignatureName == null && eSignatureTitle == null) {
+				setESignatureData(answer);
 			}
 
+	        if ("Verify".equals(mode)) {
+				setESignatureData(databaseCopy.getAnswer());
+	        }
+
             if (eSignatureName == null && eSignatureTitle == null) {
-//            if ("-".equals(eSignatureName) && "-".equals(eSignatureTitle)) {
                 auditData.setAnswer("");
                 auditData.setComment("");
                 return true;
@@ -777,6 +778,15 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	private void setESignatureData(String response) {
+		if (!Strings.isEmpty(response) && response.contains(" / ")) {
+			String[] esig = response.split(" / ");
+			eSignatureName = esig[0];
+			eSignatureTitle = esig[1];
+		}
+
 	}
 
 	private boolean isDateValid(AuditData auditData) {
