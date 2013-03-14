@@ -140,8 +140,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		loadCC();
-		if (hasActionErrors())
+		if (hasActionErrors()) {
 			return SUCCESS;
+		}
 
 		if (processPayment) {
 			completeRegistration();
@@ -153,8 +154,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String completeRegistration() throws Exception {
 		findContractor();
-		if (redirectIfNotReadyForThisStep())
+		if (redirectIfNotReadyForThisStep()) {
 			return BLANK;
+		}
 
 		Invoice invoice = getInvoice();
 
@@ -176,8 +178,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
 			contractor.setMembershipDate(new Date());
-			if (contractor.getBalance() == null)
+			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
+			}
 			contractorAccountDao.save(contractor);
 		} else {
 			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -356,11 +359,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
 				try {
 					int endPos = responsetext.indexOf("REFID");
-					if (endPos > 1)
+					if (endPos > 1) {
 						responsetext = responsetext.substring(0, endPos - 1);
+					}
 				} catch (Exception justUseThePlainResponseText) {
 				}
-				addActionError(responsetext);
+
+				addActionError(getText("ContractorPaymentOptions.SessionExpired"));
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -437,8 +442,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Override
 	public ContractorRegistrationStep getNextRegistrationStep() {
 		if (permissions.isContractor() && contractor.getStatus().isPendingOrDeactivated()
-				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB()))
+				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB())) {
 			return ContractorRegistrationStep.Done;
+		}
 
 		return null;
 	}
@@ -584,7 +590,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 * 
+	 *
 	 * @throws Exception
 	 */
 
@@ -620,8 +626,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	public InvoiceFee getImportFee() {
-		if (importFee == null)
+		if (importFee == null) {
 			importFee = invoiceFeeDAO.find(InvoiceFee.IMPORTFEE);
+		}
 		return importFee;
 	}
 
