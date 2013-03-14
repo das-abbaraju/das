@@ -1,15 +1,15 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
 public class ContractorTable extends AbstractTable {
 
 	public static final String Account = "Account";
+    public static final String AccountUser = "AccountUser";
 	public static final String CustomerService = "CustomerService";
+	public static final String CurrentCSR = "CurrentCSR";
 	public static final String RecommendedCSR = "RecommendedCSR";
 	public static final String PQF = "PQF";
 	public static final String Flag = "Flag";
@@ -47,39 +47,47 @@ public class ContractorTable extends AbstractTable {
 				new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
 		flagKey.setMinimumImportance(FieldImportance.Low);
 
-		ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(),
-				new ReportOnClause("welcomeAuditor_id")));
-		csrKey.setMinimumImportance(FieldImportance.Average);
+//		ReportForeignKey oldCsrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(),
+//				new ReportOnClause("welcomeAuditor_id")));
+//		oldCsrKey.setMinimumImportance(FieldImportance.Average);
+//		oldCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+
+//        ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CurrentCSR, new AccountUserTable(),
+        ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new AccountUserTable(),
+                new ReportOnClause("id", "accountID"))); // , ReportOnClause.ToAlias + ".role = " + UserAccountRole.PICSCustomerServiceRep));
 		csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+        csrKey.setMinimumImportance(FieldImportance.Average);
 
-		ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
+        ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
 				new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
-		pqfKey.setMinimumImportance(FieldImportance.Required);
+        pqfKey.setMinimumImportance(FieldImportance.Required);
 
-		ReportForeignKey welcomeCallKey = addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
+        ReportForeignKey welcomeCallKey = addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
 				new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.WELCOME)));
-		welcomeCallKey.setMinimumImportance(FieldImportance.Required);
+        welcomeCallKey.setMinimumImportance(FieldImportance.Required);
 
-		ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
+        ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
 				new ReportOnClause("requestedByID")));
-		requestedBy.setMinimumImportance(FieldImportance.Required);
-		requestedBy.setCategory(FieldCategory.RequestingClientSite);
+        requestedBy.setMinimumImportance(FieldImportance.Required);
+        requestedBy.setCategory(FieldCategory.RequestingClientSite);
 
-		addOptionalKey(new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
+        addOptionalKey(new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
 				ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
 
-		addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
+        addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
 				ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
 
-		addRequiredKey(new ReportForeignKey(ContractorStatistics, new ContractorStatisticsView(), new ReportOnClause(
+        addRequiredKey(new ReportForeignKey(ContractorStatistics, new ContractorStatisticsView(), new ReportOnClause(
 				"id", "conID")));
 
-		addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
+        addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
 				"conID")));
 
-		ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
+        ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
 				new ReportOnClause("recommendedCsrID")));
-		recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
-		recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
-	}
+        recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
+        recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+
+
+    }
 }

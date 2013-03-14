@@ -997,7 +997,7 @@ public class ContractorCron extends PicsActionSupport {
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
 			if (!assignment.getUser().equals(contractor.getAuditor())) {
-				contractor.setAuditor(assignment.getUser());
+				contractor.makeUserCurrentCsrExpireExistingCsr(assignment.getUser());
 			}
 		}
 	}
@@ -1067,7 +1067,7 @@ public class ContractorCron extends PicsActionSupport {
 					audit.setAuditor(userDAO.find(55603));
 					break;
 				case (AuditType.WELCOME):
-					audit.setAuditor(contractor.getAuditor());
+					audit.setAuditor(contractor.getCurrentCsr());
 					break;
 				}
 			}

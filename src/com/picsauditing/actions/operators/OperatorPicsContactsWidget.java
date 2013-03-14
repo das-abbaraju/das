@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.User;

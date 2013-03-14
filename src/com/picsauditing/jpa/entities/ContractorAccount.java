@@ -836,9 +836,64 @@ public class ContractorAccount extends Account implements JSONable {
 		this.auditor = auditor;
 	}
 
-	// /// Transient/Helper Methods ///////
+    @Transient
+    public boolean hasCurrentCsr() {
+        User csr = getCurrentCsr();
+        if (csr != null) {
+            return true;
+        }
+        return false;
+    }
 
-	@Transient
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentCsr() {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    return representative.getUser();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentCsr(User newCsr) {
+        makeUserCurrentCsrExpireExistingCsr(newCsr);
+    }
+
+    @Transient
+    public void makeUserCurrentCsrExpireExistingCsr(User newCsr) {
+        Date now = new Date();
+        expireCurrentCsrs(now);
+        addNewCsrRepresentative(newCsr, now);
+    }
+
+    private void addNewCsrRepresentative(User newCsr, Date now) {
+        AccountUser newCsrRep = new AccountUser();
+        newCsrRep.setAccount(this);
+        newCsrRep.setUser(newCsr);
+        newCsrRep.setStartDate(now);
+        newCsrRep.setEndDate(DateBean.getEndOfTime());
+        newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
+        newCsrRep.setOwnerPercent(100);
+        addAccountUser(newCsrRep);
+    }
+
+    private void expireCurrentCsrs(Date now) {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    representative.setEndDate(now);
+                }
+            }
+        }
+    }
+
+    @Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()

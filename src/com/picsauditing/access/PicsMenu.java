@@ -254,9 +254,6 @@ public class PicsMenu {
 			subMenu.addChild("Auditor Assignment", "AuditorAssignmentMatrix.action", "AuditorAssignment");
 
 		subMenu = menu.addChild("Customer Service");
-		if (permissions.isAdmin()) {
-			subMenu.addChild("Assign Contractors", "ContractorAssigned.action", "AssignContractos");
-		}
 
 		if (permissions.hasPermission(OpPerms.ManageWebcam)) {
 			subMenu.addChild("Manage Webcams", "ManageWebcams.action?button=out", "ManageWebcams");
