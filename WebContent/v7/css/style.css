@@ -10168,10 +10168,9 @@ hr {
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
   width: auto;
-  line-height: 28px;
 }
 
-/* line 25, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 24, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 
 .pagination ul > li > a,
 .pagination ul > li > span {
@@ -10190,7 +10189,7 @@ hr {
           box-shadow: inset 0 1px 1px #fff;
 }
 
-/* line 38, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 37, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 
 .pagination ul > li > a:hover {
   background-color: #e3e3e3;
@@ -10202,7 +10201,7 @@ hr {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6f6f7, endColorstr=#e3e3e3);
 }
 
-/* line 49, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 47, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 
 .pagination ul > .active > a,
 .pagination ul > .active > span,

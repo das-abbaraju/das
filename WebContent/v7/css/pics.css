@@ -913,11 +913,10 @@ hr {
 /* line 18, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
-  line-height: 28px;
   width: auto;
 }
 
-/* line 25, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 24, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination ul > li > a,
 .pagination ul > li > span {
   background-color: gainsboro;
@@ -935,7 +934,7 @@ hr {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
 }
 
-/* line 38, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 37, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination ul > li > a:hover {
   background-color: #e3e3e3;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6f6f7), color-stop(100%, #e3e3e3));
@@ -946,7 +945,7 @@ hr {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6f6f7, endColorstr=#e3e3e3);
 }
 
-/* line 49, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
+/* line 47, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination ul > .active > a,
 .pagination ul > .active > span,
 .pagination ul > .active > a:hover,
@@ -957,11 +956,11 @@ hr {
   background-image: -moz-linear-gradient(#e0e0e1, #cecece);
   background-image: -o-linear-gradient(#e0e0e1, #cecece);
   background-image: linear-gradient(#e0e0e1, #cecece);
-  color: #454545;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#e0e0e1, endColorstr=#cecece);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #454545;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#e0e0e1, endColorstr=#cecece);
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
