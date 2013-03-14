@@ -7,7 +7,6 @@ import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.ReportFilterAccount;
@@ -77,11 +76,16 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql.addField("'ACC' AS systemType");
 		sql.addField("CASE c.insideSalesPriority WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE 'None' END AS priority");
-		// Find requested or denied or pending but not active that have been
-		// requested
-		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL) "
-				+ "OR (a.status = 'Pending' AND a.id IN (SELECT subID FROM generalcontractors "
-				+ "WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0)))");
+
+		// Find requested or denied or pending but not active that have been requested,
+		// being careful to excluded those rows which contractor cron corporate rollup created
+		String whereClause = "(gc.createdBy != 1) " +
+				"AND (a.status = 'Requested' " +
+					"OR (a.status = 'Declined' AND a.reason IS NOT NULL) " +
+					"OR (a.status = 'Pending' AND a.id IN " +
+						"(SELECT subID FROM generalcontractors WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0))))";
+
+		sql.addWhere(whereClause);
 
 		sql.addGroupBy("c.id, gc.id");
 
@@ -344,12 +348,13 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("deadline", getText("ContractorRegistrationRequest.deadline"),
 				ExcelCellType.Date));
 
-		if (permissions.isOperatorCorporate())
+		if (permissions.isOperatorCorporate()) {
 			excelSheet.addColumn(new ExcelColumn("ContactedBy",
 					getText("ContractorRegistrationRequest.lastContactedBy")));
-		else
+		} else {
 			excelSheet.addColumn(new ExcelColumn("ContactedByID",
 					getText("ContractorRegistrationRequest.lastContactedBy")));
+		}
 
 		excelSheet.addColumn(new ExcelColumn("lastContactDate",
 				getText("ContractorRegistrationRequest.lastContactedDate"), ExcelCellType.Date));
