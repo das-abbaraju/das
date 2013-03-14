@@ -44,6 +44,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -1157,9 +1158,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		this.maxFileUploadBytes = Long.parseLong(value);
 	}
 
-	public String getMaxFileUploadMBytes() {
-		Double max = new Double(maxFileUploadBytes / (1024 * 1024));
-		return max.toString();
+	public String getMaxFileUploadSize() {
+		BigDecimal value = new BigDecimal(maxFileUploadBytes);
+		value = value.divide(new BigDecimal((1024 * 1024 * 1024))).setScale(2);
+		return value.toString();
 	}
 
 }

@@ -35,6 +35,9 @@ function closePage() {
 				<div class="question"><label>File:</label> <s:file name="file"
 					value="%{file}" size="50"></s:file><br />
 				</div>
+                    <div style="text-align:center; font-style:normal; font-weight:normal;"><s:text name="global.maxFileUploadBytes">
+                        <s:param><s:property value="maxFileUploadSize" /> </s:param>
+                    </s:text></div>
 				<s:if test="file != null && file.exists()">
 					<div class="question"><a
 						href="AuditFileUpload.action?auditID=<s:property value="auditID"/>&fileID=<s:property value="fileID"/>&button=download"
@@ -63,9 +66,6 @@ function closePage() {
 					type="submit">Save</button>
 				</div>
 				</div>
-                <div style="text-align:center; font-style:normal; font-weight:normal; font-size:75%;"><s:text name="global.maxFileUploadBytes">
-                    <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
-                </s:text></div>
 			</s:form>
 			</div>
 		<br clear="all" />

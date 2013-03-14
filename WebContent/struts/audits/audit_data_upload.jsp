@@ -56,8 +56,11 @@ function closePage() {
 			<td style="text-align:center;vertical-align:top;width: 45%">
 				<h3 style="margin-top:0px;"><s:text name="AuditDataUpload.UploadNew"></s:text></h3>
 				<s:if test="file != null && file.exists()">
-					<p><s:text name="AuditDataUpload.WillReplaceFile"></s:text></p>
+					<s:text name="AuditDataUpload.WillReplaceFile"></s:text>
 				</s:if>
+                <div style="margin-bottom:20px;text-align:center; font-style:normal; font-weight:normal;"><s:text name="global.maxFileUploadBytes">
+                    <s:param><s:property value="maxFileUploadSize" /> </s:param>
+                </s:text></div>
 				<s:file name="file" size="15%"></s:file>
                 <div>
 					<s:submit method="uploadFile" value="%{getText('button.UploadFile')}" cssClass="picsbutton positive"></s:submit>
@@ -85,9 +88,6 @@ function closePage() {
 		<button style="text-align:center; width:100%" class="picsbutton" name="button" value="Close" onclick="javascript: closePage()"><s:text name="button.CloseReturn" /></button>
 	</div>
 </div>
-    <div style="text-align:center; font-style:normal; font-weight:normal; font-size:75%;"><s:text name="global.maxFileUploadBytes">
-        <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
-    </s:text></div>
 
 </div>	
 </div>

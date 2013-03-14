@@ -63,7 +63,9 @@
 									<div class="question">
 										<label><s:text name="global.File" />:</label>
 										<s:file id="fileTextbox" name="file" value="%{file}" size="50" ></s:file>
-										<br />
+                                        <div style="text-align:center; font-style:normal; font-weight:normal;"><s:text name="global.maxFileUploadBytes">
+                                            <s:param><s:property value="maxFileUploadSize" /> </s:param>
+                                        </s:text></div>
 									</div>
 								
 								<s:if test="file != null && file.exists()">
@@ -134,9 +136,6 @@
 									</div>
 								</s:if>
 							</div>
-                            <div style="text-align:center; font-style:normal; font-weight:normal; font-size:75%;"><s:text name="global.maxFileUploadBytes">
-                                <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
-                            </s:text></div>
 						</s:form>
 					</div>
 					
