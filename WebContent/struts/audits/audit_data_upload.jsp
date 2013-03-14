@@ -59,9 +59,6 @@ function closePage() {
 					<p><s:text name="AuditDataUpload.WillReplaceFile"></s:text></p>
 				</s:if>
 				<s:file name="file" size="15%"></s:file>
-                <p style="font-style:normal;"><s:text name="global.maxFileUploadBytes">
-                    <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
-                </s:text></p>
                 <div>
 					<s:submit method="uploadFile" value="%{getText('button.UploadFile')}" cssClass="picsbutton positive"></s:submit>
 				</div>
@@ -88,6 +85,9 @@ function closePage() {
 		<button style="text-align:center; width:100%" class="picsbutton" name="button" value="Close" onclick="javascript: closePage()"><s:text name="button.CloseReturn" /></button>
 	</div>
 </div>
+    <div style="text-align:center; font-style:normal; font-weight:normal; font-size:75%;"><s:text name="global.maxFileUploadBytes">
+        <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
+    </s:text></div>
 
 </div>	
 </div>

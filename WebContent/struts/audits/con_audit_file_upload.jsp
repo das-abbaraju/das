@@ -63,6 +63,9 @@ function closePage() {
 					type="submit">Save</button>
 				</div>
 				</div>
+                <div style="text-align:center; font-style:normal; font-weight:normal; font-size:75%;"><s:text name="global.maxFileUploadBytes">
+                    <s:param><s:property value="maxFileUploadMBytes" /> </s:param>
+                </s:text></div>
 			</s:form>
 			</div>
 		<br clear="all" />
