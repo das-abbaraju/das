@@ -17,7 +17,7 @@ public class RecommendedCsrService {
     private ContractorAccountDAO contractorAccountDAO;
 
     public int acceptRecommendedCsrs(String contractorIds) {
-        List<Integer> contractorIdsList = parseContractorIdsString(contractorIds);
+        List<Integer> contractorIdsList = Strings.explodeCommaDelimitedStringOfIds(contractorIds);
 
         List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
 
@@ -31,7 +31,7 @@ public class RecommendedCsrService {
 
 
     public int rejectRecommendedCsrs(String contractorIds) {
-        List<Integer> contractorIdsList = parseContractorIdsString(contractorIds);
+        List<Integer> contractorIdsList = Strings.explodeCommaDelimitedStringOfIds(contractorIds);
 
         List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
 
@@ -42,15 +42,6 @@ public class RecommendedCsrService {
 
         return contractorList.size();
     }
-
-
-    private List<Integer> parseContractorIdsString(String contractorIds) {
-        String[] contractorsIdsStringArray = contractorIds.split(",");
-        List<Integer> contractorIdsList = new ArrayList<Integer>();
-
-        for (String contractorId: contractorsIdsStringArray) {
-            contractorIdsList.add(Integer.valueOf(contractorId.trim()));
-        }
-        return contractorIdsList;
-    }
 }
+
+

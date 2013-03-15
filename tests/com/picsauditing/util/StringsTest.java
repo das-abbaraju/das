@@ -7,10 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -288,4 +285,36 @@ public class StringsTest {
 	public void testToString_WhenIPassNull_ThenItReturnsEmptyString() {
 		assertEquals("", Strings.toString(null));
 	}
+
+    @Test
+    public void testExplodeCommaDelimitedStringOfIds() {
+        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1,2,3,4,5");
+        assertEquals(5, result.size());
+        assertEquals(1, (int) result.get(0));
+        assertEquals(2, (int) result.get(1));
+        assertEquals(3, (int) result.get(2));
+        assertEquals(4, (int) result.get(3));
+        assertEquals(5, (int) result.get(4));
+    }
+
+    @Test
+    public void testExplodeCommaDelimitedStringOfIds_WithWhiteSpaces() {
+        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1 ,2\r,3\n,4\t,    5       ");
+        assertEquals(5, result.size());
+        assertEquals(1, (int) result.get(0));
+        assertEquals(2, (int) result.get(1));
+        assertEquals(3, (int) result.get(2));
+        assertEquals(4, (int) result.get(3));
+        assertEquals(5, (int) result.get(4));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testExplodeCommaDelimitedStringOfIds_NotANumber() {
+        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5cheeseburgers, 3");
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testExplodeCommaDelimitedStringOfIds_Decimal() {
+        List<Integer> result = Strings.explodeCommaDelimitedStringOfIds("1, 5,3.14");
+    }
 }
