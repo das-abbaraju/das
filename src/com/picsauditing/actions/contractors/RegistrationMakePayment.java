@@ -384,7 +384,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			} catch (Exception x) {
 				// TODO: Test
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { getText("PicsTollFreePhone") }));
+						new Object[] { getPicsPhoneNumber() }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -413,7 +413,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if (retries >= quit) {
 			// TODO: Test
 			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[] { getText("PicsTollFreePhone") }));
+					new Object[] { getPicsPhoneNumber() }));
 			braintreeCommunicationError = true;
 			return;
 		}

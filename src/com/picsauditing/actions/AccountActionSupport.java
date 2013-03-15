@@ -40,8 +40,6 @@ public class AccountActionSupport extends PicsActionSupport {
 	@Autowired
 	protected NoteDAO noteDao;
 	@Autowired
-	private CountryDAO countryDAO;
-	@Autowired
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 
 	public int getId() {
@@ -62,7 +60,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Delete this method and property when we start i18n
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSubHeading() {
@@ -101,7 +99,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of notes up to the limit, using the given where clause
-	 * 
+	 *
 	 * @param where
 	 *            should be in the format of "AND field=1", can be an empty
 	 *            string
@@ -128,7 +126,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of 5 embedded notes, based on noteCategory
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Note> getNotes() {

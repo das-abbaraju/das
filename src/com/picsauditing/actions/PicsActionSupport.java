@@ -8,6 +8,7 @@ import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -83,6 +84,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected AppPropertyDAO propertyDAO;
     @Autowired
     protected BasicDAO dao;
+    @Autowired
+	protected CountryDAO countryDAO;
     @Autowired
     protected UserDAO userDAO;
     @Autowired
@@ -1164,4 +1167,23 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return value.toString();
 	}
 
+	public String getPicsPhoneNumber() {
+		return getPicsPhoneNumber(null);
+	}
+
+	public String getPicsPhoneNumber(String country) {
+		if (permissions == null) {
+			loadPermissions(false);
+		}
+
+		if (Strings.isNotEmpty(country)) {
+			return countryDAO.find(country).getPhone();
+		}
+
+		if (Strings.isNotEmpty(permissions.getCountry())) {
+			return countryDAO.find(permissions.getCountry()).getPhone();
+		}
+
+		return getText("PicsTollFreePhone");
+	}
 }

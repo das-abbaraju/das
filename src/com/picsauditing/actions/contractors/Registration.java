@@ -391,6 +391,11 @@ public class Registration extends ContractorActionSupport {
 		return countrySubdivision;
 	}
 
+	@Override
+	public String getPicsPhoneNumber() {
+		return countryDAO.find("US").getPhone();
+	}
+
 	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
