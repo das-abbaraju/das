@@ -212,10 +212,7 @@ public class EventSubscriptionBuilder {
 			Set<ContractorAudit> expiringPolicies) throws IOException {
 
 		User user = insuranceSubscription.getUser();
-		if (user.getAccount().isContractor() &&
-				((ContractorAccount) user.getAccount()).getExpiringPoliciesForInsuranceExpirationEmail().size() == 0) {
-			return;
-		}
+        if (!user.getAccount().isContractor() || expiringPolicies.isEmpty()) return;
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.clear();
