@@ -127,6 +127,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	// Specifically for testing, DO NOT @Autowired
 	private InputValidator inputValidator;
 
+	// This is specifically used for testing, do not auto-wire
+	private FeatureToggle featureToggle;
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -932,8 +935,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public boolean isUsingVersion7Menus() {
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
+		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			return isUsingDynamicReports();
 		}
 
@@ -941,18 +943,12 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
-			this.usingDynamicReports = usingVersion7Menus;
-		}
-
 		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 	@Temporal(TemporalType.DATE)
 	public Date getUsingVersion7MenusDate() {
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
+		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			return getUsingDynamicReportsDate();
 		}
 
@@ -960,11 +956,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_USER_MENU_COLUMN)) {
-			this.usingDynamicReportsDate = usingVersion7MenusDate;
-		}
-
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
@@ -1021,5 +1012,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean isUsernameNotTaken(String username) {
 		// TODO see if we want to pass something other than 0 in
 		return !getInputValidator().isUsernameTaken(username, 0);
+	}
+
+	@Transient
+	private FeatureToggle getFeatureToggle() {
+		if (featureToggle == null) {
+			return SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		}
+
+		return featureToggle;
 	}
 }

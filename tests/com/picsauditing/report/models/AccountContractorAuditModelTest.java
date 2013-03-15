@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AccountContractorAuditModelTest extends ModelTest {
+
 	private AccountContractorAuditModel model;
 
 	@Before

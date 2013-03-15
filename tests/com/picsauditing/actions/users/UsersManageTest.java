@@ -6,6 +6,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.validator.InputValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,8 @@ public class UsersManageTest extends PicsActionTest {
 	private UserDAO userDAO;
 	@Mock
 	private InputValidator inputValidator;
+	@Mock
+	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
@@ -48,6 +51,7 @@ public class UsersManageTest extends PicsActionTest {
 
 		Whitebox.setInternalState(usersManage, "userDAO", userDAO);
 		Whitebox.setInternalState(usersManage, "inputValidator", inputValidator);
+		Whitebox.setInternalState(usersManage, "featureToggle", featureToggle);
 	}
 
 	@Test

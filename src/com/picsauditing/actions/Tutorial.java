@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
 
 @SuppressWarnings("serial")
 public class Tutorial extends PicsActionSupport {
 
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	public String navigationMenu() throws Exception {
 		loadPermissions(false);
@@ -46,6 +49,11 @@ public class Tutorial extends PicsActionSupport {
 
 		User user = userDAO.find(permissions.getUserId());
 		user.setUsingVersion7MenusDate(usingVersion7MenuDate);
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			user.setusingDynamicReportsDate(usingVersion7MenuDate);
+		}
+
 		userDAO.save(user);
 	}
+
 }

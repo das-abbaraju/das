@@ -2,20 +2,20 @@ package com.picsauditing.access;
 
 import static org.junit.Assert.assertEquals;
 
-import com.picsauditing.model.i18n.LanguageModel;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import org.mockito.Mock;
+import com.picsauditing.model.i18n.LanguageModel;
 
 public class UserIndexPageTest {
 	@Mock
 	private LanguageModel languageModel;
-	
+
 	@Test
 	public void testNotLoggedIn() throws Exception {
 		assertEquals("Login.action", UserIndexPage.getIndexURL(null));

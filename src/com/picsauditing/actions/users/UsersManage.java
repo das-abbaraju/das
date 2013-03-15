@@ -57,6 +57,7 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.EncodedKey;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -112,6 +113,8 @@ public class UsersManage extends PicsActionSupport {
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
 	private InputValidator inputValidator;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -295,6 +298,10 @@ public class UsersManage extends PicsActionSupport {
 			// auto indexing, no longer need to call it.
 			// user.setNeedsIndexing(true);
 			user.setUsingVersion7Menus(isUsingVersion7Menus());
+			if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+				user.setUsingDynamicReports(isUsingVersion7Menus());
+			}
+
 			user = userDAO.save(user);
 			userDAO.refresh(user);
 

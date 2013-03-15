@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
@@ -47,6 +48,8 @@ public class ProfileEdit extends PicsActionSupport {
 	private UserLoginLogDAO loginLogDao;
 	@Autowired
 	private InputValidator inputValidator;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private User u;
 
@@ -87,6 +90,9 @@ public class ProfileEdit extends PicsActionSupport {
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 		u.setUsingVersion7Menus(isUsingVersion7Menus());
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			u.setUsingDynamicReports(isUsingVersion7Menus());
+		}
 
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
@@ -99,7 +105,7 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	private String redirect() throws IOException {
-		if (isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null) {
+		if (isUserSetForNewMenu()) {
 			// if the user makes it to this point, we know their user information was saved properly.
 			permissions.setUsingVersion7Menus(true);
 			ActionContext.getContext().getSession().put("permissions", permissions);
@@ -109,6 +115,14 @@ public class ProfileEdit extends PicsActionSupport {
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 
 		return setUrlForRedirect("ProfileEdit.action");
+	}
+
+	private boolean isUserSetForNewMenu() {
+		if(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			return isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null;
+		}
+
+		return isUsingVersion7Menus() && u.getUsingDynamicReportsDate() == null;
 	}
 
 	public void validateInput() {

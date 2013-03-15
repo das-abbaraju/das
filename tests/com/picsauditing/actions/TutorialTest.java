@@ -6,10 +6,13 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.util.Date;
 
@@ -26,6 +29,8 @@ public class TutorialTest extends PicsActionTest {
     private Permissions permissions;
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private FeatureToggle featureToggle;
 
     @Before
     public void setUp() throws Exception {
@@ -36,6 +41,7 @@ public class TutorialTest extends PicsActionTest {
         tutorial.permissions = permissions;
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(tutorial, this);
+        Whitebox.setInternalState(tutorial, "featureToggle", featureToggle);
     }
 
     @Test
