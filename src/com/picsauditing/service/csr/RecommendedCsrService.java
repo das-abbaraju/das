@@ -36,7 +36,7 @@ public class RecommendedCsrService {
         List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
 
         for (ContractorAccount contractor: contractorList) {
-            contractor.setRecommendedCsr(contractor.getCurrentCsr());
+            contractor.setRecommendedCsr(null);
             contractorAccountDAO.save(contractor);
         }
 
