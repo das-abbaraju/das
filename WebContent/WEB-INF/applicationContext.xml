@@ -191,6 +191,7 @@
 	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
 	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
 	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
+    <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService" />
 
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>

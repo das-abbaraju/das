@@ -79,6 +79,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
+    private User recommendedCsr;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
@@ -835,6 +836,16 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
+
+    @ManyToOne
+    @JoinColumn(name = "recommendedCsrID")
+    public User getRecommendedCsr() {
+        return recommendedCsr;
+    }
+
+    public void setRecommendedCsr(User recommendedCsr) {
+        this.recommendedCsr = recommendedCsr;
+    }
 
     @Transient
     public boolean hasCurrentCsr() {
