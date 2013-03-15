@@ -233,7 +233,7 @@ public class EventSubscriptionBuilder {
 		emailBuilder.setUser(user);
 
 		Account account = user.getAccount();
-		if (account.isContractor() && ((ContractorAccount) account).getAuditor() != null)
+		if (account.isContractor() && ((ContractorAccount) account).getCurrentCsr() != null)
 			emailBuilder.setFromAddressAsCSRFor((ContractorAccount) account);
 
 		EmailQueue email = emailBuilder.build();

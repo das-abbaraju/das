@@ -81,8 +81,8 @@ public abstract class SubscriptionBuilder {
 					ContractorAccount c = (ContractorAccount) user.getAccount();
 					emailBuilder.addToken("contractor", c);
 					emailBuilder.setConID(c.getId());
-					if (c.getAuditor() != null)
-						emailBuilder.setFromAddress("\"" + c.getAuditor().getName() + "\"<" + c.getAuditor().getEmail()
+					if (c.getCurrentCsr() != null)
+						emailBuilder.setFromAddress("\"" + c.getCurrentCsr().getName() + "\"<" + c.getCurrentCsr().getEmail()
 								+ ">");
 					// If operator subscription send replies to AM
 				} else if (user.getAccount().isOperatorCorporate()) {

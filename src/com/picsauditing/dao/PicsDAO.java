@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
@@ -69,6 +70,7 @@ abstract public class PicsDAO {
 
 	@Transactional(propagation = Propagation.NESTED)
 	public BaseTable save(BaseTable o) {
+        boolean transaction = TransactionSynchronizationManager.isActualTransactionActive();
 		if (o.getId() == 0) {
 			em.persist(o);
 		} else {

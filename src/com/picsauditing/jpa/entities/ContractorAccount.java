@@ -823,19 +823,15 @@ public class ContractorAccount extends Account implements JSONable {
 		this.score = score;
 	}
 
-	// Other relationships //
-	@ManyToOne
-	@JoinColumn(name = "welcomeAuditor_id")
-	/**
-	 * The CSR
-	 */
-	public User getAuditor() {
-		return auditor;
-	}
-
-	public void setAuditor(User auditor) {
-		this.auditor = auditor;
-	}
+//	@ManyToOne
+//	@JoinColumn(name = "welcomeAuditor_id")
+//	public User getAuditor() {
+//		return auditor;
+//	}
+//
+//	public void setAuditor(User auditor) {
+//		this.auditor = auditor;
+//	}
 
     @ManyToOne
     @JoinColumn(name = "recommendedCsrID")

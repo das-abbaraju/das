@@ -9,7 +9,6 @@ public class ContractorTable extends AbstractTable {
 	public static final String Account = "Account";
     public static final String AccountUser = "AccountUser";
 	public static final String CustomerService = "CustomerService";
-	public static final String CurrentCSR = "CurrentCSR";
 	public static final String RecommendedCSR = "RecommendedCSR";
 	public static final String PQF = "PQF";
 	public static final String Flag = "Flag";
@@ -52,7 +51,6 @@ public class ContractorTable extends AbstractTable {
 //		oldCsrKey.setMinimumImportance(FieldImportance.Average);
 //		oldCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 
-//        ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CurrentCSR, new AccountUserTable(),
         ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new AccountUserTable(),
                 new ReportOnClause("id", "accountID"))); // , ReportOnClause.ToAlias + ".role = " + UserAccountRole.PICSCustomerServiceRep));
 		csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);

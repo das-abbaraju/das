@@ -208,7 +208,7 @@ public class ContractorCron extends PicsActionSupport {
 			runContractorETL(contractor);
 
 			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
-					contractor.getAuditor() == null) {
+					contractor.getCurrentCsr() == null) {
 				runCSRAssignment(contractor);
 			}
 
@@ -996,7 +996,7 @@ public class ContractorCron extends PicsActionSupport {
 		logger.trace("ContractorCron starting CsrAssignment");
 		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
 		if (assignment != null) {
-			if (!assignment.getUser().equals(contractor.getAuditor())) {
+			if (!assignment.getUser().equals(contractor.getCurrentCsr())) {
 				contractor.makeUserCurrentCsrExpireExistingCsr(assignment.getUser());
 			}
 		}

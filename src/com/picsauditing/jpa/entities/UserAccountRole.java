@@ -6,8 +6,7 @@ public enum UserAccountRole implements Translatable {
 	PICSSalesRep("Sales Representative"), 
 	PICSAccountRep("Account Manager"),
 	PICSInsideSalesRep("Inside Sales Representative"),
-	PICSCustomerServiceRep("Customer Service Representative"),
-    PICSWelcomeCallAuditor("Welcome Call Auditor");
+	PICSCustomerServiceRep("Customer Service Representative");
 
 	private String description;
 
@@ -42,10 +41,6 @@ public enum UserAccountRole implements Translatable {
 
     public boolean isCustomerServiceRep() {
         return this == PICSCustomerServiceRep;
-    }
-
-    public boolean isWelcomeCallAuditor() {
-        return this == PICSWelcomeCallAuditor;
     }
 
 	@Override
