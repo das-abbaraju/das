@@ -140,7 +140,7 @@
                         />
                     </li>
                     <li id="registration_dialect">
-                        <s:include value="_registrationDialects.jsp" />
+                        <s:include value="/struts/contractors/_registration-dialects.jsp" />
                     </li>
 					<li>
 						<s:textfield name="contractor.name" />

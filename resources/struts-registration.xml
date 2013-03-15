@@ -10,8 +10,8 @@
 		</action>
 		
         <action name="RegistrationAjax" class="com.picsauditing.actions.contractors.Registration" method="dialects">
-            <result>struts/contractors/_registrationDialects.jsp</result>
-            <result name="input">struts/contractors/_registrationDialects.jsp</result>
+            <result>struts/contractors/_registration-dialects.jsp</result>
+            <result name="input">struts/contractors/_registration-dialects.jsp</result>
         </action>
 
 		<action name="ContractorRegistration" class="com.picsauditing.actions.contractors.Registration">
