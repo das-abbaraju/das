@@ -27,26 +27,32 @@
 	REGISTRATION.contractor_country = {
 		init: function () {
 			if ($('.Registration-page').length) {
-				$('.contractor-country').bind('change', this.events.update_countrySubdivision_list);
+			    var that = this;
+
+				$('.contractor-country').on('change', function (event) {
+				    that.events.update_countrySubdivision_list.call(that, event);
+				});
 
 				var selectedSubdivision = null;
 				
 				if ($('#requested_contractor').length) {
 			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
+
 			    	selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
-			    	
 			    }
+
 				//autofill Country Subdivision list
 				if ($('.contractor-country').length) {
-				    this.events.update_countrySubdivision_list(selectedSubdivision);
+				    that.events.update_countrySubdivision_list.call(that, selectedSubdivision);
 				}
 			}
 		},
 
 		events: {
 			update_countrySubdivision_list: function (selectedSubdivision) {
-				var country_select = $('.contractor-country') || $(this);
-				var country_string = country_select.val();
+				var country_select = $('.contractor-country') || $(event.currentTarget),
+				    country_string = country_select.val(),
+				    that = this;
 
 				PICS.ajax({
 					url: 'CountrySubdivisionListAjax!registration.action',
@@ -55,8 +61,8 @@
 						prefix: 'contractor.'
 					},
 					success: function (data, textStatus, XMLHttpRequest) {
-						var countrySubdivision_element = $('.registration-form li.countrySubdivision');
-						var zip_element = $('.registration-form li.zip');
+						var countrySubdivision_element = $('.registration-form li.countrySubdivision'),
+						    zip_element = $('.registration-form li.zip');
 
 						countrySubdivision_element.html(data);
 
@@ -71,18 +77,31 @@
 						} else {
 							zip_element.slideDown(400);
 						}
-
-						if (country_string == 'GB') {
-							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
-						} else {
-							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
-						}
 						
 						if (selectedSubdivision) {
 							countrySubdivision_element.find("select").val(selectedSubdivision);
 						}
+
+						that.events.updatePicsPhone(country_string);
 					}
 				});
+			},
+
+			updatePicsPhone: function (country_string) {
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!phone.action',
+                    dataType: 'json',
+                    data: {
+                        countryString: country_string
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var pics_phone = $('#pics_phone_number');
+
+                        if (pics_phone.length > 0) {
+                            pics_phone.html(data.picsPhoneNumber);
+                        }
+                    }
+                });
 			}
 		}
 	};
