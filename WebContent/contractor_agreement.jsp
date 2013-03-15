@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <section>
-	<s:text name="ContractorAgreement.content">
-		<s:param value="getText( locale, \"PicsPhone\")" />
-	</s:text>
+    <s:text name="ContractorAgreement.content">
+        <s:param>${picsPhoneNumber}</s:param>
+    </s:text>
 </section>

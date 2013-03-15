@@ -32,14 +32,7 @@
 		<span class="welcome-message"><s:text name="Header.Welcome" />, ${permissions.name}</span>
 	</s:if>
 	
-	<span class="phone">
-		<s:if test="permissions.country == 'GB'">
-			<s:text name="JS.RegistrationSuperEliteSquadronPhone.GB" />
-		</s:if>
-		<s:else>
-			<s:text name="JS.RegistrationSuperEliteSquadronPhone" />
-		</s:else>
-	</span>
+	<span id="pics_phone_number" class="phone">${picsPhoneNumber}</span>
 	
 	<s:if test="liveChatEnabled">
 		<s:include value="/struts/layout/chat.jsp" />

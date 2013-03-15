@@ -36,12 +36,18 @@
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useDynamicReports = false;
+    
+    String picsPhoneNumber = i18nCache.getText("PicsPhone", locale);
+    
 	if (permissions.getUserId() > 0){
 		UserDAO userDao = SpringUtils.getBean("UserDAO");
 		User user = userDao.find(permissions.getUserId());
 
-		if (user != null)
-	useDynamicReports = user.isUsingDynamicReports();
+		if (user != null) {
+		    useDynamicReports = user.isUsingDynamicReports();
+		}
+        
+        picsPhoneNumber = user.getAccount().getCountry().getPhone();
 	}
 
 	MenuComponent menu = new MenuComponent();
@@ -210,7 +216,7 @@
                     <% } %>
                     <td id="sidebox">
                         <p>
-                            <b class="head-phone"><%=i18nCache.getText("PicsPhone", locale)%></b>&emsp;&emsp;
+                            <b class="head-phone"><%= picsPhoneNumber %></b>
                         <% if (permissions.isLoggedIn()) { %>
                             <span id="name">
                                 <% if (permissions.hasPermission(OpPerms.EditProfile)) { %>

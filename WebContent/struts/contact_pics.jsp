@@ -28,7 +28,7 @@
                     <s:text name="PicsMainPhone" /></li>
         		<li>
                     <label><s:text name="Contact.tollfree" />:</label>
-                    <s:text name="PicsTollFreePhone" />
+                    ${picsPhoneNumber}
                 </li>
         		<li>
                     <label><s:text name="User.fax" />:</label>

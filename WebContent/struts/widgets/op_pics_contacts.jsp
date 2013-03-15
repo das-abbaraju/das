@@ -24,4 +24,9 @@
 	</ul>
 </s:iterator>
 
-<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label><s:text name="PicsPhone" /></p>
+<p>
+    <label>
+        <s:text name="ContactPage.GeneralInquiries"></s:text>:
+    </label>
+    ${picsPhoneNumber}
+</p>
