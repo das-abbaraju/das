@@ -140,7 +140,6 @@ public class ContractorAccountTest {
 		assertTrue(billingStatus.isPastDue());
 	}
 
-	@Ignore("This has been fixed on master")
 	@Test
 	public void testGetBillingStatus_90DaysPastRenewalDateAndRenewFalseIsCancelled() throws Exception {
 		contractorUnderTest.setRenew(false);
@@ -151,7 +150,6 @@ public class ContractorAccountTest {
 		assertTrue(billingStatus.isCancelled());
 	}
 
-	@Ignore("This has been fixed on master")
 	@Test
 	public void testGetBillingStatus_90DaysPastRenewalDateAndRenewTrueIsReactivation() throws Exception {
 		contractorUnderTest.setRenew(true);
