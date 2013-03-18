@@ -145,7 +145,6 @@ Ext.define('PICS.data.ServerCommunication', {
                 // set load data proxy
                 report_store.setProxyForWrite(url);
 
-                // sync
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[0],
@@ -240,8 +239,9 @@ Ext.define('PICS.data.ServerCommunication', {
                             
                             var report_store = Ext.StoreManager.get('report.Reports'),
                                 report = report_store.first();
-    
-                            report.commitAllChanges();
+
+                            // TODO: check if needed
+                            //report.commitAllChanges();
     
                             // load new results
                             loadDataTableStore(json);
@@ -284,6 +284,8 @@ Ext.define('PICS.data.ServerCommunication', {
                                 response: response
                             });
                         } else {
+                            report.has_unsaved_changes = false;
+
                             success_callback();
                         }
                     }
