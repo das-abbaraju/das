@@ -295,6 +295,7 @@
 				
 				
 				<ol>
+                    <!--
 					<s:if test="contractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
 						<s:url action="RequestNewContractorAccount" var="request_add_operator">
 							<s:param name="contractor">
@@ -382,6 +383,7 @@
 							</table>
 						</li>
 					</s:if>
+                    -->
 
                     <s:include value="operator_required_fields.jsp" />
 
