@@ -464,4 +464,14 @@ public class ContractorAuditDAO extends PicsDAO {
 
 		return (ContractorAudit) em.createQuery(hql).getSingleResult();
 	}
+
+	public ContractorAudit findMostRecentAuditByContractorAuditType(int conId, int auditTypeId) {
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + conId
+				+ " AND ca.auditType.id = " + auditTypeId + " order by ca.expiresDate DESC";
+
+		List<ContractorAudit> audits = em.createQuery(hql).getResultList();
+		if (audits.size() > 0)
+			return audits.get(0);
+		return null;
+	}
 }

@@ -250,10 +250,11 @@ public class AuditBuilderTest extends PicsTest {
 				.setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
 		addCategoryRules(null);
 
+		AuditType implementationType = EntityFactory
+				.makeAuditType(AuditType.INTEGRITYMANAGEMENT);
+		implementationType.setRenewable(false);
 		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(
-						EntityFactory
-								.makeAuditType(AuditType.INTEGRITYMANAGEMENT));
+				.thenReturn(implementationType);
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());

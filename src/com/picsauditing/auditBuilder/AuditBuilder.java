@@ -121,8 +121,10 @@ public class AuditBuilder {
 						if (auditType.isWCB()) {
 							createWCBAudits(contractor, auditType);
 						} else {
-							ContractorAudit audit = createNewAudit(contractor, auditType);
-							conAuditDao.save(audit);
+							if (!resetRenewableAudit(contractor, auditType)) {
+								ContractorAudit audit = createNewAudit(contractor, auditType);
+								conAuditDao.save(audit);
+							}
 						}
 					}
 				}
@@ -187,6 +189,27 @@ public class AuditBuilder {
 		}
 
 		conAuditDao.save(contractor);
+	}
+
+	private boolean resetRenewableAudit(ContractorAccount contractor, AuditType auditType) {
+		if (!auditType.isRenewable())
+			return false;
+
+		ContractorAudit renewableAudit = conAuditDao.findMostRecentAuditByContractorAuditType(contractor.getId(), auditType.getId());
+		if (renewableAudit != null) {
+			renewableAudit.setExpiresDate(null);
+			for (ContractorAuditOperator cao:renewableAudit.getOperators()) {
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, null);
+				if (caow != null) {
+					caow.setNotes(String.format("Resetting renewable audit to %s", AuditStatus.Pending));
+					caow.setCreatedBy(systemUser);
+					contractorAuditOperatorDAO.save(caow);
+				}
+			}
+			conAuditDao.save(renewableAudit);
+			return true;
+		}
+		return false;
 	}
 
 	/**
