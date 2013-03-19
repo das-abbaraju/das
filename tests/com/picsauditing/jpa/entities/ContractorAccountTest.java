@@ -626,8 +626,8 @@ public class ContractorAccountTest {
 
 	@Test
 	public void testValidVat_isUK() throws Exception {
-		when(country.getIsoCode()).thenReturn("GB");
-		when(countryDAO.findbyISO("GB")).thenReturn(country);
+		when(country.getIsoCode()).thenReturn(Country.UK_ISO_CODE);
+		when(countryDAO.findbyISO(Country.UK_ISO_CODE)).thenReturn(country);
 		contractorUnderTest.setCountry(country);
 
 		boolean validationResult = contractorUnderTest.isValidVAT("145798");
@@ -707,13 +707,10 @@ public class ContractorAccountTest {
 		verifyMethodDoesNotResultInNPE("setNewFee", null, BigDecimal.TEN);
 	}
 
-	@SuppressWarnings("serial")
 	private Map<FeeClass, ContractorFee> buildFakeFeeMap() {
-		return new TreeMap<FeeClass, ContractorFee>() {
-			{
-				put(FeeClass.InsureGUARD, new ContractorFee());
-			}
-		};
+		Map<FeeClass, ContractorFee> contractorFees = new TreeMap<FeeClass, ContractorFee>();
+		contractorFees.put(FeeClass.InsureGUARD, new ContractorFee());
+		return contractorFees;
 	}
 
 	private void verifyMethodDoesNotResultInNPE(String methodName, FeeClass fee) throws Exception {

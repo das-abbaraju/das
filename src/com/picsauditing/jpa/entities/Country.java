@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +35,13 @@ import com.picsauditing.util.Strings;
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
+
+	public static final String FRANCE_ISO_CODE = "FR";
+	public static final String UK_ISO_CODE = "GB";
+	public static final String UAE_ISO_CODE = "AE";
+	public static final String CANADA_ISO_CODE = "CA";
+	public static final String US_ISO_CODE = "US";
+
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	/*
@@ -46,12 +56,13 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	 */
 
 	// The 17 Countries in the EuroZone (that have adopted the Euro)
-	private static final String[] EUROZONE = { "AT", "BE", "CY", "DE", "EE", "ES", "FI", "FR", "GR", "IE", "IT", "LU",
-			"MT", "NL", "PT", "SI", "SK" };
+	private static final Set<String> EUROZONE = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("AT",
+			"BE", "CY", "DE", "EE", "ES", "FI", FRANCE_ISO_CODE, "GR", "IE", "IT", "LU", "MT", "NL", "PT", "SI", "SK")));
+
 	// The 10 additional countries that are in the European Union, but not in
 	// the EuroZone (i.e. that have not yet adopted the Euro, or never will)
-	private static final String[] EUROPEAN_UNION_ALSO = { "BG", "CZ", "DK", "GB", "GI", "HU", "LT", "LV", "PL",
-			"RO", "SE" };
+	private static final Set<String> EUROPEAN_UNION_ALSO = Collections.unmodifiableSet(new HashSet<String>(Arrays
+			.asList("BG", "CZ", "DK", UK_ISO_CODE, "GI", "HU", "LT", "LV", "PL", "RO", "SE")));
 
 	protected String isoCode;
 	protected TranslatableString name;
@@ -122,9 +133,9 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 			return tempCountry;
 		}
 		if (tempCountry.equals("Canada")) {
-			return "CA";
+			return CANADA_ISO_CODE;
 		} else if (tempCountry.equals("United States")) {
-			return "US";
+			return US_ISO_CODE;
 		}
 
 		return "???";
@@ -243,37 +254,37 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Transient
 	public boolean isUS() {
-		return "US".equals(isoCode);
+		return US_ISO_CODE.equals(isoCode);
 	}
 
 	@Transient
 	public boolean isCanada() {
-		return "CA".equals(isoCode);
+		return CANADA_ISO_CODE.equals(isoCode);
 	}
 
 	@Transient
 	public boolean isUAE() {
-		return "AE".equals(isoCode);
+		return UAE_ISO_CODE.equals(isoCode);
 	}
 
 	@Transient
 	public boolean isUK() {
-		return "GB".equals(isoCode);
+		return UK_ISO_CODE.equals(isoCode);
 	}
 
 	@Transient
 	public boolean isFrance() {
-		return "FR".equals(isoCode);
+		return FRANCE_ISO_CODE.equals(isoCode);
 	}
 
 	@Transient
 	public boolean isEuroZone() {
-		return (Arrays.binarySearch(EUROZONE, isoCode) >= 0);
+		return EUROZONE.contains(isoCode);
 	}
 
 	@Transient
 	public boolean isEuropeanUnion() {
-		return (isEuroZone() || Arrays.binarySearch(EUROPEAN_UNION_ALSO, isoCode) >= 0);
+		return (isEuroZone() || EUROPEAN_UNION_ALSO.contains(isoCode));
 	}
 
 	// TODO This is in the wrong class. It should be in a FeeService or similar.
