@@ -50,8 +50,6 @@ public enum FeeClass implements Translatable {
 		@Override
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
-			AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
-			ruleCache.initialize(auditDAO);
 			AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
 			boolean employeeAudits = false;

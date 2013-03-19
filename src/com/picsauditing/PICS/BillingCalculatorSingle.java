@@ -153,7 +153,6 @@ public class BillingCalculatorSingle {
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
 
-		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
 		Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();

@@ -70,9 +70,6 @@ public class AuditBuilder {
 	private Set<String> yearsForAllWCBs;
 
 	public void buildAudits(ContractorAccount contractor) {
-		typeRuleCache.initialize(auditDecisionTableDAO);
-		categoryRuleCache.initialize(auditDecisionTableDAO);
-
 		AuditTypesBuilder typesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
 
 		Set<AuditTypeDetail> requiredAuditTypeDetails = typesBuilder.calculate();
@@ -144,7 +141,6 @@ public class AuditBuilder {
 			}
 		}
 
-		categoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
 		/** Generate Categories and CAOs **/
@@ -776,7 +772,6 @@ public class AuditBuilder {
 	}
 
 	public void recalculateCategories(ContractorAudit conAudit) {
-		categoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
 				conAudit.getContractorAccount());
 

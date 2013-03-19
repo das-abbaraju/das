@@ -141,7 +141,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
 			if (permissions.isOperatorCorporate() && !conAudit.getAuditType().isDesktop()) {
-				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
@@ -885,7 +884,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
-			auditCategoryRuleCache.initialize(auditRuleDAO);
 			AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
 					conAudit.getContractorAccount());
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {

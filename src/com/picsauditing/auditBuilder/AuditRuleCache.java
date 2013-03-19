@@ -10,10 +10,13 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AuditRuleCache<R extends AuditRule> {
+    @Autowired
+    protected AuditDecisionTableDAO auditDecisionTableDAO;
 
-	private class FilterRule implements RuleFilterable<R> {
+    private class FilterRule implements RuleFilterable<R> {
 		List<R> rules;
 
 		public void add(R rule) {
@@ -222,5 +225,6 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		}
 	}
 
-    public abstract void initialize(AuditDecisionTableDAO dao);
+    abstract void initialize();
+
 }

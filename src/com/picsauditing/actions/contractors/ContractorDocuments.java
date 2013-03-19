@@ -41,8 +41,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	public String execute() throws Exception {
 		findContractor();
 
-		auditTypeRuleCache.initialize(auditRuleDAO);
-
 		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
 		auditMap = new TreeMap<AuditType, List<ContractorAudit>>();
 		auditTypes = new TreeMap<DocumentTab, List<AuditType>>();

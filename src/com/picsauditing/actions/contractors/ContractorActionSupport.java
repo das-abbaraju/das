@@ -876,7 +876,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public Set<AuditType> getManuallyAddAudits() {
 		if (manuallyAddAudits == null) {
 			manuallyAddAudits = new HashSet<AuditType>();
-			auditTypeRuleCache.initialize(auditRuleDAO);
 			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
 
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {

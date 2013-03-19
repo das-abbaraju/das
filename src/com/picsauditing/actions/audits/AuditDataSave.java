@@ -221,7 +221,6 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 
-				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify && !commentChanged) {

@@ -138,7 +138,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractorAccountDao.save(contractor);
 				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag,
 						permissions));
-				auditTypeRuleCache.initialize(auditRuleDAO);
 				for (AuditTypeRule atr : auditTypeRuleCache
 						.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
