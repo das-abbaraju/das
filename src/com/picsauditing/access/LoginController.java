@@ -1,21 +1,17 @@
 package com.picsauditing.access;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.security.auth.login.AccountLockedException;
-import javax.security.auth.login.AccountNotFoundException;
-import javax.security.auth.login.FailedLoginException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -24,17 +20,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.security.CookieSupport;
-import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -146,21 +144,19 @@ public class LoginController extends PicsActionSupport {
 
 	public String logout() throws Exception {
 		loadPermissions(false); // FIXME: (maybe) why are we loading permissions
-								// only to clear them and invalidate a session?
+		// only to clear them and invalidate a session?
 
 		Locale userLocale = permissions.getLocale();
-
 		permissions.clear();
-		invalidateSession();
-		clearPicsOrgCookie();
-
 		// If the user was using a beta language, default back to English because
 		// only stable languages are available on the main language dropdown
-		if (!supportedLanguages.isLanguageStable(userLocale))
-		{
+		if (userLocale != null && !supportedLanguages.isLanguageStable(userLocale)) {
 			// TODO: Does this also need to happen in any other login situation?
 			ActionContext.getContext().setLocale(LanguageModel.ENGLISH);
 		}
+
+		invalidateSession();
+		clearPicsOrgCookie();
 
 		return SUCCESS;
 	}
@@ -374,25 +370,25 @@ public class LoginController extends PicsActionSupport {
 	private String determineRedirectUrlFromHomePageType(String preLoginUrl, HomePageType homePageType) {
 		String redirectURL = null;
 		switch (homePageType) {
-		case PreLogin:
-			redirectURL = preLoginUrl;
-			break;
-		case ContractorRegistrationStep:
-			ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) user.getAccount());
-			redirectURL = step.getUrl();
-			break;
-		case HomePage:
-			if (user.isUsingVersion7Menus()) {
-				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
-				redirectURL = MenuBuilder.getHomePage(menu, permissions);
-			} else {
-				MenuComponent menu = PicsMenu.getMenu(permissions);
-				redirectURL = PicsMenu.getHomePage(menu, permissions);
-			}
-			break;
-		case Deactivated:
-			redirectURL = DEACTIVATED_ACCOUNT_PAGE;
-			break;
+			case PreLogin:
+				redirectURL = preLoginUrl;
+				break;
+			case ContractorRegistrationStep:
+				ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) user.getAccount());
+				redirectURL = step.getUrl();
+				break;
+			case HomePage:
+				if (user.isUsingVersion7Menus()) {
+					MenuComponent menu = MenuBuilder.buildMenubar(permissions);
+					redirectURL = MenuBuilder.getHomePage(menu, permissions);
+				} else {
+					MenuComponent menu = PicsMenu.getMenu(permissions);
+					redirectURL = PicsMenu.getHomePage(menu, permissions);
+				}
+				break;
+			case Deactivated:
+				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
+				break;
 		}
 
 		return redirectURL;
