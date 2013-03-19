@@ -23,6 +23,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -48,6 +49,8 @@ public class ContractorCronTest extends PicsActionTest {
 	private BasicDAO dao;
 	@Mock
 	private ContractorAccount contractor;
+	@Mock
+	private ContractorAuditDAO contractorAuditDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -58,6 +61,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
+		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 	}
 
 	/**
@@ -75,6 +79,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOnlyWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWithOnlyWCBs();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -86,6 +91,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountNoPoliciesOrWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountNoPoliciesOrWCBs();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -108,6 +114,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountWCBExpiredTwoMonthsAgo() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBExpiredTwoMonthsAgo();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -118,6 +125,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountMultipleAuditsExpiredPolicy() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredPolicy();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(1, audits.size());
@@ -129,6 +137,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountMultipleAuditsExpiredWCB() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(1, audits.size());
@@ -144,6 +153,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOverlappingValidWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYears();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -187,6 +197,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOverlappingWCBsComplete() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
