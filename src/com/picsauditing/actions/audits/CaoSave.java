@@ -418,7 +418,7 @@ public class CaoSave extends AuditActionSupport {
 			if (step.isNoteRequired() && Strings.isEmpty(note))
 				addActionError("You must enter a note" + forString);
 
-			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+			auditPercentCalculator.percentCalculateComplete(cao.getAudit(), true);
 
 			if (step.getNewStatus().isSubmittedResubmitted()) {
 				if (cao.getPercentComplete() < 100)
