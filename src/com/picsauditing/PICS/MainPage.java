@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 public class MainPage {
 	public static final String DEBUG_COOKIE_NAME = "debugging";
-	public static final String PICS_PHONE_NUMBER = "949-936-4500";
+	public static final String PICS_PHONE_NUMBER = "+1-949-936-4500";
 
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
 
