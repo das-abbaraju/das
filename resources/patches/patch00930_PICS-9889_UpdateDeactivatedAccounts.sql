@@ -1,3 +1,5 @@
+drop table if exists tmp_deactivated_accounts;
+
 CREATE TABLE tmp_deactivated_accounts
 select
 	accounts.id
