@@ -6,8 +6,7 @@
         <s:text name="Registration.dialect" />
     </label>
 
-    <!-- FIXME this inline style is temporary and should be removed and replaced by Jason Roos -->
-    <select name="dialect" id="dialect_selection" style="float: left;">
+    <select name="dialect" id="dialect_selection">
         <option value="">
             - <s:text name="Registration.dialectSelection" /> -
         </option>

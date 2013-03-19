@@ -1174,3 +1174,8 @@ footer .footer-menu a {
 .popover .popover-inner .popover-content p {
 	line-height: 18px;
 }
+
+#dialect_selection
+{
+	float: left;
+}
