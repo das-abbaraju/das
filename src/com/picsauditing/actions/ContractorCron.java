@@ -207,8 +207,8 @@ public class ContractorCron extends PicsActionSupport {
 			runTradeETL(contractor);
 			runContractorETL(contractor);
 
-			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
-					contractor.getAuditor() == null) {
+			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT)
+					&& contractor.getAuditor() == null) {
 				runCSRAssignment(contractor);
 			}
 
@@ -247,20 +247,20 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 
-            // must be done before the save, or the calculation will be lost
-            runContractorScore(contractor);
+			// must be done before the save, or the calculation will be lost
+			runContractorScore(contractor);
 
-            if (steps != null && steps.length > 0) {
-                if (opID == 0 && steps[0] == ContractorCronStep.All) {
-                    contractor.setNeedsRecalculation(0);
-                    contractor.setLastRecalculation(new Date());
-                }
-                contractorDAO.save(contractor);
-                addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
+			if (steps != null && steps.length > 0) {
+				if (opID == 0 && steps[0] == ContractorCronStep.All) {
+					contractor.setNeedsRecalculation(0);
+					contractor.setLastRecalculation(new Date());
+				}
+				contractorDAO.save(contractor);
+				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
-            }
+			}
 
-            runPolicies(contractor);
+			runPolicies(contractor);
 
 		} catch (Exception continueUpTheStack) {
 			setRecalculationToTomorrow(contractor);
@@ -811,20 +811,23 @@ public class ContractorCron extends PicsActionSupport {
 	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
 		Map<Integer, List<ContractorAudit>> policies = new HashMap<Integer, List<ContractorAudit>>();
 
-		if (CollectionUtils.isNotEmpty(contractor.getAudits())) {
-			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getClassType().isPolicy()) {
-					int key = audit.getAuditType().getId();
-					List<ContractorAudit> audits;
-					if (!policies.containsKey(audit.getAuditType().getId())) {
-						audits = new ArrayList<ContractorAudit>();
-					} else {
-						audits = policies.get(key);
-					}
+		List<ContractorAudit> auditsAboutToExpire = conAuditDAO.findAuditsAboutToExpire(contractor.getId());
+		if (CollectionUtils.isEmpty(auditsAboutToExpire)) {
+			return policies;
+		}
 
-					audits.add(audit);
-					policies.put(key, audits);
+		for (ContractorAudit audit : auditsAboutToExpire) {
+			if (audit.getAuditType().getClassType().isPolicy()) {
+				int key = audit.getAuditType().getId();
+				List<ContractorAudit> audits;
+				if (!policies.containsKey(audit.getAuditType().getId())) {
+					audits = new ArrayList<ContractorAudit>();
+				} else {
+					audits = policies.get(key);
 				}
+
+				audits.add(audit);
+				policies.put(key, audits);
 			}
 		}
 
@@ -832,19 +835,20 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private ContractorAudit getExpiringAudit(List<ContractorAudit> audits) {
+		if (CollectionUtils.isEmpty(audits)) {
+			return null;
+		}
+
+		sortAuditsByExpirationDateDescending(audits);
+
 		ContractorAudit expiringAudit = null;
-
-		if (CollectionUtils.isNotEmpty(audits)) {
-			sortAuditsByExpirationDateDescending(audits);
-			ContractorAudit audit = audits.get(0);
-
-			if (isExpiringRenewableAudit(audit)) {
-				expiringAudit = audit;
-			} else if (audits.size() > 1) {
-				ContractorAudit previousAudit = audits.get(1);
-				if (isAuditExpiringSoon(previousAudit) && !audit.hasCaoStatusAfter(AuditStatus.Resubmitted)) {
-					expiringAudit = previousAudit;
-				}
+		ContractorAudit audit = audits.get(0);
+		if (isExpiringRenewableAudit(audit)) {
+			expiringAudit = audit;
+		} else if (audits.size() > 1) {
+			ContractorAudit previousAudit = audits.get(1);
+			if (isAuditExpiringSoon(previousAudit) && !audit.hasCaoStatusAfter(AuditStatus.Resubmitted)) {
+				expiringAudit = previousAudit;
 			}
 		}
 
@@ -1029,7 +1033,9 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments.
+		// Note: audit.setAuditor() is the final arbitor of which auditor is
+		// assigned to do an audit. UserAssignment is merely the intermediate
+		// "rules" for pre-determining the assignments.
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {

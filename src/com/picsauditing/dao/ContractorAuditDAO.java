@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,12 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
@@ -34,6 +38,8 @@ import com.picsauditing.util.PermissionQueryBuilder;
 
 @SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(ContractorAuditDAO.class);
 
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {
@@ -97,6 +103,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			oCAudit.getCategories().addAll(acList);
 			oCAudit.setOperators(new ArrayList<ContractorAuditOperator>());
 		}
+
 		save(oCAudit);
 	}
 
@@ -178,14 +185,15 @@ public class ContractorAuditDAO extends PicsDAO {
 				"AND ci.accountLevel = 'Full' " +
 				"AND ci.membershipDate > DATE_SUB(NOW(), INTERVAL 6 MONTH) " +
 				"AND a.id=" + conID);
-		
+
 		List<Integer> list = query.getResultList();
-		if (list.size() > 0)
+		if (list.size() > 0) {
 			return true;
-		
+		}
+
 		return false;
 	}
-	
+
 	public List<ContractorAudit> findByAuditType(int conID, AuditTypeClass classType) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
 				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'" + "ORDER BY auditTypeID");
@@ -221,13 +229,16 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
 		String hql = "FROM ContractorAudit";
-		if (where.length() > 0)
+		if (where.length() > 0) {
 			hql += " WHERE " + where;
-		if (orderBy.length() > 0)
+		}
+		if (orderBy.length() > 0) {
 			hql += " ORDER BY " + orderBy;
+		}
 		Query query = em.createQuery(hql);
-		if (limit > 0)
+		if (limit > 0) {
 			query.setMaxResults(limit);
+		}
 		return query.getResultList();
 	}
 
@@ -256,7 +267,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	/**
 	 * Returns a list of policies that will expire 14 days from now or today or
 	 * expired 7 days ago, where a new pending policy of that type is ready.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<ContractorAudit> findExpiredCertificates(int offset) {
@@ -296,8 +307,9 @@ public class ContractorAuditDAO extends PicsDAO {
 		Query query = em.createQuery(hql);
 		query.setParameter("auditTypeID", auditTypeID);
 		query.setParameter("opID", opID);
-		if (waitingOnStatus != null)
+		if (waitingOnStatus != null) {
 			query.setParameter("waitingOnStatus", waitingOnStatus);
+		}
 		query.setMaxResults(100);
 		return query.getResultList();
 	}
@@ -321,8 +333,9 @@ public class ContractorAuditDAO extends PicsDAO {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate "
 				+ " AND ca.contractorAccount.status = 'Active'";
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			hql += " AND ca.auditor.id = :auditorID";
+		}
 		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
@@ -330,8 +343,9 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
 
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			query.setParameter("auditorID", auditorID);
+		}
 
 		return query.getResultList();
 	}
@@ -341,8 +355,9 @@ public class ContractorAuditDAO extends PicsDAO {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate "
 				+ " AND ca.contractorAccount.status = 'Active'";
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			hql += " AND ca.auditor.id = :auditorID ";
+		}
 		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
 		if (permissions.isOperatorCorporate()) {
 			PermissionQueryBuilder pqb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
@@ -356,8 +371,9 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
 
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			query.setParameter("auditorID", auditorID);
+		}
 
 		return query.getResultList();
 	}
@@ -388,10 +404,11 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ "ORDER BY ca.paidDate DESC, ca.auditor.name";
 
 		Query q = em.createQuery(hql);
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			q.setParameter("ID", auditorID);
-		else
+		} else {
 			q.setParameter("ID", User.INDEPENDENT_CONTRACTOR);
+		}
 		q.setParameter("startDate", startDate);
 		return q.getResultList();
 	}
@@ -470,8 +487,29 @@ public class ContractorAuditDAO extends PicsDAO {
 				+ " AND ca.auditType.id = " + auditTypeId + " order by ca.expiresDate DESC";
 
 		List<ContractorAudit> audits = em.createQuery(hql).getResultList();
-		if (audits.size() > 0)
+		if (audits.size() > 0) {
 			return audits.get(0);
+		}
 		return null;
+	}
+
+	public List<ContractorAudit> findAuditsAboutToExpire(int contractorId) {
+		String hql = "SELECT ca FROM ContractorAudit ca " +
+				"WHERE ca.contractorAccount.id = :contractorId " +
+				"AND ca.auditType.classType = 'Policy' " +
+				"AND (ca.expiresDate >= :oneWeekAgo OR ca.expiresDate IS NULL)";
+
+		Date oneWeekAgo = DateBean.addField(new Date(), Calendar.WEEK_OF_YEAR, -1);
+
+		try {
+			Query query = em.createQuery(hql);
+			query.setParameter("contractorId", contractorId);
+			query.setParameter("oneWeekAgo", oneWeekAgo);
+			return query.getResultList();
+		} catch (Exception e) {
+			logger.error("An error occurred while querying Audits about to expire for conID = {}", contractorId, e);
+		}
+
+		return Collections.emptyList();
 	}
 }
