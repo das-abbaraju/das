@@ -422,11 +422,8 @@
     								/>
     							</li>
     							<li>
-                                    <s:set name="contractor_last_upgrade_date">
-                                        <s:date name="contractor.lastUpgradeDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-                                    </s:set>
     								<label>Upgrade Date:</label>
-    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="${contractor_last_upgrade_date}" />
+    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />" />
     							</li>
     							<li>
     								<label>Contractor Type:</label>
