@@ -36,8 +36,6 @@
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useVersion7Menus = false;
-
-    String picsPhoneNumber = i18nCache.getText("PicsPhone", locale);
 	
 	if (permissions.getUserId() > 0) {
 		UserDAO userDao = SpringUtils.getBean("UserDAO");
@@ -45,10 +43,7 @@
 
 		if (user != null) {
             useVersion7Menus = user.isUsingVersion7Menus();
-            picsPhoneNumber = user.getAccount().getCountry().getPhone();
 		}
-        
-        picsPhoneNumber = user.getAccount().getCountry().getPhone();
 	}
 
 	MenuComponent menu = new MenuComponent();
@@ -227,7 +222,7 @@
                     %>
                     <td id="sidebox">
                         <p>
-                            <b class="head-phone"><%= picsPhoneNumber %></b>
+                            <b class="head-phone"><%=mainPage.getPhoneNumber()%></b>
                         <% if (permissions.isLoggedIn()) { %>
                             <span id="name">
                                 <%

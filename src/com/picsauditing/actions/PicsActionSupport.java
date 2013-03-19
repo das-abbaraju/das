@@ -3,6 +3,7 @@ package com.picsauditing.actions;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.MainPage;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.AccountDAO;
@@ -1172,18 +1173,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getPicsPhoneNumber(String country) {
-		if (permissions == null) {
-			loadPermissions(false);
-		}
-
-		if (Strings.isNotEmpty(country)) {
-			return countryDAO.find(country).getPhone();
-		}
-
-		if (Strings.isNotEmpty(permissions.getCountry())) {
-			return countryDAO.find(permissions.getCountry()).getPhone();
-		}
-
-		return getText("PicsTollFreePhone");
+		// Rolled up phone number logic into MainPage
+		MainPage mainPage = new MainPage();
+		mainPage.setCountryDAO(countryDAO);
+		mainPage.setPermissions(permissions);
+		return mainPage.getPhoneNumber(country);
 	}
 }
