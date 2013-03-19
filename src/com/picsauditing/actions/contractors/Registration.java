@@ -175,11 +175,19 @@ public class Registration extends ContractorActionSupport {
 			}
 		}
 
-		// SET LOCALE
 		if (Strings.isEmpty(language)) {
-			Locale locale = ActionContext.getContext().getLocale();
-			language = locale.getLanguage();
-			dialect = locale.getCountry();
+			language = Locale.ENGLISH.getLanguage();
+			dialect = "";
+
+			ActionContext context = ActionContext.getContext();
+			if (context != null) {
+				Locale locale = context.getLocale();
+
+				if (locale != null) {
+					language = locale.getLanguage();
+					dialect = locale.getCountry();
+				}
+			}
 		}
 
 		return SUCCESS;
@@ -246,6 +254,14 @@ public class Registration extends ContractorActionSupport {
 		String countryIso = "";
 		if (country != null) {
 			countryIso = country.getIsoCode();
+		}
+
+		if (!inputValidator.isLanguageValid(language, supportedLanguages)) {
+			language = Locale.ENGLISH.getLanguage();
+		}
+
+		if (StringUtils.isEmpty(dialect) || !inputValidator.containsOnlySafeCharacters(dialect)) {
+			addFieldError("contractor.dialect", getText(InputValidator.REQUIRED_KEY));
 		}
 
 		errorMessageKey = inputValidator.validateName(countryIso);

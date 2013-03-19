@@ -6,7 +6,8 @@
         <s:text name="Registration.dialect" />
     </label>
 
-    <select name="dialect" id="dialect_selection">
+    <!-- FIXME this inline style is temporary and should be removed and replaced by Jason Roos -->
+    <select name="dialect" id="dialect_selection" style="float: left;">
         <option value="">
             - <s:text name="Registration.dialectSelection" /> -
         </option>
@@ -19,4 +20,5 @@
             </option>
         </s:iterator>
     </select>
+    <s:fielderror fieldName="contractor.dialect" />
 </s:if>

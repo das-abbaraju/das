@@ -1,7 +1,6 @@
 package com.picsauditing.model.i18n;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -91,7 +89,7 @@ public class LanguageModelTest {
 
 		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
-		final List<LanguageModel.KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
+		final List<KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
 		assertNotNull(supportedLanguages);
 		assertEquals(2, supportedLanguages.size());
 		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(0).getKey());

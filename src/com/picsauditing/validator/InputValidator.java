@@ -3,6 +3,8 @@ package com.picsauditing.validator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.model.i18n.KeyValue;
+import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +142,31 @@ public class InputValidator {
 
     	return NO_ERROR;
     }
+
+
+	public boolean isLanguageValid(String language, LanguageModel supportedLanguages) {
+		if (StringUtils.isEmpty(language)) {
+			return false;
+		}
+
+		if (supportedLanguages == null) {
+			return false;
+		}
+
+		List<KeyValue> stableLanguages = supportedLanguages.getStableLanguagesSansDialect();
+
+		if (stableLanguages == null) {
+			return false;
+		}
+
+		for (KeyValue stableLanguage : stableLanguages) {
+			if (StringUtils.equals(stableLanguage.getKey(), language)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
     public String validateLocale(Locale locale) {
     	return validateLocale(locale, true);
