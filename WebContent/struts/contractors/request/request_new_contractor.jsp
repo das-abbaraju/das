@@ -120,6 +120,15 @@
 								data-class="contact-name"
 							/>
 						</li>
+                        <pics:permission perm="SwitchUser">
+                            <s:if test="contractor.id != 0">
+                                <li>
+                                    <a href="Login.action?button=login&switchToUser=${primaryContact.id}" class="btn">
+                                        <s:text name="UsersManage.SwitchToThisUser" />
+                                    </a>
+                                </li>
+                            </s:if>
+                        </pics:permission>
 						<li class="match-found contact-name"></li>
 						<li>
 							<s:textfield
