@@ -2798,7 +2798,8 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 
                 version_detail_tooltip.tooltip({
                     placement: 'right',
-                    trigger: 'manual'
+                    trigger: 'manual',
+                    html: true
                 });
                 
                 version_detail_tooltip.on('click', function (event) {
