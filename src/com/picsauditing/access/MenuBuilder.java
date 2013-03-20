@@ -343,8 +343,8 @@ public final class MenuBuilder {
 		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_DR_REPORTS)) {
 			if (CollectionUtils.isNotEmpty(favoriteReports)) {
 				reportsMenu.addChild("separator", null);
-				MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
-				favoriteLabel.setCssClass("label");
+				MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+
 				reportsMenu.addChild(favoriteLabel);
 			}
 
@@ -612,6 +612,15 @@ public final class MenuBuilder {
 
 	private static String getText(String key) {
 		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
+	}
+
+	private static MenuComponent buildUniqueFavoritesMenuComponent() {
+		MenuComponent menuComponent = new MenuComponent();
+		menuComponent.setName("Favorites"); // this should be i18n
+		// This should always be in English because the front-end is using it to determine what to replace
+		menuComponent.setHtmlId("Favorites");
+		menuComponent.setCssClass("label");
+		return menuComponent;
 	}
 
 	// TODO find out where these menus should go
