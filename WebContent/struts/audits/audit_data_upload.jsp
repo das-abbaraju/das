@@ -20,6 +20,10 @@ function closePage() {
 	} catch(err) {}
 	self.close();
 }
+
+window.onbeforeunload = function () {
+    closePage();
+}
 </script>
 
 </head>
