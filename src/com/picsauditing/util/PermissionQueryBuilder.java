@@ -6,6 +6,7 @@ import java.util.Set;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.report.models.ModelType;
 
 public class PermissionQueryBuilder {
 	private static final String PERMISSION_DENIED = "1=0";
@@ -44,6 +45,9 @@ public class PermissionQueryBuilder {
 	}
 
 	public String buildWhereClause() {
+		return buildWhereClause(null);
+	}
+	public String buildWhereClause(ModelType modelType) {
 		if (permissions == null || !permissions.isLoggedIn())
 			return PERMISSION_DENIED;
 
@@ -67,12 +71,18 @@ public class PermissionQueryBuilder {
 		if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
 			return query + buildContractorOperatorClause(contractorOperatorAlias);
 
-		String alias = isHQL() ? "co" : "gc";
+		String contractorOperatorAlias = isHQL() ? "co" : "gc";
 
 		if (permissions.isOnlyAuditor())
 			subSQL = buildAuditorSubquery();
-		else if (permissions.isOperatorCorporate())
-			subSQL = buildContractorOperatorSubquery(alias);
+		else if (permissions.isOperatorCorporate()) {
+			if (modelType == ModelType.Operators)
+			{
+				subSQL = buildFacilitiesSubquery();
+			}
+			else
+				subSQL = buildContractorOperatorSubquery(contractorOperatorAlias);
+		}
 		else
 			return PERMISSION_DENIED;
 
@@ -108,6 +118,10 @@ public class PermissionQueryBuilder {
 		subquery += " WHERE " + buildContractorOperatorClause(alias);
 
 		return subquery;
+	}
+
+	private String buildFacilitiesSubquery() {
+		return getOperatorIDs();
 	}
 
 	private String buildContractorOperatorClause(String alias) {
