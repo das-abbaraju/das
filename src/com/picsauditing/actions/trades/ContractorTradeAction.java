@@ -62,13 +62,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	// TODO Check the security here
 	public String execute() throws Exception {
 		super.execute();
-		if (this.permissions.isOperator())
+		if (this.permissions.isOperator()) {
 			selectHighestTrade();
+		}
 		return SUCCESS;
 	}
 
 	public String tradeAjax() {
-		if (trade.getId() == 0 && trade.getTrade() != null) {
+		if (trade != null && trade.getId() == 0 && trade.getTrade() != null) {
 
 			/*
 			 * Look for the existing trade in the current contractor's trades
@@ -110,8 +111,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		tradeDAO.save(trade);
 
-		if (!contractor.getTrades().contains(trade))
+		if (!contractor.getTrades().contains(trade)) {
 			contractor.getTrades().add(trade);
+		}
 
 		if (trade.getTrade().getContractorCount() == 0) {
 			EmailQueue emailQueue = new EmailQueue();
@@ -133,8 +135,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			for (ContractorType conType : conTypes) {
 				if ((conType.equals(ContractorType.Onsite) && !contractor.isOnsiteServices())
 						|| (conType.equals(ContractorType.Offsite) && !contractor.isOffsiteServices())
-						|| (conType.equals(ContractorType.Supplier) && !contractor.isMaterialSupplier()))
+						|| (conType.equals(ContractorType.Supplier) && !contractor.isMaterialSupplier())) {
 					noteSummary.add(conType.getType());
+				}
 			}
 
 			Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
@@ -275,11 +278,13 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public void selectHighestTrade() {
-		if (trade != null)
+		if (trade != null) {
 			return;
+		}
 		Set<ContractorTrade> list = contractor.getTrades();
-		if (list == null || list.size() == 0)
+		if (list == null || list.size() == 0) {
 			return;
+		}
 
 		ContractorTrade selTrade = null;
 		for (ContractorTrade t : list) {
@@ -293,8 +298,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	}
 
 	public int getHalf() {
-		if (contractor != null && contractor.getTrades().size() > 0)
+		if (contractor != null && contractor.getTrades().size() > 0) {
 			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
+		}
 
 		return 0;
 	}
