@@ -73,6 +73,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected String descriptionOsMs;
 	protected boolean systemEdit = false;
 	protected boolean showVerified = false;
+	protected boolean showCaoTable = true;
 
 	protected ContractorAudit conAudit;
 
@@ -472,6 +473,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		return false;
+	}
+
+	public boolean isShowCaoTable() {
+		return showCaoTable;
+	}
+
+	public void setShowCaoTable(boolean showCaoTable) {
+		this.showCaoTable = showCaoTable;
 	}
 
 	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {

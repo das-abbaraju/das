@@ -462,7 +462,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 				if (displayAuditUnderAuditGUARDMenu(audit)) {
 					if (subMenu.getChildren().size() < MAX_MENU_ITEM
 							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
+						MenuComponent childMenu;
+						if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review))
+							childMenu= createMenuItemMovedMenuItem(subMenu, audit);
+						else
+							childMenu = createMenuItem(subMenu, audit);
 
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
@@ -532,6 +536,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 		String linkText = getText(audit.getAuditType().getI18nKey("name"));
 
 		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
+		menuItem.setAuditId(audit.getId());
+		if (isShowCheckIcon(audit))
+			menuItem.setCssClass("done");
+
+		return menuItem;
+	}
+
+	private MenuComponent createMenuItemMovedMenuItem(MenuComponent subMenu, ContractorAudit audit) {
+		String linkText = getText(audit.getAuditType().getI18nKey("name"));
+
+		MenuComponent menuItem = subMenu.addChild(linkText, "AuditMoved.action?auditID=" + audit.getId());
 		menuItem.setAuditId(audit.getId());
 		if (isShowCheckIcon(audit))
 			menuItem.setCssClass("done");

@@ -606,6 +606,11 @@
                 class="com.picsauditing.actions.audits.AuditTranslationDownload">
         </action>
 
+        <action name="AuditMoved"
+                class="com.picsauditing.actions.audits.AuditMenuItemMoved">
+            <result>struts/audits/audit_menu_moved.jsp</result>
+        </action>
+
         <!-- Track Auditor Payments -->
 
         <action name="CreateAuditorInvoices"

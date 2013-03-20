@@ -359,7 +359,7 @@ function loadStatus(caoID, addUserNote){
 		</ul>
 	</div>
 	
-	<s:if test="auditID > 0">
+	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">
 			<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 				<fieldset>
