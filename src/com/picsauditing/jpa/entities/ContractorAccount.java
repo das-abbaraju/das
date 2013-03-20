@@ -941,7 +941,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors, importance = FieldImportance.Average)
 	public boolean isRenew() {
 		return renew;
 	}
