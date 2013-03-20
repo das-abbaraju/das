@@ -95276,6 +95276,20 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         });
     },
 
+    getFunctionMenuItem: function (menu_items) {
+        var function_item;
+
+        Ext.each(menu_items, function(item, index) {
+            if (item.name == 'function' || item.name == 'remove_function') {
+                function_item = item;
+
+                return false;
+            }
+        });
+
+        return function_item;
+    },
+
     // column header height is dictated by the height of the rownumberer column
     // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
@@ -95303,6 +95317,26 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         view.refresh();
+    },
+
+    updateFunctionMenuItem: function(grid_column) {
+        var menu = this.headerCt.getMenu(),
+            menu_items = menu.items.items,
+            function_item = this.getFunctionMenuItem(menu_items),
+            column = grid_column.column,
+            sql_function = column.get('sql_function');
+
+        if (!function_item) {
+            return false;
+        }
+
+        if (!sql_function) {
+            function_item.setText('Functions...');
+            function_item.name = "function";
+        } else {
+            function_item.setText('Remove Function');
+            function_item.name = "remove_function";
+        }
     }
 });
 Ext.define('PICS.view.report.Viewport', {
@@ -97114,6 +97148,7 @@ Ext.define('PICS.controller.report.DataTable', {
             },
 
             'reportdatatable gridcolumn': {
+                headerclick: this.onColumnHeaderClick,
                 render: this.renderGridColumn
             },
             
@@ -97153,6 +97188,10 @@ Ext.define('PICS.controller.report.DataTable', {
                 click: this.openColumnFunctionModal
             },
 
+            'menu[name=data_table_header_menu] menuitem[name=remove_function]': {
+                click: this.removeFunction
+            },
+
             'menu[name=data_table_header_menu] menuitem[name=remove_column]': {
                 click: this.removeColumn
             },
@@ -97166,7 +97205,13 @@ Ext.define('PICS.controller.report.DataTable', {
             }
         });
     },
-    
+
+    onColumnHeaderClick: function (cmp, column, e, t, eOpts) {
+        var data_table_view = this.getDataTable();
+
+        data_table_view.updateFunctionMenuItem(column);
+    },
+
     beforeDataTableRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -97181,7 +97226,7 @@ Ext.define('PICS.controller.report.DataTable', {
 
         PICS.data.ServerCommunication.loadData(1, limit);
     },
-    
+
     moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -97259,6 +97304,20 @@ Ext.define('PICS.controller.report.DataTable', {
         PICS.data.ServerCommunication.loadData();
     },
     
+    removeFunction: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column,
+            field_id = column.get('field_id');
+            end_index = field_id.indexOf('__'),
+            new_field_id = field_id.substring(0, end_index);
+
+        column.set('sql_function', null);
+        column.set('field_id', new_field_id);
+
+        PICS.data.ServerCommunication.loadReportAndData();
+    },
+
     renderGridColumn: function (cmp, eOpts) {
         // only create tooltips for PICS.ux.grid.column.Column(s)
         if (typeof cmp.createTooltip == 'function') {
