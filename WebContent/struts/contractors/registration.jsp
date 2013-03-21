@@ -119,15 +119,6 @@
 				</h1>
 				
 				<ul>
-                    <li class="country">
-                        <s:select
-                            list="countryList"
-                            cssClass="contractor-country"
-                            name="contractor.country.isoCode"
-                            listKey="isoCode"
-                            listValue="name"
-                        />
-                    </li>
                     <li>
                         <s:select
                             label="User.locale"
@@ -141,6 +132,15 @@
                     </li>
                     <li id="registration_dialect">
                         <s:include value="/struts/contractors/_registration-dialects.jsp" />
+                    </li>
+                    <li class="country">
+                        <s:select
+                            list="countryList"
+                            cssClass="contractor-country"
+                            name="contractor.country.isoCode"
+                            listKey="isoCode"
+                            listValue="name"
+                        />
                     </li>
 					<li>
 						<s:textfield name="contractor.name" />
