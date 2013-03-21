@@ -78,6 +78,20 @@ public class ContractorAuditCategoriesTest {
 	}
 
 	@Test
+	public void testGetApplicableCategories_LimitCategoriesMultipleCategories() {
+		Set<AuditCategory> requiredCategories = new HashSet<AuditCategory>();
+		AuditCatData acd1 = createCategory(1);
+		AuditCatData acd2 = createCategory(2);
+		requiredCategories.add(acd2.getCategory());
+		categories.add(acd1);
+
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions,
+				requiredCategories, categories);
+		assertEquals(1, answer.size());
+	}
+
+	@Test
 	public void testGetApplicableCategories__WorkHistory_Contractor() {
 		createCategory(AuditCategory.WORK_HISTORY);
 
