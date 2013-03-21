@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.util.Strings;
+
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
     private static final long serialVersionUID = 923449569385839331L;
@@ -24,7 +26,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
     protected boolean current = false;
 
-    private String cssClass = "";
+    private String cssClass = Strings.EMPTY_STRING;
     private Map<String, String> dataFields = new TreeMap<String, String>();
     private ArrayList<MenuComponent> children = new ArrayList<MenuComponent>();
 
@@ -59,26 +61,29 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     }
 
     public String getNameIdSafe() {
-        return name.toLowerCase().replaceAll(" ", "_");
+        return name.toLowerCase().replaceAll(Strings.SINGLE_SPACE, "_");
     }
 
     public boolean hasName() {
-    	if (name == null)
-    		return false;
+    	if (name == null) {
+			return false;
+		}
 
     	return name.length() > 0;
     }
 
     public boolean hasUrl() {
-        if (url == null)
-            return false;
+        if (url == null) {
+			return false;
+		}
 
         return url.length() > 0;
     }
 
     public boolean hasHtmlID () {
-    	if (htmlId == null)
-    		return false;
+    	if (htmlId == null) {
+			return false;
+		}
 
     	return htmlId.length() > 0;
     }
@@ -165,8 +170,9 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     }
 
     public boolean isCurrent() {
-        if (current)
-            return true;
+        if (current) {
+			return true;
+		}
 
         for (MenuComponent child : children) {
             if (child.isCurrent()) {

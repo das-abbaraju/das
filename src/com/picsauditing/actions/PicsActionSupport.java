@@ -1,10 +1,53 @@
 package com.picsauditing.actions;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.RequestAware;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.MainPage;
-import com.picsauditing.access.*;
+import com.picsauditing.access.AjaxNotLoggedInException;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.SecurityAware;
 import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -12,7 +55,6 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -23,40 +65,12 @@ import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.*;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.RequestAware;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
-
-import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.picsauditing.util.AppVersion;
+import com.picsauditing.util.JSONUtilities;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
@@ -301,7 +315,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         if (ActionContext.getContext().getSession() == null) {
             addActionError("Failed to get session");
         } else {
-            permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+            permissions = (Permissions) ActionContext.getContext().getSession().get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
         }
 
         if (permissions == null) {
@@ -341,7 +355,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
             User user = userDAO.find(userID);
 
             permissions = permissionBuilder.login(user);
-            ActionContext.getContext().getSession().put("permissions", permissions);
+            ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
         } catch (Exception e) {
             logger.error("Problem autologging in.  Id supplied was: {}", userID);
         }
