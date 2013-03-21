@@ -275,7 +275,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
+									+ invoice.getTotalAmount() + Strings.SINGLE_SPACE
+									+ invoice.getCurrency().getDisplay(), findUserForPaymentNote());
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
@@ -476,6 +477,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
 		salesCommissionDataObservable.setChanged();
 		salesCommissionDataObservable.notifyObservers(dataEvent);
+	}
+
+	private User findUserForPaymentNote() {
+		int userWhoSwitchedToCurrentUser = permissions.getAdminID();
+		User userForPaymentNote = getUser();
+		if (userForPaymentNote.getId() != userWhoSwitchedToCurrentUser && userWhoSwitchedToCurrentUser > 0) {
+			return getUser(userWhoSwitchedToCurrentUser);
+		}
+
+		return userForPaymentNote;
 	}
 
 }

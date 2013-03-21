@@ -57,6 +57,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public static int PicsID = 1100;
 	public static int PICS_CORPORATE_ID = 14;
 	public static List<Integer> PICS_CORPORATE = Collections.unmodifiableList(Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));
+
+	// These should really be enums
+	public static final String ADMIN_ACCOUNT_TYPE = "Admin";
+	public static final String ASSESSMENT_ACCOUNT_TYPE = "Assessment";
+	public static final String CONTRACTOR_ACCOUNT_TYPE = "Contractor";
+	public static final String CORPORATE_ACCOUNT_TYPE = "Corporate";
+	public static final String OPERATOR_ACCOUNT_TYPE = "Operator";
+
 	// Assessment Centers
 	static public int ASSESSMENT_NCCER = 11069;
 
@@ -670,17 +678,17 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public boolean isContractor() {
-		return "Contractor".equals(type);
+		return CONTRACTOR_ACCOUNT_TYPE.equals(type);
 	}
 
 	@Transient
 	public boolean isOperator() {
-		return "Operator".equals(type);
+		return OPERATOR_ACCOUNT_TYPE.equals(type);
 	}
 
 	@Transient
 	public boolean isCorporate() {
-		return "Corporate".equals(type);
+		return CORPORATE_ACCOUNT_TYPE.equals(type);
 	}
 
 	/**
@@ -702,7 +710,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	// Operator Qualification Assessment Center
 	@Transient
 	public boolean isAssessment() {
-		return "Assessment".equals(type);
+		return ASSESSMENT_ACCOUNT_TYPE.equals(type);
 	}
 
 	@Override
@@ -799,12 +807,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getIndexType() {
-		if (type.equals("Corporate")) {
+		if (CORPORATE_ACCOUNT_TYPE.equals(type)) {
 			return "CO";
 		}
-		if (type.equals("Assessment")) {
+
+		if (ASSESSMENT_ACCOUNT_TYPE.equals(type)) {
 			return "AS";
 		}
+
 		return type.substring(0, 1);
 	}
 
@@ -838,9 +848,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getViewLink() {
-		if (this.type.equals("Operator") || this.type.equals("Corporate")) {
+		if (OPERATOR_ACCOUNT_TYPE.equals(this.type) || CORPORATE_ACCOUNT_TYPE.equals(this.type)) {
 			return ("FacilitiesEdit.action?operator=" + this.id);
-		} else if (this.type.equals("Assessment")) {
+		} else if (ASSESSMENT_ACCOUNT_TYPE.equals(this.type)) {
 			return ("AssessmentCenterEdit.action?center=" + this.id);
 		}
 

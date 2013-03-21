@@ -27,6 +27,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -36,10 +37,14 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.jpa.entities.User;
 
 public class InvoiceDetailTest extends PicsActionTest {
 
 	InvoiceDetail invoiceDetail;
+
+	private static final int USER_ID = 787;
+	private static final int SWITCHED_TO_USER_ID = 457;
 
 	@Mock
 	private Account account;
@@ -59,6 +64,12 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private DataObservable salesCommissionDataObservable;
 	@Mock
 	private NoteDAO noteDAO;
+	@Mock
+	private User user;
+	@Mock
+	private User switchedToUser;
+	@Mock
+	private UserDAO userDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,11 +80,16 @@ public class InvoiceDetailTest extends PicsActionTest {
 
 		super.setUp(invoiceDetail);
 
+		when(user.getId()).thenReturn(USER_ID);
+		when(switchedToUser.getId()).thenReturn(SWITCHED_TO_USER_ID);
+
 		Whitebox.setInternalState(invoiceDetail, "invoiceService", invoiceService);
 		Whitebox.setInternalState(invoiceDetail, "billingService", billingService);
 		Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
+		Whitebox.setInternalState(invoiceDetail, "user", user);
+		Whitebox.setInternalState(invoiceDetail, "userDAO", userDAO);
 	}
 
 	// Go back and add in verification for the message
@@ -136,7 +152,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
 	}
 
-	private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult) throws Exception {
+	private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)
+			throws Exception {
 		assertEquals(expectedActionResult, actualActionResult);
 		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
 		verify(invoiceService, times(1)).saveInvoice(invoice);
@@ -144,6 +161,23 @@ public class InvoiceDetailTest extends PicsActionTest {
 		verify(contractor, times(1)).syncBalance();
 		verify(contractor, times(1)).setAuditColumns(permissions);
 		verify(contractorAccountDAO, times(1)).save(contractor);
+	}
+
+	@Test
+	public void testFindUserForPaymentNote_NotUsingSwitchTo() throws Exception {
+		User userForNote = Whitebox.invokeMethod(invoiceDetail, "findUserForPaymentNote");
+
+		assertEquals(userForNote.getId(), USER_ID);
+	}
+
+	@Test
+	public void testFindUserForPaymentNote_SwitchedToUser() throws Exception {
+		when(permissions.getAdminID()).thenReturn(SWITCHED_TO_USER_ID);
+		when(userDAO.find(SWITCHED_TO_USER_ID)).thenReturn(switchedToUser);
+
+		User userForNote = Whitebox.invokeMethod(invoiceDetail, "findUserForPaymentNote");
+
+		assertEquals(userForNote.getId(), SWITCHED_TO_USER_ID);
 	}
 
 }
