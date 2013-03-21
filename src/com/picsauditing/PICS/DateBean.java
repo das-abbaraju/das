@@ -212,10 +212,10 @@ public class DateBean {
 		}
 
 		if (daysBetween(wcbYearStart.getTime(), now.getTime()) < 0) {
-			return Strings.EMPTY_STRING + wcbYearStart.get(Calendar.YEAR);
+			return "" + wcbYearStart.get(Calendar.YEAR);
 		}
 
-		return Strings.EMPTY_STRING + (wcbYearStart.get(Calendar.YEAR) + 1);
+		return "" + (wcbYearStart.get(Calendar.YEAR) + 1);
 	}
 
 	public static String getWCBYear() {

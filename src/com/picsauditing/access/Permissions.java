@@ -82,7 +82,6 @@ public class Permissions implements Serializable {
 	private Date usingVersion7MenusDate;
 	private LanguageModel languageModel;
     private int primaryCorporateAccountID;
-	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
 
 	public Permissions() {
 	}

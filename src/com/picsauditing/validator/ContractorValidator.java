@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
@@ -67,21 +66,17 @@ public class ContractorValidator {
 		}
 
 		// Company Name
-		if (Strings.isEmpty(contractor.getName())) {
+		if (Strings.isEmpty(contractor.getName()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCompanyName"));
-		} else if (contractor.getName().length() < 3) {
+		else if (contractor.getName().length() < 3)
 			errorMessages.addElement(getText("ContractorValidator.error.CompanyNameNotLongEnoough"));
-		}
 
-		if (Strings.isEmpty(contractor.getAddress())) {
+		if (Strings.isEmpty(contractor.getAddress()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoAddress"));
-		}
-		if (Strings.isEmpty(contractor.getCity())) {
+		if (Strings.isEmpty(contractor.getCity()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoAdCity"));
-		}
-		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode())) {
+		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCountry"));
-		}
 		if (contractor.getCountry() != null && contractor.getCountry().isHasCountrySubdivisions()) {
 			if (contractor.getCountrySubdivision() == null
 					|| Strings.isEmpty(contractor.getCountrySubdivision().getIsoCode())) {
@@ -89,18 +84,15 @@ public class ContractorValidator {
 			}
 		}
 
-		if (Strings.isEmpty(contractor.getPhone())) {
+		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoPhone"));
-		}
 
-		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip())) {
+		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement(getText("ContractorValidator.error.PleaseFillInZip"));
-		}
 
 		// Onsite / Offsite / Material Supplier
-		if (contractor.getAccountTypes().isEmpty()) {
+		if (contractor.getAccountTypes().isEmpty())
 			errorMessages.addElement(getText("ContractorValidator.error.NoServiceSelection"));
-		}
 
 		if (!Strings.isEmpty(contractor.getVatId())) {
 			try {
@@ -118,42 +110,36 @@ public class ContractorValidator {
 
 		// Username
 		String username = user.getUsername().trim();
-		if (Strings.isEmpty(username)) {
+		if (Strings.isEmpty(username))
 			errorMessages.addElement(getText("User.username.error.Empty"));
-		} else if (username.length() < 3) {
+		else if (username.length() < 3)
 			errorMessages.addElement(getText("User.username.error.Short"));
-		} else if (username.length() > 100) {
+		else if (username.length() > 100)
 			errorMessages.addElement(getText("User.username.error.Long"));
-		} else if (username.contains(" ")) {
+		else if (username.contains(" "))
 			errorMessages.addElement(getText("User.username.error.Space"));
-		} else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$")) {
+		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
 			errorMessages.addElement(getText("User.username.error.Special"));
-		}
 
-		if (!verifyUsername(user)) {
+		if (!verifyUsername(user))
 			errorMessages.addElement(getText("ContractorValidator.error.DuplicateUserName"));
-		}
 
-		if (Strings.isEmpty(user.getName())) {
+		if (Strings.isEmpty(user.getName()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoPrimaryContact"));
-		}
-		if (!Strings.isValidEmail(user.getEmail())) {
+		if (!Strings.isValidEmail(user.getEmail()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoEmail"));
-		}
 
 		return errorMessages;
 	}
 
 	public boolean verifyUsername(User user) {
 		User foundUser = userDAO.findName(user.getUsername());
-		if (foundUser == null) {
+		if (foundUser == null)
 			return true;
-		}
 		if (user.getId() > 0) {
 			user = userDAO.find(user.getId());
-			if (foundUser.equals(user)) {
+			if (foundUser.equals(user))
 				return true;
-			}
 		}
 		return false;
 	}
@@ -164,26 +150,24 @@ public class ContractorValidator {
 		String taxId = contractorAccount.getTaxId();
 		String country = contractorAccount.getCountry().getIsoCode();
 
-		if (Country.UAE_ISO_CODE.equals(country)) {
+		if ("AE".equals(country))
 			return errorMessages;
-		}
 
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
-			if (Country.CANADA_ISO_CODE.equals(country) && taxId.length() != 15) {
+			if ("CA".equals(country) && taxId.length() != 15) {
 				errorMessages.add(getTextParameterized("ContractorValidator.error.InvalidBusinessNumber",
 						getText("PicsCustomerServicePhone")));
 				return errorMessages;
-			} else if (!Country.CANADA_ISO_CODE.equals(country) && taxId.length() != 9) {
+			} else if (!"CA".equals(country) && taxId.length() != 9) {
 				errorMessages.add(getText("ContractorValidator.error.InvalidTaxId"));
 				return errorMessages;
 			}
 
 			ContractorAccount con = contractorAccountDao.findTaxID(taxId.substring(0, 9), country);
 			if (con != null && !con.equals(contractorAccount)) {
-				if (con.getCountry().isUS()) {
+				if (con.getCountry().isUS())
 					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId",
 							getText("PicsCustomerServicePhone")));
-				}
 			}
 		}
 
@@ -192,9 +176,8 @@ public class ContractorValidator {
 
 	public boolean verifyName(ContractorAccount contractorAccount) {
 		ContractorAccount cAccount = contractorAccountDao.findConID(contractorAccount.getName());
-		if (cAccount == null || cAccount.equals(contractorAccount)) {
+		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
-		}
 
 		return false;
 	}

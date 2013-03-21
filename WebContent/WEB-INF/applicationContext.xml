@@ -146,7 +146,6 @@
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
     <bean id="VATValidator" class="com.picsauditing.validator.VATValidator" scope="prototype"/>
-    <bean id="RegistrationValidator" class="com.picsauditing.validator.RegistrationValidator" scope="prototype"/>
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>
