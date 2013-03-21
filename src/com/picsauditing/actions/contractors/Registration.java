@@ -92,9 +92,9 @@ public class Registration extends ContractorActionSupport {
 	private VATValidator vatValidator;
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
-	@Autowired
-	@Qualifier("CsrAssignmentPublisher")
-	private Publisher csrAssignmentPublisher;
+    @Autowired
+    @Qualifier("CsrAssignmentSinglePublisher")
+    private Publisher csrAssignmentSinglePublisher;
 	@Autowired
 	private InputValidator inputValidator;
 	@Autowired
@@ -240,7 +240,7 @@ public class Registration extends ContractorActionSupport {
 		addNoteThatRequestRegistered();
 
 		// this is feature toggled in the publisher
-		csrAssignmentPublisher.publish(contractor.getId());
+		csrAssignmentSinglePublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}

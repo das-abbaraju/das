@@ -47,11 +47,18 @@
 	</direct-exchange>
 	
 	<queue id="csr-assignments" name="csr-assignments" />
-	<direct-exchange name="csr-assignments-exchange" xmlns="http://www.springframework.org/schema/rabbit">
-	  <bindings>
-	    <binding queue="csr-assignments"/>
-	  </bindings>
-	</direct-exchange>
+    <direct-exchange name="csr-assignments-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <bindings>
+            <binding queue="csr-assignments"/>
+        </bindings>
+    </direct-exchange>
+
+    <queue id="csr-assignments-single" name="csr-assignments-single" />
+    <direct-exchange name="csr-assignments-single-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+        <bindings>
+            <binding queue="csr-assignments-single" />
+        </bindings>
+    </direct-exchange>
 	
 	<queue id="email-requests" name="email-requests" />
 	<direct-exchange name="email-requests-exchange" xmlns="http://www.springframework.org/schema/rabbit">
@@ -74,12 +81,19 @@
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
 	</beans:bean>
 
-	<template message-converter="messageConverter" id="CsrAssignmentTemplate" connection-factory="connectionFactory" exchange="csr-assignments-exchange" queue="csr-assignments"/>
+    <template message-converter="messageConverter" id="CsrAssignmentSingleTemplate" connection-factory="connectionFactory" exchange="csr-assignments-single-exchange" queue="csr-assignments-single"/>
+
+    <!-- CSR Assignment Single Publisher for Registration w/ Feature Toggle -->
 	<beans:bean id="CsrAssignmentPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
-		<beans:property name="amqpTemplate" ref="CsrAssignmentTemplate" />
+		<beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
 		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.Csr_SingleAssignment" />
 	</beans:bean>
+
+    <!-- CSR Assignment Single Publisher for Contractor Dashboard -->
+      <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+        <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
+    </beans:bean>
 
 	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>
 	<beans:bean id="EmailSubscriptionPoller" class="com.picsauditing.messaging.subscription.EmailSubscriptionPoller">
