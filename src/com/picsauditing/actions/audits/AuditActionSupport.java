@@ -446,12 +446,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 
-			if (type.getClassType().isAudit() && !type.isAnnualAddendum()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-					canEdit = false;
-				}
-			}
-
 			return canEdit;
 		}
 
@@ -533,14 +527,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isShowCompleteBar(ContractorAuditOperator cao) {
-		if (conAudit.getAuditType().isAnnualAddendum()) {
-			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
 		if (cao.getStatus().before(AuditStatus.Complete)) {
 			return true;
 		} else {
@@ -898,10 +884,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {
 				setCategoryBuilderToSpecificCao(builder, cao);
 
-				if (cao.getStatus().after(AuditStatus.Incomplete) && builder.isCategoryApplicable(category, cao)) {
-					return false;
+				if (cao.getStatus().before(AuditStatus.Complete) && builder.isCategoryApplicable(category, cao)) {
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 		/*
