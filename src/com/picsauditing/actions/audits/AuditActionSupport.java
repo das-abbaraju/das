@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.picsauditing.access.OpType;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,24 +31,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
@@ -144,10 +127,15 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (permissions.isOperatorCorporate() && !conAudit.getAuditType().isDesktop()) {
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
+				List<OperatorAccount> contractorOperators = new ArrayList<OperatorAccount>();
+				for (ContractorOperator co:conAudit.getContractorAccount().getOperators()) {
+					contractorOperators.add(co.getOperatorAccount());
+				}
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 				if (permissions.isCorporate()) {
 					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
-						operators.add(facility.getOperator());
+						if (contractorOperators.contains(facility.getOperator()))
+							operators.add(facility.getOperator());
 					}
 				} else {
 					operators.add(getOperatorAccount());
