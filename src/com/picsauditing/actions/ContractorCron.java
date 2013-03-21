@@ -926,21 +926,8 @@ public class ContractorCron extends PicsActionSupport {
 				// CO stuff
 				// roll up first-level Operator CO data
 				if (operator.getCorporateFacilities() != null) {
-					for (Facility facility : operator.getCorporateFacilities()) {
-						OperatorAccount parent = facility.getCorporate();
-
-						corporateUpdateQueue.add(parent);
-
-						// if CO data does not already exist, assume green flag
-						// then if CO data is found later, will be updated to
-						// proper flag color
-						FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
-								.get(parent) : FlagColor.Green;
-						FlagColor operatorFacilityColor = coOperator.getFlagColor();
-						FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
-						corporateRollupData.put(parent, worstColor);
-					}
-				} // otherwise operator has no one to roll up to
+                    rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
+                } // otherwise operator has no one to roll up to
 			}
 		}
 
@@ -992,7 +979,30 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void runCSRAssignment(ContractorAccount contractor) {
+    private void rollUpCorporateFlags(Map<OperatorAccount, FlagColor> corporateRollupData,
+                                      Queue<OperatorAccount> corporateUpdateQueue,
+                                      ContractorOperator coOperator, OperatorAccount operator) {
+        if (operator.getStatus() != AccountStatus.Active) {
+            return;
+        }
+
+        for (Facility facility : operator.getCorporateFacilities()) {
+            OperatorAccount parent = facility.getCorporate();
+
+            corporateUpdateQueue.add(parent);
+
+            // if CO data does not already exist, assume green flag
+            // then if CO data is found later, will be updated to
+            // proper flag color
+            FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+                    .get(parent) : FlagColor.Green;
+            FlagColor operatorFacilityColor = coOperator.getFlagColor();
+            FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+            corporateRollupData.put(parent, worstColor);
+        }
+    }
+
+    private void runCSRAssignment(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.CSRAssignment)) {
 			return;
 		}
