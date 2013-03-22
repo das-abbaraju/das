@@ -47,16 +47,21 @@ public class ReportBuilderTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testFromJson_WhenJsonColumnParametersArePassedIn_ThenMembersAreSetOnColumn() throws ReportValidationException {
-		int id = 123;
+		int dbId = 123;
 		String name = "Column Name";
+		String columnId = name + "_5";
 		SqlFunction sqlFunction = SqlFunction.Max;
 		int width = 150;
+		int sortIndex = 2;
 
 		JSONObject columnJson = new JSONObject();
-		columnJson.put(REPORT_ID, id);
+		columnJson.put(REPORT_ELEMENT_DB_ID, dbId);
 		columnJson.put(REPORT_ELEMENT_FIELD_ID, name);
+		columnJson.put(REPORT_ELEMENT_NAME, name);
+		columnJson.put(COLUMN_ID, columnId);
 		columnJson.put(COLUMN_SQL_FUNCTION, sqlFunction.toString());
 		columnJson.put(COLUMN_WIDTH, width);
+		columnJson.put(COLUMN_SORT, sortIndex);
 
 		JSONArray columnsJson = new JSONArray();
 		columnsJson.add(columnJson);
@@ -68,10 +73,12 @@ public class ReportBuilderTest {
 		assertEquals(1, report.getColumns().size());
 
 		Column column = report.getColumns().get(0);
-		assertEquals(id, column.getId());
+		assertEquals(dbId, column.getId());
 		assertEquals(name, column.getName());
 		assertEquals(sqlFunction, column.getSqlFunction());
 		assertEquals(width, column.getWidth());
+		assertEquals(columnId, column.getColumnId());
+		assertEquals(sortIndex, column.getSortIndex());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -83,7 +90,7 @@ public class ReportBuilderTest {
 		String columnCompare = "compare_column";
 
 		JSONObject filterJson = new JSONObject();
-		filterJson.put(REPORT_ID, id);
+		filterJson.put(REPORT_ELEMENT_DB_ID, id);
 		filterJson.put(FILTER_OPERATOR, operator.toString());
 		filterJson.put(FILTER_VALUE, value);
 		filterJson.put(FILTER_COLUMN_COMPARE, columnCompare);

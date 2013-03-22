@@ -22,7 +22,7 @@ public class ReportElementTest {
 		reportElement.setName(name);
 		reportElement.setSqlFunction(null);
 
-		reportElement.setMethodToFieldName();
+		reportElement.appendSqlFunctionToName();
 
 		assertEquals(name, reportElement.getName());
 	}
@@ -34,7 +34,7 @@ public class ReportElementTest {
 		SqlFunction sqlFunction = SqlFunction.Average;
 		reportElement.setSqlFunction(sqlFunction);
 
-		reportElement.setMethodToFieldName();
+		reportElement.appendSqlFunctionToName();
 
 		String expectedName = name + ReportElement.METHOD_SEPARATOR + sqlFunction.toString();
 		assertEquals(expectedName, reportElement.getName());

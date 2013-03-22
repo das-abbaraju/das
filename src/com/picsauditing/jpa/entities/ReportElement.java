@@ -85,8 +85,12 @@ public abstract class ReportElement {
 		}
 	}
 
-	// TODO: Move this into a Business Model or Utility class and keep the entity a POJO
-	public void setMethodToFieldName() {
+	// This is necessary to avoid a column naming collision in the generated select between a column and another column
+	// of the same name, but with an aggregate function applied. There doesn't seem to be any other need for it.
+	// The attempt to make the column aliases unique breaks down when the user attempts to apply a particular
+	// sql function to a column more than once.
+	// todo: Instead of clobbering the name, consider calling this in SqlBuilder.addFieldsAndGroupBy() as we build the query.
+	public void appendSqlFunctionToName() {
 		int startOfMethod = name.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod >= 0 || sqlFunction == null) {
 			return;

@@ -85,7 +85,7 @@ public class ColumnTest {
 	public void testGetFieldNameWithoutMethod() {
 		column.setName("FacilityCount");
 		column.setSqlFunction(SqlFunction.Count);
-		column.setMethodToFieldName();
+		column.appendSqlFunctionToName();
 
 		assertEquals("FacilityCount__Count", column.getName());
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());

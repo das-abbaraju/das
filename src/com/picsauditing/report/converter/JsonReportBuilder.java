@@ -2,6 +2,7 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ import com.picsauditing.util.Strings;
 public class JsonReportBuilder {
 
 	private static final Logger logger = LoggerFactory.getLogger(JsonReportBuilder.class);
-	
+
 	// FOR TESTING ONLY
 	protected static PermissionService permissionService;
 	protected static ReportService reportService;
@@ -67,8 +68,11 @@ public class JsonReportBuilder {
 		return reportService;
 	}
 
-	private static void addColumns(JSONObject json, List<Column> columns) {
+	protected static void addColumns(JSONObject json, List<Column> columns) {
 		JSONArray jsonArray = new JSONArray();
+
+		Collections.sort(columns);
+		assignColumnIds(columns);
 
 		for (Column column : columns) {
 			try {
@@ -79,6 +83,13 @@ public class JsonReportBuilder {
 		}
 
 		json.put(REPORT_COLUMNS, jsonArray);
+	}
+
+	protected static void assignColumnIds(List<Column> columns) {
+		for (int i = 0; i < columns.size(); i++) {
+			Column column = columns.get(i);
+			column.setColumnId(COLUMN_ID_PREFIX + i);
+		}
 	}
 
 	private static void addFilters(JSONObject json, List<Filter> filters) {
@@ -108,6 +119,7 @@ public class JsonReportBuilder {
 	private static JSONObject columnToJson(Column column) throws ReportValidationException {
 		JSONObject json = elementToCommonJson(column);
 
+		json.put(COLUMN_ID, column.getColumnId());
 		json.put(COLUMN_TYPE, column.getField().getDisplayType().name());
 		json.put(COLUMN_URL, column.getField().getUrl());
 		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
@@ -148,7 +160,7 @@ public class JsonReportBuilder {
 		JSONObject json = new JSONObject();
 
 		json.put(REPORT_ID, sort.getId());
-		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());
+		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());  // todo: Reconcile the naming
 		json.put(SORT_DIRECTION, sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 
 		return json;
@@ -162,8 +174,8 @@ public class JsonReportBuilder {
 		}
 
 		// TODO sort out these member variable names
-		json.put(REPORT_ID, element.getId());
-		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());
+		json.put(REPORT_ELEMENT_DB_ID, element.getId());
+		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());   // todo: Reconcile the naming
 		json.put(REPORT_ELEMENT_CATEGORY, element.getField().getCategoryTranslation());
 		json.put(REPORT_ELEMENT_NAME, element.getField().getText());
 		json.put(REPORT_ELEMENT_DESCRIPTION, element.getField().getHelp());
