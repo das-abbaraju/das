@@ -419,6 +419,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
             loadPermissions();
             user = getUser(permissions.getUserId());
         }
+
         return user;
     }
 
@@ -837,6 +838,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         if (alertMessages == null) {
             alertMessages = new ArrayList<String>();
         }
+
         return alertMessages;
     }
 

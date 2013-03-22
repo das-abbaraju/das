@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.BillingNoteModel;
+
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,9 +30,14 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
+
+	private static final String ACTIVATE_BUTTON = "Activate";
+	private static final String CREATE_BUTTON = "Create";
+
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
@@ -41,6 +48,8 @@ public class BillingDetail extends ContractorActionSupport {
 	private TransactionDAO transactionDAO;
 	@Autowired
 	private DataObservable saleCommissionDataObservable;
+	@Autowired
+	private BillingNoteModel billingNoteModel;
 
 	private BigDecimal invoiceTotal;
 	private List<InvoiceItem> invoiceItems;
@@ -56,10 +65,11 @@ public class BillingDetail extends ContractorActionSupport {
 		this.findContractor();
 		billingService.calculateContractorInvoiceFees(contractor);
 
-		invoiceItems = billingService.createInvoiceItems(contractor, getUser());
+		invoiceItems = billingService.createInvoiceItems(contractor,
+				billingNoteModel.findUserForPaymentNote(permissions));
 		invoiceTotal = billingService.calculateInvoiceTotal(invoiceItems);
 
-		if ("Create".equalsIgnoreCase(button)) {
+		if (CREATE_BUTTON.equalsIgnoreCase(button)) {
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0 && !permissions.hasPermission(OpPerms.Billing)) {
 				addActionError("Cannot create an Invoice for zero dollars");
 				return SUCCESS;
@@ -76,7 +86,8 @@ public class BillingDetail extends ContractorActionSupport {
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
-						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
+						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID,
+						billingNoteModel.findUserForPaymentNote(permissions));
 			}
 
 			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
@@ -85,10 +96,10 @@ public class BillingDetail extends ContractorActionSupport {
 			return BLANK;
 		}
 
-		if ("Activate".equals(button)) {
+		if (ACTIVATE_BUTTON.equals(button)) {
 			contractor.setStatus(AccountStatus.Active);
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
-					Account.PicsID, this.getUser());
+					Account.PicsID, billingNoteModel.findUserForPaymentNote(permissions));
 		}
 
 		// Automatically deactivating account based on expired membership
@@ -167,7 +178,7 @@ public class BillingDetail extends ContractorActionSupport {
 				@Override
 				public boolean check(ContractorOperator t) {
 					return !t.getOperatorAccount().isCorporate()
-							&& t.getOperatorAccount().getDoContractorsPay().equals("No")
+							&& t.getOperatorAccount().getDoContractorsPay().equals(YesNo.No.toString())
 							&& t.getOperatorAccount().getStatus().isActiveOrDemo();
 				}
 			}.grep(contractor.getOperators());

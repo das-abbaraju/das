@@ -42,6 +42,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -53,6 +54,9 @@ import com.picsauditing.validator.ContractorValidator;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
+	private static final String DELETE_BUTTON = "Delete";
+	private static final String EMAIL_BUTTON = "email";
+
 	private static final Logger logger = LoggerFactory.getLogger(RegistrationMakePayment.class);
 
 	@Autowired
@@ -79,6 +83,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private FeatureToggle featureToggleChecker;
 	@Autowired
 	private DataObservable saleCommissionDataObservable;
+	@Autowired
+	private BillingNoteModel billingNoteModel;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -125,7 +131,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		// Email proforma invoice
-		if ("email".equals(button)) {
+		if (EMAIL_BUTTON.equals(button)) {
 			contractor.setPaymentMethod(PaymentMethod.EFT);
 			contractorAccountDao.save(contractor);
 			try {
@@ -209,7 +215,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
 								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,
-								LowMedHigh.High, true, Account.EVERYONE, getUser(), null);
+								LowMedHigh.High, true, Account.EVERYONE,
+								billingNoteModel.findUserForPaymentNote(permissions), null);
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -314,7 +321,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private void addNote(String subject) {
-		Note note = new Note(contractor, new User(User.SYSTEM), subject);
+		Note note = new Note(contractor, billingNoteModel.findUserForPaymentNote(permissions), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
@@ -326,7 +333,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private void loadCC() throws Exception {
-		// Setup the new variables for sending the CC to braintree
+		// Setup the new variables for sending the CC to BrainTree
 		customer_vault_id = contractor.getIdString();
 
 		// This is a credit card method
@@ -377,7 +384,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		// Response code not received, can either be transmission error or no
 		// previous info entered
 
-		if ("Delete".equalsIgnoreCase(button)) {
+		if (DELETE_BUTTON.equalsIgnoreCase(button)) {
 			try {
 				paymentService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
@@ -408,7 +415,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		// Should exit immediately on communication error since we do not know
-		// the true status of a contractor's account on braintree, and should
+		// the true status of a contractor's account on BrainTree, and should
 		// not show cc data
 		if (retries >= quit) {
 			// TODO: Test
@@ -429,7 +436,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			// (ccOnFile == False && expDate == null)
 			// in case an insert was performed
 			// properly, but PICS never received the response message.
-			// Note: should not insert credit card info in invalid cc case:
+			// Note: should not insert credit card info in invalid CC case:
 			// (ccOnFile == False && expDate != null)
 		}
 

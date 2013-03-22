@@ -38,6 +38,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
@@ -46,6 +47,15 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
 
+	private static final String REFUND_ON_BRAIN_TREE_PICS_BUTTON = "Refund on BrainTree/PICS";
+	private static final String COLLECT_PAYMENT_BUTTON = "Collect Payment";
+	private static final String SAVE_BUTTON = "Save";
+	private static final String APPLY_BUTTON = "apply";
+	private static final String UNAPPLY_BUTTON = "unapply";
+	private static final String REFUND_BUTTON = "Refund";
+	private static final String VOID_CC_BUTTON = "voidcc";
+	private static final String DELETE_BUTTON = "Delete";
+	private static final String FIND_CC_BUTTON = "findcc";
 	@Autowired
 	private PaymentDAO paymentDAO;
 	@Autowired
@@ -58,6 +68,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private BrainTreeService paymentService;
 	@Autowired
 	private DataObservable salesCommissionDataObservable;
+	@Autowired
+	private BillingNoteModel billingNoteModel;
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -87,7 +99,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	@RequiredPermission(value = OpPerms.AllContractors)
 	public String execute() throws Exception {
-		if ("findcc".equals(button)) {
+		if (FIND_CC_BUTTON.equals(button)) {
 			creditCard = paymentService.getCreditCard(id);
 			method = PaymentMethod.CreditCard;
 			return SUCCESS;
@@ -194,7 +206,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 
 			String message = null;
-			if (button.equalsIgnoreCase("Delete")) {
+			if (DELETE_BUTTON.equalsIgnoreCase(button)) {
 				if (payment.getQbListID() != null) {
 					addActionError("You can't delete a payment that has already been synced with QuickBooks.");
 					return SUCCESS;
@@ -208,7 +220,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
 			}
 
-			if (button.equalsIgnoreCase("voidcc")) {
+			if (VOID_CC_BUTTON.equalsIgnoreCase(button)) {
 				try {
 					paymentService.voidTransaction(payment.getTransactionID());
 					message = "Successfully canceled credit card transaction";
@@ -230,7 +242,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 			}
 
-			if (button.startsWith("Refund")) {
+			if (button.startsWith(REFUND_BUTTON)) {
 				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("You can't refund negative amounts");
 					return SUCCESS;
@@ -247,7 +259,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setAccount(contractor);
 					refund.setAuditColumns(permissions);
 					refund.setStatus(TransactionStatus.Paid);
-					if (button.equals("Refund on BrainTree/PICS")) {
+					if (REFUND_ON_BRAIN_TREE_PICS_BUTTON.equals(button)) {
 						if (payment.getPaymentMethod().isCreditCard()) {
 							paymentService.processRefund(payment.getTransactionID(), refundAmount);
 							message = "Successfully refunded credit card on BrainTree";
@@ -255,6 +267,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							refund.setTransactionID(payment.getTransactionID());
 						}
 					}
+
 					refund.setQbSync(true);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
@@ -268,16 +281,16 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			if (amountApplyMap.size() > 0) {
 				boolean collected = false;
-				if ("Save".equals(button)) {
-					button = "apply";
+				if (SAVE_BUTTON.equals(button)) {
+					button = APPLY_BUTTON;
 				}
 
-				if ("Collect Payment".equals(button)) {
+				if (COLLECT_PAYMENT_BUTTON.equals(button)) {
 					collected = true;
-					button = "apply";
+					button = APPLY_BUTTON;
 				}
 
-				if (button.equals("unapply")) {
+				if (UNAPPLY_BUTTON.equals(button)) {
 					// Find the Invoice or Refund # passed through the
 					// amountApplyMap and remove it
 					for (int txnID : amountApplyMap.keySet()) {
@@ -302,7 +315,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						}
 					}
 				}
-				if (button.equals("apply")) {
+				if (APPLY_BUTTON.equals(button)) {
 					if (changePaymentMethodOnAccount) {
 						contractor.setPaymentMethod(method);
 						contractor.setAuditColumns(permissions);
@@ -424,7 +437,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addNote(String subject) {
-		Note note = new Note(payment.getAccount(), getUser(User.SYSTEM), subject);
+		Note note = new Note(payment.getAccount(), billingNoteModel.findUserForPaymentNote(permissions), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
