@@ -191,6 +191,9 @@ public class ContractorDocuments extends ContractorActionSupport {
 			if (type.getClassType().isPolicy())
 				return getText("global.InsureGUARD");
 
+			if (type.getClassType().isReview())
+				return getText("global.ClientReviews");
+
 			return getText("global.AuditGUARD");
 		}
 
@@ -207,7 +210,10 @@ public class ContractorDocuments extends ContractorActionSupport {
 	public static String getSafeName(String name) {
 		if (name == null)
 			return null;
-		return name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
+		String safeName = name.toLowerCase().replaceAll(" ", "_").replaceAll("&(.*?);", "");
+		if ("client_reviews".equals(safeName))
+			safeName="reviews";
+		return safeName;
 	}
 
 	private class AuditByDate implements Comparator<ContractorAudit> {
