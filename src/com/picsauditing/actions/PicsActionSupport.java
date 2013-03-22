@@ -480,7 +480,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     public OperatorAccount getOperatorAccount() {
         Account operator = getAccount();
-        if (Account.OPERATOR_ACCOUNT_TYPE.equals(operator.getType()) || Account.OPERATOR_ACCOUNT_TYPE.equals(operator.getType())) {
+        if (Account.OPERATOR_ACCOUNT_TYPE.equals(operator.getType()) || Account.CORPORATE_ACCOUNT_TYPE.equals(operator.getType())) {
 			return (OperatorAccount) operator;
 		}
 
