@@ -92123,22 +92123,19 @@ Ext.define('PICS.view.layout.Menu', {
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-        
-        // hack-ish to determine if we should "switch" out the menu separator and favorites label
-        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
-        if (items === undefined || items.length < 4) {
-            return;
-        }
 
-        items.splice(2, 1, {
-            xtype: 'menuseparator'
-        });
-
-        items.splice(3, 1, {
-            xtype: 'tbtext',
-            cls: 'menu-title',
-            // TODO pass in translated "Favorites"
-            text: 'Favorites'
+        Ext.each(items, function(item, index) {
+            if (item.text == 'separator') {
+                items.splice(index, 1, {
+                    xtype: 'menuseparator'
+                });
+            } else if (item.id == 'Favorites_menu') {
+                items.splice(index, 1, {
+                    xtype: 'tbtext',
+                    cls: 'menu-title',
+                    text: item.text
+                });
+            }
         });
     },
 
