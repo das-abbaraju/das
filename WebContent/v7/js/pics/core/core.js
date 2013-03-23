@@ -306,7 +306,7 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
              * Shorthand for creating a modal
              */
             modal: function (options) {
-                var modal = this.getClass('modal.Modal');
+                var modal = this.getClass('widget.Modal');
                 
                 modal.create(options);
                 
