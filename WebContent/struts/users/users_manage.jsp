@@ -283,7 +283,7 @@
 						</s:text>
 					</h2>
 
-					<ol>
+					<ul>
 						<s:if test="account.users.size() > 1">
 							<s:if test="user.id > 0">
 								<li>
@@ -303,6 +303,25 @@
                                 </li>
 							</s:if>
 						</s:if>
+
+                        <li>
+                            <label for="firstName"><s:text name="User.firstName"></s:text>:</label>
+                            <input id="firstName" type="text" name="user.firstName" value="${user.firstName}" />
+                        </li>
+
+                        <li>
+                            <label for="lastName"><s:text name="User.lastName"></s:text>:</label>
+                            <input id="lastName" type="text" name="user.lastName" value="${user.lastName}" />
+                        </li>
+
+                        <li>
+                            <label><s:text name="UsersManage.DisplayName" />:</label>
+                            <input id="firstLast" type="radio" name="u.displayName" value="${user.firstName}${user.lastName}"/>
+                            <label for="firstLast" class="label-inline">${user.firstName} ${user.lastName}</label>
+
+                            <input id="lastFirst" type="radio" name="u.displayName" value="${user.lastName}${user.firstName}"/>
+                            <label for="lastFirst" class="label-inline">${user.lastName} ${user.firstName}</label>
+                        </li>
 
 						<li>
                             <s:if test="user.isGroup.toString() == 'No'">
@@ -546,7 +565,7 @@
 								</table>
 							</li>
 						</s:if>
-					</ol>
+					</ul>
 				</fieldset>
 
 				<fieldset class="form submit">
