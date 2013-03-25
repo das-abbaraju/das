@@ -1611,7 +1611,8 @@ div.blockDialog {
     margin-right: 0px;
 }
 
-.ProfileEdit-page #tab_profile li
+.ProfileEdit-page #tab_profile li,
+.UsersManage-page #UserSave li
 {
     font-size: 15px;
     padding: 4px 5px 12px 10px;
