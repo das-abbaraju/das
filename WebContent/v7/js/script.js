@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2013-03-22
+/*! Picsorganizer - v0.1.0 - 2013-03-25
 * http://www.picsorganizer.com/
 * Copyright (c) 2013 Carey Hinoki; Licensed MIT */
 
@@ -3017,105 +3017,232 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
         }
     });
 }(jQuery));
+/**
+ * Validate
+ * 
+ * A plugin for client side validation for Twitter Bootstrap forms.
+ * 
+ * Twitter Bootstrap:  v2.3.1
+ * Plugin: v0.2
+ * 
+ * @author: Carey Hinoki
+ * @date: 2013-03-25
+ */
 (function ($, window, document, undefined) {
     "use strict"; // jshint ;_;
     
-    var rules = [{
-        key: 'validate-required',
-        message: 'Cannot be blank',
-        pattern: /^.+$/
-    }, {
-        key: 'validate-min-length',
-        message: 'Minimum length is {0}',
-        pattern: function (length) {
-            if (parseInt(length) == NaN) return /^.*$/;
-            
-            return new RegExp([
-                "^",
-                ".{" + length + ",}",
-                "$"
-            ].join(''));
+    var validators = {
+        required: {
+            name: 'required',
+            type: 'minlength',
+            size: 1,
+            message: 'Field is required'
+        },
+        minlength: {
+            name: 'minlength',
+            type: 'minlength',
+            message: 'Field is less than {0} characters'
+        },
+        maxlength: {
+            name: 'maxlength',
+            type: 'maxlength',
+            message: 'Field is longer than {0} characters'
+        },
+        compareeq: {
+            name: 'compareeq',
+            type: 'compareeq',
+            message: 'Field does not equal {0}'
+        },
+        comparelt: {
+            name: 'comparelt',
+            type: 'comparelt',
+            message: 'Field is not less than {0}'
+        },
+        comparegt: {
+            name: 'comparegt',
+            type: 'comparegt',
+            message: 'Field is not greater than {0}'
+        },
+        min: {
+            name: 'min',
+            type: 'min',
+            message: 'Field is less than {0}'
+        },
+        max: {
+            name: 'max',
+            type: 'max',
+            message: 'Field is more than {0}'
+        },
+        currency: {
+            name: 'currency',
+            type: 'regex',
+            regex: new RegExp([
+                '^',
+                '(',
+                    '[0-9]+',
+                    '([.,][0-9]{2})?',
+                '|',
+                    '[0-9]{1,3}',
+                    '([,][0-9]{3})*',
+                    '([.][0-9]{2})?',
+                '|',
+                    '[0-9]{1,3}',
+                    '([.][0-9]{3})*',
+                    '([,][0-9]{2})?',
+                ')',
+                '$'
+            ].join('')),
+            message: 'Field is not a valid amount'
+        },
+        date: {
+            name: 'date',
+            type: 'regex',
+            regex: new RegExp([
+                '^',
+                '[19|20][0-9]{2}',
+                '-',
+                '[0][1-9]|[1][0-2]',
+                '-',
+                '[0][1-9]|[12][0-9]|[3][01]',
+                '$'
+            ].join('')),
+            message: 'Field is not a valid amount'
+        },
+        dateyear: {
+            name: 'dateyear',
+            type: 'regex',
+            regex: '^[19|20][0-9]{2}$',
+            message: 'Field is not a valid year'
+        },
+        datemonth: {
+            name: 'datemonth',
+            type: 'regex',
+            regex: '^[0][1-9]|[1][0-2]$',
+            message: 'Field is not a valid month'
+        },
+        dateday: {
+            name: 'dateday',
+            type: 'regex',
+            regex: '^[0][1-9]|[12][0-9]|[3][01]$',
+            message: 'Field is not a valid day'
+        },
+        email: {
+            name: '',
+            type: 'regex',
+            regex: new RegExp([
+                '^',
+                '[a-zA-Z0-9._%+-]+',
+                '@',
+                '[a-zA-Z0-9.-]+',
+                '[.][a-zA-Z]{2,4}',
+                '$'
+            ].join('')),
+            message: 'Field is not a valid email address'
+        },
+        integer: {
+            name: 'integer',
+            type: 'regex',
+            regex: '^(0|[-]?[1-9]([0-9]+)?)$',
+            message: 'Field is not a valid number'
+        },
+        integerpositive: {
+            name: 'integerpositive',
+            type: 'regex',
+            regex: '^[1-9]([0-9]+)?$',
+            message: 'Field is not a positive number'
+        },
+        integernegative: {
+            name: 'integernegative',
+            type: 'regex',
+            regex: '^[-][1-9]([0-9]+)?$',
+            message: 'Field is not a negative number'
+        },
+        match: {
+            name: 'match',
+            type: 'match',
+            message: 'Field does not match {0}'
+        },
+        pattern: {
+            name: 'pattern',
+            type: 'regex',
+            message: 'Field does not match pattern {0}'
         }
-    }, {
-        key: 'validate-max-length',
-        message: 'Max length is {0}',
-        pattern: function (length) {
-            if (parseInt(length) == NaN) return /^.*$/;
-            
-            return new RegExp([
-                "^",
-                ".{," + length + "}",
-                "$"
-            ].join(''));
+    };
+
+    var validator_types = {
+        compareeq: {
+            init: function ($this, name) {
+                return { value: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return value == validator.value;
+            }
+        },
+        comparelt: {
+            init: function ($this, name) {
+                return { value: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return value < validator.value;
+            }
+        },
+        comparegt: {
+            init: function ($this, name) {
+                return { value: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return value > validator.value;
+            }
+        },
+        max: {
+            init: function ($this, name) {
+                return { max: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return parseFloat(validator.max) != NaN && parseFloat(value) > parseFloat(validator.max);
+            }
+        },
+        min: {
+            init: function ($this, name) {
+                return { min: $this.data(name) }
+            },
+            validate: function (value, validator) {
+                return parseFloat(validator.max) != NaN && parseFloat(value) < parseFloat(validator.max);
+            }
+        },
+        maxlength: {
+            init: function ($this, name) {
+                return { size: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return parseInt(validator.size) != NaN && value.length <= parseInt(validator.size);
+            }
+        },
+        minlength: {
+            init: function ($this, name) {
+                return { size: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return parseInt(validator.size) != NaN && value.length >= parseInt(validator.size);
+            }
+        },
+        match: {
+            init: function ($this, name) {
+                return { element: $($this.data(name)) };
+            },
+            validate: function (value, validator) {
+                return validator.element instanceof $ && value == validator.element.val();
+            }
+        },
+        regex: {
+            init: function ($this, name) {
+                return { regex: $this.data(name) };
+            },
+            validate: function (value, validator) {
+                return value.match(typeof validator.regex == 'string' ? new RegExp(validator.regex) : validator.regex) != null;
+            }
         }
-    }, {
-        key: 'validate-currency',
-        message: 'Please enter the currency without a symbol',
-        pattern: new RegExp([
-            "^",
-            "(",
-                "[0-9]+",
-                "([.,][0-9]{2})?",
-            "|",
-                "[0-9]{1,3}",
-                "([,][0-9]{3})*",
-                "([.][0-9]{2})?",
-            "|",
-                "[0-9]{1,3}",
-                "([.][0-9]{3})*",
-                "([,][0-9]{2})?",
-            ")",
-            "$"
-        ].join(''))
-    }, {
-        key: 'validate-date',
-        message: 'Please use a valid YYYY-MM-DD format',
-        pattern: new RegExp([
-            "^",
-            "(19|20)[0-9]{2}",
-            "-",
-            "(0[1-9]|1[012])",
-            "-",
-            "(0[1-9]|[12][0-9]|3[01])",
-            "$"
-        ].join(''))
-    }, {
-        key: 'validate-email',
-        message: 'Please use a valid email address',
-        pattern: new RegExp([
-            "^",
-            "[a-zA-Z0-9._%+-]+",
-            "@",
-            "[a-zA-Z0-9.-]+",
-            "[.][a-zA-Z]{2,4}",
-            "$"
-        ].join(''))
-    }, {
-        key: 'validate-integer',
-        message: 'Please enter a whole number',
-        pattern: new RegExp([
-            "^",
-            "-?",
-            "[0-9]+",
-            "$"
-        ].join(''))
-    }, {
-        key: 'validate-integer-negative',
-        message: 'Please enter a negative whole number',
-        pattern: new RegExp([
-            "^",
-            "-[0-9]+",
-            "$"
-        ].join(''))
-    }, {
-        key: 'validate-integer-positive',
-        message: 'Please enter a positive whole number',
-        pattern: new RegExp([
-            "^",
-            "[0-9]+",
-            "$"
-        ].join(''))
-    }];
+    };
     
     function Validate(element, options) {
         this.$element = $(element);
@@ -3126,117 +3253,105 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }
     
     Validate.prototype = {
-        addFieldError: function (error) {
-            var $control_group = this.$input.closest('.control-group'),
-                $controls = this.$input.closest('.controls'),
+        addError: function ($input, error_message) {
+            var $control_group = $input.closest('.control-group'),
+                $controls = $input.closest('.controls'),
+                icon_class = this.options.itarget.replace(/[.](.*)/, '$1'),
+                icon = $(this.options.itemplate).addClass(icon_class),
                 error_class = this.options.etarget.replace(/[.](.*)/, '$1'),
-                error = $('<span>').addClass(error_class).html(this.options.etemplate.replace('{{error}}', error));
+                error = $(this.options.etemplate.replace('{{error}}', error_message)).addClass(error_class);
             
             $control_group.addClass('error');
+            
+            if (this.options.icon == true) $controls.append(icon);
             
             $controls.append(error);
         },
         
-        getFieldErrors: function () {
-            var errors = [];
-            
-            $.each(this.options.rules, $.proxy(function (index, rule) {
-                if (!this.isRuleValid(rule)) throw 'Invalid validate rule';
-                
-                if (this.$input.data(rule.key) != null && this.hasFieldError(rule)) {
-                    errors.push({
-                        key: rule.key,
-                        message: this.getRuleMessage(rule)
-                    });
-                }
-            }, this));
-            
-            return errors;
-        },
-        
-        getRule: function (key) {
-            var _rule = null;
-            
-            $.each(this.options.rules, $.proxy(function (index, rule) {
-                if (this.isRuleValid(rule) && rule.key == key) return _rule = rule;
-            }, this));
-            
-            return _rule;
-        },
-        
-        getRuleMessage: function (rule) {
-            return rule.message.replace('{0}', this.$input.data(rule.key));
-        },
-        
-        getRulePattern: function (rule) {
-            if (typeof rule.pattern == 'function') return rule.pattern(this.$input.data(rule.key));
-            
-            return rule.pattern;
-        },
-        
-        hasFieldError: function (rule) {
-            var pattern = this.getRulePattern(rule);
-            
-            if (!pattern) return false;
-            
-            return $.trim(this.$input.val()).match(pattern) == null;
-        },
-        
-        isRuleValid: function (rule) {
-            return rule != null 
-                && typeof rule == 'object' 
-                && typeof rule.key == 'string' 
-                && typeof rule.message == 'string'
-                && (rule.pattern instanceof RegExp || typeof rule.pattern == 'function');
-        },
-        
-        listen: function () {
-            this.$element
-                .on('focusin.form.validate', 'input', $.proxy(this.focus, this))
-                .on('focusout.form.validate', 'input', $.proxy(this.validate, this));
-        },
-        
-        resetField: function () {
-            var $control_group = this.$input.closest('.control-group'),
-                $controls = this.$input.closest('.controls');
-            
-            $control_group.removeClass('error');
-
-            $controls.find(this.options.etarget).remove();
-        },
-        
-        updateMessages: function () {
-            if (typeof this.options.messages != 'object') return;
-            
-            $.each(this.options.messages, $.proxy(function (key, message) {
-                var rule = this.getRule(key);
-                
-                if (typeof message == 'string' && rule) rule.message = message;
-            }, this));
-        },
-        
-        focus: function (event) {
+        focusin: function (event) {
             this.$input = $(event.currentTarget);
             
-            this.resetField();
+            this.reset(this.$input);
         },
         
-        validate: function (event) {
+        focusout: function (event) {
             this.$input = $(event.currentTarget);
             
-            var errors = this.getFieldErrors();
+            var errors = this.getErrors(this.$input);
             
             if (errors.length > 0) {
                 var error = errors.shift();
                 
                 // webkit double input focus/blur events work around
                 // http://stackoverflow.com/questions/9680518/google-chrome-duplicates-javascript-focus-event/9680979#9680979
-                this.resetField();
+                this.reset(this.$input);
                 
-                this.addFieldError(error.message);
+                this.addError(this.$input, error.message);
                 
-                this.$input.trigger(error.key);
+                this.$input.trigger(error.name);
             }
+        },
+            
+        getError: function ($input, name) {
+            var validator = this.options.validators[name];
+            
+            return {
+                name: name,
+                message: validator.message.replace('{0}', $input.data(name))
+            };
+        },
+        
+        getErrors: function ($input) {
+            var errors = [];
+            
+            $.each($input.data(), $.proxy(function (name, value) {
+                if (this.hasError($input, name)) {
+                    errors.push(this.getError($input, name));
+                }
+            }, this));
+            
+            return errors;
+        },
+        
+        hasError: function ($input, name) {
+            var validator = this.options.validators[name],
+                validator_type = this.options.validator_types[validator.type];
+            
+            if (!(validator || validator_type)) {
+                return true;
+            }
+        
+            var validator = $.extend({}, validator, $input.data(name).length > 0 ? validator_type.init($input, name) : false),
+                value = $.trim($input.val());
+            
+            return validator_type.validate(value, validator) == false;
+        },
+        
+        listen: function () {
+            this.$element
+                .on('focusin.form.validate', 'input', $.proxy(this.focusin, this))
+                .on('focusout.form.validate', 'input', $.proxy(this.focusout, this));
+        },
+        
+        reset: function ($input) {
+            var $control_group = $input.closest('.control-group'),
+                $controls = $input.closest('.controls');
+            
+            $control_group.removeClass('error');
+            
+            if (this.options.icon == true) $controls.find(this.options.itarget).remove();
+            
+            $controls.find(this.options.etarget).remove();
+        },
+        
+        updateMessages: function () {
+            if (typeof this.options.messages != 'object') return;
+            
+            $.each(this.options.messages, $.proxy(function (name, message) {
+                var validator = this.options.validators[name];
+                
+                if (typeof message == 'string' && validator) validator.message = message;
+            }, this));
         }
     };
     
@@ -3252,8 +3367,12 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     
     $.fn.validate.defaults = {
         etarget: '.validate-error',
-        etemplate: '<span class="help-inline"><i class="icon-remove-sign icon-large"></i></span><span class="help-block">{{error}}</span>',
-        rules: rules
+        etemplate: '<span class="help-block">{{error}}</span>',
+        icon: true,
+        itarget: '.validate-icon',
+        itemplate: '<span class="help-inline"><i class="icon-remove-sign icon-large"></i></span>',
+        validators: validators,
+        validator_types: validator_types
     };
     
     $('form[data-init="validate"]').validate();
