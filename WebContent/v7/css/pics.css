@@ -152,7 +152,7 @@ body {
   color: #ccc;
   margin-right: 2px;
   position: relative;
-  top: 8px;
+  top: 2px;
 }
 /* line 58, ../sass/pics/layout/_menu.scss */
 .navbar .navbar-search .search-query {
@@ -239,7 +239,7 @@ body {
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
-  top: 4px;
+  top: 1px;
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
@@ -898,6 +898,8 @@ hr {
 .nav-list .icon-chevron-right {
   color: #e5e5e5;
   float: right;
+  position: relative;
+  top: 4px;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
