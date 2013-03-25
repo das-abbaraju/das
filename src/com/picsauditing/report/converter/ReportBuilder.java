@@ -113,7 +113,7 @@ public class ReportBuilder {
 
 			column.setWidth(width);
 		} catch (Exception e) {
-			logger.warn("Couldn't parse width from Column '" + json.get(REPORT_ID));
+			logger.warn("Couldn't parse width from Column " + json.get(REPORT_ELEMENT_DB_ID));
 		}
 
 		try {
@@ -126,8 +126,15 @@ public class ReportBuilder {
 
 			column.setSortIndex(sortIndex);
 		} catch (Exception e) {
-			logger.warn("Couldn't parse sort from Column '" + json.get(REPORT_ID));
+			logger.warn("Couldn't parse sort from Column " + json.get(REPORT_ELEMENT_DB_ID));
 			column.setSortIndex(Column.DEFAULT_SORT_INDEX);
+		}
+
+		try {
+			String columnIdString = json.get(COLUMN_ID).toString();
+			column.setColumnId(columnIdString);
+		} catch (Exception e) {
+			logger.warn("Couldn't find column_id or parse it from Column " + json.get(REPORT_ELEMENT_DB_ID));
 		}
 
 		return column;
@@ -170,14 +177,14 @@ public class ReportBuilder {
 
 	private static void toElementFromJSON(JSONObject json, ReportElement element) {
 		try {
-			String idString = json.get(REPORT_ID).toString();
+			String idString = json.get(REPORT_ELEMENT_DB_ID).toString();
 			int id = Integer.parseInt(idString);
 			element.setId(id);
 		} catch (Exception e) {
-			logger.warn("Couldn't parse id from ReportElement '" + json.get(REPORT_ID) + "' ReportElement's id will default to 0.");
+			logger.warn("Couldn't parse id from ReportElement '" + json.get(REPORT_ELEMENT_DB_ID) + "' ReportElement's id will default to 0.");
 		}
 
-		element.setName((String) json.get(REPORT_ELEMENT_FIELD_ID));
+		element.setName((String) json.get(REPORT_ELEMENT_FIELD_ID));    //FIXME: We need to not mix properties like this
 
 		String sqlFunction = (String) json.get(COLUMN_SQL_FUNCTION);
 		if (sqlFunction != null) {

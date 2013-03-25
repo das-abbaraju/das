@@ -69,7 +69,7 @@ public class SqlBuilder {
 
 	private void setColumnProperties(List<Column> columns, Map<String, Field> availableFields) {
 		for (Column column : columns) {
-			column.setMethodToFieldName();
+			column.appendSqlFunctionToName();
 			column.addFieldCopy(availableFields);
 
 			if (column.getField() == null) {

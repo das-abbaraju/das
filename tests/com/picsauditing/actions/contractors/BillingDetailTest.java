@@ -57,6 +57,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.Strings;
@@ -108,6 +109,8 @@ public class BillingDetailTest extends PicsActionTest {
 	private DataObservable saleCommissionDataObservable;
 	@Mock
 	private InvoiceModel invoiceModel;
+	@Mock
+	private BillingNoteModel billingNoteModel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -138,6 +141,7 @@ public class BillingDetailTest extends PicsActionTest {
 		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
 		when(contractor.getInvoices()).thenReturn(invoices);
 		when(item.getInvoiceFee()).thenReturn(invoiceFee);
+		when(billingNoteModel.findUserForPaymentNote(permissions)).thenReturn(user);
 	}
 
 	private void setupInvoiceItems() {
@@ -187,6 +191,7 @@ public class BillingDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(billingDetail, "user", user);
 		Whitebox.setInternalState(billingDetail, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(billingDetail, "saleCommissionDataObservable", saleCommissionDataObservable);
+		Whitebox.setInternalState(billingDetail, "billingNoteModel", billingNoteModel);
 	}
 
 	private void setupStandardFees() {

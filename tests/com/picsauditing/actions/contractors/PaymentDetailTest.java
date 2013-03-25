@@ -38,6 +38,7 @@ import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
@@ -60,6 +61,8 @@ public class PaymentDetailTest extends PicsActionTest {
 	private BrainTreeService brainTreeService;
 	@Mock
 	private ContractorAccountDAO contractorAccountDAO;
+	@Mock
+	private BillingNoteModel billingNoteModel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -70,6 +73,7 @@ public class PaymentDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(paymentDetail, "paymentDAO", paymentDAO);
 		Whitebox.setInternalState(paymentDetail, "paymentService", brainTreeService);
 		Whitebox.setInternalState(paymentDetail, "contractorAccountDao", contractorAccountDAO);
+		Whitebox.setInternalState(paymentDetail, "billingNoteModel", billingNoteModel);
 	}
 
 	@Test

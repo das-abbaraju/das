@@ -9,8 +9,9 @@ import com.picsauditing.report.fields.PivotDimension;
 
 @Entity
 @Table(name = "report_column")
-public class Column extends ReportElement {
+public class Column extends ReportElement implements Comparable<Column> {
 
+	private String columnId;
 	private int width = DEFAULT_WIDTH;
 	private int sortIndex = DEFAULT_SORT_INDEX;
 
@@ -23,6 +24,15 @@ public class Column extends ReportElement {
 
 	public Column(String fieldName) {
 		super(fieldName);
+	}
+
+	@Transient
+	public String getColumnId() {
+		return columnId;
+	}
+
+	public void setColumnId(String columnId) {
+		this.columnId = columnId;
 	}
 
 	public int getWidth() {
@@ -60,4 +70,10 @@ public class Column extends ReportElement {
 		// Need to move this to another table or decide to store it here
 		return null;
 	}
+
+	@Override
+	public int compareTo(Column otherColumn) {
+		return Double.compare(sortIndex, otherColumn.getSortIndex());
+	}
+
 }
