@@ -60,7 +60,8 @@ public class ReportCsrContractorCount extends ReportAccount {
 		sql.addField("a.countrySubdivision as countrySubdivision");
 		sql.addField("count(a.name) as cnt");
 		sql.addJoin("JOIN contractor_info c");
-		sql.addJoin("JOIN users u ON c.welcomeAuditor_id = u.id");
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+		sql.addJoin("JOIN users u ON au.userID = u.id");
 		String opIds = " u.id IN (" + csrIds[0];
 		for (int i = 1; i < csrIds.length; i++) {
 			opIds += "," + csrIds[i];

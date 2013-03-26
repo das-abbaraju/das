@@ -30,7 +30,9 @@ public class FlagChangesWidget extends PicsActionSupport {
 		sql.setType(Type.Contractor);
 
 		sql.addWhere("a.status IN ('Active')");
-		sql.addWhere("c.welcomeAuditor_id = " + permissions.getShadowedUserID());
+
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+		sql.addWhere("au.userID = " + permissions.getShadowedUserID());
 
 		sql.addJoin("JOIN generalcontractors gc_flag ON gc_flag.subid = a.id AND gc_flag.flag != gc_flag.baselineFlag");
 		sql.addField("gc_flag.id gcID");

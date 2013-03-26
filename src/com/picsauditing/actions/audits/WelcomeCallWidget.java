@@ -23,7 +23,8 @@ public class WelcomeCallWidget extends PicsActionSupport {
 		sql.addField("cao.creationDate createdDate");
 		sql.addField("ca.expiresDate");
 		sql.addField("CONCAT('AuditType.',aType.id,'.name') `atype.name`");
-		sql.addField("c.welcomeAuditor_id AS csrID");
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+		sql.addField("au.userID AS csrID");
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");

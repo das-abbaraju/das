@@ -51,8 +51,14 @@ public class ContractorTable extends AbstractTable {
 //		oldCsrKey.setMinimumImportance(FieldImportance.Average);
 //		oldCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 
-        ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new AccountUserTable(),
-                new ReportOnClause("id", "accountID"))); // , ReportOnClause.ToAlias + ".role = " + UserAccountRole.PICSCustomerServiceRep));
+        ReportForeignKey csrKey = addOptionalKey(
+                new ReportForeignKey(
+                        CustomerService,
+                        new AccountUserTable(),
+                        new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = " + UserAccountRole.PICSCustomerServiceRep)
+                )
+        );
+
 		csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
         csrKey.setMinimumImportance(FieldImportance.Average);
 
