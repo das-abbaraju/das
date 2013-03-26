@@ -37,6 +37,7 @@ import com.picsauditing.util.Strings;
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 
 	public static final String FRANCE_ISO_CODE = "FR";
+	public static final String GERMANY_ISO_CODE = "DE";
 	public static final String UK_ISO_CODE = "GB";
 	public static final String UAE_ISO_CODE = "AE";
 	public static final String CANADA_ISO_CODE = "CA";
