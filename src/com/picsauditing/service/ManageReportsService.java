@@ -139,4 +139,11 @@ public class ManageReportsService {
 		return reports;
 	}
 
+	public List<Report> getReportsForOwnedByUser(Permissions permissions, Pagination<Report> pagination) {
+
+		List<Report> reports = reportDao.findByOwnerID(permissions.getUserId());
+
+		return reports;
+	}
+
 }

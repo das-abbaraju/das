@@ -124,7 +124,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!searchList.action", e);
+			logger.error("Unexpected exception in ManageReports!search.action", e);
 			if (permissions.has(OpPerms.Debug)) {
 				addActionError(e.getMessage());
 			}
@@ -138,6 +138,16 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String ownedBy() {
+		reports = new ArrayList<Report>();
+		try {
+			reports = manageReportsService.getReportsForOwnedByUser(permissions, getPagination());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!ownedBy.action", e);
+			if (permissions.has(OpPerms.Debug)) {
+				addActionError(e.getMessage());
+			}
+		}
+
 		if (AjaxUtils.isAjax(request())) {
 			return "ownedByList";
 		}
