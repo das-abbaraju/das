@@ -991,7 +991,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return (this.apiKey != null) && hasPermission(OpPerms.RestApi, OpType.View);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Transient
 	public InputValidator getInputValidator() {
 		if (inputValidator == null) {

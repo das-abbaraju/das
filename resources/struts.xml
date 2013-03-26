@@ -41,7 +41,7 @@
             <interceptor name="validation"
                          class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
             <interceptor name="jsonValidation"
-                         class="org.apache.struts2.json.JSONValidationInterceptor"/>
+                         class="com.picsauditing.interceptors.PicsValidationInterceptor"/>
             <interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor"/>
             <interceptor name="FirstTimeUserInterceptor"
                          class="com.picsauditing.interceptors.FirstTimeUserInterceptor"/>

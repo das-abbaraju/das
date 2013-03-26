@@ -315,7 +315,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         if (ActionContext.getContext().getSession() == null) {
             addActionError("Failed to get session");
         } else {
-            permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+            permissions = (Permissions) ActionContext.getContext().getSession().get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
         }
 
         if (permissions == null) {
@@ -355,7 +355,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
             User user = userDAO.find(userID);
 
             permissions = permissionBuilder.login(user);
-            ActionContext.getContext().getSession().put("permissions", permissions);
+            ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
         } catch (Exception e) {
             logger.error("Problem autologging in.  Id supplied was: {}", userID);
         }
