@@ -80,6 +80,21 @@ public class AuditActionSupportTest extends PicsTest {
 	}
 
 	@Test
+	public void testIsCanEditAudit_AnnualUpdate() {
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+		audit.getAuditType().setClassType(AuditTypeClass.Audit);
+		audit.getAuditType().setHasAuditor(true);
+		audit.getAuditType().setCanContractorEdit(true);
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+		User group = new User();
+		group.setIsGroup(YesNo.Yes);
+
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		assertFalse(test.isCanEditAudit());
+	}
+
+	@Test
 	public void testIsCanEditCategory_MultipleCaosDifferentStates() throws Exception {
 		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
 		audit.getAuditType().setClassType(AuditTypeClass.Audit);

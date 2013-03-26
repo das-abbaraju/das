@@ -439,6 +439,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (type.getClassType().equals(AuditTypeClass.Audit)
 				&& permissions.isOperatorCorporate()) {
+			if (type.isAnnualAddendum())
+				return false;
 			if (type.getEditAudit() == null)
 				return true;
 			if (permissions.hasGroup(type.getEditAudit().getId())) {
