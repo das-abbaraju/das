@@ -15,54 +15,50 @@ add rule
 add rules
 </pre>
     
-    <form action="" method="post" id="" name="" class="form-horizontal" data-init="validate" data-messages='{"currency":"Please enter the currency without a symbol","date":"Please use a valid YYYY-MM-DD format","email":"Please use a valid email address","integer":"Please enter a whole number","integernegative":"Please enter a negative whole number","integerpositive":"Please enter a positive whole number","minlength":"Minimum length is {0}","maxlength":"Max length is {0}","required":"Cannot be blankio"}'>
+    <form action="/" method="post" id="contractor_form" name="contractor_form" class="form-horizontal" autocomplete="off" data-init="validate" data-messages='{"required":"En Blanco"}'>
         <div class="control-group">
-            <label class="control-label">Contractor Id</label>
+            <label class="control-label" for="contractor_id">Contractor Id</label>
             <div class="controls">
-                <input type="text" placeholder="12345" id="" name="" data-required data-integerpositive />
+                <input type="text" placeholder="12345" id="contractor_id" name="contractor_id" data-required data-integerpositive />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">Email</label>
+            <label class="control-label" for="contractor_email">Email</label>
             <div class="controls">
-                <input type="text" placeholder="john.smith@example.com" id="" name="" data-required data-email />
+                <input type="text" placeholder="john.smith@example.com" id="contractor_email" name="contractor_email" data-required data-email />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">Phone</label>
+            <label class="control-label" for="contractor_currency">Currency</label>
             <div class="controls">
-                <input type="text" placeholder="Phone" id="" name="" data-required />
-            </div>
-        </div>
-        <div class="control-group error">
-            <label class="control-label">Currency</label>
-            <div class="controls">
-                <div class="input-prepend input-append">
+                <div class="input-prepend">
                     <span class="add-on">$, etc.</span>
-                    <input type="text" placeholder="1,000 or 1.000" id="" name="" data-required data-currency />
-                    <span class="add-on">.00 or ,00</span>
+                    <input type="text" placeholder="1,000 or 1.000" id="contractor_currency" name="contractor_currency" data-currency />
                 </div>
-                
-                <span class="help-inline validate-icon"><i class="icon-remove-sign icon-large"></i></span>
-                <span class="help-block validate-error">Cannot be blankio</span>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">Date</label>
+            <label class="control-label" for="contractor_date">Date</label>
             <div class="controls">
-                <input type="text" placeholder="YYYY-MM-DD" id="" name="" data-required data-date />
+                <input type="text" placeholder="YYYY-MM-DD" id="contractor_date" name="contractor_date" data-date />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">Username</label>
+            <label class="control-label" for="contractor_username">Username</label>
             <div class="controls">
-                <input type="text" placeholder="Username" id="" name="" data-required data-min-length="5" />
+                <input type="text" placeholder="Username" id="contractor_username" name="contractor_username" data-required data-minlength="5" data-maxlength="100" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label">Password</label>
+            <label class="control-label" for="contractor_password">Password</label>
             <div class="controls">
-                <input type="text" placeholder="Password" id="" name="" data-password />
+                <input type="password" placeholder="Password" id="contractor_password" name="contractor_password" data-required />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="contractor_retype_password">Match Password</label>
+            <div class="controls">
+                <input type="password" placeholder="Password" id="contractor_retype_password" name="contractor_retype_password" data-match="#contractor_password" />
             </div>
         </div>
         <div class="control-group">

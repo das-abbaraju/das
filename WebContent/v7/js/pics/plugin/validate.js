@@ -1,22 +1,22 @@
 /**
  * Validate
- * 
+ *
  * A plugin for client side validation for Twitter Bootstrap forms.
- * 
+ *
  * Twitter Bootstrap:  v2.3.1
- * Plugin: v0.2
- * 
+ * Plugin: v0.04
+ *
  * @author: Carey Hinoki
  * @date: 2013-03-25
+ * @updated: 2013-03-26
  */
 (function ($, window, document, undefined) {
     "use strict"; // jshint ;_;
-    
+
     var validators = {
         required: {
             name: 'required',
-            type: 'minlength',
-            size: 1,
+            type: 'required',
             message: 'Field is required'
         },
         minlength: {
@@ -80,32 +80,14 @@
             type: 'regex',
             regex: new RegExp([
                 '^',
-                '[19|20][0-9]{2}',
+                '(19|20)[0-9]{2}',
                 '-',
-                '[0][1-9]|[1][0-2]',
+                '(0[1-9]|1[012])',
                 '-',
-                '[0][1-9]|[12][0-9]|[3][01]',
+                '(0[1-9]|[12][0-9]|3[01])',
                 '$'
             ].join('')),
             message: 'Field is not a valid amount'
-        },
-        dateyear: {
-            name: 'dateyear',
-            type: 'regex',
-            regex: '^[19|20][0-9]{2}$',
-            message: 'Field is not a valid year'
-        },
-        datemonth: {
-            name: 'datemonth',
-            type: 'regex',
-            regex: '^[0][1-9]|[1][0-2]$',
-            message: 'Field is not a valid month'
-        },
-        dateday: {
-            name: 'dateday',
-            type: 'regex',
-            regex: '^[0][1-9]|[12][0-9]|[3][01]$',
-            message: 'Field is not a valid day'
         },
         email: {
             name: '',
@@ -156,7 +138,7 @@
                 return { value: $this.data(name) };
             },
             validate: function (value, validator) {
-                return value == validator.value;
+                return value === validator.value;
             }
         },
         comparelt: {
@@ -180,15 +162,15 @@
                 return { max: $this.data(name) };
             },
             validate: function (value, validator) {
-                return parseFloat(validator.max) != NaN && parseFloat(value) > parseFloat(validator.max);
+                return !isNaN(parseFloat(validator.max, 10)) && parseFloat(value, 10) <= parseFloat(validator.max, 10);
             }
         },
         min: {
             init: function ($this, name) {
-                return { min: $this.data(name) }
+                return { min: $this.data(name) };
             },
             validate: function (value, validator) {
-                return parseFloat(validator.max) != NaN && parseFloat(value) < parseFloat(validator.max);
+                return !isNaN(parseFloat(validator.min, 10)) && parseFloat(value, 10) >= parseFloat(validator.min, 10);
             }
         },
         maxlength: {
@@ -196,7 +178,7 @@
                 return { size: $this.data(name) };
             },
             validate: function (value, validator) {
-                return parseInt(validator.size) != NaN && value.length <= parseInt(validator.size);
+                return !isNaN(parseInt(validator.size, 10)) && value.length <= parseInt(validator.size, 10);
             }
         },
         minlength: {
@@ -204,7 +186,7 @@
                 return { size: $this.data(name) };
             },
             validate: function (value, validator) {
-                return parseInt(validator.size) != NaN && value.length >= parseInt(validator.size);
+                return !isNaN(parseInt(validator.size, 10)) && value.length >= parseInt(validator.size, 10);
             }
         },
         match: {
@@ -212,27 +194,40 @@
                 return { element: $($this.data(name)) };
             },
             validate: function (value, validator) {
-                return validator.element instanceof $ && value == validator.element.val();
-            }
+                return validator.element instanceof $ && value === validator.element.val();
+            },
+            message: function (value, validator) {
+                return validator.message.replace('{0}', $(value).closest('.control-group').find('label').text());
+            },
+            force: true
         },
         regex: {
             init: function ($this, name) {
                 return { regex: $this.data(name) };
             },
             validate: function (value, validator) {
-                return value.match(typeof validator.regex == 'string' ? new RegExp(validator.regex) : validator.regex) != null;
+                return (typeof validator.regex === 'string' ? new RegExp(validator.regex) : validator.regex).test(value);
             }
+        },
+        required: {
+            init: function ($this, name) {
+                return false;
+            },
+            validate: function (value, validator) {
+                return value.length > 0;
+            },
+            force: true
         }
     };
-    
+
     function Validate(element, options) {
         this.$element = $(element);
         this.options = options;
-        
+
         this.updateMessages();
         this.listen();
     }
-    
+
     Validate.prototype = {
         addError: function ($input, error_message) {
             var $control_group = $input.closest('.control-group'),
@@ -241,111 +236,122 @@
                 icon = $(this.options.itemplate).addClass(icon_class),
                 error_class = this.options.etarget.replace(/[.](.*)/, '$1'),
                 error = $(this.options.etemplate.replace('{{error}}', error_message)).addClass(error_class);
-            
+
             $control_group.addClass('error');
-            
-            if (this.options.icon == true) $controls.append(icon);
-            
+
+            if (this.options.icon === true) $controls.append(icon);
+
             $controls.append(error);
         },
-        
+
         focusin: function (event) {
             this.$input = $(event.currentTarget);
-            
+
             this.reset(this.$input);
         },
-        
+
         focusout: function (event) {
             this.$input = $(event.currentTarget);
-            
-            var errors = this.getErrors(this.$input);
-            
-            if (errors.length > 0) {
-                var error = errors.shift();
-                
+
+            var errors = this.getErrors(this.$input),
+                error = errors.shift();
+
+            if (error) {
                 // webkit double input focus/blur events work around
                 // http://stackoverflow.com/questions/9680518/google-chrome-duplicates-javascript-focus-event/9680979#9680979
                 this.reset(this.$input);
-                
+
                 this.addError(this.$input, error.message);
-                
+
                 this.$input.trigger(error.name);
             }
         },
-            
+
         getError: function ($input, name) {
-            var validator = this.options.validators[name];
+            var validator = this.options.validators[name],
+                validator_type = validator && this.options.validator_types[validator.type],
+                message;
+    
+            if (!(validator || validator_type)) return null;
             
+            if (typeof validator_type.message === 'function') {
+                message = validator_type.message($input.data(name), validator); 
+            } else {
+                message = validator.message.replace('{0}', $input.data(name));
+            }
+
             return {
                 name: name,
-                message: validator.message.replace('{0}', $input.data(name))
+                message: message
             };
         },
-        
+
         getErrors: function ($input) {
             var errors = [];
-            
+
             $.each($input.data(), $.proxy(function (name, value) {
-                if (this.hasError($input, name)) {
-                    errors.push(this.getError($input, name));
-                }
+                if (!this.hasError($input, name)) return;
+                
+                var error = this.getError($input, name);
+                
+                if (error) errors.push(error);
             }, this));
-            
+
             return errors;
         },
-        
+
         hasError: function ($input, name) {
             var validator = this.options.validators[name],
-                validator_type = this.options.validator_types[validator.type];
-            
-            if (!(validator || validator_type)) {
-                return true;
-            }
-        
-            var validator = $.extend({}, validator, $input.data(name).length > 0 ? validator_type.init($input, name) : false),
+                validator_type = validator && this.options.validator_types[validator.type];
+
+            if (!(validator || validator_type)) return true;
+
+            var validator = $.extend({}, validator, $input.data(name) !== '' ? validator_type.init($input, name) : false),
                 value = $.trim($input.val());
             
-            return validator_type.validate(value, validator) == false;
+            if (value.length === 0 && validator_type.force !== true) return false;
+            
+            return validator_type.validate(value, validator) === false;
         },
-        
+
         listen: function () {
             this.$element
                 .on('focusin.form.validate', 'input', $.proxy(this.focusin, this))
                 .on('focusout.form.validate', 'input', $.proxy(this.focusout, this));
         },
-        
+
         reset: function ($input) {
             var $control_group = $input.closest('.control-group'),
                 $controls = $input.closest('.controls');
-            
+
             $control_group.removeClass('error');
-            
-            if (this.options.icon == true) $controls.find(this.options.itarget).remove();
-            
+
+            if (this.options.icon === true) $controls.find(this.options.itarget).remove();
+
             $controls.find(this.options.etarget).remove();
         },
-        
+
         updateMessages: function () {
-            if (typeof this.options.messages != 'object') return;
-            
+            if (typeof this.options.messages !== 'object') return;
+
             $.each(this.options.messages, $.proxy(function (name, message) {
                 var validator = this.options.validators[name];
-                
-                if (typeof message == 'string' && validator) validator.message = message;
+
+                if (typeof message === 'string' && validator) validator.message = message;
             }, this));
         }
     };
-    
+
     $.fn.validate = function (options) {
         return this.each(function () {
             var $this = $(this),
-                options = $.extend({}, $.fn.validate.defaults, $this.data(), typeof options == 'object' && options),
+                options = $.extend({}, $.fn.validate.defaults, $this.data(), typeof options === 'object' && options),
                 data = $this.data('validate');
-            
+
             if (!data) $this.data('validate', (new Validate(this, options)));
         });
     }
-    
+
     $.fn.validate.defaults = {
         etarget: '.validate-error',
         etemplate: '<span class="help-block">{{error}}</span>',
@@ -355,6 +361,6 @@
         validators: validators,
         validator_types: validator_types
     };
-    
+
     $('form[data-init="validate"]').validate();
 }(window.jQuery, window, document));
