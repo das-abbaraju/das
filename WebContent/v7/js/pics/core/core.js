@@ -91,18 +91,13 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     data: {},
                     success: function(data, textStatus, jqXHR) {},
                     error: function(jqXHR, textStatus, errorThrown) {},
-                    complete: function(jqXHR, textStatus) {}
+                    complete: function(jqXHR, textStatus) {},
+                    cache: false
                 };
                 
                 var config = {};
                 
                 $.extend(config, defaults, options);
-                
-                if ($.browser.msie && $.browser.version <= 8) {
-                    var date = new Date();
-                    
-                    config.data['ie_timestamp'] = date.getTime();
-                }
                 
                 return $.ajax(config);
             },
