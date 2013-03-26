@@ -55,7 +55,7 @@ public class ContractorTable extends AbstractTable {
                 new ReportForeignKey(
                         CustomerService,
                         new AccountUserTable(),
-                        new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = " + UserAccountRole.PICSCustomerServiceRep)
+                        new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSCustomerServiceRep + "'")
                 )
         );
 

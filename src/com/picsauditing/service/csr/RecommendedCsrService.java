@@ -16,13 +16,13 @@ public class RecommendedCsrService {
     @Autowired
     private ContractorAccountDAO contractorAccountDAO;
 
-    public int acceptRecommendedCsrs(String contractorIds) {
+    public int acceptRecommendedCsrs(String contractorIds, int acceptedByUserId) {
         List<Integer> contractorIdsList = Strings.explodeCommaDelimitedStringOfIds(contractorIds);
 
         List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
 
         for (ContractorAccount contractor: contractorList) {
-            contractor.setCurrentCsr(contractor.getRecommendedCsr());
+            contractor.setCurrentCsr(contractor.getRecommendedCsr(), acceptedByUserId);
             contractorAccountDAO.save(contractor);
         }
 

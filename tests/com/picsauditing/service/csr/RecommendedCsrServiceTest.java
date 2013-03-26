@@ -56,10 +56,10 @@ public class RecommendedCsrServiceTest {
 
     @Test
     public void testAcceptRecommendedCsrs() throws Exception {
-        int numAccepted = recommendedCsrService.acceptRecommendedCsrs(CONTRACTOR_IDS);
+        int numAccepted = recommendedCsrService.acceptRecommendedCsrs(CONTRACTOR_IDS, User.SYSTEM);
 
         for (ContractorAccount contractor : contractorList) {
-            verify(contractor).setCurrentCsr(recommendedCsr);
+            verify(contractor).setCurrentCsr(recommendedCsr, User.SYSTEM);
         }
         commonVerifyForAcceptReject(numAccepted);
     }

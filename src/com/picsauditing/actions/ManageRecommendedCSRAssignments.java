@@ -61,7 +61,7 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 
 	public String save() throws IOException {
 		if (Strings.isNotEmpty(acceptRecommendations)) {
-            int numRowsAffected = recommendedCsrService.acceptRecommendedCsrs(acceptRecommendations);
+            int numRowsAffected = recommendedCsrService.acceptRecommendedCsrs(acceptRecommendations, permissions.getUserId());
 			logger.info(numRowsAffected + " changes accepted, ids: " + acceptRecommendations);
 		}
 		

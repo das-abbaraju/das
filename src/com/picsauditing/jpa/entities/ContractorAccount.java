@@ -867,18 +867,18 @@ public class ContractorAccount extends Account implements JSONable {
     }
 
     @Transient
-    public void setCurrentCsr(User newCsr) {
-        makeUserCurrentCsrExpireExistingCsr(newCsr);
+    public void setCurrentCsr(User newCsr, int createdById) {
+        makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
     }
 
     @Transient
-    public void makeUserCurrentCsrExpireExistingCsr(User newCsr) {
+    public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
         Date now = new Date();
         expireCurrentCsrs(now);
-        addNewCsrRepresentative(newCsr, now);
+        addNewCsrRepresentative(newCsr, now, createdById);
     }
 
-    private void addNewCsrRepresentative(User newCsr, Date now) {
+    private void addNewCsrRepresentative(User newCsr, Date now, int createdById) {
         AccountUser newCsrRep = new AccountUser();
         newCsrRep.setAccount(this);
         newCsrRep.setUser(newCsr);
@@ -886,6 +886,8 @@ public class ContractorAccount extends Account implements JSONable {
         newCsrRep.setEndDate(DateBean.getEndOfTime());
         newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
         newCsrRep.setOwnerPercent(100);
+        newCsrRep.setCreatedBy(new User(createdById));
+        newCsrRep.setCreationDate(new Date());
         addAccountUser(newCsrRep);
     }
 
