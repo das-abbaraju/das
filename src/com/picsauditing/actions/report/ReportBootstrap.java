@@ -1,16 +1,15 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportService;
 
 @SuppressWarnings("serial")
 public class ReportBootstrap extends PicsActionSupport {
 
-	private static final String URL_FOR_REDIRECT_FOR_NOT_VIEWABLE = "ManageReports!favoritesList.action";
+	private static final String URL_FOR_REDIRECT_FOR_NOT_VIEWABLE = "ManageReports!favorites.action";
 
 	private static final String ERROR_MESSAGE_I18N_KEY = "Report.Error.ViewPermissions";
 
@@ -22,6 +21,7 @@ public class ReportBootstrap extends PicsActionSupport {
 	private String name;
 	private int report;
 
+	@Override
 	public String execute() throws Exception {
 		if (report == 0) {
 			name = "Missing report ID parameter";
