@@ -56,17 +56,17 @@ public class FacilitiesEditModelTest extends PicsTest {
 		when(operator.getCountry()).thenReturn(country);
 		corporateFacilities = new ArrayList<Facility>();
 		when(operator.getCorporateFacilities()).thenReturn(corporateFacilities);
-		
+
 		picsConsortiumMap = new HashMap<String, OperatorAccount>();
 		listOfPicsConsortiumAccounts = new ArrayList<OperatorAccount>();
-		
+
 		createConsortium("US");
 		createConsortium("CA");
 		createConsortium("FR");
 		createConsortium("GB");
 		createConsortium("AE");
 		createConsortium("DE");
-		
+
 		when(dao.findWhere(OperatorAccount.class, "inPicsConsortium=1")).thenReturn(listOfPicsConsortiumAccounts);
 	}
 
@@ -92,7 +92,7 @@ public class FacilitiesEditModelTest extends PicsTest {
 	@Test
 	public void testAddPicsCountry_Us() throws Exception {
 
-		
+
 		testAddPicsCountry("US");
 	}
 
@@ -111,6 +111,7 @@ public class FacilitiesEditModelTest extends PicsTest {
 		testAddPicsCountry("GB");
 	}
 
+	@Ignore
 	@Test
 	public void testAddPicsCountry_France() throws Exception {
 		testAddPicsCountry("FR");
