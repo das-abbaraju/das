@@ -442,7 +442,7 @@
 							</s:if>
 						</s:if>
 
-						<s:if test="user.id > 0">
+						<s:if test="user.id > 0 && !user.group">
 							<s:if test="permissions.isAdmin()">
 								<!-- Move User to Account -->
 								<s:hidden name="moveToAccount" id="moveToAccount" />
@@ -459,9 +459,8 @@
 										onclick="return confirm('%{getText('UsersManage.confirm.Move')}');" />
 								</li>
 							</s:if>
-
-
 						</s:if>
+
 						<s:else>
 							<s:hidden name="user.isActive" value="Yes" />
 						</s:else>
@@ -558,7 +557,7 @@
 						<pics:permission perm="EditUsers" type="Edit">							
 							<s:if test="user.id > 0">
 								<s:if test="!setPrimaryAccount">
-									<s:submit method="inActivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
+									<s:submit method="deactivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
 								</s:if>
 							</s:if>
 						</pics:permission>

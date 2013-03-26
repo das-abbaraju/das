@@ -1,12 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -496,7 +490,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.ownedPermissions = ownedPermissions;
 	}
 
-	public Locale getLocale() {
+    @Transient
+    public Set<OpPerms> getOwnedOpPerms() {
+        Set<OpPerms> userPerms = new HashSet<OpPerms>();
+        userPerms = new HashSet<OpPerms>();
+        for (UserAccess ua : getOwnedPermissions()) {
+            userPerms.add(ua.getOpPerm());
+        }
+        return userPerms;
+    }
+
+    public Locale getLocale() {
 		return locale;
 	}
 

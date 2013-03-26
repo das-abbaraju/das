@@ -1,21 +1,26 @@
 package com.picsauditing.actions.users;
 
-import java.net.URLEncoder;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.group.GroupManagementService;
+import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.model.usergroup.UserGroupManagementStatus;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectAccount;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.validator.InputValidator;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -25,43 +30,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserGroupDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
-import com.picsauditing.jpa.entities.UserGroup;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.UserSwitch;
-import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectAccount;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.security.CookieSupport;
-import com.picsauditing.security.EncodedKey;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.validator.InputValidator;
+import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
@@ -96,17 +67,11 @@ public class UsersManage extends PicsActionSupport {
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
-	private CountryDAO countryDAO;
-	@Autowired
-	protected UserDAO userDAO;
-	@Autowired
 	protected UserAccessDAO userAccessDAO;
 	@Autowired
 	protected UserGroupDAO userGroupDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDao;
-	@Autowired
-	protected AppPropertyDAO appPropertyDAO;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -115,6 +80,10 @@ public class UsersManage extends PicsActionSupport {
 	private InputValidator inputValidator;
 	@Autowired
 	private FeatureToggle featureToggle;
+    @Autowired
+    private UserManagementService userManagementService;
+    @Autowired
+    private GroupManagementService groupManagementService;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -180,11 +149,11 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String add() {
-		user = new User();
-		user.setAccount(account);
-		user.setIsGroup(userIsGroup);
-		user.setActive(true);
-
+        if (userIsGroup.isTrue()) {
+            user = groupManagementService.initializeNewGroup(account);
+        } else {
+            user = userManagementService.initializeNewUser(account);
+        }
 		return SUCCESS;
 	}
 
@@ -194,129 +163,44 @@ public class UsersManage extends PicsActionSupport {
 
 		user.setIsGroup(userIsGroup);
 
-		// Lazy init fix for isOk method
-		// isOk is now validateInput
-		user.getGroups().size();
-		user.getOwnedPermissions().size();
+        initializedNeededLazyCollections();
 
-		validateInput();
+		validateInputAndRecordErrors();
 		if (hasFieldErrors() || hasActionErrors()) {
-			userDAO.refresh(user); // Clear out ALL changes for the user
+            // TODO: the code to refresh the user on validation error has been here for a long time (years), but this seems
+            // like really bad UX to me, shouldn't it put back the user entered values?
+			userManagementService.resetUser(user);
 			return INPUT_ERROR;
 		}
 
-		// a contractor user.
-		if (user.getId() > 0 && account.isContractor()) {
-			if (!user.isActiveB()) {
-				Set<OpPerms> userPerms = new HashSet<OpPerms>();
-				for (User users : user.getAccount().getUsers()) {
-					for (UserAccess ua : users.getOwnedPermissions()) {
-						if (ua.getUser() != user) {
-							userPerms.add(ua.getOpPerm());
-						}
-					}
-				}
+        setUserAccountIfNeeded();
 
-				if (userPerms.size() < 4) {
-					addActionError(getText("UsersManage.CannotInactivate"));
-					user.setIsActive(YesNo.Yes); // Save everything but isActive
-					return SUCCESS;
-				}
-			}
-		}
+        if (user.getId() == 0) {
+            newUser = true;
+        }
 
-		// TODO remove this nonsense
-		if (user.getId() < 0) {
-			// We want to save a new user
-			final String randomPassword = EncodedKey.randomPassword();
-			user.setEncryptedPassword(randomPassword);
-			user.setForcePasswordReset(true);
-		}
+        if (user.isGroup()) {
+            if (groupManagementService.isGroupnameAvailable(user)) {
+                groupManagementService.setUsernameToGeneratedGroupname(user);
+                groupManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
+                addActionMessage(getText("UsersManage.GroupSavedSuccessfully"));
+            } else {
+                addActionError(getText("UsersManage.GroupnameNotAvailable"));
+                groupManagementService.resetGroup(user);
+                return SUCCESS;
+            }
+        } else {
+            if (user.getAccount().isContractor()) {
+                UserGroupManagementStatus status = userManagementService.contractorUserIsSavable(user, account, permissionsForContractorAccount());
+                if (!status.isOk) {
+                    addActionErrorFromStatus(status);
+                    return SUCCESS;
+                }
+                updateUserRoles();
+            }
 
-		user.setAuditColumns(permissions);
-
-		if (user.getAccount() == null) {
-			user.setAccount(new Account());
-			if (user.getId() == 0) {
-				user.setAccount(account);
-			} else if (!permissions.hasPermission(OpPerms.AllOperators)) {
-				user.getAccount().setId(permissions.getAccountId());
-			}
-		}
-
-		if (user.isGroup()) {
-			// Create a unique username for this group
-			String username = "GROUP";
-			username += user.getAccount().getId();
-			username += user.getName();
-
-			user.setUsername(username);
-			// LW: verify is the group name is duplicate in the current system.
-			if (userDAO.duplicateUsername(user.getUsername(), user.getId())) {
-				addActionError(getText("UsersManage.GroupnameNotAvailable"));
-				userDAO.refresh(user); // Clear out ALL changes for the user
-				return SUCCESS;
-			}
-		} else {
-			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
-		}
-
-		if (user.getAccount().isContractor()) {
-			Set<OpPerms> userPerms = getUserPerms();
-
-			if (!userPerms.contains(OpPerms.ContractorAdmin) && conAdmin) {
-				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
-					addActionError(getTextParameterized("UsersManage.1-3AdminUsers",
-							OpPerms.ContractorAdmin.getDescription()));
-					return SUCCESS;
-				}
-			}
-			udpateUserRoles();
-
-			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
-				addActionError(getText("UsersManage.AddPermissionToUser"));
-				return SUCCESS;
-			}
-		}
-
-		updateShadowCSR();
-
-		// Send activation email if set
-		if (sendActivationEmail && user.getId() == 0) {
-            setUserResetHash();
-			addActionMessage(sendActivationEmail(user, permissions));
-		}
-
-		if (user.getId() == 0) {
-			newUser = true;
-		}
-
-		try {
-			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
-				user.getAccount().setPrimaryContact(user);
-			}
-			// auto indexing, no longer need to call it.
-			// user.setNeedsIndexing(true);
-			user.setUsingVersion7Menus(isUsingVersion7Menus());
-			if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
-				user.setUsingDynamicReports(isUsingVersion7Menus());
-			}
-
-			user = userDAO.save(user);
-			userDAO.refresh(user);
-
-			if (!user.isGroup()) {
-				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-			}
-		} catch (ConstraintViolationException e) {
-			addActionError(getText("UsersManage.UsernameInUse"));
-		} catch (DataIntegrityViolationException e) {
-			addActionError(getText("UsersManage.UsernameInUse"));
-		} finally {
-			for (UserAccess userAccess : accessToBeRemoved) {
-				userAccessDAO.remove(userAccess);
-			}
-		}
+            saveNonGroupUser();
+        }
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
 			return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
@@ -325,17 +209,74 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private Set<OpPerms> getUserPerms() {
-		Set<OpPerms> userPerms = new HashSet<OpPerms>();
-		userPerms = new HashSet<OpPerms>();
-		for (UserAccess ua : user.getOwnedPermissions()) {
-			userPerms.add(ua.getOpPerm());
-		}
-		return userPerms;
-	}
+    private List<OpPerms> permissionsForContractorAccount() {
+        List<OpPerms> permissionsBeingAdded = new ArrayList<OpPerms>();
+        if (conAdmin) {
+            permissionsBeingAdded.add(OpPerms.ContractorAdmin);
+        }
+        if (conInsurance) {
+            permissionsBeingAdded.add(OpPerms.ContractorInsurance);
+        }
+        if (conSafety) {
+            permissionsBeingAdded.add(OpPerms.ContractorSafety);
+        }
+        if (conBilling) {
+            permissionsBeingAdded.add(OpPerms.ContractorBilling);
+        }
+        return permissionsBeingAdded;
+    }
 
-	private void udpateUserRoles() {
-		Set<OpPerms> userPerms = getUserPerms();
+    private void saveNonGroupUser() throws Exception {
+        user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
+
+        updateShadowCSR();
+
+        // Send activation email if set
+        if (sendActivationEmail && user.getId() == 0) {
+            setUserResetHash();
+            addActionMessage(sendActivationEmail(user, permissions));
+        }
+
+        if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
+            user.getAccount().setPrimaryContact(user);
+        }
+        user.setUsingVersion7Menus(isUsingVersion7Menus());
+        if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+            user.setUsingDynamicReports(isUsingVersion7Menus());
+        }
+
+        try {
+            user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
+            addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
+        } catch (ConstraintViolationException e) {
+            addActionError(getText("UsersManage.UsernameInUse"));
+        } catch (DataIntegrityViolationException e) {
+            addActionError(getText("UsersManage.UsernameInUse"));
+        } finally {
+            for (UserAccess userAccess : accessToBeRemoved) {
+                userAccessDAO.remove(userAccess);
+            }
+        }
+    }
+
+    private void setUserAccountIfNeeded() {
+        if (user.getAccount() == null) {
+            user.setAccount(new Account());
+            if (user.getId() == 0) {
+                user.setAccount(account);
+            } else if (!permissions.hasPermission(OpPerms.AllOperators)) {
+                user.getAccount().setId(permissions.getAccountId());
+            }
+        }
+    }
+
+    private void initializedNeededLazyCollections() {
+        user.getGroups().size();
+        user.getOwnedPermissions().size();
+    }
+
+	private void updateUserRoles() {
+		Set<OpPerms> userPerms = user.getOwnedOpPerms();
 
 		if (!userPerms.contains(OpPerms.ContractorAdmin) && conAdmin) {
 			user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
@@ -363,7 +304,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	private void removeUserRole(OpPerms role) {
-		if (((ContractorAccount) account).getUsersByRole(role).size() > 1) {
+		if (account.getUsersByRole(role).size() > 1) {
 			removeUserAccess(role);
 		} else {
 			addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission", role.getDescription()));
@@ -411,17 +352,11 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+    // NOTE: unlocking does not validate or save any of the form fields - it only unlocks
 	public String unlock() throws Exception {
 		startup();
 
-		validateInput();
-		if (hasFieldErrors() || hasActionErrors()) {
-			userDAO.clear();
-			return SUCCESS;
-		}
-
-		user.setLockUntil(null);
-		userDAO.save(user);
+        userManagementService.unlock(user);
 
 		addActionMessage(getText("UsersManage.Unlocked"));
 
@@ -431,192 +366,120 @@ public class UsersManage extends PicsActionSupport {
 	public String move() throws Exception {
 		startup();
 
-		if (user.getAccount().getUsers().size() == 1) {
-			addActionMessage(getText("UsersManage.CannotMoveUser"));
-
-			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user="
-					+ user.getId());
-		}
-
-		// accounts are different so we are moving to a new account
-		// user.setOwnedPermissions(null);
-		List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
-		Iterator<UserAccess> uaIter = userAccessList.iterator();
-		while (uaIter.hasNext()) {
-			UserAccess next = uaIter.next();
-			user.getOwnedPermissions().remove(next);
-			uaIter.remove();
-			userAccessList.remove(next);
-			userAccessDAO.remove(next);
-		}
-		// user.setGroups(null);
-		List<UserGroup> userGroupList = userGroupDAO.findByUser(user.getId());
-		Iterator<UserGroup> ugIter = userGroupList.iterator();
-		while (ugIter.hasNext()) {
-			UserGroup next = ugIter.next();
-			user.getGroups().remove(next);
-			ugIter.remove();
-			userAccessList.remove(next);
-			userAccessDAO.remove(next);
-		}
-		// get new account
-		account = accountDAO.find(moveToAccount);
-		user.setAccount(account);
-		// user.setNeedsIndexing(true);
-		userDAO.save(user);
-
-		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
+        UserGroupManagementStatus status = validateUserOrGroupIsMovable();
+        if (!status.isOk) {
+            addActionErrorFromStatus(status);
+        } else {
+            userManagementService.moveUserToNewAccount(user, moveToAccount);
+    		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
 				.getName()));
-
+        }
 		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
-	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
-	public String inActivate() throws Exception {
+    private UserGroupManagementStatus validateUserOrGroupIsMovable() {
+        UserGroupManagementStatus status;
+        if (!user.isGroup()) {
+            status = userManagementService.userIsMovable(user);
+        } else {
+            status = groupManagementService.groupIsMovable(user);
+        }
+        return status;
+    }
+
+
+    @RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	public String deactivate() throws Exception {
 		startup();
-		// permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
-		if (!user.isGroup()) {
-			// This user is a user (not a group)
-			if (user.equals(user.getAccount().getPrimaryContact())) {
-				addActionError(getTextParameterized("UsersManage.CannotInactivate", user.getAccount().getName()));
-				return SUCCESS;
-			}
-		}
-		// is a contractor
-		if (user.getAccount().isContractor()) {
-			Set<OpPerms> userPerms = getUserPerms();
-
-			if (userPerms.contains(OpPerms.ContractorAdmin)) {
-				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() < 2) {
-					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-							OpPerms.ContractorAdmin.getDescription()));
-					return SUCCESS;
-				}
-			}
-
-			if (userPerms.contains(OpPerms.ContractorBilling)) {
-				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() < 2) {
-					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-							OpPerms.ContractorBilling.getDescription()));
-					return SUCCESS;
-				}
-			}
-
-			if (userPerms.contains(OpPerms.ContractorSafety)) {
-				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() < 2) {
-					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-							OpPerms.ContractorSafety.getDescription()));
-					return SUCCESS;
-				}
-			}
-
-			if (userPerms.contains(OpPerms.ContractorInsurance)) {
-				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() < 2) {
-					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-							OpPerms.ContractorInsurance.getDescription()));
-					return SUCCESS;
-				}
-			}
-
-			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
-				addActionError(getText("UsersManage.AddPermissionToUser"));
-				return SUCCESS;
-			}
-		}
-
-		user.setActive(false);
-		userDAO.save(user);
-		addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
-				user.isGroup() ? user.getName() : user.getUsername()));
-
+        UserGroupManagementStatus status = validateUserOrGroupIsDeactivatable();
+        if (!status.isOk) {
+            addActionErrorFromStatus(status);
+        } else {
+            deactivateUserOrGroup();
+            addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
+                user.isGroup() ? user.getName() : user.getUsername()));
+        }
 		return SUCCESS;
 	}
 
-	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+    private void deactivateUserOrGroup() throws Exception {
+        if (!user.isGroup()) {
+            userManagementService.deactivate(user);
+        } else {
+            groupManagementService.deactivate(user);
+        }
+    }
+
+    private UserGroupManagementStatus validateUserOrGroupIsDeactivatable() {
+        UserGroupManagementStatus status;
+        if (!user.isGroup()) {
+            status = userManagementService.userIsDeactivatable(user, account);
+        } else {
+            status = groupManagementService.groupIsDeactivatable(user);
+        }
+        return status;
+    }
+
+    @RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String activate() throws Exception {
 		startup();
-		// permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
-		if (!user.isGroup()) {
-			// This user is a user (not a group)
-			if (user.equals(user.getAccount().getPrimaryContact())) {
-				addActionError(getTextParameterized("UsersManage.CannotActivate", user.getAccount().getName()));
-				return SUCCESS;
-			}
-		}
 
-		user.setActive(true);
-		userDAO.save(user);
+        userManagementService.activateUser(user);
 
 		removeFromExclusionList();
 
 		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
 
-		// when an user is reactived, refresh the page to change the isactive
-		// status.
+		// when an user is reactived, refresh the page to change the isactive status
 		return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
-
 	}
 
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
 	public String delete() throws Exception {
 		startup();
-		// permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-		if (!user.isGroup()) {
-			// This user is a user (not a group)
-			if (user.equals(user.getAccount().getPrimaryContact())) {
-				addActionError(getTextParameterized("UsersManage.CannotRemovePrimary", user.getAccount().getName()));
-				return SUCCESS;
-			}
-		}
 
-		user.setUsername("DELETE-" + user.getId() + "-" + Strings.hashUrlSafe(user.getUsername()));
-		userDAO.save(user);
-		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
+        UserGroupManagementStatus status = validateUserOrGroupIsDeletable();
+        if (!status.isOk) {
+            addActionErrorFromStatus(status);
+        } else {
+            deleteUserOrGroup();
+    		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
-		user = null;
+	    	user = null;
+        }
 
 		return SUCCESS;
 	}
 
-	@RequiredPermission(value = OpPerms.SwitchUser)
-	public String switchUserToDifferentServer() throws Exception {
-		// remove the cookie the switch to beta
-		removeBetaMaxCookie();
+    private void deleteUserOrGroup() throws Exception {
+        if (!user.isGroup()) {
+            userManagementService.delete(user);
+        } else {
+            groupManagementService.delete(user);
+        }
+    }
 
-		// get the sessionid form the cookie
-		String sessionID = getJSessionID();
+    private void addActionErrorFromStatus(UserGroupManagementStatus status) {
+        if (Strings.isEmpty(status.errorDetail)) {
+            addActionError(getText(status.notOkErrorKey));
+        } else {
+            addActionError(getTextParameterized(status.notOkErrorKey, status.errorDetail));
+        }
+    }
 
-		// do not create new sessionid
-		HttpSession sessionid = ServletActionContext.getRequest().getSession(false);
-		sessionid.setAttribute("JSESSIONID", sessionID);
-		sessionid.setAttribute("redirect", "true");
-		// query the app_session to look the sessionID, if exist, do the
-		// redirect, else do nothing.
-		ServletActionContext.getResponse().sendRedirect("Login.action?button=login&switchToUser=" + user.getId());
-		return SUCCESS;
-	}
+    private UserGroupManagementStatus validateUserOrGroupIsDeletable() {
+        UserGroupManagementStatus status;
+        if (!user.isGroup()) {
+            status = userManagementService.userIsDeletable(user);
+        } else {
+            status = groupManagementService.groupIsDeletable(user);
+        }
+        return status;
+    }
 
-	private String getJSessionID() {
-		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
-		String jSessionID = "";
-		if (cookiesA != null) {
-			for (Cookie element : cookiesA) {
-				if (element.getName().equals("JSESSIONID")) {
-					jSessionID = element.getValue();
-				}
-			}
-		}
-		return jSessionID;
-	}
 
-	public void removeBetaMaxCookie() {
-		Cookie cookie = new Cookie(CookieSupport.USE_BETA_COOKIE_NAME, "");
-		cookie.setMaxAge(0);
-		ServletActionContext.getResponse().addCookie(cookie);
-	}
-
-	private void startup() throws Exception {
+    private void startup() throws Exception {
 		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
 		} else {
@@ -655,7 +518,7 @@ public class UsersManage extends PicsActionSupport {
 		return (account != null && account.getPrimaryContact() != null && account.getPrimaryContact().equals(user));
 	}
 
-	public void validateInput() {
+	public void validateInputAndRecordErrors() {
 		if (user == null) {
 			addActionError(getText("UsersManage.NoUserFound"));
 			return;
@@ -949,14 +812,6 @@ public class UsersManage extends PicsActionSupport {
 
 		// for now, just add all groups in your account to the
 		list = userDAO.findByAccountID(account.getId(), "Yes", "Yes");
-		// This used to only add groups you were a member of,
-		// but this doesn't work for admins trying to add groups they aren't
-		// members of
-		// for (User group : activeGroups) {
-		// if (permissions.hasPermission(OpPerms.AllOperators) ||
-		// permissions.getGroups().contains(group.getId()))
-		// list.add(group);
-		// }
 
 		try {
 			if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
@@ -1173,7 +1028,7 @@ public class UsersManage extends PicsActionSupport {
 		return false;
 	}
 
-	// TODO: Move this email logic to Event Subscription Builder
+    // TODO Technical Debt: PICS-9613
 	public String sendRecoveryEmail(User user) {
 		try {
 			String serverName = ServletActionContext.getRequest().getServerName();
