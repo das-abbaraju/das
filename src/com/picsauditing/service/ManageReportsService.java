@@ -21,33 +21,11 @@ import com.picsauditing.util.pagination.Pagination;
 public class ManageReportsService {
 
 	@Autowired
+	public ReportPreferencesService reportPreferencesService;
+	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportUserDAO reportUserDao;
-
-	public ReportUser favoriteReport(ReportUser reportUser) {
-		int userId = reportUser.getUser().getId();
-		int nextSortIndex = getNextSortIndex(userId);
-
-		reportUser.setSortOrder(nextSortIndex);
-		reportUser.setFavorite(true);
-		reportUser = (ReportUser) reportUserDao.save(reportUser);
-
-		return reportUser;
-	}
-
-	private int getNextSortIndex(int userId) {
-		int maxSortIndex = reportUserDao.findMaxSortIndex(userId);
-		return maxSortIndex + 1;
-	}
-
-	public ReportUser unfavoriteReport(ReportUser reportUser) {
-		reportUser.setSortOrder(0);
-		reportUser.setFavorite(false);
-		reportUser = (ReportUser) reportUserDao.save(reportUser);
-
-		return reportUser;
-	}
 
 	public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
 		return moveFavorite(reportUser, 1);
@@ -107,17 +85,6 @@ public class ManageReportsService {
 		}
 
 		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
-	}
-
-	public boolean shouldFavorite(JSONObject reportJson) {
-		try {
-			boolean favorite = (Boolean) reportJson.get(REPORT_FAVORITE);
-			return favorite;
-		} catch (Exception e) {
-			// Just eat it!
-		}
-
-		return false;
 	}
 
 	public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {

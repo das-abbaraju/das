@@ -19,6 +19,7 @@ public class SpringUtils implements ApplicationContextAware {
 
 	public static final String PermissionService = "PermissionService";
 	public static final String ReportService = "ReportService";
+	public static final String ReportPreferencesService = "ReportPreferencesService";
 	public static final String BRAIN_TREE_SERVICE_BEAN_NAME = "BrainTreeService";
 	public static final String COUNTRY_DAO_BEAN_NAME = "CountryDAO";
 	public static final String INPUT_VALIDATOR_BEAN_NAME = "InputValidator";

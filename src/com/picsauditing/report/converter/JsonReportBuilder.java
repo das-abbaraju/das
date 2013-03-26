@@ -19,7 +19,7 @@ import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -30,7 +30,7 @@ public class JsonReportBuilder {
 
 	// FOR TESTING ONLY
 	protected static PermissionService permissionService;
-	protected static ReportService reportService;
+	protected static ReportPreferencesService reportPreferencesService;
 
 	public static JSONObject buildReportJson(Report report, Permissions permissions) {
 		JSONObject json = new JSONObject();
@@ -53,7 +53,7 @@ public class JsonReportBuilder {
 		
 		
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
-		json.put(REPORT_FAVORITE, getReportService().isUserFavoriteReport(permissions, report.getId()));
+		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions, report.getId()));
 	}
 	
 	public static PermissionService getPermissionService() {
@@ -62,10 +62,10 @@ public class JsonReportBuilder {
 		return permissionService;
 	}
 
-	public static ReportService getReportService() {
-		if (reportService == null)
-			return SpringUtils.getBean(SpringUtils.ReportService);
-		return reportService;
+	public static ReportPreferencesService getReportPreferencesService() {
+		if (reportPreferencesService == null)
+			return SpringUtils.getBean(SpringUtils.ReportPreferencesService);
+		return reportPreferencesService;
 	}
 
 	protected static void addColumns(JSONObject json, List<Column> columns) {

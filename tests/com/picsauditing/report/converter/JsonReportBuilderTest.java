@@ -29,7 +29,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.service.ReportPreferencesService;
 
 public class JsonReportBuilderTest {
 
@@ -40,7 +40,7 @@ public class JsonReportBuilderTest {
 	@Mock
 	private PermissionService permissionService;
 	@Mock
-	private ReportService reportService;
+	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private Account account;
 
@@ -51,13 +51,13 @@ public class JsonReportBuilderTest {
 		MockitoAnnotations.initMocks(this);
 
 		JsonReportBuilder.permissionService = permissionService;
-		JsonReportBuilder.reportService = reportService;
+		JsonReportBuilder.reportPreferencesService = reportPreferencesService;
 	}
 
 	@After
 	public void tearDown() {
 		JsonReportBuilder.permissionService = null;
-		JsonReportBuilder.reportService = null;
+		JsonReportBuilder.reportPreferencesService = null;
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class JsonReportBuilderTest {
 		when(report.getDescription()).thenReturn(description);
 		when(report.getFilterExpression()).thenReturn(filterExpression);
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
-		when(reportService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
+		when(reportPreferencesService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
 
 		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();

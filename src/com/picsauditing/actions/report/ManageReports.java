@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.service.ReportPreferencesService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,8 @@ public class ManageReports extends PicsActionSupport {
 	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ManageReportsService manageReportsService;
+	@Autowired
+	private ReportPreferencesService reportPreferencesService;
 
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
@@ -100,7 +103,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteUp() {
 		try {
-			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
@@ -114,7 +117,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteDown() {
 		try {
-			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
@@ -128,7 +131,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
+			reportUsers = reportPreferencesService.getAllReportUsers(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -196,8 +199,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
-			manageReportsService.favoriteReport(reportUser);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			reportPreferencesService.favoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -209,8 +212,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String unfavorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
-			manageReportsService.unfavoriteReport(reportUser);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			reportPreferencesService.unfavoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {

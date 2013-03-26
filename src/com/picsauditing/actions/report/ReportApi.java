@@ -11,7 +11,7 @@ import com.picsauditing.report.*;
 
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportService;
 
 import org.json.simple.JSONObject;
@@ -32,7 +32,7 @@ public class ReportApi extends PicsApiSupport {
 	@Autowired
 	protected ReportService reportService;
 	@Autowired
-	private ManageReportsService manageReportsService;
+	private ReportPreferencesService reportPreferencesService;
 
 	protected int reportId;
 	protected String debugSQL = "";
@@ -110,9 +110,9 @@ public class ReportApi extends PicsApiSupport {
 
 	public String favorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.favoriteReport(reportUser);
+			reportPreferencesService.favoriteReport(reportUser);
 
 			writeJsonSuccess(json);
 		} catch (NoResultException nre) {
@@ -128,9 +128,9 @@ public class ReportApi extends PicsApiSupport {
 
 	public String unfavorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.unfavoriteReport(reportUser);
+			reportPreferencesService.unfavoriteReport(reportUser);
 
 			writeJsonSuccess(json);
 		} catch (NoResultException nre) {

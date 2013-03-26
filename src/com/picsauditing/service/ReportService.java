@@ -9,7 +9,6 @@ import static com.picsauditing.report.ReportJson.LEVEL_RESULTS;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -31,11 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -65,15 +62,12 @@ import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 public class ReportService {
 
 	@Autowired
 	private ReportDAO reportDao;
-	@Autowired
-	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
@@ -85,7 +79,7 @@ public class ReportService {
 	@Autowired
 	private SqlBuilder sqlBuilder;
 	@Autowired
-	public ManageReportsService manageReportsService;
+	public ReportPreferencesService reportPreferencesService;
 
 	private I18nCache i18nCache;
 
@@ -194,14 +188,13 @@ public class ReportService {
 
 		reportDao.save(newReport);
 
-		if (manageReportsService.shouldFavorite(reportJson)) {
-			ReportUser reportUser = loadOrCreateReportUser(userId, newReport.getId());
-			manageReportsService.favoriteReport(reportUser);
-			reportUserDao.save(reportUser);
+		if (reportPreferencesService.shouldFavorite(reportJson)) {
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
+			reportPreferencesService.favoriteReport(reportUser);
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		loadOrCreateReportUser(userId, newReport.getId());
+		reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
 		connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
@@ -285,69 +278,6 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions) throws IllegalArgumentException {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-
-		if (Strings.isEmpty(sort)) {
-			sort = ManageReports.ALPHA_SORT;
-			direction = "ASC";
-		}
-
-		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction);
-
-		for (Report report : reports) {
-			ReportUser reportUser = report.getReportUser(permissions.getUserId());
-			if (reportUser == null) {
-				// todo: Why are creating a new ReportUser for each report???
-				reportUser = createReportUserForReport(permissions.getUserId(), report);
-			}
-			reportUsers.add(reportUser);
-		}
-
-		return reportUsers;
-	}
-
-	// FIXME mostly duplicated by createReportUser
-	private ReportUser createReportUserForReport(int userId, Report report) {
-		ReportUser reportUser = new ReportUser();
-
-		User user = new User();
-		user.setId(userId);
-		reportUser.setUser(user);
-		reportUser.setReport(report);
-		reportUser.setFavorite(false);
-		reportUserDao.save(reportUser);
-
-		return reportUser;
-	}
-
-	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
-		ReportUser reportUser;
-
-		try {
-			reportUser = loadReportUser(userId, reportId);
-		} catch (NoResultException nre) {
-			reportUser = createReportUser(userId, reportId);
-		}
-
-		return reportUser;
-	}
-
-	// FIXME mostly duplicated by createReportUserForReport
-	private ReportUser createReportUser(int userId, int reportId) {
-		ReportUser reportUser;// Need to connect user to report first
-		Report report = reportDao.find(Report.class, reportId);
-		reportUser = new ReportUser(userId, report);
-		reportUser.setAuditColumns(new User(userId));
-		reportUser.setFavorite(false);
-		reportUserDao.save(reportUser);
-		return reportUser;
-	}
-
-	public ReportUser loadReportUser(int userId, int reportId) {
-		return reportUserDao.findOne(userId, reportId);
-	}
-
 	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
 			boolean editable) throws ReportPermissionException {
 		if (!permissionService.canUserEditReport(permissions, reportId)) {
@@ -371,7 +301,7 @@ public class ReportService {
 			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
 
 			if (!shareToUser.isGroup()) {
-				loadOrCreateReportUser(shareToUserId, reportId);
+				reportPreferencesService.loadOrCreateReportUser(shareToUserId, reportId);
 			}
 		}
 
@@ -509,10 +439,6 @@ public class ReportService {
 		writeFile(report.getName() + ".xls", workbook);
 	}
 
-	public List<ReportUser> getSortedFavoriteReports(int userId) {
-		return reportUserDao.findAllFavorite(userId);
-	}
-
 	private HSSFWorkbook buildWorkbook(Report report, ReportResults reportResults) {
 		ExcelBuilder builder = new ExcelBuilder();
 		builder.addColumns(report.getColumns());
@@ -566,22 +492,6 @@ public class ReportService {
 		return sqlFunctionsJson;
 	}
 
-	public boolean isUserFavoriteReport(Permissions permissions, int reportId) {
-		try {
-			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
-
-			if (reportUser == null) {
-				return false;
-			}
-
-			return reportUser.isFavorite();
-		} catch (NoResultException nre) {
-
-		}
-
-		return false;
-	}
-	
 	private I18nCache getI18nCache() {
 		if (i18nCache == null) {
 			return I18nCache.getInstance();

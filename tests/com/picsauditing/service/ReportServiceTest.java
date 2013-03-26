@@ -38,7 +38,6 @@ import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.models.ModelType;
 import org.mockito.invocation.InvocationOnMock;
@@ -51,8 +50,6 @@ public class ReportServiceTest {
 
 	@Mock
 	private ReportDAO reportDao;
-	@Mock
-	private ReportUserDAO reportUserDao;
 	@Mock
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock
@@ -72,7 +69,7 @@ public class ReportServiceTest {
 	@Mock
 	private PermissionService permissionService;
 	@Mock
-	private ManageReportsService manageReportsService;
+	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private SqlBuilder sqlBuilder;
 	@Mock
@@ -95,12 +92,11 @@ public class ReportServiceTest {
 		legacyReportConverter = new LegacyReportConverter();
 
 		setInternalState(reportService, "reportDao", reportDao);
-		setInternalState(reportService, "reportUserDao", reportUserDao);
 		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
-		setInternalState(reportService, "manageReportsService", manageReportsService);
+		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
 
 		when(user.getId()).thenReturn(USER_ID);
@@ -215,19 +211,6 @@ public class ReportServiceTest {
 		report.setParameters("this is not valid json");
 
 		reportService.validate(report);
-	}
-
-	@Test
-	public void testLoadOrCreateReportUser() {
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-
-		ReportUser reportUser = reportService.loadOrCreateReportUser(USER_ID, REPORT_ID);
-
-		verify(reportUserDao).save(reportUser);
-		assertEquals(REPORT_ID, reportUser.getReport().getId());
-		assertEquals(USER_ID, reportUser.getUser().getId());
-		assertFalse(reportUser.isFavorite());
 	}
 
 	@Test(expected = ReportPermissionException.class)
