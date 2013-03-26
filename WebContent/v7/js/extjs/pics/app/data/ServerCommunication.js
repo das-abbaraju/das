@@ -177,9 +177,6 @@ Ext.define('PICS.data.ServerCommunication', {
                         // load the report store
                         var report_store = loadReportStore(json),
                             report = report_store.first();
-                        
-                        // TODO: check if needed
-                        // report.commitAllChanges();
 
                         // load new results
                         loadDataTableStore(json);
@@ -255,8 +252,6 @@ Ext.define('PICS.data.ServerCommunication', {
                         
                         var report_store = Ext.StoreManager.get('report.Reports'),
                             report = report_store.first();
-
-                        report.commitAllChanges();
 
                         // load new results
                         loadDataTableStore(json);
