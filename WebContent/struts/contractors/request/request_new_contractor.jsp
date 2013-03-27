@@ -111,15 +111,18 @@
 						</li>
 						<li>
 							<s:textfield
-								cssClass="check-matches"
-								id="contact_name"
-								name="primaryContact.name"
+								name="primaryContact.firstName"
 								theme="formhelp"
 								required="true"
-								data-type="U"
-								data-class="contact-name"
 							/>
 						</li>
+                        <li>
+                            <s:textfield
+                                name="primaryContact.lastName"
+                                theme="formhelp"
+                                required="true"
+                            />
+                        </li>
                         <pics:permission perm="SwitchUser">
                             <s:if test="contractor.id != 0">
                                 <li>
