@@ -228,7 +228,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String selectTime() {
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTimeAndCountry(timeSelected, this.getContractor().getCountry()
+                .getIsoCode());
 		int maxRank = Integer.MIN_VALUE;
 		for (AuditorAvailability timeslot : timeslots) {
 			int rank = timeslot.rank(conAudit, permissions);
