@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
+import com.picsauditing.dao.mapper.OwnedByMapper;
 import com.picsauditing.dao.mapper.SharedWithMapper;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
@@ -128,32 +129,6 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		return query.getResultList();
 	}
 
-	public List<ReportInfo> findReportForSharedWith(Permissions permissions) {
-		SelectSQL sql = new SelectSQL("report r");
-
-		sql.addField("r.id AS id");
-		sql.addField("r.name AS name");
-		sql.addField("r.description AS description");
-		sql.addField("MAX(rp.editable) AS editable");
-		sql.addField("ru.favorite AS favorite");
-		sql.addField("r.creationDate AS creationDate");
-		sql.addField("ru.lastViewedDate AS lastViewedDate");
-
-		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
-		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() + 
-					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " + 
-					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
-
-		sql.addGroupBy("r.id");
-		
-		try {
-			return Database.select(sql.toString(), new SharedWithMapper());
-		} catch (SQLException e) {
-			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
-		}
-		return Collections.EMPTY_LIST;
-	}
-
 	private String getOrderBySort(String sort) {
 		String orderBy = "";
 
@@ -215,7 +190,47 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		em.detach(newReport);
 	}
 
-	public List<Report> findByOwnerID(int ownerId) {
-		return findWhere(Report.class, "t.owner.id = " + ownerId);
+	public List<ReportInfo> findByOwnerID(int ownerId) {
+		SelectSQL sql = new SelectSQL("report r");
+
+		sql.addField("r.id AS id");
+		sql.addField("r.name AS name");
+		sql.addField("r.description AS description");
+		sql.addField("r.creationDate AS creationDate");
+
+		sql.addWhere("r.ownerID = " + ownerId);
+		
+		try {
+			return Database.select(sql.toString(), new OwnedByMapper());
+		} catch (SQLException e) {
+			logger.error("Error while finding owned by reports for ownerID = " + ownerId);
+		}
+		return Collections.EMPTY_LIST;
+	}
+
+	public List<ReportInfo> findReportForSharedWith(Permissions permissions) {
+		SelectSQL sql = new SelectSQL("report r");
+
+		sql.addField("r.id AS id");
+		sql.addField("r.name AS name");
+		sql.addField("r.description AS description");
+		sql.addField("MAX(rp.editable) AS editable");
+		sql.addField("ru.favorite AS favorite");
+		sql.addField("r.creationDate AS creationDate");
+		sql.addField("ru.lastViewedDate AS lastViewedDate");
+
+		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
+		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() + 
+					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " + 
+					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
+
+		sql.addGroupBy("r.id");
+		
+		try {
+			return Database.select(sql.toString(), new SharedWithMapper());
+		} catch (SQLException e) {
+			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
+		}
+		return Collections.EMPTY_LIST;
 	}
 }

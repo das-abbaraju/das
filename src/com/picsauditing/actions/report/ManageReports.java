@@ -140,9 +140,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String ownedBy() {
-		reports = new ArrayList<Report>();
+		reportInfo = new ArrayList<ReportInfo>();
 		try {
-			reports = manageReportsService.getReportsForOwnedByUser(permissions, getPagination());
+			reportInfo = manageReportsService.getReportsForOwnedByUser(permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!ownedBy.action", e);
 			if (permissions.has(OpPerms.Debug)) {
@@ -160,7 +160,7 @@ public class ManageReports extends PicsActionSupport {
 	public String sharedWith() {
 		reportInfo = new ArrayList<ReportInfo>();
 		try {
-			reportInfo = manageReportsService.getReportsForSharedWithUser(permissions, getPagination());
+			reportInfo = manageReportsService.getReportsForSharedWithUser(permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!sharedWith.action", e);
 			if (permissions.has(OpPerms.Debug)) {
