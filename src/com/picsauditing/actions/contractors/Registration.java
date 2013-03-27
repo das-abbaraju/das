@@ -516,6 +516,7 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 		user.setLastLogin(new Date());
+		user.updateDisplayNameBasedOnFirstAndLastName();
 	}
 
 	// For the Ajax Validation
