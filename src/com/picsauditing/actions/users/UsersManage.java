@@ -245,6 +245,8 @@ public class UsersManage extends PicsActionSupport {
             user.setUsingDynamicReports(isUsingVersion7Menus());
         }
 
+        user.updateDisplayNameBasedOnFirstAndLastName();
+
         try {
             user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
             addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
@@ -524,12 +526,20 @@ public class UsersManage extends PicsActionSupport {
 			return;
 		}
 
-		String errorMessageKey = inputValidator.validateName(user.getName());
-		addFieldErrorIfMessage("user.name", errorMessageKey);
+		String errorMessageKey;
 
 		if (user.isGroup()) {
+			errorMessageKey = inputValidator.validateName(user.getName());
+			addFieldErrorIfMessage("user.name", errorMessageKey);
+
 			return;
 		}
+
+		errorMessageKey = inputValidator.validateFirstName(user.getFirstName());
+		addFieldErrorIfMessage("user.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLastName(user.getLastName());
+		addFieldErrorIfMessage("user.lastName", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateName(user.getDepartment(), false);
 		addFieldErrorIfMessage("user.department", errorMessageKey);

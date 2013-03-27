@@ -24,27 +24,12 @@
 			</li>
 
             <li>
-                <label for="firstName"><s:text name="User.firstName"></s:text>:</label>
-                <input id="firstName" type="text" name="u.firstName" value="${u.firstName}" />
+                <s:textfield name="u.firstName" theme="form" />
             </li>
 
             <li>
-                <label for="lastName"><s:text name="User.lastName"></s:text>:</label>
-                <input id="lastName" type="text" name="u.lastName" value="${u.lastName}" />
+                <s:textfield name="u.lastName" theme="form" />
             </li>
-
-            <li>
-                <label><s:text name="UsersManage.DisplayName" />:</label>
-                <input id="firstLast" type="radio" name="u.displayName" value="${u.firstName}${u.lastName}"/>
-                <label for="firstLast" class="label-inline">${u.firstName} ${u.lastName}</label>
-
-                <input id="lastFirst" type="radio" name="u.displayName" value="${u.lastName}${u.firstName}"/>
-                <label for="lastFirst" class="label-inline">${u.lastName} ${u.firstName}</label>
-            </li>
-
-			<li>
-				<s:textfield name="u.name" theme="form" />
-			</li>
 
 			<li>
 				<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />

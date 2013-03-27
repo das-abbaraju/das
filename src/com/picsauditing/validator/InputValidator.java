@@ -20,12 +20,14 @@ public class InputValidator {
     @Autowired
     private ContractorAccountDAO contractorAccountDao;
 
-    private static final int MIN_STRING_LENGTH = 2;
+    private static final int MIN_STRING_LENGTH_2 = 2;
+    private static final int MAX_STRING_LENGTH_50 = 50;
     private static final int MAX_STRING_LENGTH = 100;
 
     public static final String NO_ERROR = "";
     public static final String REQUIRED_KEY = "JS.Validation.Required";
     public static final String MIN_2_CHARS_KEY = "JS.Validation.Minimum2Characters";
+    public static final String MAX_50_CHARS_KEY = "JS.Validation.Maximum50Characters";
     public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
     public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
     public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
@@ -196,6 +198,44 @@ public class InputValidator {
     	return validateString(name, required, false, true, true, false, false, false);
     }
 
+    // TODO: Cleanup
+    public String validateFirstName(String name) {
+    	if (StringUtils.isEmpty(name)) {
+    		return REQUIRED_KEY;
+    	}
+
+    	if (name.length() > MAX_STRING_LENGTH_50) {
+    		return MAX_50_CHARS_KEY;
+    	}
+
+    	if (!containsOnlySafeCharacters(name)) {
+    		return NO_SPECIAL_CHARS_KEY;
+    	}
+
+    	return NO_ERROR;
+    }
+
+    // TODO: Cleanup
+    public String validateLastName(String name) {
+    	if (StringUtils.isEmpty(name)) {
+    		return REQUIRED_KEY;
+    	}
+
+    	if (name.length() < MIN_STRING_LENGTH_2) {
+    		return MIN_2_CHARS_KEY;
+    	}
+
+    	if (name.length() > MAX_STRING_LENGTH_50) {
+    		return MAX_50_CHARS_KEY;
+    	}
+
+    	if (!containsOnlySafeCharacters(name)) {
+    		return NO_SPECIAL_CHARS_KEY;
+    	}
+
+    	return NO_ERROR;
+    }
+
     public String validateCompanyName(String name) {
     	return validateCompanyName(name, true);
     }
@@ -243,7 +283,7 @@ public class InputValidator {
     		return NO_ERROR;
     	}
 
-    	if (minLengthCheck && str.length() < MIN_STRING_LENGTH) {
+    	if (minLengthCheck && str.length() < MIN_STRING_LENGTH_2) {
     		return MIN_2_CHARS_KEY;
     	}
 
@@ -269,5 +309,4 @@ public class InputValidator {
 
     	return NO_ERROR;
     }
-
 }

@@ -305,35 +305,20 @@
 						</s:if>
 
                         <li>
-                            <label for="firstName"><s:text name="User.firstName"></s:text>:</label>
-                            <input id="firstName" type="text" name="user.firstName" value="${user.firstName}" />
+                            <s:textfield name="user.firstName" size="40" theme="form" />
                         </li>
 
                         <li>
-                            <label for="lastName"><s:text name="User.lastName"></s:text>:</label>
-                            <input id="lastName" type="text" name="user.lastName" value="${user.lastName}" />
+                            <s:textfield name="user.lastName" size="40" theme="form" />
                         </li>
 
-                        <li>
-                            <label><s:text name="UsersManage.DisplayName" />:</label>
-                            <input id="firstLast" type="radio" name="u.displayName" value="${user.firstName}${user.lastName}"/>
-                            <label for="firstLast" class="label-inline">${user.firstName} ${user.lastName}</label>
-
-                            <input id="lastFirst" type="radio" name="u.displayName" value="${user.lastName}${user.firstName}"/>
-                            <label for="lastFirst" class="label-inline">${user.lastName} ${user.firstName}</label>
-                        </li>
-
-						<li>
-                            <s:if test="user.isGroup.toString() == 'No'">
-								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" />
-							</s:if>
-                            <s:else>
+                        <s:if test="user.group">
+                            <li>
 								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" onchange="checkGroupName(this.value);" />
-								<span id="groupname_status"></span>
-							</s:else>
-                        </li>
-
-						<s:if test="user.isGroup.toString() == 'No'">
+								<span id="groupname_status"></span>							
+                            </li>
+                        </s:if>
+						<s:else>
 							<li>
                                 <s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
                             </li>
@@ -457,7 +442,7 @@
 										value="%{user.shadowedUser != null ? user.shadowedUser.id : 0}" />
 								</li>
 							</s:if>
-						</s:if>
+						</s:else>
 
 						<s:if test="user.id > 0 && !user.group">
 							<s:if test="permissions.isAdmin()">
