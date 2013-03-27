@@ -3,6 +3,9 @@ package com.picsauditing.selenium;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.access.ApiRequired;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -20,13 +23,15 @@ public class ResetSelenium extends PicsActionSupport {
 	@Autowired
 	private SeleniumDAO seleniumDao;
 
-	@Anonymous
+    @ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
 	public String execute() {
 		establishAccountsAvailableForDeletion();
 		return SUCCESS;
 	}
 
-	@Anonymous
+	@ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
 	public String delete() throws Exception {
 		establishAccountsAvailableForDeletion();
 
@@ -39,7 +44,8 @@ public class ResetSelenium extends PicsActionSupport {
 		return setUrlForRedirect("ResetSelenium.action");
 	}
 
-	@Anonymous
+    @ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
 	public String deleteAll() throws Exception {
 		seleniumDao.delete(seleniumDao.availableTestingReferences());
 		return setUrlForRedirect("ResetSelenium.action");

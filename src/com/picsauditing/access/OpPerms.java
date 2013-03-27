@@ -157,7 +157,10 @@ public enum OpPerms implements Translatable {
 	ImportPQF("Import PQF", "Users can only view a page listing contractor Import PQFs and PICS PQFs.", false, false, true, false, false),
 	
 	// REST API
-	RestApi("REST API","Only special 'API' users have access to REST API URLs", false, false, true, false, false);
+	RestApi("REST API","Only special 'API' users have access to REST API URLs", false, false, true, false, false),
+
+    // SELENIUM TEST Specific
+    SeleniumTest("SELENIUM TEST","The user is a Selenium Test",false, false, true, false, false);
 	
 	private String description;
 	private String helpText;
