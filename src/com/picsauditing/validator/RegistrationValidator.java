@@ -89,8 +89,11 @@ public class RegistrationValidator implements Validator {
 		}
 
 		// User
-		errorMessageKey = inputValidator.validateName(user.getName());
-		addFieldErrorIfMessage("user.name", errorMessageKey);
+		errorMessageKey = inputValidator.validateFirstName(user.getFirstName());
+		addFieldErrorIfMessage("user.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLastName(user.getLastName());
+		addFieldErrorIfMessage("user.lastName", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateEmail(user.getEmail());
 		addFieldErrorIfMessage("user.email", errorMessageKey);
