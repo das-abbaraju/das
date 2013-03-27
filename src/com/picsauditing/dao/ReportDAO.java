@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -17,12 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
+import com.picsauditing.dao.mapper.SharedWithMapper;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.ReportInfo;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Paginatable;
@@ -123,6 +126,32 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 
 		return query.getResultList();
+	}
+
+	public List<ReportInfo> findReportForSharedWith(Permissions permissions) {
+		SelectSQL sql = new SelectSQL("report r");
+
+		sql.addField("r.id AS id");
+		sql.addField("r.name AS name");
+		sql.addField("r.description AS description");
+		sql.addField("MAX(rp.editable) AS editable");
+		sql.addField("ru.favorite AS favorite");
+		sql.addField("r.creationDate AS creationDate");
+		sql.addField("ru.lastViewedDate AS lastViewedDate");
+
+		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
+		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() + 
+					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " + 
+					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
+
+		sql.addGroupBy("r.id");
+		
+		try {
+			return Database.select(sql.toString(), new SharedWithMapper());
+		} catch (SQLException e) {
+			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
+		}
+		return Collections.EMPTY_LIST;
 	}
 
 	private String getOrderBySort(String sort) {

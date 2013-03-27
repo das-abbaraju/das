@@ -1,4 +1,4 @@
-package com.picsauditing.search;
+package com.picsauditing.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

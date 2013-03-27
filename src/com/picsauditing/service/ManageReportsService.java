@@ -140,10 +140,11 @@ public class ManageReportsService {
 	}
 
 	public List<Report> getReportsForOwnedByUser(Permissions permissions, Pagination<Report> pagination) {
+		return reportDao.findByOwnerID(permissions.getUserId());
+	}
 
-		List<Report> reports = reportDao.findByOwnerID(permissions.getUserId());
-
-		return reports;
+	public List<ReportInfo> getReportsForSharedWithUser(Permissions permissions, Pagination<Report> pagination) {
+		return reportDao.findReportForSharedWith(permissions);
 	}
 
 }

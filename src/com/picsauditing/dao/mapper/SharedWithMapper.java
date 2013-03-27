@@ -1,0 +1,26 @@
+package com.picsauditing.dao.mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+import com.picsauditing.service.ReportInfo;
+
+public class SharedWithMapper implements RowMapper<ReportInfo> {
+
+	@Override
+	public ReportInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+		ReportInfo reportInfo = new ReportInfo();
+		reportInfo.setId(rs.getInt(1));
+		reportInfo.setName(rs.getString(2));
+		reportInfo.setDescription(rs.getString(3));
+		reportInfo.setEditable(rs.getBoolean(4));
+		reportInfo.setFavorite(rs.getBoolean(5));
+		reportInfo.setCreationDate(rs.getDate(6));
+		reportInfo.setLastViewedDate(rs.getDate(7));
+
+		return reportInfo;
+	}
+
+}

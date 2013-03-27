@@ -1,7 +1,9 @@
-package com.picsauditing.search;
+package com.picsauditing.dao.mapper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import com.picsauditing.search.QueryMapper;
 
 public class IntegerQueryMapper implements QueryMapper<Integer> {
 

@@ -197,6 +197,31 @@ public class Database {
 		return databaseName;
 	}
 	
+	public static <T> List<T> select(String sql, RowMapper<T> rowMapper) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		List<T> results = new ArrayList<T>();
+		try {
+			connection = DBBean.getDBConnection();
+			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			resultSet = statement.executeQuery(sql);
+			
+			int row = 0;
+			while (resultSet.next()) {
+				results.add(rowMapper.mapRow(resultSet, row));
+				row++;
+			}
+		} finally {
+			DatabaseUtil.closeResultSet(resultSet);
+			DatabaseUtil.closeStatement(preparedStatement);
+			DatabaseUtil.closeConnection(connection);
+		}
+		
+		return results;
+	}
+	
 	public static <T, E> List<T> select(String sql, E queryObject, QueryMapper<E> queryMapper, RowMapper<T> rowMapper) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;

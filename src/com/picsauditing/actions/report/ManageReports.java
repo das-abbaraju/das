@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.ReportInfo;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -41,6 +42,7 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
 	private List<Report> reports;
+	private List<ReportInfo> reportInfo;
 
 	private Pagination<Report> pagination;
 
@@ -156,6 +158,16 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String sharedWith() {
+		reportInfo = new ArrayList<ReportInfo>();
+		try {
+			reportInfo = manageReportsService.getReportsForSharedWithUser(permissions, getPagination());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!sharedWith.action", e);
+			if (permissions.has(OpPerms.Debug)) {
+				addActionError(e.getMessage());
+			}
+		}
+
 		if (AjaxUtils.isAjax(request())) {
 			return "sharedWithList";
 		}
