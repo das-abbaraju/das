@@ -11,17 +11,18 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 
 --%>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-		
+
+<%-- DO NOT MODIFY --%>
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
+<%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
 <script type="text/javascript" src="js/ajax.js?v=${version}"></script>
 <script type="text/javascript" src="js/bootstrap/bootstrap-modal.js?v=${version}"></script>
 <script type="text/javascript" src="js/bootstrap/bootstrap-tooltip.js?v=${version}"></script>
 <script type="text/javascript" src="js/bootstrap/bootstrap-popover.js?v=${version}"></script>
-
 <script type="text/javascript" src="js/jquery/tagit/jquery.tagit.js?v=${version}"></script>
-
 <script type="text/javascript" src="js/audit_category_matrix.js?v=${version}"></script>
 <script type="text/javascript" src="js/con_audit_new.js?v=${version}"></script>
 <script type="text/javascript" src="js/contractor_dashboard.js?v=${version}"></script>
@@ -29,7 +30,6 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/contractor_safety_statistics.js?v=${version}"></script>
 <script type="text/javascript" src="js/header_search.js?v=${version}"></script>
 <script type="text/javascript" src="js/main_system_message.js?v=${version}"></script>
-<script type="text/javascript" src="js/modal.js?v=${version}"></script>
 <script type="text/javascript" src="js/operator_edit.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration/registration-validation.js?v=${version}"></script>
