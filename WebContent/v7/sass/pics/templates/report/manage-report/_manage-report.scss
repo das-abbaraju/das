@@ -21,6 +21,7 @@
     #manage_report_filter
 	{
 		margin: 0px 0px 20px;
+		text-align: center;
 	}
     
     /*
@@ -41,7 +42,7 @@
             margin-bottom: 2px;
         }
         
-        .favorite
+        .favorite-icon
         {
             float: left;
             margin: 0 5px;
@@ -61,10 +62,12 @@
             color: #a84d10;
         }
         
-        .summary
+        .icon-edit
         {
-            float: left;
-            margin-right: 10px;
+        	color: #ccc;
+            font-size: 14px;
+            position: relative;
+            top: 2px;
         }
         
         .name

@@ -1,7 +1,7 @@
 PICS.define('report.manage-report.ManageReport', {
     methods: {
         init: function () {
-            if ($('#ManageReports_myReports_page').length || $('#ManageReports_favorites_page').length) {
+            if ($('.ManageReports-page').length > 0) {
                 var body = $('body');
                 
                 body.on('report-favorite', this.favorite);

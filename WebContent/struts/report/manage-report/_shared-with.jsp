@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="false">
+<s:if test="!reportList.isEmpty()">
     <s:include value="/struts/report/manage-report/_filter.jsp">
         <s:param name="method">sharedWith</s:param>
     </s:include>
     
     <section id="shared_with_reports">
-    
+        <%-- cannot pass list as a include : param - bypass via setter --%>
+        <s:set var="reports" value="reportList" />
+        <s:include value="/struts/report/manage-report/_report-list.jsp">
+            <s:param name="actions_path">/struts/report/manage-report/_shared-with-actions.jsp</s:param>
+        </s:include>
     </section>
 </s:if>
 <s:else>

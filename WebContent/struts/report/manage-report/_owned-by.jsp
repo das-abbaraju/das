@@ -10,7 +10,7 @@
         <%-- cannot pass list as a include : param - bypass via setter --%>
         <s:set var="reports" value="reportList" />
         <s:include value="/struts/report/manage-report/_report-list.jsp">
-            <s:param name="list_options_path">/struts/report/manage-report/_owned-by-list-options.jsp</s:param>
+            <s:param name="actions_path">/struts/report/manage-report/_owned-by-actions.jsp</s:param>
         </s:include>
     </section>
 </s:if>

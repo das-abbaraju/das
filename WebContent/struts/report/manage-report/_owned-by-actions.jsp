@@ -6,11 +6,11 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<%-- Icon --%>
+<%-- Favorite Text --%>
 <s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
 
-${report.favorite}
-${report.editable}
+<%-- Favorite Class --%>
+<s:set name="favorite_class" value="%{#report.favorite ? 'favorite' : 'unfavorite'}" />
 
 <div class="btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
@@ -19,7 +19,7 @@ ${report.editable}
 
     <ul class="dropdown-menu">
         <li>
-            <a href="${report_favorite_url}">${favorite_text}</a>
+            <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
         <li>
             <a href="">Share...</a>
