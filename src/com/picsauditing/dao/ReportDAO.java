@@ -197,9 +197,17 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addField("r.name AS name");
 		sql.addField("r.description AS description");
 		sql.addField("r.creationDate AS creationDate");
+		sql.addField("ru.favorite as favorite");
+		sql.addField("1 as editable"); // because if you own it, you can edit it
+		sql.addField("ru.lastViewedDate as lastViewedDate");
+		sql.addField("u.id as 'users.id'");
+		sql.addField("u.name as 'users.name'");
+
+		sql.addJoin("JOIN report_user ru on ru.reportID = r.id");
+		sql.addJoin("JOIN users u on u.id = ru.userID");
 
 		sql.addWhere("r.ownerID = " + ownerId);
-		
+
 		try {
 			return Database.select(sql.toString(), new OwnedByMapper());
 		} catch (SQLException e) {
@@ -218,14 +226,19 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addField("ru.favorite AS favorite");
 		sql.addField("r.creationDate AS creationDate");
 		sql.addField("ru.lastViewedDate AS lastViewedDate");
+		sql.addField("u.id as 'users.id'");
+		sql.addField("u.name as 'users.name'");
 
 		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
-		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() + 
-					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " + 
+		sql.addJoin("JOIN users u ON u.id = ru.userID");
+		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() +
+					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " +
 					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
 		sql.addGroupBy("r.id");
-		
+
+		System.out.print(sql);
+
 		try {
 			return Database.select(sql.toString(), new SharedWithMapper());
 		} catch (SQLException e) {

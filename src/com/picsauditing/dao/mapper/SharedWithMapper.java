@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.ReportInfo;
 
 public class SharedWithMapper implements RowMapper<ReportInfo> {
@@ -20,7 +21,15 @@ public class SharedWithMapper implements RowMapper<ReportInfo> {
 		reportInfo.setCreationDate(rs.getDate(6));
 		reportInfo.setLastViewedDate(rs.getDate(7));
 
+		reportInfo.setCreatedBy(mapUser(rs));
+
 		return reportInfo;
+	}
+
+	private User mapUser(ResultSet rs) {
+		User user = new User();
+
+		return user;
 	}
 
 }

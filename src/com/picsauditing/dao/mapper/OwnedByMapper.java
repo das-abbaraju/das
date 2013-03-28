@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.ReportInfo;
 
 public class OwnedByMapper implements RowMapper<ReportInfo> {
@@ -16,8 +17,18 @@ public class OwnedByMapper implements RowMapper<ReportInfo> {
 		reportInfo.setName(rs.getString(2));
 		reportInfo.setDescription(rs.getString(3));
 		reportInfo.setCreationDate(rs.getDate(4));
+		reportInfo.setFavorite(rs.getBoolean(5));
+		reportInfo.setEditable(rs.getBoolean(6));
+		reportInfo.setLastViewedDate(rs.getDate(7));
+
+		reportInfo.setCreatedBy(mapUser(rs, rowNum));
 
 		return reportInfo;
+	}
+
+	private User mapUser(ResultSet rs, int rowNum) throws SQLException {
+		UserMapper userMapper = new UserMapper();
+		return userMapper.mapRow(rs, rowNum);
 	}
 
 }

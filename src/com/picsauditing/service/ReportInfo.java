@@ -2,6 +2,8 @@ package com.picsauditing.service;
 
 import java.util.Date;
 
+import com.picsauditing.jpa.entities.User;
+
 public class ReportInfo {
 
 	private int id;
@@ -9,6 +11,7 @@ public class ReportInfo {
 	private String description;
 	private boolean favorite;
 	private boolean editable;
+	private User createdBy;
 	private Date creationDate;
 	private Date lastViewedDate;
 
@@ -50,6 +53,14 @@ public class ReportInfo {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getCreationDate() {
