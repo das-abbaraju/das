@@ -66,20 +66,8 @@
                                     <s:submit method="uploadFile" value="%{getText('button.UploadFile')}" cssClass="picsbutton positive" id="uploadFile"></s:submit>
                                 </div>
                             </td>
-                            <%--
+
                             <s:if test="file != null && file.exists()">
-                                <td style="text-align:center;vertical-align:top; width: 45%;border-left: 1px solid #eee;">
-                                    <h3 style="margin-top:0px;"><s:text name="AuditDataUpload.ViewFile"></s:text></h3>
-                                    <a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="auditData.question.id"/>"
-                                        target="_BLANK"><s:text name="AuditDataUpload.OpenExisting"><s:param><s:property value="fileSize" /></s:param></s:text></a>
-                                    <br/><br/>
-
-                                    <s:submit method="deleteFile" value="%{getText('button.DeleteFile')}" cssClass="picsbutton positive" onclick="return confirm(translate('JS.ConfirmDeletion'));"></s:submit>
-                                    <br clear="all" />
-                                </td>
-                            </s:if>
-                            --%>
-
                                 <td style="text-align:center;vertical-align:top; width: 45%;border-left: 1px solid #eee;">
                                     <h3 style="margin-top:0px;"><s:text name="AuditDataUpload.ViewFile"></s:text></h3>
                                     <a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="auditData.question.id"/>"
@@ -89,7 +77,7 @@
                                     <s:submit method="deleteFile" value="%{getText('button.DeleteFile')}" cssClass="picsbutton positive" id="deleteFile"></s:submit>
                                     <br clear="all" />
                                 </td>
-
+                            </s:if>
                         </tr>
                     </table>
                 </s:form>
