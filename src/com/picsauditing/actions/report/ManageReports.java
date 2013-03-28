@@ -77,6 +77,7 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
+	// TODO: Return a list of ReportInfo instead of reportUsers
 	public String favorites() {
 		try {
 			reportUsers = reportUserDao.findAllFavorite(permissions.getUserId());
@@ -101,6 +102,7 @@ public class ManageReports extends PicsActionSupport {
 		return "favorites";
 	}
 
+	// TODO: Return a list of ReportInfo instead of reportUsers
 	public String myReports() {
 		try {
 			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
