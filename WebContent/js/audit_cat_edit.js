@@ -235,9 +235,14 @@ function saveCertQ(certID, questionID, button, dataID, catDataID) {
                        reload_question = false;
                     });
 
-                    $('#deleteFile').on('click', function () {
-                        var answer = confirm(translate('JS.ConfirmDeletion'));
+                    $('#deleteFile').on('click', function (event) {
+                        var confirm_delete = confirm(translate('JS.ConfirmDeletion'));
+
                         reload_question = false;
+
+                        if (!confirm_delete) {
+                            event.preventDefault();
+                        }
                     });
 
                     $('#close_page').on('click', function (event) {
