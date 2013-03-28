@@ -44,8 +44,12 @@ public class RegistrationValidator implements Validator {
 		String language = valueStack.findString("language");
 		String dialect = valueStack.findString("dialect");
 
-		if (contractor == null || user == null || language == null || dialect == null) {
-			return;
+		if (contractor == null) {
+			contractor = new ContractorAccount();
+		}
+
+		if (user == null) {
+			user = new User();
 		}
 
 		// Contractor Account
