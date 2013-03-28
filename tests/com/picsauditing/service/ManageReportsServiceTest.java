@@ -1,7 +1,10 @@
 package com.picsauditing.service;
 
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,7 +14,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.ReportDAO;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -28,11 +34,17 @@ public class ManageReportsServiceTest {
 	private ManageReportsService manageReportsService;
 
 	@Mock
+	private ReportDAO reportDao;
+	@Mock
 	private ReportUserDAO reportUserDao;
 	@Mock
 	private Permissions permissions;
 	@Mock
 	private Pagination<Report> reportPagination;
+	@Mock
+	private ReportPreferencesService reportPreferencesService;
+	@Mock
+	private PermissionService permissionService;
 
 	private final int USER_ID = 23;
 
@@ -45,6 +57,9 @@ public class ManageReportsServiceTest {
 		manageReportsService = new ManageReportsService();
 
 		setInternalState(manageReportsService, "reportUserDao", reportUserDao);
+		setInternalState(manageReportsService, "reportDao", reportDao);
+		setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
+		setInternalState(manageReportsService, "permissionService", permissionService);
 	}
 
 	@Test
@@ -95,6 +110,99 @@ public class ManageReportsServiceTest {
 
 		assertNotNull(reports);
 		verify(reportUserDao).findTenMostFavoritedReports(permissions);
+	}
+
+	@Test
+	public void testTransferOwnership_previousOwnerShouldRetainEditPermission() throws Exception {
+		Report report = new Report();
+		User fromOwner = new User("From Owner");
+		report.setOwner(fromOwner);
+		User toOwner = new User("To Owner");
+
+		manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
+
+		verify(reportPreferencesService).loadOrCreateReportUser(fromOwner.getId(), report.getId());
+		verify(permissionService).grantEdit(fromOwner.getId(), report.getId());
+	}
+
+	@Test
+	public void testTransferOwnership_newOwnerShouldBeSetOnReport() throws Exception {
+		Report report = new Report();
+		User fromOwner = new User("From Owner");
+		report.setOwner(fromOwner);
+		User toOwner = new User("To Owner");
+
+		Report resultReport = manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
+
+		assertNotSame(fromOwner, resultReport.getOwner());
+		assertEquals(toOwner, resultReport.getOwner());
+	}
+
+	@Test
+	public void testDeleteReport_anyoneWithPermissionCanDelete() throws Exception {
+		Report report = new Report();
+		User deleterUser = new User("Joe Owner");
+		report.setOwner(deleterUser);
+		when(permissionService.canUserDeleteReport(deleterUser, report, permissions)).thenReturn(true);
+
+		Report resultReport = manageReportsService.deleteReport(deleterUser, report, permissions);
+
+		assertTrue(DateBean.isToday(resultReport.getUpdateDate()));
+		assertEquals(deleterUser, resultReport.getUpdatedBy());
+		verify(reportDao).remove(resultReport);
+	}
+
+	@Test
+	public void testShareWithViewPermission_reportUserIsCreatedAndViewIsGrantedToTargetUser() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+		User sharerUser = new User("Joe Owner");
+		sharerUser.setId(1);
+		report.setOwner(sharerUser);
+		User toUser = new User("To User");
+		toUser.setId(2);
+		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+
+		manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
+
+		verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
+		verify(permissionService).grantView(toUser.getId(), report.getId());
+	}
+
+	@Test
+	public void testShareWithEditPermission_reportUserIsCreatedAndEditIsGrantedToTargetUser() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+		User sharerUser = new User("Joe Owner");
+		sharerUser.setId(1);
+		report.setOwner(sharerUser);
+		User toUser = new User("To User");
+		toUser.setId(2);
+		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+
+		manageReportsService.shareWithEditPermission(sharerUser, toUser, report, permissions);
+
+		verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
+		verify(permissionService).grantEdit(toUser.getId(), report.getId());
+	}
+
+	@Test
+	@Ignore
+	public void testRemoveReport_visibleInMyReportsShouldBeCleared() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+		User sharerUser = new User("Joe Owner");
+		sharerUser.setId(1);
+		report.setOwner(sharerUser);
+		User toUser = new User("To User");
+		toUser.setId(2);
+		ReportUser reportUser = new ReportUser(toUser.getId(), report);
+		when(reportPreferencesService.loadReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
+
+//		manageReportsService.removeReport(reportUser, permissions);
+
+		assertFalse(reportUser.isVisibleOnMyReports());
+
 	}
 
 	private ReportUser createTestReportUser() {

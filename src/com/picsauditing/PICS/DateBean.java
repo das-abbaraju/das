@@ -489,6 +489,10 @@ public class DateBean {
 		return 12;
 	}
 
+	public static boolean isToday(Date firstDate) {
+		return (daysBetween(firstDate, new Date()) == 0);
+	}
+
 	public static boolean isSameDate(Date firstDate, Date secondDate) {
 		return (daysBetween(firstDate, secondDate) == 0);
 	}
