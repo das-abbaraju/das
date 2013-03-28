@@ -237,8 +237,6 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 		sql.addGroupBy("r.id");
 
-		System.out.print(sql);
-
 		try {
 			return Database.select(sql.toString(), new SharedWithMapper());
 		} catch (SQLException e) {
