@@ -42,7 +42,7 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
 	private List<Report> reports;
-	private List<ReportInfo> reportInfo;
+	private List<ReportInfo> reportList;
 
 	private Pagination<Report> pagination;
 
@@ -142,9 +142,10 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String ownedBy() {
-		reportInfo = new ArrayList<ReportInfo>();
+		reportList = new ArrayList<ReportInfo>();
 		try {
-			reportInfo = manageReportsService.getReportsForOwnedByUser(permissions);
+			reportList = manageReportsService
+					.getReportsForOwnedByUser(permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!ownedBy.action", e);
 			if (permissions.has(OpPerms.Debug)) {
@@ -160,9 +161,10 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String sharedWith() {
-		reportInfo = new ArrayList<ReportInfo>();
+		reportList = new ArrayList<ReportInfo>();
 		try {
-			reportInfo = manageReportsService.getReportsForSharedWithUser(permissions);
+			reportList = manageReportsService
+					.getReportsForSharedWithUser(permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!sharedWith.action", e);
 			if (permissions.has(OpPerms.Debug)) {
@@ -369,5 +371,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setPagination(Pagination<Report> pagination) {
 		this.pagination = pagination;
+	}
+
+	public List<ReportInfo> getReportList() {
+		return reportList;
 	}
 }

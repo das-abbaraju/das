@@ -1394,14 +1394,13 @@ hr {
 /* line 22, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page #manage_report_filter {
   margin: 0px 0px 20px;
-  text-align: center;
 }
-/* line 32, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 31, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
   margin-bottom: 20px;
   text-align: left;
 }
-/* line 37, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 36, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -1413,29 +1412,29 @@ hr {
   line-height: 35px;
   margin-bottom: 2px;
 }
-/* line 46, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 45, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite {
   float: left;
   margin: 0 5px;
   text-decoration: none;
 }
-/* line 53, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 52, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
   position: relative;
   top: 2px;
 }
-/* line 61, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 60, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #a84d10;
 }
-/* line 66, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 65, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .summary {
   float: left;
   margin-right: 10px;
 }
-/* line 72, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 71, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
   color: #333;
   float: left;
@@ -1443,14 +1442,14 @@ hr {
   font-weight: bold;
   margin-right: 10px;
 }
-/* line 81, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 80, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
   font-size: 12px;
   font-style: italic;
   white-space: nowrap;
 }
-/* line 89, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 88, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .description {
   max-width: 400px;
 }

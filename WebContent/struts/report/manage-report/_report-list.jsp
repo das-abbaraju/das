@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<ul class="report-list unstyled">
-    <s:iterator value="#reports" var="user_report" status="rowstatus">
-        <s:set name="report" value="#user_report.report" />
+<% if (request.getParameter("list_options_path") != null) { %>
+    <s:set var="list_options_path">${param.list_options_path}</s:set>
+<% } else { %>
+    <s:set var="list_options_path" value="%{''}" />
+<% } %>
 
+<ul class="report-list unstyled">
+    <s:iterator value="#reports" var="report" status="rowstatus">
         <%-- Url --%>
         <s:url action="ManageReports" method="%{#user_report.favorite ? 'unfavorite' : 'favorite'}" var="report_favorite_url">
             <s:param name="reportId">${report.id}</s:param>
@@ -22,13 +26,16 @@
                 <i class="icon-star icon-large ${is_favorite_class}"></i>
             </a>
 
-            <div class="summary">
-                <a href="${report_url}" class="name">${report.name}</a>
+            <a href="${report_url}" class="name">${report.name}</a>
 
-                <s:if test="#report.createdBy.id != permissions.userId">
-                    <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
-                </s:if>
-            </div>
+            <s:if test="#report.createdBy.id != permissions.userId">
+                <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
+            </s:if>
+            
+            <s:if test="#list_options_path != ''">
+                <%-- hidden options may be being passed from the parent include --%>
+                <s:include value="%{#list_options_path}" />
+            </s:if>
         </li>
     </s:iterator>
 </ul>
