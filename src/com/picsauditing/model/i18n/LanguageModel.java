@@ -6,6 +6,8 @@ import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -43,6 +45,8 @@ public class LanguageModel {
 	private CountryDAO countryDAO;
 	@Autowired
 	private LanguageProvider languageProvider;
+
+    private final Logger logger = LoggerFactory.getLogger(LanguageModel.class);
 
 	private List<Locale> stableLanguageLocales;
 	private List<Language> stableLanguages;
@@ -235,7 +239,13 @@ public class LanguageModel {
 	}
 
 	private Locale getMatchingStableLocale(Locale locale) {
-		for (Locale stableLocale : getStableAndBetaLanguageLocales()) {
+        List<Locale> stableAndBetaLanguageLocales = getStableAndBetaLanguageLocales();
+		for (Locale stableLocale : stableAndBetaLanguageLocales) {
+            if (stableLocale == null) {
+                logger.error("Null locale found in Stable and Beta locales list: "
+                        + Strings.implode(stableAndBetaLanguageLocales));
+                continue;
+            }
 			if (stableLocale.equals(locale)) {
 				return locale;
 			}
