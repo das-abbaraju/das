@@ -19,7 +19,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "report_user")
 @SQLDelete(sql = "UPDATE report_user SET visibleOnMyReports = false WHERE id = ?")
-@Where(clause = "visibleOnMyReports = true")
+@Where(clause = "visibleOnMyReports = 1")
 public class ReportUser extends BaseTable {
 
 	private User user;

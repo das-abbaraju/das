@@ -29,7 +29,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "report")
 @SQLDelete(sql = "UPDATE report SET deleted = true WHERE id = ?")
-@Where(clause = "deleted = false")
+@Where(clause = "deleted = 0")
 public class Report extends BaseTable {
 
 	private User owner;
