@@ -1588,27 +1588,12 @@ div.blockDialog {
 	text-decoration: none;
 }
 
-.ProfileEdit-page .label-inline,
-.UsersManage-page .label-inline
-{
-    color: #404245;
-    display: inline;
-    font-weight: normal;
-    margin-right: 5px;
-}
-
 .ProfileEdit-page ul,
 .UsersManage-page ul
 {
     margin-left: 0px;
     padding: 5px;
     list-style: none;
-}
-
-.ProfileEdit-page ul input[type=radio],
-.UsersManage-page ul input[type=radio]
-{
-    margin-right: 0px;
 }
 
 .ProfileEdit-page #tab_profile li,
