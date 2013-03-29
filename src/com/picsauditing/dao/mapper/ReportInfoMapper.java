@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.ReportInfo;
 
-public class OwnedByMapper implements RowMapper<ReportInfo> {
+public class ReportInfoMapper implements RowMapper<ReportInfo> {
 
 	@Override
 	public ReportInfo mapRow(ResultSet rs, int rowNum) throws SQLException {

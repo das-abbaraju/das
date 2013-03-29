@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
-import com.picsauditing.dao.mapper.OwnedByMapper;
+import com.picsauditing.dao.mapper.ReportInfoMapper;
 import com.picsauditing.dao.mapper.SharedWithMapper;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
@@ -209,7 +209,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addWhere("r.ownerID = " + ownerId);
 
 		try {
-			return Database.select(sql.toString(), new OwnedByMapper());
+			return Database.select(sql.toString(), new ReportInfoMapper());
 		} catch (SQLException e) {
 			logger.error("Error while finding owned by reports for ownerID = " + ownerId);
 		}
@@ -222,9 +222,9 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addField("r.id AS id");
 		sql.addField("r.name AS name");
 		sql.addField("r.description AS description");
-		sql.addField("MAX(rp.editable) AS editable");
-		sql.addField("ru.favorite AS favorite");
 		sql.addField("r.creationDate AS creationDate");
+		sql.addField("ru.favorite AS favorite");
+		sql.addField("MAX(rp.editable) AS editable");
 		sql.addField("ru.lastViewedDate AS lastViewedDate");
 		sql.addField("u.id as 'users.id'");
 		sql.addField("u.name as 'users.name'");
@@ -235,10 +235,11 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " +
 					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
+		sql.addWhere("r.ownerID != u.id");
 		sql.addGroupBy("r.id");
 
 		try {
-			return Database.select(sql.toString(), new SharedWithMapper());
+			return Database.select(sql.toString(), new ReportInfoMapper());
 		} catch (SQLException e) {
 			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
 		}

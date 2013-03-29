@@ -21,15 +21,14 @@ public class SharedWithMapper implements RowMapper<ReportInfo> {
 		reportInfo.setCreationDate(rs.getDate(6));
 		reportInfo.setLastViewedDate(rs.getDate(7));
 
-		reportInfo.setCreatedBy(mapUser(rs));
+		reportInfo.setCreatedBy(mapUser(rs, rowNum));
 
 		return reportInfo;
 	}
 
-	private User mapUser(ResultSet rs) {
-		User user = new User();
-
-		return user;
+	private User mapUser(ResultSet rs, int rowNum) throws SQLException {
+		UserMapper userMapper = new UserMapper();
+		return userMapper.mapRow(rs, rowNum);
 	}
 
 }
