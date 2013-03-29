@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportSearch;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -87,23 +89,19 @@ public class ManageReports extends PicsActionSupport {
 			}
 
 			if (reportUsers.size() > MAX_REPORTS_IN_MENU) {
-				reportUserOverflow = reportUsers.subList(MAX_REPORTS_IN_MENU,
-						reportUsers.size());
+				reportUserOverflow = reportUsers.subList(MAX_REPORTS_IN_MENU, reportUsers.size());
 				reportUsers = reportUsers.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return "favoritesList";
-		}
-
-		return "favorites";
+		return determineViewName("favoritesList", "favorites");
 	}
 
 	// TODO: Return a list of ReportInfo instead of reportUsers
 	public String myReports() {
+		reportUsers = Collections.emptyList();
 		try {
 			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
@@ -112,71 +110,48 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
 		}
 
-		if (CollectionUtils.isEmpty(reportUsers)) {
-			reportUsers = new ArrayList<ReportUser>();
-		}
-
-		if (AjaxUtils.isAjax(request())) {
-			return "myReportsList";
-		}
-
-		return "myReports";
+		return determineViewName("myReportsList", "myReports");
 	}
 
 	public String search() {
-		reports = new ArrayList<Report>();
+		reports = Collections.emptyList();
 		try {
 			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!search.action", e);
-			if (permissions.has(OpPerms.Debug)) {
-				addActionError(e.getMessage());
-			}
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!search.action", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return "searchList";
-		}
-
-		return "search";
+		return determineViewName("searchList", "search");
 	}
 
 	public String ownedBy() {
 		reportList = new ArrayList<ReportInfo>();
 		try {
-			reportList = manageReportsService
-					.getReportsForOwnedByUser(permissions);
+			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!ownedBy.action", e);
-			if (permissions.has(OpPerms.Debug)) {
-				addActionError(e.getMessage());
-			}
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!ownedBy.action", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return "ownedByList";
-		}
-
-		return "ownedBy";
+		return determineViewName("ownedByList", "ownedBy");
 	}
 
 	public String sharedWith() {
-		reportList = new ArrayList<ReportInfo>();
+		reportList = Collections.emptyList();
 		try {
-			reportList = manageReportsService
-					.getReportsForSharedWithUser(permissions);
+			reportList = manageReportsService.getReportsForSharedWithUser(buildReportSearch());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!sharedWith.action", e);
-			if (permissions.has(OpPerms.Debug)) {
-				addActionError(e.getMessage());
-			}
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!sharedWith.action", e);
 		}
 
+		return determineViewName("sharedWithList", "sharedWith");
+	}
+
+	private String determineViewName(String ajaxViewname, String jspViewName) {
 		if (AjaxUtils.isAjax(request())) {
-			return "sharedWithList";
+			return ajaxViewname;
 		}
 
-		return "sharedWith";
+		return jspViewName;
 	}
 
 	public String moveFavoriteUp() {
@@ -298,6 +273,17 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return getRequest();
+	}
+
+	private void logAndShowUserInDebugMode(String errorMessage, Exception e) {
+		logger.error(errorMessage, e);
+		if (permissions.has(OpPerms.Debug)) {
+			addActionError(e.getMessage());
+		}
+	}
+
+	private ReportSearch buildReportSearch() {
+		return new ReportSearch(permissions, sort, direction);
 	}
 
 	public List<ReportUser> getReportUsers() {

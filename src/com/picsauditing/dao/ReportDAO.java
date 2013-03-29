@@ -9,7 +9,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.mapper.ReportInfoMapper;
-import com.picsauditing.dao.mapper.SharedWithMapper;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportElement;
-import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportSearch;
+import com.picsauditing.service.ReportSearchResults;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Paginatable;
@@ -40,19 +38,18 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportPermissionUserDAO.class);
 
-	public List<BasicDynaBean> runQuery(String sql, JSONObject json) throws SQLException {
+	public ReportSearchResults runQuery(String sql) throws SQLException {
 		Database database = new Database();
+		List<BasicDynaBean> rows = queryDatabase(database, sql);
+		return new ReportSearchResults(rows, database.getAllRows());
+	}
 
-		List<BasicDynaBean> rows = null;
+	private List<BasicDynaBean> queryDatabase(Database database, String sql) throws SQLException {
 		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_READ_ONLY_DATASOURCE)) {
-			rows = database.selectReadOnly(sql, true);
-		} else {
-			rows = database.select(sql, true);
+			return database.selectReadOnly(sql, true);
 		}
 
-		// todo: move this outta here
-		json.put(ReportJson.RESULTS_TOTAL, database.getAllRows());
-		return rows;
+		return database.select(sql, true);
 	}
 
 	@Override
@@ -120,7 +117,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = :userId");
 		sql.addWhere("r.id IN (" + subSql.toString() + ")");
 
-		sql.addOrderBy(orderBy + " " + direction);
+		sql.addOrderBy(orderBy + Strings.SINGLE_SPACE + direction);
 
 		Query query = em.createNativeQuery(sql.toString(), Report.class);
 		query.setParameter("userId", permissions.getUserId());
@@ -129,25 +126,20 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		return query.getResultList();
 	}
 
-	private String getOrderBySort(String sort) {
-		String orderBy = "";
+	private String getOrderBySort(String sortType) {
+		String orderBy = Strings.EMPTY_STRING;
 
-		if (sort.equals(ManageReports.ALPHA_SORT)) {
+		if (ManageReports.ALPHA_SORT.equals(sortType)) {
 			orderBy = "r.name";
-		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
+		} else if (ManageReports.DATE_ADDED_SORT.equals(sortType)) {
 			orderBy = "r.creationDate";
-		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
+		} else if (ManageReports.LAST_VIEWED_SORT.equals(sortType)) {
 			orderBy = "ru.lastViewedDate";
 		} else {
-			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
+			throw new IllegalArgumentException("Unexpected sort type '" + sortType + "'");
 		}
-		return orderBy;
-	}
 
-	public void remove(ReportElement row) {
-		if (row != null) {
-			em.remove(row);
-		}
+		return orderBy;
 	}
 
 	// TODO remove this after next release
@@ -159,29 +151,6 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		em.createNativeQuery("TRUNCATE TABLE report_sort").executeUpdate();
 	}
 
-	@Transactional(propagation = Propagation.NESTED)
-	public ReportElement save(ReportElement o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
-			o = em.merge(o);
-		}
-		return o;
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public <E extends ReportElement> int remove(Class<E> clazz, String where) {
-		Query query = em.createQuery("DELETE " + clazz.getName() + " t WHERE " + where);
-		return query.executeUpdate();
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public <E extends ReportElement> void save(List<E> reportElements) {
-		for (ReportElement reportElement : reportElements) {
-			save(reportElement);
-		}
-	}
-
 	public Report findById(int reportId) {
 		return find(Report.class, reportId);
 	}
@@ -190,33 +159,39 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		em.detach(newReport);
 	}
 
-	public List<ReportInfo> findByOwnerID(int ownerId) {
+	public List<ReportInfo> findByOwnerID(ReportSearch reportSearch) {
 		SelectSQL sql = new SelectSQL("report r");
 
 		sql.addField("r.id AS id");
 		sql.addField("r.name AS name");
 		sql.addField("r.description AS description");
 		sql.addField("r.creationDate AS creationDate");
-		sql.addField("ru.favorite as favorite");
-		sql.addField("1 as editable"); // because if you own it, you can edit it
-		sql.addField("ru.lastViewedDate as lastViewedDate");
-		sql.addField("u.id as 'users.id'");
-		sql.addField("u.name as 'users.name'");
+		sql.addField("ru.favorite AS favorite");
+		sql.addField("1 AS editable"); // because if you own it, you can edit it
+		sql.addField("ru.lastViewedDate AS lastViewedDate");
+		sql.addField("u.id AS 'users.id'");
+		sql.addField("u.name AS 'users.name'");
 
-		sql.addJoin("JOIN report_user ru on ru.reportID = r.id");
-		sql.addJoin("JOIN users u on u.id = ru.userID");
+		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + reportSearch.getPermissions().getUserId());
+		sql.addJoin("JOIN users u ON u.id = ru.userID");
 
-		sql.addWhere("r.ownerID = " + ownerId);
+		sql.addWhere("r.ownerID = " + reportSearch.getPermissions().getUserId());
+
+		addOrderBy(sql, reportSearch);
 
 		try {
 			return Database.select(sql.toString(), new ReportInfoMapper());
 		} catch (SQLException e) {
-			logger.error("Error while finding owned by reports for ownerID = " + ownerId);
+			logger.error("Error while finding owned by reports for ownerID = "
+					+ reportSearch.getPermissions().getUserId());
 		}
+
 		return Collections.EMPTY_LIST;
 	}
 
-	public List<ReportInfo> findReportForSharedWith(Permissions permissions) {
+	public List<ReportInfo> findReportForSharedWith(ReportSearch reportSearch) {
+		Permissions permissions = reportSearch.getPermissions();
+
 		SelectSQL sql = new SelectSQL("report r");
 
 		sql.addField("r.id AS id");
@@ -226,17 +201,22 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addField("ru.favorite AS favorite");
 		sql.addField("MAX(rp.editable) AS editable");
 		sql.addField("ru.lastViewedDate AS lastViewedDate");
-		sql.addField("u.id as 'users.id'");
-		sql.addField("u.name as 'users.name'");
+		sql.addField("u.id AS 'users.id'");
+		sql.addField("u.name AS 'users.name'");
 
 		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("JOIN users u ON u.id = ru.userID");
-		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = " + permissions.getUserId() +
-					" UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ") " +
-					" UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = " + permissions.getAccountId() + ") rp ON rp.reportID = r.id");
+		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = "
+				+ permissions.getUserId()
+				+ " UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN ("
+				+ Strings.implode(permissions.getAllInheritedGroupIds()) + ") "
+				+ " UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = "
+				+ permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
-		sql.addWhere("r.ownerID != u.id");
+		sql.addWhere("r.ownerID != u.id"); // do not return reports this user
+											// owns
 		sql.addGroupBy("r.id");
+		addOrderBy(sql, reportSearch);
 
 		try {
 			return Database.select(sql.toString(), new ReportInfoMapper());
@@ -244,5 +224,14 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
 		}
 		return Collections.EMPTY_LIST;
+	}
+
+	private void addOrderBy(SelectSQL sql, ReportSearch reportSearch) {
+		if (Strings.isEmpty(reportSearch.getSortType()) || Strings.isEmpty(reportSearch.getSortDirection())) {
+			return;
+		}
+
+		sql.addOrderBy(getOrderBySort(reportSearch.getSortType()) + Strings.SINGLE_SPACE
+				+ reportSearch.getSortDirection());
 	}
 }

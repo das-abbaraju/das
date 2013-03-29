@@ -33,6 +33,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportElementDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
@@ -72,6 +73,8 @@ public class ReportService {
 
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportElementDAO reportElementDAO;
 	@Autowired
 	private ReportUserDAO reportUserDao;
 	@Autowired
@@ -146,7 +149,7 @@ public class ReportService {
 				legacyConvertParametersToReport(report);
 			}
 		}
-		
+
 		report.sortColumns();
 
 		return report;
@@ -274,11 +277,11 @@ public class ReportService {
 			throw new IllegalArgumentException("Report should not be null");
 		}
 
-		reportDao.remove(Column.class, "t.report.id = " + report.getId());
+		reportElementDAO.remove(Column.class, "t.report.id = " + report.getId());
 		report.getColumns().clear();
-		reportDao.remove(Filter.class, "t.report.id = " + report.getId());
+		reportElementDAO.remove(Filter.class, "t.report.id = " + report.getId());
 		report.getFilters().clear();
-		reportDao.remove(Sort.class, "t.report.id = " + report.getId());
+		reportElementDAO.remove(Sort.class, "t.report.id = " + report.getId());
 		report.getSorts().clear();
 
 		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
@@ -483,16 +486,20 @@ public class ReportService {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws PicsSqlException {
-		List<BasicDynaBean> queryResults = null;
+		ReportSearchResults reportSearchResults = null;
 
 		try {
-			queryResults = reportDao.runQuery(sql.toString(), json);
+			reportSearchResults = reportDao.runQuery(sql.toString());
 		} catch (SQLException se) {
 			throw new PicsSqlException(se, sql.toString());
 		}
 
-		return queryResults;
+		// TODO: Move this further up the stack
+		json.put(ReportJson.RESULTS_TOTAL, reportSearchResults.getTotalResultSize());
+
+		return reportSearchResults.getResults();
 	}
 
 	public ReportResults buildReportResultsForPrinting(ReportContext reportContext, Report report)
@@ -581,12 +588,12 @@ public class ReportService {
 
 		return false;
 	}
-	
+
 	private I18nCache getI18nCache() {
 		if (i18nCache == null) {
 			return I18nCache.getInstance();
 		}
-		
+
 		return i18nCache;
 	}
 }
