@@ -72,6 +72,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
 	public static final int GROUP_ISR = 71638;
+    public static final int SELENIUM_MASTER_USER = 94545;
 	// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
 

@@ -81,7 +81,7 @@ public class UsersManage extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggle;
     @Autowired
-    private UserManagementService userManagementService;
+    protected UserManagementService userManagementService;
     @Autowired
     private GroupManagementService groupManagementService;
 
@@ -815,43 +815,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public List<User> getAddableGroups() {
-		List<User> list = new ArrayList<User>();
-		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) {
-			return list;
-		}
-
-		// for now, just add all groups in your account to the
-		list = userDAO.findByAccountID(account.getId(), "Yes", "Yes");
-
-		try {
-			if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
-					&& permissions.getAccountId() != account.getId()) {
-				// This is an admin looking at another account (not PICS)
-				// Add the non-PICS groups too
-				List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
-				for (User group : nonPicsGroups) {
-					// Add the groups owned by PICS but that are for
-					// Operator/Corporate/Contractors/etc
-					if (!group.getName().startsWith("PICS") && !list.contains(group)) {
-						list.add(group);
-					}
-				}
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-
-		}
-
-		try {
-			for (UserGroup userGroup : user.getGroups()) {
-				// but these groups, have already been added
-				list.remove(userGroup.getGroup());
-			}
-		} catch (Exception e) {
-			logger.error("test 2 {}", e.getMessage());
-		}
-		list.remove(user);
-		return list;
+		return userManagementService.getAddableGroups(permissions, account, user);
 	}
 
 	public List<UserSwitch> getSwitchTos() {

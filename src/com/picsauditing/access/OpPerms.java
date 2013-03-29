@@ -18,6 +18,7 @@ public enum OpPerms implements Translatable {
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
 	Debug("Debug", "Allows PICS users to see debugging information", false, false, true, false, false),
+	CreateTestUser("Create Test User", "Allows PICS master test user to create new users", false, false, false, false, false),
 
 	// Default User Permissions
 	EditProfile("Edit Profile", "Allow users to Edit their own Profile.", true, false, true, true, true),

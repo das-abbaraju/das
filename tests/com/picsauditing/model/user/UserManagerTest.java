@@ -2,6 +2,7 @@ package com.picsauditing.model.user;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.*;
 public class UserManagerTest {
     private UserManager userManager;
     private Set<OpPerms> ownedOpPerms;
+    private List<UserGroup> userGroups;
 
     @Mock
     private UserDAO userDAO;
@@ -40,11 +42,15 @@ public class UserManagerTest {
     @Mock
     private User user;
     @Mock
+    private User group;
+    @Mock
     private Permissions permissions;
     @Mock
     private List mockList;
     @Mock
     private List<UserAccess> ownedPermissions;
+    @Mock
+    private UserGroup userGroup;
 
     @Before
     public void setUp() throws Exception {
@@ -52,13 +58,15 @@ public class UserManagerTest {
 
         userManager = new UserManager();
 
-        ownedOpPerms = new HashSet<OpPerms>();
+        ownedOpPerms = new HashSet<>();
+        userGroups = new ArrayList<>();
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(userManager, this);
 
         when(user.getAccount()).thenReturn(account);
         when(user.getOwnedOpPerms()).thenReturn(ownedOpPerms);
         when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
+        when(group.isGroup()).thenReturn(true);
     }
 
     @Test
@@ -390,5 +398,76 @@ public class UserManagerTest {
         assertThat(account, is(equalTo(user.getAccount())));
         assertThat(YesNo.No, is(equalTo(user.getIsGroup())));
         assertTrue(user.isActiveB());
+    }
+
+    @Test
+    public void test_getAddableGroups_NoEditUserPermissionReturnsEmptyList() throws Exception {
+        when(permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)).thenReturn(false);
+
+        List<User> result = userManager.getAddableGroups(permissions, account, user);
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void test_addUserToGroup_SetsAndSaves() throws Exception {
+        UserGroup userGroup = userManager.addUserToGroup(user, group, permissions);
+        assertEquals(userGroup.getUser(), user);
+        assertEquals(userGroup.getGroup(), group);
+        verify(userGroupDAO).save(userGroup);
+    }
+
+    @Test
+    public void test_userIsAddableToGroup_CannotAddUserToUser() throws Exception {
+        when(group.isGroup()).thenReturn(false);
+
+        UserGroupManagementStatus status = userManager.userIsAddableToGroup(user, group);
+
+        assertFalse(status.isOk);
+        assertEquals(UserManagementService.CANNOT_ADD_USER_TO_USER, status.notOkErrorKey);
+    }
+
+    @Test
+    public void test_userIsAddableToGroup_CannotAddGroupToItself() throws Exception {
+        UserGroupManagementStatus status = userManager.userIsAddableToGroup(group, group);
+
+        assertFalse(status.isOk);
+        assertEquals(UserManagementService.CANNOT_ADD_GROUP_TO_ITSELF, status.notOkErrorKey);
+    }
+
+    @Test
+    public void test_userIsAddableToGroup_CannotAddSameGroupTwice() throws Exception {
+        when(userGroup.getGroup()).thenReturn(group);
+        userGroups.add(userGroup);
+        when(user.getGroups()).thenReturn(userGroups);
+
+        UserGroupManagementStatus status = userManager.userIsAddableToGroup(user, group);
+
+        assertFalse(status.isOk);
+        assertEquals(UserManagementService.USER_ALREADY_MEMBER_OF_GROUP, status.notOkErrorKey);
+    }
+
+    @Test
+    public void test_userIsAddableToGroup_AddingGroupToGroupIsNotOkIfParentIsDecendant() throws Exception {
+        List<UserGroup> userMembers = new ArrayList<>();
+        userMembers.add(userGroup);
+        when(userGroup.getUser()).thenReturn(group);
+        when(user.getMembers()).thenReturn(userMembers);
+        when(user.isGroup()).thenReturn(true);
+
+        UserGroupManagementStatus status = userManager.userIsAddableToGroup(user, group);
+
+        assertFalse(status.isOk);
+    }
+
+    @Test
+    public void test_userIsAddableToGroup_HappyPath() throws Exception {
+        when(userGroup.getGroup()).thenReturn(mock(User.class));
+        userGroups.add(userGroup);
+        when(user.getGroups()).thenReturn(userGroups);
+
+        UserGroupManagementStatus status = userManager.userIsAddableToGroup(user, group);
+
+        assertTrue(status.isOk);
     }
 }

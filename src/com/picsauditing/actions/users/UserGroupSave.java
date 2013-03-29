@@ -1,5 +1,7 @@
 package com.picsauditing.actions.users;
 
+import com.picsauditing.model.user.UserManagementService;
+import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.UserSwitchDAO;
@@ -12,11 +14,8 @@ public class UserGroupSave extends UsersManage {
 	protected int memberId;
 	protected int groupId;
 	protected int userGroupId;
-	//protected User user;
-	@Autowired
-	protected UserSwitchDAO userSwitchDAO;
 
-	public String execute() throws Exception {
+    public String execute() throws Exception {
 		super.execute();
 		user = userDAO.find(user.getId());
 		
@@ -58,7 +57,7 @@ public class UserGroupSave extends UsersManage {
 			User member = userDAO.find(memberId);
 
 			if (member != null) {
-				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
+				UserSwitch userSwitch = userSwitchDao.findByUserIdAndSwitchToId(memberId, user.getId());
 
 				if (userSwitch != null) {
 					addActionError("That user already has the ability to switch to this group.");
@@ -67,7 +66,7 @@ public class UserGroupSave extends UsersManage {
 					userSwitch.setUser(member);
 					userSwitch.setSwitchTo(user);
 					userSwitch.setAuditColumns(permissions);
-					userSwitchDAO.save(userSwitch);
+                    userSwitchDao.save(userSwitch);
 				}
 			}
 
@@ -76,9 +75,9 @@ public class UserGroupSave extends UsersManage {
 		if ("RemoveSwitchFrom".equals(button)) {
 
 			if (memberId != 0) {
-				UserSwitch userSwitch = userSwitchDAO.findByUserIdAndSwitchToId(memberId, user.getId());
+				UserSwitch userSwitch = userSwitchDao.findByUserIdAndSwitchToId(memberId, user.getId());
 				if (userSwitch != null) {
-					userSwitchDAO.remove(userSwitch.getId());
+                    userSwitchDao.remove(userSwitch.getId());
 				}
 			}
 
@@ -88,66 +87,28 @@ public class UserGroupSave extends UsersManage {
 		return SUCCESS;
 	}
 
-	private boolean addUserToGroup(User user, User group) {
-		if (!group.isGroup()) {
-			addActionError("You can only inherit permissions from groups");
-			return false;
-		}
-		if (user.equals(group)) {
-			addActionError("You can't add a group to itself");
-			return false;
-		}
-
-		for (UserGroup userGroup : user.getGroups()) {
-			if (userGroup.getGroup().equals(group)) {
-				// Don't add the same group twice
-				return false;
-			}
-		}
-
-		if (user.isGroup()) {
-			// Make sure the new parent group isn't a descendant of this child group
-			if (containsMember(user, group)) {
-				addActionError(group.getName() + " is a descendant of " + user.getName()
-						+ ". This action would create an infinite loop.");
-				return false;
-			}
-		}
-
-		// Make sure user isn't in member's member list
-		UserGroup uGroup = new UserGroup();
-
-		uGroup.setUser(user);
-		uGroup.setGroup(group);
-		uGroup.setAuditColumns(permissions);
-		userGroupDAO.save(uGroup);
-		if (!group.getMembers().contains(uGroup))
-			group.getMembers().add(uGroup);
-		if (!user.getGroups().contains(uGroup))
-			user.getGroups().add(uGroup);
-
-		return true;
+	private boolean addUserToGroup(User user, User group) throws Exception {
+        UserGroupManagementStatus status = userManagementService.userIsAddableToGroup(user, group);
+        if (!status.isOk) {
+            addActionError(status.notOkErrorKey);
+            return false;
+        } else {
+            UserGroup userGroup = userManagementService.addUserToGroup(user, group, permissions);
+            addToGroupsForWebDisplay(user, group, userGroup);
+            return true;
+        }
 	}
 
-	/**
-	 * Is the group a child/descendant(member) of the user
-	 * 
-	 * @param user
-	 * @param group
-	 * @return
-	 */
-	private boolean containsMember(User user, User group) {
-		for (UserGroup userMember : user.getMembers()) {
-			if (userMember.getUser().equals(group)) {
-				return true;
-			}
-			if (containsMember(userMember.getUser(), group))
-				return true;
-		}
-		return false;
-	}
+    private void addToGroupsForWebDisplay(User user, User group, UserGroup userGroup) {
+        if (!group.getMembers().contains(userGroup)) {
+            group.getMembers().add(userGroup);
+        }
+        if (!user.getGroups().contains(userGroup)) {
+            user.getGroups().add(userGroup);
+        }
+    }
 
-	public int getMemberId() {
+    public int getMemberId() {
 		return memberId;
 	}
 

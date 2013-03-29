@@ -1,6 +1,7 @@
 package com.picsauditing.model.user;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -9,13 +10,18 @@ import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 import com.picsauditing.model.usergroup.UserGroupManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class UserManager extends UserGroupManager implements UserManagementService {
+    private final Logger logger = LoggerFactory.getLogger(UserManager.class);
+
     @Autowired
     protected UserAccessDAO userAccessDAO;
     @Autowired
@@ -187,5 +193,96 @@ public class UserManager extends UserGroupManager implements UserManagementServi
             }
         }
         return status;
+    }
+
+    @Override
+    public List<User> getAddableGroups(Permissions permissions, Account account, User user) {
+        List<User> list = new ArrayList<>();
+        if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit)) {
+            return list;
+        }
+
+        list = userDAO.findByAccountID(account.getId(), "Yes", "Yes");
+
+        try {
+            if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
+                    && permissions.getAccountId() != account.getId()) {
+                List<User> ownedByPicsForOperatorsCorpAndContractors = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
+                for (User group : ownedByPicsForOperatorsCorpAndContractors) {
+                    if (!group.getName().startsWith("PICS") && !list.contains(group)) {
+                        list.add(group);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+
+        }
+
+        try {
+            for (UserGroup userGroup : user.getGroups()) {
+                // but these groups, have already been added
+                list.remove(userGroup.getGroup());
+            }
+        } catch (Exception e) {
+            logger.error("test 2 {}", e.getMessage());
+        }
+        list.remove(user);
+        return list;
+    }
+
+    @Override
+    public UserGroup addUserToGroup(User user, User group, Permissions permissions) throws Exception {
+        UserGroup userGroup = new UserGroup();
+        userGroup.setUser(user);
+        userGroup.setGroup(group);
+        userGroup.setAuditColumns(permissions);
+        userGroupDAO.save(userGroup);
+        return userGroup;
+    }
+
+    @Override
+    public UserGroupManagementStatus userIsAddableToGroup(User user, User group) {
+        UserGroupManagementStatus status = new UserGroupManagementStatus();
+        if (!group.isGroup()) {
+            status.isOk = false;
+            status.notOkErrorKey = CANNOT_ADD_USER_TO_USER;
+        }
+
+        if (user.equals(group)) {
+            status.isOk = false;
+            status.notOkErrorKey = CANNOT_ADD_GROUP_TO_ITSELF;
+        }
+
+        for (UserGroup userGroup : user.getGroups()) {
+            if (userGroup.getGroup().equals(group)) {
+                // Don't add the same group twice
+                status.isOk = false;
+                status.notOkErrorKey = USER_ALREADY_MEMBER_OF_GROUP;
+                return status;
+            }
+        }
+
+        if (user.isGroup()) {
+            // Make sure the new parent group isn't a descendant of this child group
+            if (containsMember(user, group)) {
+                status.isOk = false;
+                status.notOkErrorKey = group.getName() + " is a descendant of " + user.getName()
+                        + ". This action would create an infinite loop.";
+            }
+        }
+        return status;
+    }
+
+    private boolean containsMember(User user, User group) {
+        for (UserGroup userMember : user.getMembers()) {
+            if (userMember.getUser().equals(group)) {
+                return true;
+            }
+            if (containsMember(userMember.getUser(), group)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
