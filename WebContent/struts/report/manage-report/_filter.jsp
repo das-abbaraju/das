@@ -11,9 +11,9 @@
 <s:set var="date_sort_key">dateAdded</s:set>
 <s:set var="last_viewed_sort_key">lastViewed</s:set>
 
-<s:set var="is_alpha_filter_active_class" value="%{#sort == null || #sort.equals(#alpha_sort_key) ? 'active' : ''}" />
-<s:set var="is_date_filter_active_class" value="%{sort.equals(date_sort_key) ? 'active' : ''}" />
-<s:set var="is_last_viewed_filter_active_class" value="%{sort.equals(last_viewed_sort_key) ? 'active' : ''}" />
+<s:set var="is_alpha_filter_active_class" value="%{sort == null || #alpha_sort_key.equals(sort) ? 'active' : ''}" />
+<s:set var="is_date_filter_active_class" value="%{#date_sort_key.equals(sort) ? 'active' : ''}" />
+<s:set var="is_last_viewed_filter_active_class" value="%{#last_viewed_sort_key.equals(sort) ? 'active' : ''}" />
 
 <s:url action="ManageReports" method="%{method}" var="alpha_sort_url">
     <s:param name="sort">${alpha_sort_key}</s:param>

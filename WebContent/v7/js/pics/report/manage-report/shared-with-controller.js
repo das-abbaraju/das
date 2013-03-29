@@ -6,7 +6,8 @@ PICS.define('report.manage-report.SharedWithController', {
                     .on('click', '.favorite-icon.favorite', $.proxy(this.unfavoriteReport, this))
                     .on('click', '.favorite-icon.unfavorite', $.proxy(this.favoriteReport, this))
                     .on('click', '.favorite-action.favorite', $.proxy(this.favoriteReport, this))
-                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this));
+                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '#manage_report_filter a', $.proxy(this.filterList, this));
             }
         },
         
@@ -26,6 +27,19 @@ PICS.define('report.manage-report.SharedWithController', {
                     $favorite_icon.toggleClass('favorite unfavorite');
                     $favorite_action.toggleClass('favorite unfavorite');
                     $favorite_action.text('Unfavorite');
+                }
+            });
+            
+            event.preventDefault();
+        },
+        
+        filterList: function (event) {
+            var $filter = $(event.currentTarget);
+            
+            $('body').trigger('report-filter', {
+                filter: $filter,
+                success: function (data, textStatus, jqXHR) {
+                    $('#shared_with_reports_container').html(data);
                 }
             });
             

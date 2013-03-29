@@ -6,7 +6,7 @@ PICS.define('report.manage-report.ManageReport', {
                 $('body')
                     .on('report-favorite', this.favorite)
                     .on('report-unfavorite', this.unfavorite)
-                    .on('report-filter', this.filter);
+                    .on('report-filter', $.proxy(this.filter, this));
             }
         },
         

@@ -6,9 +6,8 @@ PICS.define('report.manage-report.OwnedByController', {
                     .on('click', '.favorite-icon.favorite', $.proxy(this.unfavoriteReport, this))
                     .on('click', '.favorite-icon.unfavorite', $.proxy(this.favoriteReport, this))
                     .on('click', '.favorite-action.favorite', $.proxy(this.favoriteReport, this))
-                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this));
-                
-                $('#manage_report_filter').on('click', 'a', $.proxy(this.filterList, this));
+                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '#manage_report_filter a', $.proxy(this.filterList, this));
             }
         },
         
