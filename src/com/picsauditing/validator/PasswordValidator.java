@@ -25,6 +25,9 @@ public class PasswordValidator extends BasicTranslationSupport {
 
     public Vector<String> validatePassword(User user, String newPassword) {
         Vector<String> errorMessages = new Vector<String>();
+        if (newPassword == null) {
+        	return errorMessages;
+        }
 
         if (newPassword.equalsIgnoreCase(user.getUsername())) {
             errorMessages.addElement(getText("PasswordValidator.error.PasswordCannotBeUserName", user));

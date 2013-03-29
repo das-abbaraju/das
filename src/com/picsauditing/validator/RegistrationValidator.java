@@ -3,10 +3,15 @@ package com.picsauditing.validator;
 import java.util.Locale;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PICS.I18nCache;
@@ -14,7 +19,9 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
 
 public class RegistrationValidator implements Validator {
 
@@ -35,6 +42,13 @@ public class RegistrationValidator implements Validator {
 	public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
 		if (validatorContext == null) {
 			throw new IllegalStateException("You must set the ValidatorContext to use this validator.");
+		}
+
+		HttpServletRequest request = (HttpServletRequest) valueStack.getContext().get(HTTP_REQUEST);
+		if (request != null && MapUtils.isNotEmpty(request.getParameterMap())
+				&& request.getParameterMap().containsKey("language") && request.getParameterMap().size() == 1
+				&& AjaxUtils.isAjax(request)) {
+			return;
 		}
 
 		this.validatorContext = validatorContext;

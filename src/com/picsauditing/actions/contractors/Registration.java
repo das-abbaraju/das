@@ -182,6 +182,8 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 			}
 		}
 
+
+
 		return SUCCESS;
 	}
 
