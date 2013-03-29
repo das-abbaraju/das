@@ -11,42 +11,39 @@ PICS.define('report.manage-report.FavoritesController', {
         },
         
         moveReportUp: function (event) {
-            var element = $(event.currentTarget);
+            var $element = $(event.currentTarget);
             
             PICS.ajax({
-                url: element.attr('href'),
-                success: $.proxy(this.refreshFavorites, this)
+                url: $element.attr('href'),
+                success: this.refreshFavorites
             });
             
             event.preventDefault();
         },
         
         moveReportDown: function (event) {
-            var element = $(event.currentTarget);
-            
-            PICS.ajax({
-                url: element.attr('href'),
-                success: $.proxy(this.refreshFavorites, this)
-            });
+            var $element = $(event.currentTarget);
             
             event.preventDefault();
+            
+            PICS.ajax({
+                url: $element.attr('href'),
+                success: this.refreshFavorites
+            });
+            
         },
         
         unfavoriteReport: function (event) {
-            var element = $(event.currentTarget),
-                body = $('body'),
-                report_id = element.attr('data-id');
+            var $element = $(event.currentTarget),
+                $body = $('body'),
+                report_id = $element.attr('data-id');
             
-            function success(data, textStatus, jqXHR) {
-                element.closest('.report').fadeOut(750, this.refreshFavorites);
-            }
-            
-            var params = [
-                report_id,
-                $.proxy(success, this)
-            ];
-            
-            body.trigger('report-unfavorite', params);
+            $body.trigger('report-unfavorite', {
+                report_id: report_id,
+                success: $.proxy(function (data, textStatus, jqXHR) {
+                    $element.closest('.report').slideUp(400, this.refreshFavorites);
+                }, this)
+            });
             
             event.preventDefault();
         },

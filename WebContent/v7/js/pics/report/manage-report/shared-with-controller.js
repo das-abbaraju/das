@@ -11,59 +11,56 @@ PICS.define('report.manage-report.SharedWithController', {
         },
         
         favoriteReport: function (event) {
-            var element = $(event.currentTarget),
-                report = element.closest('.report'),
-                favorite_icon = report.find('.favorite-icon'),
-                favorite_action = report.find('.favorite-action'),
-                icon = report.find('.icon-star'),
-                body = $('body'),
-                report_id = element.attr('data-id');
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                $favorite_icon = $report.find('.favorite-icon'),
+                $favorite_action = $report.find('.favorite-action'),
+                $icon = $report.find('.icon-star'),
+                $body = $('body'),
+                report_id = $element.attr('data-id');
             
-            function success(data, textStatus, jqXHR) {
-                favorite_icon.toggleClass('favorite unfavorite');
-                favorite_action.toggleClass('favorite unfavorite');
-                
-                icon.addClass('selected');
-                
-                favorite_action.text('Unfavorite');
-            }
-            
-            var params = [
-                report_id,
-                success
-            ];
-            
-            body.trigger('report-favorite', params);
+            $body.trigger('report-favorite', {
+                report_id: report_id,
+                success: function (data, textStatus, jqXHR) {
+                    $icon.addClass('selected');
+                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_action.toggleClass('favorite unfavorite');
+                    $favorite_action.text('Unfavorite');
+                }
+            });
             
             event.preventDefault();
         },
         
         unfavoriteReport: function (event) {
-            var element = $(event.currentTarget),
-                report = element.closest('.report'),
-                favorite_icon = report.find('.favorite-icon'),
-                favorite_action = report.find('.favorite-action'),
-                icon = report.find('.icon-star'),
-                body = $('body'),
-                report_id = element.attr('data-id');
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                $favorite_icon = $report.find('.favorite-icon'),
+                $favorite_action = $report.find('.favorite-action'),
+                $icon = $report.find('.icon-star'),
+                $body = $('body'),
+                report_id = $element.attr('data-id');
             
-            function success(data, textStatus, jqXHR) {
-                favorite_icon.toggleClass('favorite unfavorite');
-                favorite_action.toggleClass('favorite unfavorite');
-                
-                icon.removeClass('selected');
-                
-                favorite_action.text('Favorite');
-            }
-            
-            var params = [
-                report_id,
-                success
-            ];
-            
-            body.trigger('report-unfavorite', params);
+            $body.trigger('report-unfavorite', {
+                report_id: report_id,
+                success: function (data, textStatus, jqXHR) {
+                    $icon.removeClass('selected');
+                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_action.toggleClass('favorite unfavorite');
+                    $favorite_action.text('Favorite');
+                }
+            });
             
             event.preventDefault();
+        },
+        
+        refreshSharedWith: function () {
+            PICS.ajax({
+                url: 'ManageReports!sharedWith.action',
+                success: function (data, textStatus, jqXHR) {
+                    $('#shared_with_reports_container').html(data);
+                }
+            });
         }
     }
 });

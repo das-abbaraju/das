@@ -165,6 +165,10 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
 		}
 
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
+		}
+
 		return redirectToPreviousView();
 	}
 
@@ -177,6 +181,10 @@ public class ManageReports extends PicsActionSupport {
 			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
+		}
+
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
 		}
 
 		return redirectToPreviousView();
@@ -222,6 +230,10 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
 		}
 
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
+		}
+
 		return redirectToPreviousView();
 	}
 
@@ -233,6 +245,10 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(nre.toString());
 		} catch (Exception e) {
 			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+		}
+
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
 		}
 
 		return redirectToPreviousView();
