@@ -97914,7 +97914,7 @@ Ext.define('PICS.controller.report.Filter', {
             // saving edits to filter store + refresh
             '#report_filters combobox[name=value]': {
                 // Unlike "select," the change event also fires when the user removes the last item.
-                select: this.selectValueField
+                change: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -98210,10 +98210,15 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
-    selectValueField: function (cmp, records, eOpts) {
+    selectValueField: function (cmp, newValue, oldValue, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
     
+        // Abort if we are pre-selecting. (It will be undefined.)
+        if (!oldValue) {
+            return;
+        }
+
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();
