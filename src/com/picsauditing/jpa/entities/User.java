@@ -84,6 +84,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	// field
 	private Date emailConfirmedDate;
 	private String name;
+	private String firstName;
+	private String lastName;
 	private YesNo isActive = YesNo.Yes;
 	private Date lastLogin;
 	private Account account;
@@ -235,6 +237,22 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
@@ -1024,5 +1042,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		}
 
 		return featureToggle;
+	}
+
+	// FIXME: This needs to move into the UserManagementService
+	@Transient
+	public void updateDisplayNameBasedOnFirstAndLastName() {
+		this.name = (firstName + " " + lastName).trim();
 	}
 }

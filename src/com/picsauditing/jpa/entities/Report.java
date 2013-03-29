@@ -10,7 +10,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -19,28 +22,44 @@ import org.apache.commons.collections.CollectionUtils;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report")
+@SQLDelete(sql = "UPDATE report SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Report extends BaseTable {
 
+	private User owner;
 	private ModelType modelType;
 	private String name;
 	private String description;
 	private String filterExpression;
 	private int numTimesFavorited;
 	private String sql;
-	
+	private boolean deleted;
+
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
 
 	private List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
-	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 	@Deprecated
 	private String parameters;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ownerID", nullable = false)
+	public User getOwner() {
+		return owner;
+	}
+
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -99,6 +118,16 @@ public class Report extends BaseTable {
 
 	public void setSql(String sql) {
 		this.sql = sql;
+	}
+
+	// todo: map me after column is added to db
+	@Transient
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)

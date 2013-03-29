@@ -44,8 +44,12 @@ public class RegistrationValidator implements Validator {
 		String language = valueStack.findString("language");
 		String dialect = valueStack.findString("dialect");
 
-		if (contractor == null || user == null || language == null || dialect == null) {
-			return;
+		if (contractor == null) {
+			contractor = new ContractorAccount();
+		}
+
+		if (user == null) {
+			user = new User();
 		}
 
 		// Contractor Account
@@ -85,8 +89,11 @@ public class RegistrationValidator implements Validator {
 		}
 
 		// User
-		errorMessageKey = inputValidator.validateName(user.getName());
-		addFieldErrorIfMessage("user.name", errorMessageKey);
+		errorMessageKey = inputValidator.validateFirstName(user.getFirstName());
+		addFieldErrorIfMessage("user.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLastName(user.getLastName());
+		addFieldErrorIfMessage("user.lastName", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateEmail(user.getEmail());
 		addFieldErrorIfMessage("user.email", errorMessageKey);

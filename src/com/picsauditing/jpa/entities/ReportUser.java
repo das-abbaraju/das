@@ -12,10 +12,14 @@ import javax.persistence.TemporalType;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_user")
+@SQLDelete(sql = "UPDATE report_user SET visibleOnMyReports = false WHERE id = ?")
+@Where(clause = "visibleOnMyReports = 1")
 public class ReportUser extends BaseTable {
 
 	private User user;
@@ -24,7 +28,6 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
-	// TODO find out why this isn't referenced ANYWHERE
 	private boolean visibleOnMyReports;
 
 	public ReportUser() {

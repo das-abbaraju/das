@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionBuilder;
@@ -24,7 +25,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
@@ -54,13 +54,10 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.validator.InputValidator;
-import com.picsauditing.validator.PasswordValidator;
 import com.picsauditing.validator.RegistrationValidator;
-import com.picsauditing.validator.VATValidator;
 import com.picsauditing.validator.Validator;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"deprecation", "serial"})
 public class Registration extends ContractorActionSupport implements AjaxValidator {
 
 	public static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
@@ -78,8 +75,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
 	private EmailSender emailSender;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
@@ -90,22 +85,15 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
-	private VATValidator vatValidator;
-	@Autowired
 	protected PermissionBuilder permissionBuilder;
     @Autowired
     @Qualifier("CsrAssignmentSinglePublisher")
     private Publisher csrAssignmentSinglePublisher;
 	@Autowired
-	private InputValidator inputValidator;
-	@Autowired
-	private PasswordValidator passwordValidator;
-	@Autowired
 	private RegistrationValidator registrationValidator;
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
-	@SuppressWarnings("deprecation")
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
@@ -210,11 +198,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 			return SUCCESS;
 		}
 		permissions = null;
-
-//		validateInput();
-//		if (hasFieldErrors()) {
-//			return INPUT_ERROR;
-//		}
 
 		setupUserData();
 		setupContractorData();
@@ -417,7 +400,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void addNoteThatRequestRegistered() {
 		if (requestID > 0) {
 			ContractorRegistrationRequest crr = updateRegistrationRequest();
@@ -441,7 +423,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private ContractorRegistrationRequest updateRegistrationRequest() {
 		ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
@@ -460,7 +441,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		return crr;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void transferRegistrationRequestTags(ContractorRegistrationRequest crr) {
 		if (Strings.isEmpty(crr.getOperatorTags())) {
 			return;
@@ -536,23 +516,18 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 		user.setLastLogin(new Date());
+		user.updateDisplayNameBasedOnFirstAndLastName();
 	}
 
-	private void checkVAT() {
-		if (!contractor.getCountry().isEuropeanUnion()) {
-			return;
-		}
-
-		try {
-			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-		} catch (Exception e) {
-			contractor.setVatId(null);
-			addActionError(getText("VAT.Required"));
-		}
-	}
-
+	// For the Ajax Validation
 	public Validator getCustomValidator() {
 		return registrationValidator;
+	}
+
+	// For server-side validation
+	@Override
+	public void validate() {
+		registrationValidator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
 
 }

@@ -439,12 +439,7 @@ function loadStatus(caoID, addUserNote){
 										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
-										<s:if test="conAudit.auditType.assigneeLabel == null" >
-											<s:text name="global.SafetyProfessional" />:
-										</s:if>
-										<s:else>
-                                            <s:property value='professionalLabel' />:
-										</s:else>
+                                        <s:property value='professionalLabel' />:
 									</s:else>
 								</label>
 

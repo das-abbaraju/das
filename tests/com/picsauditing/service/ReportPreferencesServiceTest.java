@@ -52,9 +52,9 @@ public class ReportPreferencesServiceTest {
 	}
 
 	@Test
-	public void testLoadOrCreateReportUser() {
+	public void testLoadOrCreateReportUser_createNewReportUserIfNotFound() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+		when(reportDao.findById(REPORT_ID)).thenReturn(report);
 
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(USER_ID, REPORT_ID);
 

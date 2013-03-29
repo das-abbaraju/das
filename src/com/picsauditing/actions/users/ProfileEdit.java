@@ -97,6 +97,7 @@ public class ProfileEdit extends PicsActionSupport {
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
 
+		u.updateDisplayNameBasedOnFirstAndLastName();
 		u = dao.save(u);
 		dao.refresh(u);
 
@@ -126,8 +127,11 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	public void validateInput() {
-		String errorMessageKey = inputValidator.validateName(u.getName());
-		addFieldErrorIfMessage("u.name", errorMessageKey);
+		String errorMessageKey = inputValidator.validateFirstName(u.getFirstName());
+		addFieldErrorIfMessage("u.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLastName(u.getLastName());
+		addFieldErrorIfMessage("u.lastName", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateName(u.getDepartment(), false);
 		addFieldErrorIfMessage("u.department", errorMessageKey);
@@ -190,6 +194,12 @@ public class ProfileEdit extends PicsActionSupport {
 		 */
 		if (u == null) {
 			u = dao.find(permissions.getUserId());
+		}
+
+		// If logged in as a group, you shouldn't get to this page
+		// TODO: If this happens, do we really want to log them out?
+		if (u.isGroup()) {
+			return setUrlForRedirect("Login.action?button=logout");
 		}
 
 		// If the user is not logged in, they should be redirected to the login page.

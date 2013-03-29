@@ -263,12 +263,14 @@
                     </li>
                     <li>
                     	<label>Label Key For Auditor (leave blank to default to "Assignee"): </label>
+
                     	<s:textfield name="auditType.assigneeLabel" />
+                        Do not prefix it with "Assignee."
                         <pics:fieldhelp title="Description">
                             <p>
-                                Label Key For Auditor is used to determine the label of the auditor.
+                                Label Key For Auditor is used to determine the label of the auditor. (Do not start with "Assignee.")
                             </p>
-                            <p>A translation key wil be created with a key starting with "Assignee." if it doesn't exist.  For example if you enter "QualityProfessional", 
+                            <p>A translation key wil be created from the label key with a key starting with "Assignee." followed by the label key if it doesn't exist.  For example if you enter "QualityProfessional",
                             a translation will be created with a key of "Assignee.QualityProfessional" and a default value of "Assignee".
                             You can then go to Manage Translations and edit the translation.
                             </p>

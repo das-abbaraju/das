@@ -1,12 +1,11 @@
 package com.picsauditing.service;
 
-import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.JSONObject;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.jpa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -22,6 +21,8 @@ public class ManageReportsService {
 
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
+	@Autowired
+	public PermissionService permissionService;
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -106,4 +107,100 @@ public class ManageReportsService {
 		return reports;
 	}
 
+	public Report transferOwnership(User fromOwner, User toOwner, Report report, Permissions permissions) throws Exception {
+		if (fromOwner == null) {
+			throw new Exception("Cannot transfer ownership. fromOwner is null");
+		}
+
+		if (toOwner == null) {
+			throw new Exception("Cannot transfer ownership. toOwner is null");
+		}
+
+		if (report == null) {
+			throw new Exception("Cannot transfer ownership. report is null");
+		}
+
+		if (!canTransferOwnership(fromOwner, report, permissions)) {
+			throw new Exception("User " + fromOwner + " does not have permission to transfer ownership of report " + report.getId());
+		}
+
+		grantCurrentOwnerEditPermission(report);
+		report.setOwner(toOwner);
+		reportDao.save(report);
+
+		return report;
+	}
+
+	private boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
+		return fromOwner.equals(report.getOwner()) || permissionService.isReportDevelopmentGroup(permissions);
+	}
+
+	private ReportPermissionUser grantCurrentOwnerEditPermission(Report report) throws Exception {
+		User currentOwner = getCurrentOwnerOfReport(report);
+		reportPreferencesService.loadOrCreateReportUser(currentOwner.getId(), report.getId());
+		ReportPermissionUser reportPermissionUser = permissionService.grantEdit(currentOwner.getId(), report.getId());
+		return reportPermissionUser;
+	}
+
+	private User getCurrentOwnerOfReport(Report report) {
+		User currentOwner = report.getOwner();
+		if (currentOwner == null) {
+			currentOwner = report.getCreatedBy();
+		}
+		return currentOwner;
+	}
+
+	public Report deleteReport(User user, Report report, Permissions permissions) throws Exception {
+		if (user == null) {
+			throw new Exception("Cannot delete report. user is null");
+		}
+
+		if (report == null) {
+			throw new Exception("Cannot delete report. report is null");
+		}
+
+		if (!canDeleteReport(user, report, permissions)) {
+			throw new Exception("User " + user.getId() + " does not have permission to delete report " + report.getId());
+		}
+
+		report.setAuditColumns(user);
+		reportDao.remove(report);
+
+		return report;
+	}
+
+	private boolean canDeleteReport(User user, Report report, Permissions permissions) {
+		return permissionService.canUserDeleteReport(user, report, permissions);
+	}
+
+	public ReportPermissionUser shareWithViewPermission(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
+		return shareWithPermission(sharerUser, toUser, report, false, permissions);
+	}
+
+	private ReportPermissionUser shareWithPermission(User sharerUser, User toUser, Report report, boolean grantEdit, Permissions permissions) throws Exception {
+		if (!canShareReport(sharerUser, toUser, report, permissions)) {
+			throw new Exception("User " + sharerUser.getId() + " does not have permission to share report " + report.getId());
+		}
+		reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId());
+		ReportPermissionUser reportPermissionUser;
+		if (grantEdit) {
+			reportPermissionUser = permissionService.grantEdit(toUser.getId(), report.getId());
+		} else {
+			reportPermissionUser = permissionService.grantView(toUser.getId(), report.getId());
+		}
+
+		return reportPermissionUser;
+	}
+
+	private boolean canShareReport(User sharerUser, User toUser, Report report, Permissions permissions) {
+		return permissionService.canUserShareReport(sharerUser, toUser, report, permissions);
+	}
+
+	public ReportPermissionUser shareWithEditPermission(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
+		return shareWithPermission(sharerUser, toUser, report, true, permissions);
+	}
+
+	public void removeReport(User viewerUser, Report report, Permissions permissions) {
+		//To change body of created methods use File | Settings | File Templates.
+	}
 }

@@ -140,7 +140,7 @@ public class ReportService {
 				legacyConvertParametersToReport(report);
 			}
 		}
-		
+
 		report.sortColumns();
 
 		return report;
@@ -362,7 +362,7 @@ public class ReportService {
 		return JSONUtilities.isNotEmpty(reportJson) && includeData;
 	}
 
-	private Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {
+	public Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {
 		Report report = reportDao.findById(reportId);
 
 		if (report == null) {
@@ -496,7 +496,7 @@ public class ReportService {
 		if (i18nCache == null) {
 			return I18nCache.getInstance();
 		}
-		
+
 		return i18nCache;
 	}
 }

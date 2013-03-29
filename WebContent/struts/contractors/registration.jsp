@@ -200,8 +200,11 @@
 				</h1>
 				
 				<ul>
-					<li>
-						<s:textfield name="user.name" />
+                    <li>
+                        <s:textfield name="user.firstName" />
+                    </li>
+                    <li>
+                        <s:textfield name="user.lastName" />
 					</li>
 					<li>
 						<s:textfield name="user.email" />

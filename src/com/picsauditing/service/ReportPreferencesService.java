@@ -6,7 +6,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,10 @@ public class ReportPreferencesService {
 
 	@Autowired
 	private ReportUserDAO reportUserDao;
-
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private PermissionService permissionService;
 
 	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
 		ReportUser reportUser;
@@ -37,26 +37,13 @@ public class ReportPreferencesService {
 		return reportUser;
 	}
 
-	// FIXME mostly duplicated by createReportUserForReport
 	private ReportUser createReportUser(int userId, int reportId) {
-		ReportUser reportUser;// Need to connect user to report first
-		Report report = reportDao.find(Report.class, reportId);
-		reportUser = new ReportUser(userId, report);
-		reportUser.setAuditColumns(new User(userId));
-		reportUser.setFavorite(false);
-		reportUserDao.save(reportUser);
-		return reportUser;
+		Report report = reportDao.findById(reportId);
+		return createReportUser(userId, report);
 	}
 
-	// FIXME mostly duplicated by createReportUser
-	private ReportUser createReportUserForReport(int userId, Report report) {
-		ReportUser reportUser = new ReportUser();
-
-		User user = new User();
-		user.setId(userId);
-		reportUser.setUser(user);
-		reportUser.setReport(report);
-		reportUser.setFavorite(false);
+	private ReportUser createReportUser(int userId, Report report) {
+		ReportUser reportUser = new ReportUser(userId, report);
 		reportUserDao.save(reportUser);
 
 		return reportUser;
@@ -80,7 +67,7 @@ public class ReportPreferencesService {
 			ReportUser reportUser = report.getReportUser(permissions.getUserId());
 			if (reportUser == null) {
 				// todo: Why are creating a new ReportUser for each report???
-				reportUser = createReportUserForReport(permissions.getUserId(), report);
+				reportUser = createReportUser(permissions.getUserId(), report);
 			}
 			reportUsers.add(reportUser);
 		}

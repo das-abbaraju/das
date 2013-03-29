@@ -423,7 +423,8 @@ public class UsersManageTest extends PicsActionTest {
 		usersManageSpy.save();
 
 		verify(usersManageSpy).validateInputAndRecordErrors();
-		verify(inputValidator).validateName(anyString());
+		verify(inputValidator).validateFirstName(anyString());
+		verify(inputValidator).validateLastName(anyString());
 		verify(inputValidator).validateEmail(anyString());
 		verify(inputValidator).validateUsername(anyString());
 		verify(inputValidator).validateUsernameAvailable(anyString(), anyInt());
