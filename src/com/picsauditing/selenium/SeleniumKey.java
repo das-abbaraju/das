@@ -13,15 +13,13 @@ public class SeleniumKey extends PicsApiSupport implements ParameterAware {
     protected String namePart;
     protected KeyCode keyCode = new KeyCode(8);
 
-
-
     public String getType() {
         return this.type;
     }
+
     public void setType(String type) {
         this.type = type;
     }
-
 
     public String getNamePart() {
         return this.namePart;
