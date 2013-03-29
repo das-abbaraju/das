@@ -19,7 +19,9 @@ import org.powermock.reflect.Whitebox;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 public class QaUserCreatorTest extends PicsActionTest {
     private QaUserCreator qaUserCreator;
-    private List<Integer> groupId;
+    private Set<Integer> groupId;
 
     @Mock
     private UserManagementService userManagementService;
@@ -48,7 +50,7 @@ public class QaUserCreatorTest extends PicsActionTest {
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(qaUserCreator, this);
 
-        groupId = new ArrayList<>();
+        groupId = new HashSet<>();
         qaUserCreator.setAccount(account);
         qaUserCreator.setGroupId(groupId);
         Whitebox.setInternalState(qaUserCreator, "userManagementService", userManagementService);

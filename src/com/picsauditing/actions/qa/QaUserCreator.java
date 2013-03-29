@@ -21,7 +21,7 @@ import java.util.*;
 public class QaUserCreator extends PicsApiSupport {
     private static final Logger logger = LoggerFactory.getLogger(QaUserCreator.class);
     private Account account;
-    private List<Integer> groupId = new ArrayList<>();
+    private Set<Integer> groupId = new HashSet<>();
 
     @Autowired
     private UserManagementService userManagementService;
@@ -122,11 +122,11 @@ public class QaUserCreator extends PicsApiSupport {
         this.account = account;
     }
 
-    public List<Integer> getGroupId() {
+    public Set<Integer> getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(List<Integer> groupIds) {
+    public void setGroupId(Set<Integer> groupIds) {
         this.groupId = groupIds;
     }
 
