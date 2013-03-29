@@ -2,9 +2,11 @@ PICS.define('report.manage-report.OwnedByController', {
     methods: {
         init: function () {
             if ($('#ManageReports_ownedBy_page').length > 0) {
-                $('#owned_by_reports')
-                    .on('click', '.favorite', $.proxy(this.unfavoriteReport, this))
-                    .on('click', '.unfavorite', $.proxy(this.favoriteReport, this));
+                $('#owned_by_reports_container')
+                    .on('click', '.favorite-icon.favorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '.favorite-icon.unfavorite', $.proxy(this.favoriteReport, this))
+                    .on('click', '.favorite-action.favorite', $.proxy(this.favoriteReport, this))
+                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this));
             }
         },
         

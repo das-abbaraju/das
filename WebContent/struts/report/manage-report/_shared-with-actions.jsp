@@ -10,7 +10,7 @@
 <s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
 
 <%-- Favorite Class --%>
-<s:set name="favorite_class" value="%{#report.favorite ? 'favorite' : 'unfavorite'}" />
+<s:set name="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
 
 <div class="btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">

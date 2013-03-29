@@ -2,92 +2,51 @@ PICS.define('report.manage-report.FavoritesController', {
     methods: {
         init: function () {
             if ($('#ManageReports_favorites_page').length > 0) {
-                var that = this,
-                    favorite_reports = $('#favorite_reports_container');
-                
-                $('.dropdown-toggle').dropdown();
-                
-                favorite_reports.on('click', '.delete', function (event) {
-                    that.onDeleteClick.apply(that, [event]);
-                });
-                
-                favorite_reports.on('click', '.favorite', function (event) {
-                    that.onFavoriteClick.apply(that, [event]);
-                });
-                
-                favorite_reports.on('click', '.move-down', function (event) {
-                    that.onMoveDownClick.apply(that, [event]);
-                });
-                
-                favorite_reports.on('click', '.move-up', function (event) {
-                    that.onMoveUpClick.apply(that, [event]);
-                });
-                
-                favorite_reports.on('click', '.remove', function (event) {
-                    that.onRemoveClick.apply(that, [event]);
-                });
+                $('#favorite_reports_container')
+                    .on('click', '.favorite-icon.favorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '.move-down', $.proxy(this.moveReportDown, this))
+                    .on('click', '.move-up', $.proxy(this.moveReportUp, this));
             }
         },
         
-        onDeleteClick: function (event) {
-            var element = $(event.currentTarget),
-                that = this;
+        moveReportUp: function (event) {
+            var element = $(event.currentTarget);
             
-            element.closest('.report').fadeOut(750, function () {
-                PICS.ajax({
-                    url: element.attr('href'),
-                    success: that.refreshFavorites
-                });
+            PICS.ajax({
+                url: element.attr('href'),
+                success: $.proxy(this.refreshFavorites, this)
             });
             
             event.preventDefault();
         },
         
-        onFavoriteClick: function (event) {
-            var element = $(event.currentTarget),
-                icon = element.find('.icon-star');
+        moveReportDown: function (event) {
+            var element = $(event.currentTarget);
             
-            if (icon.hasClass('selected')) {
-                this.unfavoriteReport(element, icon);
+            PICS.ajax({
+                url: element.attr('href'),
+                success: $.proxy(this.refreshFavorites, this)
+            });
+            
+            event.preventDefault();
+        },
+        
+        unfavoriteReport: function (event) {
+            var element = $(event.currentTarget),
+                body = $('body'),
+                report_id = element.attr('data-id');
+            
+            function success(data, textStatus, jqXHR) {
+                element.closest('.report').fadeOut(750, this.refreshFavorites);
             }
             
-            event.preventDefault();
-        },
-        
-        onMoveDownClick: function (event) {
-            var element = $(event.currentTarget),
-                that = this;
+            var params = [
+                report_id,
+                $.proxy(success, this)
+            ];
             
-            PICS.ajax({
-                url: element.attr('href'),
-                success: that.refreshFavorites
-            });
-            
-            event.preventDefault();
-        },
-        
-        onMoveUpClick: function (event) {
-            var element = $(event.currentTarget),
-                that = this;
-            
-            PICS.ajax({
-                url: element.attr('href'),
-                success: that.refreshFavorites
-            });
-            
-            event.preventDefault();
-        },
-        
-        onRemoveClick: function (event) {
-            var element = $(event.currentTarget),
-                that = this;
-        
-            element.closest('.report').fadeOut(750, function () {
-                PICS.ajax({
-                    url: element.attr('href'),
-                    success: that.refreshFavorites
-                });
-            });
+            body.trigger('report-unfavorite', params);
             
             event.preventDefault();
         },
@@ -99,23 +58,6 @@ PICS.define('report.manage-report.FavoritesController', {
                     $('#favorite_reports_container').html(data);
                 }
             });
-        },
-        
-        unfavoriteReport: function (element, icon) {
-            var body = $('body'),
-                report_id = element.attr('data-id'),
-                that = this;
-            
-            function success(data, textStatus, jqXHR) {
-                element.closest('.report').fadeOut(750, that.refreshFavorites);
-            }
-            
-            var params = [
-                report_id,
-                success
-            ];
-            
-            body.trigger('report-unfavorite', params);
         }
     }
 });
