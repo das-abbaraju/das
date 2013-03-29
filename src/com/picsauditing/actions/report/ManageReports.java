@@ -19,7 +19,10 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -40,6 +43,8 @@ public class ManageReports extends PicsActionSupport {
 	private ManageReportsService manageReportsService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
+
+	private User toOwner;
 
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
@@ -167,34 +172,79 @@ public class ManageReports extends PicsActionSupport {
 		return "search";
 	}
 
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
-	public String removeReportUser() {
-		return redirectToPreviousView();
+	public String transferOwnership() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.transferOwnership(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot transfer ownership.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot transfer ownership.", e);
+			return ERROR;
+		}
+
+		return NONE;
 	}
 
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
-	public String removeReportPermissionUser() {
-		return redirectToPreviousView();
-	}
-
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
 	public String deleteReport() {
-		return redirectToPreviousView();
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.deleteReport(getUser(), report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			// Report doesn't exist, so we don't need to do anything.
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot delete.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot delete.", e);
+			return ERROR;
+		}
+
+		return NONE;
+	}
+
+	public String shareWithViewPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.shareWithViewPermission(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return NONE;
+	}
+
+	public String shareWithEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.shareWithEditPermission(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return NONE;
 	}
 
 	public String favorite() {
@@ -258,6 +308,14 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return getRequest();
+	}
+
+	public User getToOwner() {
+		return toOwner;
+	}
+
+	public void setToOwner(User toOwner) {
+		this.toOwner = toOwner;
 	}
 
 	public List<ReportUser> getReportUsers() {
