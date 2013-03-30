@@ -1,6 +1,7 @@
 package com.picsauditing.service;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
@@ -138,5 +139,80 @@ public class PermissionServiceTest {
 
 		assertTrue(result);
 	}
+
+	@Test
+	public void testCanTransferOwnership_ownerCanTransfer() throws Exception {
+		Report report = new Report();
+		User fromOwner = new User("From Owner");
+		report.setOwner(fromOwner);
+
+		boolean result = permissionService.canTransferOwnership(fromOwner, report, permissions);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCanTransferOwnership_devGroupCanTransfer() throws Exception {
+		Report report = new Report();
+		User owner = new User("Joe Owner");
+		report.setOwner(owner);
+		User fromOwner = new User("Not The Owner");
+		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenReturn(new UserGroup());
+
+		boolean result = permissionService.canTransferOwnership(fromOwner, report, permissions);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCanTransferOwnership_otherThanOwnerOrDevGroupCannotTransfer() throws Exception {
+		Report report = new Report();
+		User owner = new User("Joe Owner");
+		report.setOwner(owner);
+		User otherUser = new User("Not The Owner");
+		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenThrow(new NoResultException());
+
+		boolean result = permissionService.canTransferOwnership(otherUser, report, permissions);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testCanUserDeleteReport_ownerCanDelete() throws Exception {
+		Report report = new Report();
+		User owner = new User("Joe Owner");
+		report.setOwner(owner);
+
+		boolean result = permissionService.canUserDeleteReport(owner, report, permissions);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCanUserDeleteReport_devGroupCanDelete() throws Exception {
+		Report report = new Report();
+		User owner = new User("Joe Owner");
+		report.setOwner(owner);
+		User otherUser = new User("Not The Owner");
+		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenReturn(new UserGroup());
+
+		boolean result = permissionService.canUserDeleteReport(otherUser, report, permissions);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCanUserDeleteReport_otherThanOwnerOrDevGroupCannotTransfer() throws Exception {
+		Report report = new Report();
+		User owner = new User("Joe Owner");
+		report.setOwner(owner);
+		User otherUser = new User("Not the Owner");
+		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenThrow(new NoResultException());
+
+		boolean result = permissionService.canUserDeleteReport(otherUser, report, permissions);
+
+		assertFalse(result);
+	}
+
 
 }

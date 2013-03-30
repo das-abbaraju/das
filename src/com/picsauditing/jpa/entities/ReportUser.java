@@ -37,6 +37,7 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 		this.user = new User(userId);
 		this.favorite = false;
+		this.visibleOnMyReports = true;
 	}
 
 	@ManyToOne

@@ -16,8 +16,8 @@ import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ReportDAO;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -118,6 +118,7 @@ public class ManageReportsServiceTest {
 		User fromOwner = new User("From Owner");
 		report.setOwner(fromOwner);
 		User toOwner = new User("To Owner");
+		when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
 
 		manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
 
@@ -131,6 +132,7 @@ public class ManageReportsServiceTest {
 		User fromOwner = new User("From Owner");
 		report.setOwner(fromOwner);
 		User toOwner = new User("To Owner");
+		when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
 
 		Report resultReport = manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
 
@@ -187,22 +189,39 @@ public class ManageReportsServiceTest {
 	}
 
 	@Test
-	@Ignore
-	public void testRemoveReport_visibleInMyReportsShouldBeCleared() throws Exception {
+	public void testRemoveReport_anyoneWithPermissionShouldBeAbleToRemove() throws Exception {
 		Report report = new Report();
 		report.setId(10);
-		User sharerUser = new User("Joe Owner");
+		User removerUser = new User("Joe Remover");
+		removerUser.setId(1);
+		report.setOwner(removerUser);
+		ReportUser reportUser = new ReportUser(removerUser.getId(), report);
+		when(permissionService.canUserRemoveReport(removerUser, report, permissions)).thenReturn(true);
+		when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
+		assertTrue(reportUser.isVisibleOnMyReports());
+
+		reportUser = manageReportsService.removeReport(removerUser, report, permissions);
+
+		verify(reportUserDao).remove(reportUser);
+	}
+
+	@Test
+	public void testUnshare_anyoneWithPermissionShouldBeAbleToUnshare() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+
+		User sharerUser = new User("Joe Sharer");
 		sharerUser.setId(1);
 		report.setOwner(sharerUser);
 		User toUser = new User("To User");
 		toUser.setId(2);
 		ReportUser reportUser = new ReportUser(toUser.getId(), report);
+		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
 		when(reportPreferencesService.loadReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
 
-//		manageReportsService.removeReport(reportUser, permissions);
+		manageReportsService.unshare(sharerUser, toUser, report, permissions);
 
-		assertFalse(reportUser.isVisibleOnMyReports());
-
+		verify(permissionService).unshare(toUser, report);
 	}
 
 	private ReportUser createTestReportUser() {

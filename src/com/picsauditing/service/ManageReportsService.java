@@ -17,6 +17,8 @@ import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
+import javax.persistence.NoResultException;
+
 public class ManageReportsService {
 
 	@Autowired
@@ -132,7 +134,7 @@ public class ManageReportsService {
 	}
 
 	private boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
-		return fromOwner.equals(report.getOwner()) || permissionService.isReportDevelopmentGroup(permissions);
+		return permissionService.canTransferOwnership(fromOwner, report, permissions);
 	}
 
 	private ReportPermissionUser grantCurrentOwnerEditPermission(Report report) throws Exception {
@@ -192,6 +194,13 @@ public class ManageReportsService {
 		return reportPermissionUser;
 	}
 
+	public void unshare(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
+		if (!canShareReport(sharerUser, toUser, report, permissions)) {
+			throw new Exception("User " + sharerUser.getId() + " does not have permission to unshare report " + report.getId());
+		}
+		permissionService.unshare(toUser, report);
+	}
+
 	private boolean canShareReport(User sharerUser, User toUser, Report report, Permissions permissions) {
 		return permissionService.canUserShareReport(sharerUser, toUser, report, permissions);
 	}
@@ -200,7 +209,22 @@ public class ManageReportsService {
 		return shareWithPermission(sharerUser, toUser, report, true, permissions);
 	}
 
-	public void removeReport(User viewerUser, Report report, Permissions permissions) {
-		//To change body of created methods use File | Settings | File Templates.
+	public ReportUser removeReport(User removerUser, Report report, Permissions permissions) throws Exception {
+		if (!canRemoveReport(removerUser, report, permissions)) {
+			throw new Exception("User " + removerUser.getId() + " does not have permission to remove report " + report.getId());
+		}
+
+		ReportUser reportUser = null;
+		try {
+			reportUser = reportPreferencesService.loadReportUser(removerUser.getId(), report.getId());
+			reportUserDao.remove(reportUser);
+		} catch (NoResultException dontCare) {
+		}
+
+		return reportUser;
+	}
+
+	private boolean canRemoveReport(User removerUser, Report report, Permissions permissions) {
+		return permissionService.canUserRemoveReport(removerUser, report, permissions);
 	}
 }

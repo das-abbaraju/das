@@ -61,6 +61,10 @@ public class PermissionService {
 		return isReportDevelopmentGroup(permissions);
 	}
 
+	public boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
+		return isOwner(fromOwner, report) || isReportDevelopmentGroup(permissions);
+	}
+
 	public boolean canUserDeleteReport(User user, Report report, Permissions permissions) {
 		if (report == null) {
 			return false;
@@ -72,8 +76,16 @@ public class PermissionService {
 		return isOwnerOrHasEdit(granterUser, report, permissions);
 	}
 
-	private boolean isOwnerOrHasEdit(User granterUser, Report report, Permissions permissions) {
-		return isOwner(granterUser, report) || canUserEditReport(permissions, report.getId());
+	public boolean canUserRemoveReport(User removerUser, Report report, Permissions permissions) {
+		return isOwnerOrHasView(removerUser, report, permissions);
+	}
+
+	private boolean isOwnerOrHasEdit(User user, Report report, Permissions permissions) {
+		return isOwner(user, report) || canUserEditReport(permissions, report.getId());
+	}
+
+	private boolean isOwnerOrHasView(User user, Report report, Permissions permissions) {
+		return isOwner(user, report) || canUserViewReport(permissions, report.getId());
 	}
 
 	private boolean isOwner(User user, Report report) {
@@ -91,7 +103,6 @@ public class PermissionService {
 
 			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
 
-			// FIXME this method should be something like UserService.isUserInGroup(userId, groupId)
 			reportPermissionUserDao.findOne(UserGroup.class, where);
 		} catch (NoResultException nre) {
 			return false;
@@ -116,6 +127,14 @@ public class PermissionService {
 		reportPermissionAccountDao.save(reportPermissionUser);
 
 		return reportPermissionUser;
+	}
+
+	public void unshare(User user, Report report) {
+		try {
+			ReportPermissionUser reportPermissionUser = loadReportPermissionUser(user.getId(), report.getId());
+			reportPermissionAccountDao.remove(reportPermissionUser);
+		} catch (NoResultException dontCare) {
+		}
 	}
 
 	private ReportPermissionUser loadOrCreateReportPermissionUser(int userId, int reportId) {

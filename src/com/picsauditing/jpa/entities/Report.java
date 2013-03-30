@@ -120,8 +120,6 @@ public class Report extends BaseTable {
 		this.sql = sql;
 	}
 
-	// todo: map me after column is added to db
-	@Transient
 	public boolean isDeleted() {
 		return deleted;
 	}
