@@ -181,6 +181,7 @@ public class ReportService {
 
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 		Report newReport = createReportFromPayload(reportContext.reportId, reportJson);
+		newReport.setOwner(reportContext.user);
 
 		validate(newReport);
 
@@ -188,13 +189,13 @@ public class ReportService {
 
 		reportDao.save(newReport);
 
+		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
+
 		if (reportPreferencesService.shouldFavorite(reportJson)) {
-			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
 			reportPreferencesService.favoriteReport(reportUser);
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
 		connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
@@ -402,7 +403,7 @@ public class ReportService {
 	}
 
 	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
-	                                              List<BasicDynaBean> queryResults) {
+			List<BasicDynaBean> queryResults) {
 		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());
 		converter.convertForPrinting();

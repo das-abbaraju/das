@@ -28,16 +28,18 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
+	// FIXME invert the polarity of this flag and rename it to something like isSoftDeleted
 	private boolean visibleOnMyReports;
 
 	public ReportUser() {
+		visibleOnMyReports = true;
 	}
 
 	public ReportUser(int userId, Report report) {
 		this.report = report;
-		this.user = new User(userId);
-		this.favorite = false;
-		this.visibleOnMyReports = true;
+		user = new User(userId);
+		favorite = false;
+		visibleOnMyReports = true;
 	}
 
 	@ManyToOne
