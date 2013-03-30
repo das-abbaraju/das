@@ -304,14 +304,6 @@
 							</s:if>
 						</s:if>
 
-                        <li>
-                            <s:textfield name="user.firstName" size="40" theme="form" />
-                        </li>
-
-                        <li>
-                            <s:textfield name="user.lastName" size="40" theme="form" />
-                        </li>
-
                         <s:if test="user.group">
                             <li>
 								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" onchange="checkGroupName(this.value);" />
@@ -319,6 +311,14 @@
                             </li>
                         </s:if>
 						<s:else>
+                            <li>
+                                <s:textfield name="user.firstName" size="40" theme="form" />
+                            </li>
+
+                            <li>
+                                <s:textfield name="user.lastName" size="40" theme="form" />
+                            </li>
+
 							<li>
                                 <s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
                             </li>
