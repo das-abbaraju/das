@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-public final class ReportSearchResults {
+public class ReportSearchResults {
 
 	private final List<BasicDynaBean> results;
 	private final int totalResultSize;
@@ -15,11 +15,11 @@ public final class ReportSearchResults {
 	}
 
 	// it would be very nice if we could return this as an unmodifiable list
-	public final List<BasicDynaBean> getResults() {
+	public List<BasicDynaBean> getResults() {
 		return results;
 	}
 
-	public final int getTotalResultSize() {
+	public int getTotalResultSize() {
 		return totalResultSize;
 	}
 

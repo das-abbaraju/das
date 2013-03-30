@@ -37,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportElementDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
@@ -52,6 +53,8 @@ public class ReportServiceTest {
 
 	@Mock
 	private ReportDAO reportDao;
+	@Mock
+	private ReportElementDAO reportElementDAO;
 	@Mock
 	private ReportUserDAO reportUserDao;
 	@Mock
@@ -96,6 +99,7 @@ public class ReportServiceTest {
 		legacyReportConverter = new LegacyReportConverter();
 
 		setInternalState(reportService, "reportDao", reportDao);
+		setInternalState(reportService, "reportElementDAO", reportElementDAO);
 		setInternalState(reportService, "reportUserDao", reportUserDao);
 		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
@@ -123,7 +127,6 @@ public class ReportServiceTest {
 		Whitebox.setInternalState(ReportDataConverter.class, "i18nCache", (I18nCache) null);
 	}
 
-	@Ignore("Temporarily ignore this")
 	@Test
 	public void testBuildJsonResponse_whenIncludeData_resultsElementShouldBePopulated() throws ReportValidationException, SQLException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
@@ -376,7 +379,6 @@ public class ReportServiceTest {
 		assertEquals(report.getFilterExpression(), resultReport.getFilterExpression());
 	}
 
-	@Ignore("Temporarily ignore this")
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_andReportIsEmpty_setReportPropertiesFromJsonParameters() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
@@ -398,7 +400,6 @@ public class ReportServiceTest {
 		verifyColumn("AccountCountry", resultReportElementMap);
 	}
 
-	@Ignore("Temporarily ignore this")
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_FiltersShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
@@ -416,7 +417,6 @@ public class ReportServiceTest {
 		verifyFilter("AccountStatus", QueryFilterOperator.In, "[Active, Pending]", resultFilterMap);
 	}
 
-	@Ignore("Temporarily ignore this")
 	@Test
 	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_SortsShouldBeSet() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
@@ -549,6 +549,7 @@ public class ReportServiceTest {
 		return report;
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONObject buildMinimalPayloadJson() {
 		JSONObject reportJson = new JSONObject();
 		reportJson.put(ReportJson.REPORT_ID, REPORT_ID);
@@ -583,22 +584,23 @@ public class ReportServiceTest {
 
 	private ReportSearchResults createReportSearchResults(int rowsToReturn) {
 		ReportSearchResults mockReportSearchResults = Mockito.mock(ReportSearchResults.class);
-		when(mockReportSearchResults.getResults()).then(createQueryResults(rowsToReturn));
+		Answer<List<BasicDynaBean>> result = createQueryResults(rowsToReturn);
+		when(mockReportSearchResults.getResults()).thenAnswer(result);
 		when(mockReportSearchResults.getTotalResultSize()).thenReturn(rowsToReturn);
 		return mockReportSearchResults;
 	}
 
-	private Answer<?> createQueryResults(final int rowsToReturn) {
+	private Answer<List<BasicDynaBean>> createQueryResults(final int rowsToReturn) {
+
 		return new Answer<List<BasicDynaBean>>() {
+
 			@Override
 			public List<BasicDynaBean> answer(InvocationOnMock invocation) throws Throwable {
-				Object[] args = invocation.getArguments();
-				JSONObject passedInJson = (JSONObject) args[1];
 				List<BasicDynaBean> queryResults = getTestDatabaseReportData();
-				passedInJson.put(ReportJson.RESULTS_TOTAL, rowsToReturn);
 				return queryResults;
 			}
 		};
+
 	}
 
 	private List<Map<String, String>> buildDatabaseData() {
