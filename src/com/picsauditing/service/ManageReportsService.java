@@ -2,10 +2,14 @@ package com.picsauditing.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -29,6 +33,8 @@ public class ManageReportsService {
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportUserDAO reportUserDao;
+
+	private static final Logger logger = LoggerFactory.getLogger(ManageReportsService.class);
 
 	public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
 		return moveFavorite(reportUser, 1);
@@ -227,4 +233,58 @@ public class ManageReportsService {
 	private boolean canRemoveReport(User removerUser, Report report, Permissions permissions) {
 		return permissionService.canUserRemoveReport(removerUser, report, permissions);
 	}
+
+	public List<ReportUser> buildFavorites(int userId) {
+		List<ReportUser> sortedFavorites = reportUserDao.findAllFavorite(userId);
+		if (sortOrderNeedsToBeReIndexed(sortedFavorites)) {
+			sortedFavorites = reIndexSortOrder(sortedFavorites);
+		}
+		return sortedFavorites;
+	}
+
+	private boolean sortOrderNeedsToBeReIndexed(List<ReportUser> sortedFavorites) {
+		ReportUser firstReportUserInList = sortedFavorites.get(0);
+		int highestSortOrder = firstReportUserInList.getSortOrder();
+
+		if (highestSortOrder != sortedFavorites.size()) {
+			return true;
+		}
+
+		if (hasDuplicateSortOrders(sortedFavorites)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private List<ReportUser> reIndexSortOrder(List<ReportUser> sortedFavorites) {
+
+		logger.info("Re-indexing sortOrder for favorites...");
+
+		List<ReportUser> reIndexedFavorites = new ArrayList<>();
+		for (int i = 0; i < sortedFavorites.size(); i++) {
+			ReportUser favorite = sortedFavorites.get(i);
+			int newSortOrder = sortedFavorites.size() - i;
+
+			if (newSortOrder != favorite.getSortOrder()) {
+				favorite.setSortOrder(newSortOrder);
+				reportUserDao.save(favorite);
+			}
+
+			reIndexedFavorites.add(favorite);
+		}
+		return reIndexedFavorites;
+	}
+
+	private boolean hasDuplicateSortOrders(List<ReportUser> sortedFavorites) {
+		Set<Integer> uniqueSortOrders = new HashSet<>();
+		for (ReportUser sortedFavorite : sortedFavorites) {
+			boolean addedSuccessfully = uniqueSortOrders.add(sortedFavorite.getSortOrder());
+			if (!addedSuccessfully) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -6,17 +6,19 @@ import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ReportDAO;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -238,4 +240,145 @@ public class ManageReportsServiceTest {
 		return reportUser;
 	}
 
+	@Test
+	public void testBuildFavorites_whenSortOrderIsContiguous_doNotReIndexSortOrder() throws Exception {
+
+		List<ReportUser> favorites = buildSortedFavoritesThatAreContiguous(USER_ID);
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(favorites);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(3, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		favorites = manageReportsService.buildFavorites(USER_ID);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(3, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		verify(reportUserDao, never()).save(any(ReportUser.class));
+	}
+
+	@Test
+	public void testBuildFavorites_whenMaxSortOrderIsGreaterThanListSize_reIndexSortOrder() throws Exception {
+
+		List<ReportUser> favorites = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(favorites);
+
+		assertEquals(4, favorites.size());
+		assertEquals(7, favorites.get(0).getSortOrder());
+		assertEquals(5, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		favorites = manageReportsService.buildFavorites(USER_ID);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(3, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		verify(reportUserDao).save(favorites.get(0));
+		verify(reportUserDao).save(favorites.get(1));
+		verify(reportUserDao, never()).save(favorites.get(2));
+		verify(reportUserDao, never()).save(favorites.get(3));
+	}
+
+	@Test
+	public void testBuildFavorites_whenSortOrderIsNotContiguous_reIndexSortOrder() throws Exception {
+
+		List<ReportUser> favorites = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(favorites);
+
+		assertEquals(4, favorites.size());
+		assertEquals(7, favorites.get(0).getSortOrder());
+		assertEquals(5, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		favorites = manageReportsService.buildFavorites(USER_ID);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(3, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		verify(reportUserDao).save(favorites.get(0));
+		verify(reportUserDao).save(favorites.get(1));
+		verify(reportUserDao, never()).save(favorites.get(2));
+		verify(reportUserDao, never()).save(favorites.get(3));
+	}
+
+	@Test
+	public void testBuildFavorites_whenSortOrderHasDuplicates_reIndexSortOrder() throws Exception {
+
+		List<ReportUser> favorites = buildSortedFavoritesThatHaveDuplicates(USER_ID);
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(favorites);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(2, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		favorites = manageReportsService.buildFavorites(USER_ID);
+
+		assertEquals(4, favorites.size());
+		assertEquals(4, favorites.get(0).getSortOrder());
+		assertEquals(3, favorites.get(1).getSortOrder());
+		assertEquals(2, favorites.get(2).getSortOrder());
+		assertEquals(1, favorites.get(3).getSortOrder());
+
+		verify(reportUserDao, never()).save(favorites.get(0));
+		verify(reportUserDao).save(favorites.get(1));
+		verify(reportUserDao, never()).save(favorites.get(2));
+		verify(reportUserDao, never()).save(favorites.get(3));
+	}
+
+	private List<ReportUser> buildSortedFavoritesThatAreContiguous(final int userId) {
+		final Report report = new Report();
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
+			add(createFavoriteWithSortIndex(userId, report, 4));
+			add(createFavoriteWithSortIndex(userId, report, 3));
+			add(createFavoriteWithSortIndex(userId, report, 2));
+			add(createFavoriteWithSortIndex(userId, report, 1));
+		}};
+		return favorites;
+	}
+
+	private List<ReportUser> buildSortedFavoritesThatAreNotContiguous(final int userId) {
+		final Report report = new Report();
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
+			add(createFavoriteWithSortIndex(userId, report, 7));
+			add(createFavoriteWithSortIndex(userId, report, 5));
+			add(createFavoriteWithSortIndex(userId, report, 2));
+			add(createFavoriteWithSortIndex(userId, report, 1));
+		}};
+		return favorites;
+	}
+
+	private List<ReportUser> buildSortedFavoritesThatHaveDuplicates(final int userId) {
+		final Report report = new Report();
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
+			add(createFavoriteWithSortIndex(userId, report, 4));
+			add(createFavoriteWithSortIndex(userId, report, 2));
+			add(createFavoriteWithSortIndex(userId, report, 2));
+			add(createFavoriteWithSortIndex(userId, report, 1));
+		}};
+		return favorites;
+	}
+
+	private ReportUser createFavoriteWithSortIndex(int userId, Report report, int sortOrder) {
+		ReportUser reportUser = new ReportUser(userId, report);
+		reportUser.setFavorite(true);
+		reportUser.setSortOrder(sortOrder);
+
+		return reportUser;
+	}
 }
