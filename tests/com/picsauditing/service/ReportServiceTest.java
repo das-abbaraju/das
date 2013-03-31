@@ -421,7 +421,8 @@ public class ReportServiceTest {
 	@Test
 	public void testCopy_WhenReportIsCopied_ThenReportIsValidatedAndSaved() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		User user = new User(USER_ID);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserViewReport(eq(permissions), anyInt())).thenReturn(true);
 		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
 		ReportService reportServiceSpy = spy(reportService);
@@ -445,8 +446,10 @@ public class ReportServiceTest {
 	@Test
 	public void testSave_WhenReportIsSaved_ThenReportIsValidatedAndSaved() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		ReportUser reportUser = new ReportUser(USER_ID, report);
+		when(reportPreferencesService.loadReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report report = reportServiceSpy.save(reportContext);

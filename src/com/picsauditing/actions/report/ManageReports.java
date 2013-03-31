@@ -112,7 +112,7 @@ public class ManageReports extends PicsActionSupport {
 
 			manageReportsService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
-			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
+			logger.warn("Unable to moveFavoriteUp. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
 		}
@@ -126,7 +126,7 @@ public class ManageReports extends PicsActionSupport {
 
 			manageReportsService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
-			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
+			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
 		}

@@ -28,7 +28,7 @@ import org.hibernate.annotations.Where;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report")
-@SQLDelete(sql = "UPDATE report SET deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE report SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0")
 public class Report extends BaseTable {
 

@@ -18,8 +18,8 @@ import org.hibernate.annotations.Where;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_user")
-@SQLDelete(sql = "UPDATE report_user SET visibleOnMyReports = false WHERE id = ?")
-@Where(clause = "visibleOnMyReports = 1")
+@SQLDelete(sql = "UPDATE report_user SET hidden = 1 WHERE id = ?")
+@Where(clause = "hidden = 0")
 public class ReportUser extends BaseTable {
 
 	private User user;
@@ -28,18 +28,16 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
-	// FIXME invert the polarity of this flag and rename it to something like isSoftDeleted
-	private boolean visibleOnMyReports;
+	boolean visibleOnMyReports; // todo: Not used anywhere. Remove.
+	private boolean hidden;
 
 	public ReportUser() {
-		visibleOnMyReports = true;
 	}
 
 	public ReportUser(int userId, Report report) {
 		this.report = report;
 		user = new User(userId);
 		favorite = false;
-		visibleOnMyReports = true;
 	}
 
 	@ManyToOne
@@ -105,6 +103,14 @@ public class ReportUser extends BaseTable {
 
 	public void setVisibleOnMyReports(boolean visibleOnMyReports) {
 		this.visibleOnMyReports = visibleOnMyReports;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	@Override

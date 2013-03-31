@@ -198,7 +198,7 @@ public class ManageReportsServiceTest {
 		ReportUser reportUser = new ReportUser(removerUser.getId(), report);
 		when(permissionService.canUserRemoveReport(removerUser, report, permissions)).thenReturn(true);
 		when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
-		assertTrue(reportUser.isVisibleOnMyReports());
+		assertFalse(reportUser.isHidden());
 
 		reportUser = manageReportsService.removeReport(removerUser, report, permissions);
 
