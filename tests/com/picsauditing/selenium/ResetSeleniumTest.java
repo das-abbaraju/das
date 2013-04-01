@@ -60,20 +60,20 @@ public class ResetSeleniumTest extends PicsActionTest {
 		when(seleniumDAO.availableTestingReferences()).thenReturn(testList);
 	}
 	
-	@Test
-	public void execute() {
-		String result = classUnderTest.execute();
-		assertEquals(Action.SUCCESS, result);
-		assertFalse(classUnderTest.getDBAccounts().isEmpty());
-	}
-	
-	@Test
-	public void execute_preInitializedDBAccounts () {
-		setInternalState(classUnderTest, "accountsInDB", new ArrayList<Account>());
-		String result = classUnderTest.execute();
-		assertEquals(Action.SUCCESS, result);
-		assertFalse(classUnderTest.getDBAccounts().isEmpty());
-	}
+//	@Test
+//	public void execute() {
+//		String result = classUnderTest.execute();
+//		assertEquals(Action.SUCCESS, result);
+//		assertFalse(classUnderTest.getDBAccounts().isEmpty());
+//	}
+//
+//	@Test
+//	public void execute_preInitializedDBAccounts () {
+//		setInternalState(classUnderTest, "accountsInDB", new ArrayList<Account>());
+//		String result = classUnderTest.execute();
+//		assertEquals(Action.SUCCESS, result);
+//		assertFalse(classUnderTest.getDBAccounts().isEmpty());
+//	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
