@@ -417,6 +417,6 @@ public class EmailBuilder {
 	}
 
 	public void setFromAddressAsCSRFor(ContractorAccount contractor) {
-		setFromAddress("\"" + contractor.getAuditor().getName() + "\"<" + contractor.getAuditor().getEmail() + ">");
+		setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<" + contractor.getCurrentCsr().getEmail() + ">");
 	}
 }

@@ -37,7 +37,8 @@ public class ChartFlagCategoryCount extends ChartMSAction {
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 
 		sql.addWhere("a.status = 'Active'");
-		sql.addWhere("c.welcomeAuditor_id = "+ permissions.getShadowedUserID());
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+		sql.addWhere("au.userID = "+ permissions.getShadowedUserID());
 		sql.addWhere("fd.flag IN ('Red','Amber')");
 		
 		ChartDAO db = new ChartDAO();

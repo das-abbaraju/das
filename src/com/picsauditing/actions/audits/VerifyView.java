@@ -223,7 +223,7 @@ public class VerifyView extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(11); // PQF Verification
 		emailBuilder
-				.setFromAddress(contractor.getAuditor().getName() + " <" + contractor.getAuditor().getEmail() + ">");
+				.setFromAddress(contractor.getCurrentCsr().getName() + " <" + contractor.getCurrentCsr().getEmail() + ">");
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("missing_items", addMissingItemsToEmail());
@@ -242,16 +242,16 @@ public class VerifyView extends ContractorActionSupport {
 				|| Strings.isEmpty(previewEmail.getSubject())) {
 			emailBuilder.setTemplate(11);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
-			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
-					+ contractor.getAuditor().getEmail() + ">");
+			emailBuilder.setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<"
+					+ contractor.getCurrentCsr().getEmail() + ">");
 		} else {
 			EmailTemplate emailTemplate = new EmailTemplate();
 			emailTemplate.setId(11);
 			emailTemplate.setBody(previewEmail.getBody());
 			emailTemplate.setSubject(previewEmail.getSubject());
 			emailBuilder.setEdited(true);
-			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
-					+ contractor.getAuditor().getEmail() + ">");
+			emailBuilder.setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<"
+					+ contractor.getCurrentCsr().getEmail() + ">");
 			emailBuilder.setTemplate(emailTemplate);
 		}
 		EmailQueue email = emailBuilder.build();

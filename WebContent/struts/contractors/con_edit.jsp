@@ -508,7 +508,7 @@
 	    							<li>
 										<label>CSR Assignment</label>
 										<s:if test="contractor.dontReassign">
-										    <s:set var="default" value="contractor.auditor.id" />
+										    <s:set var="default" value="contractor.currentCsr.id" />
 	    								</s:if>
 	    								<s:else>
 	    									<s:set var="default" value="0" />
@@ -521,7 +521,7 @@
 	    									multiple = "false"
 	    									headerKey = "0" 
 	    									headerValue = "AUTO ASSIGNED"
-	    									value = "%{(contractor.dontReassign)?contractor.auditor.id:0}"
+	    									value = "%{(contractor.dontReassign)?contractor.currentCsr.id:0}"
 										/>
 	    							</li>
 	    						</ol>

@@ -79,6 +79,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
+    private User recommendedCsr;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
@@ -822,23 +823,86 @@ public class ContractorAccount extends Account implements JSONable {
 		this.score = score;
 	}
 
-	// Other relationships //
-	@ManyToOne
-	@JoinColumn(name = "welcomeAuditor_id")
-	/**
-	 * The CSR
-	 */
-	public User getAuditor() {
-		return auditor;
-	}
+//	@ManyToOne
+//	@JoinColumn(name = "welcomeAuditor_id")
+//	public User getAuditor() {
+//		return auditor;
+//	}
+//
+//	public void setAuditor(User auditor) {
+//		this.auditor = auditor;
+//	}
 
-	public void setAuditor(User auditor) {
-		this.auditor = auditor;
-	}
+    @ManyToOne
+    @JoinColumn(name = "recommendedCsrID")
+    public User getRecommendedCsr() {
+        return recommendedCsr;
+    }
 
-	// /// Transient/Helper Methods ///////
+    public void setRecommendedCsr(User recommendedCsr) {
+        this.recommendedCsr = recommendedCsr;
+    }
 
-	@Transient
+    @Transient
+    public boolean hasCurrentCsr() {
+        User csr = getCurrentCsr();
+        if (csr != null) {
+            return true;
+        }
+        return false;
+    }
+
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentCsr() {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    return representative.getUser();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentCsr(User newCsr, int createdById) {
+        makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
+    }
+
+    @Transient
+    public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
+        Date now = new Date();
+        expireCurrentCsrs(now);
+        addNewCsrRepresentative(newCsr, now, createdById);
+    }
+
+    private void addNewCsrRepresentative(User newCsr, Date now, int createdById) {
+        AccountUser newCsrRep = new AccountUser();
+        newCsrRep.setAccount(this);
+        newCsrRep.setUser(newCsr);
+        newCsrRep.setStartDate(now);
+        newCsrRep.setEndDate(DateBean.getEndOfTime());
+        newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
+        newCsrRep.setOwnerPercent(100);
+        newCsrRep.setCreatedBy(new User(createdById));
+        newCsrRep.setCreationDate(new Date());
+        addAccountUser(newCsrRep);
+    }
+
+    private void expireCurrentCsrs(Date now) {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    representative.setEndDate(now);
+                }
+            }
+        }
+    }
+
+    @Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()

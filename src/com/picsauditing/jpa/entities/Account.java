@@ -632,6 +632,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.accountUsers = accountUsers;
 	}
 
+    @Transient
+    public boolean addAccountUser(AccountUser newAccountUser) {
+        if (this.accountUsers == null) {
+            this.accountUsers = new ArrayList<AccountUser>();
+        }
+        return this.accountUsers.add(newAccountUser);
+    }
+
 	@Transient
 	public List<Employee> getActiveEmployees() {
 		List<Employee> activeEmployees = new ArrayList<Employee>();

@@ -951,10 +951,6 @@
             <result>/struts/audits/auditorSelect.jsp</result>
         </action>
 
-        <action name="ContractorSaveAjax" class="com.picsauditing.actions.audits.ContractorSave">
-            <result>struts/blank.jsp</result>
-        </action>
-
         <action name="ReportFilterAjax" class="com.picsauditing.actions.report.ReportFilterAjax">
             <result>struts/reports/filters.jsp</result>
             <result name="userfilters">

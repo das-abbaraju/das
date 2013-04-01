@@ -66,7 +66,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 			sql.addWhere("fd.opID = " + permissions.getAccountId());
 		else if(permissions.hasGroup(User.GROUP_CSR)) {
 			sql.addWhere("a.status = 'Active'");
-			sql.addWhere("c.welcomeAuditor_id = "+ permissions.getUserId());
+            sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+			sql.addWhere("au.userID = "+ permissions.getUserId());
 			sql.addWhere("fd.flag = '"+ flagColor + "'");
 			sql.addWhere("fc.category = '" + category + "'");
 		}

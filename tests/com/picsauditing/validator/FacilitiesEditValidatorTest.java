@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.User;

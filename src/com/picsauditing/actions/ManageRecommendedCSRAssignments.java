@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.picsauditing.service.csr.RecommendedCsrService;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -31,6 +32,8 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 	private ReportDAO reportDao;
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
+    @Autowired
+    private RecommendedCsrService recommendedCsrService;
 
 	private final int RECOMMENDED_CSR_ASSIGNMENTS_REPORT_ID = 107;
 
@@ -58,12 +61,12 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 
 	public String save() throws IOException {
 		if (Strings.isNotEmpty(acceptRecommendations)) {
-			int numRowsAffected = contractorAccountDAO.acceptRecommendedCsrs(acceptRecommendations);
+            int numRowsAffected = recommendedCsrService.acceptRecommendedCsrs(acceptRecommendations, permissions.getUserId());
 			logger.info(numRowsAffected + " changes accepted, ids: " + acceptRecommendations);
 		}
 		
 		if (Strings.isNotEmpty(rejectRecommendations)) {
-			int numRowsAffected = contractorAccountDAO.rejectRecommendedCsrs(rejectRecommendations);
+			int numRowsAffected = recommendedCsrService.rejectRecommendedCsrs(rejectRecommendations);
 			logger.info(numRowsAffected + " changes rejected, ids: " + rejectRecommendations);
 		}
 		

@@ -38,7 +38,8 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 			opIds = Strings.implode(ops, ",");
 		}
 		if (permissions.hasGroup(User.GROUP_CSR)) {
-			sql.addWhere("c.welcomeAuditor_id = " + permissions.getUserId());
+            sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+			sql.addWhere("au.userID = " + permissions.getUserId());
 		}
 
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");

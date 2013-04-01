@@ -528,7 +528,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			if (getFilter().isNonContactUser())
 				sql.addWhere("u.id IN (" + list + ")");
 			else
-				sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
+                sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+				sql.addWhere("au.userID IN (" + list + ")");
 			setFiltered(true);
 		}
 	}

@@ -1,6 +1,6 @@
 package com.picsauditing.model.billing;
 
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 
 public class CommissionDetail {
 	

@@ -39,7 +39,8 @@ public class ChartFlagCount extends ChartSSAction {
 		} else if (permissions.hasGroup(User.GROUP_CSR)) {
 			sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 			sql.addJoin("JOIN accounts oper ON oper.id = gc.genID");
-			sql.addWhere("c.welcomeAuditor_id = " + permissions.getShadowedUserID());
+            sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+			sql.addWhere("au.userID = " + permissions.getShadowedUserID());
 			sql.addWhere("oper.type = 'Operator'");
 
 			sql.addField("gc.flag");

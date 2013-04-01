@@ -25,6 +25,7 @@
 	
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" />
 	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" />
+	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO" />
 	<bean id="DBBean" class="com.picsauditing.PICS.DBBean">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>

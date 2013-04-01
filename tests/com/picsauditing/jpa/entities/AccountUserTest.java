@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.actions.users.UserAccountRole;
 import org.junit.Test;
 
 import java.util.Date;

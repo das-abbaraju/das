@@ -8,7 +8,7 @@ import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -81,8 +81,8 @@ public abstract class SubscriptionBuilder {
 					ContractorAccount c = (ContractorAccount) user.getAccount();
 					emailBuilder.addToken("contractor", c);
 					emailBuilder.setConID(c.getId());
-					if (c.getAuditor() != null)
-						emailBuilder.setFromAddress("\"" + c.getAuditor().getName() + "\"<" + c.getAuditor().getEmail()
+					if (c.getCurrentCsr() != null)
+						emailBuilder.setFromAddress("\"" + c.getCurrentCsr().getName() + "\"<" + c.getCurrentCsr().getEmail()
 								+ ">");
 					// If operator subscription send replies to AM
 				} else if (user.getAccount().isOperatorCorporate()) {
