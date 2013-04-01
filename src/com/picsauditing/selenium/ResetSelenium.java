@@ -37,7 +37,7 @@ public class ResetSelenium extends PicsApiSupport implements ParameterAware {
             } else {
                 deleteSingleAccount(userSpecifiedAccount);
             }
-            return SUCCESS;
+            return setUrlForRedirect("ResetSelenium.action?apiKey=" + this.getApiKey());
         } else {
             return SUCCESS;
         }
