@@ -43,6 +43,10 @@ public class DataFeed extends ReportApi implements ParameterAware {
         this.reportIdSpecified = reportIdSpecified;
     }
 
+    public void setReport(int reportId) {
+        setReportId(reportId);
+    }
+
     @Override
     public void setParameters(Map<String, String[]> parameters) {
         super.setParameters(parameters);
@@ -53,7 +57,7 @@ public class DataFeed extends ReportApi implements ParameterAware {
            * error message (above).
            */
         reportIdSpecified = lookupParam(parameters, "report");
-        outputFormat = lookupParam(parameters,"format",JSON);
+        outputFormat = lookupParam(parameters,"format",JSON).toLowerCase();
     }
 
     @Override
@@ -63,18 +67,13 @@ public class DataFeed extends ReportApi implements ParameterAware {
 
         try {
 	        JSONObject payloadJson = getJsonFromRequestPayload();
+            setIncludeData(true);
+            setLimit(Integer.MAX_VALUE);
 	        ReportContext reportContext = buildReportContext(payloadJson);
 	        report = reportService.createOrLoadReport(reportContext);
 
 	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
 		        json = reportService.buildJsonResponse(reportContext);
-
-		        converter.convertForExtJS();
-				json.put("data", converter.getReportResults().toJson());
-
-				if (permissions.isAdmin() || permissions.getAdminID() > 0) {
-					json.put("sql", debugSQL);
-				}
 
 				json.put("success", true);
 			} else {

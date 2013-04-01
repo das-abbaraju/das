@@ -59,7 +59,7 @@
 		<s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid && contractor.mustPayB">
 			<div class="info">
 				<s:text name="ContractorPaymentOptions.EnterCreditCard">
-					<s:param value="getText(\"PicsBillingPhone\", locale)" />
+					<s:param value="getText(\"PicsBillingPhone\")" />
 				</s:text>
 			</div>
 		</s:elseif>
@@ -100,7 +100,7 @@
 						<li>
 							<div class="info">
 								<s:text name="ContractorPaymentOptions.CCOnFile">
-									<s:param value="getText(\"PicsPhone\", locale)" />
+									<s:param>${picsPhoneNumber}</s:param>
 								</s:text>
 							</div>
 						</li>

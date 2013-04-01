@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('csr-assignments.CSRAssignmentsController', {
+    PICS.define('csr-assignment.CSRAssignmentsController', {
         methods:{
             init:function () {
                 var that = this;

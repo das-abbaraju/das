@@ -73,6 +73,20 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         });
     },
 
+    getFunctionMenuItem: function (menu_items) {
+        var function_item;
+
+        Ext.each(menu_items, function(item, index) {
+            if (item.name == 'function' || item.name == 'remove_function') {
+                function_item = item;
+
+                return false;
+            }
+        });
+
+        return function_item;
+    },
+
     // column header height is dictated by the height of the rownumberer column
     // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
@@ -100,5 +114,25 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         view.refresh();
+    },
+
+    updateFunctionMenuItem: function(grid_column) {
+        var menu = this.headerCt.getMenu(),
+            menu_items = menu.items.items,
+            function_item = this.getFunctionMenuItem(menu_items),
+            column = grid_column.column,
+            sql_function = column.get('sql_function');
+
+        if (!function_item) {
+            return false;
+        }
+
+        if (!sql_function) {
+            function_item.setText('Functions...');
+            function_item.name = "function";
+        } else {
+            function_item.setText('Remove Function');
+            function_item.name = "remove_function";
+        }
     }
 });

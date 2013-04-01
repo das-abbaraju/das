@@ -3,30 +3,32 @@ package com.picsauditing.access;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.util.SpringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.context.ApplicationContext;
+
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.i18n.LanguageModel;
 
 
 public class PermissionsTest {
@@ -48,6 +50,7 @@ public class PermissionsTest {
 
 		permissions = new Permissions(languageModel);
 		allInheritedGroupIds = new HashSet<Integer>();
+
 		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
 
 		Country country = mock(Country.class);
@@ -93,7 +96,7 @@ public class PermissionsTest {
 		falseUrls.add("AuditTranslationDownload.action");
 		falseUrls.add("CertificateUpload.action");
 		falseUrls.add("");
-		
+
 		for (String url: falseUrls) {
 			assertFalse((Boolean) Whitebox.invokeMethod(permissions, "returnUrlIsOk", url));
 		}
@@ -129,7 +132,7 @@ public class PermissionsTest {
 	}
 
 	@Test
-	public void testBelongsToGroups_True() throws Exception {		
+	public void testBelongsToGroups_True() throws Exception {
 		allInheritedGroupIds.add(1);
 
 		assertTrue(permissions.belongsToGroups());

@@ -25,8 +25,7 @@ public class ExpirationDateSynchronizer extends PicsActionSupport {
 	public String execute() throws Exception {
 		if ("Synchronize Expiration Dates".equals(button)) {
 			// get list of contractors with credit card and no expiration
-			ContractorAccountDAO contractorAccountDAO = (ContractorAccountDAO) SpringUtils
-					.getBean("ContractorAccountDAO");
+			ContractorAccountDAO contractorAccountDAO = SpringUtils.getBean(SpringUtils.CONTRACTOR_ACCOUNT_DAO);
 			if (contractorAccountDAO == null) {
 				addActionError("Could not get ContractorAccountDAO Bean");
 				return SUCCESS;

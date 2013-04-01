@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     
     lint: {
         files: [
-            'js/vendor/jquery-1.8.0.min.js',
+            'js/vendor/jquery-1.9.1.min.js',
             'js/vendor/bootstrap.js',
             'js/vendor/prettify.js',
             'js/plugins.js',

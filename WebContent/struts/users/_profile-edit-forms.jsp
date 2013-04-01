@@ -17,15 +17,19 @@
 			<s:text name="ProfileEdit.Profile.heading" />
 		</h2>
 
-		<ol>
+		<ul>
 			<li>
 				<label><s:text name="ProfileEdit.AssignedToAccount"></s:text>:</label>
 				<s:property value="u.account.name" />
 			</li>
 
-			<li>
-				<s:textfield name="u.name" theme="form" />
-			</li>
+            <li>
+                <s:textfield name="u.firstName" theme="form" />
+            </li>
+
+            <li>
+                <s:textfield name="u.lastName" theme="form" />
+            </li>
 
 			<li>
 				<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
@@ -75,10 +79,10 @@
 			<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 				<li>
 					<label> <s:text name="User.useDynamicReport" /></label>
-					<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />
+					<s:checkbox id="usingVersion7Menus" name="usingVersion7Menus" value="u.usingVersion7Menus" />
 				</li>
 			</pics:toggle>
-		</ol>
+		</ul>
 	</fieldset>
 
 	<fieldset class="form submit">

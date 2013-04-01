@@ -103,6 +103,7 @@
 	
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
+        <input id="request_locale" type="hidden" name="request_locale" value="" />
 	
 		<s:if test="contractor.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
@@ -118,6 +119,29 @@
 				</h1>
 				
 				<ul>
+                    <li>
+                        <s:select
+                            label="User.locale"
+                            list="supportedLanguages.stableLanguagesSansDialect"
+                            listKey="key"
+                            listValue="value"
+                            name="language"
+                            value="language"
+                            id="registration_language"
+                        />
+                    </li>
+                    <li id="registration_dialect">
+                        <s:include value="/struts/contractors/_registration-dialects.jsp" />
+                    </li>
+                    <li class="country">
+                        <s:select
+                            list="countryList"
+                            cssClass="contractor-country"
+                            name="contractor.country.isoCode"
+                            listKey="isoCode"
+                            listValue="name"
+                        />
+                    </li>
 					<li>
 						<s:textfield name="contractor.name" />
 					</li>
@@ -141,15 +165,6 @@
                     		</p>
                     	</div>
                     </li>
-					<li class="country">
-						<s:select 
-							list="countryList"
-							cssClass="contractor-country"
-							name="contractor.country.isoCode"
-							listKey="isoCode"
-							listValue="name"
-						/>
-					</li>
 					<li class="address">
 						<s:textfield name="contractor.address" />
 					</li>
@@ -185,8 +200,11 @@
 				</h1>
 				
 				<ul>
-					<li>
-						<s:textfield name="user.name" />
+                    <li>
+                        <s:textfield name="user.firstName" />
+                    </li>
+                    <li>
+                        <s:textfield name="user.lastName" />
 					</li>
 					<li>
 						<s:textfield name="user.email" />

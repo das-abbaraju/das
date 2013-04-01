@@ -1,32 +1,8 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
-import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
-import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
-import static com.picsauditing.report.ReportJson.COLUMN_URL;
-import static com.picsauditing.report.ReportJson.COLUMN_WIDTH;
-import static com.picsauditing.report.ReportJson.FILTER_COLUMN_COMPARE;
-import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
-import static com.picsauditing.report.ReportJson.FILTER_TYPE;
-import static com.picsauditing.report.ReportJson.FILTER_VALUE;
-import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
-import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
-import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_CATEGORY;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_DESCRIPTION;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
-import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
-import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
-import static com.picsauditing.report.ReportJson.REPORT_ID;
-import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
-import static com.picsauditing.report.ReportJson.REPORT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_SORTS;
-import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
-import static com.picsauditing.util.Assert.assertContains;
-import static com.picsauditing.util.Assert.assertJson;
-import static com.picsauditing.util.Assert.assertJsonNoQuotes;
+import static com.picsauditing.report.ReportJson.*;
+import static com.picsauditing.util.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -53,7 +29,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.service.ReportPreferencesService;
 
 public class JsonReportBuilderTest {
 
@@ -64,7 +40,7 @@ public class JsonReportBuilderTest {
 	@Mock
 	private PermissionService permissionService;
 	@Mock
-	private ReportService reportService;
+	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private Account account;
 
@@ -75,13 +51,13 @@ public class JsonReportBuilderTest {
 		MockitoAnnotations.initMocks(this);
 
 		JsonReportBuilder.permissionService = permissionService;
-		JsonReportBuilder.reportService = reportService;
+		JsonReportBuilder.reportPreferencesService = reportPreferencesService;
 	}
 
 	@After
 	public void tearDown() {
 		JsonReportBuilder.permissionService = null;
-		JsonReportBuilder.reportService = null;
+		JsonReportBuilder.reportPreferencesService = null;
 	}
 
 	@Test
@@ -100,7 +76,7 @@ public class JsonReportBuilderTest {
 		when(report.getDescription()).thenReturn(description);
 		when(report.getFilterExpression()).thenReturn(filterExpression);
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
-		when(reportService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
+		when(reportPreferencesService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
 
 		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
@@ -155,7 +131,7 @@ public class JsonReportBuilderTest {
 		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
-		assertJsonNoQuotes(REPORT_ID, id, jsonString);
+		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(REPORT_ELEMENT_CATEGORY, categoryTranslation, jsonString);
 		assertJson(REPORT_ELEMENT_NAME, fieldText, jsonString);
@@ -167,6 +143,7 @@ public class JsonReportBuilderTest {
 		assertJson(COLUMN_SQL_FUNCTION, sqlFunction, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
+		assertJson(COLUMN_ID, COLUMN_ID_PREFIX + "0", jsonString);
 	}
 
 	@Test
@@ -209,7 +186,7 @@ public class JsonReportBuilderTest {
 		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
 		String jsonString = json.toString();
 
-		assertJsonNoQuotes(REPORT_ID, id, jsonString);
+		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
 		assertJson(REPORT_ELEMENT_CATEGORY, categoryTranslation, jsonString);
 		assertJson(REPORT_ELEMENT_NAME, fieldText, jsonString);
@@ -277,6 +254,33 @@ public class JsonReportBuilderTest {
 		when(report.getFilters()).thenReturn(filters);
 
 		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+	}
+
+	@Test
+	public void testAssignColumnIds_columnIdShouldBeSet() {
+
+		String[] columnNames = {"foo", "foo", "bar", "baz", "qux"};
+		List<Column> columns = buildTestColumns(columnNames);
+
+		JsonReportBuilder.assignColumnIds(columns);
+
+		assertEquals(columns.get(0).getColumnId(), COLUMN_ID_PREFIX + "0");
+		assertEquals(columns.get(1).getColumnId(), COLUMN_ID_PREFIX + "1");
+		assertEquals(columns.get(2).getColumnId(), COLUMN_ID_PREFIX + "2");
+		assertEquals(columns.get(3).getColumnId(), COLUMN_ID_PREFIX + "3");
+		assertEquals(columns.get(4).getColumnId(), COLUMN_ID_PREFIX + "4");
+	}
+
+	private List<Column> buildTestColumns(String[] columnNames) {
+		List<Column> columns = new ArrayList<Column>();
+
+		for (int i = 0; i < columnNames.length; i++) {
+			Column column = new Column();
+			column.setName(columnNames[i]);
+			columns.add(column);
+		}
+		return columns;
+
 	}
 
 	public void mockMinimalReport() {

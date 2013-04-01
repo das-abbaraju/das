@@ -20,7 +20,6 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	public String execute() throws Exception {
 		findContractor();
-		auditTypeRuleCache.initialize(auditRuleDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
 		auditTypeDetails = builder.calculate();
 		builder.getRules();
@@ -28,7 +27,6 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 	}
 	
 	public String category() {
-		auditCategoryRuleCache.initialize(auditRuleDAO);
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 		// categoriesBuilder.calculate(conAudit);
 		return "category";

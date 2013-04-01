@@ -1,49 +1,13 @@
 package com.picsauditing.actions.audits;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import com.picsauditing.PICS.InvoiceService;
-import org.apache.struts2.ServletActionContext;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AuditorAvailabilityDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditorAvailability;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -51,6 +15,16 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.struts2.ServletActionContext;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
@@ -181,7 +155,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		Date scheduledDateInUserTime = DateBean.parseDateTime(scheduledDateDay + " " + scheduledDateTime);
 		if (scheduledDateInUserTime == null) {
-			addActionError(getText("ScheduleAudit.error.NotValidTime", new Object[] { scheduledDateTime }));
+			addActionError(getText("ScheduleAudit.error.NotValidTime", new Object[]{scheduledDateTime}));
 			return "edit";
 		}
 		Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
@@ -254,7 +228,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String selectTime() {
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTimeAndCountry(timeSelected, this.getContractor().getCountry()
+                .getIsoCode());
 		int maxRank = Integer.MIN_VALUE;
 		for (AuditorAvailability timeslot : timeslots) {
 			int rank = timeslot.rank(conAudit, permissions);
@@ -268,7 +243,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (availabilitySelectedID > 0) {
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 			conAudit.setNeedsCamera(true); // Assume yes until they say
-											// otherwise
+			// otherwise
 			return "confirm";
 		}
 		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
@@ -294,8 +269,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 			availableSet.add(timeslot);
 		}
-
-		return;
 	}
 
 	public String confirm() throws Exception {
@@ -435,7 +408,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public static Date changeTimeZone(TimeZone inputTimeZone, TimeZone outputTimeZone, String inputDateString,
-			String inputFormat) throws Exception {
+									  String inputFormat) throws Exception {
 		if (inputFormat == null)
 			inputFormat = "yyyy-MM-dd HH:mm:ss";
 
@@ -624,7 +597,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
 			emailSender.send(email);
 		}
-		
+
 		if (conAudit.getAuditorConfirm() == null) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setPermissions(permissions);

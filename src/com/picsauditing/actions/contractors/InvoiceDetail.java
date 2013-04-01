@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.EmailAddressUtils;
@@ -61,6 +62,13 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
+
+	private static final String PAY_BUTTON = "pay";
+	private static final String CANCEL_BUTTON = "cancel";
+	private static final String SAVE_BUTTON = "save";
+	private static final String CHANGE_TO_BUTTON = "changeto";
+	private static final String EMAIL_BUTTON = "email";
+
 	@Autowired
 	private InvoiceService invoiceService;
 	@Autowired
@@ -83,6 +91,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private InvoiceModel invoiceModel;
+	@Autowired
+	private BillingNoteModel billingNoteModel;
 
 	private boolean edit = false;
 	private int newFeeId;
@@ -127,7 +137,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		if (button != null) {
 			String message = null;
 
-			if ("save".equals(button)) {
+			if (SAVE_BUTTON.equals(button)) {
 				edit = false;
 				if (newFeeId > 0) {
 					addInvoiceItem(newFeeId);
@@ -139,7 +149,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				updateTotals();
 				invoice.setQbSync(true);
 			}
-			if ("changeto".equals(button)) {
+			if (CHANGE_TO_BUTTON.equals(button)) {
 				List<String> removedItemNames = new ArrayList<String>();
 				List<String> createdItemNames = new ArrayList<String>();
 
@@ -183,7 +193,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoiceService.saveInvoice(invoice);
 
 				addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
-						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
+						+ " to " + Strings.implode(createdItemNames, ", "), billingNoteModel.findUserForPaymentNote(permissions));
 				message = getText("InvoiceDetail.message.ChangedLevel");
 
 				invoice.setNotes(invoiceModel.getSortedClientSiteList(contractor));
@@ -192,10 +202,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
 			}
 
-			if ("email".equals(button)) {
+			if (EMAIL_BUTTON.equals(button)) {
 				try {
 					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
-					String note = "";
+					String note = Strings.EMPTY_STRING;
 					if (invoice.getStatus().isPaid()) {
 						note += "Payment Receipt for Invoice";
 					} else {
@@ -206,14 +216,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					if (!Strings.isEmpty(email.getCcAddresses())) {
 						note += " and cc'd " + email.getCcAddresses();
 					}
-					addNote(note, getUser());
+					addNote(note, billingNoteModel.findUserForPaymentNote(permissions));
 					message = getText("InvoiceDetail.message.SentEmail");
 
 				} catch (Exception e) {
 					addActionError(getText("InvoiceDetail.message.EmailFail"));
 				}
 			}
-			if ("cancel".equals(button)) {
+			if (CANCEL_BUTTON.equals(button)) {
 				Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
 				if (paIterator.hasNext()) {
 					PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
@@ -246,9 +256,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
 						+ contractor.getCountry().getCurrency().getSymbol() + invoice.getTotalAmount().toString();
-				addNote(noteText, getUser());
+				addNote(noteText, billingNoteModel.findUserForPaymentNote(permissions));
 			}
-			if (button.equals("pay")) {
+			if (PAY_BUTTON.equals(button)) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
 						Payment payment = null;
@@ -260,7 +270,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions),
 									payment.getTotalAmount());
 							payment.setQbSync(true);
 
@@ -275,9 +285,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
+									+ invoice.getTotalAmount() + Strings.SINGLE_SPACE
+									+ invoice.getCurrency().getDisplay(), billingNoteModel.findUserForPaymentNote(permissions));
 						} catch (NoBrainTreeServiceResponseException re) {
-							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
+							addNote("Credit Card service connection error: " + re.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
 
 							EmailBuilder emailBuilder = new EmailBuilder();
 							emailBuilder.setTemplate(106);
@@ -316,7 +327,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							return SUCCESS;
 						} catch (Exception e) {
-							addNote("Credit Card transaction failed: " + e.getMessage(), getUser());
+							addNote("Credit Card transaction failed: " + e.getMessage(), billingNoteModel.findUserForPaymentNote(permissions));
 							this.addActionError(getText("InvoiceDetail.error.FailedCreditCard") + e.getMessage());
 							return SUCCESS;
 						}
@@ -336,7 +347,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
-			if ("save".equals(button) && !invoice.getStatus().isPaid()) {
+			if (SAVE_BUTTON.equals(button) && !invoice.getStatus().isPaid()) {
 				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
 			}
 
@@ -477,5 +488,15 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		salesCommissionDataObservable.setChanged();
 		salesCommissionDataObservable.notifyObservers(dataEvent);
 	}
+
+//	private User findUserForPaymentNote() {
+//		int userWhoSwitchedToCurrentUser = permissions.getAdminID();
+//		User userForPaymentNote = getUser();
+//		if (userForPaymentNote.getId() != userWhoSwitchedToCurrentUser && userWhoSwitchedToCurrentUser > 0) {
+//			return getUser(userWhoSwitchedToCurrentUser);
+//		}
+//
+//		return userForPaymentNote;
+//	}
 
 }

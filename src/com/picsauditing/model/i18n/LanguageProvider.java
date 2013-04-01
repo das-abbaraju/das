@@ -13,4 +13,5 @@ public interface LanguageProvider {
 	public List<Language> findByStatus(LanguageStatus status);
 	public List<Language> findByStatuses(LanguageStatus[] statuses);
 	public List<Language> findWhere(String where);
+	public List<Language> findDialectsByLanguage(String language);
 }

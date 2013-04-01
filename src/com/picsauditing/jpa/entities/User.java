@@ -1,12 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -47,6 +41,7 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.SpringUtils;
@@ -77,6 +72,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
 	public static final int GROUP_ISR = 71638;
+    public static final int SELENIUM_MASTER_USER = 94545;
 	// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
 
@@ -89,6 +85,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	// field
 	private Date emailConfirmedDate;
 	private String name;
+	private String firstName;
+	private String lastName;
 	private YesNo isActive = YesNo.Yes;
 	private Date lastLogin;
 	private Account account;
@@ -107,8 +105,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String department;
 	private String apiKey;
 	private boolean usingDynamicReports;
-	private int assignmentCapacity;
 	private Date usingDynamicReportsDate;
+	private boolean usingVersion7Menus;
+	private Date usingVersion7MenusDate;
+	private int assignmentCapacity;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -123,6 +123,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	// Specifically for testing, DO NOT @Autowired
 	private InputValidator inputValidator;
+
+	// This is specifically used for testing, do not auto-wire
+	private FeatureToggle featureToggle;
 
 	@Transient
 	public boolean isSuperUser() {
@@ -235,6 +238,22 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
@@ -490,7 +509,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.ownedPermissions = ownedPermissions;
 	}
 
-	public Locale getLocale() {
+    @Transient
+    public Set<OpPerms> getOwnedOpPerms() {
+        Set<OpPerms> userPerms = new HashSet<OpPerms>();
+        userPerms = new HashSet<OpPerms>();
+        for (UserAccess ua : getOwnedPermissions()) {
+            userPerms.add(ua.getOpPerm());
+        }
+        return userPerms;
+    }
+
+    public Locale getLocale() {
 		return locale;
 	}
 
@@ -895,21 +924,62 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return this.hasPermission(opPerm, OpType.View);
 	}
 
+	/**
+	 * Deprecated in favor of isUsingVersion7Menus()
+	 */
+	@Deprecated
 	public boolean isUsingDynamicReports() {
 		return usingDynamicReports;
 	}
 
+	/**
+	 * Deprecated in favor of setUsingVersion7Menus()
+	 */
+	@Deprecated
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
 	}
 
-	@Temporal(TemporalType.DATE)
+	/**
+	 * Deprecated in favor of getUsingVersion7MenusDate()
+	 */
+	@Deprecated
 	public Date getUsingDynamicReportsDate() {
 		return usingDynamicReportsDate;
 	}
 
-	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
+	/**
+	 * Deprecated in favor of setUsingVersion7MenusDate()
+	 */
+	@Deprecated
+	@Temporal(TemporalType.DATE)
+	public void setusingDynamicReportsDate(Date usingDynamicReportsDate) {
 		this.usingDynamicReportsDate = usingDynamicReportsDate;
+	}
+
+	public boolean isUsingVersion7Menus() {
+		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			return isUsingDynamicReports();
+		}
+
+		return usingVersion7Menus;
+	}
+
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getUsingVersion7MenusDate() {
+		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			return getUsingDynamicReportsDate();
+		}
+
+		return usingVersion7MenusDate;
+	}
+
+	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
+		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
 	@Transient
@@ -964,5 +1034,20 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean isUsernameNotTaken(String username) {
 		// TODO see if we want to pass something other than 0 in
 		return !getInputValidator().isUsernameTaken(username, 0);
+	}
+
+	@Transient
+	private FeatureToggle getFeatureToggle() {
+		if (featureToggle == null) {
+			return SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		}
+
+		return featureToggle;
+	}
+
+	// FIXME: This needs to move into the UserManagementService
+	@Transient
+	public void updateDisplayNameBasedOnFirstAndLastName() {
+		this.name = (firstName + " " + lastName).trim();
 	}
 }

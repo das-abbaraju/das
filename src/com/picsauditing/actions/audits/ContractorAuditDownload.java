@@ -67,8 +67,6 @@ public class ContractorAuditDownload extends ContractorAuditController {
 
 		cell.setCellValue(header);
 
-		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
-
 		if (builder == null) {
 			builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 		}

@@ -173,7 +173,7 @@
 
 	<div class="info">
 		<s:text name="ContractorFacilities.HelpWithAddingOrRemoving">
-			<s:param value="%{getText('RegistrationSuperEliteSquadronPhone')}" />
+			<s:param value="picsPhoneNumber" />
 		</s:text>
 	</div>
 

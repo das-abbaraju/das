@@ -2,5 +2,5 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:text name="PrivacyPolicy.content">
-    <s:param value="getText( locale, \"PicsPhone\")" />
+    <s:param>${picsPhoneNumber}</s:param>
 </s:text>

@@ -988,7 +988,30 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void runCSRAssignment(ContractorAccount contractor) {
+    private void rollUpCorporateFlags(Map<OperatorAccount, FlagColor> corporateRollupData,
+                                      Queue<OperatorAccount> corporateUpdateQueue,
+                                      ContractorOperator coOperator, OperatorAccount operator) {
+        if (operator.getStatus() != AccountStatus.Active) {
+            return;
+        }
+
+        for (Facility facility : operator.getCorporateFacilities()) {
+            OperatorAccount parent = facility.getCorporate();
+
+            corporateUpdateQueue.add(parent);
+
+            // if CO data does not already exist, assume green flag
+            // then if CO data is found later, will be updated to
+            // proper flag color
+            FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+                    .get(parent) : FlagColor.Green;
+            FlagColor operatorFacilityColor = coOperator.getFlagColor();
+            FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+            corporateRollupData.put(parent, worstColor);
+        }
+    }
+
+    private void runCSRAssignment(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.CSRAssignment)) {
 			return;
 		}
@@ -1029,7 +1052,9 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
-		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments.
+		// Note: audit.setAuditor() is the final arbitor of which auditor is
+		// assigned to do an audit. UserAssignment is merely the intermediate
+		// "rules" for pre-determining the assignments.
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {

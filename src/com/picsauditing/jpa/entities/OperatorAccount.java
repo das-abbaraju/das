@@ -90,7 +90,7 @@ public class OperatorAccount extends Account {
 	private List<Facility> linkedGeneralContractors = new ArrayList<Facility>();
 
 	public OperatorAccount() {
-		this.type = "Operator";
+		this.type = Account.OPERATOR_ACCOUNT_TYPE;
 		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
@@ -99,7 +99,7 @@ public class OperatorAccount extends Account {
 
 	public OperatorAccount(String name) {
 		this.name = name;
-		this.type = "Operator";
+		this.type = Account.OPERATOR_ACCOUNT_TYPE;
 		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
@@ -108,8 +108,10 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public String getFullName() {
-		if (Strings.isNullOrEmpty(dbaName))
+		if (Strings.isNullOrEmpty(dbaName)) {
 			return name;
+		}
+
 		return dbaName;
 	}
 
@@ -136,8 +138,9 @@ public class OperatorAccount extends Account {
 	}
 
 	private void checkCanSeeInsurance() {
-		if (this.canSeeInsurance == null)
+		if (this.canSeeInsurance == null) {
 			this.canSeeInsurance = YesNo.No;
+		}
 	}
 
 	public void setCanSeeInsurance(YesNo canSeeInsurance) {
@@ -224,16 +227,19 @@ public class OperatorAccount extends Account {
 		// check direct parents
 		OperatorAccount parent = getParent();
 		while (parent != null && parent.getId() != this.getId()) {
-			if (parent.isHasDiscount())
+			if (parent.isHasDiscount()) {
 				return parent;
+			}
 
 			parent = parent.getParent();
 		}
 
 		// check corporate associations
-		for (Facility f : getCorporateFacilities())
-			if (f.getCorporate().isHasDiscount())
+		for (Facility f : getCorporateFacilities()) {
+			if (f.getCorporate().isHasDiscount()) {
 				return f.getCorporate();
+			}
+		}
 
 		return null;
 	}
@@ -271,8 +277,9 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public void setScaledDiscountPercent(BigDecimal discountPercent) {
-		if (discountPercent == null)
+		if (discountPercent == null) {
 			discountPercent = BigDecimal.ZERO;
+		}
 		discountPercent = discountPercent.divide(new BigDecimal(100));
 		setDiscountPercent(discountPercent);
 	}
@@ -318,10 +325,11 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
-		if (insurance)
+		if (insurance) {
 			return inheritInsuranceCriteria.getFlagCriteria();
-		else
+		} else {
 			return inheritFlagCriteria.getFlagCriteria();
+		}
 	}
 
 	@Transient
@@ -357,8 +365,9 @@ public class OperatorAccount extends Account {
 			if (c.getCriteria().getQuestion() != null) {
 				if (c.getCriteria().getQuestion().isCurrent()) {
 					if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-							|| canSeeInsurance.equals(YesNo.Yes))
+							|| canSeeInsurance.equals(YesNo.Yes)) {
 						criteriaList.add(c);
+					}
 				}
 			}
 			if (c.getCriteria().getOshaType() != null) {
@@ -385,8 +394,9 @@ public class OperatorAccount extends Account {
 		ArrayList<OperatorForm> forms = new ArrayList<OperatorForm>();
 
 		for (OperatorForm f : operatorForms) {
-			if ("Insurance".equals(f.getFormType()))
+			if ("Insurance".equals(f.getFormType())) {
 				forms.add(f);
+			}
 		}
 
 		return forms;
@@ -445,18 +455,21 @@ public class OperatorAccount extends Account {
 	}
 
 	public boolean isOrIsDescendantOf(int id) {
-		if (this.id == id)
+		if (this.id == id) {
 			return true;
+		}
 		return isDescendantOf(id);
 	}
 
 	public boolean isDescendantOf(int id) {
-		if (getParent() == null)
+		if (getParent() == null) {
 			// No parent exists
 			return false;
-		if (getParent().getId() == id)
+		}
+		if (getParent().getId() == id) {
 			// Yes, the parent matches
 			return true;
+		}
 		// Maybe the grandparent is a descendant of id
 		return getParent().isDescendantOf(id);
 	}
@@ -596,8 +609,9 @@ public class OperatorAccount extends Account {
 	@Transient
 	public OperatorAccount getTopAccount() {
 		OperatorAccount topAccount = this;
-		if (this.getParent() != null)
+		if (this.getParent() != null) {
 			topAccount = this.getParent();
+		}
 
 		for (Facility facility : getCorporateFacilities()) {
 			if (facility.getCorporate().isPrimaryCorporate()) {
@@ -621,19 +635,21 @@ public class OperatorAccount extends Account {
 
 		OperatorAccount topAccount = getTopAccount();
 		for (Facility facility : getCorporateFacilities()) {
-			if (!facility.getCorporate().equals(topAccount))
+			if (!facility.getCorporate().equals(topAccount)) {
 				// Add parent's that aren't my primary parent
 				list.add(facility.getCorporate().getId());
+			}
 		}
-		if (!topAccount.equals(this))
+		if (!topAccount.equals(this)) {
 			// Add my parent
 			list.add(topAccount.getId());
+		}
 		return list;
 	}
 
 	/**
 	 * Please use sparingly!! This does a call to a Spring loaded DAO
-	 * 
+	 *
 	 * @return Set of AuditTypeIDs
 	 */
 	@Transient
@@ -690,12 +706,14 @@ public class OperatorAccount extends Account {
 			return 2;
 		}
 
-		if (isPrimaryCorporate())
+		if (isPrimaryCorporate()) {
 			return 3;
+		}
 
 		// Hubs and Divisions
-		if (isCorporate())
+		if (isCorporate()) {
 			return 4;
+		}
 
 		// All other operators
 		return 5;
@@ -741,12 +759,14 @@ public class OperatorAccount extends Account {
 	public boolean areAllContractorRelationshipsUniform() {
 		ApprovalStatus workStatus = null;
 		for (ContractorOperator contractorOperator : contractorOperators) {
-			if (!contractorOperator.getOperatorAccount().getApprovesRelationships().isTrue())
+			if (!contractorOperator.getOperatorAccount().getApprovesRelationships().isTrue()) {
 				continue;
-			if (workStatus == null)
+			}
+			if (workStatus == null) {
 				workStatus = contractorOperator.getWorkStatus();
-			else if (workStatus != contractorOperator.getWorkStatus())
+			} else if (workStatus != contractorOperator.getWorkStatus()) {
 				return false;
+			}
 		}
 		return true;
 	}

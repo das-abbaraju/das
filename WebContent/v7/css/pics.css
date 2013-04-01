@@ -152,7 +152,7 @@ body {
   color: #ccc;
   margin-right: 2px;
   position: relative;
-  top: 8px;
+  top: 2px;
 }
 /* line 58, ../sass/pics/layout/_menu.scss */
 .navbar .navbar-search .search-query {
@@ -164,86 +164,90 @@ body {
   padding: 16px 10px;
 }
 
-/* line 74, ../sass/pics/layout/_menu.scss */
+/* line 70, ../sass/pics/layout/_menu.scss */
+#user_searchbox {
+  width: 275px;
+}
+/* line 76, ../sass/pics/layout/_menu.scss */
 #user_searchbox li a {
   font-size: 13px;
   white-space: normal;
 }
-/* line 80, ../sass/pics/layout/_menu.scss */
+/* line 82, ../sass/pics/layout/_menu.scss */
 #user_searchbox li .name {
   float: left;
   font-weight: bold;
   width: 175px;
 }
-/* line 87, ../sass/pics/layout/_menu.scss */
+/* line 89, ../sass/pics/layout/_menu.scss */
 #user_searchbox li .id {
   float: right;
   font-weight: bold;
 }
-/* line 93, ../sass/pics/layout/_menu.scss */
+/* line 95, ../sass/pics/layout/_menu.scss */
 #user_searchbox li .location {
   float: left;
   width: 175px;
 }
-/* line 99, ../sass/pics/layout/_menu.scss */
+/* line 101, ../sass/pics/layout/_menu.scss */
 #user_searchbox li .type {
   float: right;
   font-style: italic;
 }
-/* line 107, ../sass/pics/layout/_menu.scss */
+/* line 109, ../sass/pics/layout/_menu.scss */
 #user_searchbox .account-deactivated a,
 #user_searchbox .account-inactive a {
   color: #aeaeae;
 }
-/* line 113, ../sass/pics/layout/_menu.scss */
+/* line 115, ../sass/pics/layout/_menu.scss */
 #user_searchbox .account-deactivated a:hover,
 #user_searchbox .account-inactive a:hover {
   color: #cccccc;
 }
-/* line 119, ../sass/pics/layout/_menu.scss */
+/* line 121, ../sass/pics/layout/_menu.scss */
 #user_searchbox .account-demo {
   font-style: italic;
 }
-/* line 129, ../sass/pics/layout/_menu.scss */
+/* line 131, ../sass/pics/layout/_menu.scss */
 #user_searchbox .account-deleted .name,
 #user_searchbox .account-deleted .id,
 #user_searchbox .account-deleted .location,
 #user_searchbox .account-deleted .type {
   text-decoration: line-through;
 }
-/* line 136, ../sass/pics/layout/_menu.scss */
+/* line 138, ../sass/pics/layout/_menu.scss */
 #user_searchbox .no-results,
 #user_searchbox .total-results {
   padding: 5px 20px;
 }
-/* line 143, ../sass/pics/layout/_menu.scss */
+/* line 145, ../sass/pics/layout/_menu.scss */
 #user_searchbox .more-results a {
   font-weight: bold;
 }
-/* line 149, ../sass/pics/layout/_menu.scss */
+/* line 151, ../sass/pics/layout/_menu.scss */
 #user_searchbox .total-results {
   background-color: #ffffff;
 }
-/* line 153, ../sass/pics/layout/_menu.scss */
+/* line 155, ../sass/pics/layout/_menu.scss */
 #user_searchbox .total-results p {
   color: #999;
   font-size: 13px;
   margin: 0;
 }
 
-/* line 164, ../sass/pics/layout/_menu.scss */
+/* line 166, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
-  top: 4px;
+  top: 1px;
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 175, ../sass/pics/layout/_menu.scss */
+  /* line 177, ../sass/pics/layout/_menu.scss */
   .navbar .brand {
     padding-right: 10px;
   }
-  /* line 180, ../sass/pics/layout/_menu.scss */
+  /* line 182, ../sass/pics/layout/_menu.scss */
   .navbar .nav > li > a {
     padding: 16px 10px;
   }
@@ -800,8 +804,9 @@ dd {
   background-image: -moz-linear-gradient(#c66603, #a84d10);
   background-image: -o-linear-gradient(#c66603, #a84d10);
   background-image: linear-gradient(#c66603, #a84d10);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c66603', endColorstr='#a84d10', GradientType=0);
 }
-/* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+/* line 15, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu .nav-header {
   color: #999;
   display: block;
@@ -812,7 +817,7 @@ dd {
   text-transform: uppercase;
 }
 
-/* line 25, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+/* line 26, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-striped li:nth-child(even) {
   background-color: #f1f1f2;
 }
@@ -893,6 +898,8 @@ hr {
 .nav-list .icon-chevron-right {
   color: #e5e5e5;
   float: right;
+  position: relative;
+  top: 4px;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */

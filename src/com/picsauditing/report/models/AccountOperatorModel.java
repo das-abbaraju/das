@@ -1,6 +1,8 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountTable;
@@ -8,6 +10,7 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.OperatorTable;
 
+import java.util.List;
 import java.util.Map;
 
 public class AccountOperatorModel extends AbstractModel {
@@ -37,6 +40,13 @@ public class AccountOperatorModel extends AbstractModel {
 		parentOperator.alias = "parentOperator";
 
 		return spec;
+	}
+
+	@Override
+	public String getWhereClause(List<Filter> filters) {
+		super.getWhereClause(filters);
+		
+		return permissionQueryBuilder.buildWhereClause(ModelType.Operators);
 	}
 
 	@Override

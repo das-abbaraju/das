@@ -79,8 +79,9 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		auditor = userDao.find(auditor.getId());
 
 		if (contractorAudit.getAuditType().isScheduled()) {
-			if (origAuditor != null && !origAuditor.equals(auditor))
+			if (origAuditor != null && !origAuditor.equals(auditor)) {
 				contractorAudit.setAuditorConfirm(null);
+			}
 
 			if ((origScheduledDate != null && !origScheduledDate.equals(contractorAudit.getScheduledDate()))
 					|| (origLocation != null && !origLocation.equals(contractorAudit.getAuditLocation()))) {
@@ -94,8 +95,9 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		// closing auditor
 		boolean newManualAudit = contractorAudit.getAuditType().isDesktop()
 				&& contractorAudit.hasCaoStatus(AuditStatus.Pending) && contractorAudit.getClosingAuditor() == null;
-		if (!newManualAudit)
+		if (!newManualAudit) {
 			contractorAudit.setClosingAuditor(new User(contractorAudit.getIndependentClosingAuditor(auditor)));
+		}
 
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)) {
 			contractorAudit = dao.save(contractorAudit);
@@ -124,10 +126,11 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.addToken("confirmLink", confirmLink);
 				emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 				EmailQueue email = emailBuilder.build();
-				if (contractorAudit.getAuditType().getAccount() != null)
+				if (contractorAudit.getAuditType().getAccount() != null) {
 					email.setViewableBy(contractorAudit.getAuditType().getAccount());
-				else
+				} else {
 					email.setViewableById(Account.EVERYONE);
+				}
 				emailSender.send(email);
 			}
 			if (contractorAudit.getAuditorConfirm() == null) {
@@ -148,16 +151,17 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailSender.send(email);
 			}
 
-			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
+			NoteDAO noteDAO = SpringUtils.getBean(SpringUtils.NOTE_DAO);
 			Note note = new Note();
 			note.setAccount(contractorAudit.getContractorAccount());
 			note.setAuditColumns(permissions);
 			note.setSummary("Audit Schedule updated");
 			note.setNoteCategory(NoteCategory.Audits);
-			if (contractorAudit.getAuditType().getAccount() != null)
+			if (contractorAudit.getAuditType().getAccount() != null) {
 				note.setViewableBy(contractorAudit.getAuditType().getAccount());
-			else
+			} else {
 				note.setViewableById(Account.EVERYONE);
+			}
 			noteDAO.save(note);
 		}
 		return SUCCESS;

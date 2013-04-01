@@ -102,8 +102,9 @@ where grp.groupID = atype.editAudit;
 	public boolean duplicateUsername(String uName, int uID) {
 		try {
 			User user = findName(uName);
-			if (user == null)
+			if (user == null) {
 				return false;
+            }
 
 			int id = user.getId();
 			if (id > 0) {

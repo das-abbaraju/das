@@ -19,6 +19,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.report.models.ModelType;
 
 public class PermissionQueryBuilderTest extends PicsTest {
 
@@ -201,6 +202,17 @@ public class PermissionQueryBuilderTest extends PicsTest {
 				+ "FROM generalcontractors gc " + "WHERE gc.genID IN (" + Strings.implode(CLIENT_SITES, ",")
 				+ ") AND gc.workStatus = 'Y')";
 		assertEquals(whereClause, builder.buildWhereClause());
+	}
+
+	@Test
+	public void testCorporateWithFacilitiesJoin() throws Exception {
+		when(permissions.isCorporate()).thenReturn(true);
+		setPermissionAccount();
+		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
+
+		String whereClause = "a.status IN ('Active') " + "AND a.id IN (" + Strings.implode(CLIENT_SITES, ",")
+				+ ")";
+		assertEquals(whereClause, builder.buildWhereClause(ModelType.Operators));
 	}
 
 	@Test

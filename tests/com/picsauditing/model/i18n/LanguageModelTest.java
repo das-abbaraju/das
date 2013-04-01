@@ -2,19 +2,21 @@ package com.picsauditing.model.i18n;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -91,7 +93,7 @@ public class LanguageModelTest {
 
 		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
-		final List<LanguageModel.KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
+		final List<KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
 		assertNotNull(supportedLanguages);
 		assertEquals(2, supportedLanguages.size());
 		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(0).getKey());
@@ -200,4 +202,55 @@ public class LanguageModelTest {
 		assertTrue(languages.contains(Locale.GERMAN.getLanguage()));
 		assertTrue(languages.contains(Locale.CHINESE.getLanguage()));
 	}
+
+
+    @Test
+    public void testGetMatchingStableLocale() throws Exception {
+        List<Language> languageList = mockLanguageList(new  Locale[]{
+                Locale.FRENCH,
+                Locale.GERMAN,
+                Locale.ITALIAN
+        });
+
+        when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+
+        Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+        assertEquals(Locale.ITALIAN, result);
+    }
+
+    @Test
+    public void testGetMatchingStableLocale_WithNull() throws Exception {
+        List<Language> languageList = mockLanguageList(new  Locale[]{
+                Locale.FRENCH,
+                Locale.GERMAN,
+                null,
+                Locale.ITALIAN
+        });
+        Logger logger = Mockito.mock(Logger.class);
+
+        Whitebox.setInternalState(languageModel, "logger", logger);
+
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+
+        when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+
+        Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+        assertEquals(Locale.ITALIAN, result);
+
+        verify(logger).error(errorMessageCaptor.capture());
+
+        assertEquals("Null locale found in Stable and Beta locales list: en_US,fr,de,null,it",
+                errorMessageCaptor.getValue());
+    }
+
+
+    private List<Language> mockLanguageList(Locale[] localesToMock) {
+        List<Language> languageList = new ArrayList<>();
+        for (Locale locale: localesToMock) {
+            Language language = Mockito.mock(Language.class);
+            when(language.getLocale()).thenReturn(locale);
+            languageList.add(language);
+        }
+        return languageList;
+    }
 }

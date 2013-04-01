@@ -6,13 +6,13 @@
                     var that = this;
 
                     $('.verify-audit').on('click', function (event) {
-                        that.loadAudit(event);
+                        that.loadAudit.call(that, event);
                     });
                 }
             },
 
-            loadAudit: function () {
-                var element = $(event.currentTarget);
+            loadAudit: function (event) {
+                var element = $(event.currentTarget),
                     auditID = element.attr('data-id'),
                     that = this;
 

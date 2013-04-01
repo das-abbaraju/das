@@ -125,7 +125,7 @@ public class BillingCalculatorSingle {
 		contractor.setPayingFacilities(payingOperators.size());
 	}
 
-	public void calculateContractorInvoiceFees (ContractorAccount contractor) {
+	public void calculateContractorInvoiceFees(ContractorAccount contractor) {
 		if (contractor.getStatus().isRequested()) {
 			return;
 		}
@@ -153,7 +153,6 @@ public class BillingCalculatorSingle {
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
 
-		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
 		Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
@@ -365,7 +364,8 @@ public class BillingCalculatorSingle {
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) throws Exception {
 		Invoice invoice = null;
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
-		// disallow zero dollar invoices (preserving existing behavior in a refactor)
+		// disallow zero dollar invoices (preserving existing behavior in a
+		// refactor)
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
@@ -529,12 +529,12 @@ public class BillingCalculatorSingle {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 					if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
 						description = i18nCache.getText("Invoice.UpgradingFrom", user != null ? user.getLocale()
-								: Locale.ENGLISH, contractor.getCountry().getCurrency().getSymbol(), upgrade
-								.getCurrentAmount(), contractor.getCountry().getCurrency().getSymbol(), upgradeAmount);
+								: Locale.ENGLISH, upgrade.getCurrentAmount(), contractor.getCountry().getCurrency()
+								.getDisplay(), upgradeAmount, contractor.getCountry().getCurrency().getDisplay());
 					} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
 						description = i18nCache.getText("Invoice.UpgradingTo", user != null ? user.getLocale()
-								: Locale.ENGLISH, upgrade.getFeeClass(), contractor.getCountry().getCurrency()
-								.getSymbol(), upgradeAmount);
+								: Locale.ENGLISH, upgrade.getFeeClass(), upgradeAmount, contractor.getCountry()
+								.getCurrency().getDisplay());
 					}
 				} else {
 					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);

@@ -20,7 +20,7 @@
  * @updated 11-05-2012 Jbrownell
  */
 (function ($) {
-    PICS.define('modal.Modal', {
+    PICS.define('widget.Modal', {
         methods: (function () {
             // default configuration
             var defaults = {

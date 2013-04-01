@@ -59,8 +59,8 @@ public class FirstTimeUserInterceptorTest {
     @Test
     public void testIntercept_RedirectForFirstTimeUser() throws Exception {
         when(permissions.isLoggedIn()).thenReturn(true);
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(null);
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
 
         when(session.get("permissions")).thenReturn(permissions);
 
@@ -79,8 +79,8 @@ public class FirstTimeUserInterceptorTest {
     @Test
     public void testRedirectUserToTutorial_AlreadyUsedDynamicReports() throws Exception {
         when(permissions.isLoggedIn()).thenReturn(true);
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(new Date());
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(new Date());
 
         Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "redirectUserToTutorial",
                 permissions);
@@ -91,8 +91,8 @@ public class FirstTimeUserInterceptorTest {
     @Test
     public void testRedirectUserToTutorial_FirstTimeUser() throws Exception {
         when(permissions.isLoggedIn()).thenReturn(true);
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(null);
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
 
         Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "redirectUserToTutorial",
                 permissions);

@@ -422,11 +422,8 @@
     								/>
     							</li>
     							<li>
-                                    <s:set name="contractor_last_upgrade_date">
-                                        <s:date name="contractor.lastUpgradeDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-                                    </s:set>
     								<label>Upgrade Date:</label>
-    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="${contractor_last_upgrade_date}" />
+    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />" />
     							</li>
     							<li>
     								<label>Contractor Type:</label>
@@ -441,36 +438,36 @@
     									id="onSite"
     									fieldValue="Onsite"
     									label="ContractorAccount.onsiteServices"
-    									value="contractor.isContractorTypeRequired('Onsite') ? true : contractor.onsiteServices" 
+    									value="contractor.onsiteServices"
     									cssClass="checkbox"
-    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Onsite)" 
+    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Onsite) && contractor.onsiteServices"
     								/><s:text name="ContractorAccount.onsiteServices" />
     								<s:checkbox
     									name="conTypes"
     									id="offSite"
     									fieldValue="Offsite"
     									label="ContractorAccount.offsiteServices"
-    									value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite) ? true : contractor.offsiteServices"
+    									value="contractor.offsiteServices"
     									cssClass="checkbox"
-    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite)" 
+    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite) && contractor.offsiteServices"
     								/><s:text name="ContractorAccount.offsiteServices" />
     								<s:checkbox 
     									name="conTypes"
     									id="materialSupplier"
     									fieldValue="Supplier"
     									label="ContractorAccount.materialSupplier"
-    									value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier) ? true : contractor.materialSupplier" 
+    									value="contractor.materialSupplier"
     									cssClass="checkbox"
-    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier)" 
+    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier) && contractor.materialSupplier"
     								/><s:text name="ContractorAccount.materialSupplier" />
     								<s:checkbox 
     									name="conTypes"
     									id="transportation"
     									fieldValue="Transportation"
     									label="ContractorAccount.transportationServices" 
-    									value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation) ? true : contractor.transportationServices"
+    									value="contractor.transportationServices"
     									cssClass="checkbox"
-    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
+    									disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation) && contractor.transportationServices"
     								/><s:text name="ContractorAccount.transportationServices" />
                                     <pics:fieldhelp title="Contractor Type">
                                         <s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">

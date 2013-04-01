@@ -346,7 +346,6 @@ public class ContractorAuditController extends AuditActionSupport {
 			return;
 		}
 
-		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 		Set<AuditCategory> requiredCategories = builder.calculate(conAudit, operators);

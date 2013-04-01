@@ -5,10 +5,16 @@
 	<package name="com.picsauditing.registration" extends="com.picsauditing">
 		<action name="Registration" class="com.picsauditing.actions.contractors.Registration">
 			<result>struts/contractors/registration.jsp</result>
+			<result name="input">struts/contractors/registration.jsp</result>
 			<result name="inputError">struts/contractors/registration.jsp</result>
 			<result name="blank">/struts/blank.jsp</result>
 		</action>
 		
+        <action name="RegistrationAjax" class="com.picsauditing.actions.contractors.Registration" method="dialects">
+            <result>struts/contractors/_registration-dialects.jsp</result>
+            <result name="input">struts/contractors/_registration-dialects.jsp</result>
+        </action>
+
 		<action name="ContractorRegistration" class="com.picsauditing.actions.contractors.Registration">
 			<result type="redirectAction">
 				<param name="actionName">Registration</param>

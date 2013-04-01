@@ -41,16 +41,17 @@ public class VATValidator {
     }
 
     private String vatPrefixFor(Country country) {
-        if (country.getIsoCode().equalsIgnoreCase(GREECE))
-            return "EL";
-        else if (country.isEuropeanUnion())
-            return country.getIsoCode().toUpperCase();
-        else
-            return "EU";
+        if (country.getIsoCode().equalsIgnoreCase(GREECE)) {
+			return "EL";
+		} else if (country.isEuropeanUnion()) {
+			return country.getIsoCode().toUpperCase();
+		} else {
+			return "EU";
+		}
     }
 
     public boolean shouldValidate(Country registrationCountry) {
-        if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
+        if (registrationCountry != null && registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
             return true;
         }
 
@@ -74,14 +75,18 @@ public class VATValidator {
         }
 
         void validate() throws ValidationException {
-            if (!GENERIC_VAT_REGEX.matcher(vatNumber).matches())
-                throw new ValidationException();
-            if (CHECK_FOR_DUPLICATES.matcher(vatNumber).matches())
-                throw new ValidationException();
-            if (CHECK_FOR_OBFUSCATION.matcher(vatNumber).matches())
-                throw new ValidationException();
-            if (CHECK_FOR_YESNO.matcher(vatNumber).matches())
-                throw new ValidationException();
+            if (!GENERIC_VAT_REGEX.matcher(vatNumber).matches()) {
+				throw new ValidationException();
+			}
+            if (CHECK_FOR_DUPLICATES.matcher(vatNumber).matches()) {
+				throw new ValidationException();
+			}
+            if (CHECK_FOR_OBFUSCATION.matcher(vatNumber).matches()) {
+				throw new ValidationException();
+			}
+            if (CHECK_FOR_YESNO.matcher(vatNumber).matches()) {
+				throw new ValidationException();
+			}
         }
     }
 

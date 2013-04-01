@@ -4,16 +4,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -23,14 +21,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.LcCorPhase;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 
@@ -48,6 +39,8 @@ public class ContractorCronTest extends PicsActionTest {
 	private BasicDAO dao;
 	@Mock
 	private ContractorAccount contractor;
+	@Mock
+	private ContractorAuditDAO contractorAuditDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -58,6 +51,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
+		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 	}
 
 	/**
@@ -75,6 +69,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOnlyWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWithOnlyWCBs();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -86,6 +81,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountNoPoliciesOrWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountNoPoliciesOrWCBs();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -108,6 +104,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountWCBExpiredTwoMonthsAgo() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBExpiredTwoMonthsAgo();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -118,6 +115,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountMultipleAuditsExpiredPolicy() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredPolicy();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(1, audits.size());
@@ -129,6 +127,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountMultipleAuditsExpiredWCB() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(1, audits.size());
@@ -144,6 +143,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOverlappingValidWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYears();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -187,6 +187,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Test
 	public void testContractorAccountOverlappingWCBsComplete() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
+		when(contractorAuditDAO.findAuditsAboutToExpire(anyInt())).thenReturn(contractorAccount.getAudits());
 		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		assertTrue(audits.isEmpty());
 	}
@@ -670,4 +671,62 @@ public class ContractorCronTest extends PicsActionTest {
 
 		verify(contractorCronSpy, never()).run(any(ContractorAccount.class), anyInt());
 	}
+
+    @Test
+    public void testRollUpCorporateFlags() throws Exception {
+        Map<OperatorAccount, FlagColor> corporateRollupData = new HashMap<OperatorAccount, FlagColor>();
+        Queue<OperatorAccount> corporateUpdateQueue = new LinkedList<OperatorAccount>();
+        ContractorOperator coOperator = Mockito.mock(ContractorOperator.class);
+        OperatorAccount childOperatorWithRedFlag = Mockito.mock(OperatorAccount.class);
+        OperatorAccount corporateWithGreenFlag = Mockito.mock(OperatorAccount.class);
+
+        Facility facility = Mockito.mock(Facility.class);
+        when(facility.getCorporate()).thenReturn(corporateWithGreenFlag);
+        when(facility.getOperator()).thenReturn(childOperatorWithRedFlag);
+
+        List<Facility> facilities = new ArrayList<Facility>();
+        facilities.add(facility);
+
+        when(childOperatorWithRedFlag.getCorporateFacilities()).thenReturn(facilities);
+        when(childOperatorWithRedFlag.getStatus()).thenReturn(AccountStatus.Active);
+
+        when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
+        corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
+
+
+        //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
+        Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
+                corporateRollupData, corporateUpdateQueue, coOperator,childOperatorWithRedFlag);
+
+        assertEquals(FlagColor.Red, corporateRollupData.get(corporateWithGreenFlag));
+    }
+
+    @Test
+    public void testRollUpCorporateFlags_WithDeletedChildAccount() throws Exception {
+        Map<OperatorAccount, FlagColor> corporateRollupData = new HashMap<OperatorAccount, FlagColor>();
+        Queue<OperatorAccount> corporateUpdateQueue = new LinkedList<OperatorAccount>();
+        ContractorOperator coOperator = Mockito.mock(ContractorOperator.class);
+        OperatorAccount deletedChildOperatorWithRedFlag = Mockito.mock(OperatorAccount.class);
+        OperatorAccount corporateWithGreenFlag = Mockito.mock(OperatorAccount.class);
+
+        Facility facility = Mockito.mock(Facility.class);
+        when(facility.getCorporate()).thenReturn(corporateWithGreenFlag);
+        when(facility.getOperator()).thenReturn(deletedChildOperatorWithRedFlag);
+
+        List<Facility> facilities = new ArrayList<Facility>();
+        facilities.add(facility);
+
+        when(deletedChildOperatorWithRedFlag.getCorporateFacilities()).thenReturn(facilities);
+        when(deletedChildOperatorWithRedFlag.getStatus()).thenReturn(AccountStatus.Deleted);
+
+        when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
+        corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
+
+
+        //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
+        Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
+                corporateRollupData, corporateUpdateQueue, coOperator,deletedChildOperatorWithRedFlag);
+
+        assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
+    }
 }

@@ -903,7 +903,7 @@
                                             onclick="$(this).attr('disabled', true); $('#form_sync').submit();" 
                                             style="margin: 5px auto;"
                                             value="<s:text name="ContractorView.Synchronize" />"/>
-                        
+
                                         <s:if test="contractor.lastRecalculation != null">
                                             <br/>
                                             
@@ -912,6 +912,13 @@
                                             </s:text>
                                         </s:if>
                                     </s:form>
+
+                                    <s:if test="permissions.hasPermission('ManageCsrAssignment')" >
+                                        <a href="ContractorView!autoAssignCsr.action?id=<s:property value='contractor.id'/>" class="picsbutton">
+                                            Auto Assign CSR
+                                        </a>
+                                    </s:if>
+
                                 </div>
                             </div>
                         </div>

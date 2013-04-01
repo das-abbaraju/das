@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -64,8 +65,10 @@ public class AuditPercentCalculatorTest {
 	@Mock private AuditCatData catData;
 	@Mock private AuditCategory category;
 	@Mock private ContractorAudit contractorAudit;
+    @Mock
+    private AuditDecisionTableDAO auditDecisionTableDAO;
 
-	@Before
+    @Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
@@ -73,12 +76,14 @@ public class AuditPercentCalculatorTest {
 
 		Whitebox.setInternalState(calculator, "auditCategoryRuleCache", catRuleCache);
 		Whitebox.setInternalState(calculator, "logger", logger);
+        Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 
 		catRules.clear();
 		catRuleCache.clear();
 
 		catRules.add(new AuditCategoryRule());
-		catRuleCache.initialize(catRules);
+
+        Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
 
 		// make standard entities
 		contractor = EntityFactory.makeContractor();

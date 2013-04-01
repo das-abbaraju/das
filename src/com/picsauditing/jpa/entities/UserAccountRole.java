@@ -1,12 +1,14 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.util.Strings;
 
+// FIXME: Move to entities package
 public enum UserAccountRole implements Translatable {
 	PICSSalesRep("Sales Representative"), 
 	PICSAccountRep("Account Manager"),
-	PICSInsideSalesRep("Inside Sales Representative"),
-	PICSCustomerServiceRep("Customer Service Representative");
+    PICSInsideSalesRep("Inside Sales Representative"),
+    PICSCustomerServiceRep("Customer Service Representative");
 
 	private String description;
 

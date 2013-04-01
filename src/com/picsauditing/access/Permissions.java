@@ -1,17 +1,29 @@
 package com.picsauditing.access;
 
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.strutsutil.AjaxUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.struts2.ServletActionContext;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.strutsutil.AjaxUtils;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -66,10 +78,11 @@ public class Permissions implements Serializable {
 	private int shadowedUserID;
 	private String shadowedUserName;
 
-	private boolean usingDynamicReports;
-	private Date usingDynamicReportsDate;
+	private boolean usingVersion7Menus;
+	private Date usingVersion7MenusDate;
 	private LanguageModel languageModel;
     private int primaryCorporateAccountID;
+	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
 
 	public Permissions() {
 	}
@@ -148,9 +161,6 @@ public class Permissions implements Serializable {
 		setStableLocale(user);
 		setTimeZone(user);
 		setAccountPerms(user);
-
-		usingDynamicReports = user.isUsingDynamicReports();
-		usingDynamicReportsDate = user.getUsingDynamicReportsDate();
 	}
 
 	public void setTimeZone(User user) {
@@ -696,20 +706,20 @@ public class Permissions implements Serializable {
 		this.sessionCookieTimeoutInSeconds = seconds;
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
-	public Date getUsingDynamicReportsDate() {
-		return usingDynamicReportsDate;
+	public Date getUsingVersion7MenusDate() {
+		return usingVersion7MenusDate;
 	}
 
-	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
-		this.usingDynamicReportsDate = usingDynamicReportsDate;
+	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
+		this.usingVersion7MenusDate = usingVersion7MenusDate;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {

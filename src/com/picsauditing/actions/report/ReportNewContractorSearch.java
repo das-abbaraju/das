@@ -217,64 +217,77 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@RequiredPermission(value = OpPerms.AddContractors)
 	public String add() throws Exception {
-		facilityChanger.setPermissions(permissions);
-		facilityChanger.setContractor(contractor);
-		facilityChanger.setOperator(operator);
-		facilityChanger.add();
+		if (isValidToAddContractor()) {
+			facilityChanger.setPermissions(permissions);
+			facilityChanger.setContractor(contractor);
+			facilityChanger.setOperator(operator);
+			facilityChanger.add();
 
-		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
-			addActionMessage(getTextParameterized("NewContractorSearch.ContractorNeedsToApprove", contractor.getName()));
-		} else {
-			addActionMessage(getTextParameterized("NewContractorSearch.message.SuccessfullyAdded", contractor.getId()
-					+ "", contractor.getName()));
-		}
-
-		// Automatically upgrading Contractor per discussion
-		// 2/15/2011
-		if (contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids()) {
-			// See also ReportBiddingContractors/ContractorDashboard
-			// Upgrade
-			contractor.setAccountLevel(AccountLevel.Full);
-			contractor.setRenew(true);
-
-			auditBuilder.buildAudits(contractor);
-
-			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf()) {
-					for (ContractorAuditOperator cao : cAudit.getOperators()) {
-						if (cao.getStatus().after(AuditStatus.Pending)) {
-							cao.changeStatus(AuditStatus.Pending, permissions);
-							auditDataDAO.save(cao);
-						}
-					}
-
-					auditBuilder.recalculateCategories(cAudit);
-					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-					auditPercentCalculator.percentCalculateComplete(cAudit);
-					auditDataDAO.save(cAudit);
-				}
+			if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+				addActionMessage(getTextParameterized("NewContractorSearch.ContractorNeedsToApprove", contractor.getName()));
+			} else {
+				addActionMessage(getTextParameterized("NewContractorSearch.message.SuccessfullyAdded", contractor.getId()
+						+ "", contractor.getName()));
 			}
 
-			contractor.incrementRecalculation();
-			contractor.setAuditColumns(permissions);
-			contractorAccountDAO.save(contractor);
+			// Automatically upgrading Contractor per discussion
+			// 2/15/2011
+			if (contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids()) {
+				// See also ReportBiddingContractors/ContractorDashboard
+				// Upgrade
+				contractor.setAccountLevel(AccountLevel.Full);
+				contractor.setRenew(true);
 
-			// Sending a Email to the contractor for upgrade
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(73); // Trial Contractor
-			// Account Approval
-			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-			emailBuilder.addToken("permissions", permissions);
-			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setHighPriority();
-			emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-			emailQueue.setViewableById(Account.PicsID);
-			emailSender.send(emailQueue);
+				auditBuilder.buildAudits(contractor);
+
+				for (ContractorAudit cAudit : contractor.getAudits()) {
+					if (cAudit.getAuditType().isPqf()) {
+						for (ContractorAuditOperator cao : cAudit.getOperators()) {
+							if (cao.getStatus().after(AuditStatus.Pending)) {
+								cao.changeStatus(AuditStatus.Pending, permissions);
+								auditDataDAO.save(cao);
+							}
+						}
+
+						auditBuilder.recalculateCategories(cAudit);
+						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+						auditPercentCalculator.percentCalculateComplete(cAudit);
+						auditDataDAO.save(cAudit);
+					}
+				}
+
+				contractor.incrementRecalculation();
+				contractor.setAuditColumns(permissions);
+				contractorAccountDAO.save(contractor);
+
+				// Sending a Email to the contractor for upgrade
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(73); // Trial Contractor
+				// Account Approval
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+				emailBuilder.addToken("permissions", permissions);
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setHighPriority();
+				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
+				emailQueue.setViewableById(Account.PicsID);
+				emailSender.send(emailQueue);
+			}
 		}
 
 		return setUrlForRedirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
 		+ "&filter.tradeInformation=true");
+	}
+
+	private boolean isValidToAddContractor() {
+		if ((operator.isOnsiteServices() && contractor.isOnsiteServices())
+				|| (operator.isOffsiteServices() && contractor.isOffsiteServices())
+				|| (operator.isMaterialSupplier() && contractor.isMaterialSupplier())
+				|| (operator.isTransportationServices() && contractor.isTransportationServices())) {
+			return true;
+		}
+		addActionError(getText("NewContractorSearch.DoesNotPerformServices"));
+		return false;
 	}
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)

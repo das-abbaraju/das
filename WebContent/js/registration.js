@@ -27,26 +27,32 @@
 	REGISTRATION.contractor_country = {
 		init: function () {
 			if ($('.Registration-page').length) {
-				$('.contractor-country').bind('change', this.events.update_countrySubdivision_list);
+			    var that = this;
+
+				$('.contractor-country').on('change', function (event) {
+				    that.events.update_countrySubdivision_list.call(that, event);
+				});
 
 				var selectedSubdivision = null;
 				
 				if ($('#requested_contractor').length) {
 			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
+
 			    	selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
-			    	
 			    }
+
 				//autofill Country Subdivision list
 				if ($('.contractor-country').length) {
-				    this.events.update_countrySubdivision_list(selectedSubdivision);
+				    that.events.update_countrySubdivision_list.call(that, selectedSubdivision);
 				}
 			}
 		},
 
 		events: {
 			update_countrySubdivision_list: function (selectedSubdivision) {
-				var country_select = $('.contractor-country') || $(this);
-				var country_string = country_select.val();
+				var country_select = $('.contractor-country') || $(event.currentTarget),
+				    country_string = country_select.val(),
+				    that = this;
 
 				PICS.ajax({
 					url: 'CountrySubdivisionListAjax!registration.action',
@@ -55,8 +61,8 @@
 						prefix: 'contractor.'
 					},
 					success: function (data, textStatus, XMLHttpRequest) {
-						var countrySubdivision_element = $('.registration-form li.countrySubdivision');
-						var zip_element = $('.registration-form li.zip');
+						var countrySubdivision_element = $('.registration-form li.countrySubdivision'),
+						    zip_element = $('.registration-form li.zip');
 
 						countrySubdivision_element.html(data);
 
@@ -71,18 +77,31 @@
 						} else {
 							zip_element.slideDown(400);
 						}
-
-						if (country_string == 'GB') {
-							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
-						} else {
-							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
-						}
 						
 						if (selectedSubdivision) {
 							countrySubdivision_element.find("select").val(selectedSubdivision);
 						}
+
+						that.events.updatePicsPhone(country_string);
 					}
 				});
+			},
+
+			updatePicsPhone: function (country_string) {
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!phone.action',
+                    dataType: 'json',
+                    data: {
+                        countryString: country_string
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var pics_phone = $('#pics_phone_number');
+
+                        if (pics_phone.length > 0) {
+                            pics_phone.html(data.picsPhoneNumber);
+                        }
+                    }
+                });
 			}
 		}
 	};
@@ -144,16 +163,55 @@
 
 	REGISTRATION.language_dropdown = {
 		init: function () {
-			$('select[name=request_locale]').bind('change', this.events.change);
+		    var that = this,
+		        registration_page = $('.Registration-page');
+
+		    if (registration_page.length > 0) {
+                registration_page.on('change', '#dialect_selection', function (event) {
+                    that.setDialect.call(that, event);
+                });
+
+                registration_page.on('change', '#registration_language', function (event) {
+                    that.getDialectList.call(that, event);
+                });
+		    }
 		},
 
-		events: {
-			change: function (event) {
-				var element = $(this);
+        getDialectList: function (event) {
+            var element = $(event.currentTarget),
+                language = element.val(),
+                request_locale = $("#request_locale");
 
-				element.closest('form').submit();
-			}
-		}
+            PICS.ajax({
+                url: 'RegistrationAjax.action',
+                data: {
+                    language: language
+                },
+                success: function (data, textStatus, jqXHR) {
+                    var dialect_dropdown = $.trim(data),  //trim carriage returns
+                        dialect_container_element = $('#registration_dialect');
+
+                    dialect_container_element.html(dialect_dropdown);
+
+                    //if no dialects, refresh page
+                    if (dialect_dropdown == '') {
+                        request_locale.val(language);
+                        element.closest('form').submit();
+                    }
+                }
+            });
+        },
+
+        setDialect: function (event, base_language) {
+            var element = $(event.currentTarget),
+                dialect = element.val(),
+                language = $('#registration_language').val(),
+                request_locale = $("#request_locale");
+
+            request_locale.val(language + "_" + dialect);
+
+            element.closest('form').submit();
+        }
 	};
 
 	// make payment help text displayed on hover of ? tips

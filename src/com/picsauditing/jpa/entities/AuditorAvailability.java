@@ -1,34 +1,25 @@
 package com.picsauditing.jpa.entities;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.text.ParseException;
+import java.util.*;
 
 @Entity
 @SuppressWarnings("serial")
 @Table(name = "auditor_availability")
 public class AuditorAvailability extends BaseTable {
+	public static final String SERVER_TIME_ZONE = "CST";
+	public static final String START_TIME_FORMAT = "hh:mm a";
+	public static final String STOP_TIME_FORMAT = "hh:mm a z";
 
 	private User user;
 	private Date startDate;
@@ -41,65 +32,21 @@ public class AuditorAvailability extends BaseTable {
 	private boolean onsiteOnly = false;
 	private boolean webOnly = false;
 	private String onlyInCountrySubdivisions = null;
-	
+
 	@Transient
 	public Date getEndDate() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.MINUTE, duration);
-		return cal.getTime();
+		DateTime endDate = new DateTime(startDate);
+		return endDate.plusMinutes(duration).toDate();
 	}
-	
+
 	@Transient
-	public String getTimeZoneStartDate(String tz) throws ParseException {
-		TimeZone cst = TimeZone.getTimeZone("CST");
-		TimeZone stz = TimeZone.getTimeZone(tz);
-		cst.getRawOffset();
-		stz.getRawOffset();
-		
-		int hoursDifference = (stz.getRawOffset() - cst.getRawOffset()) / 3600000;
-		
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CST"));
-		cal.setTime(startDate);
-		
-		if (cst.inDaylightTime(startDate))
-			cal.add(Calendar.HOUR, hoursDifference);
-		
-		DateFormat stdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		DateFormat cstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		cstFormat.setTimeZone(TimeZone.getTimeZone("CST"));
-		
-		DateFormat stzFormat = new SimpleDateFormat("hh:mm a");
-		stzFormat.setTimeZone(TimeZone.getTimeZone(tz));
-		
-		return stzFormat.format(cstFormat.parse(stdFormat.format(cal.getTime())));
+	public String getTimeZoneStartDate(String timezone) throws ParseException {
+		return getFormattedTimeStringWithNewTimeZone(timezone, START_TIME_FORMAT, startDate);
 	}
-	
+
 	@Transient
-	public String getTimeZoneEndDate(String tz) throws ParseException {
-		TimeZone cst = TimeZone.getTimeZone("CST");
-		TimeZone stz = TimeZone.getTimeZone(tz);
-		cst.getRawOffset();
-		stz.getRawOffset();
-		
-		int hoursDifference = (stz.getRawOffset() - cst.getRawOffset()) / 3600000;
-		
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CST"));
-		cal.setTime(getEndDate());
-		
-		if (cst.inDaylightTime(getEndDate()))
-			cal.add(Calendar.HOUR, hoursDifference);
-		
-		DateFormat stdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		DateFormat cstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		cstFormat.setTimeZone(TimeZone.getTimeZone("CST"));
-		
-		DateFormat stzFormat = new SimpleDateFormat("hh:mm a z");
-		stzFormat.setTimeZone(TimeZone.getTimeZone(tz));
-		
-		return stzFormat.format(cstFormat.parse(stdFormat.format(cal.getTime())));
+	public String getTimeZoneEndDate(String timezone) throws ParseException {
+		return getFormattedTimeStringWithNewTimeZone(timezone, STOP_TIME_FORMAT, getEndDate());
 	}
 
 	@ManyToOne
@@ -124,7 +71,7 @@ public class AuditorAvailability extends BaseTable {
 
 	/**
 	 * Number of minutes the auditor is available during this time slot
-	 * 
+	 *
 	 * @return
 	 */
 	@Column(nullable = false)
@@ -235,7 +182,7 @@ public class AuditorAvailability extends BaseTable {
 
 	/**
 	 * If the audit is close enough, then assume it will be onsite
-	 * 
+	 *
 	 * @param conAudit
 	 * @return
 	 */
@@ -284,5 +231,16 @@ public class AuditorAvailability extends BaseTable {
 			rank += 1000;
 
 		return rank;
+	}
+
+	@Transient
+	private String getFormattedTimeStringWithNewTimeZone(String timezone, String format, Date date) {
+		DateTimeZone serverTimeZone = DateTimeZone.forTimeZone(TimeZone.getTimeZone(SERVER_TIME_ZONE));
+		DateTimeZone selectedTimeZone = DateTimeZone.forTimeZone(TimeZone.getTimeZone(timezone));
+
+		DateTime dateTime = new DateTime(date);
+		DateTime serverDateTime = dateTime.withZoneRetainFields(serverTimeZone);
+
+		return serverDateTime.withZone(selectedTimeZone).toString(format);
 	}
 }

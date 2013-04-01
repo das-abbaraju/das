@@ -37,7 +37,7 @@ import com.picsauditing.util.Strings;
 /**
  * This class is no longer being called anywhere in the PICS code, so it is
  * being deprecated.
- * 
+ *
  * TODO: Deprecated 3/5/2012, delete by 6/5/2012 if we feel confident that it is
  * not being used anywhere.
  */
@@ -50,10 +50,10 @@ public class FlagCalculator {
 	private ContractorOperator co;
 	private ContractorAccount contractor;
 	private Map<Integer, ContractorAuditOperator> annualUpdates;
-    
+
 	/**
 	 * Getting Rules
-	 * 
+	 *
 	 * if (!worksForOperator || con.getAccountLevel().isBidOnly()) { // This is
 	 * a check for if the contractor doesn't // work for the operator (Search
 	 * for new), or is a bid only if (!criteria.getAuditType().isPqf()) { //
@@ -77,14 +77,16 @@ public class FlagCalculator {
 			if (criteria.getAuditType() != null) {
 				flagged = calculateAuditType(rule);
 			} else if (criteria.getQuestion() != null) {
-				if (criteria.getQuestion().getAuditType().isAnnualAddendum())
+				if (criteria.getQuestion().getAuditType().isAnnualAddendum()) {
 					flagged = calculateAnnualUpdateQuestion(rule);
-				else
+				} else {
 					flagged = calculateQuestion(rule, answerMap);
+				}
 			}
 
-			if (flagged == null && criteria.isFlaggableWhenMissing())
+			if (flagged == null && criteria.isFlaggableWhenMissing()) {
 				flagged = true;
+			}
 
 			if (flagged != null) {
 				results.put(criteria, rule.getFlag());
@@ -135,15 +137,17 @@ public class FlagCalculator {
 				}
 			}
 
-			if (annualUpdates.size() == 0)
+			if (annualUpdates.size() == 0) {
 				return null;
+			}
 
 			int count = 0;
 			for (Integer year : annualUpdates.keySet()) {
 				ContractorAuditOperator cao = annualUpdates.get(year);
 				// TODO support unverified Annual Updates if we want to
-				if (cao.getStatus().after(AuditStatus.Submitted))
+				if (cao.getStatus().after(AuditStatus.Submitted)) {
 					count++;
+				}
 			}
 
 			return (count >= 3);
@@ -195,19 +199,23 @@ public class FlagCalculator {
 
 		final AuditData auditData = answerMap.get(criteria.getQuestion().getId());
 
-		if (auditData == null || Strings.isEmpty(auditData.getAnswer()))
+		if (auditData == null || Strings.isEmpty(auditData.getAnswer())) {
 			return null;
+		}
 
 		String answer = auditData.getAnswer();
 		if (criteria.getQuestion().getQuestionType().equals("AMBest")) {
-			AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
+			AmBestDAO amBestDAO = SpringUtils.getBean(SpringUtils.AM_BEST_DAO);
 			AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
-			if (amBest == null)
+			if (amBest == null) {
 				return null;
-			if (criteria.getCategory().equals("Insurance AMB Rating"))
+			}
+			if (criteria.getCategory().equals("Insurance AMB Rating")) {
 				answer = Integer.toString(amBest.getRatingCode());
-			if (criteria.getCategory().equals("Insurance AMB Class"))
+			}
+			if (criteria.getCategory().equals("Insurance AMB Class")) {
 				answer = Integer.toString(amBest.getFinancialCode());
+			}
 		} else {
 			answer = FlagAnswerParser.parseAnswer(criteria, auditData);
 
@@ -237,13 +245,13 @@ public class FlagCalculator {
 		if (criteria.getQuestion().getId() == AuditQuestion.EMR) {
 			OshaResult oshaResult = MultiYearValueCalculator.calculateOshaResultsForEMR(criteria, contractor);
 			if (oshaResult != null) {
-				if (oshaResult.getAnswer() != null) { 
+				if (oshaResult.getAnswer() != null) {
 					return compare(dataType, comparison, hurdle, oshaResult.getAnswer());
 				}
 				else {
 					return null;
 				}
-			} else { 
+			} else {
 				// when the oshaResult is null, it means that an Exception was caught during the calculation
 			    // processing so true is returned to keep the behavior the same as it was before refactoring.
 				return true;
@@ -280,27 +288,32 @@ public class FlagCalculator {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param criteria
 	 * @param cao
 	 * @return
 	 */
 	private boolean flagCAO(FlagCriteria criteria, ContractorAuditOperator cao) {
-		if (criteria.getRequiredStatus() == null)
+		if (criteria.getRequiredStatus() == null) {
 			return true;
+		}
 
 		String compare = criteria.getRequiredStatusComparison();
-		if (compare == null)
+		if (compare == null) {
 			compare = "<";
+		}
 
-		if (compare.equals(">"))
+		if (compare.equals(">")) {
 			return !cao.getStatus().after(criteria.getRequiredStatus());
+		}
 
-		if (compare.equals("="))
+		if (compare.equals("=")) {
 			return !cao.getStatus().equals(criteria.getRequiredStatus());
+		}
 
-		if (compare.equals("!="))
+		if (compare.equals("!=")) {
 			return cao.getStatus().equals(criteria.getRequiredStatus());
+		}
 
 		// Default is "<"
 		return !cao.getStatus().before(criteria.getRequiredStatus());
@@ -328,44 +341,57 @@ public class FlagCalculator {
 			if (dataType.equals("number")) {
 				float answer2 = Float.parseFloat(answer.replace(",", ""));
 				float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
-				if (comparison.equals("="))
+				if (comparison.equals("=")) {
 					return answer2 == hurdle2;
-				if (comparison.equals(">"))
+				}
+				if (comparison.equals(">")) {
 					return answer2 > hurdle2;
-				if (comparison.equals("<"))
+				}
+				if (comparison.equals("<")) {
 					return answer2 < hurdle2;
-				if (comparison.equals(">="))
+				}
+				if (comparison.equals(">=")) {
 					return answer2 >= hurdle2;
-				if (comparison.equals("<="))
+				}
+				if (comparison.equals("<=")) {
 					return answer2 <= hurdle2;
-				if (comparison.equals("!="))
+				}
+				if (comparison.equals("!=")) {
 					return answer2 != hurdle2;
+				}
 			}
 
 			if (dataType.equals("string")) {
-				if (comparison.equals("NOT EMPTY"))
+				if (comparison.equals("NOT EMPTY")) {
 					return Strings.isEmpty(answer);
-				if (comparison.equalsIgnoreCase("contains"))
+				}
+				if (comparison.equalsIgnoreCase("contains")) {
 					return answer.contains(hurdle);
-				if (comparison.equals("="))
+				}
+				if (comparison.equals("=")) {
 					return hurdle.equals(answer);
+				}
 			}
 
 			if (dataType.equals("date")) {
 				Date conDate = DateBean.parseDate(answer);
 				Date opDate;
 
-				if (hurdle.equals("Today"))
+				if (hurdle.equals("Today")) {
 					opDate = new Date();
-				else
+				} else {
 					opDate = DateBean.parseDate(hurdle);
+				}
 
-				if (comparison.equals("<"))
+				if (comparison.equals("<")) {
 					return conDate.before(opDate);
-				if (comparison.equals(">"))
+				}
+				if (comparison.equals(">")) {
 					return conDate.after(opDate);
-				if (comparison.equals("="))
+				}
+				if (comparison.equals("=")) {
 					return conDate.equals(opDate);
+				}
 			}
 			return false;
 		} catch (Exception e) {
@@ -380,11 +406,13 @@ public class FlagCalculator {
 	 */
 	private ContractorAuditOperator getCaoForOperator(ContractorAudit conAudit, OperatorAccount operator) {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.isVisible())
+			if (cao.isVisible()) {
 				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-					if (caop.getOperator().equals(operator))
+					if (caop.getOperator().equals(operator)) {
 						return cao;
+					}
 				}
+			}
 		}
 
 		return null;

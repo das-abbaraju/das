@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.uuid.EthernetAddress;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
-import com.ibm.icu.util.Currency;
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -325,7 +324,7 @@ public class QBWebConnectorSvcSkeleton {
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());
 
-					EmailSender emailSender = (EmailSender) SpringUtils.getBean("EmailSender");
+					EmailSender emailSender = SpringUtils.getBean(SpringUtils.EMAIL_SENDER);
 					emailSender.send(email);
 
 				} catch (Exception notMuchWeCanDoButLogIt) {
@@ -420,7 +419,7 @@ public class QBWebConnectorSvcSkeleton {
 	}
 
 	private boolean shouldWeRunThisStep() {
-		AppPropertyDAO appPropsDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+		AppPropertyDAO appPropsDao = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
 
 		AppProperty find = appPropsDao.find("PICSQBLOADER.doStep." + currentSession.getCurrentStep());
 

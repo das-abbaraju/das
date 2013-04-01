@@ -1005,7 +1005,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors, importance = FieldImportance.Average)
 	public boolean isRenew() {
 		return renew;
 	}
@@ -2228,19 +2228,6 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return invoiceFeeDAO;
-	}
-
-	@Transient
-	public List<ContractorAudit> getExpiringPoliciesForInsuranceExpirationEmail() {
-		List<ContractorAudit> expiringPolicies = new ArrayList<ContractorAudit>();
-
-		for (ContractorAudit audit : getAudits()) {
-			if (audit.getAuditType().getClassType().isPolicy() && audit.isExpiringSoon()) {
-				expiringPolicies.add(audit);
-			}
-		}
-
-		return expiringPolicies;
 	}
 
 	@Override

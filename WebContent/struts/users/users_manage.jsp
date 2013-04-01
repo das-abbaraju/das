@@ -3,46 +3,44 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
-<head>
-	<title>
-		<s:text name="UsersManage.title" />
-		
-		<s:if test="user.id > 0">
-			: <s:property value="user.name" />
-		</s:if>
-	</title>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/users_manage.css?v=<s:property value="version"/>" />
+<title>
+	<s:text name="UsersManage.title" />
 	
-	<s:include value="../jquery.jsp" />
-	
-	<script type="text/javascript" src="js/user_manage.js?v=<s:property value="version"/>"></script>
+	<s:if test="user.id > 0">
+		: <s:property value="user.name" />
+	</s:if>
+</title>
 
-	<script type="text/javascript">
-		var accountID = '<s:property value="account.id" />';
-		var currentUserID = 0;
-		
-		<s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
-		
-		var permTypes = new Array();
-		
-		<s:iterator value="permissions.permissions">
-			<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
-		</s:iterator>
-		
-		$(function () {
-			$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Suggest').result(function (event, data) {
-				$('#moveToAccount').val(data[1]);
-			});
-			
-			$('#departmentSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Department').result(function (event, data) {
-				$('#departmentRole').val(data[3]);
-			});
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/users_manage.css?v=<s:property value="version"/>" />
+
+<script type="text/javascript" src="js/user_manage.js?v=<s:property value="version"/>"></script>
+
+<script type="text/javascript">
+	var accountID = '<s:property value="account.id" />';
+	var currentUserID = 0;
+
+	<s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
+
+	var permTypes = new Array();
+
+	<s:iterator value="permissions.permissions">
+		<s:if test="grantFlag == true">permTypes['<s:property value="opPerm"/>'] = new Array("<s:property value="opPerm.helpText"/>",<s:property value="opPerm.usesView()"/>,<s:property value="opPerm.usesEdit()"/>,<s:property value="opPerm.usesDelete()"/>);</s:if>
+	</s:iterator>
+
+	$(function () {
+		$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Suggest').result(function (event, data) {
+			$('#moveToAccount').val(data[1]);
 		});
-	</script>
-</head>
-<body>
+		
+		$('#departmentSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Department').result(function (event, data) {
+			$('#departmentRole').val(data[3]);
+		});
+	});
+</script>
+
+<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 	<h1>
 		<s:text name="UsersManage.title" />
 	</h1>
@@ -285,7 +283,7 @@
 						</s:text>
 					</h2>
 
-					<ol>
+					<ul>
 						<s:if test="account.users.size() > 1">
 							<s:if test="user.id > 0">
 								<li>
@@ -306,17 +304,21 @@
 							</s:if>
 						</s:if>
 
-						<li>
-                            <s:if test="user.isGroup.toString() == 'No'">
-								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" />
-							</s:if>
-                            <s:else>
+                        <s:if test="user.group">
+                            <li>
 								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" onchange="checkGroupName(this.value);" />
-								<span id="groupname_status"></span>
-							</s:else>
-                        </li>
+								<span id="groupname_status"></span>							
+                            </li>
+                        </s:if>
+						<s:else>
+                            <li>
+                                <s:textfield name="user.firstName" size="40" theme="form" />
+                            </li>
 
-						<s:if test="user.isGroup.toString() == 'No'">
+                            <li>
+                                <s:textfield name="user.lastName" size="40" theme="form" />
+                            </li>
+
 							<li>
                                 <s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
                             </li>
@@ -425,7 +427,7 @@
 							<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 								<li>
 									<label> <s:text name="User.useDynamicReport" /></label> 			
-									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 
+									<s:checkbox id="usingVersion7Menus" name="usingVersion7Menus" value="user.usingVersion7Menus" />		 
 																
 								</li>
 							</pics:toggle>
@@ -440,9 +442,9 @@
 										value="%{user.shadowedUser != null ? user.shadowedUser.id : 0}" />
 								</li>
 							</s:if>
-						</s:if>
+						</s:else>
 
-						<s:if test="user.id > 0">
+						<s:if test="user.id > 0 && !user.group">
 							<s:if test="permissions.isAdmin()">
 								<!-- Move User to Account -->
 								<s:hidden name="moveToAccount" id="moveToAccount" />
@@ -459,9 +461,8 @@
 										onclick="return confirm('%{getText('UsersManage.confirm.Move')}');" />
 								</li>
 							</s:if>
-
-
 						</s:if>
+
 						<s:else>
 							<s:hidden name="user.isActive" value="Yes" />
 						</s:else>
@@ -549,7 +550,7 @@
 								</table>
 							</li>
 						</s:if>
-					</ol>
+					</ul>
 				</fieldset>
 
 				<fieldset class="form submit">
@@ -558,7 +559,7 @@
 						<pics:permission perm="EditUsers" type="Edit">							
 							<s:if test="user.id > 0">
 								<s:if test="!setPrimaryAccount">
-									<s:submit method="inActivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
+									<s:submit method="deactivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
 								</s:if>
 							</s:if>
 						</pics:permission>
@@ -654,4 +655,4 @@
 			</s:if>
 		</s:if>
 	</div>
-</body>
+</div>

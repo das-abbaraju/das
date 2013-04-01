@@ -41,7 +41,7 @@
             <interceptor name="validation"
                          class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
             <interceptor name="jsonValidation"
-                         class="org.apache.struts2.json.JSONValidationInterceptor"/>
+                         class="com.picsauditing.interceptors.PicsValidationInterceptor"/>
             <interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor"/>
             <interceptor name="FirstTimeUserInterceptor"
                          class="com.picsauditing.interceptors.FirstTimeUserInterceptor"/>
@@ -604,6 +604,11 @@
 
         <action name="AuditTranslationDownload"
                 class="com.picsauditing.actions.audits.AuditTranslationDownload">
+        </action>
+
+        <action name="AuditMoved"
+                class="com.picsauditing.actions.audits.AuditMenuItemMoved">
+            <result>struts/audits/audit_menu_moved.jsp</result>
         </action>
 
         <!-- Track Auditor Payments -->

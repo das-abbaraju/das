@@ -78,6 +78,7 @@ p {
 	background-repeat: no-repeat;
 	background-position: left center;
 	height: 26px;
+	margin-right: 20px;
 	padding-left: 20px;
 	padding-bottom: 6px;
 }
@@ -1586,6 +1587,22 @@ div.blockDialog {
 	margin-right: 50px;
 	text-decoration: none;
 }
+
+.ProfileEdit-page ul,
+.UsersManage-page ul
+{
+    margin-left: 0px;
+    padding: 5px;
+    list-style: none;
+}
+
+.ProfileEdit-page #tab_profile li,
+.UsersManage-page #UserSave li
+{
+    font-size: 15px;
+    padding: 4px 5px 12px 10px;
+}
+
 /* user change password */
 #userSavePassword .cancel-password
 {

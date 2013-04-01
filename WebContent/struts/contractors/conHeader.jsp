@@ -359,7 +359,7 @@ function loadStatus(caoID, addUserNote){
 		</ul>
 	</div>
 	
-	<s:if test="auditID > 0">
+	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">
 			<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 				<fieldset>
@@ -439,12 +439,7 @@ function loadStatus(caoID, addUserNote){
 										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
-										<s:if test="conAudit.auditType.assigneeLabel == null" >
-											<s:text name="global.SafetyProfessional" />:
-										</s:if>
-										<s:else>
-                                            <s:property value='professionalLabel' />:
-										</s:else>
+                                        <s:property value='professionalLabel' />:
 									</s:else>
 								</label>
 

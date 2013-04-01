@@ -1,9 +1,13 @@
 package com.picsauditing.model.i18n;
 
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -38,7 +42,11 @@ public class LanguageModel {
 	public static final Locale ENGLISH = Locale.US;
 
 	@Autowired
+	private CountryDAO countryDAO;
+	@Autowired
 	private LanguageProvider languageProvider;
+
+    private final Logger logger = LoggerFactory.getLogger(LanguageModel.class);
 
 	private List<Locale> stableLanguageLocales;
 	private List<Language> stableLanguages;
@@ -173,6 +181,17 @@ public class LanguageModel {
 		return languagesByStatus;
 	}
 
+	public List<Country> getDialectCountriesBasedOn(String language) {
+		List<Language> dialects = languageProvider.findDialectsByLanguage(language);
+		List<Country> countries = new ArrayList<Country>();
+
+		for (Language dialect : dialects) {
+			countries.add(countryDAO.findbyISO(dialect.getCountry()));
+		}
+
+		return countries;
+	}
+
 	private List<String> extractLanguagesFromStableVariants() {
 		List<String> supportedLanguageKeys = new ArrayList<String>();
 
@@ -220,7 +239,13 @@ public class LanguageModel {
 	}
 
 	private Locale getMatchingStableLocale(Locale locale) {
-		for (Locale stableLocale : getStableAndBetaLanguageLocales()) {
+        List<Locale> stableAndBetaLanguageLocales = getStableAndBetaLanguageLocales();
+		for (Locale stableLocale : stableAndBetaLanguageLocales) {
+            if (stableLocale == null) {
+                logger.error("Null locale found in Stable and Beta locales list: "
+                        + Strings.implode(stableAndBetaLanguageLocales));
+                continue;
+            }
 			if (stableLocale.equals(locale)) {
 				return locale;
 			}
@@ -229,29 +254,4 @@ public class LanguageModel {
 		return null;
 	}
 
-	public class KeyValue {
-		private String key;
-		private String value;
-
-		public KeyValue(String key, String value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
 }

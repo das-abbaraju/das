@@ -347,7 +347,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
         ContractorAudit audit = auditData.getAudit();
 
-        auditCategoryRuleCache.initialize(auditRuleDAO);
         AuditCategoriesBuilder builder = initAuditCategoriesBuilder();
 
         for (ContractorAuditOperator cao : audit.getOperators()) {
