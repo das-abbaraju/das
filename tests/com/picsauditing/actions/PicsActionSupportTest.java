@@ -70,7 +70,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
-		Permissions permissions = new Permissions(null);
+		Permissions permissions = new Permissions();
 
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();

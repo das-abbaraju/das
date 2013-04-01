@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 
@@ -80,15 +81,12 @@ public class Permissions implements Serializable {
 
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
-	private LanguageModel languageModel;
+    // this is for injecting for unit tests
+	private transient LanguageModel languageModel;
     private int primaryCorporateAccountID;
 	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
 
 	public Permissions() {
-	}
-
-	public Permissions(LanguageModel languageModel) {
-		this.languageModel = languageModel;
 	}
 
 	public void clear() {
@@ -779,7 +777,12 @@ public class Permissions implements Serializable {
 		if (languageModel != null) {
 			locale = languageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
 		} else {
-			locale = LanguageModel.ENGLISH;
+            LanguageModel localTempLanguageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
+            if (localTempLanguageModel != null) {
+                locale = localTempLanguageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
+            } else {
+			    locale = LanguageModel.ENGLISH;
+            }
 		}
 	}
 }

@@ -1,14 +1,16 @@
 package com.picsauditing.access;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,16 +50,34 @@ public class PermissionsTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		permissions = new Permissions(languageModel);
+		permissions = new Permissions();
 		allInheritedGroupIds = new HashSet<Integer>();
 
 		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
+		Whitebox.setInternalState(permissions, "languageModel", languageModel);
 
 		Country country = mock(Country.class);
 		when(account.getCountry()).thenReturn(country);
 		when(country.getIsoCode()).thenReturn(LanguageModel.ENGLISH.getCountry());
 		when(user.getAccount()).thenReturn(account);
 	}
+
+    @Test
+    public void testSerializePermissionsObject() throws Exception {
+        FileOutputStream fileOut = null;
+        ObjectOutputStream out = null;
+        try {
+            fileOut = new FileOutputStream("permissions.ser");
+            out = new ObjectOutputStream(fileOut);
+            out.writeObject(permissions);
+        }catch(IOException i) {
+            fail("Permissions should serialize without exception");
+        } finally {
+            out.close();
+            fileOut.close();
+            new File("permissions.ser").delete();
+        }
+    }
 
 	@Test
 	public void testAddReturnToCookieIfGoodUrl_LeadingQuote() throws Exception {
@@ -175,15 +195,5 @@ public class PermissionsTest {
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
 
 		assertEquals(english, permissions.getLocale());
-	}
-
-	@Test
-	public void testSetStableLocale_LanguageModelIsNull() throws Exception {
-		when(user.getLocale()).thenReturn(Locale.GERMAN);
-
-		Whitebox.setInternalState(permissions, "languageModel", (LanguageModel) null);
-		Whitebox.invokeMethod(permissions, "setStableLocale", user);
-
-		assertEquals(LanguageModel.ENGLISH, permissions.getLocale());
 	}
 }

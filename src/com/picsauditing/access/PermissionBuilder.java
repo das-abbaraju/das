@@ -19,12 +19,10 @@ public class PermissionBuilder {
 	@Autowired
 	private FeatureToggle featureToggle;
 	@Autowired
-	private LanguageModel languageModel;
-	@Autowired
 	private UserDAO dao;
 
 	public Permissions login(User user) throws Exception {
-		Permissions permissions = new Permissions(languageModel);
+		Permissions permissions = new Permissions();
 		permissions.login(user);
 		populatePermissionsWithUserInfo(permissions, user);
 		build(permissions);

@@ -11,15 +11,14 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
+import org.powermock.reflect.Whitebox;
 
 public class UserIndexPageTest {
-	@Mock
-	private LanguageModel languageModel;
 
 	@Test
 	public void testNotLoggedIn() throws Exception {
 		assertEquals("Login.action", UserIndexPage.getIndexURL(null));
-		Permissions permissions = new Permissions(languageModel);
+		Permissions permissions = new Permissions();
 		assertEquals("Login.action", UserIndexPage.getIndexURL(permissions));
 	}
 
@@ -54,6 +53,7 @@ public class UserIndexPageTest {
 	}
 
 	private Permissions createPermissions(User user) throws Exception {
-		return EntityFactory.makePermission(user);
+        Permissions permissions = EntityFactory.makePermission(user);
+        return permissions;
 	}
 }

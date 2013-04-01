@@ -324,7 +324,7 @@ AdvancedValidationAware {
 		}
 
 		if (permissions == null) {
-			permissions = new Permissions(supportedLanguages);
+			permissions = new Permissions();
 		}
 
 		if (permissions.isLoggedIn()) {
@@ -502,7 +502,7 @@ AdvancedValidationAware {
 			}
 			return permissions;
 		} catch (Exception e) {
-			return new Permissions(supportedLanguages);
+			return new Permissions();
 		}
 	}
 
