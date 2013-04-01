@@ -306,11 +306,11 @@
             			</li>
             			<li>
                             <label>Added:</label>
-            				<s:date name="question.creationDate" />
+            				<s:date name="question.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
             			</li>
             			<li>
                             <label>Updated:</label>
-            				<s:date name="question.updateDate" />
+            				<s:date name="question.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
             			</li>
             		</s:if>
                     
