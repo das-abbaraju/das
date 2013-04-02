@@ -96946,7 +96946,13 @@ Ext.define('PICS.model.report.Report', {
             listeners: {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
-                    
+
+                    // "Add" fires when loading the report. Abort if the report has no columns.
+                    if (!record) {
+                        return;
+                    }
+
+                    // If the report is still loading, then this will do nothing.
                     this.setReportHasUnsavedChanges(record.get('report_id'));
                 },
 
@@ -96985,7 +96991,13 @@ Ext.define('PICS.model.report.Report', {
             listeners: {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
-                    
+
+                    // "Add" fires when loading the report. Abort if the report has no filters.
+                    if (!record) {
+                        return;
+                    }
+
+                    // If the report is still loading, then this will do nothing.
                     this.setReportHasUnsavedChanges(record.get('report_id'));                        
                 },
 
@@ -97026,6 +97038,12 @@ Ext.define('PICS.model.report.Report', {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
                     
+                    // "Add" fires when loading the report. Abort if the report has no sorts.
+                    if (!record) {
+                        return;
+                    }
+
+                    // If the report is still loading, then this will do nothing.
                     this.setReportHasUnsavedChanges(record.get('report_id'));
                 }
             },
