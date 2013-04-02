@@ -78,7 +78,7 @@ public class JsonReportBuilderTest {
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
 		when(reportPreferencesService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, reportId, jsonString);
@@ -128,7 +128,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
@@ -183,7 +183,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ELEMENT_DB_ID, id, jsonString);
@@ -219,7 +219,7 @@ public class JsonReportBuilderTest {
 		sorts.add(sort);
 		when(report.getSorts()).thenReturn(sorts);
 
-		JSONObject json = JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
 		String jsonString = json.toString();
 
 		assertJsonNoQuotes(REPORT_ID, id, jsonString);
@@ -239,7 +239,7 @@ public class JsonReportBuilderTest {
 		columns.add(column);
 		when(report.getColumns()).thenReturn(columns);
 
-		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JsonReportBuilder.buildReportJson(report, permissions);
 	}
 
 	@Test
@@ -253,7 +253,7 @@ public class JsonReportBuilderTest {
 		filters.add(filter);
 		when(report.getFilters()).thenReturn(filters);
 
-		JsonReportBuilder.buildReportJson(report, EntityFactory.makePermission(buildFakeUser(USER_ID)));
+		JsonReportBuilder.buildReportJson(report, permissions);
 	}
 
 	@Test
@@ -274,9 +274,9 @@ public class JsonReportBuilderTest {
 	private List<Column> buildTestColumns(String[] columnNames) {
 		List<Column> columns = new ArrayList<Column>();
 
-		for (int i = 0; i < columnNames.length; i++) {
+		for (String columnName : columnNames) {
 			Column column = new Column();
-			column.setName(columnNames[i]);
+			column.setName(columnName);
 			columns.add(column);
 		}
 		return columns;
@@ -285,12 +285,6 @@ public class JsonReportBuilderTest {
 
 	public void mockMinimalReport() {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
-	}
-
-	private User buildFakeUser(int userId) {
-		User user = new User(userId);
-		user.setAccount(account);
-		return user;
 	}
 
 }
