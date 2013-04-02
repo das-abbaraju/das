@@ -20,6 +20,7 @@
     
     #manage_report_filter
 	{
+		display: block;
 		margin: 0px 0px 20px;
 		text-align: center;
 	}
@@ -53,8 +54,7 @@
         {
             color: #ccc;
             font-size: 12px;
-            position: relative;
-            top: 2px;
+            vertical-align: 5%;
         }
         
         .icon-star.selected
@@ -85,11 +85,6 @@
             font-size: 12px;
             font-style: italic;
             white-space: nowrap;
-        }
-        
-        .description
-        {
-            max-width: 400px;
         }
     }
 }

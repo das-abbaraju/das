@@ -1436,15 +1436,16 @@ hr {
 }
 /* line 22, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page #manage_report_filter {
+  display: block;
   margin: 0px 0px 20px;
   text-align: center;
 }
-/* line 32, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 33, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
   margin-bottom: 20px;
   text-align: left;
 }
-/* line 37, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 38, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -1456,18 +1457,17 @@ hr {
   line-height: 35px;
   margin-bottom: 2px;
 }
-/* line 46, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 47, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite-icon {
   float: left;
   margin: 0 5px;
   text-decoration: none;
 }
-/* line 53, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 54, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
-  position: relative;
-  top: 2px;
+  vertical-align: 5%;
 }
 /* line 61, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
@@ -1494,10 +1494,6 @@ hr {
   font-size: 12px;
   font-style: italic;
   white-space: nowrap;
-}
-/* line 91, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .description {
-  max-width: 400px;
 }
 
 /*
@@ -1540,45 +1536,53 @@ hr {
 #ManageReports_search_page #report_search_form .icon-search {
   color: #666;
   margin-right: 2px;
-  position: relative;
-  top: 8px;
+  vertical-align: -5%;
 }
-/* line 30, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 29, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search_form input {
   background: #f1f1f2;
 }
-/* line 36, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 35, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .lt-ie8 #report_search_form {
   display: inline;
 }
-/* line 43, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 42, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .report {
   line-height: 20px;
-  padding: 0px 20px;
 }
-/* line 49, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 47, ../sass/pics/templates/report/manage-report/_search.scss */
+#ManageReports_search_page .report-list .favorite-icon {
+  line-height: 58px;
+  margin: 0 10px;
+}
+/* line 53, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .summary {
+  margin: 0 120px 0 40px;
   padding-top: 8px;
 }
-/* line 54, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 59, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .name {
   float: none;
 }
-/* line 59, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 64, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .created-by {
   line-height: normal;
 }
-/* line 64, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 69, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .description {
   font-size: 12px;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-/* line 70, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 78, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .number-favorites {
   color: #a84d10;
   font-size: 14px;
   float: right;
-  margin: 18px 0px;
+  line-height: 58px;
+  margin-right: 20px;
 }
 
 /* line 2, ../sass/pics/templates/tutorial/_navigation-menu.scss */
