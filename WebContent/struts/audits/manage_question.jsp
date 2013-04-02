@@ -33,6 +33,20 @@
             	showAuditTypeRules();
             	showCategoryRules();
             	toggleOtherOptionType();
+
+                $('.datepicker').datepicker({
+                    changeMonth : true,
+                    changeYear : true,
+                    yearRange : '1950:2049',
+                    showOn : 'button',
+                    buttonImage : 'images/icon_calendar.gif',
+                    buttonImageOnly : true,
+                    buttonText : translate('JS.ChooseADate'),
+                    constrainInput : true,
+                    showAnim : 'fadeIn',
+                    minDate: 1,
+                    dateFormat: 'yy-mm-dd'
+                });
             });
             
             function copyQuestion(atypeID) {
@@ -280,21 +294,23 @@
             		</li>
             		<li>
                         <label>Effective Date:</label>
-            			<s:textfield name="question.effectiveDate" value="%{ question.effectiveDate && getText('short_dates', {question.effectiveDate})}"/>
+                        <s:date name="question.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" var="question_effective_date" />
+            			<s:textfield name="question.effectiveDate" value="%{#question_effective_date}" cssClass="datepicker" />
             		</li>
                     
             		<s:if test="question.id > 0">
             			<li>
                             <label>Expiration Date:</label>
-            				<s:textfield name="question.expirationDate" value="%{ question.expirationDate && getText('short_dates', {question.expirationDate})}"/>
+                            <s:date name="question.expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" var="question_expiration_date"/>
+                            <s:textfield name="question.expirationDate" value="%{#question_expiration_date}" cssClass="datepicker" />
             			</li>
             			<li>
                             <label>Added:</label>
-            				<s:date name="question.creationDate" />
+            				<s:date name="question.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
             			</li>
             			<li>
                             <label>Updated:</label>
-            				<s:date name="question.updateDate" />
+            				<s:date name="question.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
             			</li>
             		</s:if>
                     

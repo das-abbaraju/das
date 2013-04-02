@@ -1,51 +1,76 @@
 package com.picsauditing.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.persistence.NoResultException;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.report.ReportContext;
-import com.picsauditing.report.ReportJson;
-import com.picsauditing.report.ReportUtil;
-import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.data.ReportDataConverter;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.JSONUtilities;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportElementDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.jpa.entities.ReportPermissionAccount;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.LegacyReportConverter;
+import com.picsauditing.report.data.ReportDataConverter;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.reflect.Whitebox;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 
 public class ReportServiceTest {
 
@@ -55,8 +80,6 @@ public class ReportServiceTest {
 	private ReportDAO reportDao;
 	@Mock
 	private ReportElementDAO reportElementDAO;
-	@Mock
-	private ReportUserDAO reportUserDao;
 	@Mock
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock
@@ -76,7 +99,7 @@ public class ReportServiceTest {
 	@Mock
 	private PermissionService permissionService;
 	@Mock
-	private ManageReportsService manageReportsService;
+	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private SqlBuilder sqlBuilder;
 	@Mock
@@ -100,12 +123,11 @@ public class ReportServiceTest {
 
 		setInternalState(reportService, "reportDao", reportDao);
 		setInternalState(reportService, "reportElementDAO", reportElementDAO);
-		setInternalState(reportService, "reportUserDao", reportUserDao);
 		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
-		setInternalState(reportService, "manageReportsService", manageReportsService);
+		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
 
 		when(user.getId()).thenReturn(USER_ID);
@@ -222,19 +244,6 @@ public class ReportServiceTest {
 		report.setParameters("this is not valid json");
 
 		reportService.validate(report);
-	}
-
-	@Test
-	public void testLoadOrCreateReportUser() {
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-
-		ReportUser reportUser = reportService.loadOrCreateReportUser(USER_ID, REPORT_ID);
-
-		verify(reportUserDao).save(reportUser);
-		assertEquals(REPORT_ID, reportUser.getReport().getId());
-		assertEquals(USER_ID, reportUser.getUser().getId());
-		assertFalse(reportUser.isFavorite());
 	}
 
 	@Test(expected = ReportPermissionException.class)
@@ -445,7 +454,8 @@ public class ReportServiceTest {
 	@Test
 	public void testCopy_WhenReportIsCopied_ThenReportIsValidatedAndSaved() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		User user = new User(USER_ID);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserViewReport(eq(permissions), anyInt())).thenReturn(true);
 		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
 		ReportService reportServiceSpy = spy(reportService);
@@ -469,8 +479,10 @@ public class ReportServiceTest {
 	@Test
 	public void testSave_WhenReportIsSaved_ThenReportIsValidatedAndSaved() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
-		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
+		reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		ReportUser reportUser = new ReportUser(USER_ID, report);
+		when(reportPreferencesService.loadReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report report = reportServiceSpy.save(reportContext);

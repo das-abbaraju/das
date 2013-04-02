@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.FacilitiesDAO;

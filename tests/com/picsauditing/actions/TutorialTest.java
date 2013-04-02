@@ -6,10 +6,13 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.util.Date;
 
@@ -26,6 +29,8 @@ public class TutorialTest extends PicsActionTest {
     private Permissions permissions;
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private FeatureToggle featureToggle;
 
     @Before
     public void setUp() throws Exception {
@@ -36,30 +41,31 @@ public class TutorialTest extends PicsActionTest {
         tutorial.permissions = permissions;
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(tutorial, this);
+        Whitebox.setInternalState(tutorial, "featureToggle", featureToggle);
     }
 
     @Test
     public void testExecute_UpdateFirstTimeUser() throws Exception {
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(null);
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
         when(userDAO.find(anyInt())).thenReturn(new User());
 
         String result = tutorial.navigationMenu();
 
-        verify(permissions, times(1)).setUsingDynamicReportsDate(any(Date.class));
+        verify(permissions, times(1)).setUsingVersion7MenusDate(any(Date.class));
         verify(userDAO, times(1)).save(any(User.class));
         assertEquals("navigation-menu", result);
     }
 
     @Test
     public void testExecute_NotUpdateFirstTimeUser() throws Exception {
-        when(permissions.isUsingDynamicReports()).thenReturn(true);
-        when(permissions.getUsingDynamicReportsDate()).thenReturn(new Date());
+        when(permissions.isUsingVersion7Menus()).thenReturn(true);
+        when(permissions.getUsingVersion7MenusDate()).thenReturn(new Date());
 
         String result = tutorial.navigationMenu();
 
         verifyZeroInteractions(userDAO);
-        verify(permissions, never()).setUsingDynamicReportsDate(any(Date.class));
+        verify(permissions, never()).setUsingVersion7MenusDate(any(Date.class));
         assertEquals("navigation-menu", result);
     }
 

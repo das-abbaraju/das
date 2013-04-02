@@ -67,8 +67,6 @@ public class ContractorAuditDownload extends ContractorAuditController {
 
 		cell.setCellValue(header);
 
-		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
-
 		if (builder == null) {
 			builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 		}
@@ -150,7 +148,7 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	private int fillExcelQuestions(List<AuditQuestion> questions, int rowNum) {
 
 		for (AuditQuestion question : questions) {
-			if (question.isCurrent() && question.isValidQuestion(conAudit.getValidDate())
+			if (question.isValidQuestion(conAudit.getValidDate())
 					&& question.isVisibleInAudit(conAudit) && satisfiesRequiredQuestion(question)
 					&& satisfiesVisibleQuestion(question)) {
 				HSSFRow row = sheet.createRow(rowNum++);

@@ -20,8 +20,9 @@ public class ReportPQFVerification extends ReportAccount {
 		// As of January 2010 there are only 34 contractors that work for only free accounts 
 		// and don't require verification. This is easier to verify all of them FOR NOW.
 		// and ao.requiredAuditStatus = 'Active'
-		
-		sql.addJoin("LEFT JOIN users csr ON csr.id = c.welcomeAuditor_id");
+
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+		sql.addJoin("LEFT JOIN users csr ON csr.id = au.userID");
 		sql.addField("csr.name csr_name");
 
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id "

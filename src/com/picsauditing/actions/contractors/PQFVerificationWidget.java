@@ -18,7 +18,9 @@ public class PQFVerificationWidget extends PicsActionSupport {
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 		sql.setType(SelectAccount.Type.Contractor);
 
-		sql.addJoin("JOIN users csr ON csr.id = c.welcomeAuditor_id");
+        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+
+		sql.addJoin("JOIN users csr ON csr.id = au.userID");
 		sql.addField("csr.name csr_name");
 		sql.addWhere("csr.id = " + permissions.getShadowedUserID());
 

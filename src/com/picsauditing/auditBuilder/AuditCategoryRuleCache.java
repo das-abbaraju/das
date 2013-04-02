@@ -11,9 +11,9 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
-
 	private AuditTypes data;
 	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache.class);
 	
@@ -32,7 +32,7 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		return rules;
 	}
 
-	protected void initialize(List<AuditCategoryRule> rules) {
+	private void initialize(List<AuditCategoryRule> rules) {
 		data = new AuditTypes();
 		for (AuditCategoryRule rule : rules) {
 			if (rule.getId() > 30470)
@@ -41,10 +41,10 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		}
 	}
 
-	public synchronized void initialize(AuditDecisionTableDAO dao) {
+	synchronized void initialize() {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(dao.findAllRules(AuditCategoryRule.class));
+			initialize(auditDecisionTableDAO.findAllRules(AuditCategoryRule.class));
 			long endTime = System.currentTimeMillis();
 			logger.info("Filled AuditCategoryRuleCache in {} ms", (endTime - startTime));
 		}
@@ -52,11 +52,13 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 
 	public synchronized void clear() {
 		data = null;
+        initialize();
 	}
 
 	private AuditTypes getData() {
-		if (data == null)
-			throw new RuntimeException("No rules were found. Please initialize() before getting data.");
+		if (data == null) {
+            initialize();
+        }
 		return data;
 	}
 

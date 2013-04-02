@@ -605,17 +605,17 @@
                                     <p>
                                         <s:text name="global.CSR"/>:
                                         <strong>
-                                            <s:property value="contractor.auditor.name"/>
+                                            <s:property value="contractor.currentCsr.name"/>
                                             /
-                                            <s:property value="contractor.auditor.phone"/>
+                                            <s:property value="contractor.currentCsr.phone"/>
                                             <span id="CSRNote">(<s:text name="ContractorView.ContractorDashboard.CSRCallNote"/>)</span>
                                             /
                                         </strong>
                                         <s:text name="ProfileEdit.u.fax"/>:
-                                        <s:property value="contractor.auditor.fax"/>
+                                        <s:property value="contractor.currentCsr.fax"/>
                                         /
-                                        <a href="mailto:<s:property value="contractor.auditor.email"/>" class="email">
-                                            <s:property value="contractor.auditor.email"/>
+                                        <a href="mailto:<s:property value="contractor.currentCsr.email"/>" class="email">
+                                            <s:property value="contractor.currentCsr.email"/>
                                         </a>
                                     </p>
                         
@@ -903,7 +903,7 @@
                                             onclick="$(this).attr('disabled', true); $('#form_sync').submit();" 
                                             style="margin: 5px auto;"
                                             value="<s:text name="ContractorView.Synchronize" />"/>
-                        
+
                                         <s:if test="contractor.lastRecalculation != null">
                                             <br/>
                                             
@@ -912,6 +912,13 @@
                                             </s:text>
                                         </s:if>
                                     </s:form>
+
+                                    <s:if test="permissions.hasPermission('ManageCsrAssignment')" >
+                                        <a href="ContractorView!autoAssignCsr.action?id=<s:property value='contractor.id'/>" class="picsbutton">
+                                            Auto Assign CSR
+                                        </a>
+                                    </s:if>
+
                                 </div>
                             </div>
                         </div>

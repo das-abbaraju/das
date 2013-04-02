@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.model.i18n.KeyValue;
+import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.validator.InputValidator;
 
 import org.junit.Before;
@@ -24,6 +26,8 @@ public class InputValidatorTest {
 
 	@Mock
 	ContractorAccountDAO contractorAccountDao;
+	@Mock
+	LanguageModel supportedLanguages;
 
 	@Before
 	public void setUp() throws Exception {
@@ -318,6 +322,78 @@ public class InputValidatorTest {
 		String errorMessageKey = inputValidator.validateDate(date);
 
 		assertNotSame(InputValidator.NO_ERROR, errorMessageKey);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenLanguageIsNull_ThenReturnFalse() {
+		String language = null;
+
+		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenLanguageIsEmpty_ThenReturnFalse() {
+		String language = "";
+
+		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenSupportedLanguagesIsNull_ThenReturnFalse() {
+		String language = Locale.ENGLISH.getLanguage();
+
+		boolean result = inputValidator.isLanguageValid(language, null);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenStableLanguagesAreNull_ThenReturnFalse() {
+		String language = Locale.ENGLISH.getLanguage();
+		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(null);
+
+		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenNoStableLanguages_ThenReturnFalse() {
+		String language = Locale.ENGLISH.getLanguage();
+		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(new ArrayList<KeyValue>());
+
+		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenLanguageIsInStableLanguages_ThenReturnTrue() {
+		String language = Locale.ENGLISH.getLanguage();
+		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
+		stableLanguages.add(new KeyValue(language, ""));
+		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(stableLanguages);
+
+		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testIsLanguageValid_WhenLanguageIsNotInStableLanguages_ThenReturnFalse() {
+		String languageEnglish = Locale.ENGLISH.getLanguage();
+		String languageFrench = Locale.FRENCH.getLanguage();
+		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
+		stableLanguages.add(new KeyValue(languageFrench, ""));
+		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(stableLanguages);
+
+		boolean result = inputValidator.isLanguageValid(languageEnglish, supportedLanguages);
+
+		assertFalse(result);
 	}
 
 	@Test

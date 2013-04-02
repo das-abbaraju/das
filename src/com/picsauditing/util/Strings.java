@@ -1,13 +1,7 @@
 package com.picsauditing.util;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -595,4 +589,19 @@ public class Strings {
 
 		return object.toString();
 	}
+
+    public static List<Integer> explodeCommaDelimitedStringOfIds(String stringOfIds) throws NumberFormatException {
+        String[] stringArrayIds = stringOfIds.split(",");
+        List<Integer> idsList = new ArrayList<Integer>();
+
+        for (String contractorId: stringArrayIds) {
+            try {
+                idsList.add(Integer.valueOf(contractorId.trim()));
+            } catch (NumberFormatException e) {
+                logger.error("Tried parse ID : " + contractorId, e);
+                throw e;
+            }
+        }
+        return idsList;
+    }
 }

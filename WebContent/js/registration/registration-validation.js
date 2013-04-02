@@ -59,9 +59,6 @@
 
                     // serialized form including json validator interceptors
                     data.push({
-                        name: 'method:ajaxValidatePlaceholder',
-                        value: 'Get Started'
-                    }, {
                         name: 'struts.enableJSONValidation',
                         value: true
                     }, {

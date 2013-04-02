@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -20,10 +19,6 @@ public class FieldTest {
 	private static final String value = "value";
 	private static final String prefix = "prefix";
 	private static final String suffix = "suffix";
-
-	@Before
-	public void setUp() {
-	}
 
 	@Test
 	public void testGetI18nKey_PrefixNullSuffixNull() {

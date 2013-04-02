@@ -33,8 +33,6 @@ public class AuditOverride extends ContractorDocuments {
 		subHeading = "Manually Add Audit";
 		this.findContractor();
 
-		auditTypeRuleCache.initialize(auditRuleDAO);
-
 		if (!isManuallyAddAudit()) {
 			throw new NoRightsException("Cannot Manually Add Audits");
 		}

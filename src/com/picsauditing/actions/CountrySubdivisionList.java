@@ -1,5 +1,7 @@
 package com.picsauditing.actions;
 
+import org.json.simple.JSONObject;
+
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.CountrySubdivision;
@@ -15,8 +17,17 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	@Override
 	@Anonymous
 	public String execute() throws Exception {
-
 		return SUCCESS;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Anonymous
+	public String phone() {
+		json = new JSONObject();
+
+		json.put("picsPhoneNumber", getPicsPhoneNumber(countryString));
+
+		return JSON;
 	}
 
 	@Anonymous
@@ -55,7 +66,7 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	public void setNeedsSuffix(boolean needsSuffix) {
 		this.needsSuffix = needsSuffix;
 	}
-	
+
     public CountrySubdivision getAccountCountrySubdivision() {
         CountrySubdivision value = null;
         value = new CountrySubdivision(countrySubdivisionString);

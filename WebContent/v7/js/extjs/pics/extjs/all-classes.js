@@ -66178,32 +66178,46 @@ Ext.define('PICS.data.ServerCommunication', {
             copyReport: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
+                    report_copy = report_store.add(report)[0],
                     url = PICS.data.ServerCommunicationUrl.getCopyReportUrl();
 
-                // flag store as dirty so it will sync data to server
-                report.setDirty();
+                // Remove the original report, so that sync sends only the copy.
+                report_store.remove(report);
+
+                // Flag the store as dirty so that sync will execute.
+                report_copy.setDirty();
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
+                
+                function callback(conn, response, options, eOpts) {
+                    if (PICS.data.Exception.hasException(response)) {
+                        PICS.data.Exception.handleException({
+                            response: response
+                        });
+                    } else {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data),
+                            report_id = json.id;
 
-                report_store.sync({
-                    callback: function (batch, eOpts) {
-                        var operation = batch.operations[0],
-                            response = operation.response || { status: operation.error.status };
-                        
-                        if (PICS.data.Exception.hasException(response)) {
-                            PICS.data.Exception.handleException({
-                                response: response
-                            });
-                        } else {
-                            var data = response.responseText,
-                                json = Ext.JSON.decode(data),
-                                report_id = json.id;
-    
-                            window.location.href = 'Report.action?report=' + report_id;
-                        }
+                        window.location.href = 'Report.action?report=' + report_id;
+                    }
+                } 
+                
+                Ext.Ajax.on({
+                    requestcomplete: {
+                        fn: callback,
+                        scope: this,
+                        single: true
+                    },
+                    requestexception: {
+                        fn: callback,
+                        scope: this,
+                        single: true
                     }
                 });
+
+                report_store.sync();
             },
             
             exportReport: function () {
@@ -66248,6 +66262,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
+                    has_unsaved_changes = report.getHasUnsavedChanges(),
                     url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl();
 
                 // add data table loading mask
@@ -66258,49 +66273,59 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
+                
+                function callback(conn, response, options, eOpts) {
+                    if (PICS.data.Exception.hasException(response)) {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data),
+                            report_store = Ext.StoreManager.get('report.Reports'),
+                            report = report_store.first();
+                        
+                        PICS.data.Exception.handleException({
+                            response: response,
+                            callback: function () {
+                                report.rejectAllChanges();
+                                
+                                PICS.data.ServerCommunication.loadData();
+                            }
+                        });
+                    } else {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data);
 
-                // sync
-                report_store.sync({
-                    callback: function (batch, eOpts) {
-                        var operation = batch.operations[0],
-                            response = operation.response || { status: operation.error.status };
+                        // load the report store
+                        var report_store = loadReportStore(json),
+                            report = report_store.first();
 
-                        if (PICS.data.Exception.hasException(response)) {
-                            var data = response.responseText,
-                                json = Ext.JSON.decode(data),
-                                report_store = Ext.StoreManager.get('report.Reports'),
-                                report = report_store.first();
-                            
-                            PICS.data.Exception.handleException({
-                                response: response,
-                                callback: function () {
-                                    report.rejectAllChanges();
-                                    
-                                    PICS.data.ServerCommunication.loadData();
-                                }
-                            });
-                        } else {
-                            var data = response.responseText,
-                                json = Ext.JSON.decode(data);
+                        // Persist the unsaved changes flag.
+                        report.setHasUnsavedChanges(has_unsaved_changes);
 
-                            // load the report store
-                            var report_store = loadReportStore(json),
-                                report = report_store.first();
-                            
-                            // TODO: check if needed
-                            // report.commitAllChanges();
-    
-                            // load new results
-                            loadDataTableStore(json);
-    
-                            // remove data table loading mask
-                            stopDataTableLoading();
-    
-                            // refresh grid
-                            updateDataTableView(report);
-                        }
+                        // load new results
+                        loadDataTableStore(json);
+
+                        // remove data table loading mask
+                        stopDataTableLoading();
+
+                        // refresh grid
+                        updateDataTableView(report);
+                    }
+                } 
+                
+                Ext.Ajax.on({
+                    requestcomplete: {
+                        fn: callback,
+                        scope: this,
+                        single: true
+                    },
+                    requestexception: {
+                        fn: callback,
+                        scope: this,
+                        single: true
                     }
                 });
+
+                // sync
+                report_store.sync();
             },
 
             loadData: function (page, limit) {
@@ -66327,47 +66352,55 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
-
-                // sync
-                report_store.sync({
-                    callback: function (batch, eOpts) {
-                        var operation = batch.operations[0],
-                            response = operation.response || { status: operation.error.status };
+                
+                function callback(conn, response, options, eOpts) {
+                    if (PICS.data.Exception.hasException(response)) {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data),
+                            report_store = Ext.StoreManager.get('report.Reports'),
+                            report = report_store.first();
                         
-                        if (PICS.data.Exception.hasException(response)) {
-                            var data = response.responseText,
-                                json = Ext.JSON.decode(data),
-                                report_store = Ext.StoreManager.get('report.Reports'),
-                                report = report_store.first();
-                            
-                            PICS.data.Exception.handleException({
-                                response: response,
-                                callback: function () {
-                                    report.rejectAllChanges();
-                                    
-                                    PICS.data.ServerCommunication.loadData();
-                                }
-                            });
-                        } else {
-                            var data = response.responseText,
-                                json = Ext.JSON.decode(data);
-                            
-                            var report_store = Ext.StoreManager.get('report.Reports'),
-                                report = report_store.first();
-    
-                            report.commitAllChanges();
-    
-                            // load new results
-                            loadDataTableStore(json);
-    
-                            // remove data table loading mask
-                            stopDataTableLoading();
-    
-                            // refresh grid
-                            updateDataTableView(report);
-                        }
+                        PICS.data.Exception.handleException({
+                            response: response,
+                            callback: function () {
+                                report.rejectAllChanges();
+                                
+                                PICS.data.ServerCommunication.loadData();
+                            }
+                        });
+                    } else {
+                        var data = response.responseText,
+                            json = Ext.JSON.decode(data);
+                        
+                        var report_store = Ext.StoreManager.get('report.Reports'),
+                            report = report_store.first();
+
+                        // load new results
+                        loadDataTableStore(json);
+
+                        // remove data table loading mask
+                        stopDataTableLoading();
+
+                        // refresh grid
+                        updateDataTableView(report);
+                    }
+                }
+                
+                Ext.Ajax.on({
+                    requestcomplete: {
+                        fn: callback,
+                        scope: this,
+                        single: true
+                    },
+                    requestexception: {
+                        fn: callback,
+                        scope: this,
+                        single: true
                     }
                 });
+
+                // sync
+                report_store.sync();
             },
             
             printReport: function () {
@@ -66387,21 +66420,33 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
+                
+                function callback(conn, response, options, eOpts) {
+                    if (PICS.data.Exception.hasException(response)) {
+                        PICS.data.Exception.handleException({
+                            response: response
+                        });
+                    } else {
+                        report.setHasUnsavedChanges(false);
 
-                report_store.sync({
-                    callback: function (batch, eOpts) {
-                        var operation = batch.operations[0],
-                            response = operation.response || { status: operation.error.status };
-
-                        if (PICS.data.Exception.hasException(response)) {
-                            PICS.data.Exception.handleException({
-                                response: response
-                            });
-                        } else {
-                            success_callback();
-                        }
+                        success_callback();
+                    }
+                }
+                
+                Ext.Ajax.on({
+                    requestcomplete: {
+                        fn: callback,
+                        scope: this,
+                        single: true
+                    },
+                    requestexception: {
+                        fn: callback,
+                        scope: this,
+                        single: true
                     }
                 });
+
+                report_store.sync();
             },
             
             shareReport: function (options) {
@@ -72187,77 +72232,6 @@ Ext.define('Ext.layout.container.Card', {
     }
 });
 
-Ext.define('PICS.model.report.Filter', {
-    extend: 'Ext.data.Model',
-
-    fields: [{
-        name: 'field_id',
-        type: 'string'
-    }, {
-        name: 'type',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'category',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'name',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'description',
-        type: 'string',
-        persist: false
-    }, {
-        name: 'operator',
-        type: 'string',
-        useNull: true
-    }, {
-        name: 'value',
-        convert: function (value, record) {
-            var type = record.get('type');
-            
-            if (value == null) {
-                return '';
-            }
-            
-            switch (type) {
-                case PICS.data.FilterType.Date:
-                    value = Ext.Date.format(value, 'Y-m-d') || value;
-                    
-                    break;
-                case PICS.data.FilterType.Multiselect:
-                    if (value instanceof Array) {
-                        value = value.join(', ');
-                    }
-                    
-                    break;
-                case PICS.data.FilterType.AccountID:
-                case PICS.data.FilterType.Boolean:
-                case PICS.data.FilterType.Number:
-                case PICS.data.FilterType.UserID:
-                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
-                    value = value.toString();
-                    
-                    break;
-                case PICS.data.FilterType.Autocomplete:
-                case PICS.data.FilterType.String:
-                default:
-                    // no conversion necessary
-                    break;
-            }
-            
-            return value;
-        },
-        type: 'string',
-        useNull: true
-    }, {
-        name: 'column_compare_id',
-        type: 'string',
-        useNull: true
-    }]
-});
 Ext.define('PICS.model.report.ColumnFunctions', {
     extend: 'Ext.data.Model',
 
@@ -75636,18 +75610,298 @@ Ext.define('Ext.form.action.Action', {
     }
 });
 
-Ext.define('PICS.model.report.Sort', {
-    extend: 'Ext.data.Model',
+/**
+ * @author Ed Spencer
+ * @class Ext.data.association.BelongsTo
+ *
+ * Represents a many to one association with another model. The owner model is expected to have
+ * a foreign key which references the primary key of the associated model:
+ *
+ *     Ext.define('Category', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',   type: 'int' },
+ *             { name: 'name', type: 'string' }
+ *         ]
+ *     });
+ *
+ *     Ext.define('Product', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             { name: 'id',          type: 'int' },
+ *             { name: 'category_id', type: 'int' },
+ *             { name: 'name',        type: 'string' }
+ *         ],
+ *         // we can use the belongsTo shortcut on the model to create a belongsTo association
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category' }
+ *         ]
+ *     });
+ *
+ * In the example above we have created models for Products and Categories, and linked them together
+ * by saying that each Product belongs to a Category. This automatically links each Product to a Category
+ * based on the Product's category_id, and provides new functions on the Product model:
+ *
+ * ## Generated getter function
+ *
+ * The first function that is added to the owner model is a getter function:
+ *
+ *     var product = new Product({
+ *         id: 100,
+ *         category_id: 20,
+ *         name: 'Sneakers'
+ *     });
+ *
+ *     product.getCategory(function(category, operation) {
+ *         // do something with the category object
+ *         alert(category.get('id')); // alerts 20
+ *     }, this);
+ *
+ * The getCategory function was created on the Product model when we defined the association. This uses the
+ * Category's configured {@link Ext.data.proxy.Proxy proxy} to load the Category asynchronously, calling the provided
+ * callback when it has loaded.
+ *
+ * The new getCategory function will also accept an object containing success, failure and callback properties
+ * - callback will always be called, success will only be called if the associated model was loaded successfully
+ * and failure will only be called if the associatied model could not be loaded:
+ *
+ *     product.getCategory({
+ *         reload: true, // force a reload if the owner model is already cached
+ *         callback: function(category, operation) {}, // a function that will always be called
+ *         success : function(category, operation) {}, // a function that will only be called if the load succeeded
+ *         failure : function(category, operation) {}, // a function that will only be called if the load did not succeed
+ *         scope   : this // optionally pass in a scope object to execute the callbacks in
+ *     });
+ *
+ * In each case above the callbacks are called with two arguments - the associated model instance and the
+ * {@link Ext.data.Operation operation} object that was executed to load that instance. The Operation object is
+ * useful when the instance could not be loaded.
+ * 
+ * Once the getter has been called on the model, it will be cached if the getter is called a second time. To
+ * force the model to reload, specify reload: true in the options object.
+ *
+ * ## Generated setter function
+ *
+ * The second generated function sets the associated model instance - if only a single argument is passed to
+ * the setter then the following two calls are identical:
+ *
+ *     // this call...
+ *     product.setCategory(10);
+ *
+ *     // is equivalent to this call:
+ *     product.set('category_id', 10);
+ *     
+ * An instance of the owner model can also be passed as a parameter.
+ *
+ * If we pass in a second argument, the model will be automatically saved and the second argument passed to
+ * the owner model's {@link Ext.data.Model#save save} method:
+ *
+ *     product.setCategory(10, function(product, operation) {
+ *         // the product has been saved
+ *         alert(product.get('category_id')); //now alerts 10
+ *     });
+ *
+ *     //alternative syntax:
+ *     product.setCategory(10, {
+ *         callback: function(product, operation), // a function that will always be called
+ *         success : function(product, operation), // a function that will only be called if the load succeeded
+ *         failure : function(product, operation), // a function that will only be called if the load did not succeed
+ *         scope   : this //optionally pass in a scope object to execute the callbacks in
+ *     })
+ *
+ * ## Customisation
+ *
+ * Associations reflect on the models they are linking to automatically set up properties such as the
+ * {@link #primaryKey} and {@link #foreignKey}. These can alternatively be specified:
+ *
+ *     Ext.define('Product', {
+ *         fields: [...],
+ *
+ *         associations: [
+ *             { type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
+ *         ]
+ *     });
+ *
+ * Here we replaced the default primary key (defaults to 'id') and foreign key (calculated as 'category_id')
+ * with our own settings. Usually this will not be needed.
+ */
+Ext.define('Ext.data.association.BelongsTo', {
+    extend: 'Ext.data.association.Association',
+    alternateClassName: 'Ext.data.BelongsToAssociation',
+    alias: 'association.belongsto',
 
-    fields: [{
-        name: 'field_id',
-        type: 'string'
-    }, {
-        name: 'direction',
-        type: 'string',
-        defaultValue: 'ASC'
-    }]
+    /**
+     * @cfg {String} foreignKey The name of the foreign key on the owner model that links it to the associated
+     * model. Defaults to the lowercased name of the associated model plus "_id", e.g. an association with a
+     * model called Product would set up a product_id foreign key.
+     *
+     *     Ext.define('Order', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'date'],
+     *         hasMany: 'Product'
+     *     });
+     *
+     *     Ext.define('Product', {
+     *         extend: 'Ext.data.Model',
+     *         fields: ['id', 'name', 'order_id'], // refers to the id of the order that this product belongs to
+     *         belongsTo: 'Order'
+     *     });
+     *     var product = new Product({
+     *         id: 1,
+     *         name: 'Product 1',
+     *         order_id: 22
+     *     }, 1);
+     *     product.getOrder(); // Will make a call to the server asking for order_id 22
+     *
+     */
+
+    /**
+     * @cfg {String} getterName The name of the getter function that will be added to the local model's prototype.
+     * Defaults to 'get' + the name of the foreign model, e.g. getCategory
+     */
+
+    /**
+     * @cfg {String} setterName The name of the setter function that will be added to the local model's prototype.
+     * Defaults to 'set' + the name of the foreign model, e.g. setCategory
+     */
+
+    /**
+     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
+     * Use 'belongsTo' to create a BelongsTo association.
+     *
+     *     associations: [{
+     *         type: 'belongsTo',
+     *         model: 'User'
+     *     }]
+     */
+    constructor: function(config) {
+        this.callParent(arguments);
+
+        var me             = this,
+            ownerProto     = me.ownerModel.prototype,
+            associatedName = me.associatedName,
+            getterName     = me.getterName || 'get' + associatedName,
+            setterName     = me.setterName || 'set' + associatedName;
+
+        Ext.applyIf(me, {
+            name        : associatedName,
+            foreignKey  : associatedName.toLowerCase() + "_id",
+            instanceName: associatedName + 'BelongsToInstance',
+            associationKey: associatedName.toLowerCase()
+        });
+
+        ownerProto[getterName] = me.createGetter();
+        ownerProto[setterName] = me.createSetter();
+    },
+
+    /**
+     * @private
+     * Returns a setter function to be placed on the owner model's prototype
+     * @return {Function} The setter function
+     */
+    createSetter: function() {
+        var me = this,
+            foreignKey = me.foreignKey;
+
+        //'this' refers to the Model instance inside this function
+        return function(value, options, scope) {
+            // If we pass in an instance, pull the id out
+            if (value && value.isModel) {
+                value = value.getId();
+            }
+            this.set(foreignKey, value);
+
+            if (Ext.isFunction(options)) {
+                options = {
+                    callback: options,
+                    scope: scope || this
+                };
+            }
+
+            if (Ext.isObject(options)) {
+                return this.save(options);
+            }
+        };
+    },
+
+    /**
+     * @private
+     * Returns a getter function to be placed on the owner model's prototype. We cache the loaded instance
+     * the first time it is loaded so that subsequent calls to the getter always receive the same reference.
+     * @return {Function} The getter function
+     */
+    createGetter: function() {
+        var me              = this,
+            associatedName  = me.associatedName,
+            associatedModel = me.associatedModel,
+            foreignKey      = me.foreignKey,
+            primaryKey      = me.primaryKey,
+            instanceName    = me.instanceName;
+
+        //'this' refers to the Model instance inside this function
+        return function(options, scope) {
+            options = options || {};
+
+            var model = this,
+                foreignKeyId = model.get(foreignKey),
+                success,
+                instance,
+                args;
+
+            if (options.reload === true || model[instanceName] === undefined) {
+                instance = Ext.ModelManager.create({}, associatedName);
+                instance.set(primaryKey, foreignKeyId);
+
+                if (typeof options == 'function') {
+                    options = {
+                        callback: options,
+                        scope: scope || model
+                    };
+                }
+                
+                // Overwrite the success handler so we can assign the current instance
+                success = options.success;
+                options.success = function(rec){
+                    model[instanceName] = rec;
+                    if (success) {
+                        success.apply(this, arguments);
+                    }
+                };
+
+                associatedModel.load(foreignKeyId, options);
+                // assign temporarily while we wait for data to return
+                model[instanceName] = instance;
+                return instance;
+            } else {
+                instance = model[instanceName];
+                args = [instance];
+                scope = scope || options.scope || model;
+
+                //TODO: We're duplicating the callback invokation code that the instance.load() call above
+                //makes here - ought to be able to normalize this - perhaps by caching at the Model.load layer
+                //instead of the association layer.
+                Ext.callback(options, scope, args);
+                Ext.callback(options.success, scope, args);
+                Ext.callback(options.failure, scope, args);
+                Ext.callback(options.callback, scope, args);
+
+                return instance;
+            }
+        };
+    },
+
+    /**
+     * Read associated data
+     * @private
+     * @param {Ext.data.Model} record The record we're writing to
+     * @param {Ext.data.reader.Reader} reader The reader for the associated model
+     * @param {Object} associationData The raw associated data
+     */
+    read: function(record, reader, associationData){
+        record[this.instanceName] = reader.read([associationData]).records[0];
+    }
 });
+
 /**
  * Component layout for tabs
  * @private
@@ -76828,23 +77082,6 @@ Ext.define('Ext.ProgressBar', {
     }
 });
 
-Ext.define('PICS.store.report.Filters', {
-    extend: 'PICS.store.report.base.Store',
-    model: 'PICS.model.report.Filter',
-
-    groupField: 'category',
-    proxy: {
-        reader: {
-            root: 'filters',
-            type: 'json'
-        },
-        type: 'memory'
-    },
-    sorters: [{
-        property: 'category',
-        direction: 'ASC'
-    }]
-});
 Ext.define('PICS.store.report.ColumnFunctions', {
     extend: 'PICS.store.report.base.Store',
     model: 'PICS.model.report.ColumnFunctions',
@@ -82889,6 +83126,102 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     title: '<i class="icon-print icon-large"></i>Print',
     // custom config
     modal_title: 'Print Report'
+});
+Ext.define('PICS.model.report.Filter', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'field_id',
+        type: 'string'
+    }, {
+        name: 'type',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'category',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'name',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'description',
+        type: 'string',
+        persist: false
+    }, {
+        name: 'operator',
+        type: 'string',
+        useNull: true
+    }, {
+        name: 'value',
+        convert: function (value, record) {
+            var type = record.get('type');
+            
+            if (value == null) {
+                return '';
+            }
+            
+            switch (type) {
+                case PICS.data.FilterType.Date:
+                    value = Ext.Date.format(value, 'Y-m-d') || value;
+                    
+                    break;
+                case PICS.data.FilterType.Multiselect:
+                    if (value instanceof Array) {
+                        value = value.join(', ');
+                    }
+                    
+                    break;
+                case PICS.data.FilterType.AccountID:
+                case PICS.data.FilterType.Boolean:
+                case PICS.data.FilterType.Number:
+                case PICS.data.FilterType.UserID:
+                    // flatten all values return into strings instead of overriding Ext.form.Basic.getFieldValues
+                    value = value.toString();
+                    
+                    break;
+                case PICS.data.FilterType.Autocomplete:
+                case PICS.data.FilterType.String:
+                default:
+                    // no conversion necessary
+                    break;
+            }
+            
+            return value;
+        },
+        type: 'string',
+        useNull: true
+    }, {
+        name: 'column_compare_id',
+        type: 'string',
+        useNull: true
+    }],
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        instanceName: 'report',
+        setterName: 'setReport'
+    }]
+});
+Ext.define('PICS.store.report.Filters', {
+    extend: 'PICS.store.report.base.Store',
+    model: 'PICS.model.report.Filter',
+
+    groupField: 'category',
+    proxy: {
+        reader: {
+            root: 'filters',
+            type: 'json'
+        },
+        type: 'memory'
+    },
+    sorters: [{
+        property: 'category',
+        direction: 'ASC'
+    }]
 });
 /**
  * @author Ed Spencer
@@ -92123,22 +92456,19 @@ Ext.define('PICS.view.layout.Menu', {
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-        
-        // hack-ish to determine if we should "switch" out the menu separator and favorites label
-        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
-        if (items === undefined || items.length < 4) {
-            return;
-        }
 
-        items.splice(2, 1, {
-            xtype: 'menuseparator'
-        });
-
-        items.splice(3, 1, {
-            xtype: 'tbtext',
-            cls: 'menu-title',
-            // TODO pass in translated "Favorites"
-            text: 'Favorites'
+        Ext.each(items, function(item, index) {
+            if (item.text == 'separator') {
+                items.splice(index, 1, {
+                    xtype: 'menuseparator'
+                });
+            } else if (item.id == 'Favorites_menu') {
+                items.splice(index, 1, {
+                    xtype: 'tbtext',
+                    cls: 'menu-title',
+                    text: item.text
+                });
+            }
         });
     },
 
@@ -92551,6 +92881,26 @@ Ext.define('Ext.grid.header.DragZone', {
     }
 });
 
+Ext.define('PICS.model.report.Sort', {
+    extend: 'Ext.data.Model',
+
+    fields: [{
+        name: 'field_id',
+        type: 'string'
+    }, {
+        name: 'direction',
+        type: 'string',
+        defaultValue: 'ASC'
+    }],
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        instanceName: 'report',
+        setterName: 'setReport'
+    }]
+});
 /**
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
  * draggable items dropped onto it.  The drop has no effect until an implementation of notifyDrop is provided.
@@ -95276,6 +95626,20 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         });
     },
 
+    getFunctionMenuItem: function (menu_items) {
+        var function_item;
+
+        Ext.each(menu_items, function(item, index) {
+            if (item.name == 'function' || item.name == 'remove_function') {
+                function_item = item;
+
+                return false;
+            }
+        });
+
+        return function_item;
+    },
+
     // column header height is dictated by the height of the rownumberer column
     // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
@@ -95303,6 +95667,26 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         view.refresh();
+    },
+
+    updateFunctionMenuItem: function(grid_column) {
+        var menu = this.headerCt.getMenu(),
+            menu_items = menu.items.items,
+            function_item = this.getFunctionMenuItem(menu_items),
+            column = grid_column.column,
+            sql_function = column.get('sql_function');
+
+        if (!function_item) {
+            return false;
+        }
+
+        if (!sql_function) {
+            function_item.setText('Functions...');
+            function_item.name = "function";
+        } else {
+            function_item.setText('Remove Function');
+            function_item.name = "remove_function";
+        }
     }
 });
 Ext.define('PICS.view.report.Viewport', {
@@ -95740,7 +96124,7 @@ Ext.define('PICS.ux.grid.column.String', {
 });
 Ext.define('PICS.model.report.Column', {
     extend: 'Ext.data.Model',
-    
+
     requires: [
         'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
@@ -95788,6 +96172,14 @@ Ext.define('PICS.model.report.Column', {
         name: 'is_sortable',
         type: 'boolean',
         persist: false
+    }],
+
+    associations: [{
+        type: 'belongsTo',
+        model: 'PICS.model.report.Report',
+        getterName: 'getReport',
+        instanceName: 'report',
+        setterName: 'setReport'
     }],
 
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
@@ -96545,15 +96937,107 @@ Ext.define('PICS.model.report.Report', {
         name: 'is_favorite',
         type: 'boolean'
     }],
+
     hasMany: [{
         model: 'PICS.model.report.Column',
-        name: 'columns'
+        name: 'columns',
+        foreignKey: 'report_id',
+        storeConfig : {
+            listeners: {
+                add: function (store, records, index, eOpts) {
+                    var record = records[0];
+                    
+                    this.setReportHasUnsavedChanges(record.get('report_id'));
+                },
+
+                remove: function (store, record, index, eOpts) {
+                    // A column has a "report" property only if it is part of the saved report.
+                    if (record.report) {
+                        record.report.setHasUnsavedChanges(true);
+                    } else {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
+                    }
+                },
+
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    // A column has a "report" property only if it is part of the saved report.
+                    if (record.report) {
+                        record.report.setHasUnsavedChanges(true);
+                    } else {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
+                    }
+                }
+            },
+            setReportHasUnsavedChanges: function (report_id) {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.getById(report_id);
+                    
+                if (report) {
+                    report.setHasUnsavedChanges(true);
+                }
+            }
+        }
     }, {
         model: 'PICS.model.report.Filter',
-        name: 'filters'
+        name: 'filters',
+        foreignKey: 'report_id',
+        storeConfig : {
+            listeners: {
+                add: function (store, records, index, eOpts) {
+                    var record = records[0];
+                    
+                    this.setReportHasUnsavedChanges(record.get('report_id'));                        
+                },
+
+                remove: function (store, record, index, eOpts) {
+                    // A filter has a "report" property only if it is part of the saved report.
+                    if (record.report) {
+                        record.report.setHasUnsavedChanges(true);
+                    } else {                        
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
+                    }
+                },
+
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    // A filter has a "report" property only if it is part of the saved report.
+                    if (record.report) {
+                        record.report.setHasUnsavedChanges(true);
+                    } else {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
+                    }
+                }
+            },
+            setReportHasUnsavedChanges: function (report_id) {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.getById(report_id);
+                
+                if (report) {
+                    report.setHasUnsavedChanges(true);                    
+                }
+            }
+        }
     }, {
         model: 'PICS.model.report.Sort',
-        name: 'sorts'
+        name: 'sorts',
+        foreignKey: 'report_id',
+        storeConfig : {
+            listeners: {
+                // Applying or changing sort order only fires the "add" event.
+                add: function (store, records, index, eOpts) {
+                    var record = records[0];
+                    
+                    this.setReportHasUnsavedChanges(record.get('report_id'));
+                }
+            },
+            setReportHasUnsavedChanges: function (report_id) {
+                var report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.getById(report_id);
+                    
+                if (report) {
+                    report.setHasUnsavedChanges(true);                    
+                }
+            }
+        }
     }],
 
     getFilterExpression: function () {
@@ -96563,7 +97047,13 @@ Ext.define('PICS.model.report.Report', {
             return parseInt(p1);
         });
     },
-    
+
+    getHasUnsavedChanges: function () {
+        return this.has_unsaved_changes;
+    },
+
+    has_unsaved_changes: false,
+
     isNewFilterExpression: function (filter_expression) {
         var current_expression = this.get('filter_expression'),
             sanitized_expression = this.sanitizeFilterExpression(filter_expression);
@@ -96689,7 +97179,7 @@ Ext.define('PICS.model.report.Report', {
     addFilters: function (filters) {
         var new_filters = [];
         
-        Ext.Array.forEach(filters, function (filter) {
+        Ext.each(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
@@ -96714,26 +97204,6 @@ Ext.define('PICS.model.report.Report', {
             field_id: field_id,
             direction: direction
         });
-    },
-
-    commitAllChanges: function () {
-        var filter_store = this.filters(),
-            column_store = this.columns(),
-            sort_store = this.sorts();
-
-        filter_store.commitChanges();
-        column_store.commitChanges();
-        sort_store.commitChanges();
-    },
-
-    rejectAllChanges: function () {
-        var filter_store = this.filters(),
-            column_store = this.columns(),
-            sort_store = this.sorts();
-    
-        filter_store.rejectChanges();
-        column_store.rejectChanges();
-        sort_store.rejectChanges();
     },
 
     convertColumnsToModelFields: function () {
@@ -96784,6 +97254,8 @@ Ext.define('PICS.model.report.Report', {
         this.addColumns(columns);
         
         this.resortColumns();
+
+        this.setHasUnsavedChanges(true);
     },
     
     removeColumns: function () {
@@ -96802,6 +97274,10 @@ Ext.define('PICS.model.report.Report', {
             
             column.set('sort', index);
         });
+    },
+    
+    setHasUnsavedChanges: function (value) {
+        this.has_unsaved_changes = value;
     }
 });
 Ext.define('PICS.store.report.Reports', {
@@ -96813,7 +97289,15 @@ Ext.define('PICS.store.report.Reports', {
         
         this.callParent(arguments);
     },
-    
+
+    listeners: {
+        update: function (store, record, operation, modifiedFieldNames, eOpts) {
+            if (modifiedFieldNames) {
+                record.setHasUnsavedChanges(true);                
+            }
+        }
+    },
+
     setProxyForRead: function () {
         var proxy = {
             reader: {
@@ -96825,7 +97309,7 @@ Ext.define('PICS.store.report.Reports', {
         
         this.setProxy(proxy);
     },
-    
+
     setProxyForWrite: function (url) {
         var proxy = {
             writer: {
@@ -97114,6 +97598,7 @@ Ext.define('PICS.controller.report.DataTable', {
             },
 
             'reportdatatable gridcolumn': {
+                headerclick: this.onColumnHeaderClick,
                 render: this.renderGridColumn
             },
             
@@ -97153,6 +97638,10 @@ Ext.define('PICS.controller.report.DataTable', {
                 click: this.openColumnFunctionModal
             },
 
+            'menu[name=data_table_header_menu] menuitem[name=remove_function]': {
+                click: this.removeFunction
+            },
+
             'menu[name=data_table_header_menu] menuitem[name=remove_column]': {
                 click: this.removeColumn
             },
@@ -97166,7 +97655,13 @@ Ext.define('PICS.controller.report.DataTable', {
             }
         });
     },
-    
+
+    onColumnHeaderClick: function (cmp, column, e, t, eOpts) {
+        var data_table_view = this.getDataTable();
+
+        data_table_view.updateFunctionMenuItem(column);
+    },
+
     beforeDataTableRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -97181,7 +97676,7 @@ Ext.define('PICS.controller.report.DataTable', {
 
         PICS.data.ServerCommunication.loadData(1, limit);
     },
-    
+
     moveColumn: function (cmp, column, fromIdx, toIdx, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -97259,6 +97754,20 @@ Ext.define('PICS.controller.report.DataTable', {
         PICS.data.ServerCommunication.loadData();
     },
     
+    removeFunction: function (cmp, event, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.column,
+            field_id = column.get('field_id');
+            end_index = field_id.indexOf('__'),
+            new_field_id = field_id.substring(0, end_index);
+
+        column.set('sql_function', null);
+        column.set('field_id', new_field_id);
+
+        PICS.data.ServerCommunication.loadReportAndData();
+    },
+
     renderGridColumn: function (cmp, eOpts) {
         // only create tooltips for PICS.ux.grid.column.Column(s)
         if (typeof cmp.createTooltip == 'function') {
@@ -97267,7 +97776,12 @@ Ext.define('PICS.controller.report.DataTable', {
     },
     
     resizeColumn: function (ct, column, width, eOpts) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first();
+
         column.column.set('width', width);
+
+        report.setHasUnsavedChanges(true);
     },
     
     sortColumnAsc: function (cmp, event, eOpts) {
@@ -97401,7 +97915,8 @@ Ext.define('PICS.controller.report.Filter', {
 
             // saving edits to filter store + refresh
             '#report_filters combobox[name=value]': {
-                select: this.selectValueField
+                // Unlike "select," the change event also fires when the user removes the last item.
+                change: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -97697,10 +98212,15 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
-    selectValueField: function (cmp, records, eOpts) {
+    selectValueField: function (cmp, newValue, oldValue, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
     
+        // Abort if we are pre-selecting. (It will be undefined.)
+        if (!oldValue) {
+            return;
+        }
+
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();

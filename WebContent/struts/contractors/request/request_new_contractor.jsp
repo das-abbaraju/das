@@ -111,15 +111,27 @@
 						</li>
 						<li>
 							<s:textfield
-								cssClass="check-matches"
-								id="contact_name"
-								name="primaryContact.name"
+								name="primaryContact.firstName"
 								theme="formhelp"
 								required="true"
-								data-type="U"
-								data-class="contact-name"
 							/>
 						</li>
+                        <li>
+                            <s:textfield
+                                name="primaryContact.lastName"
+                                theme="formhelp"
+                                required="true"
+                            />
+                        </li>
+                        <pics:permission perm="SwitchUser">
+                            <s:if test="contractor.id != 0">
+                                <li>
+                                    <a href="Login.action?button=login&switchToUser=${primaryContact.id}" class="btn">
+                                        <s:text name="UsersManage.SwitchToThisUser" />
+                                    </a>
+                                </li>
+                            </s:if>
+                        </pics:permission>
 						<li class="match-found contact-name"></li>
 						<li>
 							<s:textfield
@@ -295,6 +307,7 @@
 				
 				
 				<ol>
+                    <!--
 					<s:if test="contractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
 						<s:url action="RequestNewContractorAccount" var="request_add_operator">
 							<s:param name="contractor">
@@ -382,6 +395,7 @@
 							</table>
 						</li>
 					</s:if>
+                    -->
 
                     <s:include value="operator_required_fields.jsp" />
 

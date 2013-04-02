@@ -9,10 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
@@ -56,17 +54,19 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.validator.InputValidator;
-import com.picsauditing.validator.PasswordValidator;
-import com.picsauditing.validator.VATValidator;
+import com.picsauditing.validator.RegistrationValidator;
+import com.picsauditing.validator.Validator;
 
-@SuppressWarnings("serial")
-public class Registration extends ContractorActionSupport {
+@SuppressWarnings({"deprecation", "serial"})
+public class Registration extends ContractorActionSupport implements AjaxValidator {
 
+	public static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
 	private User user;
 	private String username;
 	private String confirmPassword;
 	private String registrationKey;
+	private String language;
+	private String dialect;
 	private int requestID;
 	private CountrySubdivision countrySubdivision;
 
@@ -74,8 +74,6 @@ public class Registration extends ContractorActionSupport {
 	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
-	@Autowired
-	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -87,16 +85,12 @@ public class Registration extends ContractorActionSupport {
 	@Autowired
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
-	private VATValidator vatValidator;
-	@Autowired
 	protected PermissionBuilder permissionBuilder;
+    @Autowired
+    @Qualifier("CsrAssignmentSinglePublisher")
+    private Publisher csrAssignmentSinglePublisher;
 	@Autowired
-	@Qualifier("CsrAssignmentPublisher")
-	private Publisher csrAssignmentPublisher;
-	@Autowired
-	private InputValidator inputValidator;
-	@Autowired
-	private PasswordValidator passwordValidator;
+	private RegistrationValidator registrationValidator;
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
@@ -173,6 +167,28 @@ public class Registration extends ContractorActionSupport {
 			}
 		}
 
+		if (Strings.isEmpty(language)) {
+			language = Locale.ENGLISH.getLanguage();
+			dialect = Strings.EMPTY_STRING;
+
+			ActionContext context = ActionContext.getContext();
+			if (context != null) {
+				Locale locale = context.getLocale();
+
+				if (locale != null) {
+					language = locale.getLanguage();
+					dialect = locale.getCountry();
+				}
+			}
+		}
+
+
+
+		return SUCCESS;
+	}
+
+	@Anonymous
+	public String dialects() {
 		return SUCCESS;
 	}
 
@@ -185,17 +201,13 @@ public class Registration extends ContractorActionSupport {
 		}
 		permissions = null;
 
-		validateInput();
-		if (hasFieldErrors()) {
-			return INPUT_ERROR;
-		}
-
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
 		if (user.getEmail().length() > 0) {
 			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		}
+
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly
@@ -218,92 +230,9 @@ public class Registration extends ContractorActionSupport {
 		addNoteThatRequestRegistered();
 
 		// this is feature toggled in the publisher
-		csrAssignmentPublisher.publish(contractor.getId());
+		csrAssignmentSinglePublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
-	}
-
-	private void validateInput() {
-		// Contractor Account
-		String errorMessageKey = inputValidator.validateCompanyName(contractor.getName());
-		addFieldErrorIfMessage("contractor.name", errorMessageKey);
-
-		Country country = contractor.getCountry();
-		String countryIso = "";
-		if (country != null) {
-			countryIso = country.getIsoCode();
-		}
-
-		errorMessageKey = inputValidator.validateName(countryIso);
-		addFieldErrorIfMessage("contractor.country.isoCode", errorMessageKey);
-
-		errorMessageKey = inputValidator.validateName(contractor.getAddress());
-		addFieldErrorIfMessage("contractor.address", errorMessageKey);
-
-		errorMessageKey = inputValidator.validateName(contractor.getCity());
-		addFieldErrorIfMessage("contractor.city", errorMessageKey);
-
-		if (shouldRequireZipCode(contractor.getCountry())) {
-			errorMessageKey = inputValidator.validateName(contractor.getZip());
-			addFieldErrorIfMessage("contractor.zip", errorMessageKey);
-		}
-
-		if (!isValidVAT(contractor.getVatId(), contractor.getCountry())) {
-			addFieldErrorIfMessage("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
-		}
-
-		// User
-		errorMessageKey = inputValidator.validateName(user.getName());
-		addFieldErrorIfMessage("user.name", errorMessageKey);
-
-		errorMessageKey = inputValidator.validateEmail(user.getEmail());
-		addFieldErrorIfMessage("user.email", errorMessageKey);
-
-		errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone());
-		addFieldErrorIfMessage("user.phone", errorMessageKey);
-
-		errorMessageKey = inputValidator.validateUsername(user.getUsername());
-		addFieldErrorIfMessage("user.username", errorMessageKey);
-		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
-		addFieldErrorIfMessage("user.username", errorMessageKey);
-
-		Vector<String> errors = passwordValidator.validatePassword(user, user.getPassword());
-		if (CollectionUtils.isNotEmpty(errors)) {
-			addFieldError("user.password", errors.get(0));
-		}
-
-		if (!StringUtils.equals(user.getPassword(), confirmPassword)) {
-			addFieldErrorIfMessage("confirmPassword", InputValidator.PASSWORDS_MUST_MATCH_KEY);
-		}
-	}
-
-	private boolean shouldRequireZipCode(Country country) {
-		if (country == null) {
-			return false;
-		}
-
-		// Carryover from existing XML validation
-		if (StringUtils.equals("AE", country.getIsoCode())) {
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean isValidVAT(String vat, Country country) {
-		if (vatValidator.shouldValidate(country)) {
-			try {
-				vatValidator.validated(vat);
-			} catch (Exception e) {
-				return false;
-			}
-		}
-
-		if (StringUtils.isNotEmpty(vat)) {
-			return inputValidator.containsOnlySafeCharacters(vat);
-		}
-
-		return true;
 	}
 
 	public ContractorAccount getContractor() {
@@ -355,6 +284,22 @@ public class Registration extends ContractorActionSupport {
 		this.registrationKey = registrationKey;
 	}
 
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getDialect() {
+		return dialect;
+	}
+
+	public void setDialect(String dialect) {
+		this.dialect = dialect;
+	}
+
 	@Override
 	public ContractorRegistrationStep getPreviousRegistrationStep() {
 		return null;
@@ -391,6 +336,11 @@ public class Registration extends ContractorActionSupport {
 		return countrySubdivision;
 	}
 
+	@Override
+	public String getPicsPhoneNumber() {
+		return countryDAO.find(Country.US_ISO_CODE).getPhone();
+	}
+
 	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
@@ -413,9 +363,9 @@ public class Registration extends ContractorActionSupport {
 
 	protected void setupContractorData() {
 		contractor.setType("Contractor");
-		if (contractor.getName().contains("^^^")) {
+		if (contractor.getName().contains(DEMO_CONTRACTOR_NAME_MARKER)) {
 			contractor.setStatus(AccountStatus.Demo);
-			contractor.setName(contractor.getName().replaceAll("^", "").trim());
+			contractor.setName(contractor.getName().replaceAll("^", Strings.EMPTY_STRING).trim());
 		}
 
 		contractor.setCountrySubdivision(countrySubdivision);
@@ -494,24 +444,25 @@ public class Registration extends ContractorActionSupport {
 	}
 
 	private void transferRegistrationRequestTags(ContractorRegistrationRequest crr) {
-		if (!Strings.isEmpty(crr.getOperatorTags())) {
-			for (String tagID : crr.getOperatorTags().split(",")) {
-				try {
-					OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
+		if (Strings.isEmpty(crr.getOperatorTags())) {
+			return;
+		}
 
-					if (tag.getOperator().getStatus().isActive()) {
-						ContractorTag contractorTag = new ContractorTag();
-						contractorTag.setTag(tag);
-						contractorTag.setContractor(contractor);
-						contractorTag.setAuditColumns(permissions);
+		for (String tagID : crr.getOperatorTags().split(",")) {
+			try {
+				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
 
-						contractorTagDAO.save(contractorTag);
-						contractor.getOperatorTags().add(contractorTag);
-					}
-				} catch (Exception exception) {
-					logger.error("Error in transferring registration request tag {}\n{}", new Object[] { tagID,
-							exception });
+				if (tag.getOperator().getStatus().isActive()) {
+					ContractorTag contractorTag = new ContractorTag();
+					contractorTag.setTag(tag);
+					contractorTag.setContractor(contractor);
+					contractorTag.setAuditColumns(permissions);
+
+					contractorTagDAO.save(contractorTag);
+					contractor.getOperatorTags().add(contractorTag);
 				}
+			} catch (Exception exception) {
+				logger.error("Error in transferring registration request tag {}\n{}", new Object[] { tagID, exception });
 			}
 		}
 	}
@@ -539,7 +490,7 @@ public class Registration extends ContractorActionSupport {
 
 	private Permissions logInUser() throws Exception {
 		Permissions permissions = permissionBuilder.login(user);
-		ActionContext.getContext().getSession().put("permissions", permissions);
+		ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 		return permissions;
 	}
 
@@ -548,9 +499,17 @@ public class Registration extends ContractorActionSupport {
 		user.setAccount(contractor);
 		user.setTimezone(contractor.getTimezone());
 
-		Locale locale = ActionContext.getContext().getLocale();
-		String country = user.getAccount().getCountry().getIsoCode();
-		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale, country));
+		Locale locale = Locale.US;
+
+		if (Strings.isNotEmpty(language)) {
+			if (Strings.isNotEmpty(dialect)) {
+				locale = new Locale(language, dialect);
+			} else {
+				locale = new Locale(language);
+			}
+		}
+
+		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale));
 
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);
@@ -559,19 +518,18 @@ public class Registration extends ContractorActionSupport {
 		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
 		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 		user.setLastLogin(new Date());
+		user.updateDisplayNameBasedOnFirstAndLastName();
 	}
 
-	private void checkVAT() {
-		if (!contractor.getCountry().isEuropeanUnion()) {
-			return;
-		}
+	// For the Ajax Validation
+	public Validator getCustomValidator() {
+		return registrationValidator;
+	}
 
-		try {
-			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-		} catch (Exception e) {
-			contractor.setVatId(null);
-			addActionError(getText("VAT.Required"));
-		}
+	// For server-side validation
+	@Override
+	public void validate() {
+		registrationValidator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
 
 }

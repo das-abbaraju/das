@@ -35,11 +35,10 @@ public class ContractorAuditCategories {
 
 		AuditCategory category = auditCatData.getCategory();
 
-		if (permissions.isAdmin() || permissions.isAuditor()) {
+		if (permissions.isAdmin() && !permissions.isOperatorCorporate()) {
 			if (category.requiresViewFullPQFPermission()) {
 				return permissions.hasPermission(OpPerms.ViewFullPQF);
 			}
-			return true;
 		}
 
 		if (requiredCategories == null)
@@ -53,7 +52,6 @@ public class ContractorAuditCategories {
 			return true;
 		}
 
-		
 		return false;
 	}
 

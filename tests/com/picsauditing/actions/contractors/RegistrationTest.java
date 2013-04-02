@@ -57,8 +57,6 @@ public class RegistrationTest {
 	private ActionContext mockContext;
 	@Mock
 	private User mockUser;
-	@Mock
-	private VATValidator mockValidator;
 
 	@AfterClass
 	public static void tearDown() {
@@ -77,7 +75,6 @@ public class RegistrationTest {
 		setInternalState(classUnderTest, "countrySubdivisionDAO", countrySubdivisionDAO);
 		setInternalState(classUnderTest, "invoiceFeeDAO", feeDAO);
 		setInternalState(classUnderTest, "operatorTagDAO", operatorTagDAO);
-		setInternalState(classUnderTest, "vatValidator", mockValidator);
 		classUnderTest.setContractor(contractor);
 		classUnderTest.setUser(mockUser);
 		when(contractor.getFees()).thenReturn(contractorFees);

@@ -35,26 +35,28 @@
 	boolean switchToUserIsSet = SessionSecurity.switchToUserIsSet(request);
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
-	boolean useDynamicReports = false;
-	if (permissions.getUserId() > 0){
+	boolean useVersion7Menus = false;
+	
+	if (permissions.getUserId() > 0) {
 		UserDAO userDao = SpringUtils.getBean("UserDAO");
 		User user = userDao.find(permissions.getUserId());
 
-		if (user != null)
-	useDynamicReports = user.isUsingDynamicReports();
+		if (user != null) {
+            useVersion7Menus = user.isUsingVersion7Menus();
+		}
 	}
 
 	MenuComponent menu = new MenuComponent();
 	String homePageUrl = "";
-	if (useDynamicReports) {
+	if (useVersion7Menus) {
 		menu = MenuBuilder.buildMenubar(permissions);
 		homePageUrl = MenuBuilder.getHomePage(menu, permissions);
 	} else {
 		menu = PicsMenu.getMenu(permissions);
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);
 	}
-    
-    LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
+
+	LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
 %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
@@ -91,8 +93,8 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
 
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome-ie7.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.css?v=${version}" />
+        <!--[if lt IE 8]><link rel="stylesheet" href="v7/css/vendor/font-awesome-ie7.css"><![endif]-->
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
@@ -177,29 +179,37 @@
 			<link rel="stylesheet" href="css/ie6.css?v=${version}" type="text/css" />
 		<![endif]-->
 	</head>
-	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
+	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<%if (debugMode) {%>class="debugging"<%}%>>
         <jsp:include page="/struts/layout/_environment.jsp" />
         
-        <% if (useDynamicReports) { %>
-        
-        <nav id="site_navigation"></nav>
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
-        <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
-        <script type="text/javascript" src="v7/js/extjs/pics/ext-overrides.js"></script>        
-        <script type="text/javascript" src="js/layout/menu.js"></script>
-        
-        <% } %>
+        <%
+            if (useVersion7Menus) {
+        %>
+            <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
+            <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
+            <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}" />
+            <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}" />            
+            <header>
+                <s:action name="Menu!menu" executeResult="true" />
+            </header>
+        <%
+        	}
+        %>
 
-        <% if (!useDynamicReports) { %>
+        <%
+        	if (!useVersion7Menus) {
+        %>
         <div id="bodywrap">
             <jsp:include page="/struts/misc/main_system_message.jsp" />
             <table id="header">
                 <!-- !begin header -->
                 <tr>
                     <td id="logo">
-                        <a href="<%= homePageUrl %>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
+                        <a href="<%=homePageUrl%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
                     </td>
-                    <% if (permissions.isActive() && !permissions.isContractor()) { %>
+                    <%
+                    	if (permissions.isActive() && !permissions.isContractor()) {
+                    %>
                         <td id="headersearch">
                             <form action="Search.action" method="get">
                                 <input type="hidden" value="search" name="button" />
@@ -207,29 +217,46 @@
                                 <input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
                             </form>
                         </td>
-                    <% } %>
+                    <%
+                    	}
+                    %>
                     <td id="sidebox">
                         <p>
-                            <b class="head-phone"><%=i18nCache.getText("PicsPhone", locale)%></b>&emsp;&emsp;
+                            <b class="head-phone"><%=mainPage.getPhoneNumber()%></b>
                         <% if (permissions.isLoggedIn()) { %>
                             <span id="name">
-                                <% if (permissions.hasPermission(OpPerms.EditProfile)) { %>
-                                    <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName()) %>
-                                <% } else { %>
-                                    <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
-                                <% } %>
+                                <%
+                                	if (permissions.hasPermission(OpPerms.EditProfile)) {
+                                %>
+                                    <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(),
+								permissions.getName())%>
+                                <%
+                                	} else {
+                                %>
+                                    <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName())%>
+                                <%
+                                	}
+                                %>
                             </span>
-                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a>
+                        | <a href="<%=homePageUrl%>"><%=i18nCache.getText("global.Home", locale)%></a>
                         | <a href="http://www.picsauditing.com">PICS</a>
-                        | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
-                        <% if (switchToUserIsSet) { %>
+                        | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale)%></a>
+                        <%
+                        	if (switchToUserIsSet) {
+                        %>
                         	| <a href="Login.action?button=switchBack">SwitchBack</a>
-                        <% } %>
-                        <% } else { %>
+                        <%
+                        	}
+                        %>
+                        <%
+                        	} else {
+                        %>
                             <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
                             | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a>
                             | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
-                        <% } %>
+                        <%
+                        	}
+                        %>
                         </p>
                     </td>
                 </tr>
@@ -243,19 +270,22 @@
 					<div id="navbar">
 						<ul>
 						<%
-						for(MenuComponent item : menu.getChildren()) {
-							if (item.visible()) { %>
-							<li><a<%=item.hasUrl() ? (" href=\""+item.getUrl()+"\"") : "" %> onmouseover="cssdropdown.dropit(this,event,'menu<%= item.getId()%>')"><span><%=item.getName()%></span></a></li><%
-							}
-						}
+							for (MenuComponent item : menu.getChildren()) {
+									if (item.visible()) {
 						%>
+							<li><a<%=item.hasUrl() ? (" href=\"" + item.getUrl() + "\"") : ""%> onmouseover="cssdropdown.dropit(this,event,'menu<%=item.getId()%>')"><span><%=item.getName()%></span></a></li><%
+								}
+									}
+							%>
 						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- !end navigation -->
-        <% } %>
+        <%
+        	}
+        %>
 
 		<div id="main">
 			<div id="bodyholder">
@@ -305,18 +335,20 @@
 					%>
 
 					<div id="helpcenter" style="float:left;">
-    					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
+    					<a href="<%=helpUrl%>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale)%></a>
 					</div>
 					<div id="helpchat" style="float:left;">
-						<pics:toggle name="<%= FeatureToggle.TOGGLE_MIBEW_CHAT %>">
-                            <a href="https://chat.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>"
+						<pics:toggle name="<%=FeatureToggle.TOGGLE_MIBEW_CHAT%>">
+                            <a href="https://chat.picsorganizer.com/client.php?locale=<%=mibew_language_code%>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>"
                                 target="_blank"
-                                onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('https://chat.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%= i18nCache.getText("Header.Chat", locale) %>
+                                onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('https://chat.picsorganizer.com/client.php?locale=<%=mibew_language_code%>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=i18nCache.getText("Header.Chat", locale)%>
                             </a>
 						</pics:toggle>
 						<pics:toggleElse>
-							<%  if (liveChatEnabled) { %>
-								<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
+							<%
+								if (liveChatEnabled) {
+							%>
+								<a href="javascript:;" class="liveperson-chat-toggle"><%=i18nCache.getText("Header.Chat", locale)%></a>
 		
 								<a id="_lpChatBtn"
 									class="liveperson-chat"
@@ -324,13 +356,21 @@
 									target="chat90511184"
 									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableAndBetaLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
 		
-									<% if (!Strings.isEmpty(chatIcon)) { %>
-										<img src="<%= chatIcon %>" />
-									<% } else { %>
-										<%= i18nCache.getText("Header.Chat", locale) %>
-									<% } %>
+									<%
+												if (!Strings.isEmpty(chatIcon)) {
+											%>
+										<img src="<%=chatIcon%>" />
+									<%
+										} else {
+									%>
+										<%=i18nCache.getText("Header.Chat", locale)%>
+									<%
+										}
+									%>
 								</a>
-							<% } %>
+							<%
+								}
+							%>
 						</pics:toggleElse>
 					</div>					
 				</div>
@@ -349,17 +389,24 @@
 			</div>
 		</div>
 
-		<% if (!useDynamicReports) { %>
+		<%
+			if (!useVersion7Menus) {
+		%>
 		<!-- !begin subnavigation -->
-		<% for(MenuComponent submenu : menu.getChildren()) { %>
-		<div id="menu<%= submenu.getId()%>" class="dropmenudiv">
+		<%
+			for (MenuComponent submenu : menu.getChildren()) {
+		%>
+		<div id="menu<%=submenu.getId()%>" class="dropmenudiv">
 			<ul>
 				<%
-				for(MenuComponent item : submenu.getChildren()) {
-					if (item.visible()) { %>
+					for (MenuComponent item : submenu.getChildren()) {
+								if (item.visible()) {
+				%>
 					<li>
-						<%  if(item.getName().equals("Online Chat"))  {
-								if (liveChatEnabled) { %>
+						<%
+							if (item.getName().equals("Online Chat")) {
+												if (liveChatEnabled) {
+						%>
 								<a id="_lpChatBtn"
 									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getNearestStableAndBetaLocale(locale).getDisplayLanguage() %>/General/3a'
 									target='chat90511184'
@@ -370,24 +417,32 @@
 							for (String dataKey : item.getDataFields().keySet()) {
 								dataFields += "data-" + dataKey + "=\"" + item.getDataFields().get(dataKey) + "\" ";
 							} %>
+
 							<a
-								<%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>
-								<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : "" %>
-								<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"") : "" %>
-								<%=dataFields %>
+								<%=item.hasUrl() ? ("href=\"" + item.getUrl() + "\"") : ""%>
+								<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : ""%>
+								<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"")
+										: ""%>
+								<%=dataFields%>
 							>
 								<span><%=item.getName()%></span>
 							</a>
-							<% } %>
+							<%
+								}
+							%>
 					</li><%
-					}
-				}
-				%>
+						}
+								}
+					%>
 			</ul>
 		</div>
-		<% } %>
+		<%
+			}
+		%>
 		<!-- !end subnavigation -->
-		<% } %>
+		<%
+			}
+		%>
 
 		<%
 			if (!"1".equals(System.getProperty("pics.debug"))) {
@@ -400,18 +455,20 @@
 			var lpPosX = 100;
 
 			if (typeof tagVars == "undefined") tagVars = "";
-		<%	if (permissions.isLoggedIn()) { %>
+		<%if (permissions.isLoggedIn()) {%>
 				tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
-		<%	} %>
+		<%}%>
 		</script>
 		<!-- End Monitor Tracking Variables  -->
 
 		<script
 			type="text/javascript"
-			src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a'>
+			src='<%=protocol%>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%=protocol%>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage()%>/General/3a'>
 		</script>
 		<!-- END LivePerson -->
-		<%	} %>
+		<%
+			}
+		%>
 
 		<script type="text/javascript">
 		  var _gaq = _gaq || [];
@@ -425,34 +482,37 @@
 		  })();
 		</script>
 
-		<% } %>
+		<%
+			}
+		%>
 
 		<!-- !begin footer -->
 		<div class="footer">
 			<%
 				Long page_logger_id = (Long) request.getAttribute("pics_page_logger_id");
-				if( page_logger_id != null ) {
+				if (page_logger_id != null) {
 					Database db = new Database();
 					try {
-						db.executeUpdate("UPDATE app_page_logger SET endTime = '"+new Timestamp(System.currentTimeMillis())+"' WHERE id = "+page_logger_id);
+						db.executeUpdate("UPDATE app_page_logger SET endTime = '"
+								+ new Timestamp(System.currentTimeMillis()) + "' WHERE id = " + page_logger_id);
 					} catch (SQLException e) {
 					}
 				}
 
 				Date startDate = (Date) request.getAttribute("pics_request_start_time");
-				if( startDate != null ) {
+				if (startDate != null) {
 					long totalTime = System.currentTimeMillis() - startDate.getTime();
-					%><div class="pageStats" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>">
-						<%=i18nCache.getText("Footer.Version", locale) %>: <%=version%><br />
-						<%=i18nCache.getText("Footer.ProcessTime", locale)%>: <%= Math.round(totalTime/10)/100f%>s
+			%><div class="pageStats" title="Server: <%=java.net.InetAddress.getLocalHost().getHostName()%>">
+						<%=i18nCache.getText("Footer.Version", locale)%>: <%=version%><br />
+						<%=i18nCache.getText("Footer.ProcessTime", locale)%>: <%=Math.round(totalTime / 10) / 100f%>s
 					</div><%
-				}
-			%>
+							}
+						%>
 			<div id="footermain">
 				<div id="footercontent">
-					<a href="http://www.picsauditing.com/" class="footer"><%=i18nCache.getText("global.PICSCopyright", locale) %></a> |
-					<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
-					<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>
+					<a href="http://www.picsauditing.com/" class="footer"><%=i18nCache.getText("global.PICSCopyright", locale)%></a> |
+					<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale)%></a> |
+					<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=i18nCache.getText("Footer.Privacy", locale)%></a>
 				</div>
 			</div>
 		</div>

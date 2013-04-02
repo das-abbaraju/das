@@ -6,6 +6,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -26,8 +27,11 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportService;
 
 public class ManageReportsTest {
@@ -38,6 +42,10 @@ public class ManageReportsTest {
 
 	@Mock
 	private ReportService reportService;
+	@Mock
+	private ManageReportsService manageReportsService;
+	@Mock
+	private Report report;
 	@Mock
 	private ReportDAO reportDao;
 	@Mock
@@ -68,8 +76,8 @@ public class ManageReportsTest {
 		setUpI18nCacheText();
 
 		Whitebox.setInternalState(manageReports, "reportService", reportService);
+		Whitebox.setInternalState(manageReports, "manageReportsService", manageReportsService);
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
-		Whitebox.setInternalState(manageReports, "reportUserDao", reportUserDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
 		Whitebox.setInternalState(manageReports, "i18nCache", i18nCache);
@@ -204,6 +212,56 @@ public class ManageReportsTest {
 		manageReports.search();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
+	}
+
+	@Test
+	public void testTransferOwnership_CallsExpectedMethod() throws Exception {
+		User toOwner = new User();
+		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		int reportId = 123;
+		Whitebox.setInternalState(manageReports, "reportId", reportId);
+		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
+
+		manageReports.transferOwnership();
+
+		verify(manageReportsService).transferOwnership(null, toOwner, report, permissions);
+	}
+
+	@Test
+	public void testDeleteReport_CallsExpectedMethod() throws Exception {
+		int reportId = 123;
+		Whitebox.setInternalState(manageReports, "reportId", reportId);
+		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
+
+		manageReports.deleteReport();
+
+		verify(manageReportsService).deleteReport(null, report, permissions);
+	}
+
+	@Test
+	public void testShareWithViewPermission_CallsExpectedMethod() throws Exception {
+		User toOwner = new User();
+		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		int reportId = 123;
+		Whitebox.setInternalState(manageReports, "reportId", reportId);
+		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
+
+		manageReports.shareWithViewPermission();
+
+		verify(manageReportsService).shareWithViewPermission(null, toOwner, report, permissions);
+	}
+
+	@Test
+	public void testShareWithEditPermission_CallsExpectedMethod() throws Exception {
+		User toOwner = new User();
+		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		int reportId = 123;
+		Whitebox.setInternalState(manageReports, "reportId", reportId);
+		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
+
+		manageReports.shareWithEditPermission();
+
+		verify(manageReportsService).shareWithEditPermission(null, toOwner, report, permissions);
 	}
 
 	private void setUpI18nCacheText() {

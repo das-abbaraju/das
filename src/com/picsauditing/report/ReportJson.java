@@ -26,18 +26,21 @@ public class ReportJson {
 	public static final String BASE_UPDATE_DATE = "update_date";
 	public static final String BASE_UPDATED_BY = "updated_by";
 
+	public static final String REPORT_ELEMENT_DB_ID = "id";
 	public static final String REPORT_ELEMENT_FIELD_ID = "field_id";
 	public static final String REPORT_ELEMENT_CATEGORY = "category";
 	public static final String REPORT_ELEMENT_NAME = "name";
 	public static final String REPORT_ELEMENT_DESCRIPTION = "description";
 
 	public static final String REPORT_COLUMNS = "columns";
+	public static final String COLUMN_ID = "column_id";
 	public static final String COLUMN_TYPE = "type";
 	public static final String COLUMN_URL = "url";
 	public static final String COLUMN_SQL_FUNCTION = "sql_function";
 	public static final String COLUMN_WIDTH = "width";
 	public static final String COLUMN_SORTABLE = "is_sortable";
 	public static final String COLUMN_SORT = "sort";
+	public static final String COLUMN_ID_PREFIX = "COLUMN_";
 
 	public static final String REPORT_FILTERS = "filters";
 	public static final String FILTER_TYPE = "type";

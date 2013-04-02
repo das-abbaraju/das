@@ -127,8 +127,7 @@
 					<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:text name="Audit.EditFile" />" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 				</s:if>
 				<s:else>
-					<s:text name="Audit.message.FileNotUploaded" />
-					<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:text name="Audit.AddFile" />" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
+					<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:text name="Audit.UploadFile" />" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 				</s:else>
 			</nobr>
 		</s:if>

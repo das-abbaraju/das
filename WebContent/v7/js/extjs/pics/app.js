@@ -68,12 +68,25 @@ Ext.application({
         Ext.create('PICS.view.report.Viewport', {
             listeners: {
                 render: function (component, eOpts) {
-                    // remove loading background
-                    var loading = Ext.get('loading_page');
+                    var loading = Ext.get('loading_page'),
+                        report_store = Ext.StoreManager.get('report.Reports'),
+                        report = report_store.first();
 
-                    if(loading) {
-                        PICS.app.updateDocumentTitle();
+                    PICS.app.updateDocumentTitle();
 
+                    // ExtJS has its own onbeforeunload, but it doesn't work in FF.
+                    // The native onbeforeunload used here, however, is broadly compatible.
+                    window.onbeforeunload = function () {
+                        var report_store = Ext.StoreManager.get('report.Reports'),
+                            report = report_store.first(),
+                            report_has_unsaved_changes = report.getHasUnsavedChanges();
+
+                        if (report_has_unsaved_changes) {
+                            return 'Any unsaved changes will be lost.';
+                        }
+                    };
+
+                    if (loading) {
                         loading.remove();
                     }
                 }

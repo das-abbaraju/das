@@ -43,6 +43,14 @@ public class LanguageDAO extends PicsDAO implements LanguageProvider {
 	}
 
 	@Override
+	public List<Language> findDialectsByLanguage(String language) {
+		Query query = em.createQuery("SELECT l FROM Language l WHERE l.language = :language");
+		query.setParameter("language", language);
+
+		return query.getResultList();
+	}
+
+	@Override
 	public List<Language> findWhere(String where) {
 		Query query = em.createQuery("SELECT l FROM Language l WHERE " + where);
 		return query.getResultList();

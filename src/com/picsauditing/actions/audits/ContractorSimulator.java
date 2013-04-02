@@ -88,7 +88,6 @@ public class ContractorSimulator extends PicsActionSupport {
 
 	private void fillAuditTypes() {
 		audits = new TreeMap<AuditType, List<AuditTypeRule>>();
-		auditTypeRuleCache.initialize(auditRuleDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
 		for (AuditTypeDetail detail : builder.calculate()) {
 			AuditType auditType = detail.rule.getAuditType();
@@ -144,7 +143,6 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		auditType = auditTypeDAO.find(auditType.getId());
 
-		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
 		ContractorAudit conAudit = new ContractorAudit();

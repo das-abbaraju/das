@@ -9,7 +9,6 @@ import static com.picsauditing.report.ReportJson.LEVEL_RESULTS;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -31,12 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportElementDAO;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -66,7 +63,6 @@ import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 public class ReportService {
@@ -75,8 +71,6 @@ public class ReportService {
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportElementDAO reportElementDAO;
-	@Autowired
-	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
@@ -88,7 +82,7 @@ public class ReportService {
 	@Autowired
 	private SqlBuilder sqlBuilder;
 	@Autowired
-	public ManageReportsService manageReportsService;
+	public ReportPreferencesService reportPreferencesService;
 
 	private I18nCache i18nCache;
 
@@ -173,11 +167,24 @@ public class ReportService {
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 		Report report = createReportFromPayload(reportContext.reportId, reportJson);
 
+		setReportOwnerIfNecessary(report, reportContext.user);
+
 		validate(report);
 
 		reportDao.save(report);
 
 		return report;
+	}
+
+	@Deprecated
+	private void setReportOwnerIfNecessary(Report report, User user) {
+		// FIXME: This is a temporary workaround to set the required ownerId of a report for saving. Please delete
+		// this method when we can verify that the ownerId is passed to the frontend and is returned back to the backend
+		// in the reportContext.payloadJson.
+		if (report.getOwner() == null ) {
+			ReportUser reportUser = reportPreferencesService.loadReportUser(user.getId(), report.getId());
+			report.setOwner(reportUser.getUser());
+		}
 	}
 
 	public Report copy(ReportContext reportContext) throws Exception {
@@ -190,6 +197,7 @@ public class ReportService {
 
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 		Report newReport = createReportFromPayload(reportContext.reportId, reportJson);
+		newReport.setOwner(reportContext.user);
 
 		validate(newReport);
 
@@ -197,14 +205,13 @@ public class ReportService {
 
 		reportDao.save(newReport);
 
-		if (manageReportsService.shouldFavorite(reportJson)) {
-			ReportUser reportUser = loadOrCreateReportUser(userId, newReport.getId());
-			manageReportsService.favoriteReport(reportUser);
-			reportUserDao.save(reportUser);
+		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
+
+		if (reportPreferencesService.shouldFavorite(reportJson)) {
+			reportPreferencesService.favoriteReport(reportUser);
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		loadOrCreateReportUser(userId, newReport.getId());
 		connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
@@ -268,6 +275,11 @@ public class ReportService {
 				throw new ReportValidationException(e, report);
 			}
 		}
+
+		if (report.getOwner() == null) {
+			throw new ReportValidationException("Report does not have an owner");
+		}
+
 	}
 
 	// TODO Remove this method after the next release
@@ -286,69 +298,6 @@ public class ReportService {
 
 		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
 		reportDao.save(report);
-	}
-
-	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions) throws IllegalArgumentException {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-
-		if (Strings.isEmpty(sort)) {
-			sort = ManageReports.ALPHA_SORT;
-			direction = "ASC";
-		}
-
-		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction);
-
-		for (Report report : reports) {
-			ReportUser reportUser = report.getReportUser(permissions.getUserId());
-			if (reportUser == null) {
-				// todo: Why are creating a new ReportUser for each report???
-				reportUser = createReportUserForReport(permissions.getUserId(), report);
-			}
-			reportUsers.add(reportUser);
-		}
-
-		return reportUsers;
-	}
-
-	// FIXME mostly duplicated by createReportUser
-	private ReportUser createReportUserForReport(int userId, Report report) {
-		ReportUser reportUser = new ReportUser();
-
-		User user = new User();
-		user.setId(userId);
-		reportUser.setUser(user);
-		reportUser.setReport(report);
-		reportUser.setFavorite(false);
-		reportUserDao.save(reportUser);
-
-		return reportUser;
-	}
-
-	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
-		ReportUser reportUser;
-
-		try {
-			reportUser = loadReportUser(userId, reportId);
-		} catch (NoResultException nre) {
-			reportUser = createReportUser(userId, reportId);
-		}
-
-		return reportUser;
-	}
-
-	// FIXME mostly duplicated by createReportUserForReport
-	private ReportUser createReportUser(int userId, int reportId) {
-		ReportUser reportUser;// Need to connect user to report first
-		Report report = reportDao.find(Report.class, reportId);
-		reportUser = new ReportUser(userId, report);
-		reportUser.setAuditColumns(new User(userId));
-		reportUser.setFavorite(false);
-		reportUserDao.save(reportUser);
-		return reportUser;
-	}
-
-	public ReportUser loadReportUser(int userId, int reportId) {
-		return reportUserDao.findOne(userId, reportId);
 	}
 
 	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
@@ -374,7 +323,7 @@ public class ReportService {
 			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
 
 			if (!shareToUser.isGroup()) {
-				loadOrCreateReportUser(shareToUserId, reportId);
+				reportPreferencesService.loadOrCreateReportUser(shareToUserId, reportId);
 			}
 		}
 
@@ -435,7 +384,7 @@ public class ReportService {
 		return JSONUtilities.isNotEmpty(reportJson) && includeData;
 	}
 
-	private Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {
+	public Report loadReportFromDatabase(int reportId) throws RecordNotFoundException, ReportValidationException {
 		Report report = reportDao.findById(reportId);
 
 		if (report == null) {
@@ -475,7 +424,7 @@ public class ReportService {
 	}
 
 	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
-	                                              List<BasicDynaBean> queryResults) {
+			List<BasicDynaBean> queryResults) {
 		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());
 		converter.convertForPrinting();
@@ -514,10 +463,6 @@ public class ReportService {
 	public void downloadReport(Report report, ReportResults reportResults) throws IOException {
 		HSSFWorkbook workbook = buildWorkbook(report, reportResults);
 		writeFile(report.getName() + ".xls", workbook);
-	}
-
-	public List<ReportUser> getSortedFavoriteReports(int userId) {
-		return reportUserDao.findAllFavorite(userId);
 	}
 
 	private HSSFWorkbook buildWorkbook(Report report, ReportResults reportResults) {
@@ -571,22 +516,6 @@ public class ReportService {
 		sqlFunctionsJson.put(ReportJson.SQL_FUNCTIONS, jsonArray);
 
 		return sqlFunctionsJson;
-	}
-
-	public boolean isUserFavoriteReport(Permissions permissions, int reportId) {
-		try {
-			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
-
-			if (reportUser == null) {
-				return false;
-			}
-
-			return reportUser.isFavorite();
-		} catch (NoResultException nre) {
-
-		}
-
-		return false;
 	}
 
 	private I18nCache getI18nCache() {

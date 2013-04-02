@@ -79,6 +79,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
+    private User recommendedCsr;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
@@ -147,6 +148,12 @@ public class ContractorAccount extends Account implements JSONable {
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
+
+	// This is only for testing, do not autowire these
+	private InvoiceFeeDAO invoiceFeeDAO;
+	private InputValidator inputValidator;
+	private VATValidator vatValidator;
+	private CountryDAO countryDAO;
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -568,10 +575,10 @@ public class ContractorAccount extends Account implements JSONable {
 		this.membershipDate = membershipDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	/*
+	/**
 	 * The date the contractor last reviewed their facility list
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getViewedFacilities() {
 		return viewedFacilities;
 	}
@@ -816,23 +823,86 @@ public class ContractorAccount extends Account implements JSONable {
 		this.score = score;
 	}
 
-	// Other relationships //
-	@ManyToOne
-	@JoinColumn(name = "welcomeAuditor_id")
-	/**
-	 * The CSR
-	 */
-	public User getAuditor() {
-		return auditor;
-	}
+//	@ManyToOne
+//	@JoinColumn(name = "welcomeAuditor_id")
+//	public User getAuditor() {
+//		return auditor;
+//	}
+//
+//	public void setAuditor(User auditor) {
+//		this.auditor = auditor;
+//	}
 
-	public void setAuditor(User auditor) {
-		this.auditor = auditor;
-	}
+    @ManyToOne
+    @JoinColumn(name = "recommendedCsrID")
+    public User getRecommendedCsr() {
+        return recommendedCsr;
+    }
 
-	// /// Transient/Helper Methods ///////
+    public void setRecommendedCsr(User recommendedCsr) {
+        this.recommendedCsr = recommendedCsr;
+    }
 
-	@Transient
+    @Transient
+    public boolean hasCurrentCsr() {
+        User csr = getCurrentCsr();
+        if (csr != null) {
+            return true;
+        }
+        return false;
+    }
+
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentCsr() {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    return representative.getUser();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentCsr(User newCsr, int createdById) {
+        makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
+    }
+
+    @Transient
+    public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
+        Date now = new Date();
+        expireCurrentCsrs(now);
+        addNewCsrRepresentative(newCsr, now, createdById);
+    }
+
+    private void addNewCsrRepresentative(User newCsr, Date now, int createdById) {
+        AccountUser newCsrRep = new AccountUser();
+        newCsrRep.setAccount(this);
+        newCsrRep.setUser(newCsr);
+        newCsrRep.setStartDate(now);
+        newCsrRep.setEndDate(DateBean.getEndOfTime());
+        newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
+        newCsrRep.setOwnerPercent(100);
+        newCsrRep.setCreatedBy(new User(createdById));
+        newCsrRep.setCreationDate(new Date());
+        addAccountUser(newCsrRep);
+    }
+
+    private void expireCurrentCsrs(Date now) {
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+                    representative.setEndDate(now);
+                }
+            }
+        }
+    }
+
+    @Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()
@@ -935,7 +1005,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors, importance = FieldImportance.Average)
 	public boolean isRenew() {
 		return renew;
 	}
@@ -1023,7 +1093,7 @@ public class ContractorAccount extends Account implements JSONable {
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
-		InvoiceFeeDAO feeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO feeDAO = getInvoiceFeeDAO();
 
 		boolean foundListOnlyMembership = false;
 		boolean foundBidOnlyMembership = false;
@@ -1144,7 +1214,8 @@ public class ContractorAccount extends Account implements JSONable {
 							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
 									.isReactivation())) {
 						if (invoice.getPayments().size() > 0) {
-							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(invoice.getPayments());
+							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(
+									invoice.getPayments());
 							Collections.sort(invoice.getPayments(), new Comparator<PaymentApplied>() {
 								public int compare(PaymentApplied paymentOne, PaymentApplied paymentTwo) {
 									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
@@ -1176,38 +1247,50 @@ public class ContractorAccount extends Account implements JSONable {
 		if (!foundListOnlyMembership) {
 			clearCurrentFee(FeeClass.ListOnly, feeDAO);
 		}
+
 		if (!foundBidOnlyMembership) {
 			clearCurrentFee(FeeClass.BidOnly, feeDAO);
 		}
+
 		if (!foundDocuGUARDMembership) {
 			clearCurrentFee(FeeClass.DocuGUARD, feeDAO);
 		}
+
 		if (!foundAuditGUARDMembership) {
 			clearCurrentFee(FeeClass.AuditGUARD, feeDAO);
 		}
+
 		if (!foundInsureGUARDMembership) {
 			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
 		}
+
 		if (!foundEmployeeGUARDMembership) {
 			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
 		}
+
 		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee) {
 			clearCurrentFee(FeeClass.ImportFee, feeDAO);
 		}
+
 		if (!foundPaymentExpires) {
 			paymentExpires = creationDate;
 		}
+
 		if (!foundMembershipDate) {
 			membershipDate = null;
 		}
 	}
 
-    private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
-        if (fees != null && fees.containsKey(feeClass)) {
-            fees.get(feeClass).setCurrentLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-            fees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
-        }
-    }
+	private void clearCurrentFee(FeeClass feeClass, InvoiceFeeDAO feeDAO) {
+		Map<FeeClass, ContractorFee> contractorFees = getFees();
+		if (isMissingFee(contractorFees, feeClass)) {
+			setNewContractorFeeOnContractor(feeClass, BigDecimal.ZERO);
+		} else {
+			InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(feeClass, 0);
+			contractorFees.get(feeClass).setCurrentLevel(invoiceFee);
+			contractorFees.get(feeClass).setCurrentAmount(BigDecimal.ZERO);
+		}
+	}
 
 	private void setNewContractorFeeOnContractor(FeeClass fee, BigDecimal amount) {
 		InvoiceFee invoiceFee = findInvoiceFeeForServiceLevel(fee, 0);
@@ -1252,12 +1335,8 @@ public class ContractorAccount extends Account implements JSONable {
 		return MapUtils.isEmpty(contractorFees) || !contractorFees.containsKey(fee);
 	}
 
-//	private InvoiceFeeDAO getInvoiceFeeDAO() {
-//		return SpringUtils.getBean("InvoiceFeeDAO");
-//	}
-
 	private InvoiceFee findInvoiceFeeForServiceLevel(FeeClass feeClass, int numberOfClientSites) {
-		InvoiceFeeDAO invoiceFeeDAO = SpringUtils.getBean("InvoiceFeeDAO");
+		InvoiceFeeDAO invoiceFeeDAO = getInvoiceFeeDAO();
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfClientSites);
 	}
 
@@ -1896,6 +1975,8 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
+	// TODO: Remove this if it is not being used.
+	@SuppressWarnings("unused")
 	private void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
@@ -2115,30 +2196,38 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public InputValidator getInputValidator() {
-		return SpringUtils.getBean("InputValidator");
+		if (inputValidator == null) {
+			return SpringUtils.getBean("InputValidator");
+		}
+
+		return inputValidator;
 	}
 
 	@Transient
 	public VATValidator getVatValidator() {
-		return SpringUtils.getBean("VATValidator");
+		if (vatValidator == null) {
+			return SpringUtils.getBean("VATValidator");
+		}
+
+		return vatValidator;
 	}
 
 	@Transient
 	public CountryDAO getCountryDao() {
-		return SpringUtils.getBean("CountryDAO");
+		if (countryDAO == null) {
+			return SpringUtils.getBean("CountryDAO");
+		}
+
+		return countryDAO;
 	}
 
 	@Transient
-	public List<ContractorAudit> getExpiringPoliciesForInsuranceExpirationEmail() {
-		List<ContractorAudit> expiringPolicies = new ArrayList<ContractorAudit>();
-
-		for (ContractorAudit audit : getAudits()) {
-			if (audit.getAuditType().getClassType().isPolicy() && audit.isExpiringSoon()) {
-				expiringPolicies.add(audit);
-			}
+	private InvoiceFeeDAO getInvoiceFeeDAO() {
+		if (invoiceFeeDAO == null) {
+			return SpringUtils.getBean("InvoiceFeeDAO");
 		}
 
-		return expiringPolicies;
+		return invoiceFeeDAO;
 	}
 
 	@Override

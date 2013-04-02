@@ -2,7 +2,6 @@ package com.picsauditing.toggle;
 
 public interface FeatureToggle {
 	String TOGGLE_BADGE = "Toggle.Badge_v2";
-	String TOGGLE_DYNAMICREPORTS = "Toggle.DynamicReports_v2";
 	String TOGGLE_V7MENUS = "Toggle.v7Menus";
 	String TOGGLE_LCCOR = "Toggle.LcCor_v2";
 	String TOGGLE_MIBEW_CHAT = "Toggle.MibewChat";
@@ -27,6 +26,8 @@ public interface FeatureToggle {
 	String TOGGLE_USE_NEW_CANADIAN_TAX = "Toggle.UseNewCanadianTax";
 	String TOGGLE_DO_NOT_USE_SWITCHTO_ACCOUNTS_IN_NOTE_RESTRICTION = "Toggle.NoteEdit.DoNotUseSwitchToInRestriction";
 	String TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD = "Toggle.ShowReviewDocInAuditGUARD";
+	String TOGGLE_SHOW_DR_REPORTS = "Toggle.ShowUserDR";
+	String TOGGLE_USE_V7_MENU_COLUMN = "Toggle.UseVersion7MenuColumns";
 
 	boolean isFeatureEnabled(String toggleName);
 

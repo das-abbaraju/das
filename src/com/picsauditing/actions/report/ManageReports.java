@@ -16,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportSearch;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -37,9 +40,11 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
-	private ReportUserDAO reportUserDao;
-	@Autowired
 	private ManageReportsService manageReportsService;
+	@Autowired
+	private ReportPreferencesService reportPreferencesService;
+
+	private User toOwner;
 
 	private List<ReportUser> reportUsers;
 	private List<ReportUser> reportUserOverflow;
@@ -82,7 +87,7 @@ public class ManageReports extends PicsActionSupport {
 	// TODO: Return a list of ReportInfo instead of reportUsers
 	public String favorites() {
 		try {
-			reportUsers = reportUserDao.findAllFavorite(permissions.getUserId());
+			reportUsers = manageReportsService.buildFavorites(permissions.getUserId());
 
 			if (CollectionUtils.isEmpty(reportUsers)) {
 				reportUsers = new ArrayList<ReportUser>();
@@ -103,7 +108,8 @@ public class ManageReports extends PicsActionSupport {
 	public String myReports() {
 		reportUsers = Collections.emptyList();
 		try {
-			reportUsers = reportService.getAllReportUsers(sort, direction, permissions);
+			reportUsers = reportPreferencesService.getAllReportUsers(sort,
+					direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -127,7 +133,10 @@ public class ManageReports extends PicsActionSupport {
 	public String ownedBy() {
 		reportList = new ArrayList<ReportInfo>();
 		try {
+
 			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
+		} catch (NoResultException nre) {
+			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
 		} catch (Exception e) {
 			logAndShowUserInDebugMode("Unexpected exception in ManageReports!ownedBy.action", e);
 		}
@@ -156,7 +165,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteUp() {
 		try {
-			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(
+					permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
@@ -174,7 +184,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteDown() {
 		try {
-			ReportUser reportUser = reportService.loadReportUser(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(
+					permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
@@ -190,40 +201,85 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
-	public String removeReportUser() {
-		return redirectToPreviousView();
+	public String transferOwnership() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.transferOwnership(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot transfer ownership.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot transfer ownership.", e);
+			return ERROR;
+		}
+
+		return NONE;
 	}
 
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
-	public String removeReportPermissionUser() {
-		return redirectToPreviousView();
-	}
-
-	/**
-	 * This method has purposely been left empty because we wanted to disable
-	 * this functionality.
-	 *
-	 * @return
-	 */
 	public String deleteReport() {
-		return redirectToPreviousView();
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.deleteReport(getUser(), report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			// Report doesn't exist, so we don't need to do anything.
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot delete.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot delete.", e);
+			return ERROR;
+		}
+
+		return NONE;
+	}
+
+	public String shareWithViewPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.shareWithViewPermission(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return NONE;
+	}
+
+	public String shareWithEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.shareWithEditPermission(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return NONE;
 	}
 
 	public String favorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
-			manageReportsService.favoriteReport(reportUser);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			reportPreferencesService.favoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -239,8 +295,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String unfavorite() {
 		try {
-			ReportUser reportUser = reportService.loadOrCreateReportUser(permissions.getUserId(), reportId);
-			manageReportsService.unfavoriteReport(reportUser);
+			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
+			reportPreferencesService.unfavoriteReport(reportUser);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -300,6 +356,14 @@ public class ManageReports extends PicsActionSupport {
 
 	private ReportSearch buildReportSearch() {
 		return new ReportSearch(permissions, sort, direction);
+	}
+
+	public User getToOwner() {
+		return toOwner;
+	}
+
+	public void setToOwner(User toOwner) {
+		this.toOwner = toOwner;
 	}
 
 	public List<ReportUser> getReportUsers() {

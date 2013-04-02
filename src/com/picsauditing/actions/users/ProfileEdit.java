@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -28,6 +30,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
@@ -45,13 +48,15 @@ public class ProfileEdit extends PicsActionSupport {
 	private UserLoginLogDAO loginLogDao;
 	@Autowired
 	private InputValidator inputValidator;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	private User u;
 
 	private List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 
 	private boolean goEmailSub = false;
-	private boolean usingDynamicReports = false;
+	private boolean usingVersion7Menus = false;
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -84,23 +89,49 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-		u.setUsingDynamicReports(isUsingDynamicReports());
+		u.setUsingVersion7Menus(isUsingVersion7Menus());
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			u.setUsingDynamicReports(isUsingVersion7Menus());
+		}
 
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
 
+		u.updateDisplayNameBasedOnFirstAndLastName();
 		u = dao.save(u);
 		dao.refresh(u);
 
+		// We have to redirect to refresh the locale, if it has been changed
+		return redirect();
+	}
+
+	private String redirect() throws IOException {
+		if (isUserSetForNewMenu()) {
+			// if the user makes it to this point, we know their user information was saved properly.
+			permissions.setUsingVersion7Menus(true);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+			return setUrlForRedirect("Tutorial!navigationMenu.action");
+		}
+
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 
-		// We have to redirect to refresh the locale, if it has been changed
 		return setUrlForRedirect("ProfileEdit.action");
 	}
 
+	private boolean isUserSetForNewMenu() {
+		if(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+			return isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null;
+		}
+
+		return isUsingVersion7Menus() && u.getUsingDynamicReportsDate() == null;
+	}
+
 	public void validateInput() {
-		String errorMessageKey = inputValidator.validateName(u.getName());
-		addFieldErrorIfMessage("u.name", errorMessageKey);
+		String errorMessageKey = inputValidator.validateFirstName(u.getFirstName());
+		addFieldErrorIfMessage("u.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLastName(u.getLastName());
+		addFieldErrorIfMessage("u.lastName", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateName(u.getDepartment(), false);
 		addFieldErrorIfMessage("u.department", errorMessageKey);
@@ -163,6 +194,12 @@ public class ProfileEdit extends PicsActionSupport {
 		 */
 		if (u == null) {
 			u = dao.find(permissions.getUserId());
+		}
+
+		// If logged in as a group, you shouldn't get to this page
+		// TODO: If this happens, do we really want to log them out?
+		if (u.isGroup()) {
+			return setUrlForRedirect("Login.action?button=logout");
 		}
 
 		// If the user is not logged in, they should be redirected to the login page.
@@ -247,7 +284,7 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	public List<AuditType> getViewableAuditsList() {
-		AuditTypeDAO auditTypeDao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		AuditTypeDAO auditTypeDao = SpringUtils.getBean(SpringUtils.AUDIT_TYPE_DAO);
 
 		return auditTypeDao.findWhere("t.id IN (" + Strings.implode(permissions.getVisibleAuditTypes()) + ")");
 	}
@@ -274,12 +311,12 @@ public class ProfileEdit extends PicsActionSupport {
 		return goEmailSub;
 	}
 
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
+	public boolean isUsingVersion7Menus() {
+		return usingVersion7Menus;
 	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
+	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
 }

@@ -1,8 +1,7 @@
 package com.picsauditing.mail;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertEquals;
-import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class EventSubscriptionBuilderTest {
 	@Autowired private NoteDAO noteDAO;
 	@Autowired private EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired private EmailTemplateDAO emailTemplateDAO;
-	
+
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
@@ -55,7 +54,7 @@ public class EventSubscriptionBuilderTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", emailBuilder);
-		
+
 		when(emailBuilder.build()).thenReturn(email);
 	}
 

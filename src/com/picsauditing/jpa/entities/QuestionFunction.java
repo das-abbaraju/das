@@ -18,18 +18,18 @@ import com.picsauditing.util.Strings;
 
 /**
  * The function that a specific {@link AuditQuestion} performs. This is used for calculated values.
- * 
+ *
  * @author kpartridge
- * 
+ *
  */
 
 public enum QuestionFunction {
 
 	/**
 	 * Used for custom {@link AuditQuestionFunction}s. This requires an expression be placed on the params map.
-	 * 
+	 *
 	 * Uses the unique code to create a string that will be executed as javascript
-	 * 
+	 *
 	 * Ex: {totalIncidents} / {manHours}
 	 */
 	CUSTOM {
@@ -60,7 +60,7 @@ public enum QuestionFunction {
 	},
 	/**
 	 * Canadian WCB Surcharge
-	 * 
+	 *
 	 * Net Premium Rate / Industry Rate
 	 */
 	WCB_SURCHARGE {
@@ -88,9 +88,10 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("fatalities"))
 					|| Strings.isEmpty(params.get("lostWorkdayCases"))
 					|| Strings.isEmpty(params.get("restrictedCases"))
-					|| Strings.isEmpty(params.get("injuries")))
+					|| Strings.isEmpty(params.get("injuries"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			//convertToInt(params.get("manHours").replace(",", ""));
 			int fatalities = convertToInt(params.get("fatalities").replace(",", ""));
@@ -98,7 +99,7 @@ public enum QuestionFunction {
 			int restrictedCases = convertToInt(params.get("restrictedCases").replace(",", ""));
 			int injuries= convertToInt(params.get("injuries").replace(",", ""));
 			int totalCases = fatalities + lostWorkdayCases + restrictedCases + injuries;
-			
+
 			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
 		}
 	},
@@ -112,12 +113,13 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
-					|| Strings.isEmpty(params.get("lostWorkdayCases")))
+					|| Strings.isEmpty(params.get("lostWorkdayCases"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int lostWorkdayCases = convertToInt(params.get("lostWorkdayCases").replace(",", ""));
-			
+
 			return calculateRate(lostWorkdayCases, manHours, OSHA_NORMALIZER);
 		}
 	},
@@ -131,13 +133,14 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
-					|| Strings.isEmpty(params.get("restrictedCases")))
+					|| Strings.isEmpty(params.get("restrictedCases"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int restrictedCases = convertToInt(params.get("restrictedCases").replace(",", ""));
-			
-			return calculateRate(restrictedCases, manHours, OSHA_NORMALIZER);	
+
+			return calculateRate(restrictedCases, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -151,15 +154,16 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdayCases"))
-					|| Strings.isEmpty(params.get("restrictedCases")))
+					|| Strings.isEmpty(params.get("restrictedCases"))) {
 				return MISSING_PARAMETER;
-			
-			int manHours = convertToInt(params.get("manHours").replace(",", ""));			
+			}
+
+			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int lostWorkdayCases = convertToInt(params.get("lostWorkdayCases").replace(",", ""));
 			int restrictedCases = convertToInt(params.get("restrictedCases").replace(",", ""));
-			
+
 			int dartCases = lostWorkdayCases + restrictedCases;
-			
+
 			return calculateRate(dartCases, manHours, OSHA_NORMALIZER);
 		}
 	},
@@ -173,13 +177,14 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int fatalities = convertToInt(params.get("fatalities").replace(",", ""));
-			
-			return calculateRate(fatalities, manHours, OSHA_NORMALIZER);	
+
+			return calculateRate(fatalities, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -192,13 +197,14 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
-					|| Strings.isEmpty(params.get("lostWorkdays")))
+					|| Strings.isEmpty(params.get("lostWorkdays"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int lostWorkdays = convertToInt(params.get("lostWorkdays").replace(",", ""));
-			
-			return calculateRate(lostWorkdays, manHours, OSHA_NORMALIZER);	
+
+			return calculateRate(lostWorkdays, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -212,15 +218,16 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdays"))
-					|| Strings.isEmpty(params.get("restrictedDays")))
+					|| Strings.isEmpty(params.get("restrictedDays"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int lostWorkdays = convertToInt(params.get("lostWorkdays").replace(",", ""));
 			int restrictedDays = convertToInt(params.get("restrictedDays").replace(",", ""));
 			int totalDays = lostWorkdays + restrictedDays;
-			
-			return calculateRate(totalDays, manHours, OSHA_NORMALIZER);	
+
+			return calculateRate(totalDays, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -235,22 +242,24 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("totalHours"))
 					|| Strings.isEmpty(params.get("majorInjuries"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
 
 			BigDecimal totalIncidents = fatalities.add(majorInjuries);
-			
+
+
 			BigDecimal result;
 			try {
 				result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(IFR_FREQUENCY_RATE_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -264,19 +273,20 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
-					|| Strings.isEmpty(params.get("totalHours")))
+					|| Strings.isEmpty(params.get("totalHours"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
-			
+
 			BigDecimal result = null;
 			try {
 				result = injuries.divide(hours, 7, RoundingMode.HALF_UP).multiply(IFR_FREQUENCY_RATE_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -291,20 +301,21 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
 					|| Strings.isEmpty(params.get("totalHours"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
-			
+
 			BigDecimal result = null;
 			try {
 				result = fatalities.add(injuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -319,20 +330,21 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
 					|| Strings.isEmpty(params.get("employees"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
-			
+
 			BigDecimal result = null;
 			try {
 				result = fatalities.add(injuries).divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -347,20 +359,21 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
 					|| Strings.isEmpty(params.get("totalHours"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
-			
+
 			BigDecimal result = null;
 			try {
 				result = fatalities.add(injuries).divide(hours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1000000)).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -375,20 +388,21 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("lostTimeInjuries"))
 					|| Strings.isEmpty(params.get("lostHours"))
-					|| Strings.isEmpty(params.get("fatalities")))
+					|| Strings.isEmpty(params.get("fatalities"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
 			BigDecimal lostHours = new BigDecimal(params.get("lostHours").replace(",", "")).setScale(7);
-			
+
 			BigDecimal result = null;
 			try {
 				result = lostHours.divide(fatalities.add(injuries), 7, RoundingMode.HALF_UP).setScale(2,RoundingMode.HALF_UP);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -426,27 +440,28 @@ public enum QuestionFunction {
 	},
 	/**
 	 * UK Annual Update Dangerous Occurrences Frequency Rate
-	 * DOFR = (dangerous occurrences / total hours worked) x 100,000 
-	 */	
+	 * DOFR = (dangerous occurrences / total hours worked) x 100,000
+	 */
 	DOFR {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("totalHours"))
-					|| Strings.isEmpty(params.get("dangerousOccurrences")))
+					|| Strings.isEmpty(params.get("dangerousOccurrences"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
-			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences").replace(",", "")).setScale(7);				
-					
+			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences").replace(",", "")).setScale(7);
+
 			BigDecimal result;
 			try {
 				result = dangerousOccurences.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(DOFR_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
-				return MISSING_PARAMETER; 
+				return MISSING_PARAMETER;
 			}
-			
+
 			return result;
 		}
 	},
@@ -457,17 +472,18 @@ public enum QuestionFunction {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
-			
+
 			if (Strings.isEmpty(params.get("overThreeDays"))
-					|| Strings.isEmpty(params.get("underThreeDays")))
+					|| Strings.isEmpty(params.get("underThreeDays"))) {
 				return MISSING_PARAMETER;
-			
+			}
+
 			int overThreeDays = Integer.valueOf(params.get("overThreeDays").replace(",", ""));
 			int underThreeDays = Integer.valueOf(params.get("underThreeDays").replace(",", ""));
-			
+
 			return overThreeDays + underThreeDays;
 		}
-		
+
 	},
 	/**
 	 * France Annual Update
@@ -475,18 +491,19 @@ public enum QuestionFunction {
 	 */
 	FRANCE_AFR {
 		@Override
-		public Object calculate(FunctionInput input) {	
+		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("deaths"))
-					|| Strings.isEmpty(params.get("lostTimeInjuries")))
+					|| Strings.isEmpty(params.get("lostTimeInjuries"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int totalCases = convertToInt(params.get("deaths").replace(",", "")) + convertToInt(params.get("lostTimeInjuries").replace(",", ""));
-			
-			return calculateRate(totalCases, manHours, IFR_FREQUENCY_RATE_NORMALIZER);	
+
+			return calculateRate(totalCases, manHours, IFR_FREQUENCY_RATE_NORMALIZER);
 		}
 	},
 	/**
@@ -495,17 +512,18 @@ public enum QuestionFunction {
 	 */
 	FRANCE_LWR {
 		@Override
-		public Object calculate(FunctionInput input) {	
+		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
-					|| Strings.isEmpty(params.get("lostWorkDays")))
+					|| Strings.isEmpty(params.get("lostWorkDays"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
 			int lostWorkDays = convertToInt(params.get("lostWorkDays").replace(",", ""));
-			
-			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);	
+
+			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);
 		}
 	},
 	/**
@@ -514,17 +532,18 @@ public enum QuestionFunction {
 	 */
 	FRANCE_FI {
 		@Override
-		public Object calculate(FunctionInput input) {	
+		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("employees"))
-					|| Strings.isEmpty(params.get("lostTimeInjuries")))
+					|| Strings.isEmpty(params.get("lostTimeInjuries"))) {
 				return MISSING_PARAMETER;
+			}
 
 			int employees = convertToInt(params.get("employees").replace(",", ""));
 			int lostTimeInjuries = convertToInt(params.get("lostTimeInjuries").replace(",", ""));
-			
-			return calculateRate(lostTimeInjuries, employees, FRANCE_NORMALIZER);	
+
+			return calculateRate(lostTimeInjuries, employees, FRANCE_NORMALIZER);
 		}
 	},
 	SCORE {
@@ -540,8 +559,9 @@ public enum QuestionFunction {
 					total += question.getScoreWeight();
 				}
 			}
-			if (total == 0)
+			if (total == 0) {
 				return 0;
+			}
 			return Math.round((score / total) * 100);
 		}
 	},
@@ -550,19 +570,22 @@ public enum QuestionFunction {
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 			String value = params.get("value");
-			if ("Yes".equals(value))
+			if ("Yes".equals(value)) {
 				return "D";
-			if ("No".equals(value))
+			}
+			if ("No".equals(value)) {
 				return "B";
-			if ("NA".equals(value))
+			}
+			if ("NA".equals(value)) {
 				return "E";
+			}
 
 			return "E";
 		}
 	},
 	/**
 	 * Suncor Audit Corruption Audit.
-	 * 
+	 *
 	 */
 	CPI_CHECK {
 		@Override
@@ -571,18 +594,18 @@ public enum QuestionFunction {
 
 			String unparsedJsonCountries = params.get("countries");
 			String actingAsAgent = params.get("actingAsAgent");
-			
+
 			double lowestCpi = NO_CPI_FOR_COUNTRIES_LISTED;
-						
+
 			if ("Yes".equals(actingAsAgent)) {
-					CorruptionPerceptionIndexMap cpiMap = (CorruptionPerceptionIndexMap) SpringUtils.getBean("CorruptionPerceptionIndexMap");
-					
+					CorruptionPerceptionIndexMap cpiMap = SpringUtils.getBean(SpringUtils.CORRUPTION_PERCEPTION_INDEX_MAP);
+
 					for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
 						if (cpi != null && cpi < lowestCpi) {
 							lowestCpi = cpi;
 						}
 					}
-		
+
 			}
 			return lowestCpi;
 		}
@@ -601,16 +624,16 @@ public enum QuestionFunction {
 
 	// US OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
-	
+
 	// UK HSE standard normalizer.
 	private static final BigDecimal DOFR_NORMALIZER = new BigDecimal(100000);
 	private static final BigDecimal IFR_FREQUENCY_RATE_NORMALIZER = new BigDecimal(1000000);
-	
+
 	// France NRIS standard normalizer.
 	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000);
-	
+
 	public static final String MISSING_PARAMETER = "Audit.missingParameter";
-	
+
 	public abstract Object calculate(FunctionInput input)  throws NumberFormatException;;
 
 	public static class FunctionInput {
@@ -665,15 +688,16 @@ public enum QuestionFunction {
 	protected int convertToInt(String value) {
 		return Float.valueOf(value).intValue();
 	}
-	
+
 	protected Map<String, String> getParameterMap(FunctionInput input) {
 		Map<String, String> params = new HashMap<String, String>();
 
 		for (AuditQuestionFunctionWatcher watcher : input.watchers) {
 			AuditData auditData = input.answerMap.get(watcher.getQuestion().getId());
 			String answer = "";
-			if (auditData != null)
+			if (auditData != null) {
 				answer = auditData.getAnswer();
+			}
 			params.put(watcher.getUniqueCode(), answer);
 		}
 

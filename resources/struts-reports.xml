@@ -333,17 +333,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorAssigned"
-			class="com.picsauditing.actions.report.ReportContractorAssignment">
-			<result>struts/reports/assignedContractor.jsp</result>
-		</action>
-
-		<action name="ContractorAssignedCSV"
-			class="com.picsauditing.actions.report.ReportContractorAssignment">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<action name="ScheduleAuditUpdate"
 			class="com.picsauditing.actions.report.AuditScheduleUpdate">
 			<result>struts/confirmaudit.jsp</result>

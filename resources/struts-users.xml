@@ -69,6 +69,7 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+        <action name="QaUserCreator" class="com.picsauditing.actions.qa.QaUserCreator"/>
 	</package>
 
 </struts>

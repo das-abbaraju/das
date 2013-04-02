@@ -14,6 +14,7 @@ import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.SpringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -120,6 +121,23 @@ public class AuditDataSaveTest {
 		assertNotNull(audit.getExpiresDate());
 		date = audit.getExpiresDate();
 		assertEquals("2026-01-31", format.format(date));
+	}
+
+	@Ignore
+	public void testESignatureVerify() throws Exception {
+		AuditData auditData = EntityFactory.makeAuditData(null);
+		auditData.setComment(null);
+		AuditData databaseData = EntityFactory.makeAuditData("John Smith / Supervisor");
+		databaseData.setId(auditData.getId());
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setQuestionType("ESignature");
+		auditData.setQuestion(question);
+		databaseData.setQuestion(question);
+
+		PicsTestUtil.forceSetPrivateField(auditDataSave, "mode", "Verify");
+		Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, databaseData);
+		assertTrue(result);
+		assertTrue(auditData.getAnswer().equals("John Smith / Supervisor"));
 	}
 
     @Test

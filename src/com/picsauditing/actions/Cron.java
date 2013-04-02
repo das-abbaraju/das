@@ -200,14 +200,6 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("Resetting Renewable Audits and cao and stamping notes...");
-				contractorAuditOperatorDAO.resetRenewableAudits();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
-
-			try {
 				// TODO we shouldn't recacluate audits, but only categories.
 				// This shouldn't be needed at all anymore
 				startTask("Recalculating all the categories for Audits...");

@@ -18,12 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
@@ -74,6 +76,8 @@ public class AuditBuilderTest extends PicsTest {
 	AuditDataDAO auditDataDao;
 	@Mock
 	ContractorAuditDAO auditDao;
+    @Mock
+    private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -83,9 +87,9 @@ public class AuditBuilderTest extends PicsTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-//		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.initMocks(this);
 
-		auditBuilder = new AuditBuilder();
+        auditBuilder = new AuditBuilder();
 		autowireEMInjectedDAOs(auditBuilder);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
 				typeRuleCache);
@@ -93,6 +97,9 @@ public class AuditBuilderTest extends PicsTest {
 				catRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder,
 				"auditPercentCalculator", auditPercentCalculator);
+
+        Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+        Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 
 		typeRules.clear();
 		typeRuleCache.clear();
@@ -106,7 +113,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 	
 	@Ignore
-	public void testBuildAudits_WCB() {
+	public void testBuildAudits_WCB() throws Exception {
 		addTypeRules((new RuleParameters()).setAuditTypeId(145));
 		addCategoryRules(null);
 
@@ -123,7 +130,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 	
 	@Test
-	public void testAdjustCaoStatus() {
+	public void testAdjustCaoStatus() throws Exception {
 		ContractorAudit annualAudit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, "2011");
 		EntityFactory.addCategories(annualAudit.getAuditType(), 101, "Annual Category 1");
 		
@@ -157,7 +164,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 	
 	@Test
-	public void testWelcomCalls() {
+	public void testWelcomCalls() throws Exception {
 		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
 		EntityFactory.addCategories(auditType, 101, "Welcome Category 1");
 		// set up rules
@@ -177,7 +184,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 	
 	@Test
-	public void testAuditTypeBuilderCategoryBuildere() {
+	public void testAuditTypeBuilderCategoryBuildere() throws Exception {
 		// set up audit type
 		AuditType pqfType = EntityFactory.makeAuditType(AuditType.PQF);
 		EntityFactory.addCategories(pqfType, 101, "PQF Category 1");
@@ -206,7 +213,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_WelcomeCall() {
+	public void testBuildAudits_WelcomeCall() throws Exception {
 		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
 		WorkflowStep pendingStep = new WorkflowStep();
 		pendingStep.setNewStatus(AuditStatus.Pending);
@@ -231,7 +238,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_AnnualUpdates() {
+	public void testBuildAudits_AnnualUpdates() throws Exception {
 		addTypeRules((new RuleParameters())
 				.setAuditTypeId(AuditType.ANNUALADDENDUM));
 		addCategoryRules(null);
@@ -245,22 +252,23 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_ReviewCompetency() {
+	public void testBuildAudits_ReviewCompetency() throws Exception {
 		addTypeRules((new RuleParameters())
 				.setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
 		addCategoryRules(null);
 
+		AuditType implementationType = EntityFactory
+				.makeAuditType(AuditType.INTEGRITYMANAGEMENT);
+		implementationType.setRenewable(false);
 		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(
-						EntityFactory
-								.makeAuditType(AuditType.INTEGRITYMANAGEMENT));
+				.thenReturn(implementationType);
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
 	}
 
 	@Test
-	public void testBuildAudits_IsValidAudit_NullData() {
+	public void testBuildAudits_IsValidAudit_NullData() throws Exception {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
@@ -291,7 +299,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_IsValidAudit_Cor_Yes() {
+	public void testBuildAudits_IsValidAudit_Cor_Yes() throws Exception {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
@@ -324,7 +332,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_IsValidAudit_Cor_No() {
+	public void testBuildAudits_IsValidAudit_Cor_No() throws Exception {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
@@ -356,7 +364,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_IsValidAudit_Iec_Yes() {
+	public void testBuildAudits_IsValidAudit_Iec_Yes() throws Exception {
 		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
 				AuditType.IEC_AUDIT, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
@@ -414,7 +422,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_IsValidAudit_Iec__No() {
+	public void testBuildAudits_IsValidAudit_Iec__No() throws Exception {
 		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
 				AuditType.IEC_AUDIT, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
@@ -644,7 +652,7 @@ public class AuditBuilderTest extends PicsTest {
 		return audit;
 	}
 
-	private void addTypeRules(RuleParameters params) {
+	private void addTypeRules(RuleParameters params) throws Exception {
 		AuditTypeRule rule = new AuditTypeRule();
 		if (params != null) {
 			fillAuditRule(params, rule);
@@ -654,10 +662,10 @@ public class AuditBuilderTest extends PicsTest {
 		}
 
 		typeRules.add(rule);
-		typeRuleCache.initialize(typeRules);
+        Whitebox.invokeMethod(typeRuleCache, "initialize", typeRules);
 	}
 
-	private void addCategoryRules(RuleParameters params) {
+	private void addCategoryRules(RuleParameters params) throws Exception {
 		AuditCategoryRule rule = new AuditCategoryRule();
 		if (params != null) {
 			fillAuditRule(params, rule);
@@ -666,7 +674,7 @@ public class AuditBuilderTest extends PicsTest {
 		}
 
 		catRules.add(rule);
-		catRuleCache.initialize(catRules);
+        Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
 	}
 
 	private void fillAuditRule(RuleParameters params, AuditRule rule) {

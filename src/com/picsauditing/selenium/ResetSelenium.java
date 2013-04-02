@@ -3,13 +3,18 @@ package com.picsauditing.selenium;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.access.ApiRequired;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.PicsApiSupport;
+import org.apache.struts2.interceptor.ParameterAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 
 @SuppressWarnings("serial")
-public class ResetSelenium extends PicsActionSupport {
+public class ResetSelenium extends PicsApiSupport implements ParameterAware {
 
 	private List<SeleniumDeletable> accountsInDB;
 	private String userSpecifiedAccount = null;
@@ -20,13 +25,26 @@ public class ResetSelenium extends PicsActionSupport {
 	@Autowired
 	private SeleniumDAO seleniumDao;
 
-	@Anonymous
-	public String execute() {
+    @Override
+    @ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
+	public String execute() throws Exception {
 		establishAccountsAvailableForDeletion();
-		return SUCCESS;
+
+        if (null != userSpecifiedAccount) {
+            if (userSpecifiedAccount.equalsIgnoreCase("all")) {
+                seleniumDao.delete(seleniumDao.availableTestingReferences());
+            } else {
+                deleteSingleAccount(userSpecifiedAccount);
+            }
+            return setUrlForRedirect("ResetSelenium.action?apiKey=" + this.getApiKey());
+        } else {
+            return SUCCESS;
+        }
 	}
 
-	@Anonymous
+	@ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
 	public String delete() throws Exception {
 		establishAccountsAvailableForDeletion();
 
@@ -39,7 +57,8 @@ public class ResetSelenium extends PicsActionSupport {
 		return setUrlForRedirect("ResetSelenium.action");
 	}
 
-	@Anonymous
+    @ApiRequired
+    // TODO When the permission is actually available on live... @RequiredPermission(value = OpPerms.SeleniumTest)
 	public String deleteAll() throws Exception {
 		seleniumDao.delete(seleniumDao.availableTestingReferences());
 		return setUrlForRedirect("ResetSelenium.action");
@@ -90,6 +109,10 @@ public class ResetSelenium extends PicsActionSupport {
 	public void setDBAccounts(List<Integer> accounts) {
 		accountsSelectedForDeletion = accounts;
 	}
+
+    public String getDeleteAccount() {
+        return this.userSpecifiedAccount;
+    }
 
 	public void setDeleteAccount(String account) {
 		userSpecifiedAccount = account;

@@ -109,19 +109,22 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction) {
 		String orderBy = getOrderBySort(sort);
 
-		SelectSQL subSql = new SelectSQL("report_permission_user rpu");
-		subSql.addField("rpu.reportID");
-		subSql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
+		String groupIds = permissions.getAllInheritedGroupIds().toString();
+		groupIds = groupIds.substring(1, groupIds.length() - 1);
 
-		SelectSQL sql = new SelectSQL("report r");
-		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = :userId");
-		sql.addWhere("r.id IN (" + subSql.toString() + ")");
+		String queryString = "SELECT r FROM ReportUser ru \n" +
+				"JOIN ru.report r \n" +
+				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
+				"AND r.id IN \n" +
+				"(\n" +
+				"SELECT rpu.report.id \n" +
+				"FROM ReportPermissionUser rpu \n" +
+				"WHERE (rpu.user.id = " + permissions.getUserId() + "\n" +
+				" OR rpu.user.id IN ( " + groupIds + " ))\n" +
+				")\n" +
+				"ORDER BY " + orderBy + " " + direction;
 
-		sql.addOrderBy(orderBy + Strings.SINGLE_SPACE + direction);
-
-		Query query = em.createNativeQuery(sql.toString(), Report.class);
-		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		Query query = em.createQuery(queryString);
 
 		return query.getResultList();
 	}
@@ -214,7 +217,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 				+ permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
 		sql.addWhere("r.ownerID != u.id"); // do not return reports this user
-											// owns
+		// owns
 		sql.addGroupBy("r.id");
 		addOrderBy(sql, reportSearch);
 

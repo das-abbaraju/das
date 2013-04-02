@@ -13,9 +13,7 @@
 	
 	<div class="info">
 		<s:text name="SubcontractorFacilities.RemovingSitesHelp">
-			<s:param>
-				<s:text name="PicsPhone" />
-			</s:param>
+			<s:param>${picsPhoneNumber}</s:param>
 		</s:text>
 	</div>
 	

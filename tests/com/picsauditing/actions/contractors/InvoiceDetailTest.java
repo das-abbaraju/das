@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import com.picsauditing.model.account.AccountStatusChanges;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,6 +35,8 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.BillingNoteModel;
 
 public class InvoiceDetailTest extends PicsActionTest {
 
@@ -59,6 +60,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 	private DataObservable salesCommissionDataObservable;
 	@Mock
 	private NoteDAO noteDAO;
+	@Mock
+	private BillingNoteModel billingNoteModel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -74,6 +77,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 		Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
 		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
 		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
+		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
 	}
 
 	// Go back and add in verification for the message
@@ -136,7 +140,8 @@ public class InvoiceDetailTest extends PicsActionTest {
 		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
 	}
 
-	private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult) throws Exception {
+	private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)
+			throws Exception {
 		assertEquals(expectedActionResult, actualActionResult);
 		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
 		verify(invoiceService, times(1)).saveInvoice(invoice);

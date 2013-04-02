@@ -12,10 +12,14 @@ import javax.persistence.TemporalType;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_user")
+@SQLDelete(sql = "UPDATE report_user SET hidden = 1 WHERE id = ?")
+@Where(clause = "hidden = 0")
 public class ReportUser extends BaseTable {
 
 	private User user;
@@ -24,16 +28,16 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
-	// TODO find out why this isn't referenced ANYWHERE
-	private boolean visibleOnMyReports;
+	boolean visibleOnMyReports; // todo: Not used anywhere. Remove.
+	private boolean hidden;
 
 	public ReportUser() {
 	}
 
 	public ReportUser(int userId, Report report) {
 		this.report = report;
-		this.user = new User(userId);
-		this.favorite = false;
+		user = new User(userId);
+		favorite = false;
 	}
 
 	@ManyToOne
@@ -99,6 +103,14 @@ public class ReportUser extends BaseTable {
 
 	public void setVisibleOnMyReports(boolean visibleOnMyReports) {
 		this.visibleOnMyReports = visibleOnMyReports;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	@Override

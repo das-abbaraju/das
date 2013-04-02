@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.opensymphony.xwork2.validator.ValidationException;
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.util.Strings;
 

@@ -9,6 +9,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -18,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.File;
 import java.util.*;
@@ -51,6 +53,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private NoteDAO noteDAO;
 	@Autowired
 	private PermissionBuilder permissionBuilder;
+    @Autowired
+    @Qualifier("CsrAssignmentSinglePublisher")
+    private Publisher csrAssignmentSinglePublisher;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -138,7 +143,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractorAccountDao.save(contractor);
 				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag,
 						permissions));
-				auditTypeRuleCache.initialize(auditRuleDAO);
 				for (AuditTypeRule atr : auditTypeRuleCache
 						.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
@@ -1027,4 +1031,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 			addActionError(getText("ContractorView.SelectGeneralContractor"));
 		}
 	}
+
+    public String autoAssignCsr() throws Exception {
+        findContractor();
+        csrAssignmentSinglePublisher.publish(contractor.getId());
+        return setUrlForRedirect("ContractorView.action?id=" + contractor.getId());
+    }
 }

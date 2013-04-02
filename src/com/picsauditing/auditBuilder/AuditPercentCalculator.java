@@ -360,7 +360,6 @@ public class AuditPercentCalculator {
 		if (recalcCats)
 			recalcAllAuditCatDatas(conAudit);
 
-		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
 				conAudit.getContractorAccount());
 

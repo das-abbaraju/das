@@ -141,7 +141,6 @@ public class GraphTrirRates extends ChartMSAction {
 		sql.addField("COUNT(*) AS value");
 		sql.addWhere("a.type='Contractor'");
 		sql.addWhere("ca.auditTypeID = 11");
-		sql.addWhere("d.dateVerified IS NOT NULL");
 		sql.addWhere("ca.auditFor IN (" + Strings.implode(years) + ")");
 		sql.addWhere("CASE WHEN d.questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR + " THEN 'OSHA' WHEN d.questionID = 11115 THEN 'MSHA' ELSE 'COHS' END IN (" + Strings.implodeForDB(shaType, ",") + ")");
 		sql.addGroupBy("series, label");

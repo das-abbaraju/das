@@ -359,7 +359,7 @@ function loadStatus(caoID, addUserNote){
 		</ul>
 	</div>
 	
-	<s:if test="auditID > 0">
+	<s:if test="auditID > 0 && showCaoTable">
 		<div id="auditHeader" class="auditHeader">
 			<div id="fieldsHead" style="width: 95%; margin-left: auto; margin-right:auto;">
 				<fieldset>
@@ -420,10 +420,10 @@ function loadStatus(caoID, addUserNote){
 								<s:date name="conAudit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 						</s:if>
-						
-						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
+
+						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
 							<li>
-								<label><s:text name="Audit.ClosingAuditor" />:</label>
+								<label><s:text name="global.Closing" /> <s:property value='professionalLabel' />:</label>
 								<s:property value="conAudit.closingAuditor.name" />
 							</li>
 						</s:if>
@@ -439,12 +439,7 @@ function loadStatus(caoID, addUserNote){
 										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
-										<s:if test="conAudit.auditType.assigneeLabel == null" >
-											<s:text name="global.SafetyProfessional" />:
-										</s:if>
-										<s:else>
-                                            <s:property value='professionalLabel' />:
-										</s:else>
+                                        <s:property value='professionalLabel' />:
 									</s:else>
 								</label>
 

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
@@ -31,7 +30,7 @@ public class ReportNewContractorSearchTest extends PicsTest {
 		permissions = EntityFactory.makePermission();
 		PicsTestUtil.forceSetPrivateField(reportNewContractorSearch,
 				"permissions", permissions);
-		
+
 		when(i18nCache.hasKey("global.CompanyName", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
 		when(i18nCache.getText("global.CompanyName", Locale.ENGLISH)).thenReturn("Company Name");
 	}

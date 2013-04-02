@@ -3,5 +3,5 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:iterator value="departmentList">	
-	<s:property value="get('department')" />
+	<s:property value="get('department')" escape="false" />
 </s:iterator>

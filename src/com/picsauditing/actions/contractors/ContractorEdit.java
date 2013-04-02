@@ -205,7 +205,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (csrId == 0) {
 				contractor.setDontReassign(false);
 			} else {
-				contractor.setAuditor(userDAO.find(csrId));
+				contractor.setCurrentCsr(userDAO.find(csrId), permissions.getUserId());
 				contractor.setDontReassign(true);
 			}
 

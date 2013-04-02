@@ -19,13 +19,12 @@ public class PermissionBuilder {
 	@Autowired
 	private FeatureToggle featureToggle;
 	@Autowired
-	private LanguageModel languageModel;
-	@Autowired
 	private UserDAO dao;
 
 	public Permissions login(User user) throws Exception {
-		Permissions permissions = new Permissions(languageModel);
+		Permissions permissions = new Permissions();
 		permissions.login(user);
+		populatePermissionsWithUserInfo(permissions, user);
 		build(permissions);
 		return permissions;
 	}
@@ -44,6 +43,11 @@ public class PermissionBuilder {
 
 		permissions.getDirectlyRelatedGroupIds().clear();
 		permissions.getDirectlyRelatedGroupIds().addAll(groupIDs);
+	}
+
+	private void populatePermissionsWithUserInfo(Permissions permissions, User user) {
+		permissions.setUsingVersion7Menus(user.isUsingVersion7Menus());
+		permissions.setUsingVersion7MenusDate(user.getUsingVersion7MenusDate());
 	}
 
 	private boolean useInheritedGroups() {

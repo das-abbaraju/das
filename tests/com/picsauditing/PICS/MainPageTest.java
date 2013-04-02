@@ -1,32 +1,36 @@
 package com.picsauditing.PICS;
 
-import static org.mockito.Mockito.*;
-
-import java.util.Locale;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.Country;
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 public class MainPageTest {
 	private MainPage mainPage;
 
 	private final String SYSTEM_MESSAGE_KEY = "SYSTEM.message.en";
 
+	@Mock
+	private Country country;
+	@Mock
+	private CountryDAO countryDAO;
 	@Mock
 	protected HttpServletRequest request;
 	@Mock
@@ -44,197 +48,262 @@ public class MainPageTest {
 		mainPage = new MainPage(request, session);
 
 		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
-		Mockito.when(session.getAttribute("permissions")).thenReturn(permissions);
+		when(session.getAttribute("permissions")).thenReturn(permissions);
 
 		Whitebox.setInternalState(mainPage, "appPropertyDAO", appPropertyDAO);
+		Whitebox.setInternalState(mainPage, "countryDAO", countryDAO);
 	}
 
 	@Test
-	public void testPermissionsLoadedFromSession() throws Exception {
-		Assert.assertEquals(permissions, mainPage.getPermissions());
+	public void testGetPermissions_LoadedFromSession() throws Exception {
+		assertEquals(permissions, mainPage.getPermissions());
 	}
 
 	@Test
-	public void testPermissionMissingFromSession() throws Exception {
-		Assert.assertEquals(0, mainPage.getPermissions().getUserId());
-		Assert.assertEquals(0, mainPage.getPermissions().getAccountId());
-		Assert.assertNull(mainPage.getPermissions().getUsername());
-		Assert.assertFalse(mainPage.getPermissions().isLoggedIn());
-		Assert.assertFalse(mainPage.getPermissions().isActive());
+	public void testGetPermissions_MissingFromSession() throws Exception {
+		assertEquals(0, mainPage.getPermissions().getUserId());
+		assertEquals(0, mainPage.getPermissions().getAccountId());
+		assertNull(mainPage.getPermissions().getUsername());
+		assertFalse(mainPage.getPermissions().isLoggedIn());
+		assertFalse(mainPage.getPermissions().isActive());
 	}
 
 	@Test
-	public void testRequestIsSecure() throws Exception {
-		Mockito.when(request.isSecure()).thenReturn(true);
+	public void testGetPermissions_SetByAction() {
+		Permissions permissions = new Permissions();
+		mainPage.setPermissions(permissions);
 
-		Assert.assertTrue(mainPage.isPageSecure());
+		assertEquals(permissions, mainPage.getPermissions());
 	}
 
 	@Test
-	public void testRequestPortIs443() throws Exception {
-		Mockito.when(request.getLocalPort()).thenReturn(443);
+	public void testIsPageSecure_IsSecure() throws Exception {
+		when(request.isSecure()).thenReturn(true);
 
-		Assert.assertTrue(mainPage.isPageSecure());
+		assertTrue(mainPage.isPageSecure());
 	}
 
 	@Test
-	public void testRequestPortIs81() throws Exception {
-		Mockito.when(request.getLocalPort()).thenReturn(81);
+	public void testIsPageSecure_PortIs443() throws Exception {
+		when(request.getLocalPort()).thenReturn(443);
 
-		Assert.assertTrue(mainPage.isPageSecure());
+		assertTrue(mainPage.isPageSecure());
 	}
 
 	@Test
-	public void testRequestIsInsecure() throws Exception {
-		Mockito.when(request.isSecure()).thenReturn(false);
+	public void testIsPageSecure_PortIs81() throws Exception {
+		when(request.getLocalPort()).thenReturn(81);
 
-		Assert.assertFalse(mainPage.isPageSecure());
+		assertTrue(mainPage.isPageSecure());
 	}
 
 	@Test
-	public void testRequestUnsecuredPortNumber() throws Exception {
-		Mockito.when(request.getLocalPort()).thenReturn(80);
+	public void testIsPageSecure_IsInsecure() throws Exception {
+		when(request.isSecure()).thenReturn(false);
 
-		Assert.assertFalse(mainPage.isPageSecure());
+		assertFalse(mainPage.isPageSecure());
 	}
 
 	@Test
-	public void testRequestRandomPortNumber() throws Exception {
-		Mockito.when(request.getLocalPort()).thenReturn(1234);
+	public void testIsPageSecure_UnsecuredPortNumber() throws Exception {
+		when(request.getLocalPort()).thenReturn(80);
 
-		Assert.assertFalse(mainPage.isPageSecure());
+		assertFalse(mainPage.isPageSecure());
+	}
+
+	@Test
+	public void testIsPageSecure_RandomPortNumber() throws Exception {
+		when(request.getLocalPort()).thenReturn(1234);
+
+		assertFalse(mainPage.isPageSecure());
+	}
+
+	@Test
+	public void testIsPageSecure_RequestIsMissing() throws Exception {
+		Whitebox.setInternalState(mainPage, "request", (HttpServletRequest) null);
+
+		assertFalse(mainPage.isPageSecure());
 	}
 
 	@Test
 	public void testSplitRegexOnDot() {
 		String[] exploded = SYSTEM_MESSAGE_KEY.split("\\.");
 
-		Assert.assertEquals(3, exploded.length);
-		Assert.assertEquals("SYSTEM", exploded[0]);
-		Assert.assertEquals("message", exploded[1]);
-		Assert.assertEquals("en", exploded[2]);
+		assertEquals(3, exploded.length);
+		assertEquals("SYSTEM", exploded[0]);
+		assertEquals("message", exploded[1]);
+		assertEquals("en", exploded[2]);
 	}
 
 	@Test
-	public void testLiveChatEnabled() throws Exception {
+	public void testIsLiveChatEnabled_Enabled() throws Exception {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("1");
 
-		Mockito.doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
+		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
 
-		Assert.assertTrue(mainPage.isLiveChatEnabled());
+		assertTrue(mainPage.isLiveChatEnabled());
 	}
 
 	@Test
-	public void testLiveChatSetTo0() throws Exception {
+	public void testIsLiveChatEnabled_SetTo0() throws Exception {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("0");
 
-		Mockito.doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
+		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
 
-		Assert.assertFalse(mainPage.isLiveChatEnabled());
+		assertFalse(mainPage.isLiveChatEnabled());
 	}
 
 	@Test
-	public void testLiveChatSetToRandom() throws Exception {
+	public void testIsLiveChatEnabled_SetToRandom() throws Exception {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("Hello World");
 
-		Mockito.doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
+		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
 
-		Assert.assertFalse(mainPage.isLiveChatEnabled());
+		assertFalse(mainPage.isLiveChatEnabled());
 	}
 
 	@Test
-	public void testLiveChatNull() throws Exception {
-		Mockito.doReturn(null).when(appPropertyDAO).find(AppProperty.LIVECHAT);
+	public void testIsLiveChatEnabled_Null() throws Exception {
+		doReturn(null).when(appPropertyDAO).find(AppProperty.LIVECHAT);
 
-		Assert.assertFalse(mainPage.isLiveChatEnabled());
+		assertFalse(mainPage.isLiveChatEnabled());
 	}
 
 	@Test
-	public void testDebugModeCookieSetTrue() {
+	public void testIsDebugMode_CookieSetTrue() {
 		Cookie debuggingCookie = new Cookie("debugging", "true");
 
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
 
-		Assert.assertTrue(mainPage.isDebugMode());
+		assertTrue(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeCookieSetOne() {
+	public void testIsDebugMode_CookieSetOne() {
 		Cookie debuggingCookie = new Cookie("debugging", "1");
 
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeCookieSetNull() {
+	public void testIsDebugMode_CookieSetNull() {
 		Cookie debuggingCookie = new Cookie("debugging", null);
 
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeCookieSetFalse() {
+	public void testIsDebugMode_CookieSetFalse() {
 		Cookie debuggingCookie = new Cookie("debugging", "false");
 
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeCookieRandom() {
+	public void testIsDebugMode_CookieRandom() {
 		Cookie debuggingCookie = new Cookie("debugging", "Hello World");
 
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeCookieMissing() {
-		Mockito.when(request.getCookies()).thenReturn(new Cookie[] {});
+	public void testIsDebugMode_CookieMissing() {
+		when(request.getCookies()).thenReturn(new Cookie[]{});
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testDebugModeNoCookies() {
-		Mockito.when(request.getCookies()).thenReturn(null);
+	public void testIsDebugMode_NoCookies() {
+		when(request.getCookies()).thenReturn(null);
 
-		Assert.assertFalse(mainPage.isDebugMode());
+		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
-	public void testShowSystemMessagesAppPropertySet1() {
+	public void testIsDebugMode_CookieNotDebugging() {
+		when(request.getCookies()).thenReturn(new Cookie[]{ new Cookie("Test", "cookie") });
+
+		assertFalse(mainPage.isDebugMode());
+	}
+
+	@Test
+	public void testIsDebugMode_MissingRequest() {
+		Whitebox.setInternalState(mainPage, "request", (HttpServletRequest) null);
+		assertFalse(mainPage.isDebugMode());
+	}
+
+	@Test
+	public void testIsDisplaySystemMessage_AppPropertySet1() {
 		AppProperty showMessages = new AppProperty();
 		showMessages.setProperty("show messages");
 		showMessages.setValue("1");
 
-		Mockito.doReturn(showMessages).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
+		doReturn(showMessages).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
 
-		Assert.assertTrue(mainPage.isDisplaySystemMessage());
+		assertTrue(mainPage.isDisplaySystemMessage());
 	}
 
 	@Test
-	public void testShowSystemMessagesAppPropertySetOther() {
+	public void testIsDisplaySystemMessage_AppPropertySetOther() {
 		AppProperty showMessages = new AppProperty();
 		showMessages.setProperty("show messages");
 		showMessages.setValue("Hello World");
-		Mockito.doReturn(showMessages).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
+		doReturn(showMessages).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
 
-		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+		assertFalse(mainPage.isDisplaySystemMessage());
 
 		showMessages.setValue("0");
-		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+		assertFalse(mainPage.isDisplaySystemMessage());
 
-		Mockito.doReturn(null).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
-		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+		doReturn(null).when(appPropertyDAO).find(AppProperty.SYSTEM_MESSAGE);
+		assertFalse(mainPage.isDisplaySystemMessage());
+	}
+
+	@Test
+	public void testGetPhoneNumber_WithoutCountry() {
+		// Defaults to "PicsPhone" translation from i18nCache
+		// Permissions will have a null country,
+		// so it should skip to printing the default number
+		String phoneNumber = mainPage.getPhoneNumber();
+
+		assertEquals(MainPage.PICS_PHONE_NUMBER, phoneNumber);
+	}
+
+	@Test
+	public void testGetPhoneNumber_PassedInCountry() {
+		// Get phone number from country object based on isocode passed in
+		String countryPhoneNumber = "Phone Number";
+		when(country.getPhone()).thenReturn(countryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getPhoneNumber("US");
+
+		assertEquals(countryPhoneNumber, phoneNumber);
+	}
+
+	@Test
+	public void testGetPhoneNumber_CountryFromPermissions() {
+		// Get phone number from country object based on isocode passed in (from permissions)
+		when(permissions.getCountry()).thenReturn("US");
+
+		String permissionsCountryPhoneNumber = "Phone Number";
+		when(country.getPhone()).thenReturn(permissionsCountryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getPhoneNumber("US");
+
+		assertEquals(permissionsCountryPhoneNumber, phoneNumber);
 	}
 }

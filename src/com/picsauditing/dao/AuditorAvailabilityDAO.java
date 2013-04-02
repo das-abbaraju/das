@@ -63,7 +63,7 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 	public List<AuditorAvailability> findAvailableLocal(Date startDate, List<User> auditors) {
 		Query query = em
 				.createQuery("SELECT t FROM AuditorAvailability t WHERE t.startDate >= :startDate AND t.user IN (:users)"
-						+ "ORDER BY startDate");
+						+ "ORDER BY t.startDate");
 		query.setParameter("startDate", startDate);
 		query.setParameter("users", auditors);
 		return query.getResultList();
@@ -88,8 +88,20 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 	}
 
 	public List<AuditorAvailability> findByTime(Date timeSelected) {
-		Query query = em.createQuery("SELECT t FROM AuditorAvailability t " + "WHERE t.startDate = ?");
-		query.setParameter(1, timeSelected);
+		Query query = em.createQuery("SELECT t FROM AuditorAvailability t WHERE t.startDate = :timeSelected");
+		query.setParameter("timeSelected", timeSelected);
 		return query.getResultList();
 	}
+
+    public List<AuditorAvailability> findByTimeAndCountry(Date timeSelected, String contractorCountry) {
+        String sql = "SELECT aa.* FROM auditor_availability aa " +
+                        "JOIN user_country uc ON uc.userID = aa.userID " +
+                        "WHERE aa.startDate = :timeSelected " +
+                        "AND uc.isoCode = :contractorCountry";
+
+        Query query = em.createNativeQuery(sql, AuditorAvailability.class);
+        query.setParameter("timeSelected", timeSelected);
+        query.setParameter("contractorCountry", contractorCountry);
+        return query.getResultList();
+    }
 }

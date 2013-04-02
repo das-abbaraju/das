@@ -77,6 +77,15 @@
 					<div id="think_contact"></div>
 					<div id="match_contact"></div>
 				</li>
+                <pics:permission perm="SwitchUser">
+                    <s:if test="newContractor.id != 0 && newContractor.contractor.primaryContact.id != 0">
+                        <li>
+                            <a href="Login.action?button=login&switchToUser=${newContractor.contractor.primaryContact.id}" class="btn">
+                                <s:text name="UsersManage.SwitchToThisUser" />
+                            </a>
+                        </li>
+                    </s:if>
+                </pics:permission>
 				<li>
 					<s:textfield
 						cssClass="checkReq"

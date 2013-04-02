@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.Field;
 
 public class AccountContractorAuditOperatorModelTest extends ModelTest {
@@ -17,18 +20,21 @@ public class AccountContractorAuditOperatorModelTest extends ModelTest {
 	public void setUp() {
 		super.setUp();
 
+		EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+
 		model = new AccountContractorAuditOperatorModel(permissions);
 	}
 
 	@Test
 	public void testAvailableFields() throws Exception {
 		availableFields = model.getAvailableFields();
-
+		
 		excludedFields.add("ContractorOperatorFlagColor");
 		excludedFields.add("AccountContactName");
 
 		includedFields.add("AuditID");
 		includedFields.add("AuditClosingAuditorName");
+		includedFields.add("ContractorRenew");
 
 		checkFields();
 	}

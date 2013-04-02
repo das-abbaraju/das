@@ -49,7 +49,6 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("debugContractor".equals(button)) {
 			setShowWho(false);
-			auditTypeRuleCache.initialize(auditRuleDAO);
 			ContractorAccount contractor = contractorDAO.find(conID);
 			AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
 			builder.calculate();

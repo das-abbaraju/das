@@ -230,6 +230,10 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				auditType.setAssigneeLabel(null);
 			if (auditType.getAssigneeLabel() != null) {
 				String key = auditType.getAssigneeLabel().trim();
+				if (key.startsWith("Assignee.")) {
+					addActionError("Do not start Label Key For Auditor with 'Assignee.'");
+					return false;
+				}
 				if (Strings.isEmpty(key) || key.indexOf(" ") > 0) {
 					addActionError("Invalid key for Label Key For Auditor.  It should have no spaces.");
 					return false;

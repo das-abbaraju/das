@@ -212,10 +212,10 @@ public class DateBean {
 		}
 
 		if (daysBetween(wcbYearStart.getTime(), now.getTime()) < 0) {
-			return "" + wcbYearStart.get(Calendar.YEAR);
+			return Strings.EMPTY_STRING + wcbYearStart.get(Calendar.YEAR);
 		}
 
-		return "" + (wcbYearStart.get(Calendar.YEAR) + 1);
+		return Strings.EMPTY_STRING + (wcbYearStart.get(Calendar.YEAR) + 1);
 	}
 
 	public static String getWCBYear() {
@@ -487,6 +487,10 @@ public class DateBean {
 		}
 
 		return 12;
+	}
+
+	public static boolean isToday(Date firstDate) {
+		return (daysBetween(firstDate, new Date()) == 0);
 	}
 
 	public static boolean isSameDate(Date firstDate, Date secondDate) {

@@ -22,7 +22,6 @@ public class AuditCategoryRuleCacheSpring {
 	public List<AuditCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
 		if (cache == null) {
 			cache = new AuditCategoryRuleCache();
-			cache.initialize(auditDecisionTableDAO);
 		}
 		return cache.getRules(contractor, auditType);
 	}

@@ -6,8 +6,15 @@ import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.model.i18n.LanguageModel;
+import org.powermock.reflect.Whitebox;
 
 import java.util.*;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This generates jpa objects that we can then use in our unit testing
@@ -36,6 +43,7 @@ public class EntityFactory {
 		operator.setInheritFlagCriteria(operator);
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
 		operator.getVisibleAuditTypes().add(1);
+        operator.setCountry(mostCommonCountries().get("US"));
 
 		return operator;
 	}
@@ -338,6 +346,9 @@ public class EntityFactory {
 	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
+            LanguageModel languageModel = mock(LanguageModel.class);
+            when(languageModel.getNearestStableAndBetaLocale(any(Locale.class), anyString())).thenReturn(Locale.US);
+            Whitebox.setInternalState(permission, "languageModel", languageModel);
 			permission.login(user);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -350,6 +361,7 @@ public class EntityFactory {
 		User user = new User(counter++);
 		user.setAccount(new Account());
 		user.getAccount().setId(Account.PicsID);
+        user.getAccount().setCountry(mostCommonCountries().get("US"));
 		return user;
 	}
 

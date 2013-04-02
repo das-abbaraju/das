@@ -76,13 +76,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	public void prepare() throws Exception {
 		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
 		this.id = Integer.parseInt(ids[0]);
-		
+
 		this.findContractor();
 		if (contractor.getCountry().getCurrency().isCAD()) {
 			initCanadianTaxFee();
 		}
 	}
-	
+
 	public String execute() throws Exception {
 		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
@@ -103,7 +103,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		}
 		if (newRegistration) {
 			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
-					new Object[] { getText("PicsTollFreePhone") }));
+					new Object[] { getPicsPhoneNumber() }));
 		}
 
 		contractorAccountDao.save(contractor);
@@ -197,7 +197,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 				}
 				// TODO: test
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { getText("PicsTollFreePhone") }));
+						new Object[] { getPicsPhoneNumber() }));
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -216,7 +216,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 			} catch (Exception x) {
 				// TODO: Test
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { getText("PicsTollFreePhone") }));
+						new Object[] { getPicsPhoneNumber() }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -245,7 +245,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		if (retries >= quit) {
 			// TODO: Test
 			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[] { getText("PicsTollFreePhone") }));
+					new Object[] { getPicsPhoneNumber() }));
 			braintreeCommunicationError = true;
 			return;
 		}

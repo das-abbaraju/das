@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.picsauditing.access.OpType;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,24 +31,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditSubStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
@@ -73,6 +56,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected String descriptionOsMs;
 	protected boolean systemEdit = false;
 	protected boolean showVerified = false;
+	protected boolean showCaoTable = true;
 
 	protected ContractorAudit conAudit;
 
@@ -141,13 +125,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
 			if (permissions.isOperatorCorporate() && !conAudit.getAuditType().isDesktop()) {
-				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
+				List<OperatorAccount> contractorOperators = new ArrayList<OperatorAccount>();
+				for (ContractorOperator co:conAudit.getContractorAccount().getOperators()) {
+					contractorOperators.add(co.getOperatorAccount());
+				}
 				Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 				if (permissions.isCorporate()) {
 					for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
-						operators.add(facility.getOperator());
+						if (contractorOperators.contains(facility.getOperator()))
+							operators.add(facility.getOperator());
 					}
 				} else {
 					operators.add(getOperatorAccount());
@@ -392,7 +380,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)
 				&& (conAudit.getAuditType().getAssignAudit() == null
-				|| permissions.hasGroup(conAudit.getAuditType().getAssignAudit().getId())))
+				|| permissions.getAllInheritedGroupIds().contains(conAudit.getAuditType().getAssignAudit().getId())))
 			return true;
 		return false;
 	}
@@ -446,17 +434,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 
-			if (type.getClassType().isAudit() && !type.isAnnualAddendum()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-					canEdit = false;
-				}
-			}
-
 			return canEdit;
 		}
 
 		if (type.getClassType().equals(AuditTypeClass.Audit)
 				&& permissions.isOperatorCorporate()) {
+			if (type.isAnnualAddendum())
+				return false;
 			if (type.getEditAudit() == null)
 				return true;
 			if (permissions.hasGroup(type.getEditAudit().getId())) {
@@ -473,6 +457,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		return false;
+	}
+
+	public boolean isShowCaoTable() {
+		return showCaoTable;
+	}
+
+	public void setShowCaoTable(boolean showCaoTable) {
+		this.showCaoTable = showCaoTable;
 	}
 
 	public ArrayListMultimap<AuditStatus, Integer> getActionStatus() {
@@ -525,14 +517,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isShowCompleteBar(ContractorAuditOperator cao) {
-		if (conAudit.getAuditType().isAnnualAddendum()) {
-			if (conAudit.hasCaoStatusBefore(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
 		if (cao.getStatus().before(AuditStatus.Complete)) {
 			return true;
 		} else {
@@ -885,16 +869,17 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
-			auditCategoryRuleCache.initialize(auditRuleDAO);
 			AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
 					conAudit.getContractorAccount());
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {
 				setCategoryBuilderToSpecificCao(builder, cao);
 
-				if (cao.getStatus().after(AuditStatus.Incomplete) && builder.isCategoryApplicable(category, cao)) {
-					return false;
+				if (cao.getStatus().before(AuditStatus.Complete) && builder.isCategoryApplicable(category, cao)) {
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 		/*

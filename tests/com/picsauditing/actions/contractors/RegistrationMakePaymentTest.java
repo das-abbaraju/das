@@ -18,6 +18,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.Strings;
 
 public class RegistrationMakePaymentTest extends PicsActionTest {
@@ -28,17 +29,21 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 	private ContractorAccount contractor;
 	@Mock
 	private ContractorOperator contractorOperator;
-	
+	@Mock
+	private BillingNoteModel billingNoteModel;
+
 	@Before
 	public void setup() throws Exception {
-		MockitoAnnotations.initMocks(this);			
+		MockitoAnnotations.initMocks(this);
 		registrationMakePayment = new RegistrationMakePayment();
 		super.setUp(registrationMakePayment);
 
 		nonCorporateOperators = new ArrayList<ContractorOperator>();
 		when(contractor.getId()).thenReturn(1);
+
+		Whitebox.setInternalState(registrationMakePayment, "billingNoteModel", billingNoteModel);
 	}
-		
+
 	// if they have not specified a safety risk
 	// and they are not only a material supplier or transportation services
 	// make them specify one
@@ -47,11 +52,11 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
 		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
 		when(contractor.isTransportationServices()).thenReturn(false);
-		
+
 		registrationMakePayment.setContractor(contractor);
-		
+
 		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
-				
+
 		assertThat(url, startsWith("RegistrationServiceEvaluation"));
 		verify(i18nCache).hasKey("ContractorRegistrationFinish.message.SelectService", Locale.ENGLISH);
 

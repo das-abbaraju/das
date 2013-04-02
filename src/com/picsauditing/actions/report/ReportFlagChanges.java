@@ -42,10 +42,10 @@ public class ReportFlagChanges extends ReportAccount {
 			approvedChanges = null;
 			return BLANK;
 		}
-		
+
 		totalFlagChanges = contractorOperatorDAO.getTotalFlagChanges();
 		totalOperatorsAffected = contractorOperatorDAO.getOperatorsAffectedByFlagChanges();
-		
+
 		return super.execute();
 	}
 
@@ -122,8 +122,9 @@ public class ReportFlagChanges extends ReportAccount {
 				expectedChanges.add("(cao.id IS NOT NULL AND fc.requiredStatus != caow.status"
 						+ " AND gc_flag.flag != 'Green')");
 			}
-			if (getFilter().isAuditCreationFlagChanges())
+			if (getFilter().isAuditCreationFlagChanges()) {
 				expectedChanges.add("(cao.id IS NOT NULL AND caow.id IS NULL)");
+			}
 			if (getFilter().isAuditQuestionFlagChanges()) {
 				expectedChanges.add("(fc.questionID IS NOT NULL)");
 				expectedChanges.add("(fc.oshaRateType IS NOT NULL AND fc.oshaType IS NOT NULL"
@@ -162,8 +163,9 @@ public class ReportFlagChanges extends ReportAccount {
 		sql.addWhere("gc_flag.forceFlag IS NULL OR NOW() >= gc_flag.forceEnd");
 		sql.addGroupBy("c.id, gc_flag.flag, gc_flag.baselineFlag, gc_flag.flagDetail, gc_flag.baselineFlagDetail");
 
-		if (!Strings.isEmpty(opIds))
+		if (!Strings.isEmpty(opIds)) {
 			sql.addWhere("operator.id in (" + opIds + ")");
+		}
 	}
 
 	@Override
@@ -181,7 +183,7 @@ public class ReportFlagChanges extends ReportAccount {
 
 	public List<User> getAccountManagers() {
 		if (accountManagers == null) {
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			UserDAO dao = SpringUtils.getBean(SpringUtils.USER_DAO);
 			accountManagers = dao.findByGroup(User.GROUP_MARKETING);
 		}
 

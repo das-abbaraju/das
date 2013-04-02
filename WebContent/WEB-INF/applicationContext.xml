@@ -147,6 +147,7 @@
     <bean id="InputValidator" class="com.picsauditing.validator.InputValidator" scope="prototype"/>
     <bean id="PasswordValidator" class="com.picsauditing.validator.PasswordValidator" scope="prototype"/>
     <bean id="VATValidator" class="com.picsauditing.validator.VATValidator" scope="prototype"/>
+    <bean id="RegistrationValidator" class="com.picsauditing.validator.RegistrationValidator" scope="prototype"/>
 
     <bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription"
           scope="prototype"/>
@@ -216,13 +217,17 @@
           class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
     <bean id="ReportService" class="com.picsauditing.service.ReportService" />
     <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService" />
+    <bean id="ReportPreferencesService" class="com.picsauditing.service.ReportPreferencesService" />
     <bean id="LegacyReportConverter" class="com.picsauditing.report.converter.LegacyReportConverter" />
     <bean id="SqlBuilder" class="com.picsauditing.report.SqlBuilder" />
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
     <bean id="UserService" class="com.picsauditing.access.UserService"/>
+    <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
+    <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
+    <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>

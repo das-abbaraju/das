@@ -18,7 +18,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Facility;

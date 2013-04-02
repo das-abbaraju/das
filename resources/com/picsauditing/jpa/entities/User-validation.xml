@@ -28,18 +28,37 @@
             <message>${getText("JS.Validation.UsernameIsTaken")}</message>
         </field-validator>
     </field>
-
-    <field name="name">
+   
+    <field name="firstName">
         <field-validator type="requiredstring" short-circuit="true">
             <message>${getText("JS.Validation.Required")}</message>
         </field-validator>
         <field-validator type="stringlength" short-circuit="true">
-            <param name="maxLength">100</param>
+            <param name="maxLength">50</param>
             <param name="trim">true</param>
-            <message>${getText("JS.Validation.Maximum100Characters")}</message>
+            <message>${getText("JS.Validation.Maximum50Characters")}</message>
         </field-validator>
         <field-validator type="fieldexpression" short-circuit="true">
-            <param name="expression"><![CDATA[containsOnlySafeCharacters(name)]]></param>
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(firstName)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+    </field>
+    
+    <field name="lastName">
+        <field-validator type="requiredstring" short-circuit="true">
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="stringlength" short-circuit="true">
+            <param name="maxLength">50</param>
+            <param name="trim">true</param>
+            <message>${getText("JS.Validation.Maximum50Characters")}</message>
+        </field-validator>
+        <field-validator type="stringlength" short-circuit="true">
+            <param name="minLength">2</param>
+            <message>${getText("JS.Validation.Minimum2Characters")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(lastName)]]></param>
             <message>${getText("JS.Validation.SpecialCharacters")}</message>
         </field-validator>
     </field>
