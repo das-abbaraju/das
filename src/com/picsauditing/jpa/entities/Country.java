@@ -1,35 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Entity
 @Table(name = "ref_country")
@@ -71,7 +55,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String phone;
 	protected Double corruptionPerceptionIndex;
 	protected Currency currency = Currency.USD;
-	protected User csr;
 
 	private List<CountrySubdivision> countrySubdivisions = new ArrayList<CountrySubdivision>();
 	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
@@ -162,16 +145,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 		this.currency = curreny;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "csrID")
-	public User getCsr() {
-		return csr;
-	}
-
-	public void setCsr(User csr) {
-		this.csr = csr;
-	}
-
 	@OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
 		return this.amountOverrides;
@@ -233,7 +206,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 		if (full) {
 			obj.put("english", english);
-			obj.put("CSR", csr == null ? null : csr.toJSON());
 		}
 		return obj;
 	}
