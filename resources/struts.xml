@@ -136,7 +136,7 @@
         <action name="Login" class="com.picsauditing.access.LoginController">
             <result>struts/users/login.jsp</result>
             <result name="error">struts/users/login.jsp</result>
-            <result name="forgot">struts/users/account_recovery.jsp</result>
+            <result name="forgot">struts/users/account-recovery.jsp</result>
             <result name="overlay">/struts/users/login_form.jsp</result>
             <result name="loginform">/struts/users/login/_login-form.jsp</result>
         </action>
@@ -147,7 +147,8 @@
         </action>
 
         <action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
-            <result>struts/users/account_recovery.jsp</result>
+            <result>struts/users/recover-password.jsp</result>
+            <result name="username">struts/users/recover-username.jsp</result>
         </action>
 
         <action name="ContractorAgreement"

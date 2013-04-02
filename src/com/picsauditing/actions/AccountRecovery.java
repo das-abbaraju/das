@@ -36,6 +36,11 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 
 	@Anonymous
+	public String recoverUsername () {
+		return "username";
+	}
+
+	@Anonymous
 	public String findName() {
 		if (email.length() > 0)
 			email = email.trim();
@@ -123,6 +128,7 @@ public class AccountRecovery extends PicsActionSupport {
 		String recoveryEmailStatus = "";
 
 		try {
+			//TODO Clean up this crap
 			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
 					"http://", "https://");
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -154,6 +160,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
+			//TODO Clean up this crap
 			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
 					"http://", "https://");
 			EmailBuilder emailBuilder = new EmailBuilder();
