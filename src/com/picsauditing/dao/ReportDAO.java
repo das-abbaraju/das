@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Query;
-
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -106,29 +104,6 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		return selectSQL;
 	}
 
-	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction) {
-		String orderBy = getOrderBySort(sort);
-
-		String groupIds = permissions.getAllInheritedGroupIds().toString();
-		groupIds = groupIds.substring(1, groupIds.length() - 1);
-
-		String queryString = "SELECT r FROM ReportUser ru \n" +
-				"JOIN ru.report r \n" +
-				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
-				"AND r.id IN \n" +
-				"(\n" +
-				"SELECT rpu.report.id \n" +
-				"FROM ReportPermissionUser rpu \n" +
-				"WHERE (rpu.user.id = " + permissions.getUserId() + "\n" +
-				" OR rpu.user.id IN ( " + groupIds + " ))\n" +
-				")\n" +
-				"ORDER BY " + orderBy + " " + direction;
-
-		Query query = em.createQuery(queryString);
-
-		return query.getResultList();
-	}
-
 	private String getOrderBySort(String sortType) {
 		String orderBy = Strings.EMPTY_STRING;
 
@@ -216,8 +191,8 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 				+ " UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = "
 				+ permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
-		sql.addWhere("r.ownerID != u.id"); // do not return reports this user
-		// owns
+		// do not return reports this user owns
+		sql.addWhere("r.ownerID != u.id");
 		sql.addGroupBy("r.id");
 		addOrderBy(sql, reportSearch);
 

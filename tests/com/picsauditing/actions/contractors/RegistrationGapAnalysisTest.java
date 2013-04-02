@@ -21,8 +21,10 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -50,10 +52,18 @@ public class RegistrationGapAnalysisTest {
 	@Mock
 	private Permissions permissions;
 
+	// Added this because when running tests testGetRecentlyRegistered() and testGetRequestedContractors()
+	// caused failures when run independently because the database in the I18nCache is the same as the
+	// mock in the Action class, which is being called two times instead of just once.
+	@BeforeClass
+	public static void classSetup() {
+		Database databaseForTesting = Mockito.mock(Database.class);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		counter = 1;
 

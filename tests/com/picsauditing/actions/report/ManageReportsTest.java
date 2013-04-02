@@ -131,42 +131,6 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testMyReportsList_AjaxReturnsExpectedResult() {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-		reportUsers.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
-		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
-
-		String result = manageReports.myReports();
-
-		assertEquals("myReportsList", result);
-	}
-
-	@Test
-	public void testMyReportsList_NotAjaxReturnsExpectedResult() {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-		reportUsers.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
-		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
-
-		String result = manageReports.myReports();
-
-		assertEquals("myReports", result);
-	}
-
-	@Test
-	public void testMyReportsList_DoesntLeaveReportUsersNull() {
-		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
-
-		manageReports.myReports();
-
-		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
-	}
-
-	@Test
 	public void testSearchList_AjaxReturnsExpectedResult() {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());

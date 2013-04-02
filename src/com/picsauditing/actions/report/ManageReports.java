@@ -104,21 +104,6 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("favoritesList", "favorites");
 	}
 
-	// TODO: Return a list of ReportInfo instead of reportUsers
-	public String myReports() {
-		reportUsers = Collections.emptyList();
-		try {
-			reportUsers = reportPreferencesService.getAllReportUsers(sort,
-					direction, permissions);
-		} catch (IllegalArgumentException iae) {
-			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
-		}
-
-		return determineViewName("myReportsList", "myReports");
-	}
-
 	public String search() {
 		reports = Collections.emptyList();
 		try {
