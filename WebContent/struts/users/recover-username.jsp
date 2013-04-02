@@ -12,6 +12,8 @@
     <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png"><!--<![endif]-->
     <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/logo/logo-small.svg"><!--<![endif]-->
 
+    <s:include value="/struts/_action-messages.jsp" />
+
     <h1><s:text name="AccountRecovery.RecoverUsername" /></h1>
 
     <form action="${recover_username}" method="post">

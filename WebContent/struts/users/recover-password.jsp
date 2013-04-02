@@ -17,7 +17,7 @@
     <h1><s:text name="AccountRecovery.RecoverPassword" /></h1>
     
     <form action="${reset_password}" method="post">
-        <label for="username">Username</label>
+        <label for="username"><s:text name="global.Username" /></label>
         <input type="text" name="username" id="username" />
     
         <a href="${username}"><s:text name="AccountRecovery.ForgotName" /></a>

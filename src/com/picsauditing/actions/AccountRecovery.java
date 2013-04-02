@@ -1,14 +1,11 @@
 package com.picsauditing.actions;
 
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
@@ -16,6 +13,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class AccountRecovery extends PicsActionSupport {
@@ -41,18 +39,24 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 
 	@Anonymous
-	public String findName() {
-		if (email.length() > 0)
+	public String findName() throws Exception {
+		URLUtils urlUtils = new URLUtils();
+		String returnURL = urlUtils.getActionUrl("AccountRecovery", "recoverUsername");
+
+		if (email.length() > 0) {
 			email = email.trim();
+		}
 
 		if (email == null || email.equals("")) {
 			addActionError(getText("AccountRecovery.error.NoEmail"));
-			return SUCCESS;
+			setUrlForRedirect(returnURL);
+			return REDIRECT;
 		}
 
 		if (!EmailAddressUtils.isValidEmail(email)) {
 			addActionError(getText("AccountRecovery.error.InvalidEmail"));
-			return SUCCESS;
+			setUrlForRedirect(returnURL);
+			return REDIRECT;
 		}
 
 		EmailBuilder emailBuilder = new EmailBuilder();
@@ -66,7 +70,8 @@ public class AccountRecovery extends PicsActionSupport {
 
 		if (matchingUsers.size() == 0) {
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
-			return SUCCESS;
+			setUrlForRedirect(returnURL);
+			return REDIRECT;
 		}
 
 		try {
@@ -85,7 +90,9 @@ public class AccountRecovery extends PicsActionSupport {
 		} catch (Exception e) {
 			addActionError(getText("AccountRecovery.error.NoEmailSent"));
 		}
-		return SUCCESS;
+
+		setUrlForRedirect(returnURL);
+		return REDIRECT;
 	}
 
 	@Anonymous
@@ -128,17 +135,17 @@ public class AccountRecovery extends PicsActionSupport {
 		String recoveryEmailStatus = "";
 
 		try {
-			//TODO Clean up this crap
-			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
-					"http://", "https://");
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = serverName + "Login.action?username="
-					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+
+			URLUtils urlUtil = new URLUtils();
+			String serverName = getRequestHost().replace("http://", "https://");
+			String confirmLink = serverName + urlUtil.getActionUrl("Login", "username", user.getUsername(), "key", user.getResetHash(), "button", "reset");
+
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
 
@@ -156,34 +163,6 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 
 		return recoveryEmailStatus;
-	}
-
-	public String sendActivationEmail(User user, Permissions permission) {
-		try {
-			//TODO Clean up this crap
-			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
-					"http://", "https://");
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(5);
-			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
-			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
-			emailBuilder.addToken("user", user);
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = serverName + "Login.action?username="
-					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
-			emailBuilder.addToken("confirmLink", confirmLink);
-			emailBuilder.setToAddresses(user.getEmail());
-			emailBuilder.setPermissions(permission);
-
-			EmailQueue emailQueue;
-			emailQueue = emailBuilder.build();
-			emailQueue.setCriticalPriority();
-
-			emailSender.send(emailQueue);
-			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
-		} catch (Exception e) {
-			return getText("AccountRecovery.error.ResetEmailError");
-		}
 	}
 
 	public String getEmail() {
