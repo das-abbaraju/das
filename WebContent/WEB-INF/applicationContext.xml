@@ -193,6 +193,7 @@
 	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
 	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
 
+	<!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
     <bean id="AuditCategoryAutocompleteService"

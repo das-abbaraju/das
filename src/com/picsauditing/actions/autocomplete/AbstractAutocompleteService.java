@@ -15,7 +15,6 @@ public abstract class AbstractAutocompleteService<T> {
 	 */
 	protected static final int RESULT_SET_LIMIT = 10;
 
-	@SuppressWarnings("unchecked")
 	public final JSONObject getJson(String search, Permissions permissions) {
 		Collection<T> searchResults = getItemsForSearch(search, permissions);
 		return getJsonForSearch(searchResults, permissions);
