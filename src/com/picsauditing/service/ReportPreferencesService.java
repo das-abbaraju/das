@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.NoResultException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
@@ -22,8 +23,6 @@ public class ReportPreferencesService {
 	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportDAO reportDao;
-	@Autowired
-	private PermissionService permissionService;
 
 	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
 		ReportUser reportUser;
@@ -35,6 +34,13 @@ public class ReportPreferencesService {
 		}
 
 		return reportUser;
+	}
+
+	public void stampViewed(ReportUser reportUser, Permissions permissions) {
+		reportUser.setAuditColumns(permissions);
+		reportUser.setLastViewedDate(new Date());
+		reportUser.setViewCount(reportUser.getViewCount()+1);
+		reportUserDao.save(reportUser);
 	}
 
 	private ReportUser createReportUser(int userId, int reportId) {
