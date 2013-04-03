@@ -25,6 +25,7 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	public String phone() {
 		json = new JSONObject();
 
+		json.put("country", getText(countryDAO.find(countryString).getI18nKey()));
 		json.put("picsPhoneNumber", getPicsPhoneNumber(countryString));
 
 		return JSON;

@@ -4,6 +4,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
@@ -105,6 +106,23 @@ public class MainPage {
 		}
 
 		return PICS_PHONE_NUMBER;
+	}
+
+	public String getCountryI18nKey() {
+		return getCountryI18nKey(null);
+	}
+
+	public String getCountryI18nKey(String isoCode) {
+		if (Strings.isEmpty(isoCode)) {
+			isoCode = getPermissions().getCountry();
+		}
+
+		Country country = getCountryDAO().find(isoCode);
+		if (country != null) {
+			return country.getI18nKey();
+		}
+
+		return null;
 	}
 
 	public void setCountryDAO(CountryDAO countryDAO) {
