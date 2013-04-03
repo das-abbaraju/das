@@ -6,6 +6,10 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
+<s:url action="ManageReports" method="removeReport" var="report_remove_url">
+    <s:param name="reportId">${report.id}</s:param>
+</s:url>
+
 <%-- Favorite Text --%>
 <s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
 
@@ -25,7 +29,7 @@
             <a href="">Share...</a>
         </li>
         <li>
-            <a href="">Remove</a>
+            <a href="${report_remove_url}">Remove</a>
         </li>
     </ul>
 </div>

@@ -261,7 +261,7 @@ public class ManageReports extends PicsActionSupport {
 		return NONE;
 	}
 
-	public String removeReportUser() {
+	public String removeReport() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			manageReportsService.removeReportUser(getUser(), report,  permissions);
