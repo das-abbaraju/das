@@ -1,31 +1,39 @@
 package com.picsauditing.actions;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.validator.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @SuppressWarnings("serial")
 public class AccountRecovery extends PicsActionSupport {
 	@Autowired
+	private EmailTemplateDAO emailTemplateDAO;
+	@Autowired
 	private UserDAO userDAO;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private InputValidator inputValidator;
 
 	private String email, username;
-	private User user;
-	private int uresponse;
-	private int sumValue;
+	private EmailBuilder emailBuilder;
+	private URLUtils urlUtils;
 
 	@Anonymous
 	@Override
@@ -34,54 +42,43 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 
 	@Anonymous
-	public String recoverUsername () {
+	public String recoverUsername() {
 		return "username";
 	}
 
 	@Anonymous
 	public String findName() throws Exception {
-		URLUtils urlUtils = new URLUtils();
-		String returnURL = urlUtils.getActionUrl("AccountRecovery", "recoverUsername");
+		String returnURL = urlUtils().getActionUrl("AccountRecovery", "recoverUsername");
 
-		if (email.length() > 0) {
-			email = email.trim();
+		String emailError = inputValidator.validateEmail(email);
+		if (!emailError.equals(InputValidator.NO_ERROR)) {
+			addActionError(getText(emailError));
+			return setUrlForRedirect(returnURL);
 		}
 
-		if (email == null || email.equals("")) {
-			addActionError(getText("AccountRecovery.error.NoEmail"));
-			setUrlForRedirect(returnURL);
-			return REDIRECT;
-		}
-
-		if (!EmailAddressUtils.isValidEmail(email)) {
-			addActionError(getText("AccountRecovery.error.InvalidEmail"));
-			setUrlForRedirect(returnURL);
-			return REDIRECT;
-		}
-
-		EmailBuilder emailBuilder = new EmailBuilder();
-
-		List<User> matchingUsers = userDAO.findByEmail(email);
+		email = email.trim();
 		// if username starts with DELETED, remove from the matchingUsers list.
-		for (int count = 0; count < matchingUsers.size(); count++) {
-			if (matchingUsers.get(count).getUsername().startsWith("DELETE-"))
-				matchingUsers.remove(count);
-		}
+		List<User> matchingUsers = new Grepper<User>() {
+			public boolean check(User user) {
+				return user != null && !user.isDeleted();
+			}
+		}.grep(userDAO.findByEmail(email));
 
 		if (matchingUsers.size() == 0) {
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
-			setUrlForRedirect(returnURL);
-			return REDIRECT;
+			return setUrlForRedirect(returnURL);
 		}
 
 		try {
-			emailBuilder.setTemplate(86); // Username Reminder
-			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
-			emailBuilder.addToken("users", matchingUsers);
-			emailBuilder.setToAddresses(email);
-			emailBuilder.addToken("username", matchingUsers.get(0).getName());
-			emailBuilder.addToken("user", matchingUsers.get(0));
-			EmailQueue emailQueue = emailBuilder.build();
+			User user = matchingUsers.get(0);
+
+			Map<String, Object> templateParameters = new TreeMap<>();
+			templateParameters.put("user", user);
+			templateParameters.put("users", matchingUsers);
+			templateParameters.put("username", user.getName());
+
+			EmailTemplate usernameReminder = emailTemplateDAO.find(EmailTemplate.USERNAME_REMINDER);
+			EmailQueue emailQueue = email(user, usernameReminder, templateParameters);
 			emailQueue.setCriticalPriority();
 
 			emailSender.send(emailQueue);
@@ -91,28 +88,28 @@ public class AccountRecovery extends PicsActionSupport {
 			addActionError(getText("AccountRecovery.error.NoEmailSent"));
 		}
 
-		setUrlForRedirect(returnURL);
-		return REDIRECT;
+		return setUrlForRedirect(returnURL);
 	}
 
 	@Anonymous
 	public String resetPassword() {
-		if (username == null || username.equals("") || username.startsWith("DELETE-")) {
+		if (Strings.isEmpty(username) || username.startsWith("DELETE-")) {
 			addActionError(getText("AccountRecovery.error.NoUserName"));
 			return SUCCESS;
 		}
 
 		try {
-			user = userDAO.findName(username);
+			User user = userDAO.findName(username);
+
+			if (user == null) {
+				throw new Exception(getText("AccountRecovery.error.UserNotFound"));
+			}
 			// LW if the user has an inactive status, then not allow them to
 			// recover the password.
 			if (!user.isActiveB()) {
 				addActionError(getText("AccountRecovery.error.UserNotActive"));
 				throw new Exception(getText("AccountRecovery.error.UserNotActive"));
 			}
-			if (user == null)
-				throw new Exception(getText("AccountRecovery.error.UserNotFound"));
-
 			// Seeding the time in the reset hash so that each one will be
 			// guaranteed unique
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
@@ -121,48 +118,15 @@ public class AccountRecovery extends PicsActionSupport {
 			String recoveryEmailStatus = sendRecoveryEmail(user);
 
 			addAlertMessage(recoveryEmailStatus);
-			setAlertMessageHeader(getText("global.Email") + " " + getText("global.Sent"));
+			setAlertMessageHeader(getText("AccountRecovery.EmailSentHeader"));
 
 			return setUrlForRedirect("Login.action");
 
 		} catch (Exception e) {
 			addActionError(getText("AccountRecovery.error.UserNameNotFound"));
 		}
+
 		return SUCCESS;
-	}
-
-	public String sendRecoveryEmail(User user) {
-		String recoveryEmailStatus = "";
-
-		try {
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(85);
-			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
-			emailBuilder.addToken("user", user);
-
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-
-			URLUtils urlUtil = new URLUtils();
-			String serverName = getRequestHost().replace("http://", "https://");
-			String confirmLink = serverName + urlUtil.getActionUrl("Login", "username", user.getUsername(), "key", user.getResetHash(), "button", "reset");
-
-			emailBuilder.addToken("confirmLink", confirmLink);
-			emailBuilder.setToAddresses(user.getEmail());
-
-			EmailQueue emailQueue;
-			emailQueue = emailBuilder.build();
-			emailQueue.setCriticalPriority();
-
-			emailSender.send(emailQueue);
-
-			// TODO change this to remove the parameterized email after all languages are translated
-//			recoveryEmailStatus = getText("AccountRecovery.EmailSent");
-			recoveryEmailStatus = getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
-		} catch (Exception e) {
-			recoveryEmailStatus = getText("AccountRecovery.error.ResetEmailError");
-		}
-
-		return recoveryEmailStatus;
 	}
 
 	public String getEmail() {
@@ -181,20 +145,62 @@ public class AccountRecovery extends PicsActionSupport {
 		this.username = username;
 	}
 
-	public int getUresponse() {
-		return uresponse;
+	private EmailBuilder emailBuilder() {
+		if (emailBuilder == null) {
+			emailBuilder = new EmailBuilder();
+		}
+
+		return emailBuilder;
 	}
 
-	public void setUresponse(int uresponse) {
-		this.uresponse = uresponse;
+	private URLUtils urlUtils() {
+		if (urlUtils == null) {
+			urlUtils = new URLUtils();
+		}
+
+		return urlUtils;
 	}
 
-	public int getSumValue() {
-		return sumValue;
+	private String sendRecoveryEmail(User user) {
+		String recoveryEmailStatus = "";
+
+		try {
+			Map<String, Object> templateParameters = new TreeMap<>();
+			templateParameters.put("user", user);
+			templateParameters.put("confirmLink", confirmLinkFor(user));
+
+			EmailTemplate passwordReset = emailTemplateDAO.find(EmailTemplate.PASSWORD_RESET);
+			EmailQueue emailQueue = email(user, passwordReset, templateParameters);
+			emailQueue.setCriticalPriority();
+
+			emailSender.send(emailQueue);
+
+			recoveryEmailStatus = getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
+		} catch (Exception e) {
+			recoveryEmailStatus = getText("AccountRecovery.error.ResetEmailError");
+		}
+
+		return recoveryEmailStatus;
 	}
 
-	public void setSumValue(int sumValue) {
-		this.sumValue = sumValue;
+	private String confirmLinkFor(User user) {
+		String serverName = getRequestHost().replace("http://", "https://");
+
+		Map<String, Object> parameters = new TreeMap<>();
+		parameters.put("username", user.getUsername());
+		parameters.put("key", user.getResetHash());
+		parameters.put("button", "reset");
+
+		return serverName + urlUtils().getActionUrl("Login", parameters);
 	}
 
+	private EmailQueue email(User user, EmailTemplate template, Map<String, Object> templateParameters) throws
+			Exception {
+		emailBuilder().setTemplate(template);
+		emailBuilder().setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
+		emailBuilder().setToAddresses(user.getEmail());
+		emailBuilder().addAllTokens(templateParameters);
+
+		return emailBuilder().build();
+	}
 }

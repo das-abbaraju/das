@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 @Table(name = "email_template")
 public class EmailTemplate extends BaseTableRequiringLanguages implements java.io.Serializable {
 
+	public static final int PASSWORD_RESET = 85;
+	public static final int USERNAME_REMINDER = 86;
 	public static final int POSSIBLE_DUPLICATE_EMAIL_TEMPLATE = 234;
 	public static final int FINAL_TO_OPERATORS_EMAIL_TEMPLATE = 240;
 	public static final int REGISTRATION_REQUEST_FINAL_EMAIL_TEMPLATE = 241;

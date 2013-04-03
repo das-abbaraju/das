@@ -18,6 +18,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -56,6 +57,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private static final Logger logger = LoggerFactory.getLogger(User.class);
 
 	public static String DEFAULT_AUDITOR = "- Auditor -";
+	public static String DELETED_PREFIX = "DELETE-";
 	public static int SYSTEM = 1;
 	public static int GROUP_ADMIN = 10;
 	public static int GROUP_AUDITOR = 11;
@@ -1049,5 +1051,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public void updateDisplayNameBasedOnFirstAndLastName() {
 		this.name = (firstName + " " + lastName).trim();
+	}
+
+	@Transient
+	public boolean isDeleted() {
+		return Strings.isNotEmpty(username) && username.startsWith(DELETED_PREFIX);
 	}
 }
