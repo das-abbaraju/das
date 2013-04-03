@@ -32,7 +32,7 @@
 		<span class="welcome-message"><s:text name="Header.Welcome" />, ${permissions.name}</span>
 	</s:if>
 	
-	<span id="pics_phone_number" class="phone">${picsPhoneNumber}</span>
+	<span id="pics_phone_number" class="phone" title="<s:text name="%{contractorCountry.i18nKey}" />">${picsPhoneNumber}</span>
 	
 	<s:if test="liveChatEnabled">
 		<s:include value="/struts/layout/chat.jsp" />
