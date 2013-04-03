@@ -99,6 +99,7 @@
 
                         if (pics_phone.length > 0) {
                             pics_phone.html(data.picsPhoneNumber);
+                            pics_phone.attr("title", unescape(data.country));
                         }
                     }
                 });
