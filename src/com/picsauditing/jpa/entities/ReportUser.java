@@ -18,8 +18,6 @@ import org.hibernate.annotations.Where;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_user")
-@SQLDelete(sql = "UPDATE report_user SET hidden = 1 WHERE id = ?")
-@Where(clause = "hidden = 0")
 public class ReportUser extends BaseTable {
 
 	private User user;

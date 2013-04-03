@@ -105,7 +105,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		return selectSQL;
 	}
 
-	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction) {
+	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction, boolean includeHidden) {
 		String orderBy = getOrderBySort(sort);
 
 		String groupIds = permissions.getAllInheritedGroupIds().toString();
@@ -114,6 +114,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		String queryString = "SELECT r FROM ReportUser ru \n" +
 				"JOIN ru.report r \n" +
 				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
+				"AND ru.hidden = " + includeHidden + "\n" +
 				"AND r.id IN \n" +
 				"(\n" +
 				"SELECT rpu.report.id \n" +

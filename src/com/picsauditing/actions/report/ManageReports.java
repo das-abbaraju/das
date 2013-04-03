@@ -136,7 +136,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportUsers = reportPreferencesService.getAllReportUsers(sort, direction, permissions);
+			reportUsers = reportPreferencesService.getAllNonHiddenReportUsers(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
