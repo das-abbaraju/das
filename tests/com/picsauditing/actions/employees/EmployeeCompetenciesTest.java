@@ -5,9 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +14,8 @@ import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -68,7 +68,58 @@ public class EmployeeCompetenciesTest {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
-	@Test
+    /* This is basically a test of the Employee comparitor, but I've put it here because it was a defect
+       in the EmployeeCompetencies use of TreeBasedTable (PICS-10080)
+     */
+    @Test
+    public void testTable() throws Exception {
+        Table<Employee, OperatorCompetency, EmployeeCompetency> employeeCompetencyTable = TreeBasedTable.create();
+        Account account = mock(Account.class);
+        when(account.getId()).thenReturn(343);
+
+        Employee employee = createEmployee(account, 180);
+        OperatorCompetency competency = createOperatorCompetency();
+        EmployeeCompetency employeeCompetency = createEmployeeCompetency(employee, competency, 49306);
+
+        employeeCompetencyTable.put(employee, competency, employeeCompetency);
+
+        Employee employee2 = createEmployee(account, 7316);
+        OperatorCompetency competency2 = createOperatorCompetency();
+        EmployeeCompetency employeeCompetency2 = createEmployeeCompetency(employee, competency, 37085);
+
+        employeeCompetencyTable.put(employee2, competency2, employeeCompetency2);
+
+        assertTrue(employeeCompetencyTable.size() == 2);
+    }
+
+    private EmployeeCompetency createEmployeeCompetency(Employee employee, OperatorCompetency competency, int id) {
+        EmployeeCompetency employeeCompetency = new EmployeeCompetency();
+        employeeCompetency.setSkilled(false);
+        employeeCompetency.setId(id);
+        employeeCompetency.setEmployee(employee);
+        employeeCompetency.setCompetency(competency);
+        return employeeCompetency;
+    }
+
+    private OperatorCompetency createOperatorCompetency() {
+        OperatorCompetency competency = new OperatorCompetency();
+        competency.setId(3);
+        competency.setCategory("Personal Safety");
+        competency.setLabel("Height Work");
+        competency.setDescription("Working practices for working at height and the use of equipment and specialist PPE.");
+        return competency;
+    }
+
+    private Employee createEmployee(Account account, int id) {
+        Employee employee = new Employee();
+        employee.setAccount(account);
+        employee.setId(id);
+        employee.setLastName("Biggs");
+        employee.setFirstName("Michael");
+        return employee;
+    }
+
+    @Test
 	public void testChangeCompetency_Existing() throws Exception {
 		Employee employee = EntityFactory.makeEmployee(loggedInContractor());
 		OperatorCompetency competency = new OperatorCompetency();
