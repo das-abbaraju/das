@@ -6,6 +6,10 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
+<s:url action="ManageReports" method="deleteReport" var="report_delete_url">
+    <s:param name="reportId">${report.id}</s:param>
+</s:url>
+
 <%-- Favorite Text --%>
 <s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
 
@@ -31,7 +35,7 @@
             <a href="">Transfer Ownership...</a>
         </li>
         <li>
-            <a href="">Delete...</a>
+            <a href="${report_delete_url}">Delete...</a>
         </li>
     </ul>
 </div>
