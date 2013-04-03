@@ -146,7 +146,6 @@ public class ReportUserDAO extends PicsDAO {
 				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
-		sql.addWhere("r.private = 0");
 
 		sql.addOrderBy("f.total DESC");
 		sql.addOrderBy("f.viewCount DESC");
