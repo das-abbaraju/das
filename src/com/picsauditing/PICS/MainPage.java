@@ -117,6 +117,10 @@ public class MainPage {
 			isoCode = getPermissions().getCountry();
 		}
 
+		if (Strings.isEmpty(isoCode)) {
+			return null;
+		}
+
 		Country country = getCountryDAO().find(isoCode);
 		if (country != null) {
 			return country.getI18nKey();
