@@ -59,7 +59,11 @@ public class ReportPreferencesService {
 		return reportUserDao.findOne(userId, reportId);
 	}
 
-	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions) throws IllegalArgumentException {
+	public List<ReportUser> getAllNonHiddenReportUsers(String sort, String direction, Permissions permissions) {
+		return getAllReportUsers(sort, direction, permissions, false);
+	}
+
+	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions, boolean includeHidden) throws IllegalArgumentException {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(sort)) {
@@ -67,7 +71,7 @@ public class ReportPreferencesService {
 			direction = "ASC";
 		}
 
-		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction);
+		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction, includeHidden);
 
 		for (Report report : reports) {
 			ReportUser reportUser = report.getReportUser(permissions.getUserId());

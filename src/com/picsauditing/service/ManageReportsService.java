@@ -189,7 +189,9 @@ public class ManageReportsService {
 		if (!canShareReport(sharerUser, toUser, report, permissions)) {
 			throw new Exception("User " + sharerUser.getId() + " does not have permission to share report " + report.getId());
 		}
-		reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId());
+
+		unhideReport(toUser, report);
+
 		ReportPermissionUser reportPermissionUser;
 		if (grantEdit) {
 			reportPermissionUser = permissionService.grantEdit(toUser.getId(), report.getId());
@@ -198,6 +200,11 @@ public class ManageReportsService {
 		}
 
 		return reportPermissionUser;
+	}
+
+	private void unhideReport(User user, Report report) {
+		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(user.getId(), report.getId());
+		reportUser.setHidden(false);
 	}
 
 	public void unshare(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
