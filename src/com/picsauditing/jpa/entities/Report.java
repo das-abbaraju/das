@@ -40,6 +40,7 @@ public class Report extends BaseTable {
 	private int numTimesFavorited;
 	private String sql;
 	private boolean deleted;
+	private boolean isPrivate;
 
 	private List<com.picsauditing.jpa.entities.Column> columns = new ArrayList<com.picsauditing.jpa.entities.Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
@@ -246,4 +247,11 @@ public class Report extends BaseTable {
 		});
 	}
 
+	public boolean isPrivate() {
+		return isPrivate;
+	}
+
+	public void setPrivate(boolean isPrivate) {
+		this.isPrivate = isPrivate;
+	}
 }

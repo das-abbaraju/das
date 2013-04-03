@@ -101,6 +101,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 		SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getPermissions());
 		selectSQL.addWhere("r.name LIKE " + query + " OR r.description LIKE " + query + " OR u.name LIKE " + query);
+		selectSQL.addWhere("r.private = 0");
 
 		return selectSQL;
 	}
