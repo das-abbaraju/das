@@ -488,7 +488,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.type = type;
 	}
 
-	@ReportField(category = FieldCategory.AccountInformation, width = 200)
+	@ReportField(category = FieldCategory.Billing, width = 200)
 	public String getReason() {
 		return reason;
 	}
@@ -1081,6 +1081,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.passwordSecurityLevelId = passwordSecurityLevelId;
 	}
 
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
 	public Date getDeactivationDate() {
 		return deactivationDate;
 	}
@@ -1091,6 +1092,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "deactivatedBy")
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
 	public User getDeactivatedBy() {
 		return deactivatedBy;
 	}
@@ -1098,5 +1100,4 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public void setDeactivatedBy(User deactivatedBy) {
 		this.deactivatedBy = deactivatedBy;
 	}
-
 }

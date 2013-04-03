@@ -215,7 +215,7 @@ public class ManageReportsService {
 		return shareWithPermission(sharerUser, toUser, report, true, permissions);
 	}
 
-	public ReportUser removeReport(User removerUser, Report report, Permissions permissions) throws Exception {
+	public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
 		if (!canRemoveReport(removerUser, report, permissions)) {
 			throw new Exception("User " + removerUser.getId() + " does not have permission to remove report " + report.getId());
 		}

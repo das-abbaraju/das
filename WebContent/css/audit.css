@@ -785,20 +785,6 @@ ul.vert-toolbar li.head
 	border: 0;
 }
 
-ul.vert-toolbar li.head .hidden-button
-{
-	cursor: pointer;
-	display:none;
-	font-size: 0.5em;
-	position: absolute;
-	right:5px;
-}
-
-ul.vert-toolbar li.hover .hidden-button
-{
-	display: inline;
-}
-
 ul.vert-toolbar .currSub
 {
 	background: #ddd;
@@ -839,11 +825,6 @@ div.addLink.hover
 	text-decoration: underline;
 	cursor: pointer;
 	color: #A84D10;
-}
-
-#nacatlist
-{
-	display: none;
 }
 
 /*** Next/Done button ***/

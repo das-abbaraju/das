@@ -2,6 +2,8 @@ package com.picsauditing.service;
 
 import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
 
+import java.util.Date;
+
 import javax.persistence.NoResultException;
 
 import org.json.simple.JSONObject;
@@ -30,6 +32,13 @@ public class ReportPreferencesService {
 		}
 
 		return reportUser;
+	}
+
+	public void stampViewed(ReportUser reportUser, Permissions permissions) {
+		reportUser.setAuditColumns(permissions);
+		reportUser.setLastViewedDate(new Date());
+		reportUser.setViewCount(reportUser.getViewCount()+1);
+		reportUserDao.save(reportUser);
 	}
 
 	private ReportUser createReportUser(int userId, int reportId) {

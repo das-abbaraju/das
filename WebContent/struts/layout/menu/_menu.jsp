@@ -4,6 +4,8 @@
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
 
+<s:url action="Search" var="search_url" />
+
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
@@ -26,9 +28,11 @@
                     <s:include value="/struts/layout/menu/_menu-item.jsp" />
                 </ul>
                 
-                <form class="navbar-search pull-right">
+                <form action="${search_url}" class="navbar-search pull-right">
                     <i class="icon-search icon-large"></i>
-                    <input type="text" class="search-query span2" placeholder="Search" />
+                    
+                    <input type="hidden" name="button" value="search" />
+                    <input type="text" name="searchTerm" class="search-query span2" placeholder="Search" />
                 </form>
             </div>
         </nav>

@@ -1,10 +1,13 @@
 package com.picsauditing.actions.report;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.service.PermissionService;
-import com.picsauditing.service.ReportService;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.jpa.entities.ReportUser;
 
 @SuppressWarnings("serial")
 public class ReportBootstrap extends PicsActionSupport {
@@ -14,7 +17,7 @@ public class ReportBootstrap extends PicsActionSupport {
 	private static final String ERROR_MESSAGE_I18N_KEY = "Report.Error.ViewPermissions";
 
 	@Autowired
-	private ReportService reportService;
+	public ReportPreferencesService reportPreferencesService;
 	@Autowired
 	private PermissionService permissionService;
 
@@ -32,6 +35,9 @@ public class ReportBootstrap extends PicsActionSupport {
 			addActionError(getText(ERROR_MESSAGE_I18N_KEY));
 			return setUrlForRedirect(URL_FOR_REDIRECT_FOR_NOT_VIEWABLE);
 		}
+		
+		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), report);
+		reportPreferencesService.stampViewed(reportUser, permissions);
 
 		name = "Loading Report " + report + " ...";
 

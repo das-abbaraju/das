@@ -431,6 +431,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "dontReassign")
+	@ReportField(category = FieldCategory.CustomerServiceRepresentatives, type = FieldType.Boolean)
 	public boolean isDontReassign() {
 		return dontReassign;
 	}

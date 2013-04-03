@@ -228,6 +228,19 @@ public class ManageReportsTest {
 		verify(manageReportsService).shareWithEditPermission(null, toOwner, report, permissions);
 	}
 
+	@Test
+	public void testRemoveReportUser_CallsExpectedMethod() throws Exception {
+		User user = new User();
+		Whitebox.setInternalState(manageReports, "user", user);
+		int reportId = 123;
+		Whitebox.setInternalState(manageReports, "reportId", reportId);
+		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
+
+		manageReports.removeReportUser();
+
+		verify(manageReportsService).removeReportUser(user, report, permissions);
+	}
+
 	private void setUpI18nCacheText() {
 		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH)))
 		.thenReturn(true);

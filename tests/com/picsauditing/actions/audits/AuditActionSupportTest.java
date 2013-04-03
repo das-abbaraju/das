@@ -305,4 +305,23 @@ public class AuditActionSupportTest extends PicsTest {
         return audit;
     }
 
+	@Test
+	public void testHasClosingAuditor() throws Exception {
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+		assertFalse(test.isHasClosingAuditor());
+
+		audit.setId(AuditType.ANNUALADDENDUM);
+		assertFalse(test.isHasClosingAuditor());
+
+		audit.setId(200);
+		audit.getAuditType().setClassType(AuditTypeClass.Policy);
+		assertFalse(test.isHasClosingAuditor());
+
+
+		audit.getAuditType().setClassType(AuditTypeClass.Audit);
+		audit.getAuditType().setHasAuditor(false);
+		assertFalse(test.isHasClosingAuditor());
+	}
 }

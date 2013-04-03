@@ -927,4 +927,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		builder.calculate(conAudit, operators);
 	}
+
+	public boolean isHasClosingAuditor() {
+		if (conAudit.getAuditType().isPqf() ||
+				conAudit.getAuditType().isAnnualAddendum() ||
+				conAudit.getAuditType().getClassType().isPolicy())
+			return false;
+		return conAudit.getAuditType().isHasAuditor();
+	}
+
 }

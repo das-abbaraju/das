@@ -421,7 +421,7 @@ function loadStatus(caoID, addUserNote){
 							</li>
 						</s:if>
 
-						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0">
+						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && hasClosingAuditor">
 							<li>
 								<label><s:text name="global.Closing" /> <s:property value='professionalLabel' />:</label>
 								<s:property value="conAudit.closingAuditor.name" />

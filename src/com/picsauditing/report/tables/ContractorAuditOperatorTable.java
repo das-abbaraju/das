@@ -14,7 +14,7 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 		primaryKey.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
 
 		Field statusSubstatus = new Field("StatusSubstatus", "CONCAT(" + ReportOnClause.ToAlias
-				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FieldType.String);
+				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FieldType.AuditStatus);
 		statusSubstatus.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
 		addField(statusSubstatus);
 

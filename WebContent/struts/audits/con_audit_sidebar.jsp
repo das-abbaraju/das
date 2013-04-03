@@ -129,7 +129,6 @@
 	<ul id="aCatlist" class="vert-toolbar catUL">
 		<li class="head">
 			<s:text name="Audit.header.Categories" />
-			<span class="hidden-button"><s:text name="Audit.header.ShowNA" /></span>
 		</li>
 		
 		<s:iterator value="categoryNodes" id="catNode">
@@ -163,36 +162,6 @@
 				</a>
 				
 				<s:set name="subcatNode" value="%{#catNode}" /> 
-				<s:if test="#catNode.subCategories.size() > 0">
-					<div class="subcat">
-						<s:include value="con_audit_sidebar_subcat.jsp" />
-					</div>
-				</s:if>
-			</li>
-		</s:iterator>
-	</ul>
-	
-	<ul id="nacatlist" class="vert-toolbar catUL">
-		<li class="head">
-			<s:text name="Audit.header.NACategories" />
-			<span class="hidden-button"><s:text name="button.Back" /></span>
-		</li>
-		
-		<s:iterator value="notApplicableCategoryNodes" id="catNode" status="rowStatus">
-			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
-				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id" />">
-					<span class="category-name"><s:property value="#catNode.category.name" /></span>
-					
-					<span class="cat-percent">
-						<s:if test="permissions.admin || permissions.auditor">
-							<s:if test="#catNode.override">
-								<img src="images/edit_pencil.gif" />
-							</s:if>
-						</s:if>
-					</span>
-				</a>
-				
-				<s:set name="subcatNode" value="%{#catNode}" />
 				<s:if test="#catNode.subCategories.size() > 0">
 					<div class="subcat">
 						<s:include value="con_audit_sidebar_subcat.jsp" />
