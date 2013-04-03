@@ -1,43 +1,42 @@
 package com.picsauditing.mail;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.io.IOException;
+import java.util.*;
 
 public class EventSubscriptionBuilder {
+
+	@Autowired
+	@Qualifier("EmailRequestPublisher")
+	private static Publisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
+
+	@Autowired
+	private static EmailReportRunner runner = SpringUtils.getBean(SpringUtils.EMAIL_REPORT_RUNNER);
+
+	@Autowired
+	private static FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
 
 	private static EmailSubscriptionDAO subscriptionDAO = SpringUtils.getBean(SpringUtils.EMAIL_SUBSCRIPTION_DAO);
 	private static NoteDAO noteDAO = SpringUtils.getBean(SpringUtils.NOTE_DAO);
 	private static EmailSender emailSender = SpringUtils.getBean(SpringUtils.EMAIL_SENDER);
 
 	private static final Logger logger = LoggerFactory.getLogger(EventSubscriptionBuilder.class);
+
+	public static final Integer PICS_CONTRACTOR_INVOICE_TEMPLATE_ID = 45;
 
 	// for test injection only
 	private static EmailBuilder emailBuilder = null;
@@ -73,10 +72,28 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user)
-			throws Exception {
+	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user) throws EmailException, IOException {
+		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
+
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SEND_INVOICE_EMAIL_VIA_BPROCS_NOT_EMAIL_BUILDER)) {
+			sendInvoiceEmailViaBProcs(invoice);
+		} else {
+			emailSender.send(email);
+		}
+
+		return email;
+	}
+
+	private static void sendInvoiceEmailViaBProcs(Invoice invoice) {
+		EmailRequestDTO request = runner.buildEmailRequest();
+		request.templateID = PICS_CONTRACTOR_INVOICE_TEMPLATE_ID;
+		request.invoiceIDs.add(invoice.getId());
+		emailRequestPublisher.publish(request);
+	}
+
+	private static EmailQueue buildInvoiceEmailQueueObject(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(45);
+		emailBuilder.setTemplate(PICS_CONTRACTOR_INVOICE_TEMPLATE_ID);
 		// Adding this to cc Billing until they're confident the billing system
 		// is ok
 		emailBuilder.setBccAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
@@ -104,8 +121,6 @@ public class EventSubscriptionBuilder {
 		email.setHighPriority();
 		email.setHtml(true);
 		email.setViewableById(Account.PicsID);
-		emailSender.send(email);
-
 		return email;
 	}
 
@@ -145,7 +160,7 @@ public class EventSubscriptionBuilder {
 	}
 
 	public static void sendExpiringCertificatesEmail(Set<EmailSubscription> contractorInsuranceSubscriptions,
-			Set<ContractorAudit> expiringPolicies) throws EmailException, IOException {
+													 Set<ContractorAudit> expiringPolicies) throws EmailException, IOException {
 		for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 			sendInsuranceEmail(contractorInsuranceSubscription, expiringPolicies);
 			contractorInsuranceSubscription.setLastSent(new Date());
@@ -210,7 +225,7 @@ public class EventSubscriptionBuilder {
 	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
-			Set<ContractorAudit> expiringPolicies) throws IOException {
+										   Set<ContractorAudit> expiringPolicies) throws IOException {
 
 		User user = insuranceSubscription.getUser();
 

@@ -11,9 +11,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.util.Assert;
 
 /**
- *
  * @author Okan Kahraman
- *
  */
 public class SpringUtils implements ApplicationContextAware {
 
@@ -42,6 +40,8 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String NOTE_DAO = "NoteDAO";
 	public static final String OPERATOR_ACCOUNT_DAO = "OperatorAccountDAO";
 	public static final String USER_DAO = "UserDAO";
+	public static final String EMAIL_REPORT_RUNNER = "EmailReportRunner";
+	public static final String EMAIL_REQUEST_PUBLISHER = "EmailRequestPublisher";
 
 	private static ApplicationContext applicationContext;
 
