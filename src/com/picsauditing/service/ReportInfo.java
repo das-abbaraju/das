@@ -10,10 +10,12 @@ public class ReportInfo {
 	private String name;
 	private String description;
 	private boolean favorite;
+	private int numberOfTimesFavorited;
 	private boolean editable;
 	private User createdBy;
 	private Date creationDate;
 	private Date lastViewedDate;
+	private int sortOrder;
 
 	public int getId() {
 		return id;
@@ -47,6 +49,14 @@ public class ReportInfo {
 		this.favorite = favorite;
 	}
 
+	public int getNumberOfTimesFavorited() {
+		return numberOfTimesFavorited;
+	}
+
+	public void setNumberOfTimesFavorited(int numberOfTimesFavorited) {
+		this.numberOfTimesFavorited = numberOfTimesFavorited;
+	}
+
 	public boolean isEditable() {
 		return editable;
 	}
@@ -78,4 +88,13 @@ public class ReportInfo {
 	public void setLastViewedDate(Date lastViewedDate) {
 		this.lastViewedDate = lastViewedDate;
 	}
+
+	public int getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
 }

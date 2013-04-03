@@ -1,15 +1,10 @@
 package com.picsauditing.service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.NoResultException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -30,11 +25,11 @@ public class ManageReportsService {
 	@Autowired
 	public PermissionService permissionService;
 	@Autowired
-	private ReportDAO reportDao;
+	private ReportDAO reportDAO;
 	@Autowired
-	private ReportUserDAO reportUserDao;
-
-	private static final Logger logger = LoggerFactory.getLogger(ManageReportsService.class);
+	private ReportUserDAO reportUserDAO;
+	@Autowired
+	private ReportInfoProvider reportInfoProvider;
 
 	public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
 		return moveFavorite(reportUser, 1);
@@ -46,7 +41,7 @@ public class ManageReportsService {
 
 	private ReportUser moveFavorite(ReportUser reportUser, int magnitude) throws Exception {
 		int userId = reportUser.getUser().getId();
-		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
+		int numberOfFavorites = reportUserDAO.getFavoriteCount(userId);
 		int currentPosition = reportUser.getSortOrder();
 		int newPosition = currentPosition + magnitude;
 
@@ -57,7 +52,7 @@ public class ManageReportsService {
 		shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
 
 		reportUser.setSortOrder(newPosition);
-		reportUserDao.save(reportUser);
+		reportUserDAO.save(reportUser);
 
 		return reportUser;
 	}
@@ -75,7 +70,7 @@ public class ManageReportsService {
 	}
 
 	private void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
-		reportUserDao.resetSortOrder(userId);
+		reportUserDAO.resetSortOrder(userId);
 
 		int offsetAmount;
 		int offsetRangeBegin;
@@ -93,29 +88,35 @@ public class ManageReportsService {
 			offsetRangeEnd = currentPosition - 1;
 		}
 
-		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
+		reportUserDAO.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
 	}
 
-	public List<Report> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<Report> pagination) {
-		List<Report> reports = new ArrayList<Report>();
-
+	public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions,
+			Pagination<ReportInfo> pagination) {
+		// By default, show the top ten most favorited reports sorted by number
+		// of favorites
 		if (Strings.isEmpty(searchTerm)) {
-			// By default, show the top ten most favorited reports sorted by
-			// number of favorites
-			List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions);
-			for (ReportUser reportUser : reportUsers) {
-				reports.add(reportUser.getReport());
-			}
-		} else {
-			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
-			pagination.initialize(parameters, reportDao);
-			reports = pagination.getResults();
+			return reportInfoProvider.findTenMostFavoritedReports(permissions);
 		}
 
-		return reports;
+		ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
+		pagination.initialize(parameters, reportInfoProvider);
+		return pagination.getResults();
 	}
 
-	public Report transferOwnership(User fromOwner, User toOwner, Report report, Permissions permissions) throws Exception {
+	public Report transferOwnership(User fromOwner, User toOwner, Report report, Permissions permissions)
+			throws Exception {
+		checkExceptionConditionsToTransferOwnership(fromOwner, toOwner, report, permissions);
+
+		grantCurrentOwnerEditPermission(report);
+		report.setOwner(toOwner);
+		reportDAO.save(report);
+
+		return report;
+	}
+
+	private void checkExceptionConditionsToTransferOwnership(User fromOwner, User toOwner, Report report,
+			Permissions permissions) throws Exception {
 		if (fromOwner == null) {
 			throw new Exception("Cannot transfer ownership. fromOwner is null");
 		}
@@ -129,14 +130,9 @@ public class ManageReportsService {
 		}
 
 		if (!canTransferOwnership(fromOwner, report, permissions)) {
-			throw new Exception("User " + fromOwner + " does not have permission to transfer ownership of report " + report.getId());
+			throw new Exception("User " + fromOwner + " does not have permission to transfer ownership of report "
+					+ report.getId());
 		}
-
-		grantCurrentOwnerEditPermission(report);
-		report.setOwner(toOwner);
-		reportDao.save(report);
-
-		return report;
 	}
 
 	private boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
@@ -159,6 +155,16 @@ public class ManageReportsService {
 	}
 
 	public Report deleteReport(User user, Report report, Permissions permissions) throws Exception {
+		checkExceptionConditionsToDeleteReport(user, report, permissions);
+
+		report.setAuditColumns(user);
+		reportDAO.remove(report);
+
+		return report;
+	}
+
+	private void checkExceptionConditionsToDeleteReport(User user, Report report, Permissions permissions)
+			throws Exception {
 		if (user == null) {
 			throw new Exception("Cannot delete report. user is null");
 		}
@@ -170,24 +176,22 @@ public class ManageReportsService {
 		if (!canDeleteReport(user, report, permissions)) {
 			throw new Exception("User " + user.getId() + " does not have permission to delete report " + report.getId());
 		}
-
-		report.setAuditColumns(user);
-		reportDao.remove(report);
-
-		return report;
 	}
 
 	private boolean canDeleteReport(User user, Report report, Permissions permissions) {
 		return permissionService.canUserDeleteReport(user, report, permissions);
 	}
 
-	public ReportPermissionUser shareWithViewPermission(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
+	public ReportPermissionUser shareWithViewPermission(User sharerUser, User toUser, Report report,
+			Permissions permissions) throws Exception {
 		return shareWithPermission(sharerUser, toUser, report, false, permissions);
 	}
 
-	private ReportPermissionUser shareWithPermission(User sharerUser, User toUser, Report report, boolean grantEdit, Permissions permissions) throws Exception {
+	private ReportPermissionUser shareWithPermission(User sharerUser, User toUser, Report report, boolean grantEdit,
+			Permissions permissions) throws Exception {
 		if (!canShareReport(sharerUser, toUser, report, permissions)) {
-			throw new Exception("User " + sharerUser.getId() + " does not have permission to share report " + report.getId());
+			throw new Exception("User " + sharerUser.getId() + " does not have permission to share report "
+					+ report.getId());
 		}
 		reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId());
 		ReportPermissionUser reportPermissionUser;
@@ -202,7 +206,8 @@ public class ManageReportsService {
 
 	public void unshare(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
 		if (!canShareReport(sharerUser, toUser, report, permissions)) {
-			throw new Exception("User " + sharerUser.getId() + " does not have permission to unshare report " + report.getId());
+			throw new Exception("User " + sharerUser.getId() + " does not have permission to unshare report "
+					+ report.getId());
 		}
 		permissionService.unshare(toUser, report);
 	}
@@ -211,19 +216,21 @@ public class ManageReportsService {
 		return permissionService.canUserShareReport(sharerUser, toUser, report, permissions);
 	}
 
-	public ReportPermissionUser shareWithEditPermission(User sharerUser, User toUser, Report report, Permissions permissions) throws Exception {
+	public ReportPermissionUser shareWithEditPermission(User sharerUser, User toUser, Report report,
+			Permissions permissions) throws Exception {
 		return shareWithPermission(sharerUser, toUser, report, true, permissions);
 	}
 
 	public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
 		if (!canRemoveReport(removerUser, report, permissions)) {
-			throw new Exception("User " + removerUser.getId() + " does not have permission to remove report " + report.getId());
+			throw new Exception("User " + removerUser.getId() + " does not have permission to remove report "
+					+ report.getId());
 		}
 
 		ReportUser reportUser = null;
 		try {
 			reportUser = reportPreferencesService.loadReportUser(removerUser.getId(), report.getId());
-			reportUserDao.remove(reportUser);
+			reportUserDAO.remove(reportUser);
 		} catch (NoResultException dontCare) {
 		}
 
@@ -234,66 +241,16 @@ public class ManageReportsService {
 		return permissionService.canUserRemoveReport(removerUser, report, permissions);
 	}
 
-	public List<ReportUser> buildFavorites(int userId) {
-		List<ReportUser> sortedFavorites = reportUserDao.findAllFavorite(userId);
-		if (sortOrderNeedsToBeReIndexed(sortedFavorites)) {
-			sortedFavorites = reIndexSortOrder(sortedFavorites);
-		}
-		return sortedFavorites;
-	}
-
-	private boolean sortOrderNeedsToBeReIndexed(List<ReportUser> sortedFavorites) {
-		ReportUser firstReportUserInList = sortedFavorites.get(0);
-		int highestSortOrder = firstReportUserInList.getSortOrder();
-
-		if (highestSortOrder != sortedFavorites.size()) {
-			return true;
-		}
-
-		if (hasDuplicateSortOrders(sortedFavorites)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private List<ReportUser> reIndexSortOrder(List<ReportUser> sortedFavorites) {
-
-		logger.info("Re-indexing sortOrder for favorites...");
-
-		List<ReportUser> reIndexedFavorites = new ArrayList<>();
-		for (int i = 0; i < sortedFavorites.size(); i++) {
-			ReportUser favorite = sortedFavorites.get(i);
-			int newSortOrder = sortedFavorites.size() - i;
-
-			if (newSortOrder != favorite.getSortOrder()) {
-				favorite.setSortOrder(newSortOrder);
-				reportUserDao.save(favorite);
-			}
-
-			reIndexedFavorites.add(favorite);
-		}
-		return reIndexedFavorites;
-	}
-
-	private boolean hasDuplicateSortOrders(List<ReportUser> sortedFavorites) {
-		Set<Integer> uniqueSortOrders = new HashSet<>();
-		for (ReportUser sortedFavorite : sortedFavorites) {
-			boolean addedSuccessfully = uniqueSortOrders.add(sortedFavorite.getSortOrder());
-			if (!addedSuccessfully) {
-				return true;
-			}
-		}
-		return false;
+	public List<ReportInfo> buildFavorites(int userId) {
+		return reportInfoProvider.buildFavorites(userId);
 	}
 
 	public List<ReportInfo> getReportsForOwnedByUser(ReportSearch reportSearch) {
-		return reportDao.findByOwnerID(reportSearch);
+		return reportDAO.findByOwnerID(reportSearch);
 	}
 
-	public List<ReportInfo> getReportsForSharedWithUser(
-			ReportSearch reportSearch) {
-		return reportDao.findReportForSharedWith(reportSearch);
+	public List<ReportInfo> getReportsForSharedWithUser(ReportSearch reportSearch) {
+		return reportDAO.findReportForSharedWith(reportSearch);
 	}
 
 }

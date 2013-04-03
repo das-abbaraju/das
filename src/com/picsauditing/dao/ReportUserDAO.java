@@ -1,7 +1,7 @@
 package com.picsauditing.dao;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -16,11 +16,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.dao.mapper.ReportInfoMapper;
+import com.picsauditing.dao.mapper.UserMapper;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.ReportInfo;
 import com.picsauditing.util.Strings;
 
 public class ReportUserDAO extends PicsDAO {
@@ -32,53 +33,16 @@ public class ReportUserDAO extends PicsDAO {
 		return findOne(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findTenMostFavoritedReports(Permissions permissions) {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-
+	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
-
 			sql.setLimit(10);
-
-			Database db = new Database();
-			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			reportUsers = populateReportUsers(results);
+			return Database.select(sql.toString(), new ReportInfoMapper());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");
 		}
 
-		return reportUsers;
-	}
-
-	private List<ReportUser> populateReportUsers(List<BasicDynaBean> results) {
-		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-
-		for (BasicDynaBean result : results) {
-			Report report = new Report();
-
-			report.setId(Integer.parseInt(result.get("id").toString()));
-			report.setName(result.get("name").toString());
-			report.setDescription(result.get("description").toString());
-
-			Object userName = result.get("userName");
-			Object userID = result.get("userId");
-
-			if (userName != null) {
-				User user = new User(userName.toString());
-				user.setId(Integer.parseInt(userID.toString()));
-			}
-
-			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
-
-			ReportUser reportUser = new ReportUser(0, report);
-			Object favorite = result.get("favorite");
-			if (favorite != null) {
-				reportUser.setFavorite(Boolean.parseBoolean(favorite.toString()));
-			}
-			reportUsers.add(reportUser);
-		}
-
-		return reportUsers;
+		return Collections.emptyList();
 	}
 
 	public List<ReportUser> findAll(int userId) {
@@ -131,15 +95,19 @@ public class ReportUserDAO extends PicsDAO {
 	public static SelectSQL setupSqlForSearchFilterQuery(Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
-		sql.addField("r.id");
-		sql.addField("r.name");
-		sql.addField("r.description");
-		sql.addField("u.name as userName");
-		sql.addField("u.id as userId");
-		sql.addField("f.total AS numTimesFavorited");
-		sql.addField("null AS favorite");
+		sql.addField("r.id AS " + ReportInfoMapper.ID_FIELD);
+		sql.addField("r.name AS " + ReportInfoMapper.NAME_FIELD);
+		sql.addField("r.description AS " + ReportInfoMapper.DESCRIPTION_FIELD);
+		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
+		sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
+		sql.addField("0 AS " + ReportInfoMapper.FAVORITE_FIELD);
+		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD);
+		sql.addField("NULL AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
+		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
+		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
 		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
+//		sql.addJoin("LEFT JOIN report_user as ru");
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()

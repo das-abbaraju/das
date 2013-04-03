@@ -46,12 +46,10 @@ public class ManageReports extends PicsActionSupport {
 
 	private User toOwner;
 
-	private List<ReportUser> reportUsers;
-	private List<ReportUser> reportUserOverflow;
-	private List<Report> reports;
+	private List<ReportInfo> reportListOverflow;
 	private List<ReportInfo> reportList;
 
-	private Pagination<Report> pagination;
+	private Pagination<ReportInfo> pagination;
 
 	// URL parameters
 	private int reportId;
@@ -84,18 +82,17 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
-	// TODO: Return a list of ReportInfo instead of reportUsers
 	public String favorites() {
 		try {
-			reportUsers = manageReportsService.buildFavorites(permissions.getUserId());
+			reportList = manageReportsService.buildFavorites(permissions.getUserId());
 
-			if (CollectionUtils.isEmpty(reportUsers)) {
-				reportUsers = new ArrayList<ReportUser>();
+			if (CollectionUtils.isEmpty(reportList)) {
+				reportList = Collections.emptyList();
 			}
 
-			if (reportUsers.size() > MAX_REPORTS_IN_MENU) {
-				reportUserOverflow = reportUsers.subList(MAX_REPORTS_IN_MENU, reportUsers.size());
-				reportUsers = reportUsers.subList(0, MAX_REPORTS_IN_MENU);
+			if (reportList.size() > MAX_REPORTS_IN_MENU) {
+				reportListOverflow = reportList.subList(MAX_REPORTS_IN_MENU, reportList.size());
+				reportList = reportList.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
@@ -105,9 +102,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String search() {
-		reports = Collections.emptyList();
+		reportList = Collections.emptyList();
 		try {
-			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
+			reportList = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (Exception e) {
 			logAndShowUserInDebugMode("Unexpected exception in ManageReports!search.action", e);
 		}
@@ -160,6 +157,10 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
 		}
 
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	private String redirectOrReturnNoneForAjaxRequest() {
 		if (AjaxUtils.isAjax(request())) {
 			return NONE;
 		}
@@ -179,11 +180,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return NONE;
-		}
-
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String transferOwnership() {
@@ -284,11 +281,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return NONE;
-		}
-
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String unfavorite() {
@@ -301,11 +294,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
 		}
 
-		if (AjaxUtils.isAjax(request())) {
-			return NONE;
-		}
-
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	/**
@@ -364,24 +353,8 @@ public class ManageReports extends PicsActionSupport {
 		this.toOwner = toOwner;
 	}
 
-	public List<ReportUser> getReportUsers() {
-		return reportUsers;
-	}
-
-	public void setReportUsers(List<ReportUser> reportUsers) {
-		this.reportUsers = reportUsers;
-	}
-
-	public List<ReportUser> getReportUserOverflow() {
-		return reportUserOverflow;
-	}
-
-	public List<Report> getReports() {
-		return reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
+	public List<ReportInfo> getReportUserOverflow() {
+		return reportListOverflow;
 	}
 
 	public ReportService getReportService() {
@@ -424,16 +397,16 @@ public class ManageReports extends PicsActionSupport {
 		this.direction = direction;
 	}
 
-	public Pagination<Report> getPagination() {
+	public Pagination<ReportInfo> getPagination() {
 		if (pagination == null) {
-			pagination = new Pagination<Report>();
+			pagination = new Pagination<ReportInfo>();
 			pagination.setParameters(new PaginationParameters());
 		}
 
 		return pagination;
 	}
 
-	public void setPagination(Pagination<Report> pagination) {
+	public void setPagination(Pagination<ReportInfo> pagination) {
 		this.pagination = pagination;
 	}
 

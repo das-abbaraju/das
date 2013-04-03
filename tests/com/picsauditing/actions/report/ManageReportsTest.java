@@ -33,12 +33,14 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.service.ManageReportsService;
 import com.picsauditing.service.ReportService;
+import com.picsauditing.strutsutil.AjaxUtils;
 
 public class ManageReportsTest {
 
-	private static final int USER_ID = 37;
-
 	private ManageReports manageReports;
+
+	private static final String NOT_AJAX_REQUEST_HEADER = "NOT_XmlHttpRequest";
+	private static final int USER_ID = 37;
 
 	@Mock
 	private ReportService reportService;
@@ -99,7 +101,7 @@ public class ManageReportsTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.favorites();
@@ -112,7 +114,7 @@ public class ManageReportsTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(NOT_AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.favorites();
@@ -127,7 +129,7 @@ public class ManageReportsTest {
 
 		manageReports.favorites();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportList"));
 	}
 
 	@Test
@@ -135,7 +137,7 @@ public class ManageReportsTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.search();
@@ -148,7 +150,7 @@ public class ManageReportsTest {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 		reportUsers.add(new ReportUser());
 		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
-		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(NOT_AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.search();
@@ -159,23 +161,23 @@ public class ManageReportsTest {
 	@Test
 	public void testSearchList_AjaxDoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(AjaxUtils.AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.search();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportList"));
 	}
 
 	@Test
 	public void testSearchList_NotAjaxDoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
+		when(httpRequest.getHeader(anyString())).thenReturn(NOT_AJAX_REQUEST_HEADER);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.search();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportList"));
 	}
 
 	@Test

@@ -10,16 +10,26 @@ import com.picsauditing.service.ReportInfo;
 
 public class ReportInfoMapper implements RowMapper<ReportInfo> {
 
+	public static final String NUMBER_OF_TIMES_FAVORITED = "numberOfTimesFavorited";
+	public static final String LAST_VIEWED_DATE_FIELD = "lastViewedDate";
+	public static final String EDITABLE_FIELD = "editable";
+	public static final String FAVORITE_FIELD = "favorite";
+	public static final String CREATION_DATE_FIELD = "creationDate";
+	public static final String DESCRIPTION_FIELD = "description";
+	public static final String NAME_FIELD = "name";
+	public static final String ID_FIELD = "id";
+
 	@Override
 	public ReportInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 		ReportInfo reportInfo = new ReportInfo();
-		reportInfo.setId(rs.getInt(1));
-		reportInfo.setName(rs.getString(2));
-		reportInfo.setDescription(rs.getString(3));
-		reportInfo.setCreationDate(rs.getDate(4));
-		reportInfo.setFavorite(rs.getBoolean(5));
-		reportInfo.setEditable(rs.getBoolean(6));
-		reportInfo.setLastViewedDate(rs.getDate(7));
+		reportInfo.setId(rs.getInt(ID_FIELD));
+		reportInfo.setName(rs.getString(NAME_FIELD));
+		reportInfo.setDescription(rs.getString(DESCRIPTION_FIELD));
+		reportInfo.setCreationDate(rs.getDate(CREATION_DATE_FIELD));
+		reportInfo.setFavorite(rs.getBoolean(FAVORITE_FIELD));
+		reportInfo.setEditable(rs.getBoolean(EDITABLE_FIELD));
+		reportInfo.setLastViewedDate(rs.getDate(LAST_VIEWED_DATE_FIELD));
+		reportInfo.setNumberOfTimesFavorited(rs.getInt(NUMBER_OF_TIMES_FAVORITED));
 
 		reportInfo.setCreatedBy(mapUser(rs, rowNum));
 

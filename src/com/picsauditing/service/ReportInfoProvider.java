@@ -1,0 +1,136 @@
+package com.picsauditing.service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.dao.mapper.ReportInfoMapper;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.report.ReportPaginationParameters;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Paginatable;
+import com.picsauditing.util.pagination.PaginationParameters;
+
+
+public class ReportInfoProvider implements Paginatable<ReportInfo> {
+
+	@Autowired
+	private ReportUserDAO reportUserDAO;
+
+	private static final ReportInfoConverter reportInfoConverter = new ReportInfoConverter();
+
+	private static final Logger logger = LoggerFactory.getLogger(ReportInfoProvider.class);
+
+	public List<ReportInfo> buildFavorites(int userId) {
+		List<ReportUser> sortedFavorites = reportUserDAO.findAllFavorite(userId);
+		if (sortOrderNeedsToBeReIndexed(sortedFavorites)) {
+			sortedFavorites = reIndexSortOrder(sortedFavorites);
+		}
+
+		return reportInfoConverter.convertReportUserToReportInfo(sortedFavorites);
+	}
+
+	private boolean sortOrderNeedsToBeReIndexed(List<ReportUser> sortedFavorites) {
+		ReportUser firstReportUserInList = sortedFavorites.get(0);
+		int highestSortOrder = firstReportUserInList.getSortOrder();
+
+		if (highestSortOrder != sortedFavorites.size()) {
+			return true;
+		}
+
+		if (hasDuplicateSortOrders(sortedFavorites)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private List<ReportUser> reIndexSortOrder(List<ReportUser> sortedFavorites) {
+
+		logger.info("Re-indexing sortOrder for favorites...");
+
+		List<ReportUser> reIndexedFavorites = new ArrayList<>();
+		for (int i = 0; i < sortedFavorites.size(); i++) {
+			ReportUser favorite = sortedFavorites.get(i);
+			int newSortOrder = sortedFavorites.size() - i;
+
+			if (newSortOrder != favorite.getSortOrder()) {
+				favorite.setSortOrder(newSortOrder);
+				reportUserDAO.save(favorite);
+			}
+
+			reIndexedFavorites.add(favorite);
+		}
+		return reIndexedFavorites;
+	}
+
+	private boolean hasDuplicateSortOrders(List<ReportUser> sortedFavorites) {
+		Set<Integer> uniqueSortOrders = new HashSet<>();
+		for (ReportUser sortedFavorite : sortedFavorites) {
+			boolean addedSuccessfully = uniqueSortOrders.add(sortedFavorite.getSortOrder());
+			if (!addedSuccessfully) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
+		return reportUserDAO.findTenMostFavoritedReports(permissions);
+	}
+
+	@Override
+	public List<ReportInfo> getPaginationResults(PaginationParameters parameters) {
+		try {
+			SelectSQL sql = buildQueryForSearch(parameters);
+			sql.setPageNumber(parameters.getPageSize(), parameters.getPage());
+			return Database.select(sql.toString(), new ReportInfoMapper());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in getPaginationResults()", e);
+		}
+
+		return Collections.emptyList();
+	}
+
+	private SelectSQL buildQueryForSearch(PaginationParameters parameters) {
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
+
+		// TODO escape properly
+		String query = "\'%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\'";
+
+		SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getPermissions());
+		selectSQL.addWhere("r.name LIKE " + query + " OR r.description LIKE " + query + " OR u.name LIKE " + query);
+
+		return selectSQL;
+	}
+
+	@Override
+	public int getPaginationOverallCount(PaginationParameters parameters) {
+		try {
+			SelectSQL sql = buildQueryForSearch(parameters);
+			sql.addField("count(r.id) AS count");
+
+			Database db = new Database();
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+
+			return Database.toInt(results.get(0), "count");
+		} catch (Exception e) {
+			logger.error("Unexpected exception in getPaginationOverallCount()", e);
+		}
+
+		return -1;
+	}
+
+}
