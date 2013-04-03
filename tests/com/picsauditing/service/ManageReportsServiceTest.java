@@ -202,7 +202,7 @@ public class ManageReportsServiceTest {
 		when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
 		assertFalse(reportUser.isHidden());
 
-		reportUser = manageReportsService.removeReport(removerUser, report, permissions);
+		reportUser = manageReportsService.removeReportUser(removerUser, report, permissions);
 
 		verify(reportUserDao).remove(reportUser);
 	}
