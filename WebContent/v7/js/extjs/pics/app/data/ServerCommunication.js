@@ -64,14 +64,10 @@ Ext.define('PICS.data.ServerCommunication', {
             copyReport: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
-                    report_copy = report_store.add(report)[0],
                     url = PICS.data.ServerCommunicationUrl.getCopyReportUrl();
 
-                // Remove the original report, so that sync sends only the copy.
-                report_store.remove(report);
-
-                // Flag the store as dirty so that sync will execute.
-                report_copy.setDirty();
+                // flag store as dirty so it will sync data to server
+                report.setDirty();
 
                 // set load data proxy
                 report_store.setProxyForWrite(url);
@@ -148,7 +144,6 @@ Ext.define('PICS.data.ServerCommunication', {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
-                    has_unsaved_changes = report.getHasUnsavedChanges(),
                     url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl();
 
                 // add data table loading mask
@@ -182,9 +177,6 @@ Ext.define('PICS.data.ServerCommunication', {
                         // load the report store
                         var report_store = loadReportStore(json),
                             report = report_store.first();
-
-                        // Persist the unsaved changes flag.
-                        report.setHasUnsavedChanges(has_unsaved_changes);
 
                         // load new results
                         loadDataTableStore(json);
@@ -313,8 +305,6 @@ Ext.define('PICS.data.ServerCommunication', {
                             response: response
                         });
                     } else {
-                        report.setHasUnsavedChanges(false);
-
                         success_callback();
                     }
                 }

@@ -9,8 +9,16 @@ Ext.define('PICS.store.report.Reports', {
     },
 
     listeners: {
+        add: function (store, record, index, eOpts) {
+            record.has_unsaved_changes = true;
+        },
+
+        remove: function (store, record, index, eOpts) {
+            record.has_unsaved_changes = true;
+        },
+
         update: function (store, record, operation, modifiedFieldNames, eOpts) {
-            record.setHasUnsavedChanges(true);
+            record.has_unsaved_changes = true;
         }
     },
 

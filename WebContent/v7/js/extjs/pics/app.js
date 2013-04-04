@@ -74,14 +74,15 @@ Ext.application({
 
                     PICS.app.updateDocumentTitle();
 
+                    report.has_unsaved_changes = false;
+
                     // ExtJS has its own onbeforeunload, but it doesn't work in FF.
                     // The native onbeforeunload used here, however, is broadly compatible.
                     window.onbeforeunload = function () {
                         var report_store = Ext.StoreManager.get('report.Reports'),
-                            report = report_store.first(),
-                            report_has_unsaved_changes = report.getHasUnsavedChanges();
+                            report = report_store.first();
 
-                        if (report_has_unsaved_changes) {
+                        if (report.has_unsaved_changes) {
                             return 'Any unsaved changes will be lost.';
                         }
                     };
