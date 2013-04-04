@@ -21,8 +21,8 @@ public class ReportPQFVerification extends ReportAccount {
 		// and don't require verification. This is easier to verify all of them FOR NOW.
 		// and ao.requiredAuditStatus = 'Active'
 
-        sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
-		sql.addJoin("LEFT JOIN users csr ON csr.id = au.userID");
+        sql.addJoin("JOIN account_user au2 on au2.accountID = a.id and au2.role='PICSCustomerServiceRep' and au2.startDate < now() and au2.endDate > now()");
+		sql.addJoin("LEFT JOIN users csr ON csr.id = au2.userID");
 		sql.addField("csr.name csr_name");
 
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id "
