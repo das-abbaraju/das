@@ -96937,11 +96937,9 @@ Ext.define('PICS.model.report.Report', {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
                     
-                    if (!record) {
-                        return;
+                    if (record.get('id') === 0) {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
                     }
-                    
-                    this.setReportHasUnsavedChanges(record.get('report_id'));
                 },
 
                 remove: function (store, record, index, eOpts) {
@@ -96967,12 +96965,9 @@ Ext.define('PICS.model.report.Report', {
             listeners: {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
-                    
-                    if (!record) {
-                        return;
-                    }
 
-                    this.setReportHasUnsavedChanges(record.get('report_id'));                        
+                    // New filter records don't have an id
+                    this.setReportHasUnsavedChanges(record.get('report_id'));
                 },
 
                 remove: function (store, record, index, eOpts) {
@@ -97005,11 +97000,9 @@ Ext.define('PICS.model.report.Report', {
                 add: function (store, records, index, eOpts) {
                     var record = records[0];
                     
-                    if (!record) {
-                        return;
+                    if (record.get('id') === 0) {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
                     }
-                    
-                    this.setReportHasUnsavedChanges(record.get('report_id'));
                 },
                 remove: function (store, record, index, eOpts) {
                     if (record.get('id') != 0) {
