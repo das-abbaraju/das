@@ -985,6 +985,11 @@
                     "path": "extjs/src/layout/container/"
                 },
                 {
+                    "clsName": "PICS.model.report.Filter",
+                    "name": "Filter.js",
+                    "path": "app/model/report/"
+                },
+                {
                     "clsName": "PICS.model.report.ColumnFunctions",
                     "name": "ColumnFunctions.js",
                     "path": "app/model/report/"
@@ -1035,9 +1040,9 @@
                     "path": "extjs/src/form/action/"
                 },
                 {
-                    "clsName": "Ext.data.association.BelongsTo",
-                    "name": "BelongsTo.js",
-                    "path": "extjs/src/data/association/"
+                    "clsName": "PICS.model.report.Sort",
+                    "name": "Sort.js",
+                    "path": "app/model/report/"
                 },
                 {
                     "clsName": "Ext.layout.component.Tab",
@@ -1078,6 +1083,11 @@
                     "clsName": "Ext.ProgressBar",
                     "name": "ProgressBar.js",
                     "path": "extjs/src/"
+                },
+                {
+                    "clsName": "PICS.store.report.Filters",
+                    "name": "Filters.js",
+                    "path": "app/store/report/"
                 },
                 {
                     "clsName": "PICS.store.report.ColumnFunctions",
@@ -1230,16 +1240,6 @@
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "PICS.model.report.Filter",
-                    "name": "Filter.js",
-                    "path": "app/model/report/"
-                },
-                {
-                    "clsName": "PICS.store.report.Filters",
-                    "name": "Filters.js",
-                    "path": "app/store/report/"
-                },
-                {
                     "clsName": "Ext.tab.Tab",
                     "name": "Tab.js",
                     "path": "extjs/src/tab/"
@@ -1388,11 +1388,6 @@
                     "clsName": "Ext.grid.header.DragZone",
                     "name": "DragZone.js",
                     "path": "extjs/src/grid/header/"
-                },
-                {
-                    "clsName": "PICS.model.report.Sort",
-                    "name": "Sort.js",
-                    "path": "app/model/report/"
                 },
                 {
                     "clsName": "Ext.dd.DropTarget",
