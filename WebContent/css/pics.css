@@ -1413,21 +1413,11 @@ div.blockDialog {
 
 .translation-list .rate
 {
-	background: #EEDC94;
-	border: 1px solid #E4C652;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
 	float: left;
 	font-size: 11px;
 	margin-right: 5px;
 	overflow: hidden;
-	width: 95px;
-}
-
-.translation-list .applicable
-{
-	overflow: hidden;
+	width: 180px;
 }
 
 .translation-list .applicable .is-applicable,
@@ -1436,25 +1426,11 @@ div.blockDialog {
 	float: left;
 }
 
-.translation-list .applicable .is-applicable
-{
-	margin: 3px 6px;
-}
-
-.translation-list .applicable label
-{
-	line-height: 19px;
-}
-
 .translation-list .quality-rating
 {
-	display: none;
-	margin-top: 10px;
-}
-
-.translation-list .quality-rating li
-{
-	overflow: hidden;
+    float: left;
+    margin: 0px;
+    margin-left: 5px;
 }
 
 .translation-list .content.view-mode .view .text *
