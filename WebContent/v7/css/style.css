@@ -11457,46 +11457,60 @@ hr {
   }
 }
 
-/* line 5, ../sass/pics/templates/user/_recover-account.scss */
+/* line 4, ../sass/pics/templates/user/_recover-account.scss */
 
-.AccountRecovery-page h1 {
-  margin-top: 0;
+.AccountRecovery-page .notice {
+  width: 220px;
+  padding: 40px 60px;
 }
 
 /* line 10, ../sass/pics/templates/user/_recover-account.scss */
+
+.AccountRecovery-page h1 {
+  margin-top: 0;
+  font-size: 25px;
+}
+
+/* line 16, ../sass/pics/templates/user/_recover-account.scss */
+
+.AccountRecovery-page .alert h4 {
+  text-align: left;
+}
+
+/* line 21, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page form {
   margin: 0;
   text-align: left;
 }
 
-/* line 16, ../sass/pics/templates/user/_recover-account.scss */
+/* line 27, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page .logo {
   margin-bottom: 30px;
 }
 
-/* line 21, ../sass/pics/templates/user/_recover-account.scss */
+/* line 32, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page .form-actions {
   margin-top: 30px;
   text-align: right;
 }
 
-/* line 26, ../sass/pics/templates/user/_recover-account.scss */
+/* line 37, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page .form-actions button {
   margin-left: 5px;
 }
 
-/* line 33, ../sass/pics/templates/user/_recover-account.scss */
+/* line 44, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page #username,
 .AccountRecovery-page #email {
   display: block;
 }
 
-/* line 39, ../sass/pics/templates/user/_recover-account.scss */
+/* line 50, ../sass/pics/templates/user/_recover-account.scss */
 
 .AccountRecovery-page #recover_password,
 .AccountRecovery-page #recover_username {

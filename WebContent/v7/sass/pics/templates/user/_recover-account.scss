@@ -1,9 +1,20 @@
 .AccountRecovery-page
 {
+    .notice
+    {
+        padding: 40px 60px;
+        width: 220px;
+    }
 
     h1
     {
+        font-size: 25px;
         margin-top: 0px;
+    }
+    
+    .alert h4
+    {
+        text-align: left;
     }
     
     form
