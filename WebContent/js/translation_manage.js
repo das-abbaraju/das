@@ -7,13 +7,9 @@
                 // toggle see more text
                 $('.translation-list').delegate('.view-mode.view-more', 'click', this.toggleViewModeShowAll);
 
-                // toggle view of quality rating options (only show if is applicable)
-                $('.translation-list').delegate('.is-applicable', 'click', this.toggleQuality);
-                $('.translation-list').delegate('.rate', 'mouseenter', this.toggleQualityRatingOn);
-                $('.translation-list').delegate('.rate', 'mouseleave', this.toggleQualityRatingOff);
-
                 // auto save applicable + quality rating
-                $('.translation-list').delegate('.rate input[type=checkbox], .rate input[type=radio]', 'click', this.saveTranslationParametersThroughAjax);
+                $('.translation-list').on('click', '.rate input[type=checkbox]', this.saveTranslationParametersThroughAjax);
+                $('.translation-list').on('change', '.quality-rating', this.saveTranslationParametersThroughAjax);
 
                 // enter edit mode
             	$('.translation-list').delegate('.view-mode a.edit', 'click', this.showEditMode);
@@ -76,47 +72,20 @@
                 $('.translation-list').removeClass('dirty');
             },
 
-            showEditMode: function (event) {
-                var element = $(this),
-                    form = element.closest('form'),
-                    translation = form.find('textarea');
-
-                form.find('.content').addClass('edit-mode');
-                form.find('.content').removeClass('view-mode');
-
-                translation.data('previous', translation.val());
-            },
-
-            showViewMode: function (event) {
-                var element = $(this),
-                    form = element.closest('form'),
-                    translation = form.find('textarea');
-
-                form.find('.content').addClass('view-mode');
-                form.find('.content').removeClass('edit-mode');
-
-                //revert translation edit on cancel
-                translation.val(translation.data('previous'))
-            },
-
             saveTranslation: function (event) {
-                var element = $(this);
-                var form = element.closest('form');
+                var element = $(this),
+                    form = element.closest('form');
 
                 function updateOtherLocales() {
-                    var checkbox = form.find('input[name=updateOtherLocales]');
+                    var translation_from = form.closest('.translation-from'),
+                        translation_to = translation_from.siblings('.translation-to'),
+                        quality_rating = translation_to.find('.quality-rating'),
+                        update_locales = form.find('input[name=updateOtherLocales]');
 
-                    if (checkbox.is(':checked')) {
-                        var translation_from = form.closest('.translation-from');
-                        var translation_to = translation_from.siblings('.translation-to');
-
+                    if (update_locales.is(':checked')) {
                         if (translation_to.length) {
-                            var radio = translation_to.find('.quality-rating input[value=Questionable]');
-
-                            radio.attr('checked', 'checked');
+                            quality_rating.val('Questionable');
                         }
-
-                        checkbox.attr('checked', 'checked');
                     }
                 }
 
@@ -164,50 +133,15 @@
             	});
             },
 
-            toggleQuality: function (event) {
-                var element = $(this);
-                var applicable = element.closest('.applicable');
+            showEditMode: function (event) {
+                var element = $(this),
+                    form = element.closest('form'),
+                    translation = form.find('textarea');
 
-                if (element.is(':checked')) {
-                    applicable.siblings('.quality').show();
-                } else {
-                    applicable.siblings('.quality').hide();
-                }
-            },
+                form.find('.content').addClass('edit-mode');
+                form.find('.content').removeClass('view-mode');
 
-            toggleQualityRatingOn: function (event) {
-                var element = $(this);
-                var quality_rating = element.find('.quality-rating');
-                var is_applicable = element.find('.is-applicable');
-
-                if (is_applicable.is(':checked')) {
-                    element.find('.quality-rating').show();
-                    element.closest('.view').addClass('all');
-                }
-            },
-
-            toggleQualityRatingOff: function (event) {
-                var element = $(this);
-                var quality_rating = element.find('.quality-rating');
-                var is_applicable = element.find('.is-applicable');
-
-                if (is_applicable.is(':checked')) {
-                    element.find('.quality-rating').hide();
-                    element.closest('.view').removeClass('all');
-                }
-            },
-
-            toggleViewModeShowAll: function (event) {
-                var element = $(this);
-                var view = element.find('.view');
-
-                if (view.length) {
-                    if (view.hasClass('all')) {
-                        view.removeClass('all')
-                    } else {
-                        view.addClass('all');
-                    }
-                }
+                translation.data('previous', translation.val());
             },
 
             showPreview: function (event) {
@@ -225,6 +159,31 @@
                 });
 
                 preview_modal.show();
+            },
+
+            showViewMode: function (event) {
+                var element = $(this),
+                    form = element.closest('form'),
+                    translation = form.find('textarea');
+
+                form.find('.content').addClass('view-mode');
+                form.find('.content').removeClass('edit-mode');
+
+                //revert translation edit on cancel
+                translation.val(translation.data('previous'))
+            },
+
+            toggleViewModeShowAll: function (event) {
+                var element = $(this);
+                var view = element.find('.view');
+
+                if (view.length) {
+                    if (view.hasClass('all')) {
+                        view.removeClass('all')
+                    } else {
+                        view.addClass('all');
+                    }
+                }
             }
         }
     });
