@@ -71,20 +71,20 @@ Ext.application({
                     // remove loading background
                     var loading = Ext.get('loading_page');
 
-                    PICS.app.updateDocumentTitle();
+                    if(loading) {
+                        PICS.app.updateDocumentTitle();
 
-                    Ext.EventManager.on(window, 'beforeunload', function () {
-                        var report_store = Ext.StoreManager.get('report.Reports'),
-                            report = report_store.first();
+                        Ext.EventManager.on(window, 'beforeunload', function() {
+                            var report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
 
-                        if (report.has_unsaved_changes) {
-                            return 'Your unsaved changes will be lost.';
-                        } else {
-                            return;
-                        }
-                    });
+                            if (report.has_unsaved_changes) {
+                                return 'Your unsaved changes will be lost.';
+                            } else {
+                                return;
+                            }
+                        });
 
-                    if (loading) {
                         loading.remove();
                     }
                 }
