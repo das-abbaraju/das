@@ -97292,9 +97292,7 @@ Ext.define('PICS.store.report.Reports', {
 
     listeners: {
         update: function (store, record, operation, modifiedFieldNames, eOpts) {
-            if (modifiedFieldNames) {
-                record.setHasUnsavedChanges(true);                
-            }
+            record.setHasUnsavedChanges(true);
         }
     },
 
