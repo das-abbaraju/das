@@ -12,9 +12,9 @@
     <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png"><!--<![endif]-->
     <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/logo/logo-small.svg"><!--<![endif]-->
 
-    <s:include value="/struts/_action-messages.jsp" />
-
     <h1><s:text name="AccountRecovery.RecoverPassword" /></h1>
+
+    <s:include value="/struts/_action-messages.jsp" />
     
     <form action="${reset_password}" method="post">
         <label for="username"><s:text name="global.Username" /></label>
