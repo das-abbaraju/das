@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 @SuppressWarnings("serial")
 public class ReportBootstrap extends PicsActionSupport {
 
-	private static final String URL_FOR_REDIRECT_FOR_NOT_VIEWABLE = "ManageReports!favorites.action";
+	private static final String URL_FOR_REDIRECT_FOR_NOT_VIEWABLE = "ManageReports!favoritesList.action";
 
 	private static final String ERROR_MESSAGE_I18N_KEY = "Report.Error.ViewPermissions";
 
@@ -35,7 +35,7 @@ public class ReportBootstrap extends PicsActionSupport {
 			addActionError(getText(ERROR_MESSAGE_I18N_KEY));
 			return setUrlForRedirect(URL_FOR_REDIRECT_FOR_NOT_VIEWABLE);
 		}
-		
+
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), report);
 		reportPreferencesService.stampViewed(reportUser, permissions);
 
