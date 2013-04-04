@@ -24,6 +24,11 @@
 			</li>
 
             <li>
+                <label><s:text name="global.Country"></s:text>:</label>
+                <s:property value="u.account.country.name" />
+            </li>
+
+            <li>
                 <s:textfield name="u.firstName" theme="form" />
             </li>
 
