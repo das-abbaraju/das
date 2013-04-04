@@ -1,18 +1,5 @@
 package com.picsauditing.mail;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -20,22 +7,21 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.Token;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Merges an email template with a map of token data and creates an email
- * 
+ *
  * @author Trevor
- * 
  */
 public class EmailBuilder {
 	private String fromAddress = null;
@@ -242,7 +228,7 @@ public class EmailBuilder {
 	/**
 	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
 	 * like this ${token.name}
-	 * 
+	 *
 	 * @param text
 	 * @param allowsVelocity
 	 * @return
@@ -393,7 +379,7 @@ public class EmailBuilder {
 	 * subject and body. If edited, we're not going to pull up any translations
 	 * and send out the email as is. MassMailer and everywhere else we edit the
 	 * body/subject for an email should set this flag to true.
-	 * 
+	 *
 	 * @param edited
 	 */
 	public void setEdited(boolean edited) {

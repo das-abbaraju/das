@@ -12,24 +12,15 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.IOException;
 import java.util.*;
 
 public class EventSubscriptionBuilder {
 
-	@Autowired
-	@Qualifier("EmailRequestPublisher")
 	private static Publisher emailRequestPublisher = SpringUtils.getBean(SpringUtils.EMAIL_REQUEST_PUBLISHER);
-
-	@Autowired
 	private static EmailReportRunner runner = SpringUtils.getBean(SpringUtils.EMAIL_REPORT_RUNNER);
-
-	@Autowired
 	private static FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-
 	private static EmailSubscriptionDAO subscriptionDAO = SpringUtils.getBean(SpringUtils.EMAIL_SUBSCRIPTION_DAO);
 	private static NoteDAO noteDAO = SpringUtils.getBean(SpringUtils.NOTE_DAO);
 	private static EmailSender emailSender = SpringUtils.getBean(SpringUtils.EMAIL_SENDER);
@@ -75,13 +66,25 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SEND_INVOICE_EMAIL_VIA_BPROCS_NOT_EMAIL_BUILDER)) {
+		if (invoiceIsToBeEmailedViaBPROCS(user)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);
 		}
 
 		return email;
+	}
+
+	public static Boolean invoiceIsToBeEmailedViaBPROCS(User user) {
+		if (
+				featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SEND_INVOICE_EMAIL_VIA_BPROCS_NOT_EMAIL_BUILDER)
+						&&
+						user.getLocale().getLanguage().equals(new Locale("fr").getLanguage())
+				) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private static void sendInvoiceEmailViaBProcs(Invoice invoice) {
