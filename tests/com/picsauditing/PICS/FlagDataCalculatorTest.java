@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,23 +28,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class FlagDataCalculatorTest {
 
@@ -122,6 +106,23 @@ public class FlagDataCalculatorTest {
 
 		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
 		Whitebox.setInternalState(calculator, "dao", dao);
+	}
+
+	@Test
+	public void testClearFlags() throws Exception {
+		calculator.setOperatorCriteria(opCrits);
+
+		contractor.setStatus(AccountStatus.Pending);
+		List<FlagData> list = calculator.calculate();
+		assertTrue(list.size() == 0);
+
+		contractor.setStatus(AccountStatus.Requested);
+		list = calculator.calculate();
+		assertTrue(list.size() == 0);
+
+		contractor.setStatus(AccountStatus.Declined);
+		list = calculator.calculate();
+		assertTrue(list.size() == 0);
 	}
 	
 	@Test		

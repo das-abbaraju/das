@@ -148,11 +148,6 @@ public class ContractorCron extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		if (!shouldRunContractorCron(contractor.getStatus())) {
-			addActionMessage("We don't run the cron on requested or declined contractors.");
-			return SUCCESS;
-		}
-
 		logger.trace("Starting ContractorCron for {}", conID);
 		try {
 			run(contractor, opID);
@@ -894,6 +889,14 @@ public class ContractorCron extends PicsActionSupport {
 		Queue<OperatorAccount> corporateUpdateQueue = new LinkedList<OperatorAccount>();
 		Set<ContractorOperator> removalSet = new HashSet<ContractorOperator>();
 
+		if (!shouldRunContractorCron(contractor.getStatus())) {
+			for (ContractorOperator co: contractor.getOperators()) {
+				co.setFlagColor(FlagColor.Clear);
+				co.setBaselineFlag(FlagColor.Clear);
+			}
+			return;
+		}
+
 		Set<ContractorOperator> dblinkedCOs = new HashSet<ContractorOperator>();
 		dblinkedCOs.addAll(contractor.getOperators());
 
@@ -1124,6 +1127,14 @@ public class ContractorCron extends PicsActionSupport {
 	// TODO This should be in a service
 	private boolean shouldRunContractorCron(AccountStatus contractorStatus) {
 		if (contractorStatus == AccountStatus.Requested) {
+			return false;
+		}
+
+		if (contractorStatus == AccountStatus.Pending) {
+			return false;
+		}
+
+		if (contractorStatus == AccountStatus.Deactivated) {
 			return false;
 		}
 
