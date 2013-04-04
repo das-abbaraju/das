@@ -97938,7 +97938,7 @@ Ext.define('PICS.controller.report.Filter', {
             // saving edits to filter store + refresh
             '#report_filters combobox[name=value]': {
                 // Unlike "select," the change event also fires when the user removes the last item.
-                select: this.selectValueField
+                change: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
