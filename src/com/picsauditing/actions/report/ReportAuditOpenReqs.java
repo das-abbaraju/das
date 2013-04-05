@@ -24,7 +24,7 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 		sql.addWhere("a.status = 'Active'");
 		
 		if (permissions.isOperatorCorporate()) {
-			String ids = Strings.implodeForDB(permissions.getAllInheritedGroupIds(), ",");
+			String ids = Strings.implodeForDB(permissions.getAllInheritedGroupIds());
 			sql.addWhere("(atype.assignAudit IN (" + ids +") or atype.editAudit IN (" + ids + "))");
 		}
 

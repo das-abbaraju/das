@@ -47,7 +47,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			types.add("Assessment");
 		}
 
-		sql.addWhere("a.type IN (" + Strings.implodeForDB(types, ",") + ")");
+		sql.addWhere("a.type IN (" + Strings.implodeForDB(types) + ")");
 		sql.setType(null);
 
 		sql.addJoin("left JOIN users contact ON contact.id = a.contactID");

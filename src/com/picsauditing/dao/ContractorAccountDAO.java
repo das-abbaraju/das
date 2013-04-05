@@ -379,7 +379,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		dates.add(DBFormat.format(calendar1.getTime()));// After180Days
 
 		String hql = "FROM Invoice i WHERE i.status = 'Unpaid' AND i.totalAmount > 0" + " AND i.dueDate IN ("
-				+ Strings.implodeForDB(dates, ",") + ") " + " AND i.account.status IN ('Active') ORDER BY i.dueDate ";
+				+ Strings.implodeForDB(dates) + ") " + " AND i.account.status IN ('Active') ORDER BY i.dueDate ";
 		Query query = em.createQuery(hql);
 		return query.getResultList();
 	}
@@ -396,7 +396,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		dates.add(DBFormat.format(calendar1.getTime()));// Before14Days
 
 		String hql = "SELECT c FROM ContractorAccount c WHERE c.status = 'Active' AND c.accountLevel = 'BidOnly' AND "
-				+ " c.paymentExpires IN (" + Strings.implodeForDB(dates, ",") + ")";
+				+ " c.paymentExpires IN (" + Strings.implodeForDB(dates) + ")";
 
 		Query query = em.createQuery(hql);
 		return query.getResultList();
@@ -406,7 +406,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		if (conIDs == null || conIDs.size() == 0)
 			return new ArrayList<ContractorAccount>();
 
-		String ids = Strings.implodeForDB(conIDs, ",");
+		String ids = Strings.implodeForDB(conIDs);
 		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
 		return query.getResultList();
 	}

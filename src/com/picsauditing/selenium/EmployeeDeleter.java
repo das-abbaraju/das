@@ -10,7 +10,7 @@ public class EmployeeDeleter {
 	String IDs;
 	
 	public EmployeeDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs, ",");
+		this.IDs = Strings.implodeForDB(IDs);
 	}
 	
 	public EmployeeDeleter(int ID) {
@@ -21,7 +21,7 @@ public class EmployeeDeleter {
 	}
 	
 	public EmployeeDeleter setEmployeeIDs(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs, ",");		
+		this.IDs = Strings.implodeForDB(IDs);
 		return this;
 	}
 	

@@ -1,24 +1,6 @@
 package com.picsauditing.service;
 
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportDAO;
@@ -28,217 +10,381 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class ManageReportsServiceTest {
 
-	private ManageReportsService manageReportsService;
+    private ManageReportsService manageReportsService;
 
-	@Mock
-	private ReportDAO reportDAO;
-	@Mock
-	private ReportUserDAO reportUserDAO;
-	@Mock
-	private Permissions permissions;
-	@Mock
-	private Pagination<ReportInfo> reportPagination;
-	@Mock
-	private ReportPreferencesService reportPreferencesService;
-	@Mock
-	private PermissionService permissionService;
-	@Mock
-	private ReportInfoProvider reportInfoProvider;
+    @Mock
+    private ReportDAO reportDAO;
+    @Mock
+    private ReportUserDAO reportUserDAO;
+    @Mock
+    private Permissions permissions;
+    @Mock
+    private Pagination<ReportInfo> reportPagination;
+    @Mock
+    private ReportPreferencesService reportPreferencesService;
+    @Mock
+    private PermissionService permissionService;
+    @Mock
+    private ReportInfoProvider reportInfoProvider;
 
-	private final int USER_ID = 23;
+    private final int USER_ID = 23;
 
-	private static final int MAX_SORT_ORDER = 10;
-	private static final int MAX_FAVORITE_COUNT = 15;
+    private static final int MAX_SORT_ORDER = 10;
+    private static final int MAX_FAVORITE_COUNT = 15;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		manageReportsService = new ManageReportsService();
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        manageReportsService = new ManageReportsService();
 
-		setInternalState(manageReportsService, "reportUserDAO", reportUserDAO);
-		setInternalState(manageReportsService, "reportDAO", reportDAO);
-		setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
-		setInternalState(manageReportsService, "permissionService", permissionService);
-		setInternalState(manageReportsService, "reportInfoProvider", reportInfoProvider);
-	}
+        setInternalState(manageReportsService, "reportUserDAO", reportUserDAO);
+        setInternalState(manageReportsService, "reportDAO", reportDAO);
+        setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
+        setInternalState(manageReportsService, "permissionService", permissionService);
+        setInternalState(manageReportsService, "reportInfoProvider", reportInfoProvider);
+    }
 
-	@Test
-	public void testMoveFavoriteUp() throws Exception {
-		ReportUser reportUser = createTestReportUser();
-		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+    @Test
+    public void testMoveFavoriteUp() throws Exception {
+        ReportUser reportUser = createTestReportUser();
+        int beforeSortOrder = 3;
+        reportUser.setSortOrder(beforeSortOrder);
+        reportUser.setFavorite(true);
+        when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+        when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
 
-		ReportUser result = manageReportsService.moveFavoriteUp(reportUser);
+        ReportUser result = manageReportsService.moveFavoriteUp(reportUser);
 
-		assertEquals(beforeSortOrder + 1, result.getSortOrder());
-		verify(reportUserDAO).offsetSortOrderForRange(USER_ID, -1, 4, 4);
-	}
+        assertEquals(beforeSortOrder + 1, result.getSortOrder());
+        verify(reportUserDAO).offsetSortOrderForRange(USER_ID, -1, 4, 4);
+    }
 
-	@Test
-	public void testMoveFavoriteDown() throws Exception {
-		ReportUser reportUser = createTestReportUser();
-		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+    @Test
+    public void testMoveFavoriteDown() throws Exception {
+        ReportUser reportUser = createTestReportUser();
+        int beforeSortOrder = 3;
+        reportUser.setSortOrder(beforeSortOrder);
+        reportUser.setFavorite(true);
+        when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+        when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
 
-		ReportUser result = manageReportsService.moveFavoriteDown(reportUser);
+        ReportUser result = manageReportsService.moveFavoriteDown(reportUser);
 
-		assertEquals(beforeSortOrder - 1, result.getSortOrder());
-		verify(reportUserDAO).offsetSortOrderForRange(USER_ID, 1, 2, 2);
-	}
+        assertEquals(beforeSortOrder - 1, result.getSortOrder());
+        verify(reportUserDAO).offsetSortOrderForRange(USER_ID, 1, 2, 2);
+    }
 
-	@Test
-	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<ReportInfo> reports = manageReportsService.getReportsForSearch(null, permissions, reportPagination);
-		Set<Integer> set = new HashSet<Integer>();
-		set.add(1294);
+    @Test
+    public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
+        List<ReportInfo> reports = manageReportsService.getReportsForSearch(null, permissions, reportPagination);
+        Set<Integer> set = new HashSet<Integer>();
+        set.add(1294);
 
-		assertNotNull(reports);
-		verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
-	}
+        assertNotNull(reports);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
+    }
 
-	@Test
-	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<ReportInfo> reports = manageReportsService.getReportsForSearch(Strings.EMPTY_STRING, permissions, reportPagination);
-		Set<Integer> set = new HashSet<Integer>();
-		set.add(1294);
+    @Test
+    public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
+        List<ReportInfo> reports = manageReportsService.getReportsForSearch(Strings.EMPTY_STRING, permissions, reportPagination);
+        Set<Integer> set = new HashSet<Integer>();
+        set.add(1294);
 
-		assertNotNull(reports);
-		verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
-	}
+        assertNotNull(reports);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
+    }
 
-	@Test
-	public void testTransferOwnership_previousOwnerShouldRetainEditPermission() throws Exception {
-		Report report = new Report();
-		User fromOwner = new User("From Owner");
-		report.setOwner(fromOwner);
-		User toOwner = new User("To Owner");
-		when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
+    @Test
+    public void testTransferOwnership_previousOwnerShouldRetainEditPermission() throws Exception {
+        Report report = new Report();
+        User fromOwner = new User("From Owner");
+        report.setOwner(fromOwner);
+        User toOwner = new User("To Owner");
+        when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
 
-		manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
+        manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
 
-		verify(reportPreferencesService).loadOrCreateReportUser(fromOwner.getId(), report.getId());
-		verify(permissionService).grantEdit(fromOwner.getId(), report.getId());
-	}
+        verify(reportPreferencesService).loadOrCreateReportUser(fromOwner.getId(), report.getId());
+        verify(permissionService).grantEdit(fromOwner.getId(), report.getId());
+    }
 
-	@Test
-	public void testTransferOwnership_newOwnerShouldBeSetOnReport() throws Exception {
-		Report report = new Report();
-		User fromOwner = new User("From Owner");
-		report.setOwner(fromOwner);
-		User toOwner = new User("To Owner");
-		when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
+    @Test
+    public void testTransferOwnership_newOwnerShouldBeSetOnReport() throws Exception {
+        Report report = new Report();
+        User fromOwner = new User("From Owner");
+        report.setOwner(fromOwner);
+        User toOwner = new User("To Owner");
+        when(permissionService.canTransferOwnership(fromOwner, report, permissions)).thenReturn(true);
 
-		Report resultReport = manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
+        Report resultReport = manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
 
-		assertNotSame(fromOwner, resultReport.getOwner());
-		assertEquals(toOwner, resultReport.getOwner());
-	}
+        assertNotSame(fromOwner, resultReport.getOwner());
+        assertEquals(toOwner, resultReport.getOwner());
+    }
 
-	@Test
-	public void testDeleteReport_anyoneWithPermissionCanDelete() throws Exception {
-		Report report = new Report();
-		User deleterUser = new User("Joe Owner");
-		report.setOwner(deleterUser);
-		when(permissionService.canUserDeleteReport(deleterUser, report, permissions)).thenReturn(true);
+    @Test
+    public void testDeleteReport_anyoneWithPermissionCanDelete() throws Exception {
+        Report report = new Report();
+        User deleterUser = new User("Joe Owner");
+        report.setOwner(deleterUser);
+        when(permissionService.canUserDeleteReport(deleterUser, report, permissions)).thenReturn(true);
 
-		Report resultReport = manageReportsService.deleteReport(deleterUser, report, permissions);
+        Report resultReport = manageReportsService.deleteReport(deleterUser, report, permissions);
 
-		assertTrue(DateBean.isToday(resultReport.getUpdateDate()));
-		assertEquals(deleterUser, resultReport.getUpdatedBy());
-		verify(reportDAO).remove(resultReport);
-	}
+        assertTrue(DateBean.isToday(resultReport.getUpdateDate()));
+        assertEquals(deleterUser, resultReport.getUpdatedBy());
+        verify(reportDAO).remove(resultReport);
+    }
 
-	@Test
-	public void testShareWithViewPermission_reportUserIsCreatedAndViewIsGrantedToTargetUser() throws Exception {
-		Report report = new Report();
-		report.setId(10);
-		User sharerUser = new User("Joe Owner");
-		sharerUser.setId(1);
-		report.setOwner(sharerUser);
-		User toUser = new User("To User");
-		toUser.setId(2);
-		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+    @Test
+    public void testShareWithViewPermission_reportUserIsCreatedAndViewIsGrantedToTargetUser() throws Exception {
+        Report report = new Report();
+        report.setId(10);
+        User sharerUser = new User("Joe Owner");
+        sharerUser.setId(1);
+        report.setOwner(sharerUser);
+        User toUser = new User("To User");
+        toUser.setId(2);
+        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
 
-		manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
+        manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
 
-		verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
-		verify(permissionService).grantView(toUser.getId(), report.getId());
-	}
+        verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
+        verify(permissionService).grantView(toUser.getId(), report.getId());
+    }
 
-	@Test
-	public void testShareWithEditPermission_reportUserIsCreatedAndEditIsGrantedToTargetUser() throws Exception {
-		Report report = new Report();
-		report.setId(10);
-		User sharerUser = new User("Joe Owner");
-		sharerUser.setId(1);
-		report.setOwner(sharerUser);
-		User toUser = new User("To User");
-		toUser.setId(2);
-		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+    @Test
+    public void testShareWithEditPermission_reportUserIsCreatedAndEditIsGrantedToTargetUser() throws Exception {
+        Report report = new Report();
+        report.setId(10);
+        User sharerUser = new User("Joe Owner");
+        sharerUser.setId(1);
+        report.setOwner(sharerUser);
+        User toUser = new User("To User");
+        toUser.setId(2);
+        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
 
-		manageReportsService.shareWithEditPermission(sharerUser, toUser, report, permissions);
+        manageReportsService.shareWithEditPermission(sharerUser, toUser, report, permissions);
 
-		verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
-		verify(permissionService).grantEdit(toUser.getId(), report.getId());
-	}
+        verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
+        verify(permissionService).grantEdit(toUser.getId(), report.getId());
+    }
 
-	@Test
-	public void testRemoveReport_anyoneWithPermissionShouldBeAbleToRemove() throws Exception {
-		Report report = new Report();
-		report.setId(10);
-		User removerUser = new User("Joe Remover");
-		removerUser.setId(1);
-		report.setOwner(removerUser);
-		ReportUser reportUser = new ReportUser(removerUser.getId(), report);
-		when(permissionService.canUserRemoveReport(removerUser, report, permissions)).thenReturn(true);
-		when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
-		assertFalse(reportUser.isHidden());
+    @Test
+    public void testRemoveReport_anyoneWithPermissionShouldBeAbleToRemove() throws Exception {
+        Report report = new Report();
+        report.setId(10);
+        User removerUser = new User("Joe Remover");
+        removerUser.setId(1);
+        report.setOwner(removerUser);
+        ReportUser reportUser = new ReportUser(removerUser.getId(), report);
+        when(permissionService.canUserRemoveReport(removerUser, report, permissions)).thenReturn(true);
+        when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
+        assertFalse(reportUser.isHidden());
 
-		reportUser = manageReportsService.removeReportUser(removerUser, report, permissions);
+        reportUser = manageReportsService.removeReportUser(removerUser, report, permissions);
 
-		verify(reportUserDAO).remove(reportUser);
-	}
+        verify(reportUserDAO).remove(reportUser);
+    }
 
-	@Test
-	public void testUnshare_anyoneWithPermissionShouldBeAbleToUnshare() throws Exception {
-		Report report = new Report();
-		report.setId(10);
+    @Test
+    public void testUnshare_anyoneWithPermissionShouldBeAbleToUnshare() throws Exception {
+        Report report = new Report();
+        report.setId(10);
 
-		User sharerUser = new User("Joe Sharer");
-		sharerUser.setId(1);
-		report.setOwner(sharerUser);
-		User toUser = new User("To User");
-		toUser.setId(2);
-		ReportUser reportUser = new ReportUser(toUser.getId(), report);
-		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
-		when(reportPreferencesService.loadReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
+        User sharerUser = new User("Joe Sharer");
+        sharerUser.setId(1);
+        report.setOwner(sharerUser);
+        User toUser = new User("To User");
+        toUser.setId(2);
+        ReportUser reportUser = new ReportUser(toUser.getId(), report);
+        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+        when(reportPreferencesService.loadReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
 
-		manageReportsService.unshare(sharerUser, toUser, report, permissions);
+        manageReportsService.unshare(sharerUser, toUser, report, permissions);
 
-		verify(permissionService).unshare(toUser, report);
-	}
+        verify(permissionService).unshare(toUser, report);
+    }
 
-	private ReportUser createTestReportUser() {
-		ReportUser reportUser = new ReportUser();
+    private ReportUser createTestReportUser() {
+        ReportUser reportUser = new ReportUser();
 
-		Report report = new Report();
-		report.setName("myReport");
-		reportUser.setReport(report);
+        Report report = new Report();
+        report.setName("myReport");
+        reportUser.setReport(report);
 
-		User user = new User("Joe User");
-		user.setId(USER_ID);
-		reportUser.setUser(user);
+        User user = new User("Joe User");
+        user.setId(USER_ID);
+        reportUser.setUser(user);
 
-		return reportUser;
-	}
+        return reportUser;
+    }
+
+    @Test
+    public void testBuildFavorites_whenSortOrderIsContiguous_doNotReIndexSortOrder() throws Exception {
+        List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreContiguous(USER_ID);
+        when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(3, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        favoritesForUser = manageReportsService.buildFavorites(USER_ID);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(3, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        verify(reportInfoProvider, never()).updateSortOrder(any(ReportInfo.class), anyInt());
+    }
+
+    @Test
+    public void testBuildFavorites_whenMaxSortOrderIsGreaterThanListSize_reIndexSortOrder() throws Exception {
+        List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+        when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(7, favoritesForUser.get(0).getSortOrder());
+        assertEquals(5, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        favoritesForUser = manageReportsService.buildFavorites(USER_ID);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(3, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(0), USER_ID);
+        verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
+    }
+
+    @Test
+    public void testBuildFavorites_whenSortOrderIsNotContiguous_reIndexSortOrder() throws Exception {
+
+        List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+        when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(7, favoritesForUser.get(0).getSortOrder());
+        assertEquals(5, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        favoritesForUser = manageReportsService.buildFavorites(USER_ID);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(3, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(0), USER_ID);
+        verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
+    }
+
+    @Test
+    public void testBuildFavorites_whenSortOrderHasDuplicates_reIndexSortOrder() throws Exception {
+
+        List<ReportInfo> favoritesForUser = buildSortedFavoritesThatHaveDuplicates(USER_ID);
+        when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(2, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        favoritesForUser = manageReportsService.buildFavorites(USER_ID);
+
+        assertEquals(4, favoritesForUser.size());
+        assertEquals(4, favoritesForUser.get(0).getSortOrder());
+        assertEquals(3, favoritesForUser.get(1).getSortOrder());
+        assertEquals(2, favoritesForUser.get(2).getSortOrder());
+        assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(0), USER_ID);
+        verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
+        verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
+    }
+
+    @SuppressWarnings("serial")
+    private List<ReportInfo> buildSortedFavoritesThatAreContiguous(final int userId) {
+        final Report report = new Report();
+        List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+            add(createFavoriteWithSortIndex(userId, report, 4));
+            add(createFavoriteWithSortIndex(userId, report, 3));
+            add(createFavoriteWithSortIndex(userId, report, 2));
+            add(createFavoriteWithSortIndex(userId, report, 1));
+        }};
+        return favorites;
+    }
+
+    @SuppressWarnings("serial")
+    private List<ReportInfo> buildSortedFavoritesThatAreNotContiguous(final int userId) {
+        final Report report = new Report();
+        List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+            add(createFavoriteWithSortIndex(userId, report, 7));
+            add(createFavoriteWithSortIndex(userId, report, 5));
+            add(createFavoriteWithSortIndex(userId, report, 2));
+            add(createFavoriteWithSortIndex(userId, report, 1));
+        }};
+
+        return favorites;
+    }
+
+    @SuppressWarnings("serial")
+    private List<ReportInfo> buildSortedFavoritesThatHaveDuplicates(final int userId) {
+        final Report report = new Report();
+        List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+            add(createFavoriteWithSortIndex(userId, report, 4));
+            add(createFavoriteWithSortIndex(userId, report, 2));
+            add(createFavoriteWithSortIndex(userId, report, 2));
+            add(createFavoriteWithSortIndex(userId, report, 1));
+        }};
+
+        return favorites;
+    }
+
+    private ReportInfo createFavoriteWithSortIndex(int userId, Report report, int sortOrder) {
+        ReportInfo reportInfo = new ReportInfo();
+        reportInfo.setFavorite(true);
+        reportInfo.setSortOrder(sortOrder);
+
+        return reportInfo;
+    }
 
 }

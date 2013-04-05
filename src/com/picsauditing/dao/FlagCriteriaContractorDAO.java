@@ -20,7 +20,7 @@ public class FlagCriteriaContractorDAO extends PicsDAO {
 	
 	public List<FlagCriteriaContractor> findByContractorList(List<Integer> conIDs) {
 		Query query = em.createQuery("FROM FlagCriteriaContractor d WHERE contractor.id in ("
-				+ Strings.implodeForDB(conIDs, ",") + ")");
+				+ Strings.implodeForDB(conIDs) + ")");
 		return query.getResultList();
 	}
 	

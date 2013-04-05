@@ -1,9 +1,10 @@
-package com.picsauditing.search;
+package com.picsauditing.dao.mapper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.picsauditing.salecommission.invoice.strategy.CommissionAudit;
+import com.picsauditing.search.QueryMapper;
 
 public class CommissionAuditQueryMapper implements QueryMapper<CommissionAudit> {
 

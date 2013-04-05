@@ -241,7 +241,7 @@ public class ImportEmployees extends PicsActionSupport {
 							}
 
 							operators = operatorAccountDAO.findWhere(true,
-									String.format("a.name IN (%s)", Strings.implodeForDB(names, ",")));
+									String.format("a.name IN (%s)", Strings.implodeForDB(names)));
 
 							continue;
 						}

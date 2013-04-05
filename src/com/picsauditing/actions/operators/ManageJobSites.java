@@ -357,7 +357,7 @@ public class ManageJobSites extends OperatorActionSupport {
 
 			String ids = "";
 			if (skip.size() > 0)
-				ids = String.format(" AND id NOT IN (%s)", Strings.implodeForDB(skip, ","));
+				ids = String.format(" AND id NOT IN (%s)", Strings.implodeForDB(skip));
 
 			addable = jobTaskDAO.findWhere(String.format("opID = %d %s ORDER BY label", operator.getId(), ids));
 		}

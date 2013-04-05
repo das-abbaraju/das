@@ -399,7 +399,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void filterOnCountries(List<String> countries, StringBuilder sb) {
 		if (!countries.isEmpty()) {
-			String countryList = Strings.implodeForDB(countries, ",");
+			String countryList = Strings.implodeForDB(countries);
 			sb.append("a.country IN (").append(countryList).append(")");
 			sql.addOrderBy("CASE WHEN a.country IN (" + countryList + ") THEN 1 ELSE 2 END");
 		}
@@ -411,7 +411,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			if (!countries.isEmpty())
 				sb.append(" OR ");
 
-			String countrySubdivisionList = Strings.implodeForDB(countrySubdivisions, ",");
+			String countrySubdivisionList = Strings.implodeForDB(countrySubdivisions);
 			sb.append("a.countrySubdivision IN (").append(countrySubdivisionList).append(") OR ")
 					.append("EXISTS (SELECT 'x' FROM pqfdata d ")
 					.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")

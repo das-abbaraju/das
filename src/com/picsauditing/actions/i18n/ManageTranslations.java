@@ -309,7 +309,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 		if (isTracingOn()) {
 			if (getI18nUsedKeys().size() > 0)
-				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys(), ",") + ")");
+				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys()) + ")");
 			else {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 			}

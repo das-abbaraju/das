@@ -36,7 +36,7 @@ public class TranslateJS extends PicsActionSupport {
 		if (!Strings.isEmpty(current.getCountry()))
 			locales.add(new Locale(current.getLanguage(), current.getCountry()).toString());
 
-		sql.addWhere("locale IN (" + Strings.implodeForDB(locales, ",") + ")");
+		sql.addWhere("locale IN (" + Strings.implodeForDB(locales) + ")");
 		// Order in this way fr_CA_Suncor, fr_CA, fr, en
 		sql.addOrderBy("CASE locale WHEN 'EN' THEN 1 ELSE 0 END, locale DESC");
 

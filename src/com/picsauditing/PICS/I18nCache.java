@@ -357,7 +357,7 @@ public class I18nCache implements Serializable {
 			cache.row(prepareKeyForCache(key)).clear();
 		}
 
-		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
+		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys) + ")";
 		Database db = getDatabase();
 		db.executeUpdate(sql);
 	}

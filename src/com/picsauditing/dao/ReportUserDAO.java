@@ -100,14 +100,14 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("r.description AS " + ReportInfoMapper.DESCRIPTION_FIELD);
 		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
 		sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
-		sql.addField("0 AS " + ReportInfoMapper.FAVORITE_FIELD);
-		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD);
-		sql.addField("NULL AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
+		sql.addField("IFNULL(ru.favorite, 0) AS " + ReportInfoMapper.FAVORITE_FIELD);
+		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD); // we do not know their permissions at this point
+		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
 		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
-//		sql.addJoin("LEFT JOIN report_user as ru");
+    	sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
