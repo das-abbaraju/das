@@ -18,16 +18,23 @@
     {
         margin: 0;
         
-        .icon-search
-        {
-            color: #666;
-            margin-right: 2px;
-            vertical-align: -5%;
-        }
-        
         input
         {
             background: #f1f1f2;
+            padding-left: 30px;
+        }
+        
+        .icon-search
+        {
+            color: #666;
+            left: -382px;
+            margin-left: -14px;
+            position: relative;
+        }
+        
+        input:focus + .icon-search
+        {
+        	color: #73bbe8;
         }
     }
     
@@ -45,29 +52,31 @@
         
         .favorite-icon
         {
-        	line-height: 58px;
+        	line-height: 48px;
         	margin: 0 10px;
         }
         
         .summary
         {
         	margin: 0 120px 0 40px;
-            padding-top: 8px;
+            padding: 6px 0 8px;
         }
         
         .name
         {
             float: none;
+            line-height: 14px;
         }
         
         .created-by
         {
-            line-height: normal;
+            line-height: 14px;
         }
         
         .description
         {
             font-size: 12px;
+            line-height: 14px;
             margin: 0;
             overflow: hidden;
         	text-overflow: ellipsis;
@@ -76,10 +85,10 @@
         
         .number-favorites
         {
-            color: #a84d10;
+            color: #e67e1c;
             font-size: 14px;
             float: right;
-            line-height: 58px;
+            line-height: 48px;
             margin-right: 20px;
         }
     }

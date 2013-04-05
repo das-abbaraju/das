@@ -26,7 +26,7 @@
 
         <li class="report clearfix">
             <a href="${report_favorite_url}" class="favorite-icon ${favorite_class}" data-id="${report.id}">
-                <i class="icon-star icon-large ${is_favorite_class}"></i>
+                <i class="icon-star ${is_favorite_class}"></i>
             </a>
 
             <a href="${report_url}" class="name">${report.name}</a>

@@ -1,13 +1,14 @@
 body {
-  padding-top: 55px;
-  padding-bottom: 26px;
-  position: relative;
+	color: #454545;
+	padding-top: 55px;
+	padding-bottom: 26px;
+	position: relative;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  body {
-    padding-top: 0;
-  }
+	body {
+		padding-top: 0;
+	}
 }
 
 @import 'simple-layout';

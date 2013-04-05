@@ -15,9 +15,8 @@
 
 <div id="report_search">
     <form id="report_search_form" class="form-inline" action="${manage_report_search_url}">
-        <i class="icon-search icon-large"></i>
-
         <input type="text" name="searchTerm" value="${searchTerm}" placeholder="${search_term_placeholder}" class="search-query span4" />
+        <i class="icon-search"></i>
     </form>
 </div>
 

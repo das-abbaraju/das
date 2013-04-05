@@ -10,7 +10,7 @@
      
     .report-subtitle
     {
-        color: #a84310;
+        color: #e67e1c;
         font-size: 14px;
         font-style: italic;
         font-weight: normal;
@@ -39,7 +39,7 @@
             background: #f1f1f2;
             border: 1px solid #ccc;
             @include border-radius(4px);
-            line-height: 35px;
+            line-height: 38px;
             margin-bottom: 2px;
         }
         
@@ -53,13 +53,11 @@
         .icon-star
         {
             color: #ccc;
-            font-size: 12px;
-            vertical-align: 5%;
         }
         
         .icon-star.selected
         {
-            color: #a84d10;
+            color: #e67e1c;
         }
         
         .icon-edit
@@ -72,11 +70,17 @@
         
         .name
         {
-            color: #333;
+        	color: #454545;
             float: left;
             font-size: 14px;
             font-weight: bold;
             margin-right: 10px;
+        }
+        
+        .name:hover
+        {
+        	color: $pics_light_blue;
+        	text-decoration: none;
         }
         
         .created-by
