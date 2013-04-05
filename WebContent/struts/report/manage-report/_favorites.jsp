@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="!reportUsers.isEmpty()">
-    <s:set var="has_overflow_list" value="%{reportUserOverflow != null && reportUserOverflow.size > 0 ? true : false}" />
+<s:if test="!reportList.isEmpty()">
+    <s:set var="has_overflow_list" value="%{reportListOverflow != null && reportListOverflow.size > 0 ? true : false}" />
     
     <section id="favorite_reports">
         <%-- cannot pass list as a include : param - bypass via setter --%>
-        <s:set var="reports" value="reportUsers" />
+        <s:set var="reports" value="reportList" />
         <s:include value="/struts/report/manage-report/_report-list.jsp">
             <s:param name="actions_path">/struts/report/manage-report/_favorites-actions.jsp</s:param>
             <s:param name="enable_move_up" value="false" />
@@ -19,8 +19,9 @@
             <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
             
             <%-- cannot pass list as a include : param - bypass via setter --%>
-            <s:set var="reports" value="reportUserOverflow" />
+            <s:set var="reports" value="reportListOverflow" />
             <s:include value="/struts/report/manage-report/_report-list.jsp">
+                <s:param name="actions_path">/struts/report/manage-report/_favorites-actions.jsp</s:param>
                 <s:param name="enable_move_up" value="true" />
                 <s:param name="enable_move_down" value="false"/>
             </s:include>

@@ -6,8 +6,8 @@ PICS.define('report.manage-report.SearchController', {
                     .on('keyup', PICS.debounce(this.search, 250));
                 
                 $('#search_reports_container')
-                    .on('click', '.favorite-icon.favorite', this.favoriteReport)
-                    .on('click', '.favorite-icon.unfavorite', this.unfavoriteReport);
+                    .on('click', '.favorite-icon.favorite', this.unfavoriteReport)
+                    .on('click', '.favorite-icon.unfavorite', this.favoriteReport);
             }
         },
         

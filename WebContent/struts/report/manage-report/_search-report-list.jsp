@@ -24,7 +24,7 @@
             </a>
             
             <span class="number-favorites">
-                ${report.numTimesFavorited} <s:text name="ManageReports.report.Favorites" />
+                ${report.numberOfTimesFavorited} <s:text name="ManageReports.report.Favorites" />
             </span>
             
             <div class="summary">

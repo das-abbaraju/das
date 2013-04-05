@@ -97,4 +97,9 @@ public class ReportInfo {
 		this.sortOrder = sortOrder;
 	}
 
+	@Override
+	public String toString() {
+		return Integer.toString(id);
+	}
+
 }

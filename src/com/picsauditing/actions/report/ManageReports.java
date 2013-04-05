@@ -353,7 +353,7 @@ public class ManageReports extends PicsActionSupport {
 		this.toOwner = toOwner;
 	}
 
-	public List<ReportInfo> getReportUserOverflow() {
+	public List<ReportInfo> getReportListOverflow() {
 		return reportListOverflow;
 	}
 
