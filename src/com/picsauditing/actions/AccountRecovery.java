@@ -48,12 +48,12 @@ public class AccountRecovery extends PicsActionSupport {
 
 	@Anonymous
 	public String findName() throws Exception {
-		String returnURL = urlUtils().getActionUrl("AccountRecovery", "recoverUsername");
+		String accountRecoveryPage = urlUtils().getActionUrl("AccountRecovery", "recoverUsername");
 
 		String emailError = inputValidator.validateEmail(email);
 		if (!emailError.equals(InputValidator.NO_ERROR)) {
 			addActionError(getText(emailError));
-			return setUrlForRedirect(returnURL);
+			return setUrlForRedirect(accountRecoveryPage);
 		}
 
 		email = email.trim();
@@ -66,7 +66,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 		if (matchingUsers.size() == 0) {
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
-			return setUrlForRedirect(returnURL);
+			return setUrlForRedirect(accountRecoveryPage);
 		}
 
 		try {
@@ -83,12 +83,19 @@ public class AccountRecovery extends PicsActionSupport {
 
 			emailSender.send(emailQueue);
 
+			setActionMessageHeader(getText("AccountRecovery.EmailSentHeader"));
 			addActionMessage(getTextParameterized("AccountRecovery.EmailSent2", email));
 		} catch (Exception e) {
 			addActionError(getText("AccountRecovery.error.NoEmailSent"));
 		}
 
-		return setUrlForRedirect(returnURL);
+		if (hasActionErrors()) {
+			return setUrlForRedirect(accountRecoveryPage);
+		} else {
+			// If everything is ok
+			String loginPage = urlUtils.getActionUrl("Login");
+			return setUrlForRedirect(loginPage);
+		}
 	}
 
 	@Anonymous
@@ -117,8 +124,9 @@ public class AccountRecovery extends PicsActionSupport {
 
 			String recoveryEmailStatus = sendRecoveryEmail(user);
 
-			addAlertMessage(recoveryEmailStatus);
-			setAlertMessageHeader(getText("AccountRecovery.EmailSentHeader"));
+			setActionMessageHeader(getText("AccountRecovery.EmailSentHeader"));
+			addActionMessage(recoveryEmailStatus);
+
 
 			return setUrlForRedirect("Login.action");
 
