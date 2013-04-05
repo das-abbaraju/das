@@ -8,10 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import groovy.lang.Binding;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,81 +31,29 @@ import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class FeatureToggleExpressionsTest {
 	private FeatureToggleExpressions featureToggleExpressions;
-	private List<UserGroup> groups;
-	private Permissions permissions;
-	private PermissionBuilder permissionBuilder;
+    private Set<Integer> inheritedGroups;
 
 	@Mock
 	private Binding binding;
-	@Mock
-	private User currentUser;
-	@Mock
-	private Account account;
 	@Mock
 	private AppPropertyDAO appPropertyDAO;
 	@Mock
 	private FeatureToggle featureToggle;
 	@Mock
 	private UserDAO userDAO;
+    @Mock
+    private Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		featureToggleExpressions = new FeatureToggleExpressionsTestable();
-		permissionBuilder = new PermissionBuilder();
-
-		groups = new ArrayList<UserGroup>();
-
-		when(currentUser.getGroups()).thenReturn(groups);
-		when(currentUser.getId()).thenReturn(941);
-		when(currentUser.getName()).thenReturn("Test Group");
-		when(currentUser.getAccount()).thenReturn(account);
-		when(currentUser.getLocale()).thenReturn(Locale.ENGLISH);
-
-		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
-
-		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggle);
-		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", getHierarchyBuilder(groups));
-		Whitebox.setInternalState(permissionBuilder, "dao", userDAO);
 
 		when(binding.getVariable("appPropertyDAO")).thenReturn(appPropertyDAO);
-		when(userDAO.find(currentUser.getId())).thenReturn(currentUser);
-	}
-
-	private void addUserGroup(int id, String name) {
-		UserGroup group = new UserGroup();
-		User user = new User();
-		user.setId(id);
-		user.setName(name);
-		user.setIsGroup(YesNo.Yes);
-		group.setGroup(user);
-		groups.add(group);
-	}
-
-	private HierarchyBuilder getHierarchyBuilder(final List<UserGroup> groups) {
-		return new AbstractBreadthFirstSearchBuilder() {
-
-			@Override
-			protected List<Integer> getIdsForAllParentEntities(List<Integer> entities) {
-				return Collections.emptyList();
-			}
-
-			@Override
-			protected List<Integer> findAllParentEntityIds(int id) {
-				List<Integer> groupIds = new ArrayList<Integer>();
-				for (UserGroup group : groups) {
-					groupIds.add(group.getGroup().getId());
-				}
-
-				return groupIds;
-			}
-		};
-	}
-
-	private void performLogin(User user) throws Exception {
-		permissions = permissionBuilder.login(user);
-		when(binding.getVariable("permissions")).thenReturn(permissions);
+        when(binding.getVariable("permissions")).thenReturn(permissions);
+        inheritedGroups = new HashSet<>();
+        when(permissions.getAllInheritedGroupIds()).thenReturn(inheritedGroups);
 	}
 
 	@Test
@@ -154,15 +99,8 @@ public class FeatureToggleExpressionsTest {
 	}
 
 	@Test
-	public void testReleaseToApplicationAudienceLevel_DevByLevelInt() throws Exception {
-
-	}
-
-	@Test
 	public void testReleaseToUserAudienceLevel_DevByLevelInt() throws Exception {
-		addUserGroup(User.GROUP_DEVELOPER, "Developer");
-
-		performLogin(currentUser);
+        when(permissions.hasGroup(User.GROUP_DEVELOPER)).thenReturn(true);
 
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(1));
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(2));
@@ -170,9 +108,7 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testReleaseToUserAudienceLevel_StakeholderByLevelInt() throws Exception {
-		addUserGroup(User.GROUP_STAKEHOLDER, "Stakeholder");
-
-		performLogin(currentUser);
+        when(permissions.hasGroup(User.GROUP_STAKEHOLDER)).thenReturn(true);
 
 		assertFalse(featureToggleExpressions.releaseToUserAudienceLevel(1));
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(2));
@@ -180,9 +116,7 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testReleaseToUserAudienceLevel_DevByBetaPoolEnum() throws Exception {
-		addUserGroup(User.GROUP_DEVELOPER, "Developer");
-
-		performLogin(currentUser);
+        when(permissions.hasGroup(User.GROUP_DEVELOPER)).thenReturn(true);
 
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(BetaPool.Developer));
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(BetaPool.Stakeholder));
@@ -190,9 +124,7 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testReleaseToUserAudienceLevel_StakeholderByBetaPoolEnum() throws Exception {
-		addUserGroup(User.GROUP_STAKEHOLDER, "Stakeholder");
-
-		performLogin(currentUser);
+        when(permissions.hasGroup(User.GROUP_STAKEHOLDER)).thenReturn(true);
 
 		assertFalse(featureToggleExpressions.releaseToUserAudienceLevel(BetaPool.Developer));
 		assertTrue(featureToggleExpressions.releaseToUserAudienceLevel(BetaPool.Stakeholder));
@@ -211,25 +143,19 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOf_ById_UserIsReturnsTrue() throws Exception {
-		addUserGroup(1, "test1");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
 
 		assertTrue(featureToggleExpressions.userIsMemberOf(1));
 	}
 
 	@Test
-	public void testUserIsmemberOf_UserIsNotMemberReturnsFalse() throws Exception {
-		performLogin(currentUser);
-
+	public void testUserIsMemberOf_UserIsNotMemberReturnsFalse() throws Exception {
 		assertFalse(featureToggleExpressions.userIsMemberOf(4561));
 	}
 
 	@Test
-	public void testUserIsmemberOfAny_UserIsReturnsTrue() throws Exception {
-		addUserGroup(2, "test2");
-
-		performLogin(currentUser);
+	public void testUserIsMemberOfAny_UserIsReturnsTrue() throws Exception {
+        inheritedGroups.add(2);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(1);
@@ -241,10 +167,8 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOfAny_ByInt_UserIsReturnsTrue() throws Exception {
-		addUserGroup(1, "test1");
-		addUserGroup(2, "test2");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
+        inheritedGroups.add(2);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(1);
@@ -266,10 +190,8 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOfAny_UserIsNotReturnsFalse() throws Exception {
-		addUserGroup(1, "test1");
-		addUserGroup(2, "test2");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
+        inheritedGroups.add(2);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(10);
@@ -281,13 +203,11 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOfAll_UserIsReturnsTrue() throws Exception {
-		addUserGroup(1, "test1");
-		addUserGroup(2, "test2");
-		addUserGroup(3, "test3");
-		addUserGroup(4, "test4");
-		addUserGroup(5, "test5");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
+        inheritedGroups.add(2);
+        inheritedGroups.add(3);
+        inheritedGroups.add(4);
+        inheritedGroups.add(5);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(1);
@@ -299,13 +219,11 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOfAll_ByInt_UserIsReturnsTrue() throws Exception {
-		addUserGroup(1, "test1");
-		addUserGroup(2, "test2");
-		addUserGroup(3, "test3");
-		addUserGroup(4, "test4");
-		addUserGroup(5, "test5");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
+        inheritedGroups.add(2);
+        inheritedGroups.add(3);
+        inheritedGroups.add(4);
+        inheritedGroups.add(5);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(1);
@@ -317,12 +235,10 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsmemberOfAll_UserIsNotReturnsFalse() throws Exception {
-		addUserGroup(1, "test1");
-		addUserGroup(3, "test3");
-		addUserGroup(4, "test4");
-		addUserGroup(5, "test5");
-
-		performLogin(currentUser);
+        inheritedGroups.add(1);
+        inheritedGroups.add(3);
+        inheritedGroups.add(4);
+        inheritedGroups.add(5);
 
 		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(1);
@@ -358,7 +274,6 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testHasPermission_Happy() throws Exception {
-		performLogin(currentUser);
 		assertFalse(featureToggleExpressions.hasPermission("RestApi"));
 	}
 
