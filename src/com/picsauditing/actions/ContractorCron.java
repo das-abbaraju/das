@@ -131,6 +131,9 @@ public class ContractorCron extends PicsActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
 
+	// This is specifically for testing
+	private Database database;
+
 	@Anonymous
 	public String execute() throws Exception {
 		if (steps == null) {
@@ -265,7 +268,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
-		Database db = new Database();
+		Database db = getDatabase();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
 
 		SelectSQL sql = new SelectSQL("flag_criteria fc1");
@@ -289,6 +292,14 @@ public class ContractorCron extends PicsActionSupport {
 		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
 
 		return resultMap;
+	}
+
+	private Database getDatabase() {
+		if (database == null) {
+			return new Database();
+		}
+
+		return database;
 	}
 
 	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,

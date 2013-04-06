@@ -52,6 +52,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
+		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
 	}
 
 	/**
@@ -694,7 +695,6 @@ public class ContractorCronTest extends PicsActionTest {
         when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
         corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
 
-
         //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
         Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
                 corporateRollupData, corporateUpdateQueue, coOperator,childOperatorWithRedFlag);
@@ -722,7 +722,6 @@ public class ContractorCronTest extends PicsActionTest {
 
         when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
         corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
-
 
         //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
         Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
