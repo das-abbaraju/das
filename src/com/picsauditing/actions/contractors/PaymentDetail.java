@@ -1,14 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
@@ -21,20 +12,8 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.Refund;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -43,6 +22,10 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class PaymentDetail extends ContractorActionSupport implements Preparable {
@@ -331,7 +314,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									// Email Receipt to Contractor
 									try {
 										if (collected) {
-											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn, getUser());
+											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn);
 										}
 									} catch (Exception e) {
 										/**

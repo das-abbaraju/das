@@ -63,10 +63,10 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user) throws EmailException, IOException {
+	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (com.picsauditing.model.l10n.Invoice.invoiceIsToBeEmailedViaBPROCS(contractor, user)) {
+		if (com.picsauditing.model.l10n.Invoice.invoiceIsToBeEmailedViaBPROCS(contractor)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);

@@ -2,7 +2,6 @@ package com.picsauditing.model.l10n;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
@@ -14,33 +13,36 @@ import java.util.Locale;
 public class Invoice {
 
 	private static AppPropertyDAO propertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
+	private static List<Locale> localesToEmailInBPROCS = new ArrayList<Locale>();
 
-	// TODO Need to make this more efficient
-	public static Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor, User user) {
+	static {
 		String localesToEmailCSV = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS).getValue();
+		if (localesToEmailCSV != null || !localesToEmailCSV.trim().isEmpty()) {
+			List<String> localesToEmailStringList = Arrays.asList(localesToEmailCSV.split("\\s*,\\s*"));
 
-		if (localesToEmailCSV == null || localesToEmailCSV.trim().isEmpty()) {
-			return false;
-		}
-
-		if (user == null || user.getLocale() == null || user.getLocale().getLanguage() == null || contractor == null || contractor.getBillingCountry() == null) {
-			return false;
-		}
-
-		List<String> localesToEmailStringList = Arrays.asList(localesToEmailCSV.split("\\s*,\\s*"));
-
-		List<Locale> localesToEmail = new ArrayList<Locale>();
-		for (String singleLocaleToEmailString : localesToEmailStringList) {
-			if (singleLocaleToEmailString.trim().isEmpty() || singleLocaleToEmailString.trim().equals("_")) {
-				continue;
+			for (String singleLocaleToEmailString : localesToEmailStringList) {
+				if (singleLocaleToEmailString.trim().isEmpty() || singleLocaleToEmailString.trim().equals("_")) {
+					continue;
+				}
+				String[] splitSingleLocale = singleLocaleToEmailString.split("_");
+				localesToEmailInBPROCS.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
 			}
-			String[] splitSingleLocale = singleLocaleToEmailString.split("_");
-			localesToEmail.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
+		}
+	}
+
+	public static List<Locale> getLocalesToEmailInBPROCS() {
+		return localesToEmailInBPROCS;
+	}
+
+	public static Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor) {
+
+		if ((contractor == null) || (contractor.getBillingCountry() == null) || (contractor.getBillingCountry().getIsoCode() == null)) {
+			return false;
 		}
 
-		Locale localeToCheck = new Locale(user.getLocale().getLanguage(), contractor.getBillingCountry().getIsoCode());
+		Locale localeToCheck = LocaleUtil.getLocaleFromCountry(contractor.getBillingCountry().getIsoCode());
 
-		if (localesToEmail.contains(localeToCheck)) {
+		if (localesToEmailInBPROCS.contains(localeToCheck)) {
 			return true;
 		} else {
 			return false;
