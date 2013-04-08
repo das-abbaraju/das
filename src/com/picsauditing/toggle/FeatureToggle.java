@@ -28,9 +28,10 @@ public interface FeatureToggle {
 	String TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD = "Toggle.ShowReviewDocInAuditGUARD";
 	String TOGGLE_SHOW_DR_REPORTS = "Toggle.ShowUserDR";
 	String TOGGLE_USE_V7_MENU_COLUMN = "Toggle.UseVersion7MenuColumns";
-	String TOGGLE_SEND_INVOICE_EMAIL_VIA_BPROCS_NOT_EMAIL_BUILDER = "Toggle.SendInvoiceEmailViaBackProcsNotEmailBuilder";
+	String TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS = "Toggle.InvoiceLocalesToEmailViaBPROCS";
 
 	boolean isFeatureEnabled(String toggleName);
 
 	void addToggleVariable(String name, Object value);
 }
+

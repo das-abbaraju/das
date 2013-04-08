@@ -6,7 +6,6 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.Publisher;
-import com.picsauditing.model.l10n.LocaleUtil;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
@@ -67,31 +66,13 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (invoiceIsToBeEmailedViaBPROCS(contractor, user)) {
+		if (com.picsauditing.model.l10n.Invoice.invoiceIsToBeEmailedViaBPROCS(contractor, user)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);
 		}
 
 		return email;
-	}
-
-	public static Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor, User user) {
-		if (user == null || user.getLocale() == null || user.getLocale().getLanguage() == null || contractor == null || contractor.getBillingCountry() == null) {
-			return false;
-		}
-
-		Locale localeToCheck = new Locale(user.getLocale().getLanguage(), contractor.getBillingCountry().getIsoCode());
-
-		if (
-				featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SEND_INVOICE_EMAIL_VIA_BPROCS_NOT_EMAIL_BUILDER)
-						&&
-						LocaleUtil.isASupportedGlobalFrenchLocale(localeToCheck)
-				) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	private static void sendInvoiceEmailViaBProcs(Invoice invoice) {
