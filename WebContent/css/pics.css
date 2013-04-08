@@ -1429,8 +1429,7 @@ div.blockDialog {
 .translation-list .quality-rating
 {
     float: left;
-    margin: 0px;
-    margin-left: 5px;
+    margin: 0 0 0 5px;
 }
 
 .translation-list .content.view-mode .view .text *

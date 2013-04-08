@@ -109,26 +109,25 @@
             },
 
             saveTranslationParametersThroughAjax: function () {
-                var element = $(this);
-            	var form = element.closest("form");
+                var $element = $(this),
+                    $form = $element.closest("form"),
+                    value = $element.val();
 
-            	var value = element.val();
-
-                if ($(this).attr('type') == 'checkbox') {
-                    value = element.is(':checked');
+                if ($element.attr('type') == 'checkbox') {
+                    value = $element.is(':checked');
                 }
 
             	var data = {};
-            	data.translation = form.find('input[name=translation]').val();
-            	data[element.attr('name')] = value;
-            	data.locale = form.find('input[name="translation.locale"]').val();
-            	data.key2 = form.find('input[name="translation.key"]').val();
+            	data.translation = $form.find('input[name=translation]').val();
+            	data[$element.attr('name')] = value;
+            	data.locale = $form.find('input[name="translation.locale"]').val();
+            	data.key2 = $form.find('input[name="translation.key"]').val();
 
             	PICS.ajax({
             		url: "ManageTranslationsAjax!update.action",
             		data: data,
             		success: function() {
-            			element.closest('td').effect('highlight', {color: '#FFFF11'}, 1000);
+            			$element.closest('td').effect('highlight', {color: '#FFFF11'}, 1000);
             		}
             	});
             },
