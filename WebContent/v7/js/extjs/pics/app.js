@@ -74,6 +74,17 @@ Ext.application({
                     if(loading) {
                         PICS.app.updateDocumentTitle();
 
+                        Ext.EventManager.on(window, 'beforeunload', function() {
+                            var report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
+
+                            if (report.has_unsaved_changes) {
+                                return 'Your unsaved changes will be lost.';
+                            } else {
+                                return;
+                            }
+                        });
+
                         loading.remove();
                     }
                 }

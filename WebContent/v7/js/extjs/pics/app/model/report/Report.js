@@ -27,15 +27,61 @@ Ext.define('PICS.model.report.Report', {
         name: 'is_favorite',
         type: 'boolean'
     }],
+
     hasMany: [{
         model: 'PICS.model.report.Column',
-        name: 'columns'
+        name: 'columns',
+        storeConfig : {
+            listeners: {
+                add: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+                },
+
+                remove: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+                },
+
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    record.has_unsaved_changes = true;
+                }
+            }
+        }
     }, {
         model: 'PICS.model.report.Filter',
-        name: 'filters'
+        name: 'filters',
+        storeConfig : {
+            listeners: {
+                add: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+                },
+
+                remove: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+                },
+
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    record.has_unsaved_changes = true;
+                }
+            }
+        }
     }, {
         model: 'PICS.model.report.Sort',
-        name: 'sorts'
+        name: 'sorts',
+        storeConfig : {
+            listeners: {
+                add: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+               },
+
+                remove: function (store, record, index, eOpts) {
+                    record.has_unsaved_changes = true;
+                },
+
+                update: function (store, record, operation, modifiedFieldNames, eOpts) {
+                    record.has_unsaved_changes = true;
+                }
+            }
+        }
     }],
 
     getFilterExpression: function () {
@@ -246,6 +292,8 @@ Ext.define('PICS.model.report.Report', {
         this.addColumns(columns);
         
         this.resortColumns();
+
+        this.has_unsaved_changes = true;
     },
     
     removeColumns: function () {
