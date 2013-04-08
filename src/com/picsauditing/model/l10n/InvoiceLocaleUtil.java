@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class Invoice {
+public class InvoiceLocaleUtil {
 
 	private static AppPropertyDAO propertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
 	private static List<Locale> localesToEmailInBPROCS = new ArrayList<Locale>();
@@ -28,10 +28,6 @@ public class Invoice {
 				localesToEmailInBPROCS.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
 			}
 		}
-	}
-
-	public static List<Locale> getLocalesToEmailInBPROCS() {
-		return localesToEmailInBPROCS;
 	}
 
 	public static Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor) {

@@ -6,6 +6,7 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.l10n.InvoiceLocaleUtil;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
@@ -66,7 +67,7 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (com.picsauditing.model.l10n.Invoice.invoiceIsToBeEmailedViaBPROCS(contractor)) {
+		if (InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);
