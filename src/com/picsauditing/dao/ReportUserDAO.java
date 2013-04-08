@@ -106,14 +106,19 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
-		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
+		sql.addJoin("LEFT JOIN users AS u ON r.ownerID = u.id");
     	sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
 				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
-		sql.addWhere("r.id IN (" + permissionsUnion + ")");
+
+		String ownerClause = "r.ownerID = " + permissions.getUserId();
+		String privateClause = "r.private = false";
+		String permissionsClause = "r.id IN (" + permissionsUnion + ")";
+
+		sql.addWhere(ownerClause + " OR " + privateClause + " OR " + permissionsClause);
 
 		sql.addOrderBy("f.total DESC");
 		sql.addOrderBy("f.viewCount DESC");
