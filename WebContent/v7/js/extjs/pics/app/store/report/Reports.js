@@ -7,15 +7,7 @@ Ext.define('PICS.store.report.Reports', {
         
         this.callParent(arguments);
     },
-
-    listeners: {
-        update: function (store, record, operation, modifiedFieldNames, eOpts) {
-            if (modifiedFieldNames) {
-                record.setHasUnsavedChanges(true);                
-            }
-        }
-    },
-
+    
     setProxyForRead: function () {
         var proxy = {
             reader: {
@@ -27,7 +19,7 @@ Ext.define('PICS.store.report.Reports', {
         
         this.setProxy(proxy);
     },
-
+    
     setProxyForWrite: function (url) {
         var proxy = {
             writer: {

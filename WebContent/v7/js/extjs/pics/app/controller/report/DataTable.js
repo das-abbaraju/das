@@ -205,12 +205,7 @@ Ext.define('PICS.controller.report.DataTable', {
     },
     
     resizeColumn: function (ct, column, width, eOpts) {
-        var report_store = this.getReportReportsStore(),
-            report = report_store.first();
-
         column.column.set('width', width);
-
-        report.setHasUnsavedChanges(true);
     },
     
     sortColumnAsc: function (cmp, event, eOpts) {

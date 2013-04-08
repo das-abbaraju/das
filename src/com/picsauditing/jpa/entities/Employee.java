@@ -429,6 +429,12 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 			return title.compareTo(otherTitle);
 		}
 
-		return 0;
+        if (id < o.getId()) {
+            return -1;
+        } else if (id > o.getId()) {
+            return 1;
+        } else {
+    		return 0;
+        }
 	}
 }

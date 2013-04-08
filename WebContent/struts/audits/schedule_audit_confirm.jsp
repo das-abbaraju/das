@@ -85,7 +85,7 @@
 					<li>
                         <s:checkbox name="confirmed" />
 						<s:text name="ScheduleAudit.message.ConfirmMessage">
-							<s:param><s:date name="lastCancellationTime" format="%{@com.picsauditing.util.PicsDateFormat@Datetime12Hour}" /></s:param>
+                            <s:param value="%{availabilitySelected.getTimeZoneLastCancellationDate(getSelectedTimeZone())}" />
 							<s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
                             <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>

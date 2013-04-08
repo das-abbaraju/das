@@ -67,13 +67,5 @@ Ext.define('PICS.model.report.Filter', {
         name: 'column_compare_id',
         type: 'string',
         useNull: true
-    }],
-
-    associations: [{
-        type: 'belongsTo',
-        model: 'PICS.model.report.Report',
-        getterName: 'getReport',
-        instanceName: 'report',
-        setterName: 'setReport'
     }]
 });

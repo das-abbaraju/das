@@ -6,8 +6,12 @@ import static org.mockito.Mockito.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.picsauditing.PICS.DateBean;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -32,10 +36,58 @@ public class AccountTimezonePopulatorTest {
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(accountTimezonePopulator, this);
 	}
 
-	@Test
+    @Test
+    public void testIncrementLookupCount_PreviousLimitOver24HoursAgo() throws Exception {
+        int count = AccountTimezonePopulator.lookupLimit - 10;
+        String json = "{\"count\":" + count + ",\"date\":\"12\\/7\\/12 2:47 PM\"}";
+        when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(json);
+
+        Whitebox.invokeMethod(accountTimezonePopulator, "incrementLookupCount");
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(appPropertyDAO).setProperty(eq(AccountTimezonePopulator.limitPropertyName), captor.capture());
+        JSONObject jsonSaved = (JSONObject) JSONValue.parse(captor.getValue());
+        assertEquals((long)1, jsonSaved.get("count"));
+        assertTrue(DateBean.isSameDate(new Date(), new SimpleDateFormat().parse((String)jsonSaved.get("date"))));
+    }
+
+    @Test
+    public void testIncrementLookupCount_NoPreviousLimitJsonStored() throws Exception {
+        int count = AccountTimezonePopulator.lookupLimit - 10;
+        when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(null);
+
+        Whitebox.invokeMethod(accountTimezonePopulator, "incrementLookupCount");
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(appPropertyDAO).setProperty(eq(AccountTimezonePopulator.limitPropertyName), captor.capture());
+        JSONObject jsonSaved = (JSONObject) JSONValue.parse(captor.getValue());
+        assertEquals((long)1, jsonSaved.get("count"));
+        assertTrue(DateBean.isSameDate(new Date(), new SimpleDateFormat().parse((String)jsonSaved.get("date"))));
+    }
+
+    @Test
+    public void testIncrementLookupCount_IncrementPrviousJsonLimit() throws Exception {
+        int count = AccountTimezonePopulator.lookupLimit - 10;
+        String json = "{\"count\":" + count + ",\"date\":\"" + new SimpleDateFormat().format(new Date()) + "\"}";
+        json = json.replace("/", "\\/");
+        when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(json);
+
+        Whitebox.invokeMethod(accountTimezonePopulator, "incrementLookupCount");
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(appPropertyDAO).setProperty(eq(AccountTimezonePopulator.limitPropertyName), captor.capture());
+        JSONObject jsonSaved = (JSONObject) JSONValue.parse(captor.getValue());
+        assertEquals((long)(count+1), jsonSaved.get("count"));
+        assertTrue(DateBean.isSameDate(new Date(), new SimpleDateFormat().parse((String)jsonSaved.get("date"))));
+    }
+
+    @Test
 	public void testRun_DidNotExceedDailyMapApiLimit() throws Exception {
 		int count = AccountTimezonePopulator.lookupLimit - 10;
-		String json = "{\"count\":" + count + ",\"date\":\"12/7/12 2:47 PM\"}";
+		String json = "{\"count\":" + count + ",\"date\":\"12\\/7\\/12 2:47 PM\"}";
 		when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(json);
 
 		accountTimezonePopulator.setTotalAccountsWillRun(100);

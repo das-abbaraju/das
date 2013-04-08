@@ -136,7 +136,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportUsers = reportPreferencesService.getAllReportUsers(sort, direction, permissions);
+			reportUsers = reportPreferencesService.getAllNonHiddenReportUsers(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -245,6 +245,19 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return NONE;
+	}
+
+	public String removeReportUser() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			manageReportsService.removeReportUser(getUser(), report,  permissions);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ManageReports.removeReportUser(). ", e);
+		}
+
+		return redirectToPreviousView();
 	}
 
 	public String favorite() {

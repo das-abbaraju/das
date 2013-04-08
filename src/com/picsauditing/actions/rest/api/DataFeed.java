@@ -2,8 +2,10 @@ package com.picsauditing.actions.rest.api;
 
 import java.util.Map;
 
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import org.apache.struts2.interceptor.ParameterAware;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,10 @@ public class DataFeed extends ReportApi implements ParameterAware {
 	        if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
 		        json = reportService.buildJsonResponse(reportContext);
 
+                if (PicsActionSupport.XML.equals(outputFormat)) {
+                    adjustForBetterSchema();
+                }
+
 				json.put("success", true);
 			} else {
 				String message = "Invalid format. Choices are: " + Strings.implodeForDB(DATAFEED_FORMATS, ", ") + ".";
@@ -101,6 +107,15 @@ public class DataFeed extends ReportApi implements ParameterAware {
         }
         logger.debug("Output Format: " + outputFormat);
         return outputFormat;
+    }
+
+    private void adjustForBetterSchema() {
+        JSONObject results = (JSONObject)json.get("results");
+        JSONArray data = (JSONArray)results.get("data");
+        results.remove("data");
+        JSONObject newData = new JSONObject();
+        newData.put("record", data);
+        results.put("data", newData);
     }
 
 }

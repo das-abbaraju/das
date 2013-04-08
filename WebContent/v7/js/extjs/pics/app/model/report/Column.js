@@ -1,6 +1,6 @@
 Ext.define('PICS.model.report.Column', {
     extend: 'Ext.data.Model',
-
+    
     requires: [
         'PICS.ux.grid.column.Column',
         'PICS.ux.grid.column.Boolean',
@@ -48,14 +48,6 @@ Ext.define('PICS.model.report.Column', {
         name: 'is_sortable',
         type: 'boolean',
         persist: false
-    }],
-
-    associations: [{
-        type: 'belongsTo',
-        model: 'PICS.model.report.Report',
-        getterName: 'getReport',
-        instanceName: 'report',
-        setterName: 'setReport'
     }],
 
     // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)

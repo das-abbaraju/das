@@ -96,8 +96,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // saving edits to filter store + refresh
             '#report_filters combobox[name=value]': {
-                // Unlike "select," the change event also fires when the user removes the last item.
-                change: this.selectValueField
+                select: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -122,7 +121,8 @@ Ext.define('PICS.controller.report.Filter', {
             
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
-                change: this.selectValueField
+                change: this.selectValueField,
+                render: this.renderCheckbox
             },
 
             // remove filter
@@ -160,9 +160,6 @@ Ext.define('PICS.controller.report.Filter', {
         this.updateRemoveButtonPositions();
     },
 
-    // TODO: figure out if this should be here
-    // TODO: figure out if this should be here
-    // TODO: figure out if this should be here
     // add the filter formula view after the filter options have been generated
     afterFilterOptionsRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
@@ -279,12 +276,11 @@ Ext.define('PICS.controller.report.Filter', {
     
     beforeFilterRender: function (cmp, eOpts) {
         var filter_input = cmp.down('reportfilterbasefilter'),
-            filter_input_form = filter_input.getForm(),
             is_autocomplete = cmp.down('reportfilterbaseautocomplete'),
             is_multiselect = cmp.down('reportfilterbasemultiselect');
         
-        // attach filter record to "filter view form"
-        filter_input_form.loadRecord(cmp.filter);
+        // attach the filter record to the filter view
+        this.loadFilter(cmp);
         
         // dynamically load value store for multiselect and autocomplete
         if (is_autocomplete) {
@@ -311,6 +307,30 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_view = cmp.up('reportfilter');
 
         filter_view.addCls('x-form-focus');
+    },
+    
+    // must disable change event from being fired so extra loadRecord does not throw excess change events on loading
+    // http://extjs-tutorials.blogspot.com/2012/02/extjs-loadrecord-disable-events.html
+    loadFilter: function (cmp) {
+        var filter_input = cmp.down('reportfilterbasefilter'),
+            filter_input_form = filter_input.getForm();
+        
+        filter_input_form.getFields().each(function (item, index, length) {
+            item.suspendCheckChange++;
+        });
+        
+        // attach filter record to "filter view form"
+        filter_input_form.loadRecord(cmp.filter);
+        
+        filter_input_form.getFields().each(function (item, index, length) {
+            item.suspendCheckChange--;
+        });
+    },
+    
+    // this method is to default checkboxes lastValue. this would have normally been set by the form field by default
+    // through chainable constructors, but we are suspending the change event from being thrown calling loadRecord
+    renderCheckbox: function (cmp, eOpts) {
+        cmp.lastValue = cmp.getValue();
     },
     
     refreshFilters: function () {
@@ -393,15 +413,10 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
-    selectValueField: function (cmp, newValue, oldValue, eOpts) {
+    selectValueField: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
     
-        // Abort if we are pre-selecting. (It will be undefined.)
-        if (!oldValue) {
-            return;
-        }
-
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();

@@ -27,107 +27,15 @@ Ext.define('PICS.model.report.Report', {
         name: 'is_favorite',
         type: 'boolean'
     }],
-
     hasMany: [{
         model: 'PICS.model.report.Column',
-        name: 'columns',
-        foreignKey: 'report_id',
-        storeConfig : {
-            listeners: {
-                add: function (store, records, index, eOpts) {
-                    var record = records[0];
-                    
-                    this.setReportHasUnsavedChanges(record.get('report_id'));
-                },
-
-                remove: function (store, record, index, eOpts) {
-                    // A column has a "report" property only if it is part of the saved report.
-                    if (record.report) {
-                        record.report.setHasUnsavedChanges(true);
-                    } else {
-                        this.setReportHasUnsavedChanges(record.get('report_id'));
-                    }
-                },
-
-                update: function (store, record, operation, modifiedFieldNames, eOpts) {
-                    // A column has a "report" property only if it is part of the saved report.
-                    if (record.report) {
-                        record.report.setHasUnsavedChanges(true);
-                    } else {
-                        this.setReportHasUnsavedChanges(record.get('report_id'));
-                    }
-                }
-            },
-            setReportHasUnsavedChanges: function (report_id) {
-                var report_store = Ext.StoreManager.get('report.Reports'),
-                    report = report_store.getById(report_id);
-                    
-                if (report) {
-                    report.setHasUnsavedChanges(true);
-                }
-            }
-        }
+        name: 'columns'
     }, {
         model: 'PICS.model.report.Filter',
-        name: 'filters',
-        foreignKey: 'report_id',
-        storeConfig : {
-            listeners: {
-                add: function (store, records, index, eOpts) {
-                    var record = records[0];
-                    
-                    this.setReportHasUnsavedChanges(record.get('report_id'));                        
-                },
-
-                remove: function (store, record, index, eOpts) {
-                    // A filter has a "report" property only if it is part of the saved report.
-                    if (record.report) {
-                        record.report.setHasUnsavedChanges(true);
-                    } else {                        
-                        this.setReportHasUnsavedChanges(record.get('report_id'));
-                    }
-                },
-
-                update: function (store, record, operation, modifiedFieldNames, eOpts) {
-                    // A filter has a "report" property only if it is part of the saved report.
-                    if (record.report) {
-                        record.report.setHasUnsavedChanges(true);
-                    } else {
-                        this.setReportHasUnsavedChanges(record.get('report_id'));
-                    }
-                }
-            },
-            setReportHasUnsavedChanges: function (report_id) {
-                var report_store = Ext.StoreManager.get('report.Reports'),
-                    report = report_store.getById(report_id);
-                
-                if (report) {
-                    report.setHasUnsavedChanges(true);                    
-                }
-            }
-        }
+        name: 'filters'
     }, {
         model: 'PICS.model.report.Sort',
-        name: 'sorts',
-        foreignKey: 'report_id',
-        storeConfig : {
-            listeners: {
-                // Applying or changing sort order only fires the "add" event.
-                add: function (store, records, index, eOpts) {
-                    var record = records[0];
-                    
-                    this.setReportHasUnsavedChanges(record.get('report_id'));
-                }
-            },
-            setReportHasUnsavedChanges: function (report_id) {
-                var report_store = Ext.StoreManager.get('report.Reports'),
-                    report = report_store.getById(report_id);
-                    
-                if (report) {
-                    report.setHasUnsavedChanges(true);                    
-                }
-            }
-        }
+        name: 'sorts'
     }],
 
     getFilterExpression: function () {
@@ -137,13 +45,7 @@ Ext.define('PICS.model.report.Report', {
             return parseInt(p1);
         });
     },
-
-    getHasUnsavedChanges: function () {
-        return this.has_unsaved_changes;
-    },
-
-    has_unsaved_changes: false,
-
+    
     isNewFilterExpression: function (filter_expression) {
         var current_expression = this.get('filter_expression'),
             sanitized_expression = this.sanitizeFilterExpression(filter_expression);
@@ -269,7 +171,7 @@ Ext.define('PICS.model.report.Report', {
     addFilters: function (filters) {
         var new_filters = [];
         
-        Ext.each(filters, function (filter) {
+        Ext.Array.forEach(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
@@ -344,8 +246,6 @@ Ext.define('PICS.model.report.Report', {
         this.addColumns(columns);
         
         this.resortColumns();
-
-        this.setHasUnsavedChanges(true);
     },
     
     removeColumns: function () {
@@ -364,9 +264,5 @@ Ext.define('PICS.model.report.Report', {
             
             column.set('sort', index);
         });
-    },
-    
-    setHasUnsavedChanges: function (value) {
-        this.has_unsaved_changes = value;
     }
 });

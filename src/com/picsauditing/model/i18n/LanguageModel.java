@@ -88,7 +88,7 @@ public class LanguageModel {
 			Collections.sort(stableLanguages);
 		}
 
-		return stableLanguages;
+		return Collections.unmodifiableList(stableLanguages);
 	}
 
 	public List<Locale> getStableLanguageLocales() {
@@ -100,13 +100,14 @@ public class LanguageModel {
 				stableLanguageLocales.add(stableLanguage.getLocale());
 			}
 		}
-
-		return stableLanguageLocales;
+        //return stableLanguageLocales;
+        return Collections.unmodifiableList(stableLanguageLocales);
 	}
 
 	public List<Locale> getStableAndBetaLanguageLocales() {
 		List<Language> betaLanguages = getLanguagesByStatus(LanguageStatus.Beta);
-		List<Locale> stableAndBetaLocales = getStableLanguageLocales();
+		List<Locale> stableAndBetaLocales = new ArrayList<>();
+        stableAndBetaLocales.addAll(getStableLanguageLocales());
 
 		for (Language betaLanguage : betaLanguages) {
 			stableAndBetaLocales.add(betaLanguage.getLocale());
@@ -149,7 +150,7 @@ public class LanguageModel {
 			});
 		}
 
-		return unifiedLanguageList;
+		return Collections.unmodifiableList(unifiedLanguageList);
 	}
 
 	public Locale getNearestStableAndBetaLocale(Locale locale) {

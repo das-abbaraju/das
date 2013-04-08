@@ -10,31 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaRateType;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -88,10 +70,11 @@ public class FlagDataCalculator {
 
 		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
 
+		boolean flaggable = isFlaggableContractor();
 		for (FlagCriteria key : operatorCriteria.keySet()) {
 			for (FlagCriteriaOperator fco : operatorCriteria.get(key)) {
 				FlagColor flag = FlagColor.Green;
-				if (contractorCriteria.containsKey(key)) {
+				if (flaggable && contractorCriteria.containsKey(key)) {
 					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
 					if (flagged != null) {
 						if (overrides != null) {
@@ -140,6 +123,26 @@ public class FlagDataCalculator {
 		}
 
 		return new ArrayList<FlagData>(dataSet.values());
+	}
+
+	private boolean isFlaggableContractor() {
+		if (contractorCriteria.size() == 0)
+			return false;
+		Collection<FlagCriteriaContractor> criteriaList = contractorCriteria.values();
+		if (criteriaList.size() == 0)
+			return false;
+		ContractorAccount contractor = criteriaList.iterator().next().getContractor();
+
+		if (contractor == null) {
+			return false;
+		}
+
+		if (contractor.getStatus().equals(AccountStatus.Pending) ||
+				contractor.getStatus().equals(AccountStatus.Deactivated) ||
+				contractor.getStatus().equals(AccountStatus.Requested)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

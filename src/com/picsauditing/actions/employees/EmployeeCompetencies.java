@@ -365,6 +365,8 @@ public class EmployeeCompetencies extends ReportEmployee {
 			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
 		}
 
+        sql.addWhere("e.status = 'Active'");
+
 		List<BasicDynaBean> data2 = database.select(sql.toString(), true);
 
 		employees = new ArrayList<Employee>();

@@ -5,6 +5,7 @@ import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
 import org.json.simple.JSONObject;
 
@@ -20,6 +21,7 @@ public class AuditorAvailability extends BaseTable {
 	public static final String SERVER_TIME_ZONE = "CST";
 	public static final String START_TIME_FORMAT = "hh:mm a";
 	public static final String STOP_TIME_FORMAT = "hh:mm a z";
+    public static final String CANCELLATION_TIME_FORMAT = "yyyy-MM-dd hh:mm a z";
 
 	private User user;
 	private Date startDate;
@@ -39,6 +41,17 @@ public class AuditorAvailability extends BaseTable {
 		return endDate.plusMinutes(duration).toDate();
 	}
 
+    @Transient
+    public Date getLastCancellationDate() {
+        DateTime jodaStartDate = new DateTime(startDate);
+        jodaStartDate = jodaStartDate.minusDays(2);
+        while (jodaStartDate.dayOfWeek().equals(DateTimeConstants.SATURDAY) || jodaStartDate.dayOfWeek().equals(DateTimeConstants.SUNDAY)) {
+            jodaStartDate = jodaStartDate.minusDays(1);
+        }
+
+        return jodaStartDate.toDate();
+    }
+
 	@Transient
 	public String getTimeZoneStartDate(String timezone) throws ParseException {
 		return getFormattedTimeStringWithNewTimeZone(timezone, START_TIME_FORMAT, startDate);
@@ -48,6 +61,11 @@ public class AuditorAvailability extends BaseTable {
 	public String getTimeZoneEndDate(String timezone) throws ParseException {
 		return getFormattedTimeStringWithNewTimeZone(timezone, STOP_TIME_FORMAT, getEndDate());
 	}
+
+    @Transient
+    public String getTimeZoneLastCancellationDate(String timezone) throws ParseException {
+        return getFormattedTimeStringWithNewTimeZone(timezone, CANCELLATION_TIME_FORMAT, getLastCancellationDate());
+    }
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)

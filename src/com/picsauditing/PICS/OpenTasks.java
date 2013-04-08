@@ -113,10 +113,20 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void establishPermissions(User user) {
 		ActionContext context = ActionContext.getContext();
-		Map<String, Object> session = context.getSession();
-		permissions = (Permissions) session.get("permissions");
-		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
 
+		if (context != null && context.getSession() != null) {
+			permissions = (Permissions) context.getSession().get("permissions");
+		}
+
+		if (permissions == null) {
+			permissions = new Permissions();
+
+			if (user != null) {
+				permissions.login(user);
+			}
+		}
+
+		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
 	}
 
 	private void gatherTasksAboutDeclaringTrades() {

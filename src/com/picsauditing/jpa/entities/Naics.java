@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
@@ -27,7 +28,7 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
 	public float getTrir() {
 		return trir;
 	}
@@ -36,7 +37,7 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
 	public float getLwcr() {
 		return lwcr;
 	}
@@ -45,7 +46,7 @@ public class Naics implements java.io.Serializable {
 		this.lwcr = lwcr;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.CompanyStatistics, type = FieldType.Float, importance = FieldImportance.Average)
 	public float getDart() {
 		return dart;
 	}

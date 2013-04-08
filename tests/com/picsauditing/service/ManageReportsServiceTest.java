@@ -166,6 +166,8 @@ public class ManageReportsServiceTest {
 		User toUser = new User("To User");
 		toUser.setId(2);
 		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+		ReportUser reportUser = new ReportUser();
+		when(reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
 
 		manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
 
@@ -183,11 +185,32 @@ public class ManageReportsServiceTest {
 		User toUser = new User("To User");
 		toUser.setId(2);
 		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+		ReportUser reportUser = new ReportUser();
+		when(reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
 
 		manageReportsService.shareWithEditPermission(sharerUser, toUser, report, permissions);
 
 		verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
 		verify(permissionService).grantEdit(toUser.getId(), report.getId());
+	}
+
+	@Test
+	public void testShareWithViewPermission_reportUserIsUnhidden() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+		User sharerUser = new User("Joe Owner");
+		sharerUser.setId(1);
+		report.setOwner(sharerUser);
+		User toUser = new User("To User");
+		toUser.setId(2);
+		when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+		ReportUser reportUser = new ReportUser();
+		reportUser.setHidden(true);
+		when(reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
+
+		manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
+
+		assertFalse(reportUser.isHidden());
 	}
 
 	@Test
@@ -202,7 +225,7 @@ public class ManageReportsServiceTest {
 		when(reportPreferencesService.loadReportUser(removerUser.getId(), report.getId())).thenReturn(reportUser);
 		assertFalse(reportUser.isHidden());
 
-		reportUser = manageReportsService.removeReport(removerUser, report, permissions);
+		reportUser = manageReportsService.removeReportUser(removerUser, report, permissions);
 
 		verify(reportUserDao).remove(reportUser);
 	}
