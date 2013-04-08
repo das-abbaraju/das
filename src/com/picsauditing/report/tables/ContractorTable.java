@@ -12,6 +12,7 @@ public class ContractorTable extends AbstractTable {
 	public static final String RecommendedCSR = "RecommendedCSR";
 	public static final String PQF = "PQF";
 	public static final String Flag = "Flag";
+	public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
 	public static final String RequestedBy = "RequestedBy";
 	public static final String Watch = "Watch";
 	public static final String Tag = "Tag";
@@ -92,6 +93,7 @@ public class ContractorTable extends AbstractTable {
         recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
         recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 
-
+        addOptionalKey(new ReportForeignKey(FlagCriteriaContractor, new FlagCriteriaContractorTable(),
+				new ReportOnClause("id", "conID")));
     }
 }
