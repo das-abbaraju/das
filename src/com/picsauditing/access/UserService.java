@@ -17,6 +17,10 @@ public class UserService {
 	@Autowired
 	protected UserDAO userDAO;
 
+	public User loadUser(int userId) {
+		return userDAO.find(userId);
+	}
+
 	public User loadUserByUsername(String username) {
 		User user;
 		try {

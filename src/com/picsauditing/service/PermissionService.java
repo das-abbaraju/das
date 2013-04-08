@@ -81,6 +81,10 @@ public class PermissionService {
         return isOwnerOrHasView(removerUser, report, permissions);
     }
 
+	public boolean canUserPrivatizeReport(User user, Report report) {
+		return isOwner(user, report);
+	}
+
     private boolean isOwnerOrHasEdit(User user, Report report, Permissions permissions) {
         return isOwner(user, report) || canUserEditReport(permissions, report.getId());
     }

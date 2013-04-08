@@ -525,4 +525,29 @@ public class ReportService {
 
 		return i18nCache;
 	}
+
+	public void privatizeReport(User user, Report report) throws ReportPermissionException {
+		if (!permissionService.canUserPrivatizeReport(user, report)) {
+			int userId = (user != null) ? user.getId() : -1;
+			int reportId = (report != null) ? report.getId() : -1;
+			throw new ReportPermissionException("User " + userId + " does not have permission to privatize report " + reportId);
+		}
+
+		report.setPrivate(true);
+
+		reportDao.save(report);
+	}
+
+	public void unprivatizeReport(User user, Report report) throws ReportPermissionException {
+		if (!permissionService.canUserPrivatizeReport(user, report)) {
+			int userId = (user != null) ? user.getId() : -1;
+			int reportId = (report != null) ? report.getId() : -1;
+			throw new ReportPermissionException("User " + userId + " does not have permission to unprivatize report " + reportId);
+		}
+
+		report.setPrivate(false);
+
+		reportDao.save(report);
+	}
+
 }

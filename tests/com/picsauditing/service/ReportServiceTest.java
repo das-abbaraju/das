@@ -1,8 +1,6 @@
 package com.picsauditing.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -490,6 +488,28 @@ public class ReportServiceTest {
 		assertTrue(REPORT_ID == report.getId());
 		verify(reportServiceSpy).validate(report);
 		verify(reportDao).save(report);
+	}
+
+	@Test
+	public void testPrivatizeReport_WhenReportIsPrivatized_ThenReportShouldBePrivate() throws ReportPermissionException {
+		Report report = new Report();
+		report.setPrivate(false);
+		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+
+		reportService.privatizeReport(user, report);
+
+		assertTrue(report.isPrivate());
+	}
+
+	@Test
+	public void testUnprivatizeReport_WhenReportIsUnprivatized_ThenReportShouldNotBePrivate() throws ReportPermissionException {
+		Report report = new Report();
+		report.setPrivate(true);
+		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+
+		reportService.unprivatizeReport(user, report);
+
+		assertFalse(report.isPrivate());
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {

@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.access.UserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +45,8 @@ public class ManageReports extends PicsActionSupport {
 	private ManageReportsService manageReportsService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
+	@Autowired
+	private UserService userService;
 
 	private User toOwner;
 
@@ -261,7 +265,7 @@ public class ManageReports extends PicsActionSupport {
 	public String removeReport() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
-			manageReportsService.removeReportUser(getUser(), report,  permissions);
+			manageReportsService.removeReportUser(getUser(), report, permissions);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
@@ -288,6 +292,36 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), reportId);
 			reportPreferencesService.unfavoriteReport(reportUser);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String privatize() {
+		try {
+			User user = userService.loadUser(permissions.getUserId());
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportService.privatizeReport(user, report);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.privatize(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unprivatize() {
+		try {
+			User user = userService.loadUser(permissions.getUserId());
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportService.unprivatizeReport(user, report);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
