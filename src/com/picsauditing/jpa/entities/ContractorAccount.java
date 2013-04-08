@@ -824,15 +824,15 @@ public class ContractorAccount extends Account implements JSONable {
 		this.score = score;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "welcomeAuditor_id")
-//	public User getAuditor() {
-//		return auditor;
-//	}
-//
-//	public void setAuditor(User auditor) {
-//		this.auditor = auditor;
-//	}
+	@ManyToOne
+	@JoinColumn(name = "welcomeAuditor_id")
+	public User getAuditor() {
+		return auditor;
+	}
+
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
+	}
 
     @ManyToOne
     @JoinColumn(name = "recommendedCsrID")
@@ -869,6 +869,7 @@ public class ContractorAccount extends Account implements JSONable {
 
     @Transient
     public void setCurrentCsr(User newCsr, int createdById) {
+        setAuditor(newCsr);
         makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
     }
 
