@@ -1,6 +1,3 @@
-/*
-Copyright(c) 2013 Company Name
-*/
 /**
  * Base class that provides a common interface for publishing events. Subclasses are expected to to have a property
  * "events" with all the events defined, and, optionally, a property "listeners" with configured listeners defined.
@@ -97227,7 +97224,9 @@ Ext.define('PICS.store.report.Reports', {
 
     listeners: {
         update: function (store, record, operation, modifiedFieldNames, eOpts) {
-            record.setHasUnsavedChanges(true);
+            if (modifiedFieldNames) {
+                record.setHasUnsavedChanges(true);                
+            }
         }
     },
 
@@ -101520,5 +101519,4 @@ Ext.define('Ext.grid.Lockable', {
     this.borrow(Ext.view.Table, ['constructFeatures']);
     this.borrow(Ext.AbstractComponent, ['constructPlugins', 'constructPlugin']);
 });
-
 
