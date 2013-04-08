@@ -31,24 +31,40 @@ Ext.define('PICS.model.report.Report', {
     hasMany: [{
         model: 'PICS.model.report.Column',
         name: 'columns',
+        foreignKey: 'report_id',
         storeConfig : {
             listeners: {
-                add: function (store, record, index, eOpts) {
-                    record.has_unsaved_changes = true;
+                add: function (store, records, index, eOpts) {
+                    var record = records[0];
+                    
+                    if (record.get('id') === 0) {
+                        this.setReportHasUnsavedChanges(record.get('report_id'));
+                    }
                 },
 
                 remove: function (store, record, index, eOpts) {
-                    record.has_unsaved_changes = true;
+                    if (record.get('id') != 0) {
+                        record.report.has_unsaved_changes = true;
+                    }
                 },
 
                 update: function (store, record, operation, modifiedFieldNames, eOpts) {
-                    record.has_unsaved_changes = true;
+                    if (record.get('id') != 0) {
+                        record.report.has_unsaved_changes = true;
+                    }
                 }
+            },
+            setReportHasUnsavedChanges: function (report_id) {
+                var report_store = Ext.StoreManager.get('report.Reports');
+                    report = report_store.getById(report_id);
+                    
+                report.has_unsaved_changes = true;
             }
         }
     }, {
         model: 'PICS.model.report.Filter',
         name: 'filters',
+        foreignKey: 'report_id',
         storeConfig : {
             listeners: {
                 add: function (store, record, index, eOpts) {
@@ -217,7 +233,7 @@ Ext.define('PICS.model.report.Report', {
     addFilters: function (filters) {
         var new_filters = [];
         
-        Ext.Array.forEach(filters, function (filter) {
+        Ext.each(filters, function (filter) {
             if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
                 Ext.Error.raise('Invalid filter');
             }
