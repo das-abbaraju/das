@@ -1,18 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 		
-<s:set name="pageIsSecure" value="false" />
-
-<s:if test="request.isSecure() || request.getLocalPort() == 443 || request.getLocalPort() == 81">
-	<s:set name="pageIsSecure" value="true" />
-</s:if>
-
-<s:if test="request.isSecure()">
-	<s:set name="protocol" value="https" />
-</s:if>
-<s:else>
-	<s:set name="protocol" value="http" />
-</s:else>
+<s:text name="%{contractorCountry.i18nKey}" var="phone_country" />
 
 <header>
 	<img src="images/logo_sm.png" alt="Home" class="logo" />
@@ -32,10 +21,9 @@
 		<span class="welcome-message"><s:text name="Header.Welcome" />, ${permissions.name}</span>
 	</s:if>
 	
-	<span id="pics_phone_number" class="phone">${picsPhoneNumber}</span>
+	<span id="pics_phone_number" class="phone" title="${phone_country}">${picsPhoneNumber}</span>
 	
 	<s:if test="liveChatEnabled">
 		<s:include value="/struts/layout/chat.jsp" />
 	</s:if>
-	
 </header>

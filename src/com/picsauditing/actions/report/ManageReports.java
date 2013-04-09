@@ -8,14 +8,13 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.access.UserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -130,11 +129,14 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("sharedWithList", "sharedWith");
 	}
 
+	// TODO: Fix this method to call David A's new method
 	public String search() {
 		reportList = Collections.emptyList();
 		try {
 			reportList = manageReportsService.getReportsForSearch(searchTerm,
 					permissions, getPagination());
+		} catch (IllegalArgumentException iae) {
+			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
 			logAndShowUserInDebugMode(
 					"Unexpected exception in ManageReports!search.action", e);

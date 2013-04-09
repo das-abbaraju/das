@@ -2,7 +2,9 @@ package com.picsauditing.service;
 
 import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -10,10 +12,12 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.util.Strings;
 
 public class ReportPreferencesService {
 
@@ -55,6 +59,32 @@ public class ReportPreferencesService {
 
 	public ReportUser loadReportUser(int userId, int reportId) {
 		return reportUserDao.findOne(userId, reportId);
+	}
+
+	public List<ReportUser> getAllNonHiddenReportUsers(String sort, String direction, Permissions permissions) {
+		return getAllReportUsers(sort, direction, permissions, false);
+	}
+
+	public List<ReportUser> getAllReportUsers(String sort, String direction, Permissions permissions, boolean includeHidden) throws IllegalArgumentException {
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
+		if (Strings.isEmpty(sort)) {
+			sort = ManageReports.ALPHA_SORT;
+			direction = "ASC";
+		}
+
+		List<Report> reports = reportDao.findAllOrdered(permissions, sort, direction, includeHidden);
+
+		for (Report report : reports) {
+			ReportUser reportUser = report.getReportUser(permissions.getUserId());
+			if (reportUser == null) {
+				// todo: Why are creating a new ReportUser for each report???
+				reportUser = createReportUser(permissions.getUserId(), report);
+			}
+			reportUsers.add(reportUser);
+		}
+
+		return reportUsers;
 	}
 
 	// todo: extract out the userId

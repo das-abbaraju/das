@@ -51,7 +51,7 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findAllFavorite(int userId) {
-		String where = "t.user.id = " + userId + " AND favorite = 1";
+		String where = "t.user.id = " + userId + " AND favorite = 1 AND hidden = 0";
 		String orderBy = "sortOrder DESC";
 		int limit = 0;
 
@@ -70,7 +70,7 @@ public class ReportUserDAO extends PicsDAO {
 
 		SelectSQL sql = new SelectSQL("report_user");
 		sql.addField("count(reportID) AS favoriteCount");
-		sql.addWhere("userID = " + userId + " AND favorite = 1");
+		sql.addWhere("userID = " + userId + " AND favorite = 1 AND hidden = 0");
 
 		Database database = new Database();
 		List<BasicDynaBean> results = database.select(sql.toString(), false);
@@ -138,7 +138,7 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public int findMaxSortIndex(int userId) {
-		Query query = em.createQuery("SELECT MAX(ru.sortOrder) FROM ReportUser ru WHERE ru.user.id = :userId");
+		Query query = em.createQuery("SELECT MAX(ru.sortOrder) FROM ReportUser ru WHERE ru.user.id = :userId AND ru.hidden = false");
 		query.setParameter("userId", userId);
 
 		int result;

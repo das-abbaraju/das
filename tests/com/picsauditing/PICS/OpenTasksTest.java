@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -15,31 +16,37 @@ import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.model.i18n.LanguageModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.ibm.icu.util.Calendar;
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
@@ -65,9 +72,13 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"OpenTasksTest-context.xml"})
 public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
@@ -89,6 +100,7 @@ public class OpenTasksTest extends PicsActionTest {
 	private final BigDecimal OUTSTANDING_BALANCE = new BigDecimal(100.00);
 
 	private OpenTasks openTasks;
+	private LanguageModel injectedLanguageModel;
 
 	@Mock
 	private Account account;
@@ -122,7 +134,7 @@ public class OpenTasksTest extends PicsActionTest {
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private LanguageModel languageModel;
-	
+
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
 	private ArrayList<String> openTaskList;
@@ -156,6 +168,9 @@ public class OpenTasksTest extends PicsActionTest {
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
 		Whitebox.setInternalState(openTasks, "featureToggleChecker", featureToggleChecker);
 		when(contractor.getLocale()).thenReturn(Locale.ENGLISH);
+
+		injectedLanguageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
+		reset(injectedLanguageModel);
 	}
 
 	private void setUpCollections() {
@@ -211,6 +226,7 @@ public class OpenTasksTest extends PicsActionTest {
 
 	private void setUpMockAudit() {
 		when(audit.getAuditType()).thenReturn(auditType);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 	}
 
 	@Test
@@ -249,7 +265,7 @@ public class OpenTasksTest extends PicsActionTest {
 		when(operator.getType()).thenReturn("Corporate");
 		when(user.getAccount()).thenReturn(operator);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
 
 		verify(contractor, never()).isAgreementInEffect();
@@ -361,7 +377,7 @@ public class OpenTasksTest extends PicsActionTest {
 		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(auditType.getId()).thenReturn(AuditType.IEC_AUDIT); // anything but
-																	// AuditType.IMPORT_PQF
+		// AuditType.IMPORT_PQF
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
 
@@ -505,8 +521,8 @@ public class OpenTasksTest extends PicsActionTest {
 
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something
-																			// not
-																			// Policy
+		// not
+		// Policy
 		when(auditType.isRenewable()).thenReturn(true);
 		when(auditType.isCanContractorEdit()).thenReturn(true);
 		when(audit.isAboutToExpire()).thenReturn(true);
@@ -543,11 +559,11 @@ public class OpenTasksTest extends PicsActionTest {
 	@Test
 	public void testGetOpenTasks_OpenRequirementsNotEmployeeGuard() throws Exception {
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something
-																			// not
-																			// Policy
-																			// and
-																			// not
-																			// Employee
+		// not
+		// Policy
+		// and
+		// not
+		// Employee
 		setUpOpenRequirements();
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
@@ -563,8 +579,8 @@ public class OpenTasksTest extends PicsActionTest {
 		when(workflow.isHasRequirements()).thenReturn(true);
 		when(auditType.getWorkFlow()).thenReturn(workflow);
 		when(auditType.getId()).thenReturn(AuditType.CAN_QUAL_PQF); // something
-																	// not
-																	// WA_STATE_VERIFICATION
+		// not
+		// WA_STATE_VERIFICATION
 		when(audit.hasCaoStatus(AuditStatus.Submitted)).thenReturn(true);
 		when(audit.getEffectiveDateLabel()).thenReturn(new Date());
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
@@ -578,7 +594,7 @@ public class OpenTasksTest extends PicsActionTest {
 		when(cao.getStatus()).thenReturn(AuditStatus.Incomplete);
 		when(cao.isVisible()).thenReturn(true);
 		when(audit.getOperators()).thenReturn(caos);
-		
+
 		Workflow wf = new Workflow();
 		when(auditType.getWorkFlow()).thenReturn(wf);
 	}
@@ -793,7 +809,7 @@ public class OpenTasksTest extends PicsActionTest {
 
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 	}
-	
+
 	@Test
 	public void testCorOpenTaskNeeded() throws Exception {
 		ContractorAccount contractor = EntityFactory.makeContractor();
@@ -802,13 +818,13 @@ public class OpenTasksTest extends PicsActionTest {
 		audit.getAuditType().setCanContractorEdit(true);
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 //		audit.getOperators().add(cao);
-		
+
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
-		
+
 		cao.setStatus(AuditStatus.Pending);
 		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 		assertTrue(result);
-		
+
 		cao.setStatus(AuditStatus.Submitted);
 		result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 		assertFalse(result);
@@ -816,5 +832,38 @@ public class OpenTasksTest extends PicsActionTest {
 		cao.setStatus(AuditStatus.Resubmitted);
 		result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 		assertTrue(result);
-}
+	}
+
+	@Test
+	public void testEstablishPermissions_NullSessionInContext() throws Exception {
+		Whitebox.invokeMethod(openTasks, "establishPermissions", (User) null);
+		permissions = Whitebox.getInternalState(openTasks, "permissions");
+
+		assertNotNull(permissions);
+		assertNotNull(injectedLanguageModel);
+
+		verify(languageModel).getNearestStableAndBetaLocale(any(Locale.class));
+	}
+
+	@Test
+	public void testEstablishPermissions_SessionInContext() throws Exception {
+		ActionContext previousContext = ActionContext.getContext();
+		ActionContext mockContext = mock(ActionContext.class);
+
+		Map<String, Object> session = new HashMap<>();
+		session.put(ActionContext.SESSION, permissions);
+
+		ActionContext.setContext(mockContext);
+		when(mockContext.getSession()).thenReturn(session);
+
+		Whitebox.invokeMethod(openTasks, "establishPermissions", (User) null);
+
+		Permissions permissionsFromOpenTasks = Whitebox.getInternalState(openTasks, "permissions");
+
+		assertNotNull(permissionsFromOpenTasks);
+
+		verify(languageModel).getNearestStableAndBetaLocale(any(Locale.class));
+		// Finally
+		ActionContext.setContext(previousContext);
+	}
 }

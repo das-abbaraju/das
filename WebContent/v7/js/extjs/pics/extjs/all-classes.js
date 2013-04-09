@@ -66190,34 +66190,23 @@ Ext.define('PICS.data.ServerCommunication', {
                 // set load data proxy
                 report_store.setProxyForWrite(url);
                 
-                function callback(conn, response, options, eOpts) {
-                    if (PICS.data.Exception.hasException(response)) {
-                        PICS.data.Exception.handleException({
-                            response: response
-                        });
-                    } else {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data),
-                            report_id = json.id;
+                report_store.sync({
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[batch.current],
+                            response = operation.response;
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            var json = this.getReader().jsonData,
+                                report_id = json.id;
 
-                        window.location.href = 'Report.action?report=' + report_id;
-                    }
-                } 
-                
-                Ext.Ajax.on({
-                    requestcomplete: {
-                        fn: callback,
-                        scope: this,
-                        single: true
-                    },
-                    requestexception: {
-                        fn: callback,
-                        scope: this,
-                        single: true
+                            window.location.href = 'Report.action?report=' + report_id;
+                        }
                     }
                 });
-
-                report_store.sync();
             },
             
             exportReport: function () {
@@ -66274,58 +66263,36 @@ Ext.define('PICS.data.ServerCommunication', {
                 // set load data proxy
                 report_store.setProxyForWrite(url);
                 
-                function callback(conn, response, options, eOpts) {
-                    if (PICS.data.Exception.hasException(response)) {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data),
-                            report_store = Ext.StoreManager.get('report.Reports'),
-                            report = report_store.first();
+                // sync
+                report_store.sync({
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[batch.current],
+                            response = operation.response;
                         
-                        PICS.data.Exception.handleException({
-                            response: response,
-                            callback: function () {
-                                report.rejectAllChanges();
-                                
-                                PICS.data.ServerCommunication.loadData();
-                            }
-                        });
-                    } else {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data);
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            // load the report store
+                            var json = this.getReader().jsonData,
+                                report_store = loadReportStore(json),
+                                report = report_store.first();
 
-                        // load the report store
-                        var report_store = loadReportStore(json),
-                            report = report_store.first();
+                            // Persist the unsaved changes flag.
+                            report.setHasUnsavedChanges(has_unsaved_changes);
 
-                        // Persist the unsaved changes flag.
-                        report.setHasUnsavedChanges(has_unsaved_changes);
+                            // load new results
+                            loadDataTableStore(json);
 
-                        // load new results
-                        loadDataTableStore(json);
+                            // remove data table loading mask
+                            stopDataTableLoading();
 
-                        // remove data table loading mask
-                        stopDataTableLoading();
-
-                        // refresh grid
-                        updateDataTableView(report);
-                    }
-                } 
-                
-                Ext.Ajax.on({
-                    requestcomplete: {
-                        fn: callback,
-                        scope: this,
-                        single: true
-                    },
-                    requestexception: {
-                        fn: callback,
-                        scope: this,
-                        single: true
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
-
-                // sync
-                report_store.sync();
             },
 
             loadData: function (page, limit) {
@@ -66353,54 +66320,32 @@ Ext.define('PICS.data.ServerCommunication', {
                 // set load data proxy
                 report_store.setProxyForWrite(url);
                 
-                function callback(conn, response, options, eOpts) {
-                    if (PICS.data.Exception.hasException(response)) {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data),
-                            report_store = Ext.StoreManager.get('report.Reports'),
-                            report = report_store.first();
+                // sync
+                report_store.sync({
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[batch.current],
+                            response = operation.response;
                         
-                        PICS.data.Exception.handleException({
-                            response: response,
-                            callback: function () {
-                                report.rejectAllChanges();
-                                
-                                PICS.data.ServerCommunication.loadData();
-                            }
-                        });
-                    } else {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data);
-                        
-                        var report_store = Ext.StoreManager.get('report.Reports'),
-                            report = report_store.first();
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            var json = this.getReader().jsonData,
+                                report_store = Ext.StoreManager.get('report.Reports'),
+                                report = report_store.first();
 
-                        // load new results
-                        loadDataTableStore(json);
+                            // load new results
+                            loadDataTableStore(json);
 
-                        // remove data table loading mask
-                        stopDataTableLoading();
+                            // remove data table loading mask
+                            stopDataTableLoading();
 
-                        // refresh grid
-                        updateDataTableView(report);
-                    }
-                }
-                
-                Ext.Ajax.on({
-                    requestcomplete: {
-                        fn: callback,
-                        scope: this,
-                        single: true
-                    },
-                    requestexception: {
-                        fn: callback,
-                        scope: this,
-                        single: true
+                            // refresh grid
+                            updateDataTableView(report);
+                        }
                     }
                 });
-
-                // sync
-                report_store.sync();
             },
             
             printReport: function () {
@@ -66421,32 +66366,22 @@ Ext.define('PICS.data.ServerCommunication', {
                 // set load data proxy
                 report_store.setProxyForWrite(url);
                 
-                function callback(conn, response, options, eOpts) {
-                    if (PICS.data.Exception.hasException(response)) {
-                        PICS.data.Exception.handleException({
-                            response: response
-                        });
-                    } else {
-                        report.setHasUnsavedChanges(false);
+                report_store.sync({
+                    callback: function (batch, eOpts) {
+                        var operation = batch.operations[batch.current],
+                            response = operation.response;
+                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            report.setHasUnsavedChanges(false);
 
-                        success_callback();
-                    }
-                }
-                
-                Ext.Ajax.on({
-                    requestcomplete: {
-                        fn: callback,
-                        scope: this,
-                        single: true
-                    },
-                    requestexception: {
-                        fn: callback,
-                        scope: this,
-                        single: true
+                            success_callback();
+                        }
                     }
                 });
-
-                report_store.sync();
             },
             
             shareReport: function (options) {
@@ -95838,7 +95773,9 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
         }
     },
     rowLines: false,
-    selModel: Ext.create('Ext.selection.CheckboxModel'),
+    selModel: Ext.create('Ext.selection.CheckboxModel', {
+        mode: 'SIMPLE'
+    }),
     
     getGroupClassNamesWithoutOver: function (html) {
         var class_names = html.className.split(' '),
@@ -97933,8 +97870,7 @@ Ext.define('PICS.controller.report.Filter', {
 
             // saving edits to filter store + refresh
             '#report_filters combobox[name=value]': {
-                // Unlike "select," the change event also fires when the user removes the last item.
-                change: this.selectValueField
+                select: this.selectValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -97959,7 +97895,8 @@ Ext.define('PICS.controller.report.Filter', {
             
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
-                change: this.selectValueField
+                change: this.selectValueField,
+                render: this.renderCheckbox
             },
 
             // remove filter
@@ -97997,9 +97934,6 @@ Ext.define('PICS.controller.report.Filter', {
         this.updateRemoveButtonPositions();
     },
 
-    // TODO: figure out if this should be here
-    // TODO: figure out if this should be here
-    // TODO: figure out if this should be here
     // add the filter formula view after the filter options have been generated
     afterFilterOptionsRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore(),
@@ -98116,12 +98050,11 @@ Ext.define('PICS.controller.report.Filter', {
     
     beforeFilterRender: function (cmp, eOpts) {
         var filter_input = cmp.down('reportfilterbasefilter'),
-            filter_input_form = filter_input.getForm(),
             is_autocomplete = cmp.down('reportfilterbaseautocomplete'),
             is_multiselect = cmp.down('reportfilterbasemultiselect');
         
-        // attach filter record to "filter view form"
-        filter_input_form.loadRecord(cmp.filter);
+        // attach the filter record to the filter view
+        this.loadFilter(cmp);
         
         // dynamically load value store for multiselect and autocomplete
         if (is_autocomplete) {
@@ -98148,6 +98081,30 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_view = cmp.up('reportfilter');
 
         filter_view.addCls('x-form-focus');
+    },
+    
+    // must disable change event from being fired so extra loadRecord does not throw excess change events on loading
+    // http://extjs-tutorials.blogspot.com/2012/02/extjs-loadrecord-disable-events.html
+    loadFilter: function (cmp) {
+        var filter_input = cmp.down('reportfilterbasefilter'),
+            filter_input_form = filter_input.getForm();
+        
+        filter_input_form.getFields().each(function (item, index, length) {
+            item.suspendCheckChange++;
+        });
+        
+        // attach filter record to "filter view form"
+        filter_input_form.loadRecord(cmp.filter);
+        
+        filter_input_form.getFields().each(function (item, index, length) {
+            item.suspendCheckChange--;
+        });
+    },
+    
+    // this method is to default checkboxes lastValue. this would have normally been set by the form field by default
+    // through chainable constructors, but we are suspending the change event from being thrown calling loadRecord
+    renderCheckbox: function (cmp, eOpts) {
+        cmp.lastValue = cmp.getValue();
     },
     
     refreshFilters: function () {
@@ -98230,15 +98187,10 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
     
-    selectValueField: function (cmp, newValue, oldValue, eOpts) {
+    selectValueField: function (cmp, records, eOpts) {
         var filter_input_view = cmp.up('reportfilterbasefilter'),
             filter_input_form = filter_input_view.getForm();
     
-        // Abort if we are pre-selecting. (It will be undefined.)
-        if (!oldValue) {
-            return;
-        }
-
         filter_input_form.updateRecord();
 
         PICS.data.ServerCommunication.loadData();

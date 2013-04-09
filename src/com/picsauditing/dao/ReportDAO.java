@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,30 @@ public class ReportDAO extends PicsDAO {
 		}
 
 		return database.select(sql, true);
+	}
+
+	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction, boolean includeHidden) {
+		String orderBy = getOrderBySort(sort);
+
+		String groupIds = permissions.getAllInheritedGroupIds().toString();
+		groupIds = groupIds.substring(1, groupIds.length() - 1);
+
+		String queryString = "SELECT r FROM ReportUser ru \n" +
+				"JOIN ru.report r \n" +
+				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
+				"AND ru.hidden = " + includeHidden + "\n" +
+				"AND r.id IN \n" +
+				"(\n" +
+				"SELECT rpu.report.id \n" +
+				"FROM ReportPermissionUser rpu \n" +
+				"WHERE (rpu.user.id = " + permissions.getUserId() + "\n" +
+				" OR rpu.user.id IN ( " + groupIds + " ))\n" +
+				")\n" +
+				"ORDER BY " + orderBy + " " + direction;
+
+		Query query = em.createQuery(queryString);
+
+		return query.getResultList();
 	}
 
 	private String getOrderBySort(String sortType) {

@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import net.sf.json.JSONObject;
-
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,12 +70,12 @@ public class AccountTimezonePopulator implements Runnable {
 			return false;
 		} else {
 			try {
-				String dateString = json.getString("date");
+				String dateString = (String)json.get("date");
 				if (Strings.isNotEmpty(dateString)) {
 					Date date = new SimpleDateFormat().parse(dateString);
 					long now = new Date().getTime();
 					if (now - date.getTime() < millsIn24Hours) {
-						return json.getInt("count") > lookupLimit;
+						return (Long)json.get("count") > lookupLimit;
 					}
 				}
 			} catch (ParseException e) {
@@ -88,7 +88,7 @@ public class AccountTimezonePopulator implements Runnable {
 	private JSONObject limitJson() {
 		String googleMapApiCount = appPropertyDAO.getProperty(limitPropertyName);
 		if (Strings.isNotEmpty(googleMapApiCount)) {
-			return JSONObject.fromObject(googleMapApiCount);
+            return (JSONObject) JSONValue.parse(googleMapApiCount);
 		} else {
 			return null;
 		}
@@ -124,19 +124,19 @@ public class AccountTimezonePopulator implements Runnable {
 		JSONObject json = limitJson();
 		if (json == null || dateIsGreaterThan24HoursAgo(json)) {
 			json = new JSONObject();
-			json.element("count", 1);
-			json.element("date", new SimpleDateFormat().format(new Date()));
+			json.put("count", 1);
+			json.put("date", new SimpleDateFormat().format(new Date()));
 		} else {
-			json.element("count", json.getInt("count") + 1);
+			json.put("count", (Long)json.get("count") + 1);
 		}
 		appPropertyDAO.setProperty(limitPropertyName, json.toString());
 	}
 
 	private boolean dateIsGreaterThan24HoursAgo(JSONObject json) {
-		if (json == null || Strings.isEmpty(json.getString("date"))) {
+		if (json == null || Strings.isEmpty((String)json.get("date"))) {
 			return false;
 		} else {
-			String dateString = json.getString("date");
+			String dateString = (String)json.get("date");
 			try {
 				Date date = new SimpleDateFormat().parse(dateString);
 				long now = new Date().getTime();

@@ -1,5 +1,9 @@
 package com.picsauditing.strutsutil;
 
+import com.fasterxml.jackson.databind.PropertyName;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.base.Joiner;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
@@ -7,11 +11,8 @@ import org.apache.struts2.dispatcher.StreamResult;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
-import net.sf.json.JSON;
-import net.sf.json.JSONSerializer;
-import net.sf.json.xml.JSONTypes;
-import net.sf.json.xml.XMLSerializer;
 
 public class XMLResult extends StreamResult {
     private static final Logger logger = LoggerFactory.getLogger(XMLResult.class);
@@ -20,16 +21,12 @@ public class XMLResult extends StreamResult {
     @SuppressWarnings("unchecked")
     @Override
     protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("In XMLResult");
-        }
+        convertJsonToXml(invocation);
+        super.doExecute(finalLocation, invocation);
+    }
+
+    private void convertJsonToXml(ActionInvocation invocation) throws Exception {
         JSONObject json = (JSONObject) invocation.getStack().findValue("json");
-        if (logger.isDebugEnabled()) {
-            logger.debug("Have JSON object");
-        }
-        /*
-           * Add in the action messages/errors if there are any.
-           */
         ActionSupport action = (ActionSupport) invocation.getAction();
         if (action.hasActionMessages() || action.hasActionErrors()) {
             if (action.hasActionMessages())
@@ -37,29 +34,20 @@ public class XMLResult extends StreamResult {
             if (action.hasActionErrors())
                 json.put("actionError", Joiner.on("\n").join(action.getActionErrors()));
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to create xmlserializer");
-        }
-        net.sf.json.xml.XMLSerializer serializer = new net.sf.json.xml.XMLSerializer();
-        if (logger.isDebugEnabled()) {
-            logger.debug("about to create net.sf.JSON object");
-        }
-        net.sf.json.JSON netsfjson = net.sf.json.JSONSerializer.toJSON( json.toJSONString() );
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring serializer");
-        }
-        serializer.setTypeHintsEnabled(false);
-		serializer.setRootName("datafeed");
-		serializer.setElementName("record");
-        if (logger.isDebugEnabled()) {
-            logger.debug("writing XML");
-        }
-        String xml = serializer.write( netsfjson );
-        if (logger.isDebugEnabled()) {
-            logger.debug("converting to inputstream");
-        }
+
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.setAnnotationIntrospector(new MyJacksonXmlAnnotationIntrospector());
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + xmlMapper.writeValueAsString(json);
+
         inputStream = new ByteArrayInputStream(xml.getBytes());
         contentType = "application/xml";
-        super.doExecute(finalLocation, invocation);
+    }
+
+    private class MyJacksonXmlAnnotationIntrospector extends JacksonXmlAnnotationIntrospector {
+        @Override
+        public PropertyName findRootName(AnnotatedClass ac) {
+            return new PropertyName("datafeed", "");
+        }
+
     }
 }

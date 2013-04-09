@@ -1,18 +1,19 @@
 <decorators defaultdir="/decorators">
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
-        <pattern>/ManageReports*.action</pattern>
-        <pattern>/ManageAppProperty*.action</pattern>
-        <pattern>/FrontendDevelopmentGuide*.action</pattern>
-        <pattern>/ReportTester.action</pattern>
         <pattern>/CreateReport*.action</pattern>
-        <pattern>/NewYearMailer*.action</pattern>
+        <pattern>/FrontendDevelopmentGuide*.action</pattern>
+        <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/ManageRecommendedCSRAssignments.action</pattern>
+        <pattern>/ManageReports*.action</pattern>
+        <pattern>/NewYearMailer*.action</pattern>
+        <pattern>/ReportTester.action</pattern>
     </decorator>
     <decorator name="simpleLayout" page="simple-layout.jsp">
+        <pattern>/AccountRecovery*.action</pattern>
+        <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
         <pattern>/Tutorial*.action</pattern>
-        <pattern>/Deactivated.action</pattern>
     </decorator>
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>

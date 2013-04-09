@@ -187,7 +187,50 @@ public class LanguageModelTest {
 		assertEquals(canadianFrench, stableLanguageLocales.get(2));
 	}
 
-	@Test
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetStableLanguageLocales_EnsureListIsUnmodifiable() {
+        List<Language> languages = createLanguageList();
+
+		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+
+		List<Locale> stableLanguageLocales = languageModel.getStableLanguageLocales();
+
+        stableLanguageLocales.add(Locale.CHINA);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetStableLanguages_EnsureListIsUnmodifiable() {
+        List<Language> languages = createLanguageList();
+
+        when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+
+        List<Language> stableLanguageLocales = languageModel.getStableLanguages();
+
+        stableLanguageLocales.add(new Language());
+    }
+
+    private List<Language> createLanguageList() {
+        Language language1 = new Language();
+        Language language2 = new Language();
+        Language language3 = new Language();
+
+        Locale britishEnglish = new Locale("en", "GB");
+        Locale canadianFrench = new Locale("fr", "CA");
+        Locale mexicanSpanish = new Locale("es", "MX");
+
+        language1.setLocale(britishEnglish);
+        language2.setLocale(canadianFrench);
+        language3.setLocale(mexicanSpanish);
+
+        List<Language> languages = new ArrayList<Language>();
+        languages.add(language1);
+        languages.add(language2);
+        languages.add(language3);
+
+        return languages;
+    }
+
+    @Test
 	public void testSetFirstLanguageAsEnglish() throws Exception {
 		List<String> languages = new ArrayList<String>();
 		languages.add(Locale.CHINESE.getLanguage());
@@ -242,7 +285,6 @@ public class LanguageModelTest {
         assertEquals("Null locale found in Stable and Beta locales list: en_US,fr,de,null,it",
                 errorMessageCaptor.getValue());
     }
-
 
     private List<Language> mockLanguageList(Locale[] localesToMock) {
         List<Language> languageList = new ArrayList<>();

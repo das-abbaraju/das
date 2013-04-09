@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
+import javax.persistence.NoResultException;
+
 public class AuditPercentCalculator {
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
@@ -29,6 +31,8 @@ public class AuditPercentCalculator {
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
+	protected AuditCategoryDataDAO auditCategoryDataDAO;
 
 	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
@@ -64,14 +68,16 @@ public class AuditPercentCalculator {
 				functionWatcherQuestionIds);
 
 		// Run functions to update answers
-		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+		for (AuditQuestion question : catData.getCategory().getQuestions())
 			if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
 				AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
+				boolean newTarget = false;
 
 				if (target == null) {
 					target = new AuditData();
 					target.setAudit(catData.getAudit());
 					target.setQuestion(question);
+					newTarget = true;
 				}
 
 				String results = null;
@@ -97,10 +103,20 @@ public class AuditPercentCalculator {
 					target.setAuditColumns(new User(User.SYSTEM));
 				}
 
-				if (!catData.getAudit().getData().contains(target))
-					catData.getAudit().getData().add(target);
+				if (newTarget) {
+					auditDataDAO.save(target);
+				}
+
+				for (AuditQuestionFunctionWatcher aqfw : question.getFunctionWatchers()) {
+					if (aqfw.getFunction().getQuestion().getCategory().getId() != question.getCategory().getId()) {
+						AuditCatData aqfwCatData = findCatData(catData.getAudit(), aqfw.getFunction().getQuestion().getCategory());
+						if (aqfwCatData == null) {
+							continue;
+						}
+						updatePercentageCompleted(aqfwCatData);
+					}
+				}
 			}
-		}
 
 		// Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<AuditData>();
@@ -226,6 +242,15 @@ public class AuditPercentCalculator {
 		catData.setScore(score);
 		catData.setScorePossible(scoreWeight);
 		// categoryDataDAO.save(catData);
+	}
+
+	private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
+		for (AuditCatData catData:audit.getCategories()) {
+			if (catData.getCategory().getId() == category.getId()) {
+				return catData;
+			}
+		}
+		return null;
 	}
 
 	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {

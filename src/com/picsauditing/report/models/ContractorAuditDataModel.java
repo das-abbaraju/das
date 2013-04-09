@@ -35,7 +35,11 @@ public class ContractorAuditDataModel extends AbstractModel {
 		account.alias = "Account";
 		account.minimumImportance = FieldImportance.Required;
 
-		ModelSpec question = auditData.join(AuditDataTable.Question);
+        ModelSpec flagCriteriaContractor = contractor.join(ContractorTable.FlagCriteriaContractor);
+        flagCriteriaContractor.alias = "FlagCriteriaContractor";
+        flagCriteriaContractor.category = FieldCategory.Audits;
+
+        ModelSpec question = auditData.join(AuditDataTable.Question);
 		question.alias = "Question";
 		question.category = FieldCategory.Audits;
 

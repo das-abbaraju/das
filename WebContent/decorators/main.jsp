@@ -222,7 +222,7 @@
                     %>
                     <td id="sidebox">
                         <p>
-                            <b class="head-phone"><%=mainPage.getPhoneNumber()%></b>
+                            <b class="head-phone" title="<%=Strings.isNotEmpty(mainPage.getCountryI18nKey()) ? i18nCache.getText(mainPage.getCountryI18nKey(), locale) : ""%>"><%=mainPage.getPhoneNumber()%></b>
                         <% if (permissions.isLoggedIn()) { %>
                             <span id="name">
                                 <%

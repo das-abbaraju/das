@@ -489,24 +489,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.expedite = expedite;
 	}
 
-	public Date getLastCancellationTime() {
-		Calendar cal = Calendar.getInstance();
-		if (availabilitySelected != null)
-			cal.setTime(availabilitySelected.getStartDate());
-		else if (conAudit.getScheduledDate() != null)
-			cal.setTime(conAudit.getScheduledDate());
-		else
-			// Something is probably wrong here
-			return cal.getTime();
-
-		cal.add(Calendar.DAY_OF_YEAR, -2);
-
-		while (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-			cal.add(Calendar.DAY_OF_YEAR, -1);
-		}
-		return cal.getTime();
-	}
-
 	public void setTimeSelected(String dateString) throws ParseException {
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);

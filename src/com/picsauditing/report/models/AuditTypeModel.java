@@ -31,9 +31,6 @@ public class AuditTypeModel extends AbstractModel {
 		Field auditTypeName = fields.get("AuditTypeName".toUpperCase());
 		auditTypeName.setUrl("ManageAuditType.action?id={AuditTypeID}");
 
-		Field createdByName = fields.get("AuditTypeCreatedByName".toUpperCase());
-		createdByName.setUrl("UsersManage.action?account={AuditTypeCreatedByAccountID}&user={AuditTypeCreatedByID}");
-
 		Field operatorName = fields.get("AuditTypeOperatorName".toUpperCase());
 		operatorName.setUrl("FacilitiesEdit.action?operator={AuditTypeOperatorID}");
 

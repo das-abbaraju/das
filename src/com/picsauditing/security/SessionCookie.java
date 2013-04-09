@@ -4,8 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.picsauditing.util.Strings;
 
 

@@ -113,10 +113,20 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void establishPermissions(User user) {
 		ActionContext context = ActionContext.getContext();
-		Map<String, Object> session = context.getSession();
-		permissions = (Permissions) session.get("permissions");
-		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
 
+		if (context != null && context.getSession() != null) {
+			permissions = (Permissions) context.getSession().get("permissions");
+		}
+
+		if (permissions == null) {
+			permissions = new Permissions();
+
+			if (user != null) {
+				permissions.login(user);
+			}
+		}
+
+		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
 	}
 
 	private void gatherTasksAboutDeclaringTrades() {
@@ -242,28 +252,34 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAuditsEmail(Locale locale) {
-		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
+		List<String> auditsWithOpenTasks = new ArrayList<String>();
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 
-			String auditTypeAndFor = conAudit.getAuditType().getId()
-					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
-					+ ((conAudit.getEmployee() != null) ? conAudit.getEmployee().getId() : "");
-			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
+			String auditKey = getAuditKey(conAudit);
+			boolean isAuditRepeated = auditsWithOpenTasks.contains(auditKey);
 
-			if (!isAuditTypeAndForRepeated) {
+			if (!isAuditRepeated) {
 				if (conAudit.isVisibleTo(permissions)) {
 					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 						if (isOpenTaskNeeded(conAudit, user, permissions)) {
 							boolean addedOpenTask = addAuditOpenTasks(conAudit, locale);
 							if (addedOpenTask) {
-								auditTypeAndForWithOpenTasks.add(auditTypeAndFor);
+								auditsWithOpenTasks.add(auditKey);
 							}
 						}
 					}
 				}
 			}
 		}
+	}
+
+	private String getAuditKey(ContractorAudit conAudit) {
+		String key = conAudit.getAuditType().getId()
+				+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
+				+ ((conAudit.getAuditType().getClassType().isPolicy()) ? conAudit.getId():"")
+				+ ((conAudit.getEmployee() != null) ? conAudit.getEmployee().getId() : "");
+		return key;
 	}
 
 	private void gatherTasksAboutMarketing() {
@@ -386,7 +402,7 @@ public class OpenTasks extends TranslationActionSupport {
 								conAudit.getId(), auditName, showAuditFor, auditFor));
 					} else {
 						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixPolicyIssues",
-								conAudit.getId(), auditName, showAuditFor, auditFor));
+								conAudit.getId(), auditName, 1, getPolicyAuditFor(conAudit)));
 					}
 					addedOpenTask = true;
 				} else {
@@ -395,7 +411,7 @@ public class OpenTasks extends TranslationActionSupport {
 								conAudit.getId(), auditName, showAuditFor, auditFor));
 					} else {
 						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UploadAndSubmitPolicy",
-								conAudit.getId(), auditName, showAuditFor, auditFor));
+								conAudit.getId(), auditName, 1, getPolicyAuditFor(conAudit)));
 					}
 					addedOpenTask = true;
 				}
@@ -555,6 +571,18 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 
 		return addedOpenTask;
+	}
+
+	private String getPolicyAuditFor(ContractorAudit conAudit) {
+		String policyAuditFor = "";
+		if (conAudit.getEffectiveDate() != null || conAudit.getAuditType().isWCB()) {
+			String year = DateBean.format(conAudit.getEffectiveDateLabel(), "yy");
+			policyAuditFor = " '" + year;
+		} else {
+			policyAuditFor = " " + getText("ContractorAudit.New");
+		}
+
+		return policyAuditFor;
 	}
 
 	private boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {

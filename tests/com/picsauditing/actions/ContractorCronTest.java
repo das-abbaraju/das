@@ -52,6 +52,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
+		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
 	}
 
 	/**
@@ -641,35 +642,36 @@ public class ContractorCronTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testExecute_WhenContractorStatusIsRequested_ThenCronIsNotRun() throws Exception {
-		ContractorCron contractorCronSpy = spy(contractorCron);
-		int conId = 123;
-		contractorCronSpy.setConID(conId);
-		contractorCronSpy.setOpID(0);
+	public void testContractorsThatShouldBeCleared() throws Exception {
+		ContractorOperator co = EntityFactory.addContractorOperator(contractor, EntityFactory.makeOperator());
+		List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+		operators.add(co);
 		ContractorCronStep[] steps = new ContractorCronStep[1];
-		contractorCronSpy.setSteps(steps);
+		steps[0] = ContractorCronStep.CorporateRollup;
+
+		when(contractorDAO.find(anyInt())).thenReturn(contractor);
+		Whitebox.setInternalState(contractorCron, "conID", 123);
+		Whitebox.setInternalState(contractorCron, "steps", steps);
+
+		when(contractor.getOperators()).thenReturn(operators);
+
+		co.setFlagColor(FlagColor.Red);
+		co.setBaselineFlag(FlagColor.Red);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Requested);
-		when(contractorDAO.find(conId)).thenReturn(contractor);
+		contractorCron.execute();
+		assertTrue(co.getFlagColor().equals(FlagColor.Clear));
 
-		contractorCronSpy.execute();
+		co.setFlagColor(FlagColor.Red);
+		co.setBaselineFlag(FlagColor.Red);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
+		contractorCron.execute();
+		assertTrue(co.getFlagColor().equals(FlagColor.Clear));
 
-		verify(contractorCronSpy, never()).run(any(ContractorAccount.class), anyInt());
-	}
-
-	@Test
-	public void testExecute_WhenContractorStatusIsDeclined_ThenCronIsNotRun() throws Exception {
-		ContractorCron contractorCronSpy = spy(contractorCron);
-		int conId = 123;
-		contractorCronSpy.setConID(conId);
-		contractorCronSpy.setOpID(0);
-		ContractorCronStep[] steps = new ContractorCronStep[1];
-		contractorCronSpy.setSteps(steps);
+		co.setFlagColor(FlagColor.Red);
+		co.setBaselineFlag(FlagColor.Red);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
-		when(contractorDAO.find(conId)).thenReturn(contractor);
-
-		contractorCronSpy.execute();
-
-		verify(contractorCronSpy, never()).run(any(ContractorAccount.class), anyInt());
+		contractorCron.execute();
+		assertTrue(co.getFlagColor().equals(FlagColor.Clear));
 	}
 
     @Test
@@ -692,7 +694,6 @@ public class ContractorCronTest extends PicsActionTest {
 
         when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
         corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
-
 
         //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
         Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
@@ -722,11 +723,14 @@ public class ContractorCronTest extends PicsActionTest {
         when(coOperator.getFlagColor()).thenReturn(FlagColor.Red);
         corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
 
-
         //rollUpCorporateFlags(corporateRollupData, corporateUpdateQueue, coOperator, operator);
         Whitebox.invokeMethod(contractorCron, "rollUpCorporateFlags",
                 corporateRollupData, corporateUpdateQueue, coOperator,deletedChildOperatorWithRedFlag);
 
         assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
+
+	    corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
+	    when(deletedChildOperatorWithRedFlag.getStatus()).thenReturn(AccountStatus.Demo);
+	    assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
     }
 }

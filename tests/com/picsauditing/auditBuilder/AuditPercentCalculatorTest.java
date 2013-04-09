@@ -1,23 +1,11 @@
 package com.picsauditing.auditBuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.startsWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.AnswerMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -26,22 +14,15 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditQuestionFunction;
-import com.picsauditing.jpa.entities.AuditQuestionFunctionWatcher;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ScoreType;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.util.AnswerMap;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.startsWith;
+import static org.mockito.Mockito.*;
 
 public class AuditPercentCalculatorTest {
 	private AuditPercentCalculator calculator;
@@ -77,6 +58,7 @@ public class AuditPercentCalculatorTest {
 		Whitebox.setInternalState(calculator, "auditCategoryRuleCache", catRuleCache);
 		Whitebox.setInternalState(calculator, "logger", logger);
         Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+	    Whitebox.setInternalState(calculator, "auditDataDAO", auditDataDAO);
 
 		catRules.clear();
 		catRuleCache.clear();
@@ -92,6 +74,91 @@ public class AuditPercentCalculatorTest {
 		workflow.setHasRequirements(false);
 		auditType.setWorkFlow(workflow);
 		audit = EntityFactory.makeContractorAudit(auditType, contractor);
+	}
+
+	@Test
+	public void testChainedFunctions() throws Exception {
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+		cao.setStatus(AuditStatus.Pending);
+		audit.getOperators().add(cao);
+
+		AuditQuestion q1 = EntityFactory.makeAuditQuestion();
+		AuditQuestion q2 = EntityFactory.makeAuditQuestion();
+		AuditQuestion q3 = EntityFactory.makeAuditQuestion();
+		q1.setId(1);
+		q2.setId(2);
+		q3.setId(3);
+		q1.setUniqueCode("value");
+		q2.setUniqueCode("value");
+		q3.setUniqueCode("value");
+
+		AuditCategory ac1 = EntityFactory.makeAuditCategory(1);
+		AuditCategory ac2 = EntityFactory.makeAuditCategory(2);
+		ac1.getQuestions().add(q1);
+		ac1.getQuestions().add(q2);
+		ac2.getQuestions().add(q3);
+		audit.getAuditType().getCategories().add(ac1);
+		audit.getAuditType().getCategories().add(ac2);
+		q1.setCategory(ac1);
+		q2.setCategory(ac1);
+		q3.setCategory(ac2);
+
+		AuditCatData acd1 = EntityFactory.makeAuditCatData();
+		AuditCatData acd2 = EntityFactory.makeAuditCatData();
+		acd1.setId(1);
+		acd2.setId(2);
+		acd1.setCategory(ac1);
+		acd2.setCategory(ac2);
+		audit.getCategories().add(acd1);
+		audit.getCategories().add(acd2);
+		acd1.setAudit(audit);
+		acd2.setAudit(audit);
+
+		AuditQuestionFunction aqf2 = new AuditQuestionFunction();
+		AuditQuestionFunction aqf3 = new AuditQuestionFunction();
+		aqf2.setType(QuestionFunctionType.Calculation);
+		aqf3.setType(QuestionFunctionType.Calculation);
+		aqf2.setFunction(QuestionFunction.DOUBLE);
+		aqf3.setFunction(QuestionFunction.DOUBLE);
+		aqf2.setOverwrite(true);
+		aqf3.setOverwrite(true);
+		aqf2.setQuestion(q2);
+		aqf3.setQuestion(q3);
+		q2.getFunctions().add(aqf2);
+		q3.getFunctions().add(aqf3);
+
+		AuditQuestionFunctionWatcher aqfw1 = new AuditQuestionFunctionWatcher();
+		AuditQuestionFunctionWatcher aqfw2 = new AuditQuestionFunctionWatcher();
+		aqfw1.setFunction(aqf2);
+		aqfw2.setFunction(aqf3);
+		aqf2.getWatchers().add(aqfw1);
+		aqf3.getWatchers().add(aqfw2);
+		aqfw1.setQuestion(q1);
+		aqfw2.setQuestion(q2);
+		q1.getFunctionWatchers().add(aqfw1);
+		q2.getFunctionWatchers().add(aqfw2);
+
+		AuditData ad1 = EntityFactory.makeAuditData("1");
+		AuditData ad2 = EntityFactory.makeAuditData("0");
+		AuditData ad3 = EntityFactory.makeAuditData("0");
+		ad1.setQuestion(q1);
+		ad2.setQuestion(q2);
+		ad3.setQuestion(q3);
+		List<AuditData> answers = new ArrayList<AuditData>();
+		answers.add(ad1);
+		answers.add(ad2);
+		answers.add(ad3);
+		AnswerMap map = new AnswerMap(answers);
+
+		when(auditDataDAO.findAnswersByAuditAndQuestions(any(ContractorAudit.class), anyCollectionOf(Integer.class))).thenReturn(map);
+		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q1.getId())).thenReturn(ad1);
+		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q2.getId())).thenReturn(ad2);
+		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q3.getId())).thenReturn(ad3);
+
+		calculator.updatePercentageCompleted(acd1);
+		assertTrue(ad1.getAnswer().equals("1"));
+		assertTrue(ad2.getAnswer().equals("2"));
+		assertTrue(ad3.getAnswer().equals("4"));
 	}
 
 	@Test
