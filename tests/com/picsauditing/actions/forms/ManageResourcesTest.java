@@ -123,6 +123,6 @@ public class ManageResourcesTest extends PicsActionTest {
     }
 
     private Integer randomPicsCorpId() {
-        return Account.PICS_CORPORATE.get((int) (Math.random() * (Account.PICS_CORPORATE.size() + 1)));
+        return Account.PICS_CORPORATE.get((int) (Math.random() * Account.PICS_CORPORATE.size()));
     }
 }
