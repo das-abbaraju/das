@@ -114,6 +114,25 @@ public class ReportBuilderTest {
 		assertEquals(columnCompare, fieldForComparision.getDatabaseColumnName());
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFromJson_WhenColumnHasNullId_ThenIdSetToDefaultValue() throws ReportValidationException {
+		JSONObject columnJson = new JSONObject();
+		columnJson.put(REPORT_ELEMENT_DB_ID, null);
+
+		JSONArray columnsJson = new JSONArray();
+		columnsJson.add(columnJson);
+
+		JSONObject reportJson = makeMinimalReportJson();
+		reportJson.put(REPORT_COLUMNS, columnsJson);
+
+		Report report = ReportBuilder.fromJson(reportJson);
+		assertEquals(1, report.getColumns().size());
+
+		Column column = report.getColumns().get(0);
+		assertEquals(DEFAULT_REPORT_ELEMENT_DB_ID, column.getId());
+	}
+
 	private JSONObject makeMinimalReportJson() {
 		return makeReportJson("", "", ModelType.Accounts, "");
 	}
