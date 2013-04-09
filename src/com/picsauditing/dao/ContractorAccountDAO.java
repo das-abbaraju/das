@@ -63,11 +63,13 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<ContractorAccount> findWhere(String where, int limit) {
-		if (where == null)
+		if (where == null) {
 			where = "";
+		}
 
-		if (where.length() > NO_LIMIT)
+		if (where.length() > NO_LIMIT) {
 			where = "WHERE " + where;
+		}
 
 		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
 		if (limit > 0) {
@@ -78,10 +80,12 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<ContractorAccount> findWhere(String where, Object... params) {
-		if (where == null)
+		if (where == null) {
 			where = "";
-		if (where.length() > 0)
+		}
+		if (where.length() > 0) {
 			where = "WHERE " + where;
+		}
 		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
 		for (int i = 0; i < params.length; i++) {
 			query.setParameter(i + 1, params[i]);
@@ -91,24 +95,28 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	/**
 	 * Return a list of Contractors
-	 * 
+	 *
 	 * @param where
 	 * @param permissions
 	 * @return
 	 */
 	public List<ContractorAccount> findWhere(String where, Permissions permissions) {
 		// Now get the contractor list
-		if (where == null)
+		if (where == null) {
 			where = "";
+		}
 
-		if (where.length() > 0)
+		if (where.length() > 0) {
 			where += " AND ";
+		}
 
 		where += "a.status IN ('Active'";
-		if (permissions.isAdmin())
+		if (permissions.isAdmin()) {
 			where += ",'Pending'";
-		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
+		}
+		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo()) {
 			where += ",'Demo'";
+		}
 		where += ") ";
 
 		where += "AND (a.id = " + permissions.getAccountId() + " )";
@@ -120,7 +128,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	/**
 	 * Alias a
-	 * 
+	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @return
@@ -140,18 +148,20 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<ContractorOperator> findOperators(ContractorAccount contractor, Permissions permissions, String where) {
-		if (where == null)
+		if (where == null) {
 			where = "";
+		}
 
 		if (permissions.isGeneralContractor()) {
 			where += " AND (operatorAccount.id = " + permissions.getAccountId()
 					+ " OR operatorAccount IN (SELECT corporate FROM Facility "
 					+ "WHERE type = 'GeneralContractor' AND operator.id = " + permissions.getAccountId() + "))";
 		} else {
-			if (permissions.isCorporate())
+			if (permissions.isCorporate()) {
 				// Show corporate users operators in their facility
 				where += " AND operatorAccount IN (SELECT operator FROM Facility " + "WHERE corporate = "
 						+ permissions.getAccountId() + ")";
+			}
 			if (permissions.isOperator()) {
 				// Show operator users operators that share the same corporate
 				// facility
@@ -169,8 +179,9 @@ public class ContractorAccountDAO extends PicsDAO {
 
 		// Make sure we have the list of operators
 		List<ContractorOperator> list = query.getResultList();
-		for (ContractorOperator co : list)
+		for (ContractorOperator co : list) {
 			co.getOperatorAccount();
+		}
 
 		return list;
 	}
@@ -208,8 +219,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public ContractorAccount findTaxID(String taxId, String country) {
-		if (taxId == null)
+		if (taxId == null) {
 			taxId = "";
+		}
 		try {
 			Query query = em
 					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId LIKE :taxId AND country.isoCode = :country");
@@ -239,8 +251,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public ContractorAccount findConID(String name) {
-		if (Strings.isEmpty(name))
+		if (Strings.isEmpty(name)) {
 			return null;
+		}
 
 		try {
 			Query query;
@@ -257,8 +270,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
 		String hql = "SELECT c.id FROM ContractorAccount c WHERE (c.status IN ('Active','Pending','Demo') OR c.balance > 0) AND ("
 				+ "c.lastRecalculation < :lastRunDate OR c.lastRecalculation IS NULL)";
-		if (contractorsToIgnore.size() > 0)
+		if (contractorsToIgnore.size() > 0) {
 			hql += " AND c.id NOT IN (" + Strings.implode(contractorsToIgnore) + ")";
+		}
 		hql += " ORDER BY c.needsRecalculation DESC, c.lastRecalculation";
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
@@ -292,13 +306,14 @@ public class ContractorAccountDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public void updateContractorByOperator(OperatorAccount operator) {
 		String subSelect = "";
-		if (operator.isOperator())
+		if (operator.isOperator()) {
 			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
-		else if (operator.isCorporate())
+		} else if (operator.isCorporate()) {
 			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
 					+ operator.getId();
-		else
+		} else {
 			return;
+		}
 
 		String sql = "UPDATE contractor_info SET needsRecalculation = 1 " + "WHERE id IN (" + subSelect + ")";
 
@@ -308,13 +323,14 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	public int findContractorsNeedingRecalculation(OperatorAccount operator) {
 		String subSelect = "";
-		if (operator.isOperator())
+		if (operator.isOperator()) {
 			subSelect += "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + operator.getId();
-		else if (operator.isCorporate())
+		} else if (operator.isCorporate()) {
 			subSelect += "SELECT gc.subID FROM generalcontractors gc JOIN facilities f on gc.genID = f.opID WHERE f.corporateID = "
 					+ operator.getId();
-		else
+		} else {
 			return 0;
+		}
 
 		String sql = "SELECT count(*) total FROM contractor_info " + "WHERE needsRecalculation >= 1 AND id IN ("
 				+ subSelect + ")";
@@ -403,8 +419,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<ContractorAccount> findByContractorIds(Set<Integer> conIDs) {
-		if (conIDs == null || conIDs.size() == 0)
+		if (conIDs == null || conIDs.size() == 0) {
 			return new ArrayList<ContractorAccount>();
+		}
 
 		String ids = Strings.implodeForDB(conIDs, ",");
 		Query query = em.createQuery("SELECT a FROM ContractorAccount a WHERE a.id in (" + ids + ")");
@@ -463,17 +480,21 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql);
 		return query.executeUpdate();
 	}
-	
+
 	@Transactional(propagation = Propagation.NESTED)
 	public int updateLastRecalculationToNow(String conIds) {
 		if (Strings.isEmpty(conIds)) {
 			return 0;
 		}
-		
-		String sql = "UPDATE contractor_info c " + 
+
+		String sql = "UPDATE contractor_info c " +
 				"SET c.lastRecalculation = NOW() " +
 				"WHERE c.id IN (" + conIds + ")";
 		Query q = em.createNativeQuery(sql);
 		return q.executeUpdate();
+	}
+
+	public void detach(ContractorAccount contractor) {
+		em.detach(contractor);
 	}
 }

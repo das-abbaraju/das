@@ -62,7 +62,7 @@ public String logout() throws Exception {
 
 # Match the constant back to struts.xml to obtain available template (if there is one)
 &lt;action name="Login" class="com.picsauditing.access.LoginController"&gt;&lt;/action&gt;
-    &lt;result&gt;/struts/users/login.jsp&lt;/result&gt;
+    &lt;result&gt;/struts/user/login/login.jsp&lt;/result&gt;
     &lt;result name="logout"&gt;/some-other-file.jsp&lt;/result&gt;
 &lt;/action&gt;
 </pre>

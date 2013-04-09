@@ -1,0 +1,53 @@
+.AccountRecovery-page
+{
+    .notice
+    {
+        padding: 40px 60px;
+        width: 220px;
+    }
+
+    h1
+    {
+        font-size: 25px;
+        margin-top: 0px;
+    }
+    
+    .alert h4
+    {
+        text-align: left;
+    }
+    
+    form
+    {
+        text-align: left;
+        margin: 0px;
+    }
+
+    .logo
+    {
+        margin-bottom: 30px;
+    }
+
+    .form-actions
+    {
+        margin-top: 30px;
+        text-align: right;
+        
+        button
+        {
+            margin-left: 5px;
+        }
+    }
+    
+    #username,
+    #email
+    {
+        display: block;
+    }
+    
+    #recover_password,
+    #recover_username
+    {
+        text-align: left;
+    }
+}

@@ -21,8 +21,10 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -50,10 +52,14 @@ public class RegistrationGapAnalysisTest {
 	@Mock
 	private Permissions permissions;
 
+	@BeforeClass
+	public static void classSetup() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", Mockito.mock(Database.class));
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		counter = 1;
 

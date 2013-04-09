@@ -1,27 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.toggle.FeatureToggle;
-import org.apache.struts2.ServletActionContext;
-import org.perf4j.StopWatch;
-import org.perf4j.slf4j.Slf4JStopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -30,16 +8,20 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.PermissionToViewContractor;
-import com.picsauditing.util.Strings;
+import org.apache.struts2.ServletActionContext;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
@@ -229,13 +211,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			// set urls based on step
 			switch (step) {
-			case Done:
-			case Payment:
-				itemPaymentOptions.setUrl("RegistrationMakePayment.action?id=" + id);
-			case Risk:
-				itemServices.setUrl("RegistrationServiceEvaluation.action?id=" + id);
-			case Clients:
-				itemFacilities.setUrl("RegistrationAddClientSite.action?id=" + id);
+				case Done:
+				case Payment:
+					itemPaymentOptions.setUrl("RegistrationMakePayment.action?id=" + id);
+				case Risk:
+					itemServices.setUrl("RegistrationServiceEvaluation.action?id=" + id);
+				case Clients:
+					itemFacilities.setUrl("RegistrationAddClientSite.action?id=" + id);
 			}
 		}
 
@@ -255,314 +237,25 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * * Annual Update<br>
 	 * * InsureGUARD<br>
 	 * * Audits<br>
-	 * 
+	 *
 	 * @return
 	 */
-    // TODO Technical Debt: PICS-9664
 	public List<MenuComponent> getAuditMenu() {
-		final int MAX_MENU_ITEM = 10;
-		boolean addMoreMenu = false;
+		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
+		logger.info("Found [{}] total active audits", auditList.size());
 
 		Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 		StopWatch stopwatch = new Slf4JStopWatch(profiler);
 		stopwatch.start("ContractorActionSupport.getAuditMenu");
 
-		// Create the menu
-		List<MenuComponent> menu = new ArrayList<MenuComponent>();
-		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
-
-        // PICS-9473 Operators should not be able to view a Pending/Requested Contractor's PQF or Flag
-        if (permissions.isOperatorCorporate() && (contractor.getStatus() == AccountStatus.Pending ||
-                contractor.getStatus() == AccountStatus.Requested)) {
-            return menu;
-        }
-
-		// Sort audits, by throwing them into a tree set and sorting them by
-		// display and then name
-		TreeSet<ContractorAudit> treeSet = new TreeSet<ContractorAudit>(new Comparator<ContractorAudit>() {
-			public int compare(ContractorAudit o1, ContractorAudit o2) {
-				if (o1 == null || o2 == null)
-					return 0; // can't compare null objects
-
-				if (o1.getAuditType().getDisplayOrder() < o2.getAuditType().getDisplayOrder())
-					return -1;
-				if (o1.getAuditType().getDisplayOrder() > o2.getAuditType().getDisplayOrder())
-					return 1;
-
-				if (o1.getAuditType().equals(o2.getAuditType())) {
-					if (o1.getAuditFor() != null && o2.getAuditFor() != null) {
-						if (o1.getAuditType().isAnnualAddendum()) {
-							// e.g. Annual Update 2011 vs Annual Update 2010
-							int descendingCompare = o2.getAuditFor().compareTo(o1.getAuditFor());
-							return (descendingCompare == 0) ? o1.getId() - o2.getId() : descendingCompare;
-						} else {
-							int ascendingCompare = o1.getAuditFor().compareTo(o2.getAuditFor());
-							return (ascendingCompare == 0) ? o1.getId() - o2.getId() : ascendingCompare;
-						}
-					} else {
-						// Just in case
-						return o1.getId() - o2.getId();
-					}
-				}
-
-				// get display names as seen in menu
-				String name1 = getText(o1.getAuditType().getI18nKey("name"));
-				String name2 = getText(o2.getAuditType().getI18nKey("name"));
-				if (name1 == null || name2 == null)
-					// Just in case
-					return o1.getId() - o2.getId();
-
-				return name1.compareTo(name2);
-			}
-		});
-		treeSet.addAll(auditList);
-		auditList = treeSet;
-
-		logger.info("Found [{}] total active audits", auditList.size());
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			// Add the PQF
-			MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
-					+ id);
-			addMoreMenu = false;
-			Iterator<ContractorAudit> iter = auditList.iterator();
-			while (iter.hasNext()) {
-				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().isPqf()) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
-							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
-						if (subMenu.getChildren().size() < MAX_MENU_ITEM || audit.getAuditType().isPqf()) {
-							MenuComponent childMenu = createMenuItem(subMenu, audit);
-							childMenu.setUrl("Audit.action?auditID=" + audit.getId());
-						}
-
-						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
-
-						// Put Trades menu after 'PQF' menu entry
-						if (audit.getAuditType().isPqf()) {
-							MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"),
-									"ContractorTrades.action?id=" + id);
-							if (contractor != null && !contractor.isNeedsTradesUpdated()
-									&& permissions.isOperatorCorporate())
-								// Only operators need to see the checkmarks?
-								tradeItem.setCssClass("done");
-						}
-					}
-					iter.remove();
-				}
-			}
-
-			if (addMoreMenu) {
-				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id);
-			}
-            menu.add(subMenu);
-
-		}
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			// Add the Annual Updates
-			MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), "ContractorDocuments.action?id="
-					+ id + "#" + ContractorDocuments.getSafeName(getText("AuditType.11.name")));
-			Iterator<ContractorAudit> iter = auditList.iterator();
-			while (iter.hasNext()) {
-				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().isAnnualAddendum()) {
-					String linkText = this.getTextParameterized("ContractorActionSupport.Update", audit.getAuditFor());
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						childMenu.setName(linkText);
-					}
-					iter.remove();
-				}
-			}
-
-			addSubMenu(menu, subMenu);
-		}
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance)) {
-			// Add InsureGUARD
-			MenuComponent subMenu = new MenuComponent(getText("global.InsureGUARD"), "ConInsureGUARD.action?id=" + id);
-			Iterator<ContractorAudit> iter = auditList.iterator();
-			while (iter.hasNext()) {
-				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-						&& audit.getOperators().size() > 0) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String linkText = getText(audit.getAuditType().getI18nKey("name"));
-						if (audit.getEffectiveDate() != null || audit.getAuditType().isWCB()) {
-							String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-							linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
-						} else {
-							linkText = getText(audit.getAuditType().getI18nKey("name")) + " " + getText("ContractorAudit.New");
-						}
-						childMenu.setName(linkText);
-						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
-					}
-					iter.remove();
-				}
-			}
-
-			if (subMenu.getChildren().size() > 0) {
-				subMenu.addChild(getText("ContractorActionSupport.ManageCertificates"), "ConInsureGUARD.action?id="
-						+ contractor.getId());
-
-				if (permissions.hasPermission(OpPerms.AuditVerification))
-					subMenu.addChild(getText("ContractorActionSupport.InsuranceVerification"),
-							"InsureGuardVerification.action?contractor=" + contractor.getId());
-
-				addSubMenu(menu, subMenu);
-			}
-		}
-
-		if (contractor.isHasEmployeeGUARDTag()
-				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
-			// Add EmployeeGUARD
-			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id="
-					+ id);
-			Iterator<ContractorAudit> iter = auditList.iterator();
-			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
-				subMenu.addChild(getText("ManageEmployees.title"), "ManageEmployees.action?id=" + id);
-			}
-			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.DefineRoles)) {
-				subMenu.addChild(getText("ManageJobRoles.title"), "ManageJobRoles.action?id=" + id);
-			}
-			while (iter.hasNext()) {
-				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().isImEmployee() && audit.getOperators().size() > 0) {
-					if (employeeGuardAudits == null)
-						employeeGuardAudits = new ArrayList<ContractorAudit>();
-					employeeGuardAudits.add(audit);
-
-					if (!audit.getAuditType().isEmployeeSpecificAudit()) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
-						childMenu.setName(linkText);
-						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
-					}
-					iter.remove();
-				}
-			}
-
-			if (isManuallyAddAudit()) {
-				subMenu.addChild(getText("EmployeeGUARD.CreateNewAudit"), "AuditOverride.action?id=" + id);
-			}
-
-			addSubMenu(menu, subMenu);
-		}
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-			// All AuditGUARD Audits
-
-			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id="
-					+ id + "#auditguard");
-			addMoreMenu = false;
-			for (ContractorAudit audit : auditList) {
-				if (displayAuditUnderAuditGUARDMenu(audit)) {
-					if (subMenu.getChildren().size() < MAX_MENU_ITEM
-							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
-						MenuComponent childMenu;
-						if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review))
-							childMenu= createMenuItemMovedMenuItem(subMenu, audit);
-						else
-							childMenu = createMenuItem(subMenu, audit);
-
-						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
-						if (!Strings.isEmpty(audit.getAuditFor()))
-							linkText = audit.getAuditFor() + " " + linkText;
-						childMenu.setName(linkText);
-
-						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
-					}
-				}
-			}
-
-			if (addMoreMenu) {
-				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
-			}
-
-			addSubMenu(menu, subMenu);
-		}
-
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
-			// All Reviews Audits
-
-			MenuComponent subMenu = new MenuComponent(getText("global.ClientReviews"), "ContractorDocuments.action?id="
-					+ id + "#reviews");
-			addMoreMenu = false;
-			for (ContractorAudit audit : auditList) {
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review)) {
-					if (subMenu.getChildren().size() < MAX_MENU_ITEM
-							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-
-						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
-						if (!Strings.isEmpty(audit.getAuditFor()))
-							linkText = audit.getAuditFor() + " " + linkText;
-						childMenu.setName(linkText);
-
-						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
-					}
-				}
-			}
-
-			if (addMoreMenu) {
-				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.ClientReviews")));
-			}
-
-			addSubMenu(menu, subMenu);
-		}
+		AuditMenuBuilder auditMenuBuilder = new AuditMenuBuilder(contractor, permissions);
+		auditMenuBuilder.setManuallyAddedAuditTypes(getManuallyAddAudits());
+		auditMenuBuilder.setClientReviewsUnderAuditGUARD(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD));
+		List<MenuComponent> menu = auditMenuBuilder.buildAuditMenuFrom(auditList);
 
 		stopwatch.stop();
-
 		resetActiveAudits();
 		return menu;
-	}
-
-	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
-		if (subMenu.getChildren().size() > 0) {
-			logger.info("Found [{}] {}{}", new Object[] { subMenu.getChildren().size(), subMenu.getName(),
-					(subMenu.getChildren().size() == 1 ? "" : "s") });
-			menu.add(subMenu);
-		}
-	}
-
-	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {
-		String linkText = getText(audit.getAuditType().getI18nKey("name"));
-
-		MenuComponent menuItem = subMenu.addChild(linkText, "Audit.action?auditID=" + audit.getId());
-		menuItem.setAuditId(audit.getId());
-		if (isShowCheckIcon(audit))
-			menuItem.setCssClass("done");
-
-		return menuItem;
-	}
-
-	private MenuComponent createMenuItemMovedMenuItem(MenuComponent subMenu, ContractorAudit audit) {
-		String linkText = getText(audit.getAuditType().getI18nKey("name"));
-
-		MenuComponent menuItem = subMenu.addChild(linkText, "AuditMoved.action?auditID=" + audit.getId());
-		menuItem.setAuditId(audit.getId());
-		if (isShowCheckIcon(audit))
-			menuItem.setCssClass("done");
-
-		return menuItem;
-	}
-
-	private boolean displayAuditUnderAuditGUARDMenu(ContractorAudit audit) {
-		AuditTypeClass classType = audit.getAuditType().getClassType();
-		if (classType.equals(AuditTypeClass.Audit)) {
-			return true;
-		} else if (classType.equals(AuditTypeClass.Review) &&
-				featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD)) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -632,7 +325,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * 
 	 * @return a list of the certificates, if the user is an operator/corporate
 	 *         then this does the appropriate checking to remove the certs that
 	 *         they shouldn't be able to see
@@ -704,7 +396,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * Get a list of Audits that the current user can see Operators can't see
 	 * each other's audits Contractors can't see the Welcome Call This is a bit
 	 * complicated but needs to look at permissions
-	 * 
+	 *
 	 * @return
 	 */
 	public List<ContractorAudit> getAudits() {
@@ -731,17 +423,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return LowMedHigh.values();
 	}
 
-	public boolean isShowCheckIcon(ContractorAudit conAudit) {
-		AuditStatus status = getActiveAuditsStatuses().get(conAudit);
-		if (status == null)
-			return false;
-
-		if (status.after(AuditStatus.Resubmitted))
-			return true;
-
-		return false;
-	}
-
 	public ContractorRegistrationStep getCurrentStep() {
 		return currentStep;
 	}
@@ -757,7 +438,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	/**
 	 * We're assuming that the ording in the enum is the standard order of
 	 * contractor registration.
-	 * 
+	 *
 	 * @return Previous ContractorRegistrationStep, according to the
 	 *         ContractorRegistrationStep enum order
 	 */
@@ -814,24 +495,24 @@ public class ContractorActionSupport extends AccountActionSupport {
 				int tradePercent = Math.round(10f * activityPercent / sumTrades);
 
 				switch (trade.getActivityPercent()) {
-				case 1:
-					tradePercent = cap(tradePercent, 1, 6);
-					break;
-				case 3:
-					tradePercent = cap(tradePercent, 2, 7);
-					break;
-				case 5:
-					tradePercent = cap(tradePercent, 3, 8);
-					break;
-				case 7:
-					tradePercent = cap(tradePercent, 4, 9);
-					break;
-				case 9:
-					tradePercent = cap(tradePercent, 5, 10);
-					break;
+					case 1:
+						tradePercent = cap(tradePercent, 1, 6);
+						break;
+					case 3:
+						tradePercent = cap(tradePercent, 2, 7);
+						break;
+					case 5:
+						tradePercent = cap(tradePercent, 3, 8);
+						break;
+					case 7:
+						tradePercent = cap(tradePercent, 4, 9);
+						break;
+					case 9:
+						tradePercent = cap(tradePercent, 5, 10);
+						break;
 
-				default:
-					tradePercent = cap(tradePercent, 1, 10);
+					default:
+						tradePercent = cap(tradePercent, 1, 10);
 				}
 				tradeCssMap.put(trade, "" + tradePercent);
 
@@ -871,10 +552,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorAudit> getEmployeeGuardAudits() {
 		return employeeGuardAudits;
-	}
-
-	public void setEmployeeGuardAudits(List<ContractorAudit> employeeGuardAudits) {
-		this.employeeGuardAudits = employeeGuardAudits;
 	}
 
 	public boolean isManuallyAddAudit() {
@@ -936,7 +613,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			else if (permissions.isOperator()) {
 				if (auditTypeRule.getOperatorAccount() != null
 						&& (permissions.getCorporateParent().contains(auditTypeRule.getOperatorAccount().getId()) || permissions
-								.getAccountId() == auditTypeRule.getOperatorAccount().getId())) {
+						.getAccountId() == auditTypeRule.getOperatorAccount().getId())) {
 					return true;
 				}
 			} else if (permissions.isCorporate()) {
