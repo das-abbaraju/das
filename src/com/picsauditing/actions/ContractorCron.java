@@ -948,6 +948,8 @@ public class ContractorCron extends PicsActionSupport {
 								.get(parent) : FlagColor.Green;
 						FlagColor operatorFacilityColor = coOperator.getFlagColor();
 						FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+						if (worstColor == null)
+							worstColor = FlagColor.Green;
 						corporateRollupData.put(parent, worstColor);
 					}
 				} // otherwise operator has no one to roll up to
@@ -966,6 +968,8 @@ public class ContractorCron extends PicsActionSupport {
 				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
 
 				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
+				if (worstColor == null)
+					worstColor = FlagColor.Green;
 				corporateRollupData.put(parent, worstColor);
 
 				// putting parent at the end of the queue for later calculation
@@ -977,7 +981,10 @@ public class ContractorCron extends PicsActionSupport {
 		// for all entries that exist in my existingCorpCOchanges (linked).
 		// Update entries based off of corporateRollupData.
 		for (OperatorAccount corporate : existingCorpCOchanges.keySet()) {
-			existingCorpCOchanges.get(corporate).setFlagColor(corporateRollupData.get(corporate));
+			FlagColor flag = corporateRollupData.get(corporate);
+			if (flag == null)
+				flag = FlagColor.Green;
+			existingCorpCOchanges.get(corporate).setFlagColor(flag);
 			corporateSet.remove(corporate);
 		}
 
@@ -986,7 +993,10 @@ public class ContractorCron extends PicsActionSupport {
 			ContractorOperator newCo = new ContractorOperator();
 			newCo.setCreationDate(new Date());
 			newCo.setUpdateDate(new Date());
-			newCo.setFlagColor(corporateRollupData.get(corporate));
+			FlagColor flag = corporateRollupData.get(corporate);
+			if (flag == null)
+				flag = FlagColor.Green;
+			newCo.setFlagColor(flag);
 			newCo.setOperatorAccount(corporate);
 			newCo.setContractorAccount(contractor);
 			newCo.setCreatedBy(new User(User.SYSTEM));
@@ -1005,7 +1015,7 @@ public class ContractorCron extends PicsActionSupport {
     private void rollUpCorporateFlags(Map<OperatorAccount, FlagColor> corporateRollupData,
                                       Queue<OperatorAccount> corporateUpdateQueue,
                                       ContractorOperator coOperator, OperatorAccount operator) {
-        if (operator.getStatus() != AccountStatus.Active) {
+        if (operator.getStatus() != AccountStatus.Active && operator.getStatus() != AccountStatus.Demo) {
             return;
         }
 
@@ -1021,6 +1031,8 @@ public class ContractorCron extends PicsActionSupport {
                     .get(parent) : FlagColor.Green;
             FlagColor operatorFacilityColor = coOperator.getFlagColor();
             FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+	        if (worstColor == null)
+		        worstColor = FlagColor.Green;
             corporateRollupData.put(parent, worstColor);
         }
     }

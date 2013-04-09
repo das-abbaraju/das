@@ -728,5 +728,9 @@ public class ContractorCronTest extends PicsActionTest {
                 corporateRollupData, corporateUpdateQueue, coOperator,deletedChildOperatorWithRedFlag);
 
         assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
+
+	    corporateRollupData.put(corporateWithGreenFlag, FlagColor.Green);
+	    when(deletedChildOperatorWithRedFlag.getStatus()).thenReturn(AccountStatus.Demo);
+	    assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
     }
 }
