@@ -170,7 +170,7 @@ public abstract class ReportElement {
 		if (sqlFunction == null) {
 			return fieldSql;
 		}
-
+		// todo: move to SqlFunction.getSql(operand)
 		switch (sqlFunction) {
 		case Average:
 			return "AVG(" + fieldSql + ")";
@@ -186,8 +186,6 @@ public abstract class ReportElement {
 			return "HOUR(" + fieldSql + ")";
 		case Length:
 			return "LENGTH(" + fieldSql + ")";
-		case Left:
-			return "LEFT(" + fieldSql + ")";
 		case LowerCase:
 			return "LOWER(" + fieldSql + ")";
 		case Max:

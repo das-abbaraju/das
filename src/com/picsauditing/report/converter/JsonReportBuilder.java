@@ -119,7 +119,7 @@ public class JsonReportBuilder {
 		JSONObject json = elementToCommonJson(column);
 
 		json.put(COLUMN_ID, column.getColumnId());
-		json.put(COLUMN_TYPE, column.getField().getDisplayType().name());
+		json.put(COLUMN_TYPE, column.getDisplayType().name());
 		json.put(COLUMN_URL, column.getField().getUrl());
 		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
 		json.put(COLUMN_WIDTH, column.getWidth());

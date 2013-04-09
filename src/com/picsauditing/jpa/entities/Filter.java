@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,6 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryDateParameter;
-import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -124,7 +121,6 @@ public class Filter extends ReportElement {
 	private String buildFilterSingleValue() {
 		FilterType filterType = getFilterType();
 
-		// todo: think about impact of applying sqlfunction to one column and then applying it to another column
 		if (fieldForComparison != null) {
 			return fieldForComparison.getDatabaseColumnName();
 		}
@@ -137,6 +133,7 @@ public class Filter extends ReportElement {
 			return "'" + dateValue + "'";
 		}
 
+		// Todo: Consider converting FilterTypes to classes that extend Filter
 		if (filterType == FilterType.Boolean) {
 			if (filterValue.equals("1")) {
 				return true + Strings.EMPTY_STRING;
@@ -215,7 +212,7 @@ public class Filter extends ReportElement {
 	@Transient
 	private FilterType getFilterType() {
 		if (sqlFunction != null) {
-			return sqlFunction.getReturnType().getFilterType();
+			return sqlFunction.getFilterType(field);
 		}
 		return field.getType().getFilterType();
 	}
