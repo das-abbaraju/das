@@ -341,33 +341,39 @@ public class ManageResources extends PicsActionSupport {
 
 	public List<Account> getFacilities() {
 		if (operator != null) {
-			ArrayList<Integer> ids = new ArrayList<Integer>();
-				if (permissions.isAdmin()) {
-					ids.add(Account.PicsID);
-				}
-			ids.add(operator.getId());
-			for (Facility facility :operator.getCorporateFacilities()) {
-				ids.add(facility.getId());
-			}
-			for (OperatorAccount oa :operator.getParentOperators()) {
-				if (permissions.isAdmin() || !Account.PICS_CORPORATE.contains(oa.getId()))
-					ids.add(oa.getId());
-			}
+            ArrayList<Integer> ids = facilityIdsToCheck();
 			@SuppressWarnings("unchecked")
 			List<Account> list = (List<Account>) dao.findWhere(Account.class,
 					"t.id IN (" + Strings.implode(ids) + ") AND t.type IN ('Operator', 'Corporate') ", 0,
 					"CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
 			return list;
 		} else {
-		@SuppressWarnings("unchecked")
-		List<Account> list = (List<Account>) dao.findWhere(Account.class,
-				"t.type IN ('Operator','Corporate') or t.id="+Account.PicsID, 0,
-				"CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
-		return list;
+            @SuppressWarnings("unchecked")
+            List<Account> list = (List<Account>) dao.findWhere(Account.class,
+                    "t.type IN ('Operator','Corporate') or t.id="+Account.PicsID, 0,
+                    "CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
+            return list;
 		}
 	}
 
-	public File getFile() {
+    private ArrayList<Integer> facilityIdsToCheck() {
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        if (permissions.isAdmin()) {
+            ids.add(Account.PicsID);
+        }
+        ids.add(operator.getId());
+        for (Facility facility :operator.getCorporateFacilities()) {
+            ids.add(facility.getCorporate().getId());
+        }
+        for (OperatorAccount oa :operator.getParentOperators()) {
+            if (permissions.isAdmin() || !Account.PICS_CORPORATE.contains(oa.getId())) {
+                ids.add(oa.getId());
+            }
+        }
+        return ids;
+    }
+
+    public File getFile() {
 		return file;
 	}
 
