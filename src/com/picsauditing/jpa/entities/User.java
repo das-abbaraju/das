@@ -519,6 +519,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
         return userPerms;
     }
 
+    @ReportField(importance = FieldImportance.Average)
     public Locale getLocale() {
 		return locale;
 	}
