@@ -29,6 +29,10 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class AccountRecoveryTest {
+	private static final String PASSWORD = "password";
+
+	private static final String USERNAME = "username";
+
 	private AccountRecovery accountRecovery;
 
 	@Mock
@@ -72,23 +76,16 @@ public class AccountRecoveryTest {
 
 	@Test
 	public void testFindName_EmailIsNullOrEmpty() throws Exception {
-		String url = "/AccountRecovery!recoverUsername";
-		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
-
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+		assertEquals(USERNAME, accountRecovery.findName());
 		assertTrue(accountRecovery.hasActionErrors());
-		assertTrue(accountRecovery.getActionErrors().contains(InputValidator.REQUIRED_KEY));
-		assertEquals(url, accountRecovery.getUrl());
 
 		verify(emailSender, never()).send(any(EmailQueue.class));
 
 		accountRecovery.setEmail("");
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+		assertEquals(USERNAME, accountRecovery.findName());
 		assertTrue(accountRecovery.hasActionErrors());
-		assertTrue(accountRecovery.getActionErrors().contains(InputValidator.REQUIRED_KEY));
 		assertFalse(accountRecovery.hasActionMessages());
-		assertEquals(url, accountRecovery.getUrl());
 
 		verify(emailBuilder, never()).build();
 		verify(emailTemplateDAO, never()).find(anyInt());
@@ -98,16 +95,11 @@ public class AccountRecoveryTest {
 
 	@Test
 	public void testFindName_EmailIsInvalid() throws Exception {
-		String url = "/AccountRecovery!recoverUsername";
-		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
-
 		accountRecovery.setEmail("Test email");
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+		assertEquals(USERNAME, accountRecovery.findName());
 		assertTrue(accountRecovery.hasActionErrors());
-		assertTrue(accountRecovery.getActionErrors().contains(InputValidator.INVALID_EMAIL_FORMAT_KEY));
 		assertFalse(accountRecovery.hasActionMessages());
-		assertEquals(url, accountRecovery.getUrl());
 
 		verify(emailBuilder, never()).build();
 		verify(emailTemplateDAO, never()).find(anyInt());
@@ -138,6 +130,7 @@ public class AccountRecoveryTest {
 	public void testFindName_EmailMatchesAtLeastOneUser() throws Exception {
 		String email = "tester@picsauditing.com";
 		String url = "/AccountRecovery!recoverUsername";
+		String loginUrl = "Login";
 
 		List<User> matchingUsers = new ArrayList<>();
 		matchingUsers.add(user);
@@ -145,6 +138,7 @@ public class AccountRecoveryTest {
 		when(emailBuilder.build()).thenReturn(emailQueue);
 		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
 		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
+		when(urlUtils.getActionUrl(loginUrl)).thenReturn(loginUrl);
 		when(user.getEmail()).thenReturn(email);
 		when(userDAO.findByEmail(anyString())).thenReturn(matchingUsers);
 
@@ -153,7 +147,7 @@ public class AccountRecoveryTest {
 		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
 		assertFalse(accountRecovery.hasActionErrors());
 		assertTrue(accountRecovery.hasActionMessages());
-		assertEquals(url, accountRecovery.getUrl());
+		assertEquals(loginUrl, accountRecovery.getUrl());
 
 		verify(emailBuilder).build();
 		verify(emailSender).send(any(EmailQueue.class));
@@ -179,10 +173,9 @@ public class AccountRecoveryTest {
 
 		accountRecovery.setEmail(email);
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+		assertEquals(USERNAME, accountRecovery.findName());
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
-		assertEquals(url, accountRecovery.getUrl());
 
 		verify(emailBuilder).build();
 		verify(emailSender, never()).send(any(EmailQueue.class));
@@ -193,15 +186,15 @@ public class AccountRecoveryTest {
 
 	@Test
 	public void testResetPassword_EmptyOrNullOrDeletedUserName() throws Exception {
-		assertEquals(PicsActionSupport.SUCCESS, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, accountRecovery.resetPassword());
 		assertTrue(accountRecovery.hasActionErrors());
 
 		accountRecovery.setUsername("");
-		assertEquals(PicsActionSupport.SUCCESS, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, accountRecovery.resetPassword());
 		assertTrue(accountRecovery.hasActionErrors());
 
 		accountRecovery.setUsername("DELETE-test");
-		assertEquals(PicsActionSupport.SUCCESS, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, accountRecovery.resetPassword());
 		assertTrue(accountRecovery.hasActionErrors());
 	}
 
@@ -213,7 +206,7 @@ public class AccountRecoveryTest {
 
 		accountRecovery.resetPassword();
 
-		assertEquals(PicsActionSupport.SUCCESS, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, accountRecovery.resetPassword());
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
@@ -230,7 +223,7 @@ public class AccountRecoveryTest {
 
 		accountRecovery.resetPassword();
 
-		assertEquals(PicsActionSupport.SUCCESS, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, accountRecovery.resetPassword());
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
@@ -247,7 +240,7 @@ public class AccountRecoveryTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.resetPassword());
 		assertFalse(accountRecovery.hasActionErrors());
-		assertTrue(accountRecovery.hasAlertMessages());
+		assertTrue(accountRecovery.hasActionMessages());
 		assertEquals("Login.action", accountRecovery.getUrl());
 
 		verify(user).setResetHash(anyString());
