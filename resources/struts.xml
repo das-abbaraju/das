@@ -134,21 +134,21 @@
 
         <!-- todo: Does it makes sense to add a global "error" result instead of at the action level? -->
         <action name="Login" class="com.picsauditing.access.LoginController">
-            <result>struts/users/login.jsp</result>
-            <result name="error">struts/users/login.jsp</result>
-            <result name="overlay">/struts/users/login_form.jsp</result>
-            <result name="loginform">/struts/users/login/_login-form.jsp</result>
+            <result>struts/user/login/login.jsp</result>
+            <result name="error">struts/user/login/login.jsp</result>
+            <result name="loginform">/struts/user/login/_login-form.jsp</result>
         </action>
+        
+        <action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
+            <result name="password">struts/user/recovery/recover-password.jsp</result>
+            <result name="username">struts/user/recovery/recover-username.jsp</result>
+        </action>
+        
         <action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
             <result>struts/users/password.jsp</result>
         </action>
-        <action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
-        </action>
-
-        <action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
-            <result>struts/users/recover-password.jsp</result>
-            <result name="username">struts/users/recover-username.jsp</result>
-        </action>
+        
+        <action name="LoginAjax" class="com.picsauditing.access.LoginAjax"></action>
 
         <action name="ContractorAgreement"
                 class="com.picsauditing.actions.contractors.ContractorAgreement">
@@ -1145,7 +1145,7 @@
         </action>
 
         <action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
-            <result>struts/users/login.jsp</result>
+            <result>struts/user/login/login.jsp</result>
         </action>
 
         <action name="Liveagent" class="com.picsauditing.actions.Liveagent">

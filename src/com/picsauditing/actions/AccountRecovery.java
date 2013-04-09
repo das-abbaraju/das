@@ -38,7 +38,7 @@ public class AccountRecovery extends PicsActionSupport {
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
-		return SUCCESS;
+		return "password";
 	}
 
 	@Anonymous
@@ -53,7 +53,7 @@ public class AccountRecovery extends PicsActionSupport {
 		String emailError = inputValidator.validateEmail(email);
 		if (!emailError.equals(InputValidator.NO_ERROR)) {
 			addActionError(getText(emailError));
-			return setUrlForRedirect(accountRecoveryPage);
+			return "username";
 		}
 
 		email = email.trim();
@@ -90,7 +90,7 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 
 		if (hasActionErrors()) {
-			return setUrlForRedirect(accountRecoveryPage);
+			return "username";
 		} else {
 			// If everything is ok
 			String loginPage = urlUtils.getActionUrl("Login");
@@ -102,7 +102,7 @@ public class AccountRecovery extends PicsActionSupport {
 	public String resetPassword() {
 		if (Strings.isEmpty(username) || username.startsWith("DELETE-")) {
 			addActionError(getText("AccountRecovery.error.NoUserName"));
-			return SUCCESS;
+			return "password";
 		}
 
 		try {
@@ -134,7 +134,7 @@ public class AccountRecovery extends PicsActionSupport {
 			addActionError(getText("AccountRecovery.error.UserNameNotFound"));
 		}
 
-		return SUCCESS;
+		return "password";
 	}
 
 	public String getEmail() {

@@ -6,5 +6,5 @@
 <div id="server_id" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>"></div>
 
 <div class="login-container">
-    <s:include value="login/_login-form.jsp"/>
+    <s:include value="/struts/user/login/_login-form.jsp"/>
 </div>
