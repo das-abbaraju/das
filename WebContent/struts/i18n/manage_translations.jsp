@@ -234,15 +234,19 @@
                                         </div>
                                         
                                         <select class="quality-rating" name="translation.qualityRating" id="${radio_id}">
+                                            <s:set var="selected_quality_rating" value="@com.picsauditing.jpa.entities.TranslationQualityRating@Questionable" />
+
+                                            <s:if test="qualityRating != null">
+                                                <s:set var="selected_quality_rating" value="qualityRating" />
+                                            </s:if>
+
                                             <s:iterator value="@com.picsauditing.jpa.entities.TranslationQualityRating@values()" var="quality_rating_option">
-                                                <s:if test="qualityRating == #quality_rating_option">
-                                                    <s:set var="is_selected">selected="selected"</s:set>
+                                                <s:if test="#selected_quality_rating == #quality_rating_option">
+                                                    <option value="${quality_rating_option}" selected="selected">${quality_rating_option}</option>
                                                 </s:if>
                                                 <s:else>
-                                                    <s:set var="is_selected" value="%{''}" />
+                                                    <option value="${quality_rating_option}">${quality_rating_option}</option>
                                                 </s:else>
-
-                                                <option value="${quality_rating_option}" ${is_selected}>${quality_rating_option}</option>
                                             </s:iterator>
                                         </select>
                                     </div>
