@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -175,14 +177,18 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						vacation.setDescription(calEvent.title);
 						Date startDate = null;
 						Date endDate = null;
-						
+                        DateTime jodaStartDate = null;
+                        DateTime jodaEndDate = null;
+
 						if (calEvent.start > 0) {
 							startDate = new Date(calEvent.start);
+                            jodaStartDate = new DateTime(calEvent.start);
 							vacation.setStartDate(startDate);
 						}
 
 						if (calEvent.end > 0) {
 							endDate = new Date(calEvent.end);
+                            jodaEndDate = new DateTime(calEvent.end);
 							vacation.setEndDate(endDate);
 						}
 
@@ -191,7 +197,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						if (currentUser != null)
 							format.setTimeZone(currentUser.getTimezone());
 
-						if (format.format(startDate).equals("00")
+						if (jodaStartDate.getHourOfDay() == 0
 								&& (endDate == null || endDate.equals(DateBean.getNextDayMidnight(startDate))))
 							vacation.setAllDay(true);
 						else
