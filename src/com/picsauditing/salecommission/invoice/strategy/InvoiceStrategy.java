@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.model.billing.helper.ContractorInvoiceState;
 import com.picsauditing.model.billing.helper.ContractorResetter;
 import com.picsauditing.model.billing.helper.InvoiceHelper;
@@ -68,6 +69,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	}
 
 	private void generateInvoiceCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
+		if (MapUtils.isEmpty(clientRevenueWeights)) {
+			return;
+		}
+
+		List<InvoiceCommission> invoiceCommissions = new ArrayList<>();
 		for (Map.Entry<ContractorOperator, Double> individualClientRevenueWeight : clientRevenueWeights.entrySet()) {
 			List<AccountUser> accountUsers = getActiveAccountUsersForClientSite(individualClientRevenueWeight.getKey()
 					.getOperatorAccount(), invoice.getCreationDate());
@@ -81,8 +87,20 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 				invoiceCommission.setPoints((isActivationInvoice(invoice)) ? revenuePercent : BigDecimal.ZERO);
 				invoiceCommission.setRevenuePercent(revenuePercent);
-				invoiceCommissionDAO.save(invoiceCommission);
+				invoiceCommissions.add(invoiceCommission);
 			}
+		}
+
+		saveInvoiceCommissions(invoiceCommissions);
+	}
+
+	private void saveInvoiceCommissions(List<InvoiceCommission> invoiceCommissions) {
+		if (CollectionUtils.isEmpty(invoiceCommissions)) {
+			return;
+		}
+
+		for (InvoiceCommission invoiceCommission : invoiceCommissions) {
+			invoiceCommissionDAO.save(invoiceCommission);
 		}
 	}
 
@@ -175,17 +193,18 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 				clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
 			}
 		} finally {
-			refreshContractorFromDatabase(contractor);
+			reloadContractorFromDatabase(contractor);
 		}
 
 		return clientSiteServiceLevels;
 	}
 
-	private void refreshContractorFromDatabase(ContractorAccount contractor) {
+	private void reloadContractorFromDatabase(ContractorAccount contractor) {
 		try {
-			contractorAccountDAO.refresh(contractor);
+			contractorAccountDAO.detach(contractor);
+			contractor = contractorAccountDAO.find(contractor.getId());
 		} catch (Exception nothingWeCanDo) {
-			logger.error("An error occurred while refreshing contractor id = {}", contractor.getId(), nothingWeCanDo);
+			logger.error("An error occurred while reload contractor id = {}", contractor.getId(), nothingWeCanDo);
 		}
 	}
 
@@ -267,7 +286,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 		for (AccountUser accountUser : clientSite.getAccountUsers()) {
-			if (isAccountUserCurrent(accountUser, effectiveDate)) {
+			if (isAccountUserCurrent(accountUser, effectiveDate) && isSalesOrAccountRep(accountUser)) {
 				accountUsers.add(accountUser);
 			}
 		}
@@ -285,6 +304,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 
 		return true;
+	}
+
+	private boolean isSalesOrAccountRep(AccountUser accountUser) {
+		return accountUser.getRole() == UserAccountRole.PICSAccountRep
+				|| accountUser.getRole() == UserAccountRole.PICSSalesRep;
 	}
 
 	private List<ContractorOperator> getListOfAllOperatorSites(ContractorAccount contractor) {

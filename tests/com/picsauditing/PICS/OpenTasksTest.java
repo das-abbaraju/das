@@ -189,6 +189,7 @@ public class OpenTasksTest extends PicsActionTest {
 
 	private void setUpMockAudit() {
 		when(audit.getAuditType()).thenReturn(auditType);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 	}
 
 	@Test

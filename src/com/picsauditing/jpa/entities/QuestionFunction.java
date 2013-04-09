@@ -615,7 +615,177 @@ public enum QuestionFunction {
         public Object calculate(FunctionInput input) {
             return null;
         }
-    }
+    },
+	LWDR {
+		@Override
+		public  Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			if (Strings.isEmpty(params.get("didWork"))
+					|| Strings.isEmpty(params.get("lostWorkCases"))
+					|| Strings.isEmpty(params.get("hours"))) {
+				return MISSING_PARAMETER;
+			}
+
+			if ("No".equals(params.get("didWork")))
+				return MISSING_PARAMETER;
+
+			BigDecimal lostWorkCases = new BigDecimal(params.get("lostWorkCases").replace(",", "")).setScale(7);
+			BigDecimal hours = new BigDecimal(params.get("hours").replace(",", "")).setScale(7);
+
+			BigDecimal result;
+			try {
+				result = lostWorkCases.multiply(new BigDecimal(200000).setScale(7)).divide(hours, 7, RoundingMode.HALF_UP).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+	},
+	SPMVI {
+		@Override
+		public  Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			if (Strings.isEmpty(params.get("didDrive"))
+					|| Strings.isEmpty(params.get("incidents"))
+					|| Strings.isEmpty(params.get("miles"))) {
+				return MISSING_PARAMETER;
+			}
+
+			if ("No".equals(params.get("didDrive")))
+				return MISSING_PARAMETER;
+
+			BigDecimal incidents = new BigDecimal(params.get("incidents").replace(",", "")).setScale(7);
+			BigDecimal miles = new BigDecimal(params.get("miles").replace(",", "")).setScale(7);
+
+			BigDecimal result;
+			try {
+				result = incidents.multiply(new BigDecimal(1000000).setScale(7)).divide(miles, 7, RoundingMode.HALF_UP).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+	},
+	QUARTERLY {
+		@Override
+		public  Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			int count = 0;
+			BigDecimal sum = new BigDecimal(0);
+
+			BigDecimal result;
+			try {
+				if (!isEmptyOrMissingParameter(params.get("month1"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("month1").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("month2"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("month2").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("month3"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("month3").replace(",", ""))));
+				}
+
+				if (count == 0)
+					return MISSING_PARAMETER;
+				else
+					result = sum.divide(new BigDecimal(count), 7, RoundingMode.HALF_UP).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+	},
+	YEARLY {
+		@Override
+		public  Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			int count = 0;
+			BigDecimal sum = new BigDecimal(0);
+
+			BigDecimal result;
+			try {
+				if (!isEmptyOrMissingParameter(params.get("jan"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("jan").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("feb"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("feb").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("mar"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("mar").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("apr"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("apr").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("may"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("may").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("jun"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("jun").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("jul"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("jul").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("aug"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("aug").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("sep"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("sep").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("oct"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("oct").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("nov"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("nov").replace(",", ""))));
+				}
+				if (!isEmptyOrMissingParameter(params.get("dec"))) {
+					count++;
+					sum = sum.add(new BigDecimal(Float.parseFloat(params.get("dec").replace(",", ""))));
+				}
+
+				if (count == 0)
+					return MISSING_PARAMETER;
+				else
+					result = sum.divide(new BigDecimal(count), 7, RoundingMode.HALF_UP).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+	},
+	DOUBLE {
+		@Override
+		public  Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			if (params.size() == 0) {
+				return MISSING_PARAMETER;
+			}
+
+			String answer = params.values().iterator().next().replace(",", "");
+
+			BigDecimal number = new BigDecimal(answer);
+			number = number.multiply(new BigDecimal(2)).setScale(0);
+			return number;
+		}
+	}
+
 ;
 	// This a special value if none of the countries listed have a CPI value.
 	// The CPI scale goes from 0 - 10, with 0 being most corrupt. We don't want
@@ -687,6 +857,14 @@ public enum QuestionFunction {
 
 	protected int convertToInt(String value) {
 		return Float.valueOf(value).intValue();
+	}
+
+	protected boolean isEmptyOrMissingParameter(String answer) {
+		if (Strings.isEmpty(answer))
+			return true;
+		if (MISSING_PARAMETER.equals(answer))
+			return true;
+		return false;
 	}
 
 	protected Map<String, String> getParameterMap(FunctionInput input) {

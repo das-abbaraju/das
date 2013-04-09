@@ -14,6 +14,8 @@
 	<s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
 </script>
 
+<s:include value="../jquery.jsp" />
+
 <script type="text/javascript">
 	function checkUsername(username) {
 		startThinking({div: 'username_status', message: translate('JS.ProfileEdit.message.CheckingAvailabilityOfUsername')});

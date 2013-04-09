@@ -5,6 +5,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,7 +50,8 @@ public class FlagCriteriaContractor extends BaseTable implements Comparable<Flag
 		this.criteria = criteria;
 	}
 
-	public String getAnswer() {
+    @ReportField(importance = FieldImportance.Required)
+    public String getAnswer() {
 		return answer;
 	}
 
