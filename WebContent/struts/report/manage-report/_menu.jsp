@@ -13,13 +13,13 @@
             <a href="${manage_reports_favorites_url}"><s:text name="ManageReports.report.Favorites" /></a>
         </li>
         <li class="${methodName == 'ownedBy' ? 'active' : ''}">
-            <a href="${manage_reports_owned_by_url}"><s:text name="ManageReports.report.OwnedBy" /></a>
+            <a href="${manage_reports_owned_by_url}">Owned by Me</a>
         </li>
         <li class="${methodName == 'sharedWith' ? 'active' : ''}">
-            <a href="${manage_reports_shared_with_url}"><s:text name="ManageReports.report.SharedWith" /></a>
+            <a href="${manage_reports_shared_with_url}">Shared with Me</a>
         </li>
         <li class="${methodName == 'search' ? 'active' : ''}">
-            <a href="${manage_reports_search_url}"><s:text name="ManageReports.report.Search" /></a>
+            <a href="${manage_reports_search_url}">Search for Reports</a>
         </li>
     </ul>
 </div>

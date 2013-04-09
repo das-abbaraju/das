@@ -65,3 +65,9 @@
         </ul>
     </div>
 </s:if>
+
+<div class="icons pull-right">
+    <if test="true">
+        <i class="icon-pushpin icon-large"></i>
+    </if>
+</div>

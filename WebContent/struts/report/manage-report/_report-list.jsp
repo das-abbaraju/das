@@ -25,6 +25,11 @@
         <s:set name="is_favorite_class" value="%{#report.favorite ? 'selected' : ''}" />
 
         <li class="report clearfix">
+            <s:if test="#actions_path != ''">
+                <%-- hidden options may be being passed from the parent include --%>
+                <s:include value="%{#actions_path}" />
+            </s:if>
+            
             <a href="${report_favorite_url}" class="favorite-icon ${favorite_class}" data-id="${report.id}">
                 <i class="icon-star ${is_favorite_class}"></i>
             </a>
@@ -32,12 +37,7 @@
             <a href="${report_url}" class="name">${report.name}</a>
 
             <s:if test="#report.createdBy.id != permissions.userId">
-                <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
-            </s:if>
-            
-            <s:if test="#actions_path != ''">
-                <%-- hidden options may be being passed from the parent include --%>
-                <s:include value="%{#actions_path}" />
+                <span class="created-by">${report.createdBy.name}</span>
             </s:if>
         </li>
     </s:iterator>

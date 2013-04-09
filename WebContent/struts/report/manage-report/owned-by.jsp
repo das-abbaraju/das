@@ -8,7 +8,7 @@
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<h4 class="report-subtitle"><s:text name="ManageReports.ownedBy.subtitle" /></h4>
+<h4 class="report-subtitle">All of your reports that you're the owner of or created.</h4>
 
 <div id="owned_by_reports_container">
     <s:include value="/struts/report/manage-report/_owned-by.jsp" />

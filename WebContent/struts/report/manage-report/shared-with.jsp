@@ -8,7 +8,7 @@
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<h4 class="report-subtitle"><s:text name="ManageReports.sharedWith.subtitle" /></h4>
+<h4 class="report-subtitle">All of your reports that have been shared with you.</h4>
 
 <div id="shared_with_reports_container">
     <s:include value="/struts/report/manage-report/_shared-with.jsp" />

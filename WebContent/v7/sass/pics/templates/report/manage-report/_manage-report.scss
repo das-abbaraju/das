@@ -1,7 +1,3 @@
-/*
- * Manage Report Controller
- */
- 
 .ManageReports-page
 {
     /*
@@ -25,10 +21,6 @@
 		text-align: center;
 	}
     
-    /*
-     * List
-     */
-    
     .report-list
     {
         margin-bottom: 20px;
@@ -45,9 +37,7 @@
         
         .favorite-icon
         {
-            float: left;
             margin: 0 5px;
-            text-decoration: none;
         }
         
         .icon-star
@@ -60,18 +50,9 @@
             color: #e67e1c;
         }
         
-        .icon-edit
-        {
-        	color: #ccc;
-            font-size: 14px;
-            position: relative;
-            top: 2px;
-        }
-        
         .name
         {
         	color: #454545;
-            float: left;
             font-size: 14px;
             font-weight: bold;
             margin-right: 10px;
@@ -80,7 +61,6 @@
         .name:hover
         {
         	color: $pics_light_blue;
-        	text-decoration: none;
         }
         
         .created-by
@@ -90,8 +70,20 @@
             font-style: italic;
             white-space: nowrap;
         }
+        
+        .btn-group
+        {
+        	margin-left: 10px;
+        }
+        
+        .dropdown-toggle
+        {
+        	padding: 9px 12px;
+        }
     }
 }
 
 @import 'favorites';
+@import 'shared-with';
+@import 'share';
 @import 'search';

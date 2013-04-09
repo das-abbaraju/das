@@ -31,7 +31,7 @@
                 <a href="${report_url}" class="name">${report.name}</a>
 
                 <s:if test="#report.createdBy.id != permissions.userId">
-                    <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
+                    <span class="created-by">${report.createdBy.name}</span>
                 </s:if>
                 
                 <p class="description">${report.description}</p>

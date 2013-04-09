@@ -39,3 +39,9 @@
         </li>
     </ul>
 </div>
+
+<div class="icons pull-right">
+    <if test="true">
+        <i class="icon-eye-close icon-large"></i>
+    </if>
+</div>

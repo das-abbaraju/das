@@ -4,11 +4,19 @@
  
 #ManageReports_favorites_page
 {
+	.report-list
+	{
+		.icon-pushpin
+		{
+			color: #999;
+		}
+	}
+	
     /*
      * Excluded Reports
      */
     
-    #report_favorites_overflow h1
+    #favorite_reports_overflow h1
     {
         border-bottom: 1px solid #ccc;
         color: #999;

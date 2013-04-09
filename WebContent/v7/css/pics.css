@@ -6,16 +6,26 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 1, ../sass/pics/layout/_layout.scss */
+/* line 11, ../sass/pics/_defaults.scss */
 body {
   color: #454545;
+}
+
+/* line 17, ../sass/pics/_defaults.scss */
+a:hover,
+a:focus {
+  text-decoration: none;
+}
+
+/* line 1, ../sass/pics/layout/_layout.scss */
+body {
   padding-top: 55px;
   padding-bottom: 26px;
   position: relative;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  /* line 9, ../sass/pics/layout/_layout.scss */
+  /* line 8, ../sass/pics/layout/_layout.scss */
   body {
     padding-top: 0;
   }
@@ -742,7 +752,7 @@ a {
 /*
  * Overrides for Link Buttons
  */
-/* line 345, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 346, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-link {
   border-color: transparent;
   text-shadow: none;
@@ -750,11 +760,10 @@ a {
   background: transparent;
 }
 
-/* line 351, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 352, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-link:hover {
   color: #73bbe8;
   background: transparent;
-  text-decoration: none;
 }
 
 /* line 358, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
@@ -764,14 +773,23 @@ a {
   background: transparent;
 }
 
+/* line 364, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-link:hover,
+.btn-link:focus {
+  text-decoration: none;
+}
+
 /* line 4, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
 .btn-group .btn-link {
   border: 0;
-  padding-bottom: 7px;
-  padding-top: 7px;
 }
 
-/* line 14, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
+/* line 12, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
+.btn-group.open .btn-link {
+  color: #73bbe8;
+}
+
+/* line 20, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
 .btn-group > .btn:first-child.btn-link {
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
@@ -1414,19 +1432,13 @@ hr {
   display: none;
 }
 
-/*
- * Manage Report Controller
- */
-/* line 6, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 2, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page {
   /*
    * Description
    */
-  /*
-   * List
-   */
 }
-/* line 12, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 8, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-subtitle {
   color: #e67e1c;
   font-size: 14px;
@@ -1435,18 +1447,18 @@ hr {
   line-height: 1;
   margin: 0 0 20px;
 }
-/* line 22, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 18, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page #manage_report_filter {
   display: block;
   margin: 0px 0px 20px;
   text-align: center;
 }
-/* line 33, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 25, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
   margin-bottom: 20px;
   text-align: left;
 }
-/* line 38, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 30, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -1458,46 +1470,43 @@ hr {
   line-height: 38px;
   margin-bottom: 2px;
 }
-/* line 47, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 39, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite-icon {
-  float: left;
   margin: 0 5px;
-  text-decoration: none;
 }
-/* line 54, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 44, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
 }
-/* line 59, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 49, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #e67e1c;
 }
-/* line 64, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .icon-edit {
-  color: #ccc;
-  font-size: 14px;
-  position: relative;
-  top: 2px;
-}
-/* line 72, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 54, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
   color: #454545;
-  float: left;
   font-size: 14px;
   font-weight: bold;
   margin-right: 10px;
 }
-/* line 81, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 62, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name:hover {
   color: #73bbe8;
-  text-decoration: none;
 }
-/* line 87, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 67, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
   font-size: 12px;
   font-style: italic;
   white-space: nowrap;
+}
+/* line 75, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+.ManageReports-page .report-list .btn-group {
+  margin-left: 10px;
+}
+/* line 80, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+.ManageReports-page .report-list .dropdown-toggle {
+  padding: 9px 12px;
 }
 
 /*
@@ -1509,8 +1518,12 @@ hr {
    * Excluded Reports
    */
 }
-/* line 12, ../sass/pics/templates/report/manage-report/_favorites.scss */
-#ManageReports_favorites_page #report_favorites_overflow h1 {
+/* line 10, ../sass/pics/templates/report/manage-report/_favorites.scss */
+#ManageReports_favorites_page .report-list .icon-pushpin {
+  color: #999;
+}
+/* line 20, ../sass/pics/templates/report/manage-report/_favorites.scss */
+#ManageReports_favorites_page #favorite_reports_overflow h1 {
   border-bottom: 1px solid #ccc;
   color: #999;
   font-size: 18px;
@@ -1518,68 +1531,159 @@ hr {
   text-align: left;
 }
 
-/*
- * Search
- */
-/* line 6, ../sass/pics/templates/report/manage-report/_search.scss */
-#ManageReports_search_page {
-  /*
-   * Search box
-   */
+/* line 6, ../sass/pics/templates/report/manage-report/_shared-with.scss */
+#ManageReports_sharedWith_page .report-list .icon-edit {
+  color: #999;
 }
-/* line 12, ../sass/pics/templates/report/manage-report/_search.scss */
+
+/* line 4, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page #report_share_search {
+  margin: 30px 0px 40px;
+  text-align: center;
+}
+/* line 12, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page #report_share_search_form input {
+  background: #f1f1f2;
+  padding-left: 30px;
+}
+/* line 18, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page #report_share_search_form .icon-search {
+  color: #666;
+  left: -312px;
+  margin-left: -14px;
+  position: relative;
+}
+/* line 26, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page #report_share_search_form input:focus + .icon-search {
+  color: #73bbe8;
+}
+/* line 32, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .lt-ie8 #report_share_search_form {
+  display: inline;
+}
+/* line 37, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list {
+  margin-bottom: 20px;
+}
+/* line 41, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .user {
+  background: #f1f1f2;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  line-height: 20px;
+  margin-bottom: 2px;
+  padding: 0 20px;
+}
+/* line 51, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .summary {
+  margin: 0 60px 0 0px;
+  padding: 6px 0 8px;
+}
+/* line 57, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .name {
+  color: #454545;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+/* line 65, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .name:hover {
+  color: #73bbe8;
+}
+/* line 70, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .description {
+  font-size: 12px;
+  line-height: 14px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* line 80, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .icons {
+  line-height: 48px;
+}
+
+@media (min-width: 1200px) {
+  /* line 92, ../sass/pics/templates/report/manage-report/_share.scss */
+  #ManageReports_share_page #report_share_search_form .icon-search {
+    left: -382px;
+  }
+}
+@media (max-width: 979px) and (min-width: 768px) {
+  /* line 105, ../sass/pics/templates/report/manage-report/_share.scss */
+  #ManageReports_share_page #report_share_search_form .icon-search {
+    left: -242px;
+  }
+}
+@media (max-width: 767px) {
+  /* line 118, ../sass/pics/templates/report/manage-report/_share.scss */
+  #ManageReports_share_page #report_share_search_form input {
+    padding-left: 14px;
+  }
+  /* line 123, ../sass/pics/templates/report/manage-report/_share.scss */
+  #ManageReports_share_page #report_share_search_form .icon-search {
+    display: none;
+  }
+}
+/* line 4, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search {
   margin: 30px 0px 40px;
   text-align: center;
 }
-/* line 18, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 10, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search_form {
   margin: 0;
 }
-/* line 22, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 14, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search_form input {
   background: #f1f1f2;
   padding-left: 30px;
 }
-/* line 28, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 20, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search_form .icon-search {
   color: #666;
-  left: -382px;
+  left: -312px;
   margin-left: -14px;
   position: relative;
 }
-/* line 36, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 28, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page #report_search_form input:focus + .icon-search {
   color: #73bbe8;
 }
-/* line 42, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 34, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .lt-ie8 #report_search_form {
   display: inline;
 }
-/* line 49, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 41, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .report {
   line-height: 20px;
 }
-/* line 54, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 46, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .favorite-icon {
+  float: left;
   line-height: 48px;
   margin: 0 10px;
 }
-/* line 60, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 53, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .summary {
   margin: 0 120px 0 40px;
   padding: 6px 0 8px;
 }
-/* line 66, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 59, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .name {
   float: none;
   line-height: 14px;
 }
-/* line 72, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 65, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .created-by {
   line-height: 14px;
 }
-/* line 77, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 70, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .description {
   font-size: 12px;
   line-height: 14px;
@@ -1588,7 +1692,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* line 87, ../sass/pics/templates/report/manage-report/_search.scss */
+/* line 80, ../sass/pics/templates/report/manage-report/_search.scss */
 #ManageReports_search_page .report-list .number-favorites {
   color: #e67e1c;
   font-size: 14px;
@@ -1597,6 +1701,28 @@ hr {
   margin-right: 20px;
 }
 
+@media (min-width: 1200px) {
+  /* line 96, ../sass/pics/templates/report/manage-report/_search.scss */
+  #ManageReports_search_page #report_search_form .icon-search {
+    left: -382px;
+  }
+}
+@media (max-width: 979px) and (min-width: 768px) {
+  /* line 109, ../sass/pics/templates/report/manage-report/_search.scss */
+  #ManageReports_search_page #report_search_form .icon-search {
+    left: -242px;
+  }
+}
+@media (max-width: 767px) {
+  /* line 122, ../sass/pics/templates/report/manage-report/_search.scss */
+  #ManageReports_search_page #report_search_form input {
+    padding-left: 14px;
+  }
+  /* line 127, ../sass/pics/templates/report/manage-report/_search.scss */
+  #ManageReports_search_page #report_search_form .icon-search {
+    display: none;
+  }
+}
 /* line 2, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page {
   background-color: #454545;

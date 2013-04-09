@@ -34,6 +34,8 @@
     </ul>
 </div>
 
-<s:if test="#report.editable">
-    <i class="icon-edit icon-large pull-right"></i>
-</s:if>
+<div class="icons pull-right">
+    <s:if test="#report.editable">
+        <i class="icon-edit icon-large"></i>
+    </s:if>
+</div>

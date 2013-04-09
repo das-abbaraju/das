@@ -5,3 +5,15 @@ $pics_light_blue: #73bbe8;
 $pics_link_blue: #226396;
 $pics_warm_grey: #808285;
 $pics_cool_grey: #f1f1f2;
+
+// default tag overrides
+body
+{
+	color: #454545;
+}
+
+a:hover,
+a:focus
+{
+	text-decoration: none;
+}

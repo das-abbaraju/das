@@ -81,30 +81,30 @@ $link_hover_text_color: #73BBE8;
 $link_active_text_color: #226396;
 
 @mixin buttonOverrides($border_color, $text_shadow_color: none){
-  border-color: $border_color;
+    border-color: $border_color;
 
-  @if $text_shadow_color != none {
-      text-shadow: 0px -1px 1px $text_shadow_color;
-  } @else {
-      text-shadow: none;
-  }
+    @if $text_shadow_color != none {
+            text-shadow: 0px -1px 1px $text_shadow_color;
+    } @else {
+            text-shadow: none;
+    }
 }
 
 @mixin buttonDisabledOverrides($background_color: none, $opacity: 0.65){
-  background-color: $background_color;
-  background-image: none;
-  @include box-shadow(none);
-  opacity: $opacity;
+    background-color: $background_color;
+    background-image: none;
+    @include box-shadow(none);
+    opacity: $opacity;
 }
 
 @mixin buttonStateOverrides($text_color, $background_color: none, $top_gradient_color: none, $bottom_gradient_color: none){
-  color: $text_color;
-  background: $background_color;
+    color: $text_color;
+    background: $background_color;
 
-  @if $top_gradient_color != none {
-      @include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
-  }
+    @if $top_gradient_color != none {
+            @include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
+    }
 }
 
 /*
@@ -112,32 +112,32 @@ $link_active_text_color: #226396;
  */
 
 .btn {
-  @include buttonOverrides($default_border_color,
-    $default_text_shadow_color);
+    @include buttonOverrides($default_border_color,
+        $default_text_shadow_color);
 
-  @include buttonStateOverrides($default_text_color,
-    $default_bottom_gradient_color,
-    $default_top_gradient_color,
-    $default_bottom_gradient_color);
+    @include buttonStateOverrides($default_text_color,
+        $default_bottom_gradient_color,
+        $default_top_gradient_color,
+        $default_bottom_gradient_color);
 }
 
 .btn:hover {
-  @include buttonStateOverrides($default_text_color,
-    $default_hover_bottom_gradient_color,
-    $default_hover_top_gradient_color,
-    $default_hover_bottom_gradient_color);
+    @include buttonStateOverrides($default_text_color,
+        $default_hover_bottom_gradient_color,
+        $default_hover_top_gradient_color,
+        $default_hover_bottom_gradient_color);
 }
 
 .btn.active,
 .btn:active {
-  @include buttonStateOverrides($default_text_color,
-    $default_active_bottom_gradient_color,
-    $default_active_top_gradient_color,
-    $default_active_bottom_gradient_color);
+    @include buttonStateOverrides($default_text_color,
+        $default_active_bottom_gradient_color,
+        $default_active_top_gradient_color,
+        $default_active_bottom_gradient_color);
 }
 
 .btn.disabled {
-  @include buttonDisabledOverrides($default_disabled_background_color);
+    @include buttonDisabledOverrides($default_disabled_background_color);
 }
 
 /*
@@ -145,32 +145,32 @@ $link_active_text_color: #226396;
  */
 
 .btn-primary {
-  @include buttonOverrides($primary_border_color,
-    $primary_text_shadow_color);
+    @include buttonOverrides($primary_border_color,
+        $primary_text_shadow_color);
 
-  @include buttonStateOverrides($primary_text_color,
-    $primary_bottom_gradient_color,
-    $primary_top_gradient_color,
-    $primary_bottom_gradient_color);
+    @include buttonStateOverrides($primary_text_color,
+        $primary_bottom_gradient_color,
+        $primary_top_gradient_color,
+        $primary_bottom_gradient_color);
 }
 
 .btn-primary:hover {
-  @include buttonStateOverrides($primary_text_color,
-    $primary_hover_bottom_gradient_color,
-    $primary_hover_top_gradient_color,
-    $primary_hover_bottom_gradient_color);
+    @include buttonStateOverrides($primary_text_color,
+        $primary_hover_bottom_gradient_color,
+        $primary_hover_top_gradient_color,
+        $primary_hover_bottom_gradient_color);
 }
 
 .btn-primary.active,
 .btn-primary:active {
-  @include buttonStateOverrides($primary_text_color,
-    $primary_active_bottom_gradient_color,
-    $primary_active_top_gradient_color,
-    $primary_active_bottom_gradient_color);
+    @include buttonStateOverrides($primary_text_color,
+        $primary_active_bottom_gradient_color,
+        $primary_active_top_gradient_color,
+        $primary_active_bottom_gradient_color);
 }
 
 .btn-primary.disabled {
-  @include buttonDisabledOverrides($primary_disabled_background_color);
+    @include buttonDisabledOverrides($primary_disabled_background_color);
 }
 
 /*
@@ -178,32 +178,32 @@ $link_active_text_color: #226396;
  */
 
 .btn-warning {
-  @include buttonOverrides($warning_border_color,
-    $warning_text_shadow_color);
+    @include buttonOverrides($warning_border_color,
+        $warning_text_shadow_color);
 
-  @include buttonStateOverrides($warning_text_color,
-    $warning_bottom_gradient_color,
-    $warning_top_gradient_color,
-    $warning_bottom_gradient_color);
+    @include buttonStateOverrides($warning_text_color,
+        $warning_bottom_gradient_color,
+        $warning_top_gradient_color,
+        $warning_bottom_gradient_color);
 }
 
 .btn-warning:hover {
-  @include buttonStateOverrides($warning_text_color,
-    $warning_hover_bottom_gradient_color,
-    $warning_hover_top_gradient_color,
-    $warning_hover_bottom_gradient_color);
+    @include buttonStateOverrides($warning_text_color,
+        $warning_hover_bottom_gradient_color,
+        $warning_hover_top_gradient_color,
+        $warning_hover_bottom_gradient_color);
 }
 
 .btn-warning.active,
 .btn-warning:active {
-  @include buttonStateOverrides($warning_text_color,
-    $warning_active_bottom_gradient_color,
-    $warning_active_top_gradient_color,
-    $warning_active_bottom_gradient_color);
+    @include buttonStateOverrides($warning_text_color,
+        $warning_active_bottom_gradient_color,
+        $warning_active_top_gradient_color,
+        $warning_active_bottom_gradient_color);
 }
 
 .btn-warning.disabled {
-  @include buttonDisabledOverrides($warning_disabled_background_color);
+    @include buttonDisabledOverrides($warning_disabled_background_color);
 }
 
 /*
@@ -211,32 +211,32 @@ $link_active_text_color: #226396;
  */
 
 .btn-info {
-  @include buttonOverrides($info_border_color,
-    $info_text_shadow_color);
+    @include buttonOverrides($info_border_color,
+        $info_text_shadow_color);
 
-  @include buttonStateOverrides($info_text_color,
-    $info_bottom_gradient_color,
-    $info_top_gradient_color,
-    $info_bottom_gradient_color);
+    @include buttonStateOverrides($info_text_color,
+        $info_bottom_gradient_color,
+        $info_top_gradient_color,
+        $info_bottom_gradient_color);
 }
 
 .btn-info:hover {
-  @include buttonStateOverrides($info_text_color,
-    $info_hover_bottom_gradient_color,
-    $info_hover_top_gradient_color,
-    $info_hover_bottom_gradient_color);
+    @include buttonStateOverrides($info_text_color,
+        $info_hover_bottom_gradient_color,
+        $info_hover_top_gradient_color,
+        $info_hover_bottom_gradient_color);
 }
 
 .btn-info.active,
 .btn-info:active {
-  @include buttonStateOverrides($info_text_color,
-    $info_active_bottom_gradient_color,
-    $info_active_top_gradient_color,
-    $info_active_bottom_gradient_color);
+    @include buttonStateOverrides($info_text_color,
+        $info_active_bottom_gradient_color,
+        $info_active_top_gradient_color,
+        $info_active_bottom_gradient_color);
 }
 
 .btn-info.disabled {
-  @include buttonDisabledOverrides($info_disabled_background_color);
+    @include buttonDisabledOverrides($info_disabled_background_color);
 }
 
 /*
@@ -244,32 +244,32 @@ $link_active_text_color: #226396;
  */
 
 .btn-success {
-  @include buttonOverrides($success_border_color,
-    $success_text_shadow_color);
+    @include buttonOverrides($success_border_color,
+        $success_text_shadow_color);
 
-  @include buttonStateOverrides($success_text_color,
-    $success_bottom_gradient_color,
-    $success_top_gradient_color,
-    $success_bottom_gradient_color);
+    @include buttonStateOverrides($success_text_color,
+        $success_bottom_gradient_color,
+        $success_top_gradient_color,
+        $success_bottom_gradient_color);
 }
 
 .btn-success:hover {
-  @include buttonStateOverrides($success_text_color,
-    $success_hover_bottom_gradient_color,
-    $success_hover_top_gradient_color,
-    $success_hover_bottom_gradient_color);
+    @include buttonStateOverrides($success_text_color,
+        $success_hover_bottom_gradient_color,
+        $success_hover_top_gradient_color,
+        $success_hover_bottom_gradient_color);
 }
 
 .btn-success.active,
 .btn-success:active {
-  @include buttonStateOverrides($success_text_color,
-    $success_active_bottom_gradient_color,
-    $success_active_top_gradient_color,
-    $success_active_bottom_gradient_color);
+    @include buttonStateOverrides($success_text_color,
+        $success_active_bottom_gradient_color,
+        $success_active_top_gradient_color,
+        $success_active_bottom_gradient_color);
 }
 
 .btn-success.disabled {
-  @include buttonDisabledOverrides($success_disabled_background_color);
+    @include buttonDisabledOverrides($success_disabled_background_color);
 }
 
 /*
@@ -277,32 +277,32 @@ $link_active_text_color: #226396;
  */
 
 .btn-danger {
-  @include buttonOverrides($danger_border_color,
-    $danger_text_shadow_color);
+    @include buttonOverrides($danger_border_color,
+        $danger_text_shadow_color);
 
-  @include buttonStateOverrides($danger_text_color,
-    $danger_bottom_gradient_color,
-    $danger_top_gradient_color,
-    $danger_bottom_gradient_color);
+    @include buttonStateOverrides($danger_text_color,
+        $danger_bottom_gradient_color,
+        $danger_top_gradient_color,
+        $danger_bottom_gradient_color);
 }
 
 .btn-danger:hover {
-  @include buttonStateOverrides($danger_text_color,
-    $danger_hover_bottom_gradient_color,
-    $danger_hover_top_gradient_color,
-    $danger_hover_bottom_gradient_color);
+    @include buttonStateOverrides($danger_text_color,
+        $danger_hover_bottom_gradient_color,
+        $danger_hover_top_gradient_color,
+        $danger_hover_bottom_gradient_color);
 }
 
 .btn-danger.active,
 .btn-danger:active {
-  @include buttonStateOverrides($danger_text_color,
-    $danger_active_bottom_gradient_color,
-    $danger_active_top_gradient_color,
-    $danger_active_bottom_gradient_color);
+    @include buttonStateOverrides($danger_text_color,
+        $danger_active_bottom_gradient_color,
+        $danger_active_top_gradient_color,
+        $danger_active_bottom_gradient_color);
 }
 
 .btn-danger.disabled {
-  @include buttonDisabledOverrides($danger_disabled_background_color);
+    @include buttonDisabledOverrides($danger_disabled_background_color);
 }
 
 /*
@@ -310,51 +310,57 @@ $link_active_text_color: #226396;
  */
 
 .btn-inverse {
-  @include buttonOverrides($inverse_border_color,
-    $inverse_text_shadow_color);
+    @include buttonOverrides($inverse_border_color,
+        $inverse_text_shadow_color);
 
-  @include buttonStateOverrides($inverse_text_color,
-    $inverse_bottom_gradient_color,
-    $inverse_top_gradient_color,
-    $inverse_bottom_gradient_color);
+    @include buttonStateOverrides($inverse_text_color,
+        $inverse_bottom_gradient_color,
+        $inverse_top_gradient_color,
+        $inverse_bottom_gradient_color);
 }
 
 .btn-inverse:hover {
-  @include buttonStateOverrides($inverse_text_color,
-    $inverse_hover_bottom_gradient_color,
-    $inverse_hover_top_gradient_color,
-    $inverse_hover_bottom_gradient_color);
+    @include buttonStateOverrides($inverse_text_color,
+        $inverse_hover_bottom_gradient_color,
+        $inverse_hover_top_gradient_color,
+        $inverse_hover_bottom_gradient_color);
 }
 
 .btn-inverse.active,
 .btn-inverse:active {
-  @include buttonStateOverrides($inverse_text_color,
-    $inverse_active_bottom_gradient_color,
-    $inverse_active_top_gradient_color,
-    $inverse_active_bottom_gradient_color);
+    @include buttonStateOverrides($inverse_text_color,
+        $inverse_active_bottom_gradient_color,
+        $inverse_active_top_gradient_color,
+        $inverse_active_bottom_gradient_color);
 }
 
 .btn-inverse.disabled {
-  @include buttonDisabledOverrides($inverse_disabled_background_color);
+    @include buttonDisabledOverrides($inverse_disabled_background_color);
 }
 
 /*
  * Overrides for Link Buttons
  */
 
-.btn-link {
-  @include buttonOverrides($link_border_color);
-
-  @include buttonStateOverrides($link_text_color, transparent);
+.btn-link
+{
+    @include buttonOverrides($link_border_color);
+    @include buttonStateOverrides($link_text_color, transparent);
 }
 
-.btn-link:hover {
-  @include buttonStateOverrides($link_hover_text_color, transparent);
-
-  text-decoration: none;
+.btn-link:hover
+{
+    @include buttonStateOverrides($link_hover_text_color, transparent);
 }
 
 .btn-link.active,
-.btn-link:active {
-  @include buttonStateOverrides($link_active_text_color, transparent);
+.btn-link:active
+{
+    @include buttonStateOverrides($link_active_text_color, transparent);
+}
+
+.btn-link:hover,
+.btn-link:focus
+{
+	text-decoration: none;
 }

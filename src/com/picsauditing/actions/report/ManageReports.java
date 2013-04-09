@@ -105,17 +105,6 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("favoritesList", "favorites");
 	}
 
-	public String search() {
-		reportList = Collections.emptyList();
-		try {
-			reportList = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
-		} catch (Exception e) {
-			logAndShowUserInDebugMode("Unexpected exception in ManageReports!search.action", e);
-		}
-
-		return determineViewName("searchList", "search");
-	}
-
 	public String ownedBy() {
 		reportList = new ArrayList<ReportInfo>();
 		try {
@@ -139,6 +128,23 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return determineViewName("sharedWithList", "sharedWith");
+	}
+
+	public String search() {
+		reportList = Collections.emptyList();
+		try {
+			reportList = manageReportsService.getReportsForSearch(searchTerm,
+					permissions, getPagination());
+		} catch (Exception e) {
+			logAndShowUserInDebugMode(
+					"Unexpected exception in ManageReports!search.action", e);
+		}
+
+		return determineViewName("searchList", "search");
+	}
+
+	public String share() {
+		return "share";
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {
