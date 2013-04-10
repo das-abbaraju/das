@@ -70,6 +70,8 @@
     <bean id="FlagDataDAO" class="com.picsauditing.dao.FlagDataDAO"/>
     <bean id="FlagDataOverrideDAO" class="com.picsauditing.dao.FlagDataOverrideDAO"/>
     <bean id="IndexableDAO" class="com.picsauditing.dao.IndexableDAO"/>
+    <bean id="InsuranceCriteriaContractorOperatorDAO"
+          class="com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO"/>
     <bean id="InsuranceRejectedNoUpdateSubscription"
           class="com.picsauditing.mail.subscription.InsuranceRejectedNoUpdateSubscription"/>
     <bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
@@ -192,9 +194,8 @@
 	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
 	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
 	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
-    <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService" />
 
-	<!-- Autocompletes -->
+    <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
     <bean id="AuditCategoryAutocompleteService"

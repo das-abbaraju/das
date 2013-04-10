@@ -115,4 +115,19 @@ public class OperatorAccountTest {
 		assertTrue(operator.isApplicableFlagOperator(facilityop));
 		assertFalse(operator.isApplicableFlagOperator(notapplicable));
 	}
+
+    @Test
+    public void testHasRulesBasedInsuranceCriteria() {
+        OperatorAccount operator = new OperatorAccount();
+        operator.setId(7727);
+        assertTrue(operator.hasRulesBasedInsuranceCriteria());
+    }
+
+
+    @Test
+    public void testHasRulesBasedInsuranceCriteria_Fail() {
+        OperatorAccount operator = new OperatorAccount();
+        operator.setId(6115);
+        assertFalse(operator.hasRulesBasedInsuranceCriteria());
+    }
 }
