@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -255,6 +256,22 @@ public class AccountActionSupport extends PicsActionSupport {
 		});
 
 		return result;
+	}
+
+	public String getCountrySubdivisionLabelFor(String country) {
+		return getText(getCountrySubdivisionLabelKeyFor(country));
+	}
+
+	public String getCountrySubdivisionLabelKeyFor(String country) {
+		if (Strings.isNotEmpty(country)) {
+			String countrySubdivisionLabelKey = String.format(Country.COUNTRY_SUBDIVISION_LABEL_FORMAT, country);
+
+			if (hasKey(countrySubdivisionLabelKey)) {
+				return countrySubdivisionLabelKey;
+			}
+		}
+
+		return Country.DEFAULT_COUNTRY_SUBDIVISION_LABEL;
 	}
 
 	public boolean isShowMoreNotes() {
