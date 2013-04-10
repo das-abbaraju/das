@@ -194,6 +194,8 @@
 	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
 	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
 	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
+    <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype" />
+    <bean id="ContractorModel" class="com.picsauditing.rbic.ContractorModel" scope="prototype" />
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
