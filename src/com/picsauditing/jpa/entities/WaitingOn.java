@@ -34,6 +34,19 @@ public enum WaitingOn implements Translatable {
 		return valueOf(waitingOn);
 	}
 
+	public static WaitingOn getWorseWaitingOn(WaitingOn waiting1, WaitingOn waiting2) {
+		if (waiting2 == null)
+			return waiting1;
+
+		if (waiting1 == null) {
+			return waiting2;
+		}
+
+		if (waiting2.ordinal() > waiting1.ordinal())
+			waiting1 = waiting2;
+		return waiting1;
+	}
+
 	public boolean isNone() {
 		return this.equals(None);
 	}

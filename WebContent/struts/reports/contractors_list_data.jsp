@@ -46,7 +46,7 @@
 				</td>
 				
 				<pics:permission perm="AllContractors">
-					<td></td>
+					<td> </td>
 				</pics:permission>
 				
 				<pics:permission perm="ContractorDetails">
@@ -66,12 +66,10 @@
 						<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
 					</td>
 					
-					<s:if test="permissions.operator">
-						<td>
-							<s:text name="WaitingOn" />
-						</td>
-					</s:if>
-					
+					<td>
+						<s:text name="WaitingOn" />
+					</td>
+
 					<pics:permission perm="ViewUnApproved">
 						<td>
 							<s:text name="AuditStatus.Approved" />
@@ -207,7 +205,7 @@
 								<s:if test='get("forceEnd") != null || get("dataForceEnd") != null'>*</s:if></a>
 							</pics:permission>
 						</td>
-						<s:if test="permissions.operator && !permissions.generalContractorFree">
+						<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
 							<td>
 								<pics:permission perm="ContractorDetails">
 									<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" >
