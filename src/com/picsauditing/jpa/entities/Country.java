@@ -54,7 +54,17 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String english;
 	protected String phone;
 	protected Double corruptionPerceptionIndex;
+	protected Locale locale;
+
 	protected Currency currency = Currency.USD;
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
 
 	private List<CountrySubdivision> countrySubdivisions = new ArrayList<CountrySubdivision>();
 	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();

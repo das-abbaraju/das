@@ -1,6 +1,7 @@
 package com.picsauditing.model.l10n;
 
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -13,7 +14,8 @@ import java.util.Locale;
 public class InvoiceLocaleUtil {
 
 	private static AppPropertyDAO propertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
-	private static List<Locale> localesToEmailInBPROCS = new ArrayList<Locale>();
+	private static List<Locale> localesToEmailInvoicesInBPROCS = new ArrayList<Locale>();
+	private static CountryDAO countryDAO = SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
 
 	static {
 		String localesToEmailCSV = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS).getValue();
@@ -25,7 +27,7 @@ public class InvoiceLocaleUtil {
 					continue;
 				}
 				String[] splitSingleLocale = singleLocaleToEmailString.split("_");
-				localesToEmailInBPROCS.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
+				localesToEmailInvoicesInBPROCS.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
 			}
 		}
 	}
@@ -36,9 +38,9 @@ public class InvoiceLocaleUtil {
 			return false;
 		}
 
-		Locale localeToCheck = LocaleUtil.getLocaleFromCountry(contractor.getBillingCountry().getIsoCode());
+		Locale localeToCheck = countryDAO.findLocaleByCountryISO(contractor.getBillingCountry().getIsoCode());
 
-		if (localesToEmailInBPROCS.contains(localeToCheck)) {
+		if (localesToEmailInvoicesInBPROCS.contains(localeToCheck)) {
 			return true;
 		} else {
 			return false;

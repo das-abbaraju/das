@@ -1,11 +1,11 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.picsauditing.jpa.entities.Country;
 
 import javax.persistence.Query;
-
-import com.picsauditing.jpa.entities.Country;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unchecked")
 public class CountryDAO extends PicsDAO {
@@ -35,7 +35,13 @@ public class CountryDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-    public Country findbyISO(String iso) {
-        return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
-    }
+	public Country findbyISO(String iso) {
+		return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
+	}
+
+	public Locale findLocaleByCountryISO(String countryISO) {
+		Country countryObj = find(countryISO);
+		Locale countryLocale = countryObj.getLocale();
+		return countryLocale;
+	}
 }
