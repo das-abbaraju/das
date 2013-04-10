@@ -273,6 +273,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		displayOsha.put(OshaType.MEXICO, false);
         displayOsha.put(OshaType.AUSTRALIA, false);
 		displayOsha.put(OshaType.IRELAND, false);
+		displayOsha.put(OshaType.SOUTH_AFRICA, false);
 
         for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isAnnualAddendum()
@@ -298,6 +299,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (audit.isDataExpectedAnswer(AuditQuestion.IRELAND_KEPT_ID,
 						"Yes"))
 					displayOsha.put(OshaType.IRELAND, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.SOUTH_AFRICA_KEPT_ID,
+						"Yes"))
+					displayOsha.put(OshaType.SOUTH_AFRICA, true);
 			}
 		}
 	}

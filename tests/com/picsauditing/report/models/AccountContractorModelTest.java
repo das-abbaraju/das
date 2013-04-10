@@ -27,7 +27,7 @@ public class AccountContractorModelTest extends ModelTest {
 		includedFields.add("AccountContactEmail");
 		excludedFields.add("AccountContactLastLogin");
 		includedFields.add("AccountNaicsTrir");
-		// includedFields.add("ContractorCustomerServiceFax");
+		includedFields.add("ContractorCustomerServiceUserFax");
 		excludedFields.add("ContractorCustomerServiceLastLogin");
 		excludedFields.add("ContractorFlagFlagColor");
 		checkFields();

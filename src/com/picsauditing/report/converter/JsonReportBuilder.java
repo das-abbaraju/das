@@ -50,12 +50,11 @@ public class JsonReportBuilder {
 		json.put(REPORT_NAME, report.getName());
 		json.put(REPORT_DESCRIPTION, report.getDescription());
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		
-		
+
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
 		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions, report.getId()));
 	}
-	
+
 	public static PermissionService getPermissionService() {
 		if (permissionService == null)
 			return SpringUtils.getBean(SpringUtils.PermissionService);
@@ -120,7 +119,7 @@ public class JsonReportBuilder {
 		JSONObject json = elementToCommonJson(column);
 
 		json.put(COLUMN_ID, column.getColumnId());
-		json.put(COLUMN_TYPE, column.getField().getDisplayType().name());
+		json.put(COLUMN_TYPE, column.getDisplayType().name());
 		json.put(COLUMN_URL, column.getField().getUrl());
 		json.put(COLUMN_SQL_FUNCTION, Strings.toStringPreserveNull(column.getSqlFunction()));
 		json.put(COLUMN_WIDTH, column.getWidth());
@@ -159,7 +158,7 @@ public class JsonReportBuilder {
 	private static JSONObject sortToJson(Sort sort) {
 		JSONObject json = new JSONObject();
 
-		json.put(REPORT_ID, sort.getId());
+		json.put(REPORT_ELEMENT_DB_ID, sort.getId());
 		json.put(REPORT_ELEMENT_FIELD_ID, sort.getName());  // todo: Reconcile the naming
 		json.put(SORT_DIRECTION, sort.isAscending() ? Sort.ASCENDING : Sort.DESCENDING);
 
@@ -173,8 +172,14 @@ public class JsonReportBuilder {
 			throw new ReportValidationException("Field with name '" + element.getName() + "' was not loaded correctly. The field name in the database (report_column, etc.) probably hasn't been updated to match.");
 		}
 
+		int elementId = element.getId();
+		if (elementId == DEFAULT_REPORT_ELEMENT_DB_ID) {
+			json.put(REPORT_ELEMENT_DB_ID, null);
+		} else {
+			json.put(REPORT_ELEMENT_DB_ID, elementId);
+		}
+
 		// TODO sort out these member variable names
-		json.put(REPORT_ELEMENT_DB_ID, element.getId());
 		json.put(REPORT_ELEMENT_FIELD_ID, element.getName());   // todo: Reconcile the naming
 		json.put(REPORT_ELEMENT_CATEGORY, element.getField().getCategoryTranslation());
 		json.put(REPORT_ELEMENT_NAME, element.getField().getText());

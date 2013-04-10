@@ -15,7 +15,7 @@
 
     <img src="/v7/img/logo/logo-large.png" class="logo" />
 
-    <s:include value="../../_action-messages.jsp" />
+    <s:include value="/struts/_action-messages.jsp" />
 
     <fieldset>
         <s:if test="configEnvironment || i18nReady">
@@ -24,10 +24,10 @@
                     <i class="icon-globe"></i>
                 </label>
 
-                <s:include value="_supported-locales-list.jsp" />
+                <s:include value="/struts/user/login/_supported-locales-list.jsp" />
             </div>
         </s:if>
-        <s:include value="_login-form-fields.jsp"/>
+        <s:include value="/struts/user/login/_login-form-fields.jsp"/>
     </fieldset>
 </s:form>
 

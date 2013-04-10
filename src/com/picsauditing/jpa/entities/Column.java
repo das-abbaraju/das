@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
 
@@ -69,6 +70,14 @@ public class Column extends ReportElement implements Comparable<Column> {
 	public PivotCellMethod getPivotCellMethod() {
 		// Need to move this to another table or decide to store it here
 		return null;
+	}
+
+	@Transient
+	public DisplayType getDisplayType() {
+		if (sqlFunction != null) {
+			return sqlFunction.getDisplayType(getField());
+		}
+		return field.getDisplayType();
 	}
 
 	@Override

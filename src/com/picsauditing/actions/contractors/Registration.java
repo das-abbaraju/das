@@ -336,9 +336,17 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		return countrySubdivision;
 	}
 
+	public Country getContractorCountry() {
+		if (contractor != null && contractor.getCountry() != null) {
+			return contractor.getCountry();
+		}
+
+		return countryDAO.find(Country.US_ISO_CODE);
+	}
+
 	@Override
 	public String getPicsPhoneNumber() {
-		return countryDAO.find(Country.US_ISO_CODE).getPhone();
+		return getContractorCountry().getPhone();
 	}
 
 	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {

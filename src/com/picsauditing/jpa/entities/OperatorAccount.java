@@ -328,7 +328,10 @@ public class OperatorAccount extends Account {
 		if (insurance) {
 			return inheritInsuranceCriteria.getFlagCriteria();
 		} else {
-			return inheritFlagCriteria.getFlagCriteria();
+			if (inheritFlagCriteria == null)
+				return new ArrayList<FlagCriteriaOperator>();
+			else
+				return inheritFlagCriteria.getFlagCriteria();
 		}
 	}
 
@@ -346,10 +349,12 @@ public class OperatorAccount extends Account {
 	public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
 
-		for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-			if (c.getCriteria().getAuditType() != null) {
-				if (!c.getCriteria().getAuditType().getClassType().isPolicy() || canSeeInsurance.equals(YesNo.Yes)) {
-					criteriaList.add(c);
+		if (inheritFlagCriteria != null) {
+			for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
+				if (c.getCriteria().getAuditType() != null) {
+					if (!c.getCriteria().getAuditType().getClassType().isPolicy() || canSeeInsurance.equals(YesNo.Yes)) {
+						criteriaList.add(c);
+					}
 				}
 			}
 		}
@@ -361,18 +366,20 @@ public class OperatorAccount extends Account {
 	public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
 
-		for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-			if (c.getCriteria().getQuestion() != null) {
-				if (c.getCriteria().getQuestion().isCurrent()) {
-					if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-							|| canSeeInsurance.equals(YesNo.Yes)) {
-						criteriaList.add(c);
+		if (inheritFlagCriteria != null) {
+			for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
+				if (c.getCriteria().getQuestion() != null) {
+					if (c.getCriteria().getQuestion().isCurrent()) {
+						if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
+								|| canSeeInsurance.equals(YesNo.Yes)) {
+							criteriaList.add(c);
+						}
 					}
 				}
-			}
-			if (c.getCriteria().getOshaType() != null) {
-				if (c.getCriteria().getOshaType().equals(oshaType)) {
-					criteriaList.add(c);
+				if (c.getCriteria().getOshaType() != null) {
+					if (c.getCriteria().getOshaType().equals(oshaType)) {
+						criteriaList.add(c);
+					}
 				}
 			}
 		}

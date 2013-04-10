@@ -55,7 +55,7 @@ public class ReportJson {
 	public static final String RESULTS_TOTAL = "total";
 	public static final String RESULTS_SQL = "sql";
 	public static final String RESULTS_DATA = "data";
-	
+
 	public static final String SQL_FUNCTIONS = "sql_functions";
 	public static final String SQL_FUNCTIONS_KEY = "key";
 	public static final String SQL_FUNCTIONS_VALUE = "value";
@@ -67,6 +67,8 @@ public class ReportJson {
 	public static final String EXT_JS_DEBUG = "debug";
 
 	public static final String DEBUG_SQL = "sql";
+
+	public static final int DEFAULT_REPORT_ELEMENT_DB_ID = -1;
 
 	@Deprecated
 	public static final String LEGACY_MODEL_TYPE = "modelType";
