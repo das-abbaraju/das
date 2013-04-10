@@ -220,6 +220,10 @@ public class Report extends BaseTable {
 		return modelType == null;
 	}
 
+	public boolean hasNoOwner() {
+		return owner == null || owner.getId() == 0;
+	}
+
 	@Deprecated
 	public boolean hasParameters() {
 		return parameters != null;
