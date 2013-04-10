@@ -1,4 +1,4 @@
-$default_border_color: #bcbcbc;
+/*$default_border_color: #bcbcbc;
 $default_text_color: #333;
 $default_text_shadow_color: none;
 $default_top_gradient_color: #f1f1f2;
@@ -107,9 +107,7 @@ $link_active_text_color: #226396;
     }
 }
 
-/*
- * Overrides for Default Buttons
- */
+// Overrides for Default Buttons
 
 .btn {
     @include buttonOverrides($default_border_color,
@@ -140,9 +138,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($default_disabled_background_color);
 }
 
-/*
- * Overrides for Primary Buttons
- */
+// Overrides for Primary Buttons
 
 .btn-primary {
     @include buttonOverrides($primary_border_color,
@@ -173,9 +169,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($primary_disabled_background_color);
 }
 
-/*
- * Overrides for Warning Buttons
- */
+// Overrides for Warning Buttons
 
 .btn-warning {
     @include buttonOverrides($warning_border_color,
@@ -206,9 +200,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($warning_disabled_background_color);
 }
 
-/*
- * Overrides for Info Buttons
- */
+// Overrides for Info Buttons
 
 .btn-info {
     @include buttonOverrides($info_border_color,
@@ -239,9 +231,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($info_disabled_background_color);
 }
 
-/*
- * Overrides for Success Buttons
- */
+// Overrides for Success Buttons
 
 .btn-success {
     @include buttonOverrides($success_border_color,
@@ -272,9 +262,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($success_disabled_background_color);
 }
 
-/*
- * Overrides for Danger Buttons
- */
+// Overrides for Danger Buttons
 
 .btn-danger {
     @include buttonOverrides($danger_border_color,
@@ -305,9 +293,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($danger_disabled_background_color);
 }
 
-/*
- * Overrides for Inverse Buttons
- */
+// Overrides for Inverse Buttons
 
 .btn-inverse {
     @include buttonOverrides($inverse_border_color,
@@ -338,9 +324,7 @@ $link_active_text_color: #226396;
     @include buttonDisabledOverrides($inverse_disabled_background_color);
 }
 
-/*
- * Overrides for Link Buttons
- */
+// Overrides for Link Buttons
 
 .btn-link
 {
@@ -363,4 +347,4 @@ $link_active_text_color: #226396;
 .btn-link:focus
 {
 	text-decoration: none;
-}
+}*/

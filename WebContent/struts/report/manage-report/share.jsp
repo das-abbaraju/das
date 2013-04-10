@@ -16,16 +16,30 @@
     </form>
 </div>
 
-<div class="well">
-    Contractor List
-    <p>Default Contractor List for PICS Employees</p>
-</div>
+<h1>People and groups if you are there answer my call.!!!!!</h1>
 
 <ul class="user-list unstyled">
     <li class="user clearfix">
-        <div class="icons pull-right">
-            <a href="#"><i class="icon-edit icon-large"></i></a>
-            <a href="#"><i class="icon-minus-sign icon-large"></i></a>
+        <div class="btn-group pull-right">
+            <button class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="icon-eye-open"></i> Can View <span class="caret"></span>
+            </button>
+            
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#"><i class="icon-key icon-large"></i> Owner</a>
+                </li>
+                <li>
+                    <a href="#"><i class="icon-edit icon-large"></i> Can Edit</a>
+                </li>
+                <li>
+                    <a href="#"><i class="icon-eye-open icon-large"></i> Can View</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#"><i class="icon-remove icon-large"></i> Remove</a>
+                </li>
+            </ul>
         </div>
         
         <div class="summary">

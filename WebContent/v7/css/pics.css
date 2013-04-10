@@ -385,400 +385,6 @@ a {
   color: #226396;
 }
 
-/*
- * Overrides for Default Buttons
- */
-/* line 114, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn {
-  border-color: #bcbcbc;
-  text-shadow: none;
-  color: #333333;
-  background: gainsboro;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
-}
-
-/* line 124, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn:hover {
-  color: #333333;
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec);
-}
-
-/* line 132, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn.active,
-.btn:active {
-  color: #333333;
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=gainsboro, endColorstr=#cdcdcd);
-}
-
-/* line 139, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn.disabled {
-  background-color: #e6e6e6;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Primary Buttons
- */
-/* line 147, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-primary {
-  border-color: #226396;
-  text-shadow: 0px -1px 1px #226396;
-  color: white;
-  background: #226396;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
-  background-image: -webkit-linear-gradient(#73bbe8, #226396);
-  background-image: -moz-linear-gradient(#73bbe8, #226396);
-  background-image: -o-linear-gradient(#73bbe8, #226396);
-  background-image: linear-gradient(#73bbe8, #226396);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396);
-}
-
-/* line 157, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-primary:hover {
-  color: white;
-  background: #396cc9;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
-  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
-  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
-  background-image: -o-linear-gradient(#60c9f3, #396cc9);
-  background-image: linear-gradient(#60c9f3, #396cc9);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9);
-}
-
-/* line 165, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-primary.active,
-.btn-primary:active {
-  color: white;
-  background: #09366f;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
-  background-image: -webkit-linear-gradient(#336f9c, #09366f);
-  background-image: -moz-linear-gradient(#336f9c, #09366f);
-  background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#336f9c, endColorstr=#09366f);
-}
-
-/* line 172, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-primary.disabled {
-  background-color: #0044cc;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Warning Buttons
- */
-/* line 180, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-warning {
-  border-color: #e67e1c;
-  text-shadow: 0px -1px 1px #e67e1c;
-  color: white;
-  background: #e67e1c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
-  background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
-  background-image: -moz-linear-gradient(#fcc033, #e67e1c);
-  background-image: -o-linear-gradient(#fcc033, #e67e1c);
-  background-image: linear-gradient(#fcc033, #e67e1c);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c);
-}
-
-/* line 190, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-warning:hover {
-  color: white;
-  background: #f1a300;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
-  background-image: -webkit-linear-gradient(#fcd100, #f1a300);
-  background-image: -moz-linear-gradient(#fcd100, #f1a300);
-  background-image: -o-linear-gradient(#fcd100, #f1a300);
-  background-image: linear-gradient(#fcd100, #f1a300);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300);
-}
-
-/* line 198, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-warning.active,
-.btn-warning:active {
-  color: white;
-  background: #d66000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
-  background-image: -webkit-linear-gradient(#ea9000, #d66000);
-  background-image: -moz-linear-gradient(#ea9000, #d66000);
-  background-image: -o-linear-gradient(#ea9000, #d66000);
-  background-image: linear-gradient(#ea9000, #d66000);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ea9000, endColorstr=#d66000);
-}
-
-/* line 205, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-warning.disabled {
-  background-color: #f89406;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Info Buttons
- */
-/* line 213, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-info {
-  border-color: #6ca6f6;
-  text-shadow: 0px -1px 1px #6ca6f6;
-  color: white;
-  background: #6ca6f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
-  background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -o-linear-gradient(#70cfff, #6ca6f6);
-  background-image: linear-gradient(#70cfff, #6ca6f6);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6);
-}
-
-/* line 223, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-info:hover {
-  color: white;
-  background: #73d0f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
-  background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
-  background-image: -moz-linear-gradient(#73ddff, #73d0f6);
-  background-image: -o-linear-gradient(#73ddff, #73d0f6);
-  background-image: linear-gradient(#73ddff, #73d0f6);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6);
-}
-
-/* line 231, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-info.active,
-.btn-info:active {
-  color: white;
-  background: #5599fc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
-  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
-  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
-  background-image: -o-linear-gradient(#55a9ff, #5599fc);
-  background-image: linear-gradient(#55a9ff, #5599fc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#55a9ff, endColorstr=#5599fc);
-}
-
-/* line 238, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-info.disabled {
-  background-color: #2f96b4;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Success Buttons
- */
-/* line 246, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-success {
-  border-color: #229322;
-  text-shadow: 0px -1px 1px #229322;
-  color: white;
-  background: #229322;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
-  background-image: -webkit-linear-gradient(#33c033, #229322);
-  background-image: -moz-linear-gradient(#33c033, #229322);
-  background-image: -o-linear-gradient(#33c033, #229322);
-  background-image: linear-gradient(#33c033, #229322);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322);
-}
-
-/* line 256, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-success:hover {
-  color: white;
-  background: #25b000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
-  background-image: -webkit-linear-gradient(#33d000, #25b000);
-  background-image: -moz-linear-gradient(#33d000, #25b000);
-  background-image: -o-linear-gradient(#33d000, #25b000);
-  background-image: linear-gradient(#33d000, #25b000);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000);
-}
-
-/* line 264, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-success.active,
-.btn-success:active {
-  color: white;
-  background: #1c7600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
-  background-image: -webkit-linear-gradient(#299600, #1c7600);
-  background-image: -moz-linear-gradient(#299600, #1c7600);
-  background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#299600, endColorstr=#1c7600);
-}
-
-/* line 271, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-success.disabled {
-  background-color: #51a351;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Danger Buttons
- */
-/* line 279, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-danger {
-  border-color: #ac030c;
-  text-shadow: 0px -1px 1px #ac030c;
-  color: white;
-  background: #ac030c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
-  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
-  background-image: -moz-linear-gradient(#f6303c, #ac030c);
-  background-image: -o-linear-gradient(#f6303c, #ac030c);
-  background-image: linear-gradient(#f6303c, #ac030c);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c);
-}
-
-/* line 289, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-danger:hover {
-  color: white;
-  background: #d00900;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
-  background-image: -webkit-linear-gradient(#f92626, #d00900);
-  background-image: -moz-linear-gradient(#f92626, #d00900);
-  background-image: -o-linear-gradient(#f92626, #d00900);
-  background-image: linear-gradient(#f92626, #d00900);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900);
-}
-
-/* line 297, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-danger.active,
-.btn-danger:active {
-  color: white;
-  background: #8c0600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
-  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
-  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
-  background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600);
-}
-
-/* line 304, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-danger.disabled {
-  background-color: #bd362f;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Inverse Buttons
- */
-/* line 312, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-inverse {
-  border-color: #333333;
-  text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.25);
-  color: white;
-  background: #333333;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #454545), color-stop(100%, #333333));
-  background-image: -webkit-linear-gradient(#454545, #333333);
-  background-image: -moz-linear-gradient(#454545, #333333);
-  background-image: -o-linear-gradient(#454545, #333333);
-  background-image: linear-gradient(#454545, #333333);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#454545, endColorstr=#333333);
-}
-
-/* line 322, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-inverse:hover {
-  color: white;
-  background: #222222;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(#444444, #222222);
-  background-image: -moz-linear-gradient(#444444, #222222);
-  background-image: -o-linear-gradient(#444444, #222222);
-  background-image: linear-gradient(#444444, #222222);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
-}
-
-/* line 330, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-inverse.active,
-.btn-inverse:active {
-  color: white;
-  background: #222222;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(#444444, #222222);
-  background-image: -moz-linear-gradient(#444444, #222222);
-  background-image: -o-linear-gradient(#444444, #222222);
-  background-image: linear-gradient(#444444, #222222);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
-}
-
-/* line 337, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-inverse.disabled {
-  background-color: #222222;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
-}
-
-/*
- * Overrides for Link Buttons
- */
-/* line 346, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-link {
-  border-color: transparent;
-  text-shadow: none;
-  color: #226396;
-  background: transparent;
-}
-
-/* line 352, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-link:hover {
-  color: #73bbe8;
-  background: transparent;
-}
-
-/* line 358, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-link.active,
-.btn-link:active {
-  color: #226396;
-  background: transparent;
-}
-
-/* line 364, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
-.btn-link:hover,
-.btn-link:focus {
-  text-decoration: none;
-}
-
 /* line 4, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
 .btn-group .btn-link {
   border: 0;
@@ -1576,7 +1182,7 @@ hr {
   border-radius: 4px;
   line-height: 20px;
   margin-bottom: 2px;
-  padding: 0 20px;
+  padding: 0 9px 0 20px;
 }
 /* line 51, ../sass/pics/templates/report/manage-report/_share.scss */
 #ManageReports_share_page .user-list .summary {
@@ -1604,28 +1210,32 @@ hr {
   white-space: nowrap;
 }
 /* line 80, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .user-list .icons {
+#ManageReports_share_page .user-list .btn-group {
   line-height: 48px;
+}
+/* line 84, ../sass/pics/templates/report/manage-report/_share.scss */
+#ManageReports_share_page .user-list .btn-group .caret {
+  margin-left: 10px;
 }
 
 @media (min-width: 1200px) {
-  /* line 92, ../sass/pics/templates/report/manage-report/_share.scss */
+  /* line 97, ../sass/pics/templates/report/manage-report/_share.scss */
   #ManageReports_share_page #report_share_search_form .icon-search {
     left: -382px;
   }
 }
 @media (max-width: 979px) and (min-width: 768px) {
-  /* line 105, ../sass/pics/templates/report/manage-report/_share.scss */
+  /* line 110, ../sass/pics/templates/report/manage-report/_share.scss */
   #ManageReports_share_page #report_share_search_form .icon-search {
     left: -242px;
   }
 }
 @media (max-width: 767px) {
-  /* line 118, ../sass/pics/templates/report/manage-report/_share.scss */
+  /* line 123, ../sass/pics/templates/report/manage-report/_share.scss */
   #ManageReports_share_page #report_share_search_form input {
     padding-left: 14px;
   }
-  /* line 123, ../sass/pics/templates/report/manage-report/_share.scss */
+  /* line 128, ../sass/pics/templates/report/manage-report/_share.scss */
   #ManageReports_share_page #report_share_search_form .icon-search {
     display: none;
   }
