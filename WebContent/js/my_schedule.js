@@ -91,7 +91,8 @@ function loadPreview() {
 				'calEvent.title':$dialog.find('[name="title"]').val(),
 				'type': $dialog.find('[name="type"]').val(),
 				'button': 'save',
-				'currentUserID': $('#currentUserID').val()
+				'currentUserID': $('#currentUserID').val(),
+                'allDay': $('#all-day').is(':checked')
 			};
 
 			if (!isNaN(start)) {
