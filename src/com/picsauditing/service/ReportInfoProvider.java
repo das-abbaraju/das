@@ -1,5 +1,13 @@
 package com.picsauditing.service;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.dao.mapper.ReportInfoMapper;
@@ -10,15 +18,6 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Paginatable;
 import com.picsauditing.util.pagination.PaginationParameters;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 public class ReportInfoProvider implements Paginatable<ReportInfo> {
 
@@ -38,15 +37,6 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
         ReportUser reportUser = reportUserDAO.findOne(userId, reportInfo.getId());
         reportUser.setSortOrder(reportInfo.getSortOrder());
         reportUserDAO.save(reportUser);
-    }
-
-    private List<Integer> getReportIds(List<ReportInfo> reportInfoList) {
-        List<Integer> ids = new ArrayList<>();
-        for (ReportInfo reportInfo : reportInfoList) {
-            ids.add(reportInfo.getId());
-        }
-
-        return ids;
     }
 
     public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
