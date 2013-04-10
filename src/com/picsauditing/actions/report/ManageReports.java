@@ -110,7 +110,8 @@ public class ManageReports extends PicsActionSupport {
 
 			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
 		} catch (NoResultException nre) {
-			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
+			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId()
+					+ " and report id " + reportId, nre);
 		} catch (Exception e) {
 			logAndShowUserInDebugMode("Unexpected exception in ManageReports!ownedBy.action", e);
 		}
@@ -133,13 +134,11 @@ public class ManageReports extends PicsActionSupport {
 	public String search() {
 		reportList = Collections.emptyList();
 		try {
-			reportList = manageReportsService.getReportsForSearch(searchTerm,
-					permissions, getPagination());
+			reportList = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
-			logAndShowUserInDebugMode(
-					"Unexpected exception in ManageReports!search.action", e);
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!search.action", e);
 		}
 
 		return determineViewName("searchList", "search");
@@ -159,8 +158,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteUp() {
 		try {
-			ReportUser reportUser = reportPreferencesService.loadReportUser(
-					permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
@@ -182,8 +180,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveFavoriteDown() {
 		try {
-			ReportUser reportUser = reportPreferencesService.loadReportUser(
-					permissions.getUserId(), reportId);
+			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
 			manageReportsService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
@@ -384,7 +381,8 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	private ReportSearch buildReportSearch() {
-		return new ReportSearch(permissions, sort, direction);
+		return new ReportSearch.Builder().permissions(permissions).sortType(sort)
+				.sortDirection(direction).build();
 	}
 
 	public User getToOwner() {

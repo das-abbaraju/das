@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,6 +23,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportSearch;
 import com.picsauditing.util.Strings;
 
 public class ReportUserDAO extends PicsDAO {
@@ -149,6 +151,30 @@ public class ReportUserDAO extends PicsDAO {
 		}
 
 		return result;
+	}
+
+	public List<ReportUser> findAllOrdered(ReportSearch reportSearch) {
+		String orderBy = ReportDAO.getOrderBySort(reportSearch.getSortType());
+
+		Permissions permissions = reportSearch.getPermissions();
+		String groupIds = permissions.getAllInheritedGroupIds().toString();
+		groupIds = groupIds.substring(1, groupIds.length() - 1);
+
+		String queryString = "SELECT ru FROM ReportUser ru \n" +
+				"JOIN ru.report r \n" +
+				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
+				"AND ru.hidden = " + reportSearch.isIncludeHidden() + "\n" +
+				"AND r.id IN \n" +
+				"(\n" +
+				"SELECT rpu.report.id \n" +
+				"FROM ReportPermissionUser rpu \n" +
+				"WHERE (rpu.user.id = " + permissions.getUserId() + "\n" +
+				" OR rpu.user.id IN ( " + groupIds + " ))\n" +
+				")\n" +
+				"ORDER BY " + orderBy + " " + reportSearch.getSortDirection();
+
+		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
+		return query.getResultList();
 	}
 
 }
