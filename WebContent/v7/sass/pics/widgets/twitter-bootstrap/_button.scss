@@ -1,350 +1,437 @@
-/*$default_border_color: #bcbcbc;
-$default_text_color: #333;
-$default_text_shadow_color: none;
-$default_top_gradient_color: #f1f1f2;
-$default_bottom_gradient_color: #dcdcdc;
-$default_hover_top_gradient_color: #f7f7f8;
-$default_hover_bottom_gradient_color: #ececec;
-$default_active_top_gradient_color: #dcdcdc;
-$default_active_bottom_gradient_color: #cdcdcd;
-$default_disabled_background_color: #e6e6e6;
-
-$primary_border_color: #226396;
-$primary_text_color: #fff;
-$primary_text_shadow_color: #226396;
-$primary_top_gradient_color: #73bbe8;
-$primary_bottom_gradient_color: #226396;
-$primary_hover_top_gradient_color: #60c9f3;
-$primary_hover_bottom_gradient_color: #396cc9;
-$primary_active_top_gradient_color: #336f9c;
-$primary_active_bottom_gradient_color: #09366f;
-$primary_disabled_background_color: #04c;
-
-$warning_border_color: #e67e1c;
-$warning_text_color: $primary_text_color;
-$warning_text_shadow_color: #e67e1c;
-$warning_top_gradient_color: #fcc033;
-$warning_bottom_gradient_color: #e67e1c;
-$warning_hover_top_gradient_color: #fcd100;
-$warning_hover_bottom_gradient_color: #f1a300;
-$warning_active_top_gradient_color: #ea9000;
-$warning_active_bottom_gradient_color: #d66000;
-$warning_disabled_background_color: #F89406;
-
-$info_border_color: #6ca6f6;
-$info_text_color: $primary_text_color;
-$info_text_shadow_color: #6ca6f6;
-$info_top_gradient_color: #70cfff;
-$info_bottom_gradient_color: #6ca6f6;
-$info_hover_top_gradient_color: #73ddff;
-$info_hover_bottom_gradient_color: #73d0f6;
-$info_active_top_gradient_color: #55a9ff;
-$info_active_bottom_gradient_color: #5599fc;
-$info_disabled_background_color: #2F96B4;
-
-$success_border_color: #229322;
-$success_text_color: $primary_text_color;
-$success_text_shadow_color: #229322;
-$success_top_gradient_color: #33c033;
-$success_bottom_gradient_color: #229322;
-$success_hover_top_gradient_color: #33d000;
-$success_hover_bottom_gradient_color: #25b000;
-$success_active_top_gradient_color: #299600;
-$success_active_bottom_gradient_color: #1c7600;
-$success_disabled_background_color: #51A351;
-
-$danger_border_color: #ac030c;
-$danger_text_color: $primary_text_color;
-$danger_text_shadow_color: #ac030c;
-$danger_top_gradient_color: #f6303c;
-$danger_bottom_gradient_color: #ac030c;
-$danger_hover_top_gradient_color: #f92626;
-$danger_hover_bottom_gradient_color: #d00900;
-$danger_active_top_gradient_color: #c60c0c;
-$danger_active_bottom_gradient_color: #8c0600;
-$danger_disabled_background_color: #BD362F;
-
-$inverse_border_color: #333;
-$inverse_text_color: $primary_text_color;
-$inverse_text_shadow_color: rgba(0, 0, 0, 0.25);
-$inverse_top_gradient_color: #454545;
-$inverse_bottom_gradient_color: #333;
-$inverse_hover_top_gradient_color: #444;
-$inverse_hover_bottom_gradient_color: #222;
-$inverse_active_top_gradient_color: #444;
-$inverse_active_bottom_gradient_color: #222;
-$inverse_disabled_background_color: #222;
-
-$link_border_color: transparent;
-$link_text_color: #226396;
-$link_hover_text_color: #73BBE8;
-$link_active_text_color: #226396;
-
-@mixin buttonOverrides($border_color, $text_shadow_color: none){
-    border-color: $border_color;
-
-    @if $text_shadow_color != none {
-            text-shadow: 0px -1px 1px $text_shadow_color;
-    } @else {
-            text-shadow: none;
-    }
-}
-
-@mixin buttonDisabledOverrides($background_color: none, $opacity: 0.65){
-    background-color: $background_color;
-    background-image: none;
-    @include box-shadow(none);
-    opacity: $opacity;
-}
-
-@mixin buttonStateOverrides($text_color, $background_color: none, $top_gradient_color: none, $bottom_gradient_color: none){
-    color: $text_color;
-    background: $background_color;
-
-    @if $top_gradient_color != none {
-            @include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
-    }
-}
-
-// Overrides for Default Buttons
-
 .btn {
-    @include buttonOverrides($default_border_color,
-        $default_text_shadow_color);
+    display: inline-block;
+    *display: inline;
+    /* IE7 inline-block hack */
 
-    @include buttonStateOverrides($default_text_color,
-        $default_bottom_gradient_color,
-        $default_top_gradient_color,
-        $default_bottom_gradient_color);
+    *zoom: 1;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    color: #454545;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    background-color: #f5f5f5;
+    background-image: -moz-linear-gradient(top, #f1f1f2, #dcdcdc);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f1f1f2), to(#dcdcdc));
+    background-image: -webkit-linear-gradient(top, #f1f1f2, #dcdcdc);
+    background-image: -o-linear-gradient(top, #f1f1f2, #dcdcdc);
+    background-image: linear-gradient(to bottom, #f1f1f2, #dcdcdc);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff1f1f2', endColorstr='#ffdcdcdc', GradientType=0);
+    border-color: #dcdcdc #dcdcdc #bfbfbf;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #dcdcdc;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+    border: 1px solid #bcbcbc;
+    *border: 0;
+    border-bottom-color: #b3b3b3;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    *margin-left: .3em;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
 
-.btn:hover {
-    @include buttonStateOverrides($default_text_color,
-        $default_hover_bottom_gradient_color,
-        $default_hover_top_gradient_color,
-        $default_hover_bottom_gradient_color);
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled] {
+    color: #454545;
+    background-color: #dcdcdc;
+    *background-color: #dcdcdc;
+}
+
+.btn:active,
+.btn.active {
+    background-color: #dcdcdc \9;
+}
+
+.btn:first-child {
+    *margin-left: 0;
+}
+
+.btn:hover,
+.btn:focus {
+    color: #454545;
+    text-decoration: none;
+    background-position: 0 -15px;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
+}
+
+.btn:focus {
+    outline: thin dotted #454545;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
 }
 
 .btn.active,
 .btn:active {
-    @include buttonStateOverrides($default_text_color,
-        $default_active_bottom_gradient_color,
-        $default_active_top_gradient_color,
-        $default_active_bottom_gradient_color);
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05);
 }
 
-.btn.disabled {
-    @include buttonDisabledOverrides($default_disabled_background_color);
+.btn.disabled,
+.btn[disabled] {
+    cursor: default;
+    background-image: none;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 
-// Overrides for Primary Buttons
-
-.btn-primary {
-    @include buttonOverrides($primary_border_color,
-        $primary_text_shadow_color);
-
-    @include buttonStateOverrides($primary_text_color,
-        $primary_bottom_gradient_color,
-        $primary_top_gradient_color,
-        $primary_bottom_gradient_color);
+.btn-large {
+    padding: 11px 19px;
+    font-size: 17.5px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 
-.btn-primary:hover {
-    @include buttonStateOverrides($primary_text_color,
-        $primary_hover_bottom_gradient_color,
-        $primary_hover_top_gradient_color,
-        $primary_hover_bottom_gradient_color);
+.btn-large [class^="icon-"],
+.btn-large [class*=" icon-"] {
+    margin-top: 4px;
+}
+
+.btn-small {
+    padding: 2px 10px;
+    font-size: 11.9px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.btn-small [class^="icon-"],
+.btn-small [class*=" icon-"] {
+    margin-top: 0;
+}
+
+.btn-mini [class^="icon-"],
+.btn-mini [class*=" icon-"] {
+    margin-top: -1px;
+}
+
+.btn-mini {
+    padding: 0 6px;
+    font-size: 10.5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.btn-block + .btn-block {
+    margin-top: 5px;
+}
+
+input[type="submit"].btn-block,
+input[type="reset"].btn-block,
+input[type="button"].btn-block {
+    width: 100%;
 }
 
 .btn-primary.active,
-.btn-primary:active {
-    @include buttonStateOverrides($primary_text_color,
-        $primary_active_bottom_gradient_color,
-        $primary_active_top_gradient_color,
-        $primary_active_bottom_gradient_color);
+.btn-warning.active,
+.btn-danger.active,
+.btn-success.active,
+.btn-info.active,
+.btn-inverse.active {
+    color: rgba(255, 255, 255, 0.75);
 }
 
-.btn-primary.disabled {
-    @include buttonDisabledOverrides($primary_disabled_background_color);
+.btn-primary {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #3f93c0;
+    background-image: -moz-linear-gradient(top, #73bbe8, #3f93c0);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#73bbe8), to(#3f93c0));
+    background-image: -webkit-linear-gradient(top, #73bbe8, #3f93c0);
+    background-image: -o-linear-gradient(top, #73bbe8, #3f93c0);
+    background-image: linear-gradient(to bottom, #73bbe8, #3f93c0);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
+    border-color: #3f93c0 #3f93c0 #336699;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #3f93c0;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-// Overrides for Warning Buttons
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+    color: #ffffff;
+    background-color: #3f93c0;
+    *background-color: #3f93c0;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+    background-color: #3f93c0 \9;
+}
 
 .btn-warning {
-    @include buttonOverrides($warning_border_color,
-        $warning_text_shadow_color);
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #faa732;
+    background-image: -moz-linear-gradient(top, #ff9600, #e67e1c);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ff9600), to(#e67e1c));
+    background-image: -webkit-linear-gradient(top, #ff9600, #e67e1c);
+    background-image: -o-linear-gradient(top, #ff9600, #e67e1c);
+    background-image: linear-gradient(to bottom, #ff9600, #e67e1c);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffff9600', endColorstr='#ffe67e1c', GradientType=0);
+    border-color: #e67e1c #e67e1c #b3660c;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #e67e1c;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
-    @include buttonStateOverrides($warning_text_color,
-        $warning_bottom_gradient_color,
-        $warning_top_gradient_color,
-        $warning_bottom_gradient_color);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-.btn-warning:hover {
-    @include buttonStateOverrides($warning_text_color,
-        $warning_hover_bottom_gradient_color,
-        $warning_hover_top_gradient_color,
-        $warning_hover_bottom_gradient_color);
-}
-
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-warning:active,
 .btn-warning.active,
-.btn-warning:active {
-    @include buttonStateOverrides($warning_text_color,
-        $warning_active_bottom_gradient_color,
-        $warning_active_top_gradient_color,
-        $warning_active_bottom_gradient_color);
+.btn-warning.disabled,
+.btn-warning[disabled] {
+    color: #ffffff;
+    background-color: #e67e1c;
+    *background-color: #e67e1c;
 }
 
-.btn-warning.disabled {
-    @include buttonDisabledOverrides($warning_disabled_background_color);
+.btn-warning:active,
+.btn-warning.active {
+    background-color: #e67e1c \9;
 }
-
-// Overrides for Info Buttons
-
-.btn-info {
-    @include buttonOverrides($info_border_color,
-        $info_text_shadow_color);
-
-    @include buttonStateOverrides($info_text_color,
-        $info_bottom_gradient_color,
-        $info_top_gradient_color,
-        $info_bottom_gradient_color);
-}
-
-.btn-info:hover {
-    @include buttonStateOverrides($info_text_color,
-        $info_hover_bottom_gradient_color,
-        $info_hover_top_gradient_color,
-        $info_hover_bottom_gradient_color);
-}
-
-.btn-info.active,
-.btn-info:active {
-    @include buttonStateOverrides($info_text_color,
-        $info_active_bottom_gradient_color,
-        $info_active_top_gradient_color,
-        $info_active_bottom_gradient_color);
-}
-
-.btn-info.disabled {
-    @include buttonDisabledOverrides($info_disabled_background_color);
-}
-
-// Overrides for Success Buttons
-
-.btn-success {
-    @include buttonOverrides($success_border_color,
-        $success_text_shadow_color);
-
-    @include buttonStateOverrides($success_text_color,
-        $success_bottom_gradient_color,
-        $success_top_gradient_color,
-        $success_bottom_gradient_color);
-}
-
-.btn-success:hover {
-    @include buttonStateOverrides($success_text_color,
-        $success_hover_bottom_gradient_color,
-        $success_hover_top_gradient_color,
-        $success_hover_bottom_gradient_color);
-}
-
-.btn-success.active,
-.btn-success:active {
-    @include buttonStateOverrides($success_text_color,
-        $success_active_bottom_gradient_color,
-        $success_active_top_gradient_color,
-        $success_active_bottom_gradient_color);
-}
-
-.btn-success.disabled {
-    @include buttonDisabledOverrides($success_disabled_background_color);
-}
-
-// Overrides for Danger Buttons
 
 .btn-danger {
-    @include buttonOverrides($danger_border_color,
-        $danger_text_shadow_color);
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #da4f49;
+    background-image: -moz-linear-gradient(top, #e60606, #ac030c);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e60606), to(#ac030c));
+    background-image: -webkit-linear-gradient(top, #e60606, #ac030c);
+    background-image: -o-linear-gradient(top, #e60606, #ac030c);
+    background-image: linear-gradient(to bottom, #e60606, #ac030c);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe60606', endColorstr='#ffac030c', GradientType=0);
+    border-color: #ac030c #ac030c #73030c;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #ac030c;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
-    @include buttonStateOverrides($danger_text_color,
-        $danger_bottom_gradient_color,
-        $danger_top_gradient_color,
-        $danger_bottom_gradient_color);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-.btn-danger:hover {
-    @include buttonStateOverrides($danger_text_color,
-        $danger_hover_bottom_gradient_color,
-        $danger_hover_top_gradient_color,
-        $danger_hover_bottom_gradient_color);
-}
-
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active,
 .btn-danger.active,
-.btn-danger:active {
-    @include buttonStateOverrides($danger_text_color,
-        $danger_active_bottom_gradient_color,
-        $danger_active_top_gradient_color,
-        $danger_active_bottom_gradient_color);
+.btn-danger.disabled,
+.btn-danger[disabled] {
+    color: #ffffff;
+    background-color: #ac030c;
+    *background-color: #ac030c;
 }
 
-.btn-danger.disabled {
-    @include buttonDisabledOverrides($danger_disabled_background_color);
+.btn-danger:active,
+.btn-danger.active {
+    background-color: #ac030c \9;
 }
 
-// Overrides for Inverse Buttons
+.btn-success {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #5bb75b;
+    background-image: -moz-linear-gradient(top, #36a906, #229322);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a906), to(#229322));
+    background-image: -webkit-linear-gradient(top, #36a906, #229322);
+    background-image: -o-linear-gradient(top, #36a906, #229322);
+    background-image: linear-gradient(to bottom, #36a906, #229322);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff36a906', endColorstr='#ff229322', GradientType=0);
+    border-color: #229322 #229322 #096909;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #229322;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active,
+.btn-success.active,
+.btn-success.disabled,
+.btn-success[disabled] {
+    color: #ffffff;
+    background-color: #229322;
+    *background-color: #229322;
+}
+
+.btn-success:active,
+.btn-success.active {
+    background-color: #229322 \9;
+}
+
+.btn-info {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #49afcd;
+    background-image: -moz-linear-gradient(top, #9cccf9, #73bbe8);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#9cccf9), to(#73bbe8));
+    background-image: -webkit-linear-gradient(top, #9cccf9, #73bbe8);
+    background-image: -o-linear-gradient(top, #9cccf9, #73bbe8);
+    background-image: linear-gradient(to bottom, #9cccf9, #73bbe8);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff9cccf9', endColorstr='#ff73bbe8', GradientType=0);
+    border-color: #73bbe8 #73bbe8 #226396;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #73bbe8;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active,
+.btn-info.active,
+.btn-info.disabled,
+.btn-info[disabled] {
+    color: #ffffff;
+    background-color: #73bbe8;
+    *background-color: #73bbe8;
+}
+
+.btn-info:active,
+.btn-info.active {
+    background-color: #73bbe8 \9;
+}
 
 .btn-inverse {
-    @include buttonOverrides($inverse_border_color,
-        $inverse_text_shadow_color);
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #363636;
+    background-image: -moz-linear-gradient(top, #003663, #002441);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#003663), to(#002441));
+    background-image: -webkit-linear-gradient(top, #003663, #002441);
+    background-image: -o-linear-gradient(top, #003663, #002441);
+    background-image: linear-gradient(to bottom, #003663, #002441);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff003663', endColorstr='#ff002441', GradientType=0);
+    border-color: #002441 #002441 #001323;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #002441;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
-    @include buttonStateOverrides($inverse_text_color,
-        $inverse_bottom_gradient_color,
-        $inverse_top_gradient_color,
-        $inverse_bottom_gradient_color);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-.btn-inverse:hover {
-    @include buttonStateOverrides($inverse_text_color,
-        $inverse_hover_bottom_gradient_color,
-        $inverse_hover_top_gradient_color,
-        $inverse_hover_bottom_gradient_color);
-}
-
+.btn-inverse:hover,
+.btn-inverse:focus,
+.btn-inverse:active,
 .btn-inverse.active,
-.btn-inverse:active {
-    @include buttonStateOverrides($inverse_text_color,
-        $inverse_active_bottom_gradient_color,
-        $inverse_active_top_gradient_color,
-        $inverse_active_bottom_gradient_color);
+.btn-inverse.disabled,
+.btn-inverse[disabled] {
+    color: #ffffff;
+    background-color: #002441;
+    *background-color: #002441;
 }
 
-.btn-inverse.disabled {
-    @include buttonDisabledOverrides($inverse_disabled_background_color);
+.btn-inverse:active,
+.btn-inverse.active {
+    background-color: #002441 \9;
 }
 
-// Overrides for Link Buttons
-
-.btn-link
-{
-    @include buttonOverrides($link_border_color);
-    @include buttonStateOverrides($link_text_color, transparent);
+button.btn,
+input[type="submit"].btn {
+    *padding-top: 3px;
+    *padding-bottom: 3px;
 }
 
-.btn-link:hover
-{
-    @include buttonStateOverrides($link_hover_text_color, transparent);
+button.btn::-moz-focus-inner,
+input[type="submit"].btn::-moz-focus-inner {
+    padding: 0;
+    border: 0;
 }
 
-.btn-link.active,
-.btn-link:active
-{
-    @include buttonStateOverrides($link_active_text_color, transparent);
+button.btn.btn-large,
+input[type="submit"].btn.btn-large {
+    *padding-top: 7px;
+    *padding-bottom: 7px;
+}
+
+button.btn.btn-small,
+input[type="submit"].btn.btn-small {
+    *padding-top: 3px;
+    *padding-bottom: 3px;
+}
+
+button.btn.btn-mini,
+input[type="submit"].btn.btn-mini {
+    *padding-top: 1px;
+    *padding-bottom: 1px;
+}
+
+.btn-link,
+.btn-link:active,
+.btn-link[disabled] {
+    background-color: transparent;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn-link {
+    border-color: transparent;
+    cursor: pointer;
+    color: #226396;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 
 .btn-link:hover,
-.btn-link:focus
-{
-	text-decoration: none;
-}*/
+.btn-link:focus {
+    color: #73bbe8;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.btn-link[disabled]:hover,
+.btn-link[disabled]:focus {
+    color: #454545;
+    text-decoration: none;
+}
