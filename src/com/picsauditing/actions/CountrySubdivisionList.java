@@ -1,10 +1,11 @@
 package com.picsauditing.actions;
 
-import org.json.simple.JSONObject;
-
+import com.picsauditing.PICS.MainPage;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.util.Strings;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 public class CountrySubdivisionList extends AccountActionSupport {
@@ -25,8 +26,17 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	public String phone() {
 		json = new JSONObject();
 
-		json.put("country", getText(countryDAO.find(countryString).getI18nKey()));
-		json.put("picsPhoneNumber", getPicsPhoneNumber(countryString));
+		json.put("country", getText("Country"));
+		json.put("picsPhoneNumber", MainPage.PICS_PHONE_NUMBER);
+
+		Country country = countryDAO.find(countryString);
+		if (country != null) {
+			json.put("country", getText(country.getI18nKey()));
+
+			if (Strings.isNotEmpty(country.getPhone())) {
+				json.put("picsPhoneNumber", country.getPhone());
+			}
+		}
 
 		return JSON;
 	}
@@ -68,15 +78,17 @@ public class CountrySubdivisionList extends AccountActionSupport {
 		this.needsSuffix = needsSuffix;
 	}
 
-    public CountrySubdivision getAccountCountrySubdivision() {
-        CountrySubdivision value = null;
-        value = new CountrySubdivision(countrySubdivisionString);
-//        Account account = accountDAO.find(id, "Contractor");
-//        if (account != null) {
-//                value=account.getCountrySubdivision();
-//        }
-        return value;
-}
+	public CountrySubdivision getAccountCountrySubdivision() {
+		if (account != null && account.getCountrySubdivision() != null) {
+			return account.getCountrySubdivision();
+		}
+
+		if (Strings.isNotEmpty(getCountrySubdivisionString())) {
+			return new CountrySubdivision(getCountrySubdivisionString());
+		}
+
+		return null;
+	}
 
 	public boolean isRequired() {
 		return required;
@@ -87,10 +99,13 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	}
 
 	public String getCountrySubdivisionPrefix() {
-		if (prefix == null)
+		if (Strings.isEmpty(prefix)) {
 			return "countrySubdivision";
-		if (prefix.contains("CountrySubdivision"))
+		}
+
+		if (prefix.contains("CountrySubdivision")) {
 			return prefix;
+		}
 
 		return prefix + "countrySubdivision";
 	}

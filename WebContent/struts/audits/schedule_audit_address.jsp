@@ -83,7 +83,8 @@
                         listKey="isoCode" 
                         listValue="name" 
                         headerKey="" 
-                        headerValue=" - Country - "
+                        headerValue=" - %{getText('Country')} - "
+                        data-contractor="%{conAudit.contractorAccount.id}"
                     />
                 </li>
                 <li id="conAudit_countrySubdivision_li" class="calculated-address">

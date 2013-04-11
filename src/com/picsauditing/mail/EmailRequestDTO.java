@@ -13,5 +13,5 @@ public class EmailRequestDTO {
 	public Set<Integer> contractorIDs = new HashSet<Integer>();
 	public Set<OpPerms> userTypes = new HashSet<OpPerms>();
 	public String overrideEmail;
-	public Set<Integer> invoiceIDs = new HashSet<Integer>();
+	public int invoiceID = 0;
 }

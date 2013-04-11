@@ -1,38 +1,21 @@
 package com.picsauditing.mail;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.l10n.InvoiceLocaleUtil;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
 
 public class EventSubscriptionBuilder {
 
@@ -85,7 +68,7 @@ public class EventSubscriptionBuilder {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
 		if (InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
-			sendInvoiceEmailViaBProcs(invoice);
+			sendInvoiceEmailViaBProcs(contractor, invoice);
 		} else {
 			emailSender.send(email);
 		}
@@ -93,10 +76,10 @@ public class EventSubscriptionBuilder {
 		return email;
 	}
 
-	private static void sendInvoiceEmailViaBProcs(Invoice invoice) {
-		EmailRequestDTO request = runner.buildEmailRequest();
+	private static void sendInvoiceEmailViaBProcs(ContractorAccount contractorAccount, Invoice invoice) {
+		EmailRequestDTO request = new EmailRequestDTO();
 		request.templateID = PICS_CONTRACTOR_INVOICE_TEMPLATE_ID;
-		request.invoiceIDs.add(invoice.getId());
+		request.invoiceID = invoice.getId();
 		emailRequestPublisher.publish(request);
 	}
 
