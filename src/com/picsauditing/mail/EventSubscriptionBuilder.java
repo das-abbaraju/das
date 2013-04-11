@@ -1,21 +1,38 @@
 package com.picsauditing.mail;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.l10n.InvoiceLocaleUtil;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.*;
 
 public class EventSubscriptionBuilder {
 
@@ -25,7 +42,6 @@ public class EventSubscriptionBuilder {
 	private static EmailSubscriptionDAO subscriptionDAO = SpringUtils.getBean(SpringUtils.EMAIL_SUBSCRIPTION_DAO);
 	private static NoteDAO noteDAO = SpringUtils.getBean(SpringUtils.NOTE_DAO);
 	private static EmailSender emailSender = SpringUtils.getBean(SpringUtils.EMAIL_SENDER);
-	private static InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(EventSubscriptionBuilder.class);
 
@@ -68,7 +84,7 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (invoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
+		if (InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);
@@ -222,7 +238,9 @@ public class EventSubscriptionBuilder {
 
 		User user = insuranceSubscription.getUser();
 
-		if (!user.getAccount().isContractor() || expiringPolicies.isEmpty()) return;
+		if (!user.getAccount().isContractor() || expiringPolicies.isEmpty()) {
+			return;
+		}
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.clear();

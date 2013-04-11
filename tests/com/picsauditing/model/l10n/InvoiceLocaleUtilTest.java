@@ -85,8 +85,8 @@ public class InvoiceLocaleUtilTest {
 	}
 
 	private boolean getResultOfInvoiceUtil(ContractorAccount contractorAccount) {
-		InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
-		return invoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+//		InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
+		return InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
 	}
 
 	private void setupSingleLocaleForEmail() {
