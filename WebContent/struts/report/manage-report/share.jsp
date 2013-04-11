@@ -9,6 +9,10 @@
     <s:param name="subtitle">You are sharing this report with the selected people and groups</s:param>
 </s:include>
 
+<s:include value="/struts/report/manage-report/_menu.jsp" />
+
+<h4 class="report-subtitle">Look ma I am a subtitle.</h4>
+
 <div id="report_share_search">
     <form id="report_share_search_form" class="form-inline" action="${manage_report_share_search_url}">
         <input type="text" name="searchTerm" placeholder="${share_search_term_placeholder}" class="search-query span4" />
