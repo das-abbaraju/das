@@ -25,6 +25,7 @@ public class EventSubscriptionBuilder {
 	private static EmailSubscriptionDAO subscriptionDAO = SpringUtils.getBean(SpringUtils.EMAIL_SUBSCRIPTION_DAO);
 	private static NoteDAO noteDAO = SpringUtils.getBean(SpringUtils.NOTE_DAO);
 	private static EmailSender emailSender = SpringUtils.getBean(SpringUtils.EMAIL_SENDER);
+	private static InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
 
 	private static final Logger logger = LoggerFactory.getLogger(EventSubscriptionBuilder.class);
 
@@ -67,7 +68,7 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice) throws EmailException, IOException {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
-		if (InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
+		if (invoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
 			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);

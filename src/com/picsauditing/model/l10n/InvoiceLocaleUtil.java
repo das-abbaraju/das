@@ -2,6 +2,7 @@ package com.picsauditing.model.l10n;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -13,12 +14,16 @@ import java.util.Locale;
 
 public class InvoiceLocaleUtil {
 
-	private static AppPropertyDAO propertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
-	private static List<Locale> localesToEmailInvoicesInBPROCS = new ArrayList<Locale>();
-	private static CountryDAO countryDAO = SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
+	private InvoiceLocaleUtil() {
 
-	static {
-		String localesToEmailCSV = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS).getValue();
+	}
+
+	public static InvoiceLocaleUtil getInstance() {
+		if (propertyDAO == null) {
+			System.out.println("it's null");
+		}
+		AppProperty appProperty = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS);
+		String localesToEmailCSV = appProperty.getValue();
 		if (localesToEmailCSV != null || !localesToEmailCSV.trim().isEmpty()) {
 			List<String> localesToEmailStringList = Arrays.asList(localesToEmailCSV.split("\\s*,\\s*"));
 
@@ -30,9 +35,16 @@ public class InvoiceLocaleUtil {
 				localesToEmailInvoicesInBPROCS.add(new Locale(splitSingleLocale[0], splitSingleLocale[1]));
 			}
 		}
+
+		return new InvoiceLocaleUtil();
 	}
 
-	public static Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor) {
+	private static AppPropertyDAO propertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
+	private static List<Locale> localesToEmailInvoicesInBPROCS = new ArrayList<Locale>();
+	private static CountryDAO countryDAO = SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
+
+
+	public Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor) {
 
 		if ((contractor == null) || (contractor.getBillingCountry() == null) || (contractor.getBillingCountry().getIsoCode() == null)) {
 			return false;

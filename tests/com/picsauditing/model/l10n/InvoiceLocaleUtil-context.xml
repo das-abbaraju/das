@@ -10,9 +10,7 @@
 
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
 
-    <mockito:mock id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
-    <mockito:mock id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO"/>
+    <mockito:mock id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
+    <mockito:mock id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
     <mockito:mock id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggle"/>
-    <mockito:mock id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel"/>
-
 </beans>
