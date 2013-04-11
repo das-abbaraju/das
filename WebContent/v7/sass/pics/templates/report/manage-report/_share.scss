@@ -22,7 +22,7 @@
             position: relative;
         }
         
-        input:focus + .icon-search
+        input:focus ~ .icon-search
         {
         	color: #73bbe8;
         }
@@ -33,10 +33,12 @@
         display: inline;
     }
     
+    .group-list,
     .user-list
     {
     	margin-bottom: 20px;
     	
+    	.group,
     	.user
     	{
     		background: #f1f1f2;
@@ -66,7 +68,8 @@
         	color: $pics_light_blue;
         }
         
-        .description
+        .description,
+        .info
         {
             font-size: 12px;
             line-height: 14px;
@@ -78,11 +81,34 @@
         
         .btn-group
         {
-        	line-height: 48px;
+        	margin: 9px 0 0;
         	
         	.caret
         	{
         		margin-left: 10px;
+        	}
+        }
+        
+        .user.assign
+        {
+        	background-color: #e67e1c;
+        	
+        	a,
+        	p
+        	{
+        		color: #fff;
+        	}
+        }
+        
+        .group.remove,
+        .user.remove
+        {
+        	background-color: #ac030c;
+        	
+        	a,
+        	p
+        	{
+        		color: #fff;
         	}
         }
     }

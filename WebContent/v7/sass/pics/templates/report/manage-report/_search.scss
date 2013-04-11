@@ -24,7 +24,7 @@
             position: relative;
         }
         
-        input:focus + .icon-search
+        input:focus ~ .icon-search
         {
         	color: #73bbe8;
         }

@@ -267,6 +267,25 @@ public class ManageReports extends PicsActionSupport {
 		return NONE;
 	}
 
+	public String unshare() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			
+			manageReportsService.unshare(getUser(), toOwner, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+			return ERROR;
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+			return ERROR;
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+		
+		return NONE;
+	}
+
 	public String removeReport() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
