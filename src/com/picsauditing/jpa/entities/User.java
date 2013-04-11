@@ -191,7 +191,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setUsername(String username) {
-		this.username = username.trim();
+		this.username = sanitizeField(username);
+	}
+
+	@Transient
+	private String sanitizeField(String field) {
+		if (Strings.isNotEmpty(field)) {
+			return field.trim();
+		}
+		return null;
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
@@ -219,7 +227,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		this.email = sanitizeField(email);
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -247,7 +255,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.firstName = sanitizeField(firstName);
 	}
 
 	public String getLastName() {
@@ -255,7 +263,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		this.lastName = sanitizeField(lastName);
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
@@ -356,7 +364,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setPhone(String phone) {
-		this.phone = phone;
+		this.phone = sanitizeField(phone);
 	}
 
 	@Column(length = 10)
@@ -376,7 +384,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setFax(String fax) {
-		this.fax = fax;
+		this.fax = sanitizeField(fax);
 	}
 
 	@ManyToOne(optional = false)
@@ -545,7 +553,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	public void setDepartment(String department) {
-		this.department = department;
+		this.department = sanitizeField(department);
 	}
 
 	/**
