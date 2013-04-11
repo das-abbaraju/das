@@ -6,6 +6,10 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
+<s:url action="ManageReports" method="share" var="report_share_url">
+    <s:param name="reportId">${report.id}</s:param>
+</s:url>
+
 <s:url action="ManageReports" method="removeReport" var="report_remove_url">
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
@@ -26,7 +30,7 @@
             <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
         <li>
-            <a href="">Share...</a>
+            <a href="${report_share_url}">Share&hellip;</a>
         </li>
         <li>
             <a href="${report_remove_url}">Remove</a>
