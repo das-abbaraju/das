@@ -48,7 +48,6 @@ public class InvoiceLocaleUtilTest {
 		Mockito.reset(appPropertyDAO, countryDAO);
 	}
 
-
 	@AfterClass
 	public static void classTeardown() {
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
@@ -58,7 +57,7 @@ public class InvoiceLocaleUtilTest {
 	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveNullContractor() throws Exception {
 		setupSingleLocaleForEmail();
 
-		boolean result = getResultOfInvoiceUtil(null);
+		boolean result = InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(null);
 
 		assertFalse(result);
 	}
@@ -66,10 +65,9 @@ public class InvoiceLocaleUtilTest {
 	@Test
 	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullBillingCountry() throws Exception {
 		setupSingleLocaleForEmail();
-		when(country.getIsoCode()).thenReturn(null);
-		when(contractorAccount.getBillingCountry()).thenReturn(country);
+		when(contractorAccount.getBillingCountry()).thenReturn(null);
 
-		boolean result = getResultOfInvoiceUtil(contractorAccount);
+		boolean result = InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
 
 		assertFalse(result);
 	}
@@ -77,16 +75,12 @@ public class InvoiceLocaleUtilTest {
 	@Test
 	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullBillingCountryIsoCode() throws Exception {
 		setupSingleLocaleForEmail();
-		when(contractorAccount.getBillingCountry()).thenReturn(null);
+		when(country.getIsoCode()).thenReturn(null);
+		when(contractorAccount.getBillingCountry()).thenReturn(country);
 
-		boolean result = getResultOfInvoiceUtil(contractorAccount);
+		boolean result = InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
 
 		assertFalse(result);
-	}
-
-	private boolean getResultOfInvoiceUtil(ContractorAccount contractorAccount) {
-//		InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
-		return InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
 	}
 
 	private void setupSingleLocaleForEmail() {
