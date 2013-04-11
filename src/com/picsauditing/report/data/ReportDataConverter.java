@@ -49,7 +49,7 @@ public class ReportDataConverter {
 			return null;
 		}
 
-		Object result = convertValueBasedOnCellColumn(cell);
+		Object result = convertValueBasedOnCellColumn(cell, false);
 		if (result == null) {
 			result = convertValueBasedOnType(value);
 			if (result == null) {
@@ -66,15 +66,15 @@ public class ReportDataConverter {
 			return null;
 		}
 
-		Object result = convertValueBasedOnCellColumn(cell);
-		if (result == null) {
-			result = value;
-		}
+		Object result = convertValueBasedOnCellColumn(cell, true);
+        if (result == null) {
+            result = value;
+        }
 
 		return result;
 	}
 
-	private Object convertValueBasedOnCellColumn(ReportCell cell) {
+	private Object convertValueBasedOnCellColumn(ReportCell cell, boolean forPrint) {
 		Column column = cell.getColumn();
 		Object value = cell.getValue();
 		Object result = null;
@@ -111,8 +111,15 @@ public class ReportDataConverter {
 		}
 
 		if (displayType == DisplayType.Boolean) {
-			result = value;
-		}
+            if (forPrint) {
+                if (value == 0)
+                    result = "N";
+                else
+                    result = "Y";
+            }
+            else
+                result = value;
+        }
 
 		return result;
 	}

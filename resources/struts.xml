@@ -1208,4 +1208,7 @@
     <!-- Crons and Scheduled Tasks -->
     <include file="struts-crons.xml"/>
 
+    <!-- Drools & RBIC -->
+    <include file="struts-rbic.xml"/>
+
 </struts>

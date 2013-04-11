@@ -53,13 +53,11 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    if (filter_value && !this.initialSelectionMade) {
-
-                        value_field.select(filter_value);
-
+                    if (!this.initialSelectionMade) {
                         this.initialSelectionMade = true;
-
                         this.proxy.url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id);
+                        
+                        value_field.select(filter.get('value').split(', '));
                     }
                 }
             }

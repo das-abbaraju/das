@@ -19,6 +19,8 @@ import java.util.*;
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
+	public static final String DEFAULT_COUNTRY_SUBDIVISION_LABEL = "ContractorAccount.countrySubdivision";
+	public static final String COUNTRY_SUBDIVISION_LABEL_FORMAT= "Country.%s.SubdivisionLabel";
 
 	public static final String FRANCE_ISO_CODE = "FR";
 	public static final String GERMANY_ISO_CODE = "DE";

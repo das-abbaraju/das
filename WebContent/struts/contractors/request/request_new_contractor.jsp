@@ -229,7 +229,7 @@
 							<s:if test="contractor.country != null && contractor.country.hasCountrySubdivisions">
 								<s:select
 									id="countrySubdivision_sel"
-									label="%{contractor.country.isoCode == 'CA' ? 'global.Province' : 'CountrySubdivision'}"
+									label="%{getCountrySubdivisionLabelFor(contractor.country.isoCode)}"
 									list="getCountrySubdivisionList(contractor.country.isoCode)"
 									listKey="isoCode"
 									listValue="simpleName"

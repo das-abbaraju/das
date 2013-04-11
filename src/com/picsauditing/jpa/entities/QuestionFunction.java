@@ -634,7 +634,7 @@ public enum QuestionFunction {
 
 			BigDecimal result;
 			try {
-				result = lostWorkCases.multiply(new BigDecimal(200000).setScale(7)).divide(hours, 7, RoundingMode.HALF_UP).setScale(2);
+				result = lostWorkCases.multiply(new BigDecimal(200000).setScale(7)).divide(hours, 7, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
@@ -660,7 +660,7 @@ public enum QuestionFunction {
 
 			BigDecimal result;
 			try {
-				result = incidents.multiply(new BigDecimal(1000000).setScale(7)).divide(miles, 7, RoundingMode.HALF_UP).setScale(2);
+				result = incidents.multiply(new BigDecimal(1000000).setScale(7)).divide(miles, 7, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}

@@ -777,4 +777,9 @@ public class OperatorAccount extends Account {
 		}
 		return true;
 	}
+
+    @Transient
+    public boolean hasRulesBasedInsuranceCriteria() {
+        return this.getId() == 7727;
+    }
 }
