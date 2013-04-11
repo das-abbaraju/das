@@ -1,23 +1,23 @@
-PICS.define('report.manage-report.ShareController', {
+PICS.define('report.manage-report.AccessController', {
 	methods: {
 		init: function () {
-		    if ($('#ManageReports_share_page').length > 0) {
-		        $('#report_share_search_form input').typeahead({
+		    if ($('#ManageReports_access_page').length > 0) {
+		        $('#report_access_search_form input').typeahead({
 		            source: ['Ancon Marine', 'Don Couch']
 		        });
 		        
 		        $('#group_access')
-                    .on('click', '.access-options .permission.edit', $.proxy(this.assignGroupViewPermission, this))
-                    .on('click', '.access-options .permission.view', $.proxy(this.assignGroupEditPermission, this))
-                    .on('click', '.access-options .permission.remove', $.proxy(this.removeGroupPermission, this))
+                    .on('click', '.access-options .edit a', $.proxy(this.assignGroupEditPermission, this))
+                    .on('click', '.access-options .view a', $.proxy(this.assignGroupViewPermission, this))
+                    .on('click', '.access-options .remove a', $.proxy(this.removeGroupPermission, this))
                     .on('click', '.confirm-options .cancel', $.proxy(this.cancelGroupChanges, this))
                     .on('click', '.confirm-options .remove-permission', $.proxy(this.confirmRemoveGroupPermission, this));
 		        
 		        $('#user_access')
-		            .on('click', '.access-options .permission.owner', $.proxy(this.assignUserOwner, this))
-                    .on('click', '.access-options .permission.edit', $.proxy(this.assignUserViewPermission, this))
-                    .on('click', '.access-options .permission.view', $.proxy(this.assignUserEditPermission, this))
-                    .on('click', '.access-options .permission.remove', $.proxy(this.removeUserPermission, this))
+		            .on('click', '.access-options .owner a', $.proxy(this.assignUserOwner, this))
+                    .on('click', '.access-options .edit a', $.proxy(this.assignUserEditPermission, this))
+                    .on('click', '.access-options .view a', $.proxy(this.assignUserViewPermission, this))
+                    .on('click', '.access-options .remove a', $.proxy(this.removeUserPermission, this))
                     .on('click', '.confirm-options .assign-ownership', $.proxy(this.confirmAssignUserOwner, this))
                     .on('click', '.confirm-options .cancel', $.proxy(this.cancelUserChanges, this))
                     .on('click', '.confirm-options .remove-permission', $.proxy(this.confirmRemoveUserPermission, this));
@@ -25,9 +25,14 @@ PICS.define('report.manage-report.ShareController', {
 		},
 		
         assignGroupEditPermission: function (event) {
-            var $element = $(event.currentTarget);
+            var $element = $(event.currentTarget),
+                $group = $element.closest('.group');
             
             // make permission edit ajax
+            
+            this.resetGroup($group);
+            
+            $group.addClass('edit');
             
             this.updateSelectedPermission($element);
             
@@ -35,9 +40,14 @@ PICS.define('report.manage-report.ShareController', {
         },
         
         assignGroupViewPermission: function (event) {
-            var $element = $(event.currentTarget);
+            var $element = $(event.currentTarget),
+                $group = $element.closest('.group');
             
             // make permission view ajax
+            
+            this.resetGroup($group);
+            
+            $group.addClass('view');
             
             this.updateSelectedPermission($element);
             
@@ -64,7 +74,7 @@ PICS.define('report.manage-report.ShareController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="assign-ownership btn btn-info" data-href="' + $element.attr('href') + '">Assign</button>',
+                    '<button class="assign-ownership btn btn-warning" data-href="' + $element.attr('href') + '">Assign</button>',
                 '</div>'
             ].join('')));
             
@@ -72,9 +82,14 @@ PICS.define('report.manage-report.ShareController', {
         },
         
         assignUserEditPermission: function (event) {
-            var $element = $(event.currentTarget);
+            var $element = $(event.currentTarget),
+                $user = $element.closest('.user');
             
             // make permission edit ajax
+            
+            this.resetUser($user);
+            
+            $user.addClass('edit');
             
             this.updateSelectedPermission($element);
             
@@ -82,9 +97,14 @@ PICS.define('report.manage-report.ShareController', {
         },
         
         assignUserViewPermission: function (event) {
-            var $element = $(event.currentTarget);
+            var $element = $(event.currentTarget),
+                $user = $element.closest('.user');
             
             // make permission view ajax
+            
+            this.resetUser($user);
+            
+            $user.addClass('view');
             
             this.updateSelectedPermission($element);
             
@@ -92,49 +112,40 @@ PICS.define('report.manage-report.ShareController', {
         },
         
         cancelGroupChanges: function (event) {
-            var $element = $(event.currentTarget), 
-                $group = $element.closest('.group'),
-                $summary = $group.find('.summary'),
-                $info = $summary.find('.info'),
-                $description = $summary.find('.description'),
-                $confirm_options = $group.find('.confirm-options'),
-                $access_options = $group.find('.access-options');
+            var $element = $(event.currentTarget),
+                $group = $element.closest('.group');
             
-            $info.remove();
-            
-            $description.show();
-            
-            $confirm_options.remove();
-            
-            $access_options.show();
-            
-            $group.removeClass('remove');
+            this.resetGroup($group);
         },
         
         cancelUserChanges: function (event) {
             var $element = $(event.currentTarget),
-                $user = $element.closest('.user'),
-                $summary = $user.find('.summary'),
-                $info = $summary.find('.info'),
-                $description = $summary.find('.description'),
-                $confirm_options = $user.find('.confirm-options'),
-                $access_options = $user.find('.access-options');
+                $user = $element.closest('.user');
             
-            $info.remove();
-            
-            $description.show();
-            
-            $confirm_options.remove();
-            
-            $access_options.show();
-            
-            $user.removeClass('remove assign');
+            this.resetUser($user);
         },
         
         confirmAssignUserOwner: function (event) {
             var $element = $(event.currentTarget),
                 $user = $element.closest('.user'),
+                $edit = $user.find('.edit a'),
                 $access_options = $user.find('.access-options');
+            
+            this.removePreviousOwner();
+            
+            this.resetUser($user);
+            
+            $user.addClass('owner');
+            
+            $access_options.hide();
+            
+            $user.prepend($([
+                '<div class="is-owner pull-right">',
+                    '<i class="icon-key"></i> Owner',
+                '</div>'
+            ].join('')));
+            
+            this.updateSelectedPermission($edit);
         },
         
         confirmRemoveGroupPermission: function (event) {
@@ -153,7 +164,7 @@ PICS.define('report.manage-report.ShareController', {
                 $user = $element.closest('.user');
             
             $user.slideUp(400, function () {
-                // remove ajax
+                // make permission remove ajax
                 
                 $(this).remove();
             });
@@ -178,11 +189,27 @@ PICS.define('report.manage-report.ShareController', {
             $group.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-warning" data-href="' + $element.attr('href') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '">Remove</button>',
                 '</div>'
             ].join('')));
             
             event.preventDefault();
+        },
+        
+        removePreviousOwner: function () {
+            var $owner = $('#user_access .user.owner'),
+                $is_owner = $owner.find('.is-owner'),
+                $edit = $owner.find('.edit a');
+            
+            // make permission edit ajax
+            
+            $is_owner.remove();
+            
+            this.resetUser($owner);
+            
+            $owner.addClass('edit');
+            
+            this.updateSelectedPermission($edit);
         },
         
         removeUserPermission: function (event) {
@@ -204,11 +231,47 @@ PICS.define('report.manage-report.ShareController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-warning" data-href="' + $element.attr('href') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '">Remove</button>',
                 '</div>'
             ].join('')));
             
             event.preventDefault();
+        },
+        
+        resetGroup: function ($group) {
+            var $summary = $group.find('.summary'),
+                $info = $summary.find('.info'),
+                $description = $summary.find('.description'),
+                $confirm_options = $group.find('.confirm-options'),
+                $access_options = $group.find('.access-options');
+            
+            $info.remove();
+            
+            $description.show();
+            
+            $confirm_options.remove();
+            
+            $access_options.show();
+            
+            $group.removeClass('remove edit view');
+        },
+        
+        resetUser: function ($user) {
+            var $summary = $user.find('.summary'),
+                $info = $summary.find('.info'),
+                $description = $summary.find('.description'),
+                $confirm_options = $user.find('.confirm-options'),
+                $access_options = $user.find('.access-options');
+            
+            $info.remove();
+            
+            $description.show();
+            
+            $confirm_options.remove();
+            
+            $access_options.show();
+            
+            $user.removeClass('remove assign edit view owner');
         },
 		
 		updateSelectedPermission: function ($element) {

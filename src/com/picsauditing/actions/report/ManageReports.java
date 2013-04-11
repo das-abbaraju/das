@@ -144,8 +144,8 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("searchList", "search");
 	}
 
-	public String share() {
-		return "share";
+	public String access() {
+		return "access";
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {

@@ -362,7 +362,7 @@ body {
 /* line 9, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert-error {
   background: #ffc6c9;
-  border: 1px solid #ff969c;
+  border: 1px solid #ac030c;
   color: #ac030c;
 }
 
@@ -1617,41 +1617,44 @@ hr {
   color: #999;
 }
 
-/* line 4, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page #report_share_search {
+/* line 4, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page #report_access_search {
   margin: 30px 0px 40px;
   text-align: center;
 }
-/* line 12, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page #report_share_search_form input {
+/* line 12, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page #report_access_search_form input {
   background: #f1f1f2;
   padding-left: 30px;
 }
-/* line 18, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page #report_share_search_form .icon-search {
+/* line 18, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page #report_access_search_form .icon-search {
   color: #666;
   left: -312px;
   margin-left: -14px;
   position: relative;
 }
-/* line 26, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page #report_share_search_form input:focus ~ .icon-search {
+/* line 26, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page #report_access_search_form input:focus ~ .icon-search {
   color: #73bbe8;
 }
-/* line 32, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .lt-ie8 #report_share_search_form {
+/* line 32, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .lt-ie8 #report_access_search_form {
   display: inline;
 }
-/* line 38, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list,
-#ManageReports_share_page .user-list {
+/* line 38, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page #group_access h1,
+#ManageReports_access_page #user_access h1 {
+  font-size: 18px;
+}
+/* line 44, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group-list,
+#ManageReports_access_page .user-list {
   margin-bottom: 20px;
 }
-/* line 43, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .group,
-#ManageReports_share_page .group-list .user,
-#ManageReports_share_page .user-list .group,
-#ManageReports_share_page .user-list .user {
+/* line 50, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group,
+#ManageReports_access_page .user {
   background: #f1f1f2;
   border: 1px solid #ccc;
   -webkit-border-radius: 4px;
@@ -1663,30 +1666,30 @@ hr {
   margin-bottom: 2px;
   padding: 0 9px 0 20px;
 }
-/* line 53, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .summary,
-#ManageReports_share_page .user-list .summary {
+/* line 59, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .summary,
+#ManageReports_access_page .user .summary {
   margin: 0 60px 0 0px;
   padding: 6px 0 8px;
 }
-/* line 59, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .name,
-#ManageReports_share_page .user-list .name {
+/* line 65, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .name,
+#ManageReports_access_page .user .name {
   color: #454545;
   font-size: 14px;
   font-weight: bold;
   margin-right: 10px;
 }
-/* line 67, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .name:hover,
-#ManageReports_share_page .user-list .name:hover {
+/* line 73, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .name:hover,
+#ManageReports_access_page .user .name:hover {
   color: #73bbe8;
 }
-/* line 73, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .description,
-#ManageReports_share_page .group-list .info,
-#ManageReports_share_page .user-list .description,
-#ManageReports_share_page .user-list .info {
+/* line 79, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .description,
+#ManageReports_access_page .group .info,
+#ManageReports_access_page .user .description,
+#ManageReports_access_page .user .info {
   font-size: 12px;
   line-height: 14px;
   margin: 0;
@@ -1694,66 +1697,79 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* line 83, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .btn-group,
-#ManageReports_share_page .user-list .btn-group {
+/* line 89, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .btn-group,
+#ManageReports_access_page .user .btn-group {
   margin: 9px 0 0;
 }
-/* line 87, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .btn-group .caret,
-#ManageReports_share_page .user-list .btn-group .caret {
+/* line 93, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group .btn-group .caret,
+#ManageReports_access_page .user .btn-group .caret {
   margin-left: 10px;
 }
-/* line 93, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .user.assign,
-#ManageReports_share_page .user-list .user.assign {
-  background-color: #e67e1c;
+/* line 100, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .user.assign {
+  background: #fcf3cc;
+  border: 1px solid #e67e1c;
 }
-/* line 98, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .user.assign a,
-#ManageReports_share_page .group-list .user.assign p,
-#ManageReports_share_page .user-list .user.assign a,
-#ManageReports_share_page .user-list .user.assign p {
-  color: #fff;
+/* line 106, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .user.assign a,
+#ManageReports_access_page .user.assign p {
+  color: #e67e1c;
 }
-/* line 105, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .group.remove,
-#ManageReports_share_page .group-list .user.remove,
-#ManageReports_share_page .user-list .group.remove,
-#ManageReports_share_page .user-list .user.remove {
-  background-color: #ac030c;
+/* line 113, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group.remove,
+#ManageReports_access_page .user.remove {
+  background-color: #ffc6c9;
+  border: 1px solid #ac030c;
 }
-/* line 110, ../sass/pics/templates/report/manage-report/_share.scss */
-#ManageReports_share_page .group-list .group.remove a,
-#ManageReports_share_page .group-list .group.remove p,
-#ManageReports_share_page .group-list .user.remove a,
-#ManageReports_share_page .group-list .user.remove p,
-#ManageReports_share_page .user-list .group.remove a,
-#ManageReports_share_page .user-list .group.remove p,
-#ManageReports_share_page .user-list .user.remove a,
-#ManageReports_share_page .user-list .user.remove p {
-  color: #fff;
+/* line 119, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group.remove a,
+#ManageReports_access_page .group.remove p,
+#ManageReports_access_page .user.remove a,
+#ManageReports_access_page .user.remove p {
+  color: #ac030c;
+}
+/* line 127, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .user.owner .access-options {
+  display: none;
+}
+/* line 136, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group.edit .edit,
+#ManageReports_access_page .user.edit .edit {
+  display: none;
+}
+/* line 145, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .group.view .view,
+#ManageReports_access_page .user.view .view {
+  display: none;
+}
+/* line 151, ../sass/pics/templates/report/manage-report/_access.scss */
+#ManageReports_access_page .is-owner {
+  color: #e67e1c;
+  line-height: 48px;
+  margin-right: 10px;
 }
 
 @media (min-width: 1200px) {
-  /* line 123, ../sass/pics/templates/report/manage-report/_share.scss */
-  #ManageReports_share_page #report_share_search_form .icon-search {
+  /* line 164, ../sass/pics/templates/report/manage-report/_access.scss */
+  #ManageReports_access_page #report_access_search_form .icon-search {
     left: -382px;
   }
 }
 @media (max-width: 979px) and (min-width: 768px) {
-  /* line 136, ../sass/pics/templates/report/manage-report/_share.scss */
-  #ManageReports_share_page #report_share_search_form .icon-search {
+  /* line 177, ../sass/pics/templates/report/manage-report/_access.scss */
+  #ManageReports_access_page #report_access_search_form .icon-search {
     left: -242px;
   }
 }
 @media (max-width: 767px) {
-  /* line 149, ../sass/pics/templates/report/manage-report/_share.scss */
-  #ManageReports_share_page #report_share_search_form input {
+  /* line 190, ../sass/pics/templates/report/manage-report/_access.scss */
+  #ManageReports_access_page #report_access_search_form input {
     padding-left: 14px;
   }
-  /* line 154, ../sass/pics/templates/report/manage-report/_share.scss */
-  #ManageReports_share_page #report_share_search_form .icon-search {
+  /* line 195, ../sass/pics/templates/report/manage-report/_access.scss */
+  #ManageReports_access_page #report_access_search_form .icon-search {
     display: none;
   }
 }

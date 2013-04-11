@@ -22,7 +22,7 @@
 			<result name="ownedBy">/struts/report/manage-report/owned-by.jsp</result>
 			<result name="sharedWith">/struts/report/manage-report/shared-with.jsp</result>
 			<result name="search">/struts/report/manage-report/search.jsp</result>
-			<result name="share">/struts/report/manage-report/share.jsp</result>
+			<result name="access">/struts/report/manage-report/access.jsp</result>
 			
 			<result name="favoritesList">/struts/report/manage-report/_favorites.jsp</result>
 			<result name="ownedByList">/struts/report/manage-report/_owned-by.jsp</result>
