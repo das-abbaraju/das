@@ -68,7 +68,7 @@ public class EventSubscriptionBuilder {
 		EmailQueue email = buildInvoiceEmailQueueObject(contractor, invoice);
 
 		if (InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractor)) {
-			sendInvoiceEmailViaBProcs(contractor, invoice);
+			sendInvoiceEmailViaBProcs(invoice);
 		} else {
 			emailSender.send(email);
 		}
@@ -76,7 +76,7 @@ public class EventSubscriptionBuilder {
 		return email;
 	}
 
-	private static void sendInvoiceEmailViaBProcs(ContractorAccount contractorAccount, Invoice invoice) {
+	private static void sendInvoiceEmailViaBProcs(Invoice invoice) {
 		EmailRequestDTO request = new EmailRequestDTO();
 		request.templateID = PICS_CONTRACTOR_INVOICE_TEMPLATE_ID;
 		request.invoiceID = invoice.getId();
