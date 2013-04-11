@@ -71,24 +71,6 @@ public class EventSubscriptionBuilderTest {
 		verify(emailSender).send(email);
 	}
 
-	private void setupTestContractorInvoiceEvent_SendViaBPROCS() {
-
-	}
-
-	private void setupTestContractorInvoiceEvent_SendViaBuilder() {
-
-	}
-
-	@Test
-	public void testContractorInvoiceEvent_SendEmailViaBuilder() {
-
-	}
-
-	@Test
-	public void testContractorInvoiceEvent_SendEmailViaBPROCS() {
-
-	}
-
 	private ContractorAudit getAudit() {
 		ContractorAudit audit = new ContractorAudit();
 		User user = new User();
