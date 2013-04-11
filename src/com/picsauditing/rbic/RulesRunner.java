@@ -2,6 +2,7 @@ package com.picsauditing.rbic;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.toggle.FeatureToggle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -24,9 +25,11 @@ public class RulesRunner {
 
     @Autowired
     private ContractorModel contractorModel;
+    @Autowired
+    private FeatureToggle featureToggle;
 
     public void runInsuranceCriteriaRulesForOperator(OperatorAccount operator) {
-        if (!operator.hasRulesBasedInsuranceCriteria()) {
+        if (!operatorHasRulesBasedInsuranceCriteria(operator.getId())) {
             return;
         }
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -59,5 +62,9 @@ public class RulesRunner {
 
     public void setContractor(ContractorAccount contractor) {
         this.contractor = contractor;
+    }
+    public boolean operatorHasRulesBasedInsuranceCriteria(int operatorId) {
+        featureToggle.addToggleVariable("operatorId", operatorId);
+        return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA);
     }
 }
