@@ -1,7 +1,11 @@
 package com.picsauditing.model.l10n;
 
 import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,6 +55,12 @@ public class InvoiceLocaleUtilTest {
 	@AfterClass
 	public static void classTeardown() {
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
+		Whitebox.setInternalState(InvoiceLocaleUtil.class, "localesToEmailInvoicesInBPROCS", (List<Locale>) null);
+	}
+
+	private void setupSingleLocaleForEmail() {
+		when(appProperty.getValue()).thenReturn("en_UK");
+		when(appPropertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS)).thenReturn(appProperty);
 	}
 
 	@Test
@@ -83,9 +93,52 @@ public class InvoiceLocaleUtilTest {
 		assertFalse(result);
 	}
 
-	private void setupSingleLocaleForEmail() {
-		when(appProperty.getValue()).thenReturn("en_UK");
-		when(appPropertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS)).thenReturn(appProperty);
+	private void setupInvoiceLocaleUtilEmailListContainsLocaleTest() {
+		setupSingleLocaleForEmail();
+		setupCountryLocale(Country.FRANCE_ISO_CODE, Locale.FRANCE);
+		addLocaleToEmailList(Locale.FRANCE);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_LocaleToEmailContainsCountry() throws Exception {
+		setupInvoiceLocaleUtilEmailListContainsLocaleTest();
+
+		boolean result = InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertTrue(result);
+	}
+
+	private void setupInvoiceLocaleUtilEmailListDoesNotContainsLocaleTest() {
+		setupSingleLocaleForEmail();
+		setupCountryLocale(Country.GERMANY_ISO_CODE, Locale.GERMANY);
+		removeLocaleFromEmailList(Locale.GERMANY);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_LocaleToEmailDoesNotContainCountry() throws Exception {
+		setupInvoiceLocaleUtilEmailListDoesNotContainsLocaleTest();
+
+		boolean result = InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	private void setupCountryLocale(String isoCode, Locale locale) {
+		when(country.getIsoCode()).thenReturn(isoCode);
+		when(contractorAccount.getBillingCountry()).thenReturn(country);
+		when(countryDAO.findLocaleByCountryISO(isoCode)).thenReturn(locale);
+	}
+
+	private void addLocaleToEmailList(Locale locale) {
+		getLocaleList().add(locale);
+	}
+
+	private void removeLocaleFromEmailList(Locale locale) {
+		getLocaleList().remove(locale);
+	}
+
+	private List<Locale> getLocaleList() {
+		return Whitebox.getInternalState(InvoiceLocaleUtil.class, "localesToEmailInvoicesInBPROCS");
 	}
 
 }
