@@ -37,7 +37,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public int revokePermissions(int userId, int reportId) {
 		String sql = "DELETE FROM ReportPermissionUser rpu WHERE rpu.user.id = :userId AND rpu.report.id = :reportId ";
-		
+
 		Query query = em.createQuery(sql);
 		query.setParameter("userId", userId);
 		query.setParameter("reportId", userId);
@@ -47,5 +47,13 @@ public class ReportPermissionUserDAO extends PicsDAO {
 
 	public List<ReportPermissionUser> findAllByReportId(int reportId) {
 		return findWhere(ReportPermissionUser.class, "t.report.id = " + reportId);
+	}
+
+	public List<ReportPermissionUser> findAllUsersByReportId(int reportId) {
+		return findWhere(ReportPermissionUser.class, "t.report.id = " + reportId + " AND t.user.isGroup = 'No'");
+	}
+
+	public List<ReportPermissionUser> findAllGroupsByReportId(int reportId) {
+		return findWhere(ReportPermissionUser.class, "t.report.id = " + reportId + " AND t.user.isGroup = 'Yes'");
 	}
 }

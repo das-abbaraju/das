@@ -93,7 +93,7 @@ public class PermissionService {
         return isOwner(user, report) || canUserViewReport(permissions, report.getId());
     }
 
-    private boolean isOwner(User user, Report report) {
+    public boolean isOwner(User user, Report report) {
         return report.getOwner().equals(user);
     }
 

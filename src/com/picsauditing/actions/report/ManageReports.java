@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +24,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.service.ManageReportsService;
-import com.picsauditing.service.ReportInfo;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportSearch;
-import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -270,7 +266,7 @@ public class ManageReports extends PicsActionSupport {
 	public String unshare() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
-			
+
 			manageReportsService.unshare(getUser(), toOwner, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
@@ -282,7 +278,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 			return ERROR;
 		}
-		
+
 		return NONE;
 	}
 
@@ -353,6 +349,22 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public List<ReportPermissionInfo> getUserAccessList() {
+		List<ReportPermissionInfo> userAccessList = new ArrayList<>();
+
+		userAccessList = reportService.buildUserAccessList(reportId);
+
+		return userAccessList;
+	}
+
+	public List<ReportPermissionInfo> getGroupAccessList() {
+		List<ReportPermissionInfo> groupAccessList = new ArrayList<>();
+
+		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
+
+		return groupAccessList;
 	}
 
 	/**

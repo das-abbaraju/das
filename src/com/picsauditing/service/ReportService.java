@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.dao.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -30,10 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportElementDAO;
-import com.picsauditing.dao.ReportPermissionAccountDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -83,6 +80,8 @@ public class ReportService {
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
+	@Autowired
+	private ReportPermissionInfoConverter reportPermissionInfoConverter;
 
 	private I18nCache i18nCache;
 
@@ -550,4 +549,20 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
+	public List<ReportPermissionInfo> buildUserAccessList(int reportId) {
+		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllUsersByReportId(reportId);
+
+		List<ReportPermissionInfo> userAccessList = reportPermissionInfoConverter.convertToReportPermissionInfo(reportPermissionUsers);
+
+		return userAccessList;
+	}
+
+	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(int reportId) {
+		List<ReportPermissionUser> groupAccessList = reportPermissionUserDao.findAllGroupsByReportId(reportId);
+		List<ReportPermissionInfo> groupPermissionInfoList = reportPermissionInfoConverter.convertToReportPermissionInfo(groupAccessList);
+
+//		List<ReportPermissionAccount> accountAccessList = reportPermissionAccountDao.buildAccountAccessList(reportId);
+
+		return groupPermissionInfoList;
+	}
 }
