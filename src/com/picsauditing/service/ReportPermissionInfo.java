@@ -8,6 +8,7 @@ public class ReportPermissionInfo {
 	private int id;
 	private String userName;
 	private boolean isOwner;
+	private boolean isEditable;
 	private String accountName;
 	private String location;
 
@@ -29,6 +30,14 @@ public class ReportPermissionInfo {
 
 	public boolean isOwner() {
 		return isOwner;
+	}
+
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	public void setEditable(boolean editable) {
+		isEditable = editable;
 	}
 
 	public void setOwner(boolean owner) {

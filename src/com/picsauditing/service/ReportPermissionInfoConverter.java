@@ -1,5 +1,6 @@
 package com.picsauditing.service;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.User;
 import org.apache.commons.collections.CollectionUtils;
@@ -36,12 +37,14 @@ public class ReportPermissionInfoConverter {
 		}
 
 		User user = reportPermissionUser.getUser();
+		Account account = user.getAccount();
 
 		reportPermissionInfo.setId(user.getId());
 		reportPermissionInfo.setUserName(user.getName());
 		reportPermissionInfo.setOwner(permissionService.isOwner(user, reportPermissionUser.getReport()));
-		reportPermissionInfo.setAccountName(user.getAccount().getName());
-		reportPermissionInfo.setLocation(user.getAccount().getCity() + ", " + user.getAccount().getCountrySubdivision());
+		reportPermissionInfo.setEditable(reportPermissionUser.isEditable());
+		reportPermissionInfo.setAccountName(account.getName());
+		reportPermissionInfo.setLocation(account.getCity() + ", " + account.getCountrySubdivision());
 
 		return reportPermissionInfo;
 	}
