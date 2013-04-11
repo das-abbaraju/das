@@ -38,12 +38,14 @@
             updateCountrySubdivisionList: function () {
                 var element = $(this);
                 var country_string = element.val();
+                var account = $(this).attr('data-contractor');
 
                 PICS.ajax({
                     url: 'CountrySubdivisionListAjax.action',
                     data: {
                         countryString: country_string,
-                        prefix: 'contractor.'
+                        prefix: 'contractor.',
+                        account: account
                     },
                     success: function (data, textStatus, XMLHttpRequest) {
                         var countrySubdivision_element = $('#conAudit_countrySubdivision_li');
