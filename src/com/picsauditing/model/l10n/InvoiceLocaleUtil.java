@@ -19,11 +19,7 @@ public class InvoiceLocaleUtil {
 	}
 
 	public static InvoiceLocaleUtil getInstance() {
-		if (propertyDAO == null) {
-			System.out.println("it's null");
-		}
-		AppProperty appProperty = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS);
-		String localesToEmailCSV = appProperty.getValue();
+		String localesToEmailCSV = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS).getValue();
 		if (localesToEmailCSV != null || !localesToEmailCSV.trim().isEmpty()) {
 			List<String> localesToEmailStringList = Arrays.asList(localesToEmailCSV.split("\\s*,\\s*"));
 

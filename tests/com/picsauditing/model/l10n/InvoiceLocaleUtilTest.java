@@ -1,65 +1,97 @@
 package com.picsauditing.model.l10n;
 
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
+import static junit.framework.Assert.assertFalse;
+import static org.mockito.Mockito.when;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 
-import static junit.framework.Assert.assertFalse;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = {"InvoiceLocaleUtil-context.xml"})
 public class InvoiceLocaleUtilTest {
 
 	@Mock
-	private AppPropertyDAO propertyDAO;
-
-	@Mock
-	private CountryDAO countryDAO;
-
-	@Mock
 	private ContractorAccount contractorAccount;
+	@Mock
+	private AppProperty appProperty;
+	@Mock
+	private Country country;
+
+	private static ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+	private static AppPropertyDAO appPropertyDAO = Mockito.mock(AppPropertyDAO.class);
+	private static CountryDAO countryDAO = Mockito.mock(CountryDAO.class);
 
 	@BeforeClass
 	public static void classSetup() {
-		Whitebox.setInternalState(SpringUtils.class, "applicationContext", Mockito.mock(ApplicationContext.class));
-
-		AppPropertyDAO appPropertyDAO = Mockito.mock(AppPropertyDAO.class);
-		when(appPropertyDAO.find(anyString())).thenReturn(new AppProperty(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS, "ca_FR"));
-		Whitebox.setInternalState(InvoiceLocaleUtil.class, "propertyDAO", Mockito.mock(AppPropertyDAO.class));
-
-		Whitebox.setInternalState(InvoiceLocaleUtil.class, "countryDAO", Mockito.mock(CountryDAO.class));
+		when(applicationContext.getBean(SpringUtils.APP_PROPERTY_DAO)).thenReturn(appPropertyDAO);
+		when(applicationContext.getBean(SpringUtils.COUNTRY_DAO)).thenReturn(countryDAO);
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
 
+		Mockito.reset(appPropertyDAO, countryDAO);
 	}
+
 
 	@AfterClass
 	public static void classTeardown() {
-		Whitebox.setInternalState(InvoiceLocaleUtil.class, "propertyDAO", (AppPropertyDAO) null);
-		Whitebox.setInternalState(InvoiceLocaleUtil.class, "countryDAO", (CountryDAO) null);
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
 	}
 
 	@Test
 	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveNullContractor() throws Exception {
-		InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
-		Boolean result = invoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(null);
+		setupSingleLocaleForEmail();
+
+		boolean result = getResultOfInvoiceUtil(null);
+
 		assertFalse(result);
 	}
 
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullBillingCountry() throws Exception {
+		setupSingleLocaleForEmail();
+		when(country.getIsoCode()).thenReturn(null);
+		when(contractorAccount.getBillingCountry()).thenReturn(country);
+
+		boolean result = getResultOfInvoiceUtil(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullBillingCountryIsoCode() throws Exception {
+		setupSingleLocaleForEmail();
+		when(contractorAccount.getBillingCountry()).thenReturn(null);
+
+		boolean result = getResultOfInvoiceUtil(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	private boolean getResultOfInvoiceUtil(ContractorAccount contractorAccount) {
+		InvoiceLocaleUtil invoiceLocaleUtil = InvoiceLocaleUtil.getInstance();
+		return invoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+	}
+
+	private void setupSingleLocaleForEmail() {
+		when(appProperty.getValue()).thenReturn("en_UK");
+		when(appPropertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS)).thenReturn(appProperty);
+	}
 
 }
