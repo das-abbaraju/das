@@ -1,11 +1,11 @@
 package com.picsauditing.mail;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,35 +18,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"EventSubscriptionBuilderTest-context.xml"})
+@ContextConfiguration(locations = {"EventSubscriptionBuilderTest-context.xml"})
 public class EventSubscriptionBuilderTest {
 
-	@Mock private EmailBuilder emailBuilder;
-	@Mock private EmailQueue email;
-	@Mock private EmailTemplate emailTemplate;
-	@Mock private Database databaseForTesting;
+	@Mock
+	private EmailBuilder emailBuilder;
+	@Mock
+	private EmailQueue email;
+	@Mock
+	private EmailTemplate emailTemplate;
+	@Mock
+	private Database databaseForTesting;
 
-	@Autowired private EmailSender emailSender;
-	@Autowired private NoteDAO noteDAO;
-	@Autowired private EmailSubscriptionDAO emailSubscriptionDAO;
-	@Autowired private EmailTemplateDAO emailTemplateDAO;
+	@Autowired
+	private EmailSender emailSender;
+	@Autowired
+	private NoteDAO noteDAO;
+	@Autowired
+	private EmailSubscriptionDAO emailSubscriptionDAO;
+	@Autowired
+	private EmailTemplateDAO emailTemplateDAO;
 
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
-		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder)null);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder) null);
 	}
 
 	@Before
@@ -68,7 +71,25 @@ public class EventSubscriptionBuilderTest {
 		verify(emailSender).send(email);
 	}
 
-	private ContractorAudit getAudit(){
+	private void setupTestContractorInvoiceEvent_SendViaBPROCS() {
+
+	}
+
+	private void setupTestContractorInvoiceEvent_SendViaBuilder() {
+
+	}
+
+	@Test
+	public void testContractorInvoiceEvent_SendEmailViaBuilder() {
+
+	}
+
+	@Test
+	public void testContractorInvoiceEvent_SendEmailViaBPROCS() {
+
+	}
+
+	private ContractorAudit getAudit() {
 		ContractorAudit audit = new ContractorAudit();
 		User user = new User();
 		ContractorAccount contractorAccount = new ContractorAccount();
