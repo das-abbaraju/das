@@ -901,6 +901,7 @@ public class FlagDataCalculator {
 			FlagCriteria nextCriteria = getNextCriteria(fdo.getCriteria());
 			if (nextCriteria != null) {
 				fdo.setCriteria(nextCriteria);
+				dao.save(fdo);
 				addFlagDataOverride(fdo);
 			} else {
 				dao.deleteData(FlagDataOverride.class, "id=" + fdo.getId());
