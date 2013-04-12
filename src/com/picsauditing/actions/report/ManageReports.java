@@ -48,6 +48,9 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportInfo> reportListOverflow;
 	private List<ReportInfo> reportList;
 
+	private List<ReportPermissionInfo> userAccessList;
+	private List<ReportPermissionInfo> groupAccessList;
+
 	private Pagination<ReportInfo> pagination;
 
 	// URL parameters
@@ -141,6 +144,9 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String access() {
+		userAccessList = reportService.buildUserAccessList(reportId);
+		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
+
 		return "access";
 	}
 
@@ -351,22 +357,6 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public List<ReportPermissionInfo> getUserAccessList() {
-		List<ReportPermissionInfo> userAccessList = new ArrayList<>();
-
-		userAccessList = reportService.buildUserAccessList(reportId);
-
-		return userAccessList;
-	}
-
-	public List<ReportPermissionInfo> getGroupAccessList() {
-		List<ReportPermissionInfo> groupAccessList = new ArrayList<>();
-
-		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
-
-		return groupAccessList;
-	}
-
 	/**
 	 * Exclusively to export Columns for translations
 	 *
@@ -484,4 +474,13 @@ public class ManageReports extends PicsActionSupport {
 	public List<ReportInfo> getReportList() {
 		return reportList;
 	}
+
+	public List<ReportPermissionInfo> getUserAccessList() {
+		return userAccessList;
+	}
+
+	public List<ReportPermissionInfo> getGroupAccessList() {
+		return groupAccessList;
+	}
+
 }
