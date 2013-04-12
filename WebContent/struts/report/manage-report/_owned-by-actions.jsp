@@ -14,11 +14,17 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<%-- Favorite Text --%>
-<s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
+<s:url action="ManageReports" method="%{#report.private ? 'unprivatize' : 'privatize'}" var="report_private_url">
+    <s:param name="reportId">${report.id}</s:param>
+</s:url>
 
-<%-- Favorite Class --%>
-<s:set name="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
+<%-- Text --%>
+<s:set var="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
+<s:set var="private_text" value="%{#report.private ? 'Make Public' : 'Make Private'}" />
+
+<%-- Class --%>
+<s:set var="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
+<s:set var="private_class" value="%{#report.private ? 'public' : 'private'}" />
 
 <div class="btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
@@ -33,7 +39,7 @@
             <a href="${report_access_url}">Share&hellip;</a>
         </li>
         <li>
-            <a href="">Make Private</a>
+            <a href="${report_private_url}" class="private-action ${private_class}" data-id="${report.id}">${private_text}</a>
         </li>
         <li>
             <a href="${report_access_url}">Transfer Ownership&hellip;</a>
@@ -45,7 +51,7 @@
 </div>
 
 <div class="icons pull-right">
-    <if test="true">
+    <s:if test="#report.private">
         <i class="icon-eye-close icon-large"></i>
-    </if>
+    </s:if>
 </div>

@@ -29,9 +29,13 @@
         <li>
             <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
-        <li>
-            <a href="${report_access_url}">Share&hellip;</a>
-        </li>
+        
+        <s:if test="#report.editable">
+            <li>
+                <a href="${report_access_url}">Share&hellip;</a>
+            </li>
+        </s:if>
+        
         <li>
             <a href="${report_remove_url}">Remove</a>
         </li>
