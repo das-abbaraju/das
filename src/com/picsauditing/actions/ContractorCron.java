@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -376,6 +377,57 @@ public class ContractorCron extends PicsActionSupport {
 
 		checkLcCor(contractor);
 		cancelScheduledImplementationAudits(contractor);
+		checkSla(contractor);
+	}
+
+	private void checkSla(ContractorAccount contractor) {
+		setSlaManualAudit(contractor);
+	}
+
+	private void setSlaManualAudit(ContractorAccount contractor) {
+		if (contractor.getBalance().compareTo(BigDecimal.ZERO) != 0)
+			return;
+
+		if (!isPqfAndSafetyManualOkay(contractor))
+			return;
+
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isDesktop() &&
+					audit.hasCaoStatus(AuditStatus.Pending) &&
+					audit.getSlaDate() == null) {
+				Calendar date = Calendar.getInstance();
+				date.add(Calendar.DATE, 10);
+				audit.setSlaDate(DateBean.setToEndOfDay(date.getTime()));
+				dao.save(audit);
+			}
+		}
+	}
+
+	private boolean isPqfAndSafetyManualOkay(ContractorAccount contractor) {
+		boolean pqfRequirementsMet = false;
+		boolean safetyManualRequirementsMet = false;
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
+				pqfRequirementsMet = true;
+
+				for (AuditData data:audit.getData()) {
+					if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
+						if (data.isAnswered() && data.isVerified())
+							safetyManualRequirementsMet = true;
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+
+		return pqfRequirementsMet && safetyManualRequirementsMet;
+	}
+
+	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {
+
+		return false;
 	}
 
 	private void cancelScheduledImplementationAudits(ContractorAccount contractor) {

@@ -83,6 +83,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private String phone;
 	private String phone2;
 	private Integer ruleID;
+	private Date slaDate;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -223,6 +224,14 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setPaidDate(Date paidDate) {
 		this.paidDate = paidDate;
+	}
+
+	public Date getSlaDate() {
+		return slaDate;
+	}
+
+	public void setSlaDate(Date slaDate) {
+		this.slaDate = slaDate;
 	}
 
 	@ManyToOne
