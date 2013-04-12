@@ -8,7 +8,7 @@
         <s:iterator value="#groups" var="group">
             <s:set var="access_type" value="%{#group.editable ? 'edit' : 'view' }" />
         
-            <li class="group ${access_type} clearfix">
+            <li class="group ${access_type} clearfix" data-group-id="${group.id}">
                 <s:include value="/struts/report/manage-report/_access-group-access-options.jsp" />
                 
                 <div class="summary">

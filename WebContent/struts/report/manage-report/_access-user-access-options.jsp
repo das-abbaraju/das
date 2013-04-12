@@ -33,21 +33,21 @@
     
     <ul class="dropdown-menu">
         <li class="owner">
-            <a href="${transfer_ownership_url}"><i class="icon-key"></i> Owner</a>
+            <a href="${transfer_ownership_url}" data-report-id="${reportId}"><i class="icon-key"></i> Owner</a>
         </li>
         
         <li class="edit">
-            <a href="${share_edit_permission_url}"><i class="icon-edit"></i> Can Edit</a>
+            <a href="${share_edit_permission_url}" data-report-id="${reportId}"><i class="icon-edit"></i> Can Edit</a>
         </li>
         
         <li class="view">
-            <a href="${share_view_permission_url}"><i class="icon-eye-open"></i> Can View</a>
+            <a href="${share_view_permission_url}" data-report-id="${reportId}"><i class="icon-eye-open"></i> Can View</a>
         </li>
         
         <li class="divider"></li>
         
         <li class="remove">
-            <a href="${unshare_url}"><i class="icon-remove"></i> Remove</a>
+            <a href="${unshare_url}" data-report-id="${reportId}"><i class="icon-remove"></i> Remove</a>
         </li>
     </ul>
 </div>
