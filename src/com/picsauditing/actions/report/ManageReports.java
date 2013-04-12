@@ -204,7 +204,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String deleteReport() {
@@ -222,7 +222,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String shareWithViewPermission() {
@@ -241,7 +241,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String shareWithEditPermission() {
@@ -260,7 +260,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String unshare() {
@@ -279,7 +279,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String removeReport() {
