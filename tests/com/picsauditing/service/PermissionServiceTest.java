@@ -214,5 +214,26 @@ public class PermissionServiceTest {
 		assertFalse(result);
 	}
 
+	@Test
+	public void testGrantEdit_WhenEditPermissionIsGranted_ThenEditableShouldBeTrue() throws Exception {
+		ReportPermissionUser reportPermissionUser = new ReportPermissionUser();
+		reportPermissionUser.setEditable(false);
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
+
+		reportPermissionUser = permissionService.grantEdit(USER_ID, REPORT_ID);
+
+		assertTrue(reportPermissionUser.isEditable());
+	}
+
+	@Test
+	public void testGrantView_WhenViewPermissionIsGranted_ThenEditableShouldBeFalse() throws Exception {
+		ReportPermissionUser reportPermissionUser = new ReportPermissionUser();
+		reportPermissionUser.setEditable(true);
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
+
+		reportPermissionUser = permissionService.grantView(USER_ID, REPORT_ID);
+
+		assertFalse(reportPermissionUser.isEditable());
+	}
 
 }
