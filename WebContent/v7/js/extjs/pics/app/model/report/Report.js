@@ -160,6 +160,14 @@ Ext.define('PICS.model.report.Report', {
         return this.has_unsaved_changes;
     },
 
+    getRecordDataAsJson: function () {
+        var proxy = this.getProxy(),
+            writer = proxy.getWriter(),
+            record_data = writer.getRecordData(this);
+        
+        return Ext.encode(record_data);
+    },
+
     has_unsaved_changes: false,
 
     isNewFilterExpression: function (filter_expression) {
