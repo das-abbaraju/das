@@ -1,0 +1,198 @@
+#ManageReports_access_page
+{
+	#report_access_search
+	{
+		margin: 30px 0px 40px;
+        text-align: center;
+	}
+	
+	#report_access_search_form
+	{
+		input
+        {
+            background: #f1f1f2;
+            padding-left: 30px;
+        }
+        
+        .icon-search
+        {
+            color: #666;
+            left: -312px;
+            margin-left: -14px;
+            position: relative;
+        }
+        
+        input:focus ~ .icon-search
+        {
+        	color: #73bbe8;
+        }
+	}
+	
+	.lt-ie8 #report_access_search_form
+    {
+        display: inline;
+    }
+    
+    #access_list
+    {
+    	#group_access h1,
+	    #user_access h1
+	    {
+	    	font-size: 18px;
+	    }
+	    
+	    .group-list,
+	    .user-list
+	    {
+	    	margin-bottom: 20px;
+	    }
+	    
+	    .group,
+		.user
+		{
+			background: #f1f1f2;
+	        border: 1px solid #ccc;
+	        @include border-radius(4px);
+	        line-height: 20px;
+	        margin-bottom: 2px;
+	        padding: 0 9px 0 20px;
+	        
+	        .summary
+	        {
+	        	margin: 0 60px 0 0px;
+	            padding: 6px 0 8px;
+	        }
+	    	
+	    	.name
+	        {
+	        	color: #454545;
+	            font-size: 14px;
+	            font-weight: bold;
+	            margin-right: 10px;
+	        }
+	        
+	        .description,
+	        .info
+	        {
+	            font-size: 12px;
+	            line-height: 14px;
+	            margin: 0;
+	            overflow: hidden;
+	        	text-overflow: ellipsis;
+	            white-space: nowrap;
+	        }
+	        
+	        .btn-group
+	        {
+	        	margin: 9px 0 0;
+	        	
+	        	.caret
+	        	{
+	        		margin-left: 10px;
+	        	}
+	        }
+		}
+		
+		.user.assign
+	    {
+			background: #fcf3cc;
+			border: 1px solid #e67e1c;
+	    	
+	    	a,
+	    	p
+	    	{
+	    		color: #e67e1c;
+	    	}
+	    }
+	    
+	    .group.remove,
+	    .user.remove
+	    {
+	    	background-color: #ffc6c9;
+	    	border: 1px solid #ac030c;
+	    	
+	    	a,
+	    	p
+	    	{
+	    		color: #ac030c;
+	    	}
+	    }
+	    
+	    .user.owner
+	    {
+	    	.access-options
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .group.edit,
+	    .user.edit
+	    {
+	    	.edit
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .group.view,
+	    .user.view
+	    {
+	    	.view
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .is-owner
+	    {
+	    	color: #e67e1c;
+	    	line-height: 48px;
+	    	margin-right: 10px;
+	    }
+    }
+}
+
+@media (min-width: 1200px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	        .icon-search
+	        {
+	        	left: -382px;
+	        }
+        }
+	}
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	        .icon-search
+	        {
+	            left: -242px;
+	        }
+        }
+	}
+}
+
+@media (max-width: 767px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	    	input
+	    	{
+		    	padding-left: 14px;
+	    	}
+	    	
+	        .icon-search
+	        {
+	            display: none;
+	        }
+        }
+	}
+}

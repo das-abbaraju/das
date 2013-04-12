@@ -13,6 +13,7 @@ public class ReportInfoMapper implements RowMapper<ReportInfo> {
 	public static final String NUMBER_OF_TIMES_FAVORITED = "numberOfTimesFavorited";
 	public static final String LAST_VIEWED_DATE_FIELD = "lastViewedDate";
 	public static final String EDITABLE_FIELD = "editable";
+	public static final String PRIVATE_FIELD = "private";
 	public static final String FAVORITE_FIELD = "favorite";
 	public static final String CREATION_DATE_FIELD = "creationDate";
 	public static final String DESCRIPTION_FIELD = "description";
@@ -27,6 +28,7 @@ public class ReportInfoMapper implements RowMapper<ReportInfo> {
 		reportInfo.setDescription(rs.getString(DESCRIPTION_FIELD));
 		reportInfo.setCreationDate(rs.getDate(CREATION_DATE_FIELD));
 		reportInfo.setFavorite(rs.getBoolean(FAVORITE_FIELD));
+		reportInfo.setPrivate(rs.getBoolean(PRIVATE_FIELD));
 		reportInfo.setEditable(rs.getBoolean(EDITABLE_FIELD));
 		reportInfo.setLastViewedDate(rs.getDate(LAST_VIEWED_DATE_FIELD));
 		reportInfo.setNumberOfTimesFavorited(rs.getInt(NUMBER_OF_TIMES_FAVORITED));

@@ -6,7 +6,7 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<s:url action="ManageReports" method="share" var="report_share_url">
+<s:url action="ManageReports" method="access" var="report_access_url">
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
@@ -14,11 +14,17 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<%-- Favorite Text --%>
-<s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
+<s:url action="ManageReports" method="%{#report.private ? 'unprivatize' : 'privatize'}" var="report_private_url">
+    <s:param name="reportId">${report.id}</s:param>
+</s:url>
 
-<%-- Favorite Class --%>
-<s:set name="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
+<%-- Text --%>
+<s:set var="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
+<s:set var="private_text" value="%{#report.private ? 'Make Public' : 'Make Private'}" />
+
+<%-- Class --%>
+<s:set var="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
+<s:set var="private_class" value="%{#report.private ? 'public' : 'private'}" />
 
 <div class="btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
@@ -29,15 +35,21 @@
         <li>
             <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
+        
         <li>
-            <a href="${report_share_url}">Share&hellip;</a>
+            <a href="${report_access_url}">Share&hellip;</a>
         </li>
+        
         <li>
-            <a href="">Make Private</a>
+            <a href="${report_private_url}" class="private-action ${private_class}" data-id="${report.id}">${private_text}</a>
         </li>
+        
         <li>
-            <a href="${report_share_url}">Transfer Ownership&hellip;</a>
+            <a href="${report_access_url}">Transfer Ownership&hellip;</a>
         </li>
+        
+        <li class="divider"></li>
+        
         <li>
             <a href="${report_delete_url}">Delete&hellip;</a>
         </li>
@@ -45,7 +57,7 @@
 </div>
 
 <div class="icons pull-right">
-    <if test="true">
+    <s:if test="#report.private">
         <i class="icon-eye-close icon-large"></i>
-    </if>
+    </s:if>
 </div>

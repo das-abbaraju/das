@@ -37,10 +37,6 @@
                 <a href="${report_favorite_url}" class="favorite-action unfavorite" data-id="${report.id}">Unfavorite</a>
             </li>
             
-            <li>
-                <a href="">Share...</a>
-            </li>
-            
             <li class="divider"></li>
             
             <li>

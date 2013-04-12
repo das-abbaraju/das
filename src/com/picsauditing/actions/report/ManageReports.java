@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +24,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.service.ManageReportsService;
-import com.picsauditing.service.ReportInfo;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportSearch;
-import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -51,6 +47,9 @@ public class ManageReports extends PicsActionSupport {
 
 	private List<ReportInfo> reportListOverflow;
 	private List<ReportInfo> reportList;
+
+	private List<ReportPermissionInfo> userAccessList;
+	private List<ReportPermissionInfo> groupAccessList;
 
 	private Pagination<ReportInfo> pagination;
 
@@ -144,8 +143,11 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("searchList", "search");
 	}
 
-	public String share() {
-		return "share";
+	public String access() {
+		userAccessList = reportService.buildUserAccessList(reportId);
+		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
+
+		return "access";
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {
@@ -208,7 +210,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String deleteReport() {
@@ -226,7 +228,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String shareWithViewPermission() {
@@ -245,7 +247,7 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String shareWithEditPermission() {
@@ -264,13 +266,13 @@ public class ManageReports extends PicsActionSupport {
 			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String unshare() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
-			
+
 			manageReportsService.unshare(getUser(), toOwner, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
@@ -282,8 +284,8 @@ public class ManageReports extends PicsActionSupport {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
 			return ERROR;
 		}
-		
-		return NONE;
+
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String removeReport() {
@@ -472,4 +474,13 @@ public class ManageReports extends PicsActionSupport {
 	public List<ReportInfo> getReportList() {
 		return reportList;
 	}
+
+	public List<ReportPermissionInfo> getUserAccessList() {
+		return userAccessList;
+	}
+
+	public List<ReportPermissionInfo> getGroupAccessList() {
+		return groupAccessList;
+	}
+
 }

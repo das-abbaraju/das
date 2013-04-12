@@ -6,7 +6,7 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<s:url action="ManageReports" method="share" var="report_share_url">
+<s:url action="ManageReports" method="access" var="report_access_url">
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
@@ -29,9 +29,15 @@
         <li>
             <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
-        <li>
-            <a href="${report_share_url}">Share&hellip;</a>
-        </li>
+        
+        <s:if test="#report.editable">
+            <li>
+                <a href="${report_access_url}">Share&hellip;</a>
+            </li>
+        </s:if>
+        
+        <li class="divider"></li>
+        
         <li>
             <a href="${report_remove_url}">Remove</a>
         </li>

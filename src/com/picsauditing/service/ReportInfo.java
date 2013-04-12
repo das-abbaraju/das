@@ -10,6 +10,7 @@ public class ReportInfo {
 	private String name;
 	private String description;
 	private boolean favorite;
+	private boolean isPrivate;
 	private int numberOfTimesFavorited;
 	private boolean editable;
 	private User createdBy;
@@ -47,6 +48,14 @@ public class ReportInfo {
 
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;
+	}
+
+	public boolean isPrivate() {
+		return isPrivate;
+	}
+
+	public void setPrivate(boolean isPrivate) {
+		this.isPrivate = isPrivate;
 	}
 
 	public int getNumberOfTimesFavorited() {
@@ -101,5 +110,4 @@ public class ReportInfo {
 	public String toString() {
 		return Integer.toString(id);
 	}
-
 }
