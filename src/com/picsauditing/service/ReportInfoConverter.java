@@ -33,6 +33,7 @@ public class ReportInfoConverter {
 		reportInfo.setDescription(reportUser.getReport().getDescription());
 		reportInfo.setEditable(false); // TODO: look into a better way to set this value from permissions
 		reportInfo.setFavorite(reportUser.isFavorite());
+		reportInfo.setPrivate(reportUser.getReport().isPrivate());
 		reportInfo.setId(reportUser.getReport().getId());
 		reportInfo.setLastViewedDate(reportUser.getLastViewedDate());
 		reportInfo.setName(reportUser.getReport().getName());

@@ -101,6 +101,7 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
 		sql.addField("ru.favorite AS " + ReportInfoMapper.FAVORITE_FIELD);
 		sql.addField("1 AS " + ReportInfoMapper.EDITABLE_FIELD); // because if you own it, you can edit it
+		sql.addField("r.private AS " + ReportInfoMapper.PRIVATE_FIELD);
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
@@ -138,6 +139,7 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
 		sql.addField("ru.favorite AS " + ReportInfoMapper.FAVORITE_FIELD);
 		sql.addField("MAX(rp.editable) AS " + ReportInfoMapper.EDITABLE_FIELD);
+		sql.addField("r.private AS " + ReportInfoMapper.PRIVATE_FIELD);
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
