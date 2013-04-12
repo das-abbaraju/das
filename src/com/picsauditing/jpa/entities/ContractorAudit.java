@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.access.OpPerms;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
@@ -226,6 +227,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		this.paidDate = paidDate;
 	}
 
+	@ReportField(type = FieldType.Date, category = FieldCategory.AuditScheduling, requiredPermissions = OpPerms.AllOperators)
 	public Date getSlaDate() {
 		return slaDate;
 	}
