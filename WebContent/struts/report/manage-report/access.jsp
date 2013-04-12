@@ -4,10 +4,12 @@
 <%-- Url --%>
 <s:url action="ManageReports" method="share" var="manage_report_access_search_url" />
 
+<%-- Text --%>
 <s:set var="access_search_term_placeholder" value="%{'Share with people and groups'}" />
 
+<%-- Container configuration --%>
 <s:if test="userAccessList.size() > 0 && groupAccessList.size() > 0">
-    <%-- has both access group - display span6 --%>
+    <%-- has both access group and access user - display span6 --%>
     <s:set var="column_size">span6</s:set>
 </s:if>
 <s:else>
@@ -34,5 +36,17 @@
 <h1></h1>
 
 <div id="access_list" class="row">
-    <s:include value="/struts/report/manage-report/_access.jsp" />
+    <s:if test="groupAccessList.size() > 0">
+        <div class="${column_size}">
+            <s:set var="groups" value="groupAccessList" />
+            <s:include value="/struts/report/manage-report/_access-groups.jsp" />
+        </div>
+    </s:if>
+    
+    <s:if test="userAccessList.size() > 0">
+        <div class="${column_size}">
+            <s:set var="persons" value="userAccessList" />
+            <s:include value="/struts/report/manage-report/_access-users.jsp" />
+        </div>
+    </s:if>
 </div>

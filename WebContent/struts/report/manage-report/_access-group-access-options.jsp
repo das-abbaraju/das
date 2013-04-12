@@ -15,10 +15,13 @@
         <li class="edit">
             <a href="#"><i class="icon-edit"></i> Can Edit</a>
         </li>
+        
         <li class="view">
             <a href="#"><i class="icon-eye-open"></i> Can View</a>
         </li>
+        
         <li class="divider"></li>
+        
         <li class="remove">
             <a href="#"><i class="icon-remove"></i> Remove</a>
         </li>

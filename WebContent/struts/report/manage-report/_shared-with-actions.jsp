@@ -36,6 +36,8 @@
             </li>
         </s:if>
         
+        <li class="divider"></li>
+        
         <li>
             <a href="${report_remove_url}">Remove</a>
         </li>

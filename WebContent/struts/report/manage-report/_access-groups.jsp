@@ -5,16 +5,14 @@
     <h1>Groups with access</h1>
     
     <ul class="group-list unstyled">
-        <s:set var="groups" value="groupAccessList" />
-        
         <s:iterator value="#groups" var="group">
-            <s:set var="access" value="%{#group.editable ? 'edit' : 'view' }" />
+            <s:set var="access_type" value="%{#group.editable ? 'edit' : 'view' }" />
         
-            <li class="group ${access} clearfix">
+            <li class="group ${access_type} clearfix">
                 <s:include value="/struts/report/manage-report/_access-group-access-options.jsp" />
                 
                 <div class="summary">
-                    <a href="#" class="name">${group.accountName}</a>
+                    <span class="name">${group.accountName}</span>
                     <p class="description">${group.location}</p>
                 </div>
             </li>

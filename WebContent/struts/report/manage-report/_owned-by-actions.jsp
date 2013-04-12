@@ -35,15 +35,21 @@
         <li>
             <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
         </li>
+        
         <li>
             <a href="${report_access_url}">Share&hellip;</a>
         </li>
+        
         <li>
             <a href="${report_private_url}" class="private-action ${private_class}" data-id="${report.id}">${private_text}</a>
         </li>
+        
         <li>
             <a href="${report_access_url}">Transfer Ownership&hellip;</a>
         </li>
+        
+        <li class="divider"></li>
+        
         <li>
             <a href="${report_delete_url}">Delete&hellip;</a>
         </li>
