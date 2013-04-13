@@ -1,2 +1,2 @@
-ALTER TABLE `pics_alpha1`.`report_user`
-  ADD COLUMN `pinned` TINYINT(1) DEFAULT 0  NOT NULL AFTER `hidden`;
+ALTER TABLE `report_user`
+  ADD COLUMN `pinnedIndex` INT(11) DEFAULT -1 NOT NULL AFTER `hidden`;
