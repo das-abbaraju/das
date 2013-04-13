@@ -1,6 +1,5 @@
 package com.picsauditing.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,67 +37,7 @@ public class ManageReportsService {
 
     private static final Logger logger = LoggerFactory.getLogger(ManageReportsService.class);
 
-    public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
-        return moveFavorite(reportUser, 1);
-    }
-
-    public ReportUser moveFavoriteDown(ReportUser reportUser) throws Exception {
-        return moveFavorite(reportUser, -1);
-    }
-
-    private ReportUser moveFavorite(ReportUser reportUser, int magnitude) throws Exception {
-        int userId = reportUser.getUser().getId();
-        int numberOfFavorites = reportUserDAO.getFavoriteCount(userId);
-        int currentPosition = reportUser.getSortOrder();
-        int newPosition = currentPosition + magnitude;
-
-        if (moveIsUnnecessaryOrInvalid(currentPosition, newPosition, numberOfFavorites)) {
-            return reportUser;
-        }
-
-        shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
-
-        reportUser.setSortOrder(newPosition);
-        reportUserDAO.save(reportUser);
-
-        return reportUser;
-    }
-
-    private boolean moveIsUnnecessaryOrInvalid(int currentPosition, int newPosition, int numberOfFavorites) {
-        if (currentPosition == newPosition) {
-            return true;
-        }
-
-        if ((newPosition < 0) || (newPosition > numberOfFavorites)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
-        reportUserDAO.resetSortOrder(userId);
-
-        int offsetAmount;
-        int offsetRangeBegin;
-        int offsetRangeEnd;
-
-        if (currentPosition < newPosition) {
-            // Moving up in list, displaced reports move down
-            offsetAmount = -1;
-            offsetRangeBegin = currentPosition + 1;
-            offsetRangeEnd = newPosition;
-        } else {
-            // Moving down in list, displaced reports move up
-            offsetAmount = 1;
-            offsetRangeBegin = newPosition;
-            offsetRangeEnd = currentPosition - 1;
-        }
-
-        reportUserDAO.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
-    }
-
-    public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions,
+	public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions,
                                                 Pagination<ReportInfo> pagination) {
         // By default, show the top ten most favorited reports sorted by number
         // of favorites

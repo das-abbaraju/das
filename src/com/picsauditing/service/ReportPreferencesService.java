@@ -23,6 +23,10 @@ public class ReportPreferencesService {
 	@Autowired
 	private ReportDAO reportDao;
 
+	public ReportUser loadReportUser(int userId, int reportId) {
+		return reportUserDao.findOne(userId, reportId);
+	}
+
 	public ReportUser loadOrCreateReportUser(int userId, int reportId) {
 		ReportUser reportUser;
 
@@ -52,10 +56,6 @@ public class ReportPreferencesService {
 		reportUserDao.save(reportUser);
 
 		return reportUser;
-	}
-
-	public ReportUser loadReportUser(int userId, int reportId) {
-		return reportUserDao.findOne(userId, reportId);
 	}
 
 	public List<ReportUser> getAllNonHiddenReportUsers(ReportSearch reportSearch) {
@@ -114,4 +114,65 @@ public class ReportPreferencesService {
 		int maxSortIndex = reportUserDao.findMaxSortIndex(userId);
 		return maxSortIndex + 1;
 	}
+
+	public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
+		return moveFavorite(reportUser, 1);
+	}
+
+	public ReportUser moveFavoriteDown(ReportUser reportUser) throws Exception {
+        return moveFavorite(reportUser, -1);
+    }
+
+	private ReportUser moveFavorite(ReportUser reportUser, int magnitude) throws Exception {
+        int userId = reportUser.getUser().getId();
+        int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
+        int currentPosition = reportUser.getSortOrder();
+        int newPosition = currentPosition + magnitude;
+
+        if (moveIsUnnecessaryOrInvalid(currentPosition, newPosition, numberOfFavorites)) {
+            return reportUser;
+        }
+
+        shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
+
+        reportUser.setSortOrder(newPosition);
+        reportUserDao.save(reportUser);
+
+        return reportUser;
+    }
+
+	private boolean moveIsUnnecessaryOrInvalid(int currentPosition, int newPosition, int numberOfFavorites) {
+        if (currentPosition == newPosition) {
+            return true;
+        }
+
+        if ((newPosition < 0) || (newPosition > numberOfFavorites)) {
+            return true;
+        }
+
+        return false;
+    }
+
+	void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
+		reportUserDao.resetSortOrder(userId);
+
+		int offsetAmount;
+		int offsetRangeBegin;
+		int offsetRangeEnd;
+
+		if (currentPosition < newPosition) {
+			// Moving up in list, displaced reports move down
+			offsetAmount = -1;
+			offsetRangeBegin = currentPosition + 1;
+			offsetRangeEnd = newPosition;
+		} else {
+			// Moving down in list, displaced reports move up
+			offsetAmount = 1;
+			offsetRangeBegin = newPosition;
+			offsetRangeEnd = currentPosition - 1;
+		}
+
+		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
+	}
+
 }

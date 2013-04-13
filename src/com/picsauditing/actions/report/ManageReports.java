@@ -162,7 +162,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.moveFavoriteUp(reportUser);
+			reportPreferencesService.moveFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
 		} catch (Exception e) {
@@ -184,7 +184,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.moveFavoriteDown(reportUser);
+			reportPreferencesService.moveFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
 		} catch (Exception e) {

@@ -54,9 +54,6 @@ public class ManageReportsServiceTest {
 
     private final int USER_ID = 23;
 
-    private static final int MAX_SORT_ORDER = 10;
-    private static final int MAX_FAVORITE_COUNT = 15;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -67,36 +64,6 @@ public class ManageReportsServiceTest {
         setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
         setInternalState(manageReportsService, "permissionService", permissionService);
         setInternalState(manageReportsService, "reportInfoProvider", reportInfoProvider);
-    }
-
-    @Test
-    public void testMoveFavoriteUp() throws Exception {
-        ReportUser reportUser = createTestReportUser();
-        int beforeSortOrder = 3;
-        reportUser.setSortOrder(beforeSortOrder);
-        reportUser.setFavorite(true);
-        when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-        when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
-
-        ReportUser result = manageReportsService.moveFavoriteUp(reportUser);
-
-        assertEquals(beforeSortOrder + 1, result.getSortOrder());
-        verify(reportUserDAO).offsetSortOrderForRange(USER_ID, -1, 4, 4);
-    }
-
-    @Test
-    public void testMoveFavoriteDown() throws Exception {
-        ReportUser reportUser = createTestReportUser();
-        int beforeSortOrder = 3;
-        reportUser.setSortOrder(beforeSortOrder);
-        reportUser.setFavorite(true);
-        when(reportUserDAO.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-        when(reportUserDAO.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
-
-        ReportUser result = manageReportsService.moveFavoriteDown(reportUser);
-
-        assertEquals(beforeSortOrder - 1, result.getSortOrder());
-        verify(reportUserDAO).offsetSortOrderForRange(USER_ID, 1, 2, 2);
     }
 
     @Test

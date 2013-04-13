@@ -37,6 +37,8 @@ public class ReportPreferencesServiceTest {
 	private static final int USER_ID = 23;
 	private static final int REPORT_ID = 29;
 	private static final int MAX_SORT_ORDER = 10;
+	private static final int MAX_FAVORITE_COUNT = 15;
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -101,6 +103,36 @@ public class ReportPreferencesServiceTest {
 		assertEquals(0, result.getSortOrder());
 	}
 
+	@Test
+	public void testMoveFavoriteUp() throws Exception {
+		ReportUser reportUser = createTestReportUser();
+		int beforeSortOrder = 3;
+		reportUser.setSortOrder(beforeSortOrder);
+		reportUser.setFavorite(true);
+		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+
+		ReportUser result = reportPreferencesService.moveFavoriteUp(reportUser);
+
+		assertEquals(beforeSortOrder + 1, result.getSortOrder());
+		verify(reportUserDao).offsetSortOrderForRange(USER_ID, -1, 4, 4);
+	}
+
+	@Test
+	public void testMoveFavoriteDown() throws Exception {
+		ReportUser reportUser = createTestReportUser();
+		int beforeSortOrder = 3;
+		reportUser.setSortOrder(beforeSortOrder);
+		reportUser.setFavorite(true);
+		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
+		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+
+		ReportUser result = reportPreferencesService.moveFavoriteDown(reportUser);
+
+		assertEquals(beforeSortOrder - 1, result.getSortOrder());
+		verify(reportUserDao).offsetSortOrderForRange(USER_ID, 1, 2, 2);
+	}
+
 	private ReportUser createTestReportUser() {
 		ReportUser reportUser = new ReportUser();
 
@@ -114,6 +146,5 @@ public class ReportPreferencesServiceTest {
 
 		return reportUser;
 	}
-
 
 }
