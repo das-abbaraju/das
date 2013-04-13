@@ -2,6 +2,7 @@ package com.picsauditing.service;
 
 import java.util.Date;
 
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 
 public class ReportInfo {
@@ -17,6 +18,7 @@ public class ReportInfo {
 	private Date creationDate;
 	private Date lastViewedDate;
 	private int sortOrder;
+	private int pinnedIndex;
 
 	public int getId() {
 		return id;
@@ -106,8 +108,21 @@ public class ReportInfo {
 		this.sortOrder = sortOrder;
 	}
 
+	public int getPinnedIndex() {
+		return pinnedIndex;
+	}
+
+	public void setPinnedIndex(int pinnedIndex) {
+		this.pinnedIndex = pinnedIndex;
+	}
+
+	public boolean isPinned() {
+		return pinnedIndex != ReportUser.UNPINNED_INDEX;
+	}
+
 	@Override
 	public String toString() {
 		return Integer.toString(id);
 	}
+
 }

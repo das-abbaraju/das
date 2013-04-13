@@ -28,6 +28,9 @@ public class ReportUser extends BaseTable {
 	private int sortOrder;
 	boolean visibleOnMyReports; // todo: Not used anywhere. Remove.
 	private boolean hidden;
+	private int pinnedIndex;
+
+	public static final int UNPINNED_INDEX = -1;
 
 	public ReportUser() {
 	}
@@ -109,6 +112,14 @@ public class ReportUser extends BaseTable {
 
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public int getPinnedIndex() {
+		return pinnedIndex;
+	}
+
+	public void setPinnedIndex(int pinnedIndex) {
+		this.pinnedIndex = pinnedIndex;
 	}
 
 	@Override
