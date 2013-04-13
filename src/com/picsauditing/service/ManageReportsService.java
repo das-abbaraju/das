@@ -1,14 +1,9 @@
 package com.picsauditing.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.NoResultException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -34,8 +29,6 @@ public class ManageReportsService {
     private ReportUserDAO reportUserDAO;
     @Autowired
     private ReportInfoProvider reportInfoProvider;
-
-    private static final Logger logger = LoggerFactory.getLogger(ManageReportsService.class);
 
 	public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions,
                                                 Pagination<ReportInfo> pagination) {
@@ -185,62 +178,6 @@ public class ManageReportsService {
 
     private boolean canRemoveReport(User removerUser, Report report, Permissions permissions) {
         return permissionService.canUserRemoveReport(removerUser, report, permissions);
-    }
-
-    public List<ReportInfo> buildFavorites(int userId) {
-        List<ReportInfo> favorites = reportInfoProvider.findAllFavoriteReports(userId);
-        if (sortOrderNeedsToBeReIndexed(favorites)) {
-            favorites = reIndexSortOrder(favorites, userId);
-        }
-
-        return favorites;
-    }
-
-    private boolean sortOrderNeedsToBeReIndexed(List<ReportInfo> sortedFavorites) {
-        ReportInfo firstReportUserInList = sortedFavorites.get(0);
-        int highestSortOrder = firstReportUserInList.getSortOrder();
-
-        if (highestSortOrder != sortedFavorites.size()) {
-            return true;
-        }
-
-        if (hasDuplicateSortOrders(sortedFavorites)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private List<ReportInfo> reIndexSortOrder(List<ReportInfo> favorites, int userId) {
-
-        logger.info("Re-indexing sortOrder for favorites...");
-
-        List<ReportInfo> reIndexedFavorites = new ArrayList<>();
-        for (int i = 0; i < favorites.size(); i++) {
-            ReportInfo favorite = favorites.get(i);
-            int newSortOrder = favorites.size() - i;
-
-            if (newSortOrder != favorite.getSortOrder()) {
-                favorite.setSortOrder(newSortOrder);
-                reportInfoProvider.updateSortOrder(favorite, userId);
-            }
-
-            reIndexedFavorites.add(favorite);
-        }
-
-        return reIndexedFavorites;
-    }
-
-    private boolean hasDuplicateSortOrders(List<ReportInfo> favorites) {
-        Set<Integer> uniqueSortOrders = new HashSet<>();
-        for (ReportInfo favoriteReport : favorites) {
-            boolean addedSuccessfully = uniqueSortOrders.add(favoriteReport.getSortOrder());
-            if (!addedSuccessfully) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public List<ReportInfo> getReportsForOwnedByUser(ReportSearch reportSearch) {

@@ -86,7 +86,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorites() {
 		try {
-			reportList = manageReportsService.buildFavorites(permissions.getUserId());
+			reportList = reportPreferencesService.buildFavorites(permissions.getUserId());
 
 			if (CollectionUtils.isEmpty(reportList)) {
 				reportList = Collections.emptyList();

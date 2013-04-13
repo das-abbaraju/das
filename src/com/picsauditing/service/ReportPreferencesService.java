@@ -22,6 +22,8 @@ public class ReportPreferencesService {
 	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportInfoProvider reportInfoProvider;
 
 	public ReportUser loadReportUser(int userId, int reportId) {
 		return reportUserDao.findOne(userId, reportId);
@@ -173,6 +175,59 @@ public class ReportPreferencesService {
 		}
 
 		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
+	}
+
+	public List<ReportInfo> buildFavorites(int userId) {
+		List<ReportInfo> favorites = reportInfoProvider.findAllFavoriteReports(userId);
+		if (sortOrderNeedsToBeReIndexed(favorites)) {
+			favorites = reIndexSortOrder(favorites, userId);
+		}
+
+		return favorites;
+	}
+
+	private boolean sortOrderNeedsToBeReIndexed(List<ReportInfo> sortedFavorites) {
+		ReportInfo firstReportUserInList = sortedFavorites.get(0);
+		int highestSortOrder = firstReportUserInList.getSortOrder();
+
+		if (highestSortOrder != sortedFavorites.size()) {
+			return true;
+		}
+
+		if (hasDuplicateSortOrders(sortedFavorites)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private List<ReportInfo> reIndexSortOrder(List<ReportInfo> favorites, int userId) {
+		List<ReportInfo> reIndexedFavorites = new ArrayList<>();
+		for (int i = 0; i < favorites.size(); i++) {
+			ReportInfo favorite = favorites.get(i);
+			int newSortOrder = favorites.size() - i;
+
+			if (newSortOrder != favorite.getSortOrder()) {
+				favorite.setSortOrder(newSortOrder);
+				reportInfoProvider.updateSortOrder(favorite, userId);
+			}
+
+			reIndexedFavorites.add(favorite);
+		}
+
+		return reIndexedFavorites;
+	}
+
+	private boolean hasDuplicateSortOrders(List<ReportInfo> favorites) {
+		Set<Integer> uniqueSortOrders = new HashSet<>();
+		for (ReportInfo favoriteReport : favorites) {
+			boolean addedSuccessfully = uniqueSortOrders.add(favoriteReport.getSortOrder());
+			if (!addedSuccessfully) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }
