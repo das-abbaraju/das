@@ -3,8 +3,8 @@ PICS.define('report.manage-report.FavoritesController', {
         init: function () {
             if ($('#ManageReports_favorites_page').length > 0) {
                 $('#favorite_reports_container')
-                    .on('click', '.favorite-icon.favorite', $.proxy(this.unfavoriteReport, this))
-                    .on('click', '.favorite-action.unfavorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '.report > .favorite', $.proxy(this.unfavoriteReport, this))
+                    .on('click', '.report-options .unfavorite', $.proxy(this.unfavoriteReport, this))
                     .on('click', '.move-down', $.proxy(this.moveReportDown, this))
                     .on('click', '.move-up', $.proxy(this.moveReportUp, this));
             }
@@ -36,7 +36,7 @@ PICS.define('report.manage-report.FavoritesController', {
         unfavoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $body = $('body'),
-                report_id = $element.attr('data-id');
+                report_id = $element.data('report-id');
             
             $body.trigger('report-unfavorite', {
                 report_id: report_id,

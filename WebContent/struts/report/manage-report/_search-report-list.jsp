@@ -19,7 +19,7 @@
         <s:set name="is_favorite_class" value="%{#report.favorite ? 'selected' : ''}" />
 
         <li class="report clearfix">
-            <a href="${report_favorite_url}" class="favorite-icon ${favorite_class}" data-id="${report.id}">
+            <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">
                 <i class="icon-star ${is_favorite_class}"></i>
             </a>
             

@@ -35,7 +35,8 @@
             margin-bottom: 2px;
         }
         
-        .favorite-icon
+        .report > .favorite,
+        .report > .unfavorite
         {
             margin: 0 5px;
         }
@@ -79,6 +80,23 @@
         .dropdown-toggle
         {
         	padding: 9px 12px;
+        }
+        
+        .confirm-options
+        {
+        	margin-right: 5px;
+        }
+        
+        .report.delete
+        {
+        	background-color: #ffc6c9;
+	    	border: 1px solid #ac030c;
+	    	
+	    	a,
+	    	p
+	    	{
+	    		color: #ac030c;
+	    	}
         }
     }
 }

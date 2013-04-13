@@ -6,24 +6,24 @@ PICS.define('report.manage-report.SearchController', {
                     .on('keyup', PICS.debounce(this.search, 250));
                 
                 $('#search_reports_container')
-                    .on('click', '.favorite-icon.favorite', this.unfavoriteReport)
-                    .on('click', '.favorite-icon.unfavorite', this.favoriteReport);
+                    .on('click', '.report > .favorite', this.unfavoriteReport)
+                    .on('click', '.report > .unfavorite', this.favoriteReport);
             }
         },
         
         favoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $icon = $report.find('.icon-star'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
                 $body = $('body'),
-                report_id = $element.attr('data-id');
+                report_id = $element.data('report-id');
             
             $body.trigger('report-favorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
-                    $icon.addClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.addClass('selected');
                 }
             });
             
@@ -47,16 +47,16 @@ PICS.define('report.manage-report.SearchController', {
         unfavoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $icon = $report.find('.icon-star'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
                 $body = $('body'),
-                report_id = $element.attr('data-id');
+                report_id = $element.data('report-id');
             
             $body.trigger('report-unfavorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
-                    $icon.removeClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.removeClass('selected');
                 }
             });
             

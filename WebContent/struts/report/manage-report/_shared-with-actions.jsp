@@ -20,14 +20,14 @@
 <%-- Favorite Class --%>
 <s:set name="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
 
-<div class="btn-group pull-right">
+<div class="report-options btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
         Options
     </button>
 
     <ul class="dropdown-menu">
         <li>
-            <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
+            <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">${favorite_text}</a>
         </li>
         
         <s:if test="#report.editable">
@@ -39,7 +39,7 @@
         <li class="divider"></li>
         
         <li>
-            <a href="${report_remove_url}">Remove</a>
+            <a href="${report_remove_url}" class="remove">Remove</a>
         </li>
     </ul>
 </div>

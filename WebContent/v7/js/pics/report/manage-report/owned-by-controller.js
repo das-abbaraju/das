@@ -3,30 +3,84 @@ PICS.define('report.manage-report.OwnedByController', {
         init: function () {
             if ($('#ManageReports_ownedBy_page').length > 0) {
                 $('#owned_by_reports_container')
-                    .on('click', '.favorite-icon.favorite', this.unfavoriteReport)
-                    .on('click', '.favorite-icon.unfavorite', this.favoriteReport)
-                    .on('click', '.favorite-action.favorite', this.favoriteReport)
-                    .on('click', '.favorite-action.unfavorite', this.unfavoriteReport)
-                    .on('click', '.private-action.private', this.privateReport)
-                    .on('click', '.private-action.public', this.publicReport)
+                    .on('click', '.report > .favorite', this.unfavoriteReport)
+                    .on('click', '.report > .unfavorite', this.favoriteReport)
+                    .on('click', '.report-options .favorite', this.favoriteReport)
+                    .on('click', '.report-options .unfavorite', this.unfavoriteReport)
+                    .on('click', '.report-options .private', this.privateReport)
+                    .on('click', '.report-options .public', this.publicReport)
+                    .on('click', '.report-options .delete', this.deleteReport)
+                    .on('click', '.confirm-options .delete', $.proxy(this.confirmDeleteReport, this))
+                    .on('click', '.confirm-options .cancel', $.proxy(this.cancelChanges, this))
                     .on('click', '#manage_report_filter a', this.filterList);
             }
+        },
+        
+        cancelChanges: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report');
+            
+            this.resetReport($report);
+            
+            event.preventDefault();
+        },
+        
+        confirmDeleteReport: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                report_id = $element.data('report-id');
+            
+            PICS.ajax({
+                url: 'ManageReports!deleteReport.action',
+                data: {
+                    reportId: report_id,
+                }
+            });
+
+            $report.slideUp(400, function () {
+                $(this).remove();
+            });
+            
+            event.preventDefault();
+        },
+        
+        deleteReport: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                $report_options = $report.find('.report-options'),
+                $report_icons = $report.find('.icons');
+            
+            $report.addClass('delete');
+            
+            $report_options.hide();
+            
+            $report_icons.hide();
+                    
+            $report.append($([
+                '<div class="confirm-options btn-group pull-right">',
+                    '<button class="btn cancel">Cancel</button>',
+                    '<button class="btn btn-danger delete">Delete</button>',
+                '</div>'
+            ].join('')));
+            
+            event.preventDefault();
         },
         
         favoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $favorite_action = $report.find('.favorite-action'),
-                $icon = $report.find('.icon-star'),
+                $report_options = $report.find('.report-options'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
+                $favorite_action = $report_options.find('.favorite, .unfavorite'),
                 $body = $('body'),
-                report_id = $element.attr('data-id');
+                report_id = $element.data('report-id');
             
             $body.trigger('report-favorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
-                    $icon.addClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.addClass('selected');
                     $favorite_action.toggleClass('favorite unfavorite');
                     $favorite_action.text('Unfavorite');
                 }
@@ -51,9 +105,10 @@ PICS.define('report.manage-report.OwnedByController', {
         privateReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
+                $report_options = $report.find('.report-options'),
                 $icons = $report.find('.icons'),
-                $private_action = $report.find('.private-action'),
-                report_id = $element.attr('data-id');
+                $private_action = $report_options.find('.private, .public'),
+                report_id = $element.data('report-id');
             
             PICS.ajax({
                 url: 'ManageReports!privatize.action',
@@ -73,9 +128,10 @@ PICS.define('report.manage-report.OwnedByController', {
         publicReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
+                $report_options = $report.find('.report-options'),
                 $private_icon = $report.find('.icon-eye-close'),
-                $private_action = $report.find('.private-action'),
-                report_id = $element.attr('data-id');
+                $private_action = $report_options.find('.private, .public'),
+                report_id = $element.data('reprot-id');
             
             PICS.ajax({
                 url: 'ManageReports!unprivatize.action',
@@ -92,28 +148,6 @@ PICS.define('report.manage-report.OwnedByController', {
             event.preventDefault();
         },
         
-        unfavoriteReport: function (event) {
-            var $element = $(event.currentTarget),
-                $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $favorite_action = $report.find('.favorite-action'),
-                $icon = $report.find('.icon-star'),
-                $body = $('body'),
-                report_id = $element.attr('data-id');
-            
-            $body.trigger('report-unfavorite', {
-                report_id: report_id,
-                success: function (data, textStatus, jqXHR) {
-                    $icon.removeClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
-                    $favorite_action.toggleClass('favorite unfavorite');
-                    $favorite_action.text('Favorite');
-                }
-            });
-            
-            event.preventDefault();
-        },
-        
         refreshOwnedBy: function () {
             PICS.ajax({
                 url: 'ManageReports!ownedBy.action',
@@ -121,6 +155,43 @@ PICS.define('report.manage-report.OwnedByController', {
                     $('#owned_by_reports_container').html(data);
                 }
             });
+        },
+        
+        resetReport: function ($report) {
+            var $confirm_options = $report.find('.confirm-options'),
+                $report_options = $report.find('.report-options'),
+                $report_icons = $report.find('.icons');
+            
+            $report.removeClass('delete');
+            
+            $confirm_options.remove();
+            
+            $report_options.show();
+            
+            $report_icons.show();
+        },
+        
+        unfavoriteReport: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                $report_options = $report.find('.report-options'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
+                $favorite_action = $report_options.find('.favorite, .unfavorite'),
+                $body = $('body'),
+                report_id = $element.data('report-id');
+            
+            $body.trigger('report-unfavorite', {
+                report_id: report_id,
+                success: function (data, textStatus, jqXHR) {
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.removeClass('selected');
+                    $favorite_action.toggleClass('favorite unfavorite');
+                    $favorite_action.text('Favorite');
+                }
+            });
+            
+            event.preventDefault();
         }
     }
 });

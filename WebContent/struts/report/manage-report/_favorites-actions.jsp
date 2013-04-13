@@ -27,14 +27,14 @@
 </s:url>
 
 <s:if test="#reports.size > 1 || #enable_move_up == 'true'">
-    <div class="btn-group pull-right">
+    <div class="report-options btn-group pull-right">
         <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
             <s:text name="ManageReports.myReports.Options" />
         </button>
 
         <ul class="dropdown-menu">
             <li>
-                <a href="${report_favorite_url}" class="favorite-action unfavorite" data-id="${report.id}">Unfavorite</a>
+                <a href="${report_favorite_url}" class="unfavorite" data-report-id="${report.id}">Unfavorite</a>
             </li>
             
             <li class="divider"></li>
