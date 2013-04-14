@@ -50,12 +50,11 @@ public class JsonReportBuilder {
 		json.put(REPORT_NAME, report.getName());
 		json.put(REPORT_DESCRIPTION, report.getDescription());
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
-		
-		
+
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
-		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions, report.getId()));
+		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions.getUserId(), report.getId()));
 	}
-	
+
 	public static PermissionService getPermissionService() {
 		if (permissionService == null)
 			return SpringUtils.getBean(SpringUtils.PermissionService);

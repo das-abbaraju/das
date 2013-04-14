@@ -76,7 +76,7 @@ public class JsonReportBuilderTest {
 		when(report.getDescription()).thenReturn(description);
 		when(report.getFilterExpression()).thenReturn(filterExpression);
 		when(permissionService.canUserEditReport(permissions, reportId)).thenReturn(editable);
-		when(reportPreferencesService.isUserFavoriteReport(permissions, reportId)).thenReturn(favorite);
+		when(reportPreferencesService.isUserFavoriteReport(USER_ID, reportId)).thenReturn(favorite);
 
 		JSONObject json = JsonReportBuilder.buildReportJson(report, permissions);
 		String jsonString = json.toString();

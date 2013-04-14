@@ -64,10 +64,9 @@ public class ReportPreferencesService {
 		return reportUserDao.findAllOrdered(reportSearch);
 	}
 
-	// todo: extract out the userId
-	public boolean isUserFavoriteReport(Permissions permissions, int reportId) {
+	public boolean isUserFavoriteReport(int userId, int reportId) {
 		try {
-			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
+			ReportUser reportUser = reportUserDao.findOne(userId, reportId);
 
 			if (reportUser == null) {
 				return false;
