@@ -90,7 +90,7 @@ public class ReportPreferencesService {
 
 		List<ReportUser> favorites = mergePinnedAndUnpinnedFavorites(pinnedFavorites, unpinnedFavorites);
 
-		reIndexSortOrder(favorites, userId);
+		reIndexSortOrder(favorites);
 
 		return reportUser;
 	}
@@ -165,7 +165,7 @@ public class ReportPreferencesService {
 		List<ReportUser> favorites = mergePinnedAndUnpinnedFavorites(pinnedFavorites, unpinnedFavorites);
 
 		if (sortOrderNeedsToBeReIndexed(favorites)) {
-			favorites = reIndexSortOrder(favorites, userId);
+			favorites = reIndexSortOrder(favorites);
 		}
 
 		List<ReportInfo> favoritesDTO = reportInfoConverter.convertReportUserToReportInfo(favorites);
@@ -214,23 +214,19 @@ public class ReportPreferencesService {
 		return false;
 	}
 
-	// TODO this looks fishy
-	private List<ReportUser> reIndexSortOrder(List<ReportUser> favorites, int userId) {
-		List<ReportUser> reIndexedFavorites = new ArrayList<>();
+	public List<ReportUser> reIndexSortOrder(List<ReportUser> favorites) {
+		int expectedSortOrder = favorites.size();
 
-		for (int i = 0; i < favorites.size(); i++) {
-			ReportUser favorite = favorites.get(i);
-			int newSortOrder = favorites.size() - i;
-
-			if (newSortOrder != favorite.getSortOrder()) {
-				favorite.setSortOrder(newSortOrder);
+		for (ReportUser favorite : favorites) {
+			if (favorite.getSortOrder() != expectedSortOrder) {
+				favorite.setSortOrder(expectedSortOrder);
 				reportUserDao.save(favorite);
 			}
 
-			reIndexedFavorites.add(favorite);
+			expectedSortOrder -= 1;
 		}
 
-		return reIndexedFavorites;
+		return favorites;
 	}
 
 	private boolean hasDuplicateSortOrders(List<ReportUser> favorites) {

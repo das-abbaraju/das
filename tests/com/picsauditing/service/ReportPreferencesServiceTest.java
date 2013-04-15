@@ -147,6 +147,82 @@ public class ReportPreferencesServiceTest {
 		assertEquals(replacedReportSortOrder, result.getSortOrder());
 	}
 
+	@Test
+	public void testReIndexSortOrder_WhenSortOrderIsContiguous_ThenDontReIndexSortOrder() {
+		List<ReportUser> favoritesForUser = buildSortedFavoritesThatAreContiguous(USER_ID);
+
+		assertEquals(4, favoritesForUser.size());
+		assertEquals(4, favoritesForUser.get(0).getSortOrder());
+		assertEquals(3, favoritesForUser.get(1).getSortOrder());
+		assertEquals(2, favoritesForUser.get(2).getSortOrder());
+		assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+		List<ReportUser> reIndexedFavorites = reportPreferencesService.reIndexSortOrder(favoritesForUser);
+
+		assertEquals(4, reIndexedFavorites.size());
+		assertEquals(4, reIndexedFavorites.get(0).getSortOrder());
+		assertEquals(3, reIndexedFavorites.get(1).getSortOrder());
+		assertEquals(2, reIndexedFavorites.get(2).getSortOrder());
+		assertEquals(1, reIndexedFavorites.get(3).getSortOrder());
+	}
+
+	@Test
+	public void testReIndexSortOrder_WhenMaxSortOrderIsGreaterThanListSize_ThenReIndexSortOrder() {
+		List<ReportUser> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+
+		assertEquals(4, favoritesForUser.size());
+		assertEquals(7, favoritesForUser.get(0).getSortOrder());
+		assertEquals(5, favoritesForUser.get(1).getSortOrder());
+		assertEquals(2, favoritesForUser.get(2).getSortOrder());
+		assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+		List<ReportUser> reIndexedFavorites = reportPreferencesService.reIndexSortOrder(favoritesForUser);
+
+		assertEquals(4, reIndexedFavorites.size());
+		assertEquals(4, reIndexedFavorites.get(0).getSortOrder());
+		assertEquals(3, reIndexedFavorites.get(1).getSortOrder());
+		assertEquals(2, reIndexedFavorites.get(2).getSortOrder());
+		assertEquals(1, reIndexedFavorites.get(3).getSortOrder());
+	}
+
+	@Test
+	public void testReIndexSortOrder_WhenSortOrderIsNotContiguous_ThenReIndexSortOrder() {
+		List<ReportUser> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
+
+		assertEquals(4, favoritesForUser.size());
+		assertEquals(7, favoritesForUser.get(0).getSortOrder());
+		assertEquals(5, favoritesForUser.get(1).getSortOrder());
+		assertEquals(2, favoritesForUser.get(2).getSortOrder());
+		assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+		List<ReportUser> reIndexedFavorites = reportPreferencesService.reIndexSortOrder(favoritesForUser);
+
+		assertEquals(4, reIndexedFavorites.size());
+		assertEquals(4, reIndexedFavorites.get(0).getSortOrder());
+		assertEquals(3, reIndexedFavorites.get(1).getSortOrder());
+		assertEquals(2, reIndexedFavorites.get(2).getSortOrder());
+		assertEquals(1, reIndexedFavorites.get(3).getSortOrder());
+	}
+
+	@Test
+	public void testReIndexSortOrder_WhenSortOrderHasDuplicates_ThenReIndexSortOrder() {
+		List<ReportUser> favoritesForUser = buildSortedFavoritesThatHaveDuplicates(USER_ID);
+
+		assertEquals(4, favoritesForUser.size());
+		assertEquals(4, favoritesForUser.get(0).getSortOrder());
+		assertEquals(2, favoritesForUser.get(1).getSortOrder());
+		assertEquals(2, favoritesForUser.get(2).getSortOrder());
+		assertEquals(1, favoritesForUser.get(3).getSortOrder());
+
+		List<ReportUser> reIndexedFavorites = reportPreferencesService.reIndexSortOrder(favoritesForUser);
+
+		assertEquals(4, reIndexedFavorites.size());
+		assertEquals(4, reIndexedFavorites.get(0).getSortOrder());
+		assertEquals(3, reIndexedFavorites.get(1).getSortOrder());
+		assertEquals(2, reIndexedFavorites.get(2).getSortOrder());
+		assertEquals(1, reIndexedFavorites.get(3).getSortOrder());
+	}
+
 	private ReportUser createTestReportUser() {
 		ReportUser reportUser = new ReportUser();
 
