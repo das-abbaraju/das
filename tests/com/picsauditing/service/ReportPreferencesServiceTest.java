@@ -51,7 +51,6 @@ public class ReportPreferencesServiceTest {
 
 		setInternalState(reportPreferencesService, "reportDao", reportDao);
 		setInternalState(reportPreferencesService, "reportUserDao", reportUserDao);
-		setInternalState(reportPreferencesService, "reportInfoConverter", reportInfoConverter);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
@@ -70,7 +69,6 @@ public class ReportPreferencesServiceTest {
 		assertEquals(USER_ID, reportUser.getUser().getId());
 		assertFalse(reportUser.isFavorite());
 	}
-
 
 	@Test
 	public void testFavoriteReport_shouldSetFavoriteFlag() throws SQLException {
