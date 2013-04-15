@@ -47,6 +47,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 		expiredAudits = new ArrayList<ContractorAudit>();
 
 		for (ContractorAudit audit : getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
+				continue;
 			DocumentTab tab = new DocumentTab(audit.getAuditType());
 			if (!audit.isExpired() && audit.getCurrentOperators().size() > 0) {
 				if (auditMap.get(audit.getAuditType()) == null)

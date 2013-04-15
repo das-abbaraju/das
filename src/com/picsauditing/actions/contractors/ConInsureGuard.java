@@ -11,19 +11,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 
@@ -104,8 +98,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 		List<ContractorAudit> audits = contractorAuditDAO.findByContractor(contractor.getId());
 
 		for (ContractorAudit audit : audits) {
-			if (audit.getAuditType().getClassType()
-					.equals(AuditTypeClass.Policy)
+			if ((audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+			|| audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
 					&& auditApplies(audit)) {
 				if (audit.isExpired()) {
 					expiredPoliciesMap.put(audit, null);

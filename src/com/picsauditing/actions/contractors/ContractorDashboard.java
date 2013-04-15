@@ -243,7 +243,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
 			if (permissions.canSeeAudit(audit.getAuditType())
 					&& !audit.hasOnlyInvisibleCaos()) {
-				if (audit.getAuditType().getClassType().isPolicy())
+				if (audit.getAuditType().getClassType().isPolicy() ||
+						audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
 					insureGUARD.add(audit);
 				else if (audit.getAuditType().getClassType().isPqf()
 						|| audit.getAuditType().isAnnualAddendum())

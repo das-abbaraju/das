@@ -65,6 +65,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static final int COMPLYWORKS_PQF = 271;
 	public static final int ISN_US_PQF = 281;
 	public static final int IEC_AUDIT = 313;
+	public static final int IHG_INSURANCE_QUESTIONAIRE = 509;
 
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
