@@ -176,6 +176,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addJoin("JOIN operator_competency oc ON oc.id = jc.competencyID");
 
 		sql.addWhere("a.id = " + account.getId());
+        sql.addWhere("e.status = 'Active'");
 
 		sql.addOrderBy(getOrderBy());
 	}
