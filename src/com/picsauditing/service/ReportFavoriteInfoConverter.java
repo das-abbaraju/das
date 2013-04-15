@@ -20,6 +20,8 @@ public class ReportFavoriteInfoConverter {
 			reportFavoriteInfoList.add(convert(reportUser));
 		}
 
+		markUnmovableUnpinnedReports(reportFavoriteInfoList);
+
 		return reportFavoriteInfoList;
 	}
 
@@ -36,6 +38,34 @@ public class ReportFavoriteInfoConverter {
 		reportFavoriteInfo.setSortOrder(reportUser.getSortOrder());
 		reportFavoriteInfo.setPinnedIndex(reportUser.getPinnedIndex());
 
+		if (reportUser.isPinned()) {
+			reportFavoriteInfo.setCanMoveUp(false);
+			reportFavoriteInfo.setCanMoveDown(false);
+		} else {
+			reportFavoriteInfo.setCanMoveUp(true);
+			reportFavoriteInfo.setCanMoveDown(true);
+		}
+
 		return reportFavoriteInfo;
+	}
+
+	private void markUnmovableUnpinnedReports(List<ReportFavoriteInfo> reportFavoriteInfoList) {
+		// The highest unpinned report cannot move up
+		for (ReportFavoriteInfo favorite : reportFavoriteInfoList) {
+			if (!favorite.isPinned()) {
+				favorite.setCanMoveUp(false);
+				break;
+			}
+		}
+
+		// The lowest unpinned report cannot move down
+		for (int i = reportFavoriteInfoList.size() - 1; i >= 0; i -= 1) {
+			ReportFavoriteInfo favorite = reportFavoriteInfoList.get(i);
+
+			if (!favorite.isPinned()) {
+				favorite.setCanMoveDown(false);
+				break;
+			}
+		}
 	}
 }

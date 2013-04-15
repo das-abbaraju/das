@@ -13,6 +13,8 @@ public class ReportFavoriteInfo {
 	private User createdBy;
 	private int sortOrder;
 	private int pinnedIndex;
+	private boolean canMoveUp;
+	private boolean canMoveDown;
 
 	public int getId() {
 		return id;
@@ -66,9 +68,24 @@ public class ReportFavoriteInfo {
 		return pinnedIndex != ReportUser.UNPINNED_INDEX;
 	}
 
+	public boolean canMoveUp() {
+		return canMoveUp;
+	}
+
+	public void setCanMoveUp(boolean canMoveUp) {
+		this.canMoveUp = canMoveUp;
+	}
+
+	public boolean canMoveDown() {
+		return canMoveDown;
+	}
+
+	public void setCanMoveDown(boolean canMoveDown) {
+		this.canMoveDown = canMoveDown;
+	}
+
 	@Override
 	public String toString() {
 		return Integer.toString(id);
 	}
-
 }
