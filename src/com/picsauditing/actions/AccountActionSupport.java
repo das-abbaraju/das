@@ -1,9 +1,6 @@
 package com.picsauditing.actions;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,33 +217,32 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public List<CountrySubdivision> getCountrySubdivisionList() {
-		List<CountrySubdivision> results = Collections.emptyList();
 		if (account == null) {
-			results = countrySubdivisionDAO.findAll();
-		} else {
-			results = countrySubdivisionDAO.findByCountry(account.getCountry());
+			return getCountrySubdivisionList(null);
 		}
 
-		Collections.sort(results, new Comparator<CountrySubdivision>() {
-			public int compare(CountrySubdivision o1, CountrySubdivision o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
-		return results;
+		return getCountrySubdivisionList(account.getCountry().getIsoCode());
 	}
 
 	public List<CountrySubdivision> getCountrySubdivisionList(String countries) {
 		List<CountrySubdivision> result;
 		if (countries == null) {
-			result = countrySubdivisionDAO.findAll();
+			result = countrySubdivisionDAO.findByCountries(Country.COUNTRIES_WITH_SUBDIVISIONS, false);
 		} else {
 			boolean negative = false;
 			if (countries.startsWith("!")) {
 				countries = countries.replace("!", "");
 				negative = true;
 			}
-			result = countrySubdivisionDAO.findByCountries(Arrays.asList(countries.split("[|]")), negative);
+
+            List<String> validCountriesWithSubdivisions = new ArrayList<>();
+            for (String country : countries.split("[|]")) {
+                if (Country.COUNTRIES_WITH_SUBDIVISIONS.contains(country)) {
+                    validCountriesWithSubdivisions.add(country);
+                }
+            }
+
+			result = countrySubdivisionDAO.findByCountries(validCountriesWithSubdivisions, negative);
 		}
 
 		Collections.sort(result, new Comparator<CountrySubdivision>() {

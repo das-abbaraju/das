@@ -2,7 +2,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:set var="countryString" value="countryString" />
+<s:if test="!isStringEmpty(countryString)">
+    <s:set var="countryString" value="countryString" />
+</s:if>
 
 <s:if test="getCountrySubdivisionList(#countryString).size() > 0">
     <s:select

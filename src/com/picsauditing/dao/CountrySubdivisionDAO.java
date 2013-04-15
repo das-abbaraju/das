@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -48,6 +49,10 @@ public class CountrySubdivisionDAO extends PicsDAO {
 	}
 
 	public List<CountrySubdivision> findByCountries(Collection<String> countries, boolean negative) {
+		if (countries == null || countries.isEmpty()) {
+			return Collections.emptyList();
+		}
+
 		String q = "FROM CountrySubdivision WHERE country.isoCode ";
 		if (negative)
 			q += "NOT ";

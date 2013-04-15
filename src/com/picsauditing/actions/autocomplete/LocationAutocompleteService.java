@@ -1,9 +1,6 @@
 package com.picsauditing.actions.autocomplete;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,30 +30,9 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 			return Collections.emptyList();
 		}
 
-		Collection<Autocompleteable> result = new HashSet<Autocompleteable>();
-		if (search.length() == ISO_COUNTRY_CODE_LENGTH) { // search both iso and translated fields for the 2 letter combinations
-			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode LIKE '%"
-					+ Strings.escapeQuotes(search) + "'");
-			List<Country> countryList = countryDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotes(search) + "'");
-			result.addAll(countrySubdivisionList);
-			result.addAll(countryList);
-
-			countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(CountrySubdivision.class, "%"
-					+ Strings.escapeQuotes(search) + "%");
-			countryList = countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search) + "%");
-
-			result.addAll(countrySubdivisionList);
-			result.addAll(countryList);
-		} else { // any more or less characters, then search only through translations
-			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(
-					CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%");
-			List<Country> countryList = countryDAO.findByTranslatableField(Country.class,
-					"%" + Strings.escapeQuotes(search) + "%");
-
-			result.addAll(countrySubdivisionList);
-			result.addAll(countryList);
-
-		}
+		Collection<Autocompleteable> result = new HashSet<>();
+		result.addAll(searchCountrySubdivision(search));
+		result.addAll(searchCountry(search));
 
 		return result;
 	}
@@ -74,5 +50,46 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 	@Override
 	protected Collection<Autocompleteable> getItemsForSearchKey(String searchKey, Permissions permissions) {
 		return getItemsForSearch(searchKey, permissions);
+	}
+
+	private List<Country> searchCountry(String search) {
+		List<Country> matchingCountries = new ArrayList<>();
+		// search both iso and translated fields for the 2 letter combinations
+		if (search.length() == ISO_COUNTRY_CODE_LENGTH) {
+			matchingCountries.addAll(countryDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotes(search) + "'"));
+		}
+
+		matchingCountries.addAll(searchCountryByTranslation(search));
+
+		return matchingCountries;
+	}
+
+	private List<CountrySubdivision> searchCountrySubdivision(String search) {
+		List<CountrySubdivision> matchingSubdivisions = new ArrayList<>();
+		// search both iso and translated fields for the 2 letter combinations
+		if (search.length() == ISO_COUNTRY_CODE_LENGTH) {
+			matchingSubdivisions.addAll(countrySubdivisionDAO.findWhere("isoCode LIKE '%"
+					+ Strings.escapeQuotes(search) + "'"));
+		}
+
+		matchingSubdivisions.addAll(searchCountrySubdivisionByTranslation(search));
+
+		Iterator<CountrySubdivision> iterator = matchingSubdivisions.iterator();
+		while (iterator.hasNext()) {
+			if (!iterator.next().getCountry().isHasCountrySubdivisions()) {
+				iterator.remove();
+			}
+		}
+
+		return matchingSubdivisions;
+	}
+
+	private List<Country> searchCountryByTranslation(String search) {
+		return countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search) + "%");
+	}
+
+	private List<CountrySubdivision> searchCountrySubdivisionByTranslation(String search) {
+		return countrySubdivisionDAO.findByTranslatableField(
+				CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%");
 	}
 }
