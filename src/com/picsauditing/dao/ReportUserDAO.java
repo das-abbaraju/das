@@ -141,7 +141,6 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
-		sql.addField("ru.pinnedIndex AS " + ReportInfoMapper.PINNED_INDEX_FIELD);
 
 		sql.addJoin("LEFT JOIN users AS u ON r.ownerID = u.id");
     	sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());

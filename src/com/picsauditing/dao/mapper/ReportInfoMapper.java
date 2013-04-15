@@ -19,7 +19,6 @@ public class ReportInfoMapper implements RowMapper<ReportInfo> {
 	public static final String DESCRIPTION_FIELD = "description";
 	public static final String NAME_FIELD = "name";
 	public static final String ID_FIELD = "id";
-	public static final String PINNED_INDEX_FIELD = "pinnedIndex";
 
 	@Override
 	public ReportInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -33,7 +32,6 @@ public class ReportInfoMapper implements RowMapper<ReportInfo> {
 		reportInfo.setEditable(rs.getBoolean(EDITABLE_FIELD));
 		reportInfo.setLastViewedDate(rs.getDate(LAST_VIEWED_DATE_FIELD));
 		reportInfo.setNumberOfTimesFavorited(rs.getInt(NUMBER_OF_TIMES_FAVORITED));
-		reportInfo.setPinnedIndex(rs.getInt(PINNED_INDEX_FIELD));
 
 		reportInfo.setCreatedBy(mapUser(rs, rowNum));
 

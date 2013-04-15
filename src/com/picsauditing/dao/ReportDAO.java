@@ -106,7 +106,6 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
-		sql.addField("ru.pinnedIndex AS " + ReportInfoMapper.PINNED_INDEX_FIELD);
 
 		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + reportSearch.getPermissions().getUserId());
 		sql.addJoin("JOIN users u ON u.id = ru.userID");
@@ -145,7 +144,6 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
-		sql.addField("ru.pinnedIndex AS " + ReportInfoMapper.PINNED_INDEX_FIELD);
 
 		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("JOIN users u ON u.id = ru.userID");

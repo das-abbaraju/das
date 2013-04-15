@@ -38,7 +38,6 @@ public class ReportInfoConverter {
 		reportInfo.setLastViewedDate(reportUser.getLastViewedDate());
 		reportInfo.setName(reportUser.getReport().getName());
 		reportInfo.setSortOrder(reportUser.getSortOrder());
-		reportInfo.setPinnedIndex(reportUser.getPinnedIndex());
 
 		return reportInfo;
 	}

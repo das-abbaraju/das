@@ -42,11 +42,16 @@ public class ManageReports extends PicsActionSupport {
 	private ReportPreferencesService reportPreferencesService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
 
 	private User toUser;
 
-	private List<ReportInfo> reportListOverflow;
+	// TODO remove this after we have separate pojos for all views
 	private List<ReportInfo> reportList;
+
+	private List<ReportFavoriteInfo> reportFavoriteList;
+	private List<ReportFavoriteInfo> reportFavoriteListOverflow;
 
 	private List<ReportPermissionInfo> userAccessList;
 	private List<ReportPermissionInfo> groupAccessList;
@@ -88,15 +93,16 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorites() {
 		try {
-			reportList = reportPreferencesService.buildFavorites(permissions.getUserId());
+			List<ReportUser> favorites = reportPreferencesService.buildFavorites(permissions.getUserId());
+			reportFavoriteList = reportFavoriteInfoConverter.convert(favorites);
 
-			if (CollectionUtils.isEmpty(reportList)) {
-				reportList = Collections.emptyList();
+			if (CollectionUtils.isEmpty(reportFavoriteList)) {
+				reportFavoriteList = Collections.emptyList();
 			}
 
-			if (reportList.size() > MAX_REPORTS_IN_MENU) {
-				reportListOverflow = reportList.subList(MAX_REPORTS_IN_MENU, reportList.size());
-				reportList = reportList.subList(0, MAX_REPORTS_IN_MENU);
+			if (reportFavoriteList.size() > MAX_REPORTS_IN_MENU) {
+				reportFavoriteListOverflow = reportFavoriteList.subList(MAX_REPORTS_IN_MENU, reportFavoriteList.size());
+				reportFavoriteList = reportFavoriteList.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favorites.action", e);
@@ -106,7 +112,8 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String ownedBy() {
-		reportList = new ArrayList<ReportInfo>();
+		reportList = new ArrayList<>();
+
 		try {
 
 			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
@@ -440,8 +447,8 @@ public class ManageReports extends PicsActionSupport {
 		this.toUser = toUser;
 	}
 
-	public List<ReportInfo> getReportListOverflow() {
-		return reportListOverflow;
+	public List<ReportFavoriteInfo> getReportFavoriteListOverflow() {
+		return reportFavoriteListOverflow;
 	}
 
 	public ReportService getReportService() {
@@ -501,8 +508,13 @@ public class ManageReports extends PicsActionSupport {
 		this.pagination = pagination;
 	}
 
+	// TODO remove this
 	public List<ReportInfo> getReportList() {
 		return reportList;
+	}
+
+	public List<ReportFavoriteInfo> getReportFavoriteList() {
+		return reportFavoriteList;
 	}
 
 	public List<ReportPermissionInfo> getUserAccessList() {

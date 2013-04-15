@@ -18,7 +18,6 @@ public class ReportInfo {
 	private Date creationDate;
 	private Date lastViewedDate;
 	private int sortOrder;
-	private int pinnedIndex;
 
 	public int getId() {
 		return id;
@@ -106,18 +105,6 @@ public class ReportInfo {
 
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
-	}
-
-	public int getPinnedIndex() {
-		return pinnedIndex;
-	}
-
-	public void setPinnedIndex(int pinnedIndex) {
-		this.pinnedIndex = pinnedIndex;
-	}
-
-	public boolean isPinned() {
-		return pinnedIndex != ReportUser.UNPINNED_INDEX;
 	}
 
 	@Override

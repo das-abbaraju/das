@@ -2,7 +2,6 @@ package com.picsauditing.service;
 
 import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
 
-import java.sql.SQLException;
 import java.util.*;
 
 import javax.persistence.NoResultException;
@@ -24,8 +23,6 @@ public class ReportPreferencesService {
 	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportDAO reportDao;
-	@Autowired
-	private ReportInfoConverter reportInfoConverter;
 
 	public ReportUser loadReportUser(int userId, int reportId) {
 		return reportUserDao.findOne(userId, reportId);
@@ -158,7 +155,7 @@ public class ReportPreferencesService {
 		return movingFavorite;
 	}
 
-	public List<ReportInfo> buildFavorites(int userId) {
+	public List<ReportUser> buildFavorites(int userId) {
 		List<ReportUser> pinnedFavorites = reportUserDao.findPinnedFavorites(userId);
 		List<ReportUser> unpinnedFavorites = reportUserDao.findUnpinnedFavorites(userId);
 
@@ -168,9 +165,7 @@ public class ReportPreferencesService {
 			favorites = reIndexSortOrder(favorites);
 		}
 
-		List<ReportInfo> favoritesDTO = reportInfoConverter.convertReportUserToReportInfo(favorites);
-
-		return favoritesDTO;
+		return favorites;
 	}
 
 	private List<ReportUser> mergePinnedAndUnpinnedFavorites(List<ReportUser> pinnedFavorites, List<ReportUser> unpinnedFavorites) {

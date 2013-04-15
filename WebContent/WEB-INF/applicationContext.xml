@@ -231,6 +231,7 @@
     <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel" />
 	<bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
 	<bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
+	<bean id="ReportFavoriteInfoConverter" class="com.picsauditing.service.ReportFavoriteInfoConverter" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
