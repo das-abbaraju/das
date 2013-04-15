@@ -95,8 +95,14 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // saving edits to filter store + refresh
-            '#report_filters combobox[name=value]': {
+            '#report_filters reportfilterbasemultiselect combobox[name=value]': {
                 change: this.selectValueField,
+                render: this.renderComboboxValueField
+            },
+
+            // saving edits to filter store + refresh
+            '#report_filters reportfilterbaseautocomplete combobox[name=value]': {
+                select: this.selectValueField,
                 render: this.renderComboboxValueField
             },
 

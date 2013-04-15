@@ -82464,7 +82464,7 @@ Ext.define('PICS.view.report.filter.base.Autocomplete', {
                         this.initialSelectionMade = true;
                         this.proxy.url = PICS.data.ServerCommunicationUrl.getAutocompleteUrl(field_id);
                         
-                        value_field.select(value_field.lastValue);
+                        value_field.select(filter.get('value').split(', '));
                     }
                 }
             }
@@ -82610,7 +82610,6 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             value_field = this.down('combobox'),
             url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
         
-        // create value field store
         value_field.store = Ext.create('Ext.data.Store', {
             autoLoad: true,
             fields: [{
@@ -82631,7 +82630,7 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    value_field.select(value_field.lastValue);
+                    value_field.select(filter.get('value').split(', '));
                 }
             }
         });
@@ -97863,8 +97862,14 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // saving edits to filter store + refresh
-            '#report_filters combobox[name=value]': {
+            '#report_filters reportfilterbasemultiselect combobox[name=value]': {
                 change: this.selectValueField,
+                render: this.renderComboboxValueField
+            },
+
+            // saving edits to filter store + refresh
+            '#report_filters reportfilterbaseautocomplete combobox[name=value]': {
+                select: this.selectValueField,
                 render: this.renderComboboxValueField
             },
 
