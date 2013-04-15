@@ -98,7 +98,7 @@
 			<s:property value="@com.picsauditing.util.Constants@displayCountrySubdivisionLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 		
-		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
+		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number' || #q.questionType == 'Percent'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number text"/>
 		</s:if>
 		

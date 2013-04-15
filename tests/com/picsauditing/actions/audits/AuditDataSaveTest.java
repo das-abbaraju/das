@@ -399,6 +399,26 @@ public class AuditDataSaveTest {
 	}
 
 	@Test
+	public void testIsInvalidPercent() throws Exception {
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setQuestionType("Percent");
+		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidPercent", new BigDecimal(-1), question);
+		assertTrue(returnValue);
+
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidPercent", new BigDecimal(0), question);
+		assertFalse(returnValue);
+
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidPercent", new BigDecimal(0.1), question);
+		assertFalse(returnValue);
+
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidPercent", new BigDecimal(100), question);
+		assertFalse(returnValue);
+
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidPercent", new BigDecimal(100.01), question);
+		assertTrue(returnValue);
+	}
+
+	@Test
 	public void testEmptyTagit() throws Exception {
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setQuestionType("Tagit");

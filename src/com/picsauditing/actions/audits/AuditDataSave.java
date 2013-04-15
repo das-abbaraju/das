@@ -730,7 +730,7 @@ public class AuditDataSave extends AuditActionSupport {
 			return isDateValid(auditData);
 		}
 
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType) || "Percent".equals(questionType)) {
 			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
 
 			boolean hasBadChar = false;
@@ -750,6 +750,8 @@ public class AuditDataSave extends AuditActionSupport {
 				format = new DecimalFormat("#,##0.000");
 			} else if ("Number".equals(questionType)) {
 				format = new DecimalFormat("###0");
+			} else if ("Percent".equals(questionType)) {
+				format = new DecimalFormat("##0.00");
 			} else {
 				format = new DecimalFormat("#,##0");
 			}
@@ -758,6 +760,9 @@ public class AuditDataSave extends AuditActionSupport {
 				BigDecimal value = new BigDecimal(answer);
 				if (isInvalidNegativeNumber(value, question)) {
 					addActionError(getText("Audit.message.InvalidNegativeNumber"));
+					return false;
+				} else if (isInvalidPercent(value, question)) {
+					addActionError(getText("Audit.message.InvalidPercent"));
 					return false;
 				}
 				auditData.setAnswer(format.format(value));
@@ -777,6 +782,15 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	private boolean isInvalidPercent(BigDecimal value, AuditQuestion question) {
+		if ("Percent".equals(question.getQuestionType()) && value != null) {
+			if (value.floatValue() < 0f || value.floatValue() > 100f) {
+				return true;
+			}
+		}
+		return false;  //To change body of created methods use File | Settings | File Templates.
 	}
 
 	private void setESignatureData(String response) {
