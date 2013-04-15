@@ -24,20 +24,7 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
     @Autowired
     private ReportUserDAO reportUserDAO;
 
-    private static final ReportInfoConverter reportInfoConverter = new ReportInfoConverter();
-
     private static final Logger logger = LoggerFactory.getLogger(ReportInfoProvider.class);
-
-    public List<ReportInfo> findAllFavoriteReports(int userId) {
-        List<ReportUser> sortedFavorites = reportUserDAO.findAllFavorite(userId);
-        return reportInfoConverter.convertReportUserToReportInfo(sortedFavorites);
-    }
-
-    public void updateSortOrder(ReportInfo reportInfo, int userId) {
-        ReportUser reportUser = reportUserDAO.findOne(userId, reportInfo.getId());
-        reportUser.setSortOrder(reportInfo.getSortOrder());
-        reportUserDAO.save(reportUser);
-    }
 
     public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
         return reportUserDAO.findTenMostFavoritedReports(permissions);
