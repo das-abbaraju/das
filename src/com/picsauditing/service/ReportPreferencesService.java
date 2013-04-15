@@ -2,11 +2,13 @@ package com.picsauditing.service;
 
 import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
 
-import java.util.Date;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.jpa.entities.User;
+import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +25,7 @@ public class ReportPreferencesService {
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
-	private ReportInfoProvider reportInfoProvider;
+	private ReportInfoConverter reportInfoConverter;
 
 	public ReportUser loadReportUser(int userId, int reportId) {
 		return reportUserDao.findOne(userId, reportId);
@@ -60,10 +62,6 @@ public class ReportPreferencesService {
 		return reportUser;
 	}
 
-	public List<ReportUser> getAllNonHiddenReportUsers(ReportSearch reportSearch) {
-		return reportUserDao.findAllOrdered(reportSearch);
-	}
-
 	public boolean isUserFavoriteReport(int userId, int reportId) {
 		try {
 			ReportUser reportUser = reportUserDao.findOne(userId, reportId);
@@ -82,11 +80,17 @@ public class ReportPreferencesService {
 
 	public ReportUser favoriteReport(ReportUser reportUser) {
 		int userId = reportUser.getUser().getId();
-		int nextSortIndex = getNextSortIndex(userId);
-
-		reportUser.setSortOrder(nextSortIndex);
 		reportUser.setFavorite(true);
-		reportUser = (ReportUser) reportUserDao.save(reportUser);
+
+		List<ReportUser> pinnedFavorites = reportUserDao.findPinnedFavorites(userId);
+		List<ReportUser> unpinnedFavorites = reportUserDao.findUnpinnedFavorites(userId);
+
+		// Favoriting a report really means putting it at the top of the unpinned reports
+		unpinnedFavorites.add(0, reportUser);
+
+		List<ReportUser> favorites = mergePinnedAndUnpinnedFavorites(pinnedFavorites, unpinnedFavorites);
+
+		reIndexSortOrder(favorites, userId);
 
 		return reportUser;
 	}
@@ -94,6 +98,7 @@ public class ReportPreferencesService {
 	public ReportUser unfavoriteReport(ReportUser reportUser) {
 		reportUser.setSortOrder(0);
 		reportUser.setFavorite(false);
+		reportUser.setPinnedIndex(ReportUser.UNPINNED_INDEX);
 		reportUser = (ReportUser) reportUserDao.save(reportUser);
 
 		return reportUser;
@@ -111,82 +116,91 @@ public class ReportPreferencesService {
 		return false;
 	}
 
-	private int getNextSortIndex(int userId) {
-		int maxSortIndex = reportUserDao.findMaxSortIndex(userId);
-		return maxSortIndex + 1;
-	}
-
-	public ReportUser moveFavoriteUp(ReportUser reportUser) throws Exception {
-		return moveFavorite(reportUser, 1);
-	}
-
-	public ReportUser moveFavoriteDown(ReportUser reportUser) throws Exception {
-        return moveFavorite(reportUser, -1);
-    }
-
-	private ReportUser moveFavorite(ReportUser reportUser, int magnitude) throws Exception {
-        int userId = reportUser.getUser().getId();
-        int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
-        int currentPosition = reportUser.getSortOrder();
-        int newPosition = currentPosition + magnitude;
-
-        if (moveIsUnnecessaryOrInvalid(currentPosition, newPosition, numberOfFavorites)) {
-            return reportUser;
-        }
-
-        shiftFavoritesDisplacedByMove(userId, currentPosition, newPosition);
-
-        reportUser.setSortOrder(newPosition);
-        reportUserDao.save(reportUser);
-
-        return reportUser;
-    }
-
-	private boolean moveIsUnnecessaryOrInvalid(int currentPosition, int newPosition, int numberOfFavorites) {
-        if (currentPosition == newPosition) {
-            return true;
-        }
-
-        if ((newPosition < 0) || (newPosition > numberOfFavorites)) {
-            return true;
-        }
-
-        return false;
-    }
-
-	void shiftFavoritesDisplacedByMove(int userId, int currentPosition, int newPosition) throws SQLException {
-		reportUserDao.resetSortOrder(userId);
-
-		int offsetAmount;
-		int offsetRangeBegin;
-		int offsetRangeEnd;
-
-		if (currentPosition < newPosition) {
-			// Moving up in list, displaced reports move down
-			offsetAmount = -1;
-			offsetRangeBegin = currentPosition + 1;
-			offsetRangeEnd = newPosition;
-		} else {
-			// Moving down in list, displaced reports move up
-			offsetAmount = 1;
-			offsetRangeBegin = newPosition;
-			offsetRangeEnd = currentPosition - 1;
+	public ReportUser moveUnpinnedFavoriteUp(ReportUser movingFavorite) throws Exception {
+		if (movingFavorite.isPinned()) {
+			return movingFavorite;
 		}
 
-		reportUserDao.offsetSortOrderForRange(userId, offsetAmount, offsetRangeBegin, offsetRangeEnd);
+		List<ReportUser> replacedFavoriteList = reportUserDao.findUnpinnedWithNextHighestSortOrder(movingFavorite);
+
+		if (CollectionUtils.isNotEmpty(replacedFavoriteList)) {
+			ReportUser replacedFavorite = replacedFavoriteList.get(0);
+
+			int originalSortOrder = movingFavorite.getSortOrder();
+			movingFavorite.setSortOrder(replacedFavorite.getSortOrder());
+			replacedFavorite.setSortOrder(originalSortOrder);
+
+			reportUserDao.save(replacedFavorite);
+			reportUserDao.save(movingFavorite);
+		}
+
+		return movingFavorite;
+	}
+
+	public ReportUser moveUnpinnedFavoriteDown(ReportUser movingFavorite) throws Exception {
+		if (movingFavorite.isPinned()) {
+			return movingFavorite;
+		}
+
+		List<ReportUser> replacedFavoriteList = reportUserDao.findUnpinnedWithNextLowestSortOrder(movingFavorite);
+
+		if (CollectionUtils.isNotEmpty(replacedFavoriteList)) {
+			ReportUser replacedFavorite = replacedFavoriteList.get(0);
+
+			int originalSortOrder = movingFavorite.getSortOrder();
+			movingFavorite.setSortOrder(replacedFavorite.getSortOrder());
+			replacedFavorite.setSortOrder(originalSortOrder);
+
+			reportUserDao.save(replacedFavorite);
+			reportUserDao.save(movingFavorite);
+		}
+
+		return movingFavorite;
 	}
 
 	public List<ReportInfo> buildFavorites(int userId) {
-		List<ReportInfo> favorites = reportInfoProvider.findAllFavoriteReports(userId);
+		List<ReportUser> pinnedFavorites = reportUserDao.findPinnedFavorites(userId);
+		List<ReportUser> unpinnedFavorites = reportUserDao.findUnpinnedFavorites(userId);
+
+		List<ReportUser> favorites = mergePinnedAndUnpinnedFavorites(pinnedFavorites, unpinnedFavorites);
+
 		if (sortOrderNeedsToBeReIndexed(favorites)) {
 			favorites = reIndexSortOrder(favorites, userId);
 		}
 
-		return favorites;
+		List<ReportInfo> favoritesDTO = reportInfoConverter.convertReportUserToReportInfo(favorites);
+
+		return favoritesDTO;
 	}
 
-	private boolean sortOrderNeedsToBeReIndexed(List<ReportInfo> sortedFavorites) {
-		ReportInfo firstReportUserInList = sortedFavorites.get(0);
+	private List<ReportUser> mergePinnedAndUnpinnedFavorites(List<ReportUser> pinnedFavorites, List<ReportUser> unpinnedFavorites) {
+		List<ReportUser> mergedFavorites = new ArrayList<>();
+		int totalFavorites = pinnedFavorites.size() + unpinnedFavorites.size();
+
+		for (int i = 0; i < totalFavorites; i += 1) {
+			// See if we've run out of either list
+			if (CollectionUtils.isEmpty(pinnedFavorites)) {
+				mergedFavorites.addAll(unpinnedFavorites);
+				break;
+			} else if (CollectionUtils.isEmpty(unpinnedFavorites)) {
+				mergedFavorites.addAll(pinnedFavorites);
+				break;
+			}
+
+			if (i == pinnedFavorites.get(0).getPinnedIndex()) {
+				mergedFavorites.add(pinnedFavorites.get(0));
+				pinnedFavorites.remove(0);
+			} else {
+				mergedFavorites.add(unpinnedFavorites.get(0));
+				unpinnedFavorites.remove(0);
+			}
+		}
+
+		return mergedFavorites;
+	}
+
+	private boolean sortOrderNeedsToBeReIndexed(List<ReportUser> sortedFavorites) {
+		ReportUser firstReportUserInList = sortedFavorites.get(0);
 		int highestSortOrder = firstReportUserInList.getSortOrder();
 
 		if (highestSortOrder != sortedFavorites.size()) {
@@ -200,15 +214,17 @@ public class ReportPreferencesService {
 		return false;
 	}
 
-	private List<ReportInfo> reIndexSortOrder(List<ReportInfo> favorites, int userId) {
-		List<ReportInfo> reIndexedFavorites = new ArrayList<>();
+	// TODO this looks fishy
+	private List<ReportUser> reIndexSortOrder(List<ReportUser> favorites, int userId) {
+		List<ReportUser> reIndexedFavorites = new ArrayList<>();
+
 		for (int i = 0; i < favorites.size(); i++) {
-			ReportInfo favorite = favorites.get(i);
+			ReportUser favorite = favorites.get(i);
 			int newSortOrder = favorites.size() - i;
 
 			if (newSortOrder != favorite.getSortOrder()) {
 				favorite.setSortOrder(newSortOrder);
-				reportInfoProvider.updateSortOrder(favorite, userId);
+				reportUserDao.save(favorite);
 			}
 
 			reIndexedFavorites.add(favorite);
@@ -217,16 +233,45 @@ public class ReportPreferencesService {
 		return reIndexedFavorites;
 	}
 
-	private boolean hasDuplicateSortOrders(List<ReportInfo> favorites) {
+	private boolean hasDuplicateSortOrders(List<ReportUser> favorites) {
 		Set<Integer> uniqueSortOrders = new HashSet<>();
-		for (ReportInfo favoriteReport : favorites) {
+
+		for (ReportUser favoriteReport : favorites) {
 			boolean addedSuccessfully = uniqueSortOrders.add(favoriteReport.getSortOrder());
+
 			if (!addedSuccessfully) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public void pinFavorite(User user, Report report, int pinnedIndex) throws Exception {
+		if (!isUserFavoriteReport(user.getId(), report.getId())) {
+			throw new Exception("Report " + report.getId() + " could not be pinned by user " + user.getId() + " because it is a not a favorite.");
+		}
+
+		// Make sure there isn't already a favorite pinned at pinnedIndex
+		for (ReportUser reportUser : reportUserDao.findAllFavorite(user.getId())) {
+			if (reportUser.getPinnedIndex() == pinnedIndex) {
+				throw new Exception("User " + user.getId() + " already has a favorite pinned at index " + pinnedIndex);
+			}
+		}
+
+		ReportUser reportPreferences = loadReportUser(user.getId(), report.getId());
+		reportPreferences.setPinnedIndex(pinnedIndex);
+		reportUserDao.save(reportPreferences);
+	}
+
+	public void unpinFavorite(User user, Report report) throws Exception {
+		if (!isUserFavoriteReport(user.getId(), report.getId())) {
+			throw new Exception("Report " + report.getId() + " could not be unpinned by user " + user.getId() + " because it is a not a favorite.");
+		}
+
+		ReportUser reportPreferences = loadReportUser(user.getId(), report.getId());
+		reportPreferences.setPinnedIndex(ReportUser.UNPINNED_INDEX);
+		reportUserDao.save(reportPreferences);
 	}
 
 }

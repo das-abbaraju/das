@@ -62,8 +62,41 @@ public class ReportUserDAO extends PicsDAO {
 		return reportUsers;
 	}
 
+	public List<ReportUser> findPinnedFavorites(int userId) {
+		String where = "t.user.id = " + userId +
+				" AND favorite = 1" +
+				" AND pinnedIndex != " + ReportUser.UNPINNED_INDEX +
+				" AND hidden = 0";
+
+		String orderBy = "pinnedIndex ASC";
+		int limit = 0;
+
+		List<ReportUser> reportUsers = findWhere(ReportUser.class, where, limit, orderBy);
+
+		return reportUsers;
+	}
+
+	public List<ReportUser> findUnpinnedFavorites(int userId) {
+		String where = "t.user.id = " + userId +
+				" AND favorite = 1" +
+				" AND pinnedIndex = " + ReportUser.UNPINNED_INDEX +
+				" AND hidden = 0";
+
+		String orderBy = "sortOrder DESC";
+		int limit = 0;
+
+		List<ReportUser> reportUsers = findWhere(ReportUser.class, where, limit, orderBy);
+
+		return reportUsers;
+	}
+
 	public List<ReportUser> findAllByReportId(int reportId) {
 		String query = "t.report.id = " + reportId;
+		return findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findAllByUserId(int userId) {
+		String query = "t.user.id = " + userId;
 		return findWhere(ReportUser.class, query);
 	}
 
@@ -179,4 +212,31 @@ public class ReportUserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ReportUser> findUnpinnedWithNextHighestSortOrder(ReportUser reportUser) {
+		String queryString = "SELECT ru FROM ReportUser ru" +
+				" WHERE ru.user.id = " + reportUser.getUser().getId() +
+				" AND ru.favorite = 1" +
+				" AND ru.sortOrder > " + reportUser.getSortOrder() +
+				" AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX +
+				" ORDER BY ru.sortOrder ASC";
+
+		Query query = em.createQuery(queryString);
+		query.setMaxResults(1);
+
+		return query.getResultList();
+	}
+
+	public List<ReportUser> findUnpinnedWithNextLowestSortOrder(ReportUser reportUser) {
+		String queryString = "SELECT ru FROM ReportUser ru" +
+				" WHERE ru.user.id = " + reportUser.getUser().getId() +
+				" AND ru.favorite = 1" +
+				" AND ru.sortOrder < " + reportUser.getSortOrder() +
+				" AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX +
+				" ORDER BY ru.sortOrder DESC";
+
+		Query query = em.createQuery(queryString);
+		query.setMaxResults(1);
+
+		return query.getResultList();
+	}
 }

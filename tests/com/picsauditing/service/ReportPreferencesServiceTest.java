@@ -39,13 +39,10 @@ public class ReportPreferencesServiceTest {
 	@Mock
 	private Report report;
 	@Mock
-	private ReportInfoProvider reportInfoProvider;
+	private ReportInfoConverter reportInfoConverter;
 
 	private static final int USER_ID = 23;
 	private static final int REPORT_ID = 29;
-	private static final int MAX_SORT_ORDER = 10;
-	private static final int MAX_FAVORITE_COUNT = 15;
-
 
 	@Before
 	public void setUp() throws Exception {
@@ -54,7 +51,7 @@ public class ReportPreferencesServiceTest {
 
 		setInternalState(reportPreferencesService, "reportDao", reportDao);
 		setInternalState(reportPreferencesService, "reportUserDao", reportUserDao);
-		setInternalState(reportPreferencesService, "reportInfoProvider", reportInfoProvider);
+		setInternalState(reportPreferencesService, "reportInfoConverter", reportInfoConverter);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
@@ -87,15 +84,16 @@ public class ReportPreferencesServiceTest {
 	}
 
 	@Test
-	public void testFavoriteReport_newlyFavoritedReportShouldHaveHighestSortOrder() throws SQLException {
+	public void testFavoriteReport_WhenReportIsNewlyFavorited_AndNoPinnedReports_ThenItShouldHaveHighestSortOrder() throws SQLException {
 		ReportUser reportUser = createTestReportUser();
 		reportUser.setFavorite(false);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
 		when(reportUserDao.save(reportUser)).thenReturn(reportUser);
+		List<ReportUser> unpinnedFavorites = createTestUnpinnedFavorites();
+		when(reportUserDao.findUnpinnedFavorites(USER_ID)).thenReturn(unpinnedFavorites);
 
 		ReportUser result = reportPreferencesService.favoriteReport(reportUser);
 
-		assertEquals(MAX_SORT_ORDER + 1, result.getSortOrder());
+		assertEquals(unpinnedFavorites.size(), result.getSortOrder());
 	}
 
 	@Test
@@ -112,33 +110,41 @@ public class ReportPreferencesServiceTest {
 	}
 
 	@Test
-	public void testMoveFavoriteUp() throws Exception {
-		ReportUser reportUser = createTestReportUser();
+	public void testMoveUnpinnedFavoriteUp_WhenCanBeMoved_ThenGetsSortOrderOfNextHighestSortOrder() throws Exception {
+		ReportUser movingReport = createTestReportUser();
 		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+		movingReport.setSortOrder(beforeSortOrder);
+		movingReport.setFavorite(true);
 
-		ReportUser result = reportPreferencesService.moveFavoriteUp(reportUser);
+		List<ReportUser> unpinnedWithNextHighestSortOrder = new ArrayList<>();
+		ReportUser replacedReport = new ReportUser();
+		int replacedReportSortOrder = 5;
+		replacedReport.setSortOrder(replacedReportSortOrder);
+		unpinnedWithNextHighestSortOrder.add(replacedReport);
+		when(reportUserDao.findUnpinnedWithNextHighestSortOrder(movingReport)).thenReturn(unpinnedWithNextHighestSortOrder);
 
-		assertEquals(beforeSortOrder + 1, result.getSortOrder());
-		verify(reportUserDao).offsetSortOrderForRange(USER_ID, -1, 4, 4);
+		ReportUser result = reportPreferencesService.moveUnpinnedFavoriteUp(movingReport);
+
+		assertEquals(replacedReportSortOrder, result.getSortOrder());
 	}
 
 	@Test
-	public void testMoveFavoriteDown() throws Exception {
-		ReportUser reportUser = createTestReportUser();
+	public void testMoveUnpinnedFavoriteDown_WhenCanBeMoved_ThenGetsSortOrderOfNextLowestSortOrder() throws Exception {
+		ReportUser movingReport = createTestReportUser();
 		int beforeSortOrder = 3;
-		reportUser.setSortOrder(beforeSortOrder);
-		reportUser.setFavorite(true);
-		when(reportUserDao.getFavoriteCount(USER_ID)).thenReturn(MAX_FAVORITE_COUNT);
-		when(reportUserDao.findMaxSortIndex(USER_ID)).thenReturn(MAX_SORT_ORDER);
+		movingReport.setSortOrder(beforeSortOrder);
+		movingReport.setFavorite(true);
 
-		ReportUser result = reportPreferencesService.moveFavoriteDown(reportUser);
+		List<ReportUser> unpinnedWithNextHighestSortOrder = new ArrayList<>();
+		ReportUser replacedReport = new ReportUser();
+		int replacedReportSortOrder = 1;
+		replacedReport.setSortOrder(replacedReportSortOrder);
+		unpinnedWithNextHighestSortOrder.add(replacedReport);
+		when(reportUserDao.findUnpinnedWithNextLowestSortOrder(movingReport)).thenReturn(unpinnedWithNextHighestSortOrder);
 
-		assertEquals(beforeSortOrder - 1, result.getSortOrder());
-		verify(reportUserDao).offsetSortOrderForRange(USER_ID, 1, 2, 2);
+		ReportUser result = reportPreferencesService.moveUnpinnedFavoriteDown(movingReport);
+
+		assertEquals(replacedReportSortOrder, result.getSortOrder());
 	}
 
 	private ReportUser createTestReportUser() {
@@ -155,109 +161,24 @@ public class ReportPreferencesServiceTest {
 		return reportUser;
 	}
 
-	@Test
-	public void testBuildFavorites_whenSortOrderIsContiguous_doNotReIndexSortOrder() throws Exception {
-		List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreContiguous(USER_ID);
-		when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
+	private List<ReportUser> createTestUnpinnedFavorites() {
+		List<ReportUser> unpinnedFavorites = new ArrayList<>();
 
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(3, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
+		for (int i = 0; i < 3; i += 1) {
+			ReportUser reportUser = new ReportUser();
+			reportUser.setSortOrder(3 - i);
+			reportUser.setFavorite(true);
 
-		favoritesForUser = reportPreferencesService.buildFavorites(USER_ID);
+			unpinnedFavorites.add(reportUser);
+		}
 
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(3, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		verify(reportInfoProvider, never()).updateSortOrder(any(ReportInfo.class), anyInt());
-	}
-
-	@Test
-	public void testBuildFavorites_whenMaxSortOrderIsGreaterThanListSize_reIndexSortOrder() throws Exception {
-		List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
-		when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(7, favoritesForUser.get(0).getSortOrder());
-		assertEquals(5, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		favoritesForUser = reportPreferencesService.buildFavorites(USER_ID);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(3, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(0), USER_ID);
-		verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
-	}
-
-	@Test
-	public void testBuildFavorites_whenSortOrderIsNotContiguous_reIndexSortOrder() throws Exception {
-
-		List<ReportInfo> favoritesForUser = buildSortedFavoritesThatAreNotContiguous(USER_ID);
-		when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(7, favoritesForUser.get(0).getSortOrder());
-		assertEquals(5, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		favoritesForUser = reportPreferencesService.buildFavorites(USER_ID);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(3, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(0), USER_ID);
-		verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
-	}
-
-	@Test
-	public void testBuildFavorites_whenSortOrderHasDuplicates_reIndexSortOrder() throws Exception {
-
-		List<ReportInfo> favoritesForUser = buildSortedFavoritesThatHaveDuplicates(USER_ID);
-		when(reportInfoProvider.findAllFavoriteReports(USER_ID)).thenReturn(favoritesForUser);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(2, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		favoritesForUser = reportPreferencesService.buildFavorites(USER_ID);
-
-		assertEquals(4, favoritesForUser.size());
-		assertEquals(4, favoritesForUser.get(0).getSortOrder());
-		assertEquals(3, favoritesForUser.get(1).getSortOrder());
-		assertEquals(2, favoritesForUser.get(2).getSortOrder());
-		assertEquals(1, favoritesForUser.get(3).getSortOrder());
-
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(0), USER_ID);
-		verify(reportInfoProvider).updateSortOrder(favoritesForUser.get(1), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(2), USER_ID);
-		verify(reportInfoProvider, never()).updateSortOrder(favoritesForUser.get(3), USER_ID);
+		return unpinnedFavorites;
 	}
 
 	@SuppressWarnings("serial")
-	private List<ReportInfo> buildSortedFavoritesThatAreContiguous(final int userId) {
+	private List<ReportUser> buildSortedFavoritesThatAreContiguous(final int userId) {
 		final Report report = new Report();
-		List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
 			add(createFavoriteWithSortIndex(userId, report, 4));
 			add(createFavoriteWithSortIndex(userId, report, 3));
 			add(createFavoriteWithSortIndex(userId, report, 2));
@@ -267,9 +188,9 @@ public class ReportPreferencesServiceTest {
 	}
 
 	@SuppressWarnings("serial")
-	private List<ReportInfo> buildSortedFavoritesThatAreNotContiguous(final int userId) {
+	private List<ReportUser> buildSortedFavoritesThatAreNotContiguous(final int userId) {
 		final Report report = new Report();
-		List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
 			add(createFavoriteWithSortIndex(userId, report, 7));
 			add(createFavoriteWithSortIndex(userId, report, 5));
 			add(createFavoriteWithSortIndex(userId, report, 2));
@@ -280,9 +201,9 @@ public class ReportPreferencesServiceTest {
 	}
 
 	@SuppressWarnings("serial")
-	private List<ReportInfo> buildSortedFavoritesThatHaveDuplicates(final int userId) {
+	private List<ReportUser> buildSortedFavoritesThatHaveDuplicates(final int userId) {
 		final Report report = new Report();
-		List<ReportInfo> favorites = new ArrayList<ReportInfo>() {{
+		List<ReportUser> favorites = new ArrayList<ReportUser>() {{
 			add(createFavoriteWithSortIndex(userId, report, 4));
 			add(createFavoriteWithSortIndex(userId, report, 2));
 			add(createFavoriteWithSortIndex(userId, report, 2));
@@ -292,12 +213,12 @@ public class ReportPreferencesServiceTest {
 		return favorites;
 	}
 
-	private ReportInfo createFavoriteWithSortIndex(int userId, Report report, int sortOrder) {
-		ReportInfo reportInfo = new ReportInfo();
-		reportInfo.setFavorite(true);
-		reportInfo.setSortOrder(sortOrder);
+	private ReportUser createFavoriteWithSortIndex(int userId, Report report, int sortOrder) {
+		ReportUser reportUser = new ReportUser();
+		reportUser.setFavorite(true);
+		reportUser.setSortOrder(sortOrder);
 
-		return reportInfo;
+		return reportUser;
 	}
 
 }

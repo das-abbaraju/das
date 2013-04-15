@@ -2,12 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -28,7 +23,7 @@ public class ReportUser extends BaseTable {
 	private int sortOrder;
 	boolean visibleOnMyReports; // todo: Not used anywhere. Remove.
 	private boolean hidden;
-	private int pinnedIndex;
+	private int pinnedIndex = UNPINNED_INDEX;
 
 	public static final int UNPINNED_INDEX = -1;
 
@@ -120,6 +115,11 @@ public class ReportUser extends BaseTable {
 
 	public void setPinnedIndex(int pinnedIndex) {
 		this.pinnedIndex = pinnedIndex;
+	}
+
+	@Transient
+	public boolean isPinned() {
+		return pinnedIndex != UNPINNED_INDEX;
 	}
 
 	@Override

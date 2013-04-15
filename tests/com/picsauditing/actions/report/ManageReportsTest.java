@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.service.ReportPreferencesService;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,6 +47,8 @@ public class ManageReportsTest {
 	private ReportService reportService;
 	@Mock
 	private ManageReportsService manageReportsService;
+	@Mock
+	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private Report report;
 	@Mock
@@ -79,6 +82,7 @@ public class ManageReportsTest {
 
 		Whitebox.setInternalState(manageReports, "reportService", reportService);
 		Whitebox.setInternalState(manageReports, "manageReportsService", manageReportsService);
+		Whitebox.setInternalState(manageReports, "reportPreferencesService", reportPreferencesService);
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
@@ -124,8 +128,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testFavoritesList_DoesntLeaveReportUsersNull() {
-		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(null);
+		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
+		when(reportPreferencesService.buildFavorites(USER_ID)).thenReturn(null);
 
 		manageReports.favorites();
 

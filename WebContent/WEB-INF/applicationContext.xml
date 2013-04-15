@@ -229,7 +229,8 @@
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
     <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel" />
-    <bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
+	<bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
+	<bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>

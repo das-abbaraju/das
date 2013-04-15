@@ -59,6 +59,8 @@ public class ManageReports extends PicsActionSupport {
 	private String sort;
 	private String direction;
 
+	private int pinnedIndex;
+
 	private HttpServletRequest requestForTesting;
 
 	public static final String LANDING_URL = "ManageReports!favorites.action";
@@ -97,7 +99,7 @@ public class ManageReports extends PicsActionSupport {
 				reportList = reportList.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
+			logger.error("Unexpected exception in ManageReports!favorites.action", e);
 		}
 
 		return determineViewName("favoritesList", "favorites");
@@ -162,7 +164,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			reportPreferencesService.moveFavoriteUp(reportUser);
+			reportPreferencesService.moveUnpinnedFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
 		} catch (Exception e) {
@@ -184,7 +186,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			reportPreferencesService.moveFavoriteDown(reportUser);
+			reportPreferencesService.moveUnpinnedFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
 		} catch (Exception e) {
@@ -295,7 +297,7 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.removeReportUser(). ", e);
+			logger.error("Unexpected exception in ManageReports.removeReport(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -308,7 +310,7 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
+			logger.error("Unexpected exception in ManageReports.favorite(). ", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -321,7 +323,7 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+			logger.error("Unexpected exception in ManageReports.unfavorite(). ", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -351,7 +353,31 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+			logger.error("Unexpected exception in ManageReports.unprivatize(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String pinFavorite() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportPreferencesService.pinFavorite(getUser(), report, pinnedIndex);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.pin(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unpinFavorite() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportPreferencesService.unpinFavorite(getUser(), report);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.unpin(). ", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -456,6 +482,10 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+
+	public void setPinnedIndex(int pinnedIndex) {
+		this.pinnedIndex = pinnedIndex;
 	}
 
 	public Pagination<ReportInfo> getPagination() {
