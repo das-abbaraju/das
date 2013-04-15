@@ -43,7 +43,7 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private UserService userService;
 
-	private User toOwner;
+	private User toUser;
 
 	private List<ReportInfo> reportListOverflow;
 	private List<ReportInfo> reportList;
@@ -198,7 +198,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			manageReportsService.transferOwnership(getUser(), toOwner, report, permissions);
+			manageReportsService.transferOwnership(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
 			return ERROR;
@@ -235,7 +235,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			manageReportsService.shareWithViewPermission(getUser(), toOwner, report, permissions);
+			manageReportsService.shareWithViewPermission(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -254,7 +254,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			manageReportsService.shareWithEditPermission(getUser(), toOwner, report, permissions);
+			manageReportsService.shareWithEditPermission(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -273,7 +273,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			manageReportsService.unshare(getUser(), toOwner, report, permissions);
+			manageReportsService.unshare(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -406,12 +406,12 @@ public class ManageReports extends PicsActionSupport {
 				.sortDirection(direction).build();
 	}
 
-	public User getToOwner() {
-		return toOwner;
+	public User getToUser() {
+		return toUser;
 	}
 
-	public void setToOwner(User toOwner) {
-		this.toOwner = toOwner;
+	public void setToUser(User toUser) {
+		this.toUser = toUser;
 	}
 
 	public List<ReportInfo> getReportListOverflow() {

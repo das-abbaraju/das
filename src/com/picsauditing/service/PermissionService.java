@@ -127,7 +127,7 @@ public class PermissionService {
 
     public ReportPermissionUser grantView(int userId, int reportId) {
         ReportPermissionUser reportPermissionUser = loadOrCreateReportPermissionUser(userId, reportId);
-        reportPermissionUser.setEditable(true);
+        reportPermissionUser.setEditable(false);
         reportPermissionUser.setAuditColumns(new User(userId));
         reportPermissionAccountDao.save(reportPermissionUser);
 

@@ -26,14 +26,14 @@
 <s:set var="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
 <s:set var="private_class" value="%{#report.private ? 'public' : 'private'}" />
 
-<div class="btn-group pull-right">
+<div class="report-options btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
         Options
     </button>
 
     <ul class="dropdown-menu">
         <li>
-            <a href="${report_favorite_url}" class="favorite-action ${favorite_class}" data-id="${report.id}">${favorite_text}</a>
+            <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">${favorite_text}</a>
         </li>
         
         <li>
@@ -41,7 +41,7 @@
         </li>
         
         <li>
-            <a href="${report_private_url}" class="private-action ${private_class}" data-id="${report.id}">${private_text}</a>
+            <a href="${report_private_url}" class="${private_class}" data-report-id="${report.id}">${private_text}</a>
         </li>
         
         <li>
@@ -51,7 +51,7 @@
         <li class="divider"></li>
         
         <li>
-            <a href="${report_delete_url}">Delete&hellip;</a>
+            <a href="${report_delete_url}" class="delete" data-report-id="${report.id}">Delete&hellip;</a>
         </li>
     </ul>
 </div>

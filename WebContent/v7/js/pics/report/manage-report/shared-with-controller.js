@@ -3,10 +3,11 @@ PICS.define('report.manage-report.SharedWithController', {
         init: function () {
             if ($('#ManageReports_sharedWith_page').length > 0) {
                 $('#shared_with_reports_container')
-                    .on('click', '.favorite-icon.favorite', this.unfavoriteReport)
-                    .on('click', '.favorite-icon.unfavorite', this.favoriteReport)
-                    .on('click', '.favorite-action.favorite', this.favoriteReport)
-                    .on('click', '.favorite-action.unfavorite', this.unfavoriteReport)
+                    .on('click', '.report > .favorite', this.unfavoriteReport)
+                    .on('click', '.report > .unfavorite', this.favoriteReport)
+                    .on('click', '.report-options .favorite', this.favoriteReport)
+                    .on('click', '.report-options .unfavorite', this.unfavoriteReport)
+                    .on('click', '.report-options .remove', this.removeReport)
                     .on('click', '#manage_report_filter a', this.filterList);
             }
         },
@@ -14,17 +15,18 @@ PICS.define('report.manage-report.SharedWithController', {
         favoriteReport: function (event) {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $favorite_action = $report.find('.favorite-action'),
-                $icon = $report.find('.icon-star'),
+                $report_options = $report.find('.report-options'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
+                $favorite_action = $report_options.find('.favorite, .unfavorite'),
                 $body = $('body'),
-                report_id = $element.attr('data-id');
+                report_id = $element.data('report-id');
             
             $body.trigger('report-favorite', {
                 report_id: report_id,
                 success: function (data, textStatus, jqXHR) {
-                    $icon.addClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.addClass('selected');
                     $favorite_action.toggleClass('favorite unfavorite');
                     $favorite_action.text('Unfavorite');
                 }
@@ -46,28 +48,6 @@ PICS.define('report.manage-report.SharedWithController', {
             event.preventDefault();
         },
         
-        unfavoriteReport: function (event) {
-            var $element = $(event.currentTarget),
-                $report = $element.closest('.report'),
-                $favorite_icon = $report.find('.favorite-icon'),
-                $favorite_action = $report.find('.favorite-action'),
-                $icon = $report.find('.icon-star'),
-                $body = $('body'),
-                report_id = $element.attr('data-id');
-            
-            $body.trigger('report-unfavorite', {
-                report_id: report_id,
-                success: function (data, textStatus, jqXHR) {
-                    $icon.removeClass('selected');
-                    $favorite_icon.toggleClass('favorite unfavorite');
-                    $favorite_action.toggleClass('favorite unfavorite');
-                    $favorite_action.text('Favorite');
-                }
-            });
-            
-            event.preventDefault();
-        },
-        
         refreshSharedWith: function () {
             PICS.ajax({
                 url: 'ManageReports!sharedWith.action',
@@ -75,6 +55,48 @@ PICS.define('report.manage-report.SharedWithController', {
                     $('#shared_with_reports_container').html(data);
                 }
             });
+        },
+        
+        removeReport: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                report_id = $element.data('report-id');
+            
+            PICS.ajax({
+                url: 'ManageReports!removeReport.action',
+                data: {
+                    reportId: report_id,
+                }
+            });
+            
+            $report.slideUp(400, function () {
+                $(this).remove();
+            });
+            
+            event.preventDefault();
+        },
+        
+        unfavoriteReport: function (event) {
+            var $element = $(event.currentTarget),
+                $report = $element.closest('.report'),
+                $report_options = $report.find('.report-options'),
+                $favorite_star = $report.children('.favorite, .unfavorite'),
+                $favorite_icon = $favorite_star.find('.icon-star'),
+                $favorite_action = $report_options.find('.favorite, .unfavorite'),
+                $body = $('body'),
+                report_id = $element.data('report-id');
+            
+            $body.trigger('report-unfavorite', {
+                report_id: report_id,
+                success: function (data, textStatus, jqXHR) {
+                    $favorite_star.toggleClass('favorite unfavorite');
+                    $favorite_icon.removeClass('selected');
+                    $favorite_action.toggleClass('favorite unfavorite');
+                    $favorite_action.text('Favorite');
+                }
+            });
+            
+            event.preventDefault();
         }
     }
 });

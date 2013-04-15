@@ -182,8 +182,8 @@ public class ManageReportsTest {
 
 	@Test
 	public void testTransferOwnership_CallsExpectedMethod() throws Exception {
-		User toOwner = new User();
-		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		User toUser = new User();
+		Whitebox.setInternalState(manageReports, "toUser", toUser);
 		int reportId = 123;
 		Whitebox.setInternalState(manageReports, "reportId", reportId);
 		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
@@ -191,7 +191,7 @@ public class ManageReportsTest {
 
 		manageReports.transferOwnership();
 
-		verify(manageReportsService).transferOwnership(null, toOwner, report, permissions);
+		verify(manageReportsService).transferOwnership(null, toUser, report, permissions);
 	}
 
 	@Test
@@ -208,8 +208,8 @@ public class ManageReportsTest {
 
 	@Test
 	public void testShareWithViewPermission_CallsExpectedMethod() throws Exception {
-		User toOwner = new User();
-		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		User toUser = new User();
+		Whitebox.setInternalState(manageReports, "toUser", toUser);
 		int reportId = 123;
 		Whitebox.setInternalState(manageReports, "reportId", reportId);
 		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
@@ -217,13 +217,13 @@ public class ManageReportsTest {
 
 		manageReports.shareWithViewPermission();
 
-		verify(manageReportsService).shareWithViewPermission(null, toOwner, report, permissions);
+		verify(manageReportsService).shareWithViewPermission(null, toUser, report, permissions);
 	}
 
 	@Test
 	public void testShareWithEditPermission_CallsExpectedMethod() throws Exception {
-		User toOwner = new User();
-		Whitebox.setInternalState(manageReports, "toOwner", toOwner);
+		User toUser = new User();
+		Whitebox.setInternalState(manageReports, "toUser", toUser);
 		int reportId = 123;
 		Whitebox.setInternalState(manageReports, "reportId", reportId);
 		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
@@ -231,7 +231,7 @@ public class ManageReportsTest {
 
 		manageReports.shareWithEditPermission();
 
-		verify(manageReportsService).shareWithEditPermission(null, toOwner, report, permissions);
+		verify(manageReportsService).shareWithEditPermission(null, toUser, report, permissions);
 	}
 
 	private void setUpI18nCacheText() {

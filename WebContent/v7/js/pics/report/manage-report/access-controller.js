@@ -83,9 +83,19 @@ PICS.define('report.manage-report.AccessController', {
         
         assignUserEditPermission: function (event) {
             var $element = $(event.currentTarget),
-                $user = $element.closest('.user');
+                $user = $element.closest('.user'),
+                report_id = $element.data('report-id'),
+                user_id = $user.data('user-id');
             
             // make permission edit ajax
+            
+            PICS.ajax({
+                url: 'ManageReports!shareWithEditPermission.action',
+                data: {
+                    reportId: report_id,
+                    toUser: user_id,
+                }
+            });
             
             this.resetUser($user);
             
@@ -98,9 +108,19 @@ PICS.define('report.manage-report.AccessController', {
         
         assignUserViewPermission: function (event) {
             var $element = $(event.currentTarget),
-                $user = $element.closest('.user');
+                $user = $element.closest('.user'),
+                report_id = $element.data('report-id'),
+                user_id = $user.data('user-id');
             
             // make permission view ajax
+            
+            PICS.ajax({
+                url: 'ManageReports!shareWithViewPermission.action',
+                data: {
+                    reportId: report_id,
+                    toUser: user_id,
+                }
+            });
             
             this.resetUser($user);
             

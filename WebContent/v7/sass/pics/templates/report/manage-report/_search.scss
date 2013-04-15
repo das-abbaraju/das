@@ -42,7 +42,8 @@
             line-height: 20px;
         }
         
-        .favorite-icon
+        .report > .favorite,
+        .report > .unfavorite
         {
         	float: left;
         	line-height: 48px;

@@ -16,7 +16,7 @@
                 <s:set var="access_type">view</s:set>
             </s:else>
             
-            <li class="user ${access_type} clearfix">
+            <li class="user ${access_type} clearfix" data-user-id="${person.id}">
                 <s:if test="#person.owner">
                     <div class="is-owner pull-right">
                         <i class="icon-key"></i> Owner
