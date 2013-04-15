@@ -332,115 +332,115 @@ BEGIN
 			vwUser_Role
 		WHERE
 			(
-			User_id	= User_id
+			vwUser_Role.User_id	= User_id
 		OR	User_id	=  -2147483647
 			)
 		AND	(
-			User_tp	= User_tp
+			vwUser_Role.User_tp	= User_tp
 		OR	User_tp	= '-2147483647'
 			)
 		AND	(
-			User_nm	LIKE CONCAT('%', User_nm, '%')
+			vwUser_Role.User_nm	LIKE CONCAT('%', User_nm, '%')
 		OR	User_nm	= '-2147483647'
 			)
 		AND	(
-			Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
+			vwUser_Role.Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
 		OR	Domain_nm	= '-2147483647'
 			)
 		AND	(
-			Password_cd	LIKE CONCAT('%', Password_cd, '%')
+			vwUser_Role.Password_cd	LIKE CONCAT('%', Password_cd, '%')
 		OR	Password_cd	= '-2147483647'
 			)
 		AND	(
-			Email_tx	LIKE CONCAT('%', Email_tx, '%')
+			vwUser_Role.Email_tx	LIKE CONCAT('%', Email_tx, '%')
 		OR	Email_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Role_id	= Role_id
+			vwUser_Role.Role_id	= Role_id
 		OR	Role_id	=  -2147483647
 			)
 		AND	(
-			Role_tp	= Role_tp
+			vwUser_Role.Role_tp	= Role_tp
 		OR	Role_tp	= '-2147483647'
 			)
 		AND	(
-			Role_nm	LIKE CONCAT('%', Role_nm, '%')
+			vwUser_Role.Role_nm	LIKE CONCAT('%', Role_nm, '%')
 		OR	Role_nm	= '-2147483647'
 			)
 		AND	(
-			Role_cd	LIKE CONCAT('%', Role_cd, '%')
+			vwUser_Role.Role_cd	LIKE CONCAT('%', Role_cd, '%')
 		OR	Role_cd	= '-2147483647'
 			)
 		AND	(
-			User_tx	LIKE CONCAT('%', User_tx, '%')
+			vwUser_Role.User_tx	LIKE CONCAT('%', User_tx, '%')
 		OR	User_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Role_tx	LIKE CONCAT('%', Role_tx, '%')
+			vwUser_Role.Role_tx	LIKE CONCAT('%', Role_tx, '%')
 		OR	Role_tx	LIKE '-2147483647'
 			)
 		AND	(
-			UserADD_dm	= UserADD_dm
+			vwUser_Role.UserADD_dm	= UserADD_dm
 		OR	UserADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
+			vwUser_Role.UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
 		OR	UserADD_nm	= '-2147483647'
 			)
 		AND	(
-			UserUPD_dm	= UserUPD_dm
+			vwUser_Role.UserUPD_dm	= UserUPD_dm
 		OR	UserUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
+			vwUser_Role.UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
 		OR	UserUPD_nm	= '-2147483647'
 			)
 		AND	(
-			UserDEL_dm	= UserDEL_dm
+			vwUser_Role.UserDEL_dm	= UserDEL_dm
 		OR	UserDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
+			vwUser_Role.UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
 		OR	UserDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentUser_tp	= ParentUser_tp
+			vwUser_Role.ParentUser_tp	= ParentUser_tp
 		OR	ParentUser_tp	= '-2147483647'
 			)
 		AND	(
-			UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
+			vwUser_Role.UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
 		OR	UserType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			RoleADD_dm	= RoleADD_dm
+			vwUser_Role.RoleADD_dm	= RoleADD_dm
 		OR	RoleADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleADD_nm	LIKE CONCAT('%', RoleADD_nm, '%')
+			vwUser_Role.RoleADD_nm	LIKE CONCAT('%', RoleADD_nm, '%')
 		OR	RoleADD_nm	= '-2147483647'
 			)
 		AND	(
-			RoleUPD_dm	= RoleUPD_dm
+			vwUser_Role.RoleUPD_dm	= RoleUPD_dm
 		OR	RoleUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleUPD_nm	LIKE CONCAT('%', RoleUPD_nm, '%')
+			vwUser_Role.RoleUPD_nm	LIKE CONCAT('%', RoleUPD_nm, '%')
 		OR	RoleUPD_nm	= '-2147483647'
 			)
 		AND	(
-			RoleDEL_dm	= RoleDEL_dm
+			vwUser_Role.RoleDEL_dm	= RoleDEL_dm
 		OR	RoleDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleDEL_nm	LIKE CONCAT('%', RoleDEL_nm, '%')
+			vwUser_Role.RoleDEL_nm	LIKE CONCAT('%', RoleDEL_nm, '%')
 		OR	RoleDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentRole_tp	= ParentRole_tp
+			vwUser_Role.ParentRole_tp	= ParentRole_tp
 		OR	ParentRole_tp	= '-2147483647'
 			)
 		AND	(
-			RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
+			vwUser_Role.RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
 		OR	RoleType_tx	LIKE '-2147483647'
 			)
 

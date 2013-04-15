@@ -134,31 +134,31 @@ BEGIN
 			vwUserType
 		WHERE
 			(
-			User_tp	= User_tp
+			vwUserType.User_tp	= User_tp
 		OR	User_tp	= '-2147483647'
 			)
 		AND	(
-			ParentUser_tp	= ParentUser_tp
+			vwUserType.ParentUser_tp	= ParentUser_tp
 		OR	ParentUser_tp	= '-2147483647'
 			)
 		AND	(
-			UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
+			vwUserType.UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
 		OR	UserType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			UserTypeLeft_id	= UserTypeLeft_id
+			vwUserType.UserTypeLeft_id	= UserTypeLeft_id
 		OR	UserTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			UserTypeRight_id	= UserTypeRight_id
+			vwUserType.UserTypeRight_id	= UserTypeRight_id
 		OR	UserTypeRight_id	=  -2147483647
 			)
 		AND	(
-			UserTypeLevel_id	= UserTypeLevel_id
+			vwUserType.UserTypeLevel_id	= UserTypeLevel_id
 		OR	UserTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			UserTypeOrder_id	= UserTypeOrder_id
+			vwUserType.UserTypeOrder_id	= UserTypeOrder_id
 		OR	UserTypeOrder_id	=  -2147483647
 			)
 

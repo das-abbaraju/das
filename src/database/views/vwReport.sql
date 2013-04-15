@@ -20,6 +20,11 @@ CREATE OR REPLACE VIEW	`vwReport`
 ,	ReportTypeRight_id
 ,	ReportTypeLevel_id
 ,	ReportTypeOrder_id
+,	ReportOwner_id
+,	ReportIsDeleted_fg
+,	ReportParameters_tx
+,	ReportFilter_tx
+,	ReportIsPrivate_fg
 )
 -- WITH ENCRYPTION
 AS
@@ -28,40 +33,36 @@ AS
 **	Type:		View
 **	Purpose:	To return materialized data from one or more tables.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/9/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/9/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 SELECT
-	tblReport.Report_id
-,	tblReport.Report_tp
-,	tblReport.Report_nm
-,	tblReport.Report_cd
-,	vwResource.Resrc_tx
-,	vwResource.ADD_dm
-,	vwResource.ADD_nm
-,	vwResource.UPD_dm
-,	vwResource.UPD_nm
-,	vwResource.DEL_dm
-,	vwResource.DEL_nm
-,	vwReportType.ParentReport_tp
-,	vwReportType.ReportType_tx
-,	vwReportType.ReportTypeLeft_id
-,	vwReportType.ReportTypeRight_id
-,	vwReportType.ReportTypeLevel_id
-,	vwReportType.ReportTypeOrder_id
+	Report.id	AS Report_id
+,	Report.modelType	AS Report_tp
+,	Report.name	AS Report_nm
+,	CAST(Report.id AS CHAR)	AS Report_cd
+,	Report.description	AS Resrc_tx
+,	Report.creationDate	AS ADD_dm
+,	CAST(Report.createdBy AS CHAR)	AS ADD_nm
+,	Report.updateDate	AS UPD_dm
+,	CAST(Report.updatedBy AS CHAR)	AS UPD_nm
+,	NULL	AS DEL_dm
+,	NULL	AS DEL_nm
+,	'Report'	AS ParentReport_tp
+,	''	AS ReportType_tx
+,	-1	AS ReportTypeLeft_id
+,	-1	AS ReportTypeRight_id
+,	-1	AS ReportTypeLevel_id
+,	-1	AS ReportTypeOrder_id
+,	ownerID	AS ReportOwner_id
+,	deleted AS ReportIsDeleted_fg
+,	Parameters AS ReportParameters_tx
+,	filterExpression	AS ReportFilter_tx
+,	private	AS ReportIsPrivate_fg
 FROM
-	[pics_alpha1].[tblReport]
-INNER
-JOIN	[pics_alpha1].[vwResource]
-ON	tblReport.Report_id	= vwResource.Resrc_id		-- FK1
-AND	tblReport.Report_tp	= vwResource.Resrc_tp
-INNER
-JOIN	[pics_alpha1].[vwReportType]
-ON	tblReport.Report_tp	= vwReportType.Report_tp		-- FK2
-
+	Report
 ;
-

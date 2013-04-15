@@ -262,79 +262,79 @@ BEGIN
 			vwUser
 		WHERE
 			(
-			User_id	= User_id
+			vwUser.User_id	= User_id
 		OR	User_id	=  -2147483647
 			)
 		AND	(
-			User_tp	= User_tp
+			vwUser.User_tp	= User_tp
 		OR	User_tp	= '-2147483647'
 			)
 		AND	(
-			User_nm	LIKE CONCAT('%', User_nm, '%')
+			vwUser.User_nm	LIKE CONCAT('%', User_nm, '%')
 		OR	User_nm	= '-2147483647'
 			)
 		AND	(
-			Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
+			vwUser.Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
 		OR	Domain_nm	= '-2147483647'
 			)
 		AND	(
-			Password_cd	LIKE CONCAT('%', Password_cd, '%')
+			vwUser.Password_cd	LIKE CONCAT('%', Password_cd, '%')
 		OR	Password_cd	= '-2147483647'
 			)
 		AND	(
-			Email_tx	LIKE CONCAT('%', Email_tx, '%')
+			vwUser.Email_tx	LIKE CONCAT('%', Email_tx, '%')
 		OR	Email_tx	LIKE '-2147483647'
 			)
 		AND	(
-			User_tx	LIKE CONCAT('%', User_tx, '%')
+			vwUser.User_tx	LIKE CONCAT('%', User_tx, '%')
 		OR	User_tx	LIKE '-2147483647'
 			)
 		AND	(
-			UserADD_dm	= UserADD_dm
+			vwUser.UserADD_dm	= UserADD_dm
 		OR	UserADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
+			vwUser.UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
 		OR	UserADD_nm	= '-2147483647'
 			)
 		AND	(
-			UserUPD_dm	= UserUPD_dm
+			vwUser.UserUPD_dm	= UserUPD_dm
 		OR	UserUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
+			vwUser.UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
 		OR	UserUPD_nm	= '-2147483647'
 			)
 		AND	(
-			UserDEL_dm	= UserDEL_dm
+			vwUser.UserDEL_dm	= UserDEL_dm
 		OR	UserDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
+			vwUser.UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
 		OR	UserDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentUser_tp	= ParentUser_tp
+			vwUser.ParentUser_tp	= ParentUser_tp
 		OR	ParentUser_tp	= '-2147483647'
 			)
 		AND	(
-			UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
+			vwUser.UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
 		OR	UserType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			UserTypeLeft_id	= UserTypeLeft_id
+			vwUser.UserTypeLeft_id	= UserTypeLeft_id
 		OR	UserTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			UserTypeRight_id	= UserTypeRight_id
+			vwUser.UserTypeRight_id	= UserTypeRight_id
 		OR	UserTypeRight_id	=  -2147483647
 			)
 		AND	(
-			UserTypeLevel_id	= UserTypeLevel_id
+			vwUser.UserTypeLevel_id	= UserTypeLevel_id
 		OR	UserTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			UserTypeOrder_id	= UserTypeOrder_id
+			vwUser.UserTypeOrder_id	= UserTypeOrder_id
 		OR	UserTypeOrder_id	=  -2147483647
 			)
 

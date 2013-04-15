@@ -134,31 +134,31 @@ BEGIN
 			vwRightType
 		WHERE
 			(
-			Right_tp	= Right_tp
+			vwRightType.Right_tp	= Right_tp
 		OR	Right_tp	= '-2147483647'
 			)
 		AND	(
-			ParentRight_tp	= ParentRight_tp
+			vwRightType.ParentRight_tp	= ParentRight_tp
 		OR	ParentRight_tp	= '-2147483647'
 			)
 		AND	(
-			RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
+			vwRightType.RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
 		OR	RightType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			RightTypeLeft_id	= RightTypeLeft_id
+			vwRightType.RightTypeLeft_id	= RightTypeLeft_id
 		OR	RightTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			RightTypeRight_id	= RightTypeRight_id
+			vwRightType.RightTypeRight_id	= RightTypeRight_id
 		OR	RightTypeRight_id	=  -2147483647
 			)
 		AND	(
-			RightTypeLevel_id	= RightTypeLevel_id
+			vwRightType.RightTypeLevel_id	= RightTypeLevel_id
 		OR	RightTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			RightTypeOrder_id	= RightTypeOrder_id
+			vwRightType.RightTypeOrder_id	= RightTypeOrder_id
 		OR	RightTypeOrder_id	=  -2147483647
 			)
 

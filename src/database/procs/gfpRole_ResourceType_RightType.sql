@@ -227,47 +227,47 @@ BEGIN
 			vwRole_ResourceType_RightType
 		WHERE
 			(
-			Role_id	= Role_id
+			vwRole_ResourceType_RightType.Role_id	= Role_id
 		OR	Role_id	=  -2147483647
 			)
 		AND	(
-			Role_tp	= Role_tp
+			vwRole_ResourceType_RightType.Role_tp	= Role_tp
 		OR	Role_tp	= '-2147483647'
 			)
 		AND	(
-			Role_nm	LIKE CONCAT('%', Role_nm, '%')
+			vwRole_ResourceType_RightType.Role_nm	LIKE CONCAT('%', Role_nm, '%')
 		OR	Role_nm	= '-2147483647'
 			)
 		AND	(
-			Role_cd	LIKE CONCAT('%', Role_cd, '%')
+			vwRole_ResourceType_RightType.Role_cd	LIKE CONCAT('%', Role_cd, '%')
 		OR	Role_cd	= '-2147483647'
 			)
 		AND	(
-			Resrc_tp	= Resrc_tp
+			vwRole_ResourceType_RightType.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			Right_tp	= Right_tp
+			vwRole_ResourceType_RightType.Right_tp	= Right_tp
 		OR	Right_tp	= '-2147483647'
 			)
 		AND	(
-			Role_tx	LIKE CONCAT('%', Role_tx, '%')
+			vwRole_ResourceType_RightType.Role_tx	LIKE CONCAT('%', Role_tx, '%')
 		OR	Role_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwRole_ResourceType_RightType.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwRole_ResourceType_RightType.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentRight_tp	= ParentRight_tp
+			vwRole_ResourceType_RightType.ParentRight_tp	= ParentRight_tp
 		OR	ParentRight_tp	= '-2147483647'
 			)
 		AND	(
-			RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
+			vwRole_ResourceType_RightType.RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
 		OR	RightType_tx	LIKE '-2147483647'
 			)
 

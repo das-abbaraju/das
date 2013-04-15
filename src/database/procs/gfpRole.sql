@@ -248,71 +248,71 @@ BEGIN
 			vwRole
 		WHERE
 			(
-			Role_id	= Role_id
+			vwRole.Role_id	= Role_id
 		OR	Role_id	=  -2147483647
 			)
 		AND	(
-			Role_tp	= Role_tp
+			vwRole.Role_tp	= Role_tp
 		OR	Role_tp	= '-2147483647'
 			)
 		AND	(
-			Role_nm	LIKE CONCAT('%', Role_nm, '%')
+			vwRole.Role_nm	LIKE CONCAT('%', Role_nm, '%')
 		OR	Role_nm	= '-2147483647'
 			)
 		AND	(
-			Role_cd	LIKE CONCAT('%', Role_cd, '%')
+			vwRole.Role_cd	LIKE CONCAT('%', Role_cd, '%')
 		OR	Role_cd	= '-2147483647'
 			)
 		AND	(
-			Role_tx	LIKE CONCAT('%', Role_tx, '%')
+			vwRole.Role_tx	LIKE CONCAT('%', Role_tx, '%')
 		OR	Role_tx	LIKE '-2147483647'
 			)
 		AND	(
-			RoleADD_dm	= RoleADD_dm
+			vwRole.RoleADD_dm	= RoleADD_dm
 		OR	RoleADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleADD_nm	LIKE CONCAT('%', RoleADD_nm, '%')
+			vwRole.RoleADD_nm	LIKE CONCAT('%', RoleADD_nm, '%')
 		OR	RoleADD_nm	= '-2147483647'
 			)
 		AND	(
-			RoleUPD_dm	= RoleUPD_dm
+			vwRole.RoleUPD_dm	= RoleUPD_dm
 		OR	RoleUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleUPD_nm	LIKE CONCAT('%', RoleUPD_nm, '%')
+			vwRole.RoleUPD_nm	LIKE CONCAT('%', RoleUPD_nm, '%')
 		OR	RoleUPD_nm	= '-2147483647'
 			)
 		AND	(
-			RoleDEL_dm	= RoleDEL_dm
+			vwRole.RoleDEL_dm	= RoleDEL_dm
 		OR	RoleDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			RoleDEL_nm	LIKE CONCAT('%', RoleDEL_nm, '%')
+			vwRole.RoleDEL_nm	LIKE CONCAT('%', RoleDEL_nm, '%')
 		OR	RoleDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentRole_tp	= ParentRole_tp
+			vwRole.ParentRole_tp	= ParentRole_tp
 		OR	ParentRole_tp	= '-2147483647'
 			)
 		AND	(
-			RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
+			vwRole.RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
 		OR	RoleType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			RoleTypeLeft_id	= RoleTypeLeft_id
+			vwRole.RoleTypeLeft_id	= RoleTypeLeft_id
 		OR	RoleTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeRight_id	= RoleTypeRight_id
+			vwRole.RoleTypeRight_id	= RoleTypeRight_id
 		OR	RoleTypeRight_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeLevel_id	= RoleTypeLevel_id
+			vwRole.RoleTypeLevel_id	= RoleTypeLevel_id
 		OR	RoleTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeOrder_id	= RoleTypeOrder_id
+			vwRole.RoleTypeOrder_id	= RoleTypeOrder_id
 		OR	RoleTypeOrder_id	=  -2147483647
 			)
 

@@ -134,31 +134,31 @@ BEGIN
 			vwReportType
 		WHERE
 			(
-			Report_tp	= Report_tp
+			vwReportType.Report_tp	= Report_tp
 		OR	Report_tp	= '-2147483647'
 			)
 		AND	(
-			ParentReport_tp	= ParentReport_tp
+			vwReportType.ParentReport_tp	= ParentReport_tp
 		OR	ParentReport_tp	= '-2147483647'
 			)
 		AND	(
-			ReportType_tx	LIKE CONCAT('%', ReportType_tx, '%')
+			vwReportType.ReportType_tx	LIKE CONCAT('%', ReportType_tx, '%')
 		OR	ReportType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ReportTypeLeft_id	= ReportTypeLeft_id
+			vwReportType.ReportTypeLeft_id	= ReportTypeLeft_id
 		OR	ReportTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeRight_id	= ReportTypeRight_id
+			vwReportType.ReportTypeRight_id	= ReportTypeRight_id
 		OR	ReportTypeRight_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeLevel_id	= ReportTypeLevel_id
+			vwReportType.ReportTypeLevel_id	= ReportTypeLevel_id
 		OR	ReportTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeOrder_id	= ReportTypeOrder_id
+			vwReportType.ReportTypeOrder_id	= ReportTypeOrder_id
 		OR	ReportTypeOrder_id	=  -2147483647
 			)
 

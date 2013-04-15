@@ -133,31 +133,31 @@ BEGIN
 			vwResourceType
 		WHERE
 			(
-			Resrc_tp	= Resrc_tp
+			vwResourceType.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwResourceType.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwResourceType.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Left_id	= Left_id
+			vwResourceType.Left_id	= Left_id
 		OR	Left_id	=  -2147483647
 			)
 		AND	(
-			Right_id	= Right_id
+			vwResourceType.Right_id	= Right_id
 		OR	Right_id	=  -2147483647
 			)
 		AND	(
-			Level_id	= Level_id
+			vwResourceType.Level_id	= Level_id
 		OR	Level_id	=  -2147483647
 			)
 		AND	(
-			Order_id	= Order_id
+			vwResourceType.Order_id	= Order_id
 		OR	Order_id	=  -2147483647
 			)
 

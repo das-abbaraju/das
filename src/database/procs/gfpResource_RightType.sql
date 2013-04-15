@@ -230,63 +230,63 @@ BEGIN
 			vwResource_RightType
 		WHERE
 			(
-			Resrc_id	= Resrc_id
+			vwResource_RightType.Resrc_id	= Resrc_id
 		OR	Resrc_id	=  -2147483647
 			)
 		AND	(
-			Resrc_tp	= Resrc_tp
+			vwResource_RightType.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			Right_tp	= Right_tp
+			vwResource_RightType.Right_tp	= Right_tp
 		OR	Right_tp	= '-2147483647'
 			)
 		AND	(
-			Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
+			vwResource_RightType.Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
 		OR	Resrc_nm	= '-2147483647'
 			)
 		AND	(
-			Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
+			vwResource_RightType.Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
 		OR	Resrc_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwResource_RightType.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwResource_RightType.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ADD_dm	= ADD_dm
+			vwResource_RightType.ADD_dm	= ADD_dm
 		OR	ADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			ADD_nm	LIKE CONCAT('%', ADD_nm, '%')
+			vwResource_RightType.ADD_nm	LIKE CONCAT('%', ADD_nm, '%')
 		OR	ADD_nm	= '-2147483647'
 			)
 		AND	(
-			UPD_dm	= UPD_dm
+			vwResource_RightType.UPD_dm	= UPD_dm
 		OR	UPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UPD_nm	LIKE CONCAT('%', UPD_nm, '%')
+			vwResource_RightType.UPD_nm	LIKE CONCAT('%', UPD_nm, '%')
 		OR	UPD_nm	= '-2147483647'
 			)
 		AND	(
-			DEL_dm	= DEL_dm
+			vwResource_RightType.DEL_dm	= DEL_dm
 		OR	DEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			DEL_nm	LIKE CONCAT('%', DEL_nm, '%')
+			vwResource_RightType.DEL_nm	LIKE CONCAT('%', DEL_nm, '%')
 		OR	DEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentRight_tp	= ParentRight_tp
+			vwResource_RightType.ParentRight_tp	= ParentRight_tp
 		OR	ParentRight_tp	= '-2147483647'
 			)
 		AND	(
-			RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
+			vwResource_RightType.RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
 		OR	RightType_tx	LIKE '-2147483647'
 			)
 

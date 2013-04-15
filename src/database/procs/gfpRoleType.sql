@@ -134,31 +134,31 @@ BEGIN
 			vwRoleType
 		WHERE
 			(
-			Role_tp	= Role_tp
+			vwRoleType.Role_tp	= Role_tp
 		OR	Role_tp	= '-2147483647'
 			)
 		AND	(
-			ParentRole_tp	= ParentRole_tp
+			vwRoleType.ParentRole_tp	= ParentRole_tp
 		OR	ParentRole_tp	= '-2147483647'
 			)
 		AND	(
-			RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
+			vwRoleType.RoleType_tx	LIKE CONCAT('%', RoleType_tx, '%')
 		OR	RoleType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			RoleTypeLeft_id	= RoleTypeLeft_id
+			vwRoleType.RoleTypeLeft_id	= RoleTypeLeft_id
 		OR	RoleTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeRight_id	= RoleTypeRight_id
+			vwRoleType.RoleTypeRight_id	= RoleTypeRight_id
 		OR	RoleTypeRight_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeLevel_id	= RoleTypeLevel_id
+			vwRoleType.RoleTypeLevel_id	= RoleTypeLevel_id
 		OR	RoleTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			RoleTypeOrder_id	= RoleTypeOrder_id
+			vwRoleType.RoleTypeOrder_id	= RoleTypeOrder_id
 		OR	RoleTypeOrder_id	=  -2147483647
 			)
 

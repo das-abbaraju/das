@@ -147,27 +147,27 @@ BEGIN
 			vwResourceType_RightType
 		WHERE
 			(
-			Resrc_tp	= Resrc_tp
+			vwResourceType_RightType.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			Right_tp	= Right_tp
+			vwResourceType_RightType.Right_tp	= Right_tp
 		OR	Right_tp	= '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwResourceType_RightType.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwResourceType_RightType.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentRight_tp	= ParentRight_tp
+			vwResourceType_RightType.ParentRight_tp	= ParentRight_tp
 		OR	ParentRight_tp	= '-2147483647'
 			)
 		AND	(
-			RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
+			vwResourceType_RightType.RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
 		OR	RightType_tx	LIKE '-2147483647'
 			)
 

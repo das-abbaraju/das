@@ -4,23 +4,28 @@ DROP PROCEDURE IF EXISTS	`gfpReport`
 DELIMITER //
 CREATE PROCEDURE	gfpReport
 (
-	Report_id		int signed		-- PK1 
-,	Report_tp		varchar(80)		-- PK2 AK1
-,	Report_nm		varchar(128)		--  AK2
-,	Report_cd		varchar(48)	
-,	Report_tx		mediumtext	
-,	ReportADD_dm		datetime	
-,	ReportADD_nm		varchar(128)	
-,	ReportUPD_dm		datetime	
-,	ReportUPD_nm		varchar(128)	
-,	ReportDEL_dm		datetime	
-,	ReportDEL_nm		varchar(128)	
-,	ParentReport_tp		varchar(80)	
-,	ReportType_tx		mediumtext	
-,	ReportTypeLeft_id		int signed	
-,	ReportTypeRight_id		int signed	
-,	ReportTypeLevel_id		int signed	
-,	ReportTypeOrder_id		int signed	
+	Report_id		INT SIGNED		-- PK1 
+,	Report_tp		VARCHAR(80)		-- PK2 AK1
+,	Report_nm		VARCHAR(128)		--  AK2
+,	Report_cd		VARCHAR(48)	
+,	Report_tx		TEXT	
+,	ReportADD_dm		DATETIME	
+,	ReportADD_nm		VARCHAR(128)	
+,	ReportUPD_dm		DATETIME	
+,	ReportUPD_nm		VARCHAR(128)	
+,	ReportDEL_dm		DATETIME	
+,	ReportDEL_nm		VARCHAR(128)	
+,	ParentReport_tp		VARCHAR(80)	
+,	ReportType_tx		MEDIUMTEXT	
+,	ReportTypeLeft_id		INT SIGNED	
+,	ReportTypeRight_id		INT SIGNED	
+,	ReportTypeLevel_id		INT SIGNED	
+,	ReportTypeOrder_id		INT SIGNED	
+,	ReportOwner_id		INT SIGNED
+,	ReportIsDeleted_fg	TINYINT
+,	ReportParameters_tx	TEXT
+,	ReportFilter_tx		VARCHAR(100)
+,	ReportIsPrivate_fg	TINYINT
 
 ,		Key_cd		VARCHAR(16)		-- Search key code
 )
@@ -33,7 +38,7 @@ BEGIN
 **	Author:		Solomon S. Shacter
 **	Company:	Innovella, Inc.
 **
-**	Modified:	4/12/2013
+**	Modified:	4/11/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -67,6 +72,11 @@ BEGIN
 	IF ReportTypeLevel_id IS NULL OR ReportTypeLevel_id = 0 THEN SET ReportTypeLevel_id =  -2147483647;	END IF;
 	IF ReportTypeOrder_id IS NULL OR ReportTypeOrder_id = 0 THEN SET ReportTypeOrder_id =  -2147483647;	END IF;
 
+	IF ReportOwner_id IS NULL OR ReportOwner_id = 0 THEN SET ReportOwner_id =  -2147483647;	END IF;
+	IF ReportIsDeleted_fg IS NULL THEN SET ReportIsDeleted_fg =  -1;	END IF;
+	IF ReportParameters_tx IS NULL OR ReportParameters_tx = '' THEN SET ReportParameters_tx = '-2147483647';	END IF;
+	IF ReportFilter_tx IS NULL OR ReportFilter_tx = '' THEN SET ReportFilter_tx = '-2147483647';	END IF;
+	IF ReportIsPrivate_fg IS NULL THEN SET ReportIsPrivate_fg =  -1;	END IF;
 	#######################################################################
 	-- Check Security
 	#######################################################################
@@ -92,23 +102,7 @@ BEGIN
 	IF	Key_cd = 'PK'
 	THEN
 		SELECT
-			vwReport.Report_id
-		,	vwReport.Report_tp
-		,	vwReport.Report_nm
-		,	vwReport.Report_cd
-		,	vwReport.Report_tx
-		,	vwReport.ReportADD_dm
-		,	vwReport.ReportADD_nm
-		,	vwReport.ReportUPD_dm
-		,	vwReport.ReportUPD_nm
-		,	vwReport.ReportDEL_dm
-		,	vwReport.ReportDEL_nm
-		,	vwReport.ParentReport_tp
-		,	vwReport.ReportType_tx
-		,	vwReport.ReportTypeLeft_id
-		,	vwReport.ReportTypeRight_id
-		,	vwReport.ReportTypeLevel_id
-		,	vwReport.ReportTypeOrder_id
+			*
 		FROM
 			vwReport
 		WHERE
@@ -125,23 +119,7 @@ BEGIN
 	IF	Key_cd	= 'FK1'
 	THEN
 		SELECT
-			vwReport.Report_id
-		,	vwReport.Report_tp
-		,	vwReport.Report_nm
-		,	vwReport.Report_cd
-		,	vwReport.Report_tx
-		,	vwReport.ReportADD_dm
-		,	vwReport.ReportADD_nm
-		,	vwReport.ReportUPD_dm
-		,	vwReport.ReportUPD_nm
-		,	vwReport.ReportDEL_dm
-		,	vwReport.ReportDEL_nm
-		,	vwReport.ParentReport_tp
-		,	vwReport.ReportType_tx
-		,	vwReport.ReportTypeLeft_id
-		,	vwReport.ReportTypeRight_id
-		,	vwReport.ReportTypeLevel_id
-		,	vwReport.ReportTypeOrder_id
+			*
 		FROM
 			vwReport
 		WHERE
@@ -158,23 +136,7 @@ BEGIN
 	IF	Key_cd = 'AK'
 	THEN
 		SELECT
-			vwReport.Report_id
-		,	vwReport.Report_tp
-		,	vwReport.Report_nm
-		,	vwReport.Report_cd
-		,	vwReport.Report_tx
-		,	vwReport.ReportADD_dm
-		,	vwReport.ReportADD_nm
-		,	vwReport.ReportUPD_dm
-		,	vwReport.ReportUPD_nm
-		,	vwReport.ReportDEL_dm
-		,	vwReport.ReportDEL_nm
-		,	vwReport.ParentReport_tp
-		,	vwReport.ReportType_tx
-		,	vwReport.ReportTypeLeft_id
-		,	vwReport.ReportTypeRight_id
-		,	vwReport.ReportTypeLevel_id
-		,	vwReport.ReportTypeOrder_id
+			*
 		FROM
 			vwReport
 		WHERE
@@ -195,93 +157,94 @@ BEGIN
 	IF	Key_cd = 'AL'
 	THEN
 		SELECT
-			vwReport.Report_id
-		,	vwReport.Report_tp
-		,	vwReport.Report_nm
-		,	vwReport.Report_cd
-		,	vwReport.Report_tx
-		,	vwReport.ReportADD_dm
-		,	vwReport.ReportADD_nm
-		,	vwReport.ReportUPD_dm
-		,	vwReport.ReportUPD_nm
-		,	vwReport.ReportDEL_dm
-		,	vwReport.ReportDEL_nm
-		,	vwReport.ParentReport_tp
-		,	vwReport.ReportType_tx
-		,	vwReport.ReportTypeLeft_id
-		,	vwReport.ReportTypeRight_id
-		,	vwReport.ReportTypeLevel_id
-		,	vwReport.ReportTypeOrder_id
+			*
 		FROM
 			vwReport
 		WHERE
 			(
-			Report_id	= Report_id
+			vwReport.Report_id	= Report_id
 		OR	Report_id	=  -2147483647
 			)
 		AND	(
-			Report_tp	= Report_tp
+			vwReport.Report_tp	= Report_tp
 		OR	Report_tp	= '-2147483647'
 			)
 		AND	(
-			Report_nm	LIKE CONCAT('%', Report_nm, '%')
+			vwReport.Report_nm	LIKE CONCAT('%', Report_nm, '%')
 		OR	Report_nm	= '-2147483647'
 			)
 		AND	(
-			Report_cd	LIKE CONCAT('%', Report_cd, '%')
+			vwReport.Report_cd	LIKE CONCAT('%', Report_cd, '%')
 		OR	Report_cd	= '-2147483647'
 			)
 		AND	(
-			Report_tx	LIKE CONCAT('%', Report_tx, '%')
+			vwReport.Report_tx	LIKE CONCAT('%', Report_tx, '%')
 		OR	Report_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ReportADD_dm	= ReportADD_dm
+			vwReport.ReportADD_dm	= ReportADD_dm
 		OR	ReportADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			ReportADD_nm	LIKE CONCAT('%', ReportADD_nm, '%')
+			vwReport.ReportADD_nm	LIKE CONCAT('%', ReportADD_nm, '%')
 		OR	ReportADD_nm	= '-2147483647'
 			)
 		AND	(
-			ReportUPD_dm	= ReportUPD_dm
+			vwReport.ReportUPD_dm	= ReportUPD_dm
 		OR	ReportUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			ReportUPD_nm	LIKE CONCAT('%', ReportUPD_nm, '%')
+			vwReport.ReportUPD_nm	LIKE CONCAT('%', ReportUPD_nm, '%')
 		OR	ReportUPD_nm	= '-2147483647'
 			)
+--		AND	vwReport.ReportDEL_dm	IS NULL
+-- 		AND	(
+-- 			vwReport.ReportDEL_nm	LIKE CONCAT('%', ReportDEL_nm, '%')
+-- 		OR	ReportDEL_nm	= '-2147483647'
+-- 			)
 		AND	(
-			ReportDEL_dm	= ReportDEL_dm
-		OR	ReportDEL_dm	= '0000-00-00 00:00:00'
-			)
-		AND	(
-			ReportDEL_nm	LIKE CONCAT('%', ReportDEL_nm, '%')
-		OR	ReportDEL_nm	= '-2147483647'
-			)
-		AND	(
-			ParentReport_tp	= ParentReport_tp
+			vwReport.ParentReport_tp	= ParentReport_tp
 		OR	ParentReport_tp	= '-2147483647'
 			)
 		AND	(
-			ReportType_tx	LIKE CONCAT('%', ReportType_tx, '%')
+			vwReport.ReportType_tx	LIKE CONCAT('%', ReportType_tx, '%')
 		OR	ReportType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ReportTypeLeft_id	= ReportTypeLeft_id
+			vwReport.ReportTypeLeft_id	= ReportTypeLeft_id
 		OR	ReportTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeRight_id	= ReportTypeRight_id
+			vwReport.ReportTypeRight_id	= ReportTypeRight_id
 		OR	ReportTypeRight_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeLevel_id	= ReportTypeLevel_id
+			vwReport.ReportTypeLevel_id	= ReportTypeLevel_id
 		OR	ReportTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			ReportTypeOrder_id	= ReportTypeOrder_id
+			vwReport.ReportTypeOrder_id	= ReportTypeOrder_id
 		OR	ReportTypeOrder_id	=  -2147483647
+			)
+		AND	(
+			vwReport.ReportOwner_id	= ReportOwner_id
+		OR	ReportOwner_id	=  -2147483647
+			)
+		AND	(
+			vwReport.ReportIsDeleted_fg	= ReportIsDeleted_fg
+		OR	ReportIsDeleted_fg	=  -1
+			)
+		AND	(
+			vwReport.ReportParameters_tx	LIKE CONCAT('%', ReportParameters_tx, '%')
+		OR	ReportParameters_tx	LIKE '-2147483647'
+			)
+		AND	(
+			vwReport.ReportFilter_tx	LIKE CONCAT('%', ReportFilter_tx, '%')
+		OR	ReportFilter_tx	LIKE '-2147483647'
+			)
+		AND	(
+			vwReport.ReportIsPrivate_fg	= ReportIsPrivate_fg
+		OR	ReportIsPrivate_fg	=  -1
 			)
 
 		;
@@ -295,3 +258,35 @@ END
 DELIMITER ;
 ;
 
+/*
+CALL	gfpReport
+(
+		@Report_id	:= NULL
+	,	@Report_tp	:= NULL
+	,	@Report_nm	:= 'Con'
+	,	@Report_cd	:= NULL
+	,	@Report_tx	:= NULL
+	,	@ReportADD_dm	:= NULL
+	,	@ReportADD_nm	:= NULL
+	,	@ReportUPD_dm	:= NULL
+	,	@ReportUPD_nm	:= NULL
+	,	@ReportDEL_dm	:= NULL
+	,	@ReportDEL_nm	:= NULL
+	,	@ParentReport_tp	:= NULL
+	,	@ReportType_tx	:= NULL
+	,	@ReportTypeLeft_id	:= NULL
+	,	@ReportTypeRight_id	:= NULL
+	,	@ReportTypeLevel_id	:= NULL
+	,	@ReportTypeOrder_id	:= NULL
+	,	@ReportOwner_id	:= NULL
+	,	@ReportIsDeleted_fg	:= 0
+	,	@ReportParameters_tx	:= '"modelType":"ContractorSearch"'
+	,	@ReportFilter_tx	:= NULL
+	,	@ReportIsPrivate_fg	:= NULL
+
+	,	@Key_cd	:= 'AL'
+)
+;
+
+
+*/

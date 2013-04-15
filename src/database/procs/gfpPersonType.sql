@@ -134,31 +134,31 @@ BEGIN
 			vwPersonType
 		WHERE
 			(
-			Person_tp	= Person_tp
+			vwPersonType.Person_tp	= Person_tp
 		OR	Person_tp	= '-2147483647'
 			)
 		AND	(
-			ParentPerson_tp	= ParentPerson_tp
+			vwPersonType.ParentPerson_tp	= ParentPerson_tp
 		OR	ParentPerson_tp	= '-2147483647'
 			)
 		AND	(
-			PersonType_tx	LIKE CONCAT('%', PersonType_tx, '%')
+			vwPersonType.PersonType_tx	LIKE CONCAT('%', PersonType_tx, '%')
 		OR	PersonType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			PersonTypeLeft_id	= PersonTypeLeft_id
+			vwPersonType.PersonTypeLeft_id	= PersonTypeLeft_id
 		OR	PersonTypeLeft_id	=  -2147483647
 			)
 		AND	(
-			PersonTypeRight_id	= PersonTypeRight_id
+			vwPersonType.PersonTypeRight_id	= PersonTypeRight_id
 		OR	PersonTypeRight_id	=  -2147483647
 			)
 		AND	(
-			PersonTypeLevel_id	= PersonTypeLevel_id
+			vwPersonType.PersonTypeLevel_id	= PersonTypeLevel_id
 		OR	PersonTypeLevel_id	=  -2147483647
 			)
 		AND	(
-			PersonTypeOrder_id	= PersonTypeOrder_id
+			vwPersonType.PersonTypeOrder_id	= PersonTypeOrder_id
 		OR	PersonTypeOrder_id	=  -2147483647
 			)
 

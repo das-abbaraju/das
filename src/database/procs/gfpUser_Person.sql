@@ -374,139 +374,139 @@ BEGIN
 			vwUser_Person
 		WHERE
 			(
-			User_id	= User_id
+			vwUser_Person.User_id	= User_id
 		OR	User_id	=  -2147483647
 			)
 		AND	(
-			User_tp	= User_tp
+			vwUser_Person.User_tp	= User_tp
 		OR	User_tp	= '-2147483647'
 			)
 		AND	(
-			User_nm	LIKE CONCAT('%', User_nm, '%')
+			vwUser_Person.User_nm	LIKE CONCAT('%', User_nm, '%')
 		OR	User_nm	= '-2147483647'
 			)
 		AND	(
-			Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
+			vwUser_Person.Domain_nm	LIKE CONCAT('%', Domain_nm, '%')
 		OR	Domain_nm	= '-2147483647'
 			)
 		AND	(
-			Password_cd	LIKE CONCAT('%', Password_cd, '%')
+			vwUser_Person.Password_cd	LIKE CONCAT('%', Password_cd, '%')
 		OR	Password_cd	= '-2147483647'
 			)
 		AND	(
-			Email_tx	LIKE CONCAT('%', Email_tx, '%')
+			vwUser_Person.Email_tx	LIKE CONCAT('%', Email_tx, '%')
 		OR	Email_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Person_id	= Person_id
+			vwUser_Person.Person_id	= Person_id
 		OR	Person_id	=  -2147483647
 			)
 		AND	(
-			Person_tp	= Person_tp
+			vwUser_Person.Person_tp	= Person_tp
 		OR	Person_tp	= '-2147483647'
 			)
 		AND	(
-			Person_nm	LIKE CONCAT('%', Person_nm, '%')
+			vwUser_Person.Person_nm	LIKE CONCAT('%', Person_nm, '%')
 		OR	Person_nm	= '-2147483647'
 			)
 		AND	(
-			First_nm	LIKE CONCAT('%', First_nm, '%')
+			vwUser_Person.First_nm	LIKE CONCAT('%', First_nm, '%')
 		OR	First_nm	= '-2147483647'
 			)
 		AND	(
-			Middle_nm	LIKE CONCAT('%', Middle_nm, '%')
+			vwUser_Person.Middle_nm	LIKE CONCAT('%', Middle_nm, '%')
 		OR	Middle_nm	= '-2147483647'
 			)
 		AND	(
-			Last_nm	LIKE CONCAT('%', Last_nm, '%')
+			vwUser_Person.Last_nm	LIKE CONCAT('%', Last_nm, '%')
 		OR	Last_nm	= '-2147483647'
 			)
 		AND	(
-			FirstSNDX_cd	LIKE CONCAT('%', FirstSNDX_cd, '%')
+			vwUser_Person.FirstSNDX_cd	LIKE CONCAT('%', FirstSNDX_cd, '%')
 		OR	FirstSNDX_cd	= '-2147483647'
 			)
 		AND	(
-			LastSNDX_cd	LIKE CONCAT('%', LastSNDX_cd, '%')
+			vwUser_Person.LastSNDX_cd	LIKE CONCAT('%', LastSNDX_cd, '%')
 		OR	LastSNDX_cd	= '-2147483647'
 			)
 		AND	(
-			Birth_dm	= Birth_dm
+			vwUser_Person.Birth_dm	= Birth_dm
 		OR	Birth_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			Gender_cd	LIKE CONCAT('%', Gender_cd, '%')
+			vwUser_Person.Gender_cd	LIKE CONCAT('%', Gender_cd, '%')
 		OR	Gender_cd	= '-2147483647'
 			)
 		AND	(
-			User_tx	LIKE CONCAT('%', User_tx, '%')
+			vwUser_Person.User_tx	LIKE CONCAT('%', User_tx, '%')
 		OR	User_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Person_tx	LIKE CONCAT('%', Person_tx, '%')
+			vwUser_Person.Person_tx	LIKE CONCAT('%', Person_tx, '%')
 		OR	Person_tx	LIKE '-2147483647'
 			)
 		AND	(
-			UserADD_dm	= UserADD_dm
+			vwUser_Person.UserADD_dm	= UserADD_dm
 		OR	UserADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
+			vwUser_Person.UserADD_nm	LIKE CONCAT('%', UserADD_nm, '%')
 		OR	UserADD_nm	= '-2147483647'
 			)
 		AND	(
-			UserUPD_dm	= UserUPD_dm
+			vwUser_Person.UserUPD_dm	= UserUPD_dm
 		OR	UserUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
+			vwUser_Person.UserUPD_nm	LIKE CONCAT('%', UserUPD_nm, '%')
 		OR	UserUPD_nm	= '-2147483647'
 			)
 		AND	(
-			UserDEL_dm	= UserDEL_dm
+			vwUser_Person.UserDEL_dm	= UserDEL_dm
 		OR	UserDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
+			vwUser_Person.UserDEL_nm	LIKE CONCAT('%', UserDEL_nm, '%')
 		OR	UserDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentUser_tp	= ParentUser_tp
+			vwUser_Person.ParentUser_tp	= ParentUser_tp
 		OR	ParentUser_tp	= '-2147483647'
 			)
 		AND	(
-			UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
+			vwUser_Person.UserType_tx	LIKE CONCAT('%', UserType_tx, '%')
 		OR	UserType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			PersonADD_dm	= PersonADD_dm
+			vwUser_Person.PersonADD_dm	= PersonADD_dm
 		OR	PersonADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			PersonADD_nm	LIKE CONCAT('%', PersonADD_nm, '%')
+			vwUser_Person.PersonADD_nm	LIKE CONCAT('%', PersonADD_nm, '%')
 		OR	PersonADD_nm	= '-2147483647'
 			)
 		AND	(
-			PersonUPD_dm	= PersonUPD_dm
+			vwUser_Person.PersonUPD_dm	= PersonUPD_dm
 		OR	PersonUPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			PersonUPD_nm	LIKE CONCAT('%', PersonUPD_nm, '%')
+			vwUser_Person.PersonUPD_nm	LIKE CONCAT('%', PersonUPD_nm, '%')
 		OR	PersonUPD_nm	= '-2147483647'
 			)
 		AND	(
-			PersonDEL_dm	= PersonDEL_dm
+			vwUser_Person.PersonDEL_dm	= PersonDEL_dm
 		OR	PersonDEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			PersonDEL_nm	LIKE CONCAT('%', PersonDEL_nm, '%')
+			vwUser_Person.PersonDEL_nm	LIKE CONCAT('%', PersonDEL_nm, '%')
 		OR	PersonDEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentPerson_tp	= ParentPerson_tp
+			vwUser_Person.ParentPerson_tp	= ParentPerson_tp
 		OR	ParentPerson_tp	= '-2147483647'
 			)
 		AND	(
-			PersonType_tx	LIKE CONCAT('%', PersonType_tx, '%')
+			vwUser_Person.PersonType_tx	LIKE CONCAT('%', PersonType_tx, '%')
 		OR	PersonType_tx	LIKE '-2147483647'
 			)
 

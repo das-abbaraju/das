@@ -210,67 +210,67 @@ BEGIN
 			vwResource
 		WHERE
 			(
-			Resrc_id	= Resrc_id
+			vwResource.Resrc_id	= Resrc_id
 		OR	Resrc_id	=  -2147483647
 			)
 		AND	(
-			Resrc_tp	= Resrc_tp
+			vwResource.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
+			vwResource.Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
 		OR	Resrc_nm	= '-2147483647'
 			)
 		AND	(
-			Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
+			vwResource.Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
 		OR	Resrc_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ADD_dm	= ADD_dm
+			vwResource.ADD_dm	= ADD_dm
 		OR	ADD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			ADD_nm	LIKE CONCAT('%', ADD_nm, '%')
+			vwResource.ADD_nm	LIKE CONCAT('%', ADD_nm, '%')
 		OR	ADD_nm	= '-2147483647'
 			)
 		AND	(
-			UPD_dm	= UPD_dm
+			vwResource.UPD_dm	= UPD_dm
 		OR	UPD_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			UPD_nm	LIKE CONCAT('%', UPD_nm, '%')
+			vwResource.UPD_nm	LIKE CONCAT('%', UPD_nm, '%')
 		OR	UPD_nm	= '-2147483647'
 			)
 		AND	(
-			DEL_dm	= DEL_dm
+			vwResource.DEL_dm	= DEL_dm
 		OR	DEL_dm	= '0000-00-00 00:00:00'
 			)
 		AND	(
-			DEL_nm	LIKE CONCAT('%', DEL_nm, '%')
+			vwResource.DEL_nm	LIKE CONCAT('%', DEL_nm, '%')
 		OR	DEL_nm	= '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwResource.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwResource.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Left_id	= Left_id
+			vwResource.Left_id	= Left_id
 		OR	Left_id	=  -2147483647
 			)
 		AND	(
-			Right_id	= Right_id
+			vwResource.Right_id	= Right_id
 		OR	Right_id	=  -2147483647
 			)
 		AND	(
-			Level_id	= Level_id
+			vwResource.Level_id	= Level_id
 		OR	Level_id	=  -2147483647
 			)
 		AND	(
-			Order_id	= Order_id
+			vwResource.Order_id	= Order_id
 		OR	Order_id	=  -2147483647
 			)
 

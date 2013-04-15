@@ -256,59 +256,59 @@ BEGIN
 			vwRole_Resource_RightType
 		WHERE
 			(
-			Role_id	= Role_id
+			vwRole_Resource_RightType.Role_id	= Role_id
 		OR	Role_id	=  -2147483647
 			)
 		AND	(
-			Role_tp	= Role_tp
+			vwRole_Resource_RightType.Role_tp	= Role_tp
 		OR	Role_tp	= '-2147483647'
 			)
 		AND	(
-			Role_nm	LIKE CONCAT('%', Role_nm, '%')
+			vwRole_Resource_RightType.Role_nm	LIKE CONCAT('%', Role_nm, '%')
 		OR	Role_nm	= '-2147483647'
 			)
 		AND	(
-			Role_cd	LIKE CONCAT('%', Role_cd, '%')
+			vwRole_Resource_RightType.Role_cd	LIKE CONCAT('%', Role_cd, '%')
 		OR	Role_cd	= '-2147483647'
 			)
 		AND	(
-			Resrc_id	= Resrc_id
+			vwRole_Resource_RightType.Resrc_id	= Resrc_id
 		OR	Resrc_id	=  -2147483647
 			)
 		AND	(
-			Resrc_tp	= Resrc_tp
+			vwRole_Resource_RightType.Resrc_tp	= Resrc_tp
 		OR	Resrc_tp	= '-2147483647'
 			)
 		AND	(
-			Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
+			vwRole_Resource_RightType.Resrc_nm	LIKE CONCAT('%', Resrc_nm, '%')
 		OR	Resrc_nm	= '-2147483647'
 			)
 		AND	(
-			Right_tp	= Right_tp
+			vwRole_Resource_RightType.Right_tp	= Right_tp
 		OR	Right_tp	= '-2147483647'
 			)
 		AND	(
-			Role_tx	LIKE CONCAT('%', Role_tx, '%')
+			vwRole_Resource_RightType.Role_tx	LIKE CONCAT('%', Role_tx, '%')
 		OR	Role_tx	LIKE '-2147483647'
 			)
 		AND	(
-			Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
+			vwRole_Resource_RightType.Resrc_tx	LIKE CONCAT('%', Resrc_tx, '%')
 		OR	Resrc_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentResrc_tp	= ParentResrc_tp
+			vwRole_Resource_RightType.ParentResrc_tp	= ParentResrc_tp
 		OR	ParentResrc_tp	= '-2147483647'
 			)
 		AND	(
-			ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
+			vwRole_Resource_RightType.ResrcType_tx	LIKE CONCAT('%', ResrcType_tx, '%')
 		OR	ResrcType_tx	LIKE '-2147483647'
 			)
 		AND	(
-			ParentRight_tp	= ParentRight_tp
+			vwRole_Resource_RightType.ParentRight_tp	= ParentRight_tp
 		OR	ParentRight_tp	= '-2147483647'
 			)
 		AND	(
-			RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
+			vwRole_Resource_RightType.RightType_tx	LIKE CONCAT('%', RightType_tx, '%')
 		OR	RightType_tx	LIKE '-2147483647'
 			)
 
