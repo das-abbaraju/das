@@ -100,33 +100,6 @@ public class ReportUserDAO extends PicsDAO {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public int getFavoriteCount(int userId) throws SQLException, Exception {
-		int favoriteCount = 0;
-
-		SelectSQL sql = new SelectSQL("report_user");
-		sql.addField("count(reportID) AS favoriteCount");
-		sql.addWhere("userID = " + userId + " AND favorite = 1 AND hidden = 0");
-
-		Database database = new Database();
-		List<BasicDynaBean> results = database.select(sql.toString(), false);
-
-		if (CollectionUtils.isNotEmpty(results)) {
-			Long favoriteCountLong = (Long) results.get(0).get("favoriteCount");
-			favoriteCount = favoriteCountLong.intValue();
-		}
-
-		return favoriteCount;
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void offsetSortOrderForRange(int userId, int offset, int start, int end) throws SQLException {
-		String sql = "UPDATE report_user SET sortOrder = sortOrder + " + offset + " WHERE userID = " + userId
-				+ " AND sortOrder >= " + start + " AND sortOrder <= " + end;
-
-		Query query = em.createNativeQuery(sql);
-		query.executeUpdate();
-	}
-
 	public static SelectSQL setupSqlForSearchFilterQuery(Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
@@ -171,44 +144,6 @@ public class ReportUserDAO extends PicsDAO {
 
 		Database db = new Database();
 		db.executeUpdate(sql);
-	}
-
-	public int findMaxSortIndex(int userId) {
-		Query query = em.createQuery("SELECT MAX(ru.sortOrder) FROM ReportUser ru WHERE ru.user.id = :userId AND ru.hidden = false");
-		query.setParameter("userId", userId);
-
-		int result;
-		try {
-			result = (Integer) query.getSingleResult();
-		} catch (Exception e) {
-			result = 0;
-		}
-
-		return result;
-	}
-
-	public List<ReportUser> findAllOrdered(ReportSearch reportSearch) {
-		String orderBy = ReportDAO.getOrderBySort(reportSearch.getSortType());
-
-		Permissions permissions = reportSearch.getPermissions();
-		String groupIds = permissions.getAllInheritedGroupIds().toString();
-		groupIds = groupIds.substring(1, groupIds.length() - 1);
-
-		String queryString = "SELECT ru FROM ReportUser ru \n" +
-				"JOIN ru.report r \n" +
-				"WHERE ru.user.id = " + permissions.getUserId() + "\n" +
-				"AND ru.hidden = " + reportSearch.isIncludeHidden() + "\n" +
-				"AND r.id IN \n" +
-				"(\n" +
-				"SELECT rpu.report.id \n" +
-				"FROM ReportPermissionUser rpu \n" +
-				"WHERE (rpu.user.id = " + permissions.getUserId() + "\n" +
-				" OR rpu.user.id IN ( " + groupIds + " ))\n" +
-				")\n" +
-				"ORDER BY " + orderBy + " " + reportSearch.getSortDirection();
-
-		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
-		return query.getResultList();
 	}
 
 	public List<ReportUser> findUnpinnedWithNextHighestSortOrder(ReportUser reportUser) {
