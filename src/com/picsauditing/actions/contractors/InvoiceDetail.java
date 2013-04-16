@@ -10,6 +10,8 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -21,8 +23,7 @@ import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
-	private BrainTreeService paymentService;
+	private BrainTree paymentService;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -241,7 +242,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 							paymentService.processPayment(payment, invoice);
 
-							CreditCard creditCard = paymentService.getCreditCard(id);
+							CreditCard creditCard = paymentService.getCreditCard(contractor);
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
@@ -425,7 +426,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public String getCcNumber() {
 		String ccNumber = "";
 		try {
-			CreditCard creditCard = paymentService.getCreditCard(id);
+			CreditCard creditCard = paymentService.getCreditCard(contractor);
 			ccNumber = creditCard.getCardNumber();
 		} catch (Exception e) {
 		}

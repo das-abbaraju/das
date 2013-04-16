@@ -19,8 +19,8 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.BrainTreeService;
+import com.picsauditing.braintree.CreditCard;
 
 /**
  * Widgets for a single contractor

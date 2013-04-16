@@ -40,8 +40,8 @@ import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.BrainTreeService;
+import com.picsauditing.braintree.CreditCard;
 
 public class PaymentDetailTest extends PicsActionTest {
 

@@ -56,4 +56,7 @@ public enum Currency {
 		return isCAD() || isGBP();
 	}
 
+    public com.picsauditing.currency.Currency toNewCurrency() {
+        return com.picsauditing.currency.Currency.valueOf(this.name());
+    }
 }

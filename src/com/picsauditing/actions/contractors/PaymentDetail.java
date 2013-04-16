@@ -2,7 +2,8 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
@@ -19,8 +20,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -48,7 +48,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
-	private BrainTreeService paymentService;
+	private BrainTree paymentService;
 	@Autowired
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
@@ -83,7 +83,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@RequiredPermission(value = OpPerms.AllContractors)
 	public String execute() throws Exception {
 		if (FIND_CC_BUTTON.equals(button)) {
-			creditCard = paymentService.getCreditCard(id);
+			creditCard = paymentService.getCreditCard(contractor);
 			method = PaymentMethod.CreditCard;
 			return SUCCESS;
 		}
@@ -136,7 +136,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				if (method.isCreditCard()) {
 					try {
 						if (creditCard == null || creditCard.getCardNumber() == null) {
-							creditCard = paymentService.getCreditCard(id);
+							creditCard = paymentService.getCreditCard(contractor);
 						}
 						paymentService.processPayment(payment, null);
 						payment.setCcNumber(creditCard.getCardNumber());

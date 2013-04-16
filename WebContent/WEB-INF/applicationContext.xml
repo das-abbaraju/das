@@ -123,8 +123,7 @@
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
     <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
     <bean id="BillingService" class="com.picsauditing.PICS.BillingCalculatorSingle" init-method="initService"/>
-    <bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
-    <bean id="BrainTreeRequest" class="com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest"/>
+    <bean id="brainTree" class="com.picsauditing.billing.BrainTree" />
     <bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
     <bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
     <bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
