@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.billing.BrainTree;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class PaymentDetailTest extends PicsActionTest {
 	@Mock
 	private PaymentDAO paymentDAO;
 	@Mock
-	private BrainTreeService brainTreeService;
+	private BrainTree brainTreeService;
 	@Mock
 	private ContractorAccountDAO contractorAccountDAO;
 	@Mock
@@ -80,7 +81,7 @@ public class PaymentDetailTest extends PicsActionTest {
 	public void testExecute_FindCreditCardButton() throws Exception {
 		paymentDetail.setId(CONTRACTOR_ID);
 		paymentDetail.setButton(FIND_CREDIT_CARD_BUTTON);
-		when(brainTreeService.getCreditCard(CONTRACTOR_ID)).thenReturn(new CreditCard(Strings.EMPTY_STRING));
+		when(brainTreeService.getCreditCard(any(ContractorAccount.class))).thenReturn(new CreditCard(Strings.EMPTY_STRING));
 
 		String result = paymentDetail.execute();
 
