@@ -23,6 +23,7 @@ public class OshaAudit implements OshaVisitable {
     public static final int CAT_ID_EMR = 152; // EMR
     public static final int CAT_ID_AUSTRALIA = 3325; // Australia
 	public static final int CAT_ID_IRElAND = 3428; // Ireland
+	public static final int CAT_ID_SOUTH_AFRICA = 2810; // South Africa
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
@@ -35,7 +36,8 @@ public class OshaAudit implements OshaVisitable {
                     CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
     public static final Set<Integer> DISPLAY_SAFETY_STATISTICS_CATEGORY_IDS =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
-                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND)));
+                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND,
+		            CAT_ID_SOUTH_AFRICA)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -80,6 +82,9 @@ public class OshaAudit implements OshaVisitable {
 	        case CAT_ID_IRElAND:
 		        type = OshaType.IRELAND;
 		        break;
+	        case CAT_ID_SOUTH_AFRICA:
+		        type = OshaType.SOUTH_AFRICA;
+		        break;
         }
 
         return type;
@@ -112,6 +117,7 @@ public class OshaAudit implements OshaVisitable {
         displaySafetyStatisticsMap.put(OshaType.MEXICO, false);
         displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, false);
 	    displaySafetyStatisticsMap.put(OshaType.IRELAND, false);
+	    displaySafetyStatisticsMap.put(OshaType.SOUTH_AFRICA, false);
         for (AuditCatData category : getCategories()) {
             if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
@@ -131,6 +137,9 @@ public class OshaAudit implements OshaVisitable {
             }
 	        if (category.getCategory().getId() == CAT_ID_IRElAND) {
 		        displaySafetyStatisticsMap.put(OshaType.IRELAND, category.isApplies());
+	        }
+	        if (category.getCategory().getId() == CAT_ID_SOUTH_AFRICA) {
+		        displaySafetyStatisticsMap.put(OshaType.SOUTH_AFRICA, category.isApplies());
 	        }
         }
     }
@@ -185,7 +194,9 @@ public class OshaAudit implements OshaVisitable {
                 safetyStatistics = new AustraliaStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.IRELAND) {
 	            safetyStatistics = new IrelandStatistics(year, contractorAudit.getData(), category.isApplies());
-            }
+            } else if (oshaType == OshaType.SOUTH_AFRICA) {
+		        safetyStatistics = new SouthAfricaStatistics(year, contractorAudit.getData(), category.isApplies());
+	        }
 
             if (safetyStatistics != null) {
                 safetyStatisticsMap.put(oshaType, safetyStatistics);

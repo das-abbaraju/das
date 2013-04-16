@@ -24,7 +24,6 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
     
     updateValueFieldStore: function (filter) {
         var field_id = filter.get('field_id'),
-            filter_value = filter.get('value'),
             value_field = this.down('combobox'),
             url = PICS.data.ServerCommunicationUrl.getMultiSelectUrl(field_id);
         
@@ -48,11 +47,7 @@ Ext.define('PICS.view.report.filter.base.MultiSelect', {
             listeners: {
                 // Pre-select saved selections, i.e., display them in the input field and highlight them in the down-down.
                 load: function (store, records, successful, eOpts) {
-                    if (typeof filter_value == 'string') {
-                        var keys = filter_value.split(', ');
-                        
-                        value_field.select(keys);
-                    }
+                    value_field.select(filter.get('value').split(', '));
                 }
             }
         });

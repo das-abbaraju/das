@@ -233,22 +233,22 @@
                                             <s:checkbox id="%{checkbox_id}" name="translation.applicable" value="%{applicable}" cssClass="is-applicable"/>
                                         </div>
                                         
-                                        <s:if test="applicable == false">
-                                            <s:set var="radio_display" value="'display: none'" />
-                                        </s:if>
-                                        <s:else>
-                                            <s:set var="radio_display" value="" />
-                                        </s:else>
-                                        
-                                        <div class="quality" style="${radio_display}">
-                                            <s:radio
-                                                list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
-                                                name="translation.qualityRating"
-                                                id="%{radio_id}"
-                                                cssClass="quality-rating"
-                                                value="%{qualityRating}"
-                                            />
-                                        </div>
+                                        <select class="quality-rating" name="translation.qualityRating" id="${radio_id}">
+                                            <s:set var="selected_quality_rating" value="@com.picsauditing.jpa.entities.TranslationQualityRating@Questionable" />
+
+                                            <s:if test="qualityRating != null">
+                                                <s:set var="selected_quality_rating" value="qualityRating" />
+                                            </s:if>
+
+                                            <s:iterator value="@com.picsauditing.jpa.entities.TranslationQualityRating@values()" var="quality_rating_option">
+                                                <s:if test="#selected_quality_rating == #quality_rating_option">
+                                                    <option value="${quality_rating_option}" selected="selected">${quality_rating_option}</option>
+                                                </s:if>
+                                                <s:else>
+                                                    <option value="${quality_rating_option}">${quality_rating_option}</option>
+                                                </s:else>
+                                            </s:iterator>
+                                        </select>
                                     </div>
                                     
                                     <s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">

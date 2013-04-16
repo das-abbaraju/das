@@ -57,6 +57,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected boolean systemEdit = false;
 	protected boolean showVerified = false;
 	protected boolean showCaoTable = true;
+	protected boolean showUploadRequirementsBanner = false;
 
 	protected ContractorAudit conAudit;
 
@@ -99,6 +100,25 @@ public class AuditActionSupport extends ContractorActionSupport {
 		else
 			professionalLabel = getText("Assignee." + conAudit.getAuditType().getAssigneeLabel());
 
+		setUploadRequirements();
+
+	}
+
+	private void setUploadRequirements() {
+		if (conAudit == null)
+			return;
+		List<Integer> list = Arrays.asList(2, 3, 5, 6, 17, 29, 72, 82, 96, 100, 176, 313);
+		if (list.contains(conAudit.getAuditType().getId())) {
+			showUploadRequirementsBanner = true;
+		}
+	}
+
+	public boolean isShowUploadRequirementsBanner() {
+		return showUploadRequirementsBanner;
+	}
+
+	public void setShowUploadRequirementsBanner(boolean showUploadRequirementsBanner) {
+		this.showUploadRequirementsBanner = showUploadRequirementsBanner;
 	}
 
 	public int getAuditID() {

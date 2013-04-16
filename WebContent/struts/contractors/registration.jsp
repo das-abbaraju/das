@@ -25,14 +25,8 @@
 	<s:set var="countrySubdivision_display" value="''" />
 </s:else>
 
-<s:if test="contractor.country.isoCode == 'CA'">
-	<s:set var="countrySubdivision_label_display" value="%{getText('global.Province')}" />
-</s:if>
-<s:else>
-	<s:set var="countrySubdivision_label_display" value="%{getText('global.CountrySubdivision')}" />
-</s:else>
-
 <s:set name="chat_url" value="%{chatUrl}"></s:set>
+<s:set var="countrySubdivision_label_display" value="%{getCountrySubdivisionLabel(#country_value)}" />
 
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />

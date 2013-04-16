@@ -1,23 +1,7 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import com.picsauditing.model.account.AccountStatusChanges;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.PICS.InvoiceValidationException;
-import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
-import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.*;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -26,31 +10,12 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentApplied;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
@@ -59,6 +24,16 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
@@ -204,7 +179,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 			if (EMAIL_BUTTON.equals(button)) {
 				try {
-					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
 					String note = Strings.EMPTY_STRING;
 					if (invoice.getStatus().isPaid()) {
 						note += "Payment Receipt for Invoice";
@@ -335,7 +310,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 					// Send a receipt to the contractor
 					try {
-						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
 					} catch (Exception theyJustDontGetAnEmail) {
 					}
 				}
@@ -466,7 +441,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (item.getInvoiceFee().isMembership()
 						&& item.getInvoiceFee().getFeeClass()
-								.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
+						.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
 						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel())) {
 					return true;
 				}

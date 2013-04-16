@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -49,6 +52,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 
 	private CalEvent calEvent;
 	private ScheduleEvent schedEvent;
+
+    private Boolean allDay;
 
 	private User currentUser;
 
@@ -175,7 +180,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						vacation.setDescription(calEvent.title);
 						Date startDate = null;
 						Date endDate = null;
-						
+
 						if (calEvent.start > 0) {
 							startDate = new Date(calEvent.start);
 							vacation.setStartDate(startDate);
@@ -187,17 +192,8 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						}
 
 						// set allDay
-						DateFormat format = new SimpleDateFormat("HH");
-						if (currentUser != null)
-							format.setTimeZone(currentUser.getTimezone());
+						vacation.setAllDay(allDay);
 
-						if (format.format(startDate).equals("00")
-								&& (endDate == null || endDate.equals(DateBean.getNextDayMidnight(startDate))))
-							vacation.setAllDay(true);
-						else
-							vacation.setAllDay(false);
-
-						
 						vacation.setAuditColumns(permissions);
 						auditorVacationDAO.save(vacation);
 
@@ -465,5 +461,13 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	public void setCurrentUserID(int currentUserID) {
 		this.currentUserID = currentUserID;
 	}
+
+    public Boolean getAllDay() {
+        return allDay;
+    }
+
+    public void setAllDay(Boolean allDay) {
+        this.allDay = allDay;
+    }
 
 }

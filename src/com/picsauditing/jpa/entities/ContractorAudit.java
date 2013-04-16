@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.access.OpPerms;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
@@ -83,6 +84,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private String phone;
 	private String phone2;
 	private Integer ruleID;
+	private Date slaDate;
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
@@ -223,6 +225,15 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setPaidDate(Date paidDate) {
 		this.paidDate = paidDate;
+	}
+
+	@ReportField(type = FieldType.Date, category = FieldCategory.AuditScheduling, requiredPermissions = OpPerms.AllOperators)
+	public Date getSlaDate() {
+		return slaDate;
+	}
+
+	public void setSlaDate(Date slaDate) {
+		this.slaDate = slaDate;
 	}
 
 	@ManyToOne

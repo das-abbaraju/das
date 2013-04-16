@@ -177,9 +177,15 @@ public class ReportBuilder {
 
 	private static void toElementFromJSON(JSONObject json, ReportElement element) {
 		try {
-			String idString = json.get(REPORT_ELEMENT_DB_ID).toString();
-			int id = Integer.parseInt(idString);
-			element.setId(id);
+			Object idObj = json.get(REPORT_ELEMENT_DB_ID);
+
+			if (idObj == null) {
+				element.setId(DEFAULT_REPORT_ELEMENT_DB_ID);
+			} else {
+				String idString = idObj.toString();
+				int id = Integer.parseInt(idString);
+				element.setId(id);
+			}
 		} catch (Exception e) {
 			logger.warn("Couldn't parse id from ReportElement '" + json.get(REPORT_ELEMENT_DB_ID) + "' ReportElement's id will default to 0.");
 		}

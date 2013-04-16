@@ -138,16 +138,16 @@
             <result name="error">struts/user/login/login.jsp</result>
             <result name="loginform">/struts/user/login/_login-form.jsp</result>
         </action>
-        
+
         <action name="AccountRecovery" class="com.picsauditing.actions.AccountRecovery">
             <result name="password">struts/user/recovery/recover-password.jsp</result>
             <result name="username">struts/user/recovery/recover-username.jsp</result>
         </action>
-        
+
         <action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
             <result>struts/users/password.jsp</result>
         </action>
-        
+
         <action name="LoginAjax" class="com.picsauditing.access.LoginAjax"></action>
 
         <action name="ContractorAgreement"
@@ -194,15 +194,15 @@
         <action name="About" class="com.picsauditing.actions.About">
             <result>/struts/general/about.jsp</result>
         </action>
-		
+
         <action name="Tutorial" class="com.picsauditing.actions.Tutorial">
-			<result name="dynamic-report">/struts/tutorial/dynamic-report.jsp</result>
-			<result name="navigation-menu">/struts/tutorial/navigation-menu.jsp</result>
-			
-			<interceptor-ref name="validation">
-    			<param name="excludeMethods">execute,navigationMenu</param>
-			</interceptor-ref>
-		</action>
+            <result name="dynamic-report">/struts/tutorial/dynamic-report.jsp</result>
+            <result name="navigation-menu">/struts/tutorial/navigation-menu.jsp</result>
+
+            <interceptor-ref name="validation">
+                <param name="excludeMethods">execute,navigationMenu</param>
+            </interceptor-ref>
+        </action>
 
         <action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
             <result>struts/forms/manage_resources.jsp</result>
@@ -1067,6 +1067,10 @@
             <result>struts/trevor.jsp</result>
         </action>
 
+        <action name="PICS10116" class="com.picsauditing.actions.PICS10116">
+            <result>struts/pics10116.jsp</result>
+        </action>
+
         <action name="ServerInfo" class="com.picsauditing.actions.ServerInfo">
             <result>struts/server_info.jsp</result>
         </action>
@@ -1139,9 +1143,13 @@
             <result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
             <result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
             <result name="component">/struts/frontend-development-guide/component/components.jsp</result>
-            <result name="css-javascript-conventions">/struts/frontend-development-guide/convention/css-javascript/conventions.jsp</result>
+            <result name="css-javascript-conventions">
+                /struts/frontend-development-guide/convention/css-javascript/conventions.jsp
+            </result>
             <result name="html-conventions">/struts/frontend-development-guide/convention/html/conventions.jsp</result>
-            <result name="file-structure-conventions">/struts/frontend-development-guide/convention/file-structure/conventions.jsp</result>
+            <result name="file-structure-conventions">
+                /struts/frontend-development-guide/convention/file-structure/conventions.jsp
+            </result>
         </action>
 
         <action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
@@ -1152,12 +1160,12 @@
             <result>struts/liveagent/liveagent.jsp</result>
         </action>
 
-		<action name="SessionAjax" class="com.picsauditing.actions.users.SessionAjax">
-			<result type="json"></result>
-		</action>
-		
-		<action name="AccountTimezonePopulator" class="com.picsauditing.actions.dev.AccountTimezonePopulatorController">
-			<result>struts/dev/account_timezone_populator.jsp</result>
+        <action name="SessionAjax" class="com.picsauditing.actions.users.SessionAjax">
+            <result type="json"></result>
+        </action>
+
+        <action name="AccountTimezonePopulator" class="com.picsauditing.actions.dev.AccountTimezonePopulatorController">
+            <result>struts/dev/account_timezone_populator.jsp</result>
         </action>
 
         <action name="ManageRecommendedCSRAssignments" class="com.picsauditing.actions.ManageRecommendedCSRAssignments">
@@ -1207,5 +1215,8 @@
 
     <!-- Crons and Scheduled Tasks -->
     <include file="struts-crons.xml"/>
+
+    <!-- Drools & RBIC -->
+    <include file="struts-rbic.xml"/>
 
 </struts>

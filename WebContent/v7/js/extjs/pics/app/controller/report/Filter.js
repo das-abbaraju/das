@@ -95,8 +95,15 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // saving edits to filter store + refresh
-            '#report_filters combobox[name=value]': {
-                select: this.selectValueField
+            '#report_filters reportfilterbasemultiselect combobox[name=value]': {
+                change: this.selectValueField,
+                render: this.renderComboboxValueField
+            },
+
+            // saving edits to filter store + refresh
+            '#report_filters reportfilterbaseautocomplete combobox[name=value]': {
+                select: this.selectValueField,
+                render: this.renderComboboxValueField
             },
 
             '#report_filters combobox[name=operator]': {
@@ -262,6 +269,7 @@ Ext.define('PICS.controller.report.Filter', {
         
         if (is_new_filter_expression) {
             report.setFilterExpression(filter_expression);
+            
             PICS.data.ServerCommunication.loadData();
         }
     },
@@ -275,19 +283,8 @@ Ext.define('PICS.controller.report.Filter', {
     },
     
     beforeFilterRender: function (cmp, eOpts) {
-        var filter_input = cmp.down('reportfilterbasefilter'),
-            is_autocomplete = cmp.down('reportfilterbaseautocomplete'),
-            is_multiselect = cmp.down('reportfilterbasemultiselect');
-        
         // attach the filter record to the filter view
         this.loadFilter(cmp);
-        
-        // dynamically load value store for multiselect and autocomplete
-        if (is_autocomplete) {
-            filter_input.updateValueFieldStore(cmp.filter);
-        } else if (is_multiselect) {
-            filter_input.updateValueFieldStore(cmp.filter);
-        }
     },
     
     blurFilter: function (cmp, event, eOpts) {
@@ -331,6 +328,18 @@ Ext.define('PICS.controller.report.Filter', {
     // through chainable constructors, but we are suspending the change event from being thrown calling loadRecord
     renderCheckbox: function (cmp, eOpts) {
         cmp.lastValue = cmp.getValue();
+    },
+    
+    // this method is to default checkboxes lastValue. this would have normally been set by the form field by default
+    // through chainable constructors, but we are suspending the change event from being thrown calling select
+    renderComboboxValueField: function (cmp, eOpts) {
+        var filter_view = cmp.up('reportfilter'),
+            filter_input = cmp.up('reportfilterbasefilter'),
+            filter = filter_view.filter;
+        
+        cmp.lastValue = cmp.getRawValue().split(', ');
+        
+        filter_input.updateValueFieldStore(filter);
     },
     
     refreshFilters: function () {

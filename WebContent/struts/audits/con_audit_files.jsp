@@ -58,10 +58,12 @@
 	
 		<s:include value="../audits/audit_catHeader.jsp"/>
 		<s:include value="../actionMessages.jsp" />
-		
-		<div class="info">
-			<s:text name="Audit.message.info.UploadRequirement" />
-		</div>
+
+        <s:if test="showUploadRequirementsBanner" >
+            <div class="info">
+                <s:text name="Audit.message.info.UploadRequirement" />
+            </div>
+        </s:if>
 
 		<h3><s:property value="conAudit.auditType.name" />#<s:property value="conAudit.id" /></h3>
 				

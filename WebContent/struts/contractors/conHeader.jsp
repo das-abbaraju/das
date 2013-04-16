@@ -470,6 +470,13 @@ function loadStatus(caoID, addUserNote){
 								<s:property value="conAudit.auditLocation" />
 							</li>
 						</s:if>
+
+                        <s:if test="conAudit.slaDate != null && permissions.admin" >
+                            <li>
+                                <label><s:text name="Audit.message.sla" />:</label>
+                                <s:date name="conAudit.slaDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
+                            </li>
+                        </s:if>
 					</ul>
 				</fieldset>
 			</div>

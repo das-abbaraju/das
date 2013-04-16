@@ -1,5 +1,25 @@
 package com.picsauditing.actions.contractors;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.access.*;
+import com.picsauditing.actions.validation.AjaxValidator;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailException;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.validator.RegistrationValidator;
+import com.picsauditing.validator.Validator;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -9,53 +29,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.validation.AjaxValidator;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.validator.RegistrationValidator;
-import com.picsauditing.validator.Validator;
 
 @SuppressWarnings({"deprecation", "serial"})
 public class Registration extends ContractorActionSupport implements AjaxValidator {
@@ -86,9 +59,9 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
-    @Autowired
-    @Qualifier("CsrAssignmentSinglePublisher")
-    private Publisher csrAssignmentSinglePublisher;
+	@Autowired
+	@Qualifier("CsrAssignmentSinglePublisher")
+	private Publisher csrAssignmentSinglePublisher;
 	@Autowired
 	private RegistrationValidator registrationValidator;
 
@@ -168,21 +141,24 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		}
 
 		if (Strings.isEmpty(language)) {
-			language = Locale.ENGLISH.getLanguage();
-			dialect = Strings.EMPTY_STRING;
+			ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+					.getStableLanguages());
+			Locale locale = languageUtility.getBrowserLocale();
+			language = languageUtility.getBrowserLanguage();
+			dialect = languageUtility.getBrowserDialect();
 
 			ActionContext context = ActionContext.getContext();
 			if (context != null) {
-				Locale locale = context.getLocale();
+				locale = context.getLocale();
 
 				if (locale != null) {
 					language = locale.getLanguage();
 					dialect = locale.getCountry();
 				}
 			}
+
+			ActionContext.getContext().setLocale(locale);
 		}
-
-
 
 		return SUCCESS;
 	}
@@ -470,7 +446,7 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 					contractor.getOperatorTags().add(contractorTag);
 				}
 			} catch (Exception exception) {
-				logger.error("Error in transferring registration request tag {}\n{}", new Object[] { tagID, exception });
+				logger.error("Error in transferring registration request tag {}\n{}", new Object[]{tagID, exception});
 			}
 		}
 	}

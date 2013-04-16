@@ -243,7 +243,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
 			if (permissions.canSeeAudit(audit.getAuditType())
 					&& !audit.hasOnlyInvisibleCaos()) {
-				if (audit.getAuditType().getClassType().isPolicy())
+				if (audit.getAuditType().getClassType().isPolicy() ||
+						audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
 					insureGUARD.add(audit);
 				else if (audit.getAuditType().getClassType().isPqf()
 						|| audit.getAuditType().isAnnualAddendum())
@@ -273,6 +274,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		displayOsha.put(OshaType.MEXICO, false);
         displayOsha.put(OshaType.AUSTRALIA, false);
 		displayOsha.put(OshaType.IRELAND, false);
+		displayOsha.put(OshaType.SOUTH_AFRICA, false);
 
         for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isAnnualAddendum()
@@ -298,6 +300,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (audit.isDataExpectedAnswer(AuditQuestion.IRELAND_KEPT_ID,
 						"Yes"))
 					displayOsha.put(OshaType.IRELAND, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.SOUTH_AFRICA_KEPT_ID,
+						"Yes"))
+					displayOsha.put(OshaType.SOUTH_AFRICA, true);
 			}
 		}
 	}

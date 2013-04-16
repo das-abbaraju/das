@@ -24,6 +24,8 @@ public enum OshaType implements Translatable {
             OshaRateType.Fatalities, OshaRateType.Hours }),
 	IRELAND(OshaAudit.CAT_ID_IRElAND, new OshaRateType[] { OshaRateType.IFR, OshaRateType.IR,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
+	SOUTH_AFRICA(OshaAudit.CAT_ID_SOUTH_AFRICA, new OshaRateType[] { OshaRateType.IFR, OshaRateType.IR,
+			OshaRateType.Fatalities, OshaRateType.Hours }),
 	EMR(OshaAudit.CAT_ID_EMR, new OshaRateType[] { OshaRateType.EMR });
 	
 

@@ -86,7 +86,7 @@ public class AuditMenuBuilder {
 					ContractorAudit audit = iterator.next();
 					AuditType auditType = audit.getAuditType();
 
-					if (auditType.getClassType().isPqf()) {
+					if (auditType.getClassType().isPqf() && auditType.getId() != AuditType.IHG_INSURANCE_QUESTIONAIRE) {
 						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 								|| auditType.getId() == AuditType.IMPORT_PQF) {
 							if (subMenu.getChildren().size() < MAX_MENU_ITEM || auditType.isPqf()) {
@@ -162,11 +162,14 @@ public class AuditMenuBuilder {
 
 				while (iterator.hasNext()) {
 					ContractorAudit audit = iterator.next();
-					if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+					if ((audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) ||
+							audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
 							&& audit.getOperators().size() > 0) {
 						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 							MenuComponent childMenu = createMenuItem(subMenu, audit);
-							if (audit.getEffectiveDate() != null || audit.getAuditType().isWCB()) {
+							if (audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE) {
+								childMenu.setName(getText(audit.getAuditType().getI18nKey("name")));
+							} else if (audit.getEffectiveDate() != null || audit.getAuditType().isWCB()) {
 								String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 								childMenu.setName(getText(audit.getAuditType().getI18nKey("name")) + " '" + year);
 							} else {

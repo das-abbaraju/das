@@ -79,6 +79,13 @@ public class LoginController extends PicsActionSupport {
 					clearPicsOrgCookie();
 				}
 			}
+
+			if (ActionContext.getContext().getLocale() == null) {
+				ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+						.getStableLanguages());
+				ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
+			}
+
 			return SUCCESS;
 		} else if ("confirm".equals(button)) {
 			return confirm();

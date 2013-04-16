@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.jpa.entities.*;
@@ -53,6 +54,52 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
+	}
+
+	@Test
+	public void testSafetyManualSla() throws Exception {
+		contractor = EntityFactory.makeContractor();
+
+		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+		contractor.getAudits().add(pqf);
+		ContractorAuditOperator pqfCao = EntityFactory.addCao(pqf, EntityFactory.makeOperator());
+		AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
+		data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+		pqf.getData().add(data);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+		contractor.getAudits().add(audit);
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+
+		audit.setSlaDate(null);
+		contractor.setBalance(new BigDecimal(2));
+		pqfCao.changeStatus(AuditStatus.Pending, null);
+		cao.changeStatus(AuditStatus.Pending, null);
+		data.setAnswer("");
+		data.setDateVerified(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+
+		audit.setSlaDate(null);
+		contractor.setBalance(BigDecimal.ZERO);
+		pqfCao.changeStatus(AuditStatus.Pending, null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+
+		audit.setSlaDate(null);
+		pqfCao.changeStatus(AuditStatus.Complete, null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+
+		audit.setSlaDate(null);
+		data.setAnswer("doc");
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+
+		audit.setSlaDate(null);
+		data.setDateVerified(new Date());
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null);
 	}
 
 	/**

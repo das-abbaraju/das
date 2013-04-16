@@ -1,18 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.picsauditing.PICS.*;
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -22,23 +10,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.LcCorPhase;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -51,6 +23,17 @@ import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.validator.ContractorValidator;
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
@@ -135,7 +118,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.setPaymentMethod(PaymentMethod.EFT);
 			contractorAccountDao.save(contractor);
 			try {
-				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
 				addActionMessage(getText("RegistrationMakePayment.message.SentProFormaEmail"));
 			} catch (Exception e) {
 				addActionError(getText("RegistrationMakePayment.message.ProFormaEmailError"));
@@ -240,7 +223,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						} catch (Exception e) {
 							logger.error("Cannot send email error message or "
 									+ "determine credit processing status for contractor {} ({}) for invoice {}",
-									new Object[] { contractor.getName(), contractor.getId(), invoice.getId() });
+									new Object[]{contractor.getName(), contractor.getId(), invoice.getId()});
 						}
 
 						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
@@ -262,7 +245,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 				// Send a receipt to the contractor
 				try {
-					EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+					EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice);
 				} catch (Exception theyJustDontGetAnEmail) {
 				}
 			}
@@ -391,7 +374,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			} catch (Exception x) {
 				// TODO: Test
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { getPicsPhoneNumber() }));
+						new Object[]{getPicsPhoneNumber()}));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -420,7 +403,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if (retries >= quit) {
 			// TODO: Test
 			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[] { getPicsPhoneNumber() }));
+					new Object[]{getPicsPhoneNumber()}));
 			braintreeCommunicationError = true;
 			return;
 		}

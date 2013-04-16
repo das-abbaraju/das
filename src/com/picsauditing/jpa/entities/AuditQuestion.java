@@ -59,10 +59,11 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int MEXICO_KEPT_ID = 15337;
     static public final int AUSTRALIA_KEPT_ID = 15214;
 	static public final int IRELAND_KEPT_ID = 15660;
+	static public final int SOUTH_AFRICA_KEPT_ID = 16282;
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
-			"License", "Money", "Number", "ESignature", "Tagit", "MultiSelect" };
+			"License", "Money", "Number", "ESignature", "Tagit", "MultiSelect", "Percent" };
 
 	private int number;
 	private int scoreWeight;
