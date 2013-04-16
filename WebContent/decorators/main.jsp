@@ -181,110 +181,132 @@
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<%if (debugMode) {%>class="debugging"<%}%>>
         <jsp:include page="/struts/layout/_environment.jsp" />
-        
+
         <%
-            if (useVersion7Menus) {
+        if (useVersion7Menus) {
         %>
             <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
             <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
             <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}" />
-            <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}" />            
+            <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}" />
+
             <header>
                 <s:action name="Menu!menu" executeResult="true" />
             </header>
         <%
-        	}
+        }
         %>
 
         <%
-        	if (!useVersion7Menus) {
+        if (mainPage.isDisplaySystemMessage()) {
+            if (useVersion7Menus) {
         %>
-        <div id="bodywrap">
-            <jsp:include page="/struts/misc/main_system_message.jsp" />
-            <table id="header">
-                <!-- !begin header -->
-                <tr>
-                    <td id="logo">
-                        <a href="<%=homePageUrl%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
-                    </td>
-                    <%
-                    	if (permissions.isActive() && !permissions.isContractor()) {
-                    %>
-                        <td id="headersearch">
-                            <form action="Search.action" method="get">
-                                <input type="hidden" value="search" name="button" />
-                                <input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-                                <input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
-                            </form>
-                        </td>
-                    <%
-                    	}
-                    %>
-                    <td id="sidebox">
-                        <p>
-                            <b class="head-phone" title="<%=Strings.isNotEmpty(mainPage.getCountryI18nKey()) ? i18nCache.getText(mainPage.getCountryI18nKey(), locale) : ""%>"><%=mainPage.getPhoneNumber()%></b>
-                        <% if (permissions.isLoggedIn()) { %>
-                            <span id="name">
-                                <%
-                                	if (permissions.hasPermission(OpPerms.EditProfile)) {
-                                %>
-                                    <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(),
-								permissions.getName())%>
-                                <%
-                                	} else {
-                                %>
-                                    <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName())%>
-                                <%
-                                	}
-                                %>
-                            </span>
-                        | <a href="<%=homePageUrl%>"><%=i18nCache.getText("global.Home", locale)%></a>
-                        | <a href="http://www.picsauditing.com">PICS</a>
-                        | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale)%></a>
-                        <%
-                        	if (switchToUserIsSet) {
-                        %>
-                        	| <a href="Login.action?button=switchBack">SwitchBack</a>
-                        <%
-                        	}
-                        %>
-                        <%
-                        	} else {
-                        %>
-                            <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
-                            | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a>
-                            | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
-                        <%
-                        	}
-                        %>
-                        </p>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-		<!-- !begin navigation -->
-		<div id="nav">
-			<div id="MainMenu">
-				<div id="tab">
-					<div id="navbar">
-						<ul>
-						<%
-							for (MenuComponent item : menu.getChildren()) {
-									if (item.visible()) {
-						%>
-							<li><a<%=item.hasUrl() ? (" href=\"" + item.getUrl() + "\"") : ""%> onmouseover="cssdropdown.dropit(this,event,'menu<%=item.getId()%>')"><span><%=item.getName()%></span></a></li><%
-								}
-									}
-							%>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- !end navigation -->
+                <style>
+                    body {
+                        padding-top: 55px;
+                    }
+
+                    #systemMessage {
+                        margin-bottom: 20px;
+                    }
+                </style>
         <%
-        	}
+            }
+        %>
+            <jsp:include page="/struts/misc/main_system_message.jsp" />
+        <%
+        }
+        %>
+
+        <%
+    	if (!useVersion7Menus) {
+        %>
+            <div id="bodywrap">
+                <jsp:include page="/struts/misc/main_system_message.jsp" />
+                <table id="header">
+                    <!-- !begin header -->
+                    <tr>
+                        <td id="logo">
+                            <a href="<%=homePageUrl%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
+                        </td>
+                        <%
+                        	if (permissions.isActive() && !permissions.isContractor()) {
+                        %>
+                            <td id="headersearch">
+                                <form action="Search.action" method="get">
+                                    <input type="hidden" value="search" name="button" />
+                                    <input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
+                                    <input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
+                                </form>
+                            </td>
+                        <%
+                        	}
+                        %>
+                        <td id="sidebox">
+                            <p>
+                                <b class="head-phone" title="<%=Strings.isNotEmpty(mainPage.getCountryI18nKey()) ? i18nCache.getText(mainPage.getCountryI18nKey(), locale) : ""%>"><%=mainPage.getPhoneNumber()%></b>
+                            <% if (permissions.isLoggedIn()) { %>
+                                <span id="name">
+                                    <%
+                                    	if (permissions.hasPermission(OpPerms.EditProfile)) {
+                                    %>
+                                        <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(),
+    								permissions.getName())%>
+                                    <%
+                                    	} else {
+                                    %>
+                                        <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName())%>
+                                    <%
+                                    	}
+                                    %>
+                                </span>
+                            | <a href="<%=homePageUrl%>"><%=i18nCache.getText("global.Home", locale)%></a>
+                            | <a href="http://www.picsauditing.com">PICS</a>
+                            | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale)%></a>
+                            <%
+                            	if (switchToUserIsSet) {
+                            %>
+                            	| <a href="Login.action?button=switchBack">SwitchBack</a>
+                            <%
+                            	}
+                            %>
+                            <%
+                            	} else {
+                            %>
+                                <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
+                                | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a>
+                                | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
+                            <%
+                            	}
+                            %>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+    		<!-- !begin navigation -->
+    		<div id="nav">
+    			<div id="MainMenu">
+    				<div id="tab">
+    					<div id="navbar">
+    						<ul>
+    						<%
+    							for (MenuComponent item : menu.getChildren()) {
+    									if (item.visible()) {
+    						%>
+    							<li><a<%=item.hasUrl() ? (" href=\"" + item.getUrl() + "\"") : ""%> onmouseover="cssdropdown.dropit(this,event,'menu<%=item.getId()%>')"><span><%=item.getName()%></span></a></li><%
+    								}
+    									}
+    							%>
+    						</ul>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+    		<!-- !end navigation -->
+        <%
+    	}
         %>
 
 		<div id="main">
