@@ -74,7 +74,6 @@ public class Autocompleter extends PicsActionSupport {
 
 	public String reportSharingAutocomplete() {
 		try {
-			int reportId = NumberUtils.toInt(getRequest().getParameter("reportId"));
 			if (reportId <= 0) {
 				throw new Exception("Invalid reportId parameter.");
 			}
