@@ -112,13 +112,14 @@ public class ReportDataConverter {
 
 		if (displayType == DisplayType.Boolean) {
             if (forPrint) {
-                if (value == 0)
-                    result = "N";
-                else
-                    result = "Y";
-            }
-            else
-                result = value;
+                if (((Integer)value).intValue() == 0) {
+					result = "N";
+				} else {
+					result = "Y";
+				}
+            } else {
+				result = value;
+			}
         }
 
 		return result;

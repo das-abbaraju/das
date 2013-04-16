@@ -1,12 +1,13 @@
 package com.picsauditing.model.l10n;
 
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,12 +18,13 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 
-import java.util.List;
-import java.util.Locale;
-
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 
 public class InvoiceLocaleUtilTest {
 
@@ -89,6 +91,13 @@ public class InvoiceLocaleUtilTest {
 	}
 
 	@Test
+	public void testNoAppPropertyFound_DoesNotThrowException() {
+		when(appPropertyDAO.find(anyString())).thenReturn(null);
+
+		InvoiceLocaleUtil.invoiceIsToBeEmailedViaBPROCS(null);
+	}
+
+	@Test
 	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullBillingCountry() throws Exception {
 		setupSingleLocaleForEmail();
 		when(contractorAccount.getBillingCountry()).thenReturn(null);
@@ -151,7 +160,6 @@ public class InvoiceLocaleUtilTest {
 		when(country.getIsoCode()).thenReturn(isoCode);
 		when(contractorAccount.getBillingCountry()).thenReturn(country);
 	}
-
 
 	private void setupCountryDAOToReturnLocaleWhenGivenIsoCode(String isoCode, Locale locale) {
 		when(countryDAO.findLocaleByCountryISO(isoCode)).thenReturn(locale);

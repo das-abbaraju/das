@@ -2,6 +2,7 @@ package com.picsauditing.model.l10n;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -19,7 +20,13 @@ public class InvoiceLocaleUtil {
 	private static CountryDAO countryDAO = SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
 
 	static {
-		String localesToEmailCSV = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS).getValue();
+		AppProperty appProperty = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS);
+
+		String localesToEmailCSV = null;
+		if (appProperty != null) {
+			localesToEmailCSV = appProperty.getValue();
+		}
+
 		if (Strings.isNotEmpty(localesToEmailCSV)) {
 			List<String> localesToEmailStringList = Arrays.asList(localesToEmailCSV.split("\\s*,\\s*"));
 
