@@ -47,6 +47,13 @@
 // as a JNDI Resource in the Context as:
 					<Resource auth="Container" name="amqp/pics" type="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
 					factory="com.picsauditing.jndi.RabbitMqInitialContextFactory" host="HOST" username="USERNAME" password="PASSWORD"/>
+					
+// Here is the DEVRABBIT information for your localhost
+<Resource auth="Container" name="amqp/pics" type="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
+factory="com.picsauditing.jndi.RabbitMqInitialContextFactory"
+host="wolfram.picsauditing.com"
+port="5672"
+username="pics" password="vEndLEn3"/>
 
 // To enable persistent tomcat database sessions, replace this line from context.xml
 	<Manager pathname="" />
