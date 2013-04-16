@@ -5,10 +5,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.OperatorTable;
+import com.picsauditing.report.tables.*;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +36,17 @@ public class AccountOperatorModel extends AbstractModel {
 		parentOperator.category = FieldCategory.AccountInformation;
 		parentOperator.alias = "parentOperator";
 
-		return spec;
+        ModelSpec accountUser = spec.join(AccountTable.AccountUser);
+        accountUser.category = FieldCategory.AccountInformation;
+        accountUser.minimumImportance = FieldImportance.Average;
+        accountUser.alias = "AccountUser";
+
+        ModelSpec user = accountUser.join(AccountUserTable.User);
+        user.category = FieldCategory.ContactInformation;
+        user.alias = "User";
+        user.minimumImportance = FieldImportance.Required;
+
+        return spec;
 	}
 
 	@Override
