@@ -23,30 +23,22 @@ public class ReportFatalities extends ReportAnnualAddendum {
 		getFilter().setShowShaLocation(true);
 		setVerifiedAnnualUpdateFilter("pd.dateVerified");
 
-		sql.addJoin("JOIN pqfdata pd ON pd.auditID = ca.id AND pd.questionID IN (8812, 10010, 8841)");
+		sql.addJoin("JOIN pqfdata pd ON pd.auditID = ca.id");
+		sql.addJoin("JOIN audit_question aq ON aq.id=pd.questionID");
+		sql.addJoin("JOIN audit_category cat ON cat.id=aq.categoryID");
+
 		sql.addField("pd.dateVerified");
 		sql.addField("pd.answer AS fatalities");
-		sql.addField("CASE WHEN pd.questionID = 8812 THEN 'OSHA' WHEN pd.questionID = 10010 THEN 'MSHA' ELSE 'COHS' END AS shaType");
+		sql.addField("cat.uniqueCode AS shaType");
 		sql.addWhere("pd.answer > 0");
+		sql.addWhere("aq.uniqueCode LIKE '%fatalities%'");
 	    
 		if (filterOn(getFilter().getShaType())) {
-			int questionID = 0;
-
-			if (getFilter().getShaType().equals(OshaType.OSHA))
-				questionID = OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR;
-			else if (getFilter().getShaType().equals(OshaType.MSHA))
-				questionID = 10010;
-			else if (getFilter().getShaType().equals(OshaType.COHS))
-				questionID = CohsStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR;
-
-			sql.addWhere("pd.questionID = " + questionID);
-
+			sql.addWhere("cat.uniqueCode = '" + getFilter().getShaType() + "'");
 			if (getFilter().getShaType().equals(OshaType.MSHA) || getFilter().getShaType().equals(OshaType.COHS)) {
 				getFilter().setVerifiedAnnualUpdate(0);
 			}
 		}
-
-		sql.addGroupBy("shaType");
 	}
 
 	@Override
