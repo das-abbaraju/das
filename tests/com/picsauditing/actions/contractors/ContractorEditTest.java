@@ -343,10 +343,15 @@ public class ContractorEditTest extends PicsActionTest {
 
 		String actionResult = classUnderTest.deactivate();
 
+		verifyNoDeactivationOccursWhenNoReasonProvided(actionResult);
+	}
+
+	private void verifyNoDeactivationOccursWhenNoReasonProvided(String actionResult) {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionErrors());
 		verify(accountStatusChanges, never()).deactivateContractor(any(ContractorAccount.class),
 				any(Permissions.class), anyString(), anyString());
+		verify(mockContractorAccountDao, never()).save(mockContractor);
 	}
 
 	private void setupForDeactivateTest(Date paymentExpires, boolean freeMembership) {
@@ -361,10 +366,16 @@ public class ContractorEditTest extends PicsActionTest {
 
 		String actionResult = classUnderTest.deactivate();
 
+		verifyContractorIsDeactivedWhenPaymentExpires(actionResult);
+	}
+
+	private void verifyContractorIsDeactivedWhenPaymentExpires(String actionResult) {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionMessages());
 		verify(accountStatusChanges, times(1)).deactivateContractor(any(ContractorAccount.class),
 				any(Permissions.class), anyString(), anyString());
+		verify(mockContractorAccountDao, times(1)).save(mockContractor);
+		verify(mockContractor, times(1)).setRenew(false);
 	}
 
 	@Test
@@ -373,10 +384,7 @@ public class ContractorEditTest extends PicsActionTest {
 
 		String actionResult = classUnderTest.deactivate();
 
-		assertEquals(ActionSupport.SUCCESS, actionResult);
-		assertTrue(classUnderTest.hasActionMessages());
-		verify(accountStatusChanges, times(1)).deactivateContractor(any(ContractorAccount.class),
-				any(Permissions.class), anyString(), anyString());
+		verifyContractorIsDeactivedWhenPaymentExpires(actionResult);
 	}
 
 	@Test
@@ -385,8 +393,14 @@ public class ContractorEditTest extends PicsActionTest {
 
 		String actionResult = classUnderTest.deactivate();
 
+		verifyAccountIsSetNotToRenew(actionResult);
+	}
+
+	private void verifyAccountIsSetNotToRenew(String actionResult) {
 		assertEquals(ActionSupport.SUCCESS, actionResult);
 		assertTrue(classUnderTest.hasActionMessages());
+		verify(mockContractorAccountDao, times(1)).save(mockContractor);
+		verify(mockContractor, times(1)).setRenew(false);
 	}
 
 }
