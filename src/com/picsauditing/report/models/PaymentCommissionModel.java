@@ -2,9 +2,11 @@ package com.picsauditing.report.models;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountUserTable;
@@ -13,6 +15,8 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
 import com.picsauditing.report.tables.PaymentCommissionTable;
+import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentCommissionModel extends AbstractModel {
 
@@ -122,7 +126,17 @@ public class PaymentCommissionModel extends AbstractModel {
 	@Override
 	public String getWhereClause(List<Filter> filters) {
 		String whereClause = super.getWhereClause(filters);
+		whereClause = restrictSalesRepsToTheirOwnRows(whereClause);
 
+		return whereClause;
+	}
+
+	private String restrictSalesRepsToTheirOwnRows(String whereClause) {
+		Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+		if (CollectionUtils.isNotEmpty(groupIds) && !groupIds.contains(User.GROUP_MANAGER)
+				&& groupIds.contains(User.GROUP_SALES_REPS)) {
+			whereClause += Strings.EMPTY_STRING + "AccountUser.userID = " + permissions.getUserId();
+		}
 		return whereClause;
 	}
 }

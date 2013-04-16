@@ -1,10 +1,12 @@
 package com.picsauditing.report.models;
 
+import static com.picsauditing.util.Assert.assertContains;
 import static com.picsauditing.util.Assert.assertNotContains;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.User;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,8 +36,27 @@ public class PaymentCommissionModelTest extends ModelTest {
 	}
 
 	@Test
-	public void testWhereClause__NoAccountUserClause() throws Exception {
-		List<Filter> filters = new ArrayList<Filter>();
+	public void testWhereClause_otherThanSalesRepsShouldNotBeRestricted() throws Exception {
+		List<Filter> filters = new ArrayList<>();
+		String whereClause = model.getWhereClause(filters);
+
+		assertNotContains("AccountUser.userID = ", whereClause);
+	}
+
+	@Test
+	public void testWhereClause_salesRepsShouldBeRestricted() throws Exception {
+		model.permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
+		List<Filter> filters = new ArrayList<>();
+		String whereClause = model.getWhereClause(filters);
+
+		assertContains("AccountUser.userID = ", whereClause);
+	}
+
+	@Test
+	public void testWhereClause_salesRepsShouldBeRestrictedUnlessTheyreAlsoAManager() throws Exception {
+		model.permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
+		model.permissions.getAllInheritedGroupIds().add(User.GROUP_MANAGER);
+		List<Filter> filters = new ArrayList<>();
 		String whereClause = model.getWhereClause(filters);
 
 		assertNotContains("AccountUser.userID = ", whereClause);
