@@ -43,7 +43,7 @@ public class AccountOperatorModel extends AbstractModel {
 
         ModelSpec user = accountUser.join(AccountUserTable.User);
         user.category = FieldCategory.ContactInformation;
-        user.alias = "User";
+        user.alias = "AccountUserUser";
         user.minimumImportance = FieldImportance.Required;
 
         return spec;
