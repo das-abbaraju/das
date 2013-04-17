@@ -27,7 +27,7 @@
                 
                 <div class="summary">
                     <span class="name">${person.userName}</span>
-                    <p class="description">${person.location}</p>
+                    <p class="location">${person.location}</p>
                 </div>
             </li>
         </s:iterator>

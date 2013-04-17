@@ -1,5 +1,6 @@
 .dropdown-menu
 {
+	text-align: left;
 	z-index: 9999;
 	
 	li > a:hover,
@@ -24,5 +25,5 @@
 }
 
 .dropdown-striped li:nth-child(even) {
-  background-color: $pics_cool_grey;
+	background-color: $pics_cool_grey;
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,14 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.ReportFavoriteInfo;
+import com.picsauditing.service.ReportFavoriteInfoConverter;
+import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportPermissionInfo;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.service.ReportSearch;
+import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -156,7 +163,7 @@ public class ManageReports extends PicsActionSupport {
 		userAccessList = reportService.buildUserAccessList(reportId);
 		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
 
-		return "access";
+		return determineViewName("accessList", "access");
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {

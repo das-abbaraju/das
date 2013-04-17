@@ -6,14 +6,14 @@
     
     <ul class="group-list unstyled">
         <s:iterator value="#groups" var="group">
-            <s:set var="access_type" value="%{#group.editable ? 'edit' : 'view' }" />
+            <s:set var="access_type" value="%{#group.editable ? 'edit' : 'view'}" />
         
             <li class="group ${access_type} clearfix" data-group-id="${group.id}">
                 <s:include value="/struts/report/manage-report/_access-group-access-options.jsp" />
                 
                 <div class="summary">
                     <span class="name">${group.accountName}</span>
-                    <p class="description">${group.location}</p>
+                    <p class="location">${group.location}</p>
                 </div>
             </li>
         </s:iterator>
