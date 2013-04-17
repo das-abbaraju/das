@@ -1,17 +1,5 @@
 package com.picsauditing.validator;
 
-import java.util.Locale;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PICS.I18nCache;
@@ -21,6 +9,15 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
+import java.util.Vector;
+
 import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
 
 public class RegistrationValidator implements Validator {
@@ -58,6 +55,8 @@ public class RegistrationValidator implements Validator {
 		String language = valueStack.findString("language");
 		String dialect = valueStack.findString("dialect");
 
+		String countrySubdivision = valueStack.findString("countrySubdivision");
+
 		if (contractor == null) {
 			contractor = new ContractorAccount();
 		}
@@ -74,6 +73,13 @@ public class RegistrationValidator implements Validator {
 		String countryIso = Strings.EMPTY_STRING;
 		if (country != null) {
 			countryIso = country.getIsoCode();
+		}
+
+		if (Strings.isEmpty(countrySubdivision)) {
+			if ((country != null && country.isHasCountrySubdivisions()) || Country.COUNTRIES_WITH_SUBDIVISIONS
+					.contains(countryIso)) {
+				addFieldError("countrySubdivision", getText(InputValidator.REQUIRED_KEY));
+			}
 		}
 
 		if (!inputValidator.isLanguageValid(language, (LanguageModel) valueStack.findValue("supportedLanguages"))) {

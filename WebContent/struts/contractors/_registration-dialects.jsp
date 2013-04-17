@@ -19,5 +19,6 @@
             </option>
         </s:iterator>
     </select>
-    <s:fielderror fieldName="contractor.dialect" />
+
+    <s:fielderror fieldName="contractor.dialect" id="Registration_language_dialect_error" />
 </s:if>

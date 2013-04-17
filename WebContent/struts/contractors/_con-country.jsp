@@ -8,13 +8,15 @@
 
 <s:if test="getCountrySubdivisionList(#countryString).size() > 0">
     <s:select
-        label="%{getCountrySubdivisionLabelKeyFor(#countryString)}"
-        id="countrySubdivision_sel"
-        list="getCountrySubdivisionList(#countryString)"
         cssClass="contractor-countrySubdivision"
-        name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"
+        headerKey=""
+        headerValue="- %{getText('CountrySubdivisionList.list.select.header')} -"
+        id="countrySubdivision_sel"
+        label="%{getCountrySubdivisionLabelKeyFor(#countryString)}"
+        list="getCountrySubdivisionList(#countryString)"
         listKey="isoCode"
         listValue="simpleName"
+        name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"
         theme="pics"
         value="accountCountrySubdivision"
     />

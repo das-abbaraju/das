@@ -2,14 +2,15 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:if test="getCountrySubdivisionList(countryString).size() > 0">
-	<s:select
-		label="%{getCountrySubdivisionLabelKeyFor(countryString)}"
-		id="Registration_contractor_countrySubdivision"
-		list="getCountrySubdivisionList(countryString)" 
-		cssClass="contractor-countrySubdivision"
-		name="countrySubdivision" 
-		listKey="isoCode" 
-		listValue="simpleName"
-		theme="pics"
-	/>
+    <label for="Registration_contractor_countrySubdivision">
+        <s:property value="getCountrySubdivisionLabelFor(countryString)" />
+    </label>
+
+    <select class="contractor-countrySubdivision" id="Registration_contractor_countrySubdivision"
+            name="countrySubdivision">
+        <option value="">- <s:text name="CountrySubdivisionList.list.select.header" /> -</option>
+        <s:iterator value="getCountrySubdivisionList(countryString)">
+            <option value="${isoCode}">${simpleName}</option>
+        </s:iterator>
+    </select>
 </s:if>

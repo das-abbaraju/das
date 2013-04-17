@@ -1175,7 +1175,8 @@ footer .footer-menu a {
 	line-height: 18px;
 }
 
-#dialect_selection
+#dialect_selection,
+#Registration_contractor_countrySubdivision
 {
 	float: left;
 }
