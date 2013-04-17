@@ -8,7 +8,6 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.util.AppVersion;
 import com.picsauditing.util.Strings;
 
@@ -23,9 +22,7 @@ public class DataConversion extends PicsActionSupport {
 	private AppPropertyDAO appPropertyDAO;
 	@Autowired
 	private ReportDAO reportDAO;
-	@Autowired
-	private LegacyReportConverter legacyReportConverter;
-	
+
 	// TODO change this back to not testing
 	private boolean testing = true;
 
@@ -65,7 +62,6 @@ public class DataConversion extends PicsActionSupport {
 			return BLANK;
 		}
 		long startTime = System.currentTimeMillis();
-		runDataConversion();
 		updateDatabaseVersions();
 		long endTime = System.currentTimeMillis();
 		addActionMessage("Data conversion completed successfully in " + (endTime - startTime) + " ms");
@@ -77,25 +73,4 @@ public class DataConversion extends PicsActionSupport {
 		appPropertyDAO.setProperty("VERSION.minor", AppVersion.current.getMinor() + "");
 	}
 
-	/*
-	 * For each release of PICS Organizer clear this out and write a new version
-	 */
-	private void runDataConversion() {
-		reportDAO.truncateReportChildren();
-		List<Report> reports = dao.findAll(Report.class);
-		
-		for (Report report : reports) {
-			try {
-				convertReport(report);
-			} catch (Exception e) {
-				System.out.println(" -- FAILED TO CONVERT REPORT " + e.getMessage());
-			}
-		}
-	}
-
-	private void convertReport(Report report) {
-		System.out.println("Converting " + report.getId() + " " + report.getName());
-		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
-		dao.save(report);
-	}
 }

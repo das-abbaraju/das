@@ -67,7 +67,7 @@ public final class ReportUtil {
 		field.setHelp(translateHelp(field, locale));
 	}
 
-	public static void addTranslatedLabelsToReportParameters(Report report, Locale locale) {
+	public static void addTranslatedLabelsToReport(Report report, Locale locale) {
 		addTranslationLabelsToColumns(report, locale);
 		addTranslationLabelsToFilters(report, locale);
 		addTranslationLabelsToSorts(report, locale);

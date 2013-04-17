@@ -21,8 +21,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,6 @@ import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.converter.JsonReportElementsBuilder;
-import com.picsauditing.report.converter.LegacyReportConverter;
 import com.picsauditing.report.converter.ReportBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
@@ -74,8 +71,6 @@ public class ReportService {
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
 	@Autowired
 	private PermissionService permissionService;
-	@Autowired
-	private LegacyReportConverter legacyReportConverter;
 	@Autowired
 	private SqlBuilder sqlBuilder;
 	@Autowired
@@ -122,7 +117,7 @@ public class ReportService {
 		SelectSQL sql = sqlBuilder.initializeReportAndBuildSql(report, reportContext.permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
-		ReportUtil.addTranslatedLabelsToReportParameters(report, reportContext.permissions.getLocale());
+		ReportUtil.addTranslatedLabelsToReport(report, reportContext.permissions.getLocale());
 		return sql;
 	}
 
@@ -134,11 +129,6 @@ public class ReportService {
 			report = buildReportFromJson(reportJson, reportContext.reportId);
 		} else {
 			report = loadReportFromDatabase(reportContext.reportId);
-
-			// todo: Remove me when all reports are converted to new layout on stable
-			if (report.hasNoColumnsFiltersOrSorts()) {
-				legacyConvertParametersToReport(report);
-			}
 		}
 
 		report.sortColumns();
@@ -268,37 +258,10 @@ public class ReportService {
 			throw new ReportValidationException("Report contained no columns");
 		}
 
-		if (report.hasParameters()) {
-			try {
-				JSONParser parser = new JSONParser();
-				parser.parse(report.getParameters());
-			} catch (ParseException e) {
-				throw new ReportValidationException(e, report);
-			}
-		}
-
 		if (report.getOwner() == null) {
 			throw new ReportValidationException("Report does not have an owner");
 		}
 
-	}
-
-	// TODO Remove this method after the next release
-	@Deprecated
-	private void legacyConvertParametersToReport(Report report) throws ReportValidationException {
-		if (report == null) {
-			throw new IllegalArgumentException("Report should not be null");
-		}
-
-		reportDao.remove(Column.class, "t.report.id = " + report.getId());
-		report.getColumns().clear();
-		reportDao.remove(Filter.class, "t.report.id = " + report.getId());
-		report.getFilters().clear();
-		reportDao.remove(Sort.class, "t.report.id = " + report.getId());
-		report.getSorts().clear();
-
-		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
-		reportDao.save(report);
 	}
 
 	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,

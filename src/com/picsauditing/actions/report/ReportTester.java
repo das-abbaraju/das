@@ -33,7 +33,7 @@ public class ReportTester extends PicsActionSupport {
 			SqlBuilder sqlBuilder = new SqlBuilder();
 			report.setSql(sqlBuilder.initializeReportAndBuildSql(report, permissions).toString());
 
-			ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
+			ReportUtil.addTranslatedLabelsToReport(report, permissions.getLocale());
 
 			reportElements = new ArrayList<ReportElement>();
 			reportElements.add(new Column("COLUMNS"));
