@@ -98,7 +98,7 @@ Ext.define('PICS.data.ServerCommunication', {
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
 
-                this.sendReportViaForm(url);
+                this.sendReportViaForm(url, '_self');
             },
 
             favoriteReport: function () {
@@ -237,7 +237,7 @@ Ext.define('PICS.data.ServerCommunication', {
             printReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getPrintReportUrl();
 
-                this.sendReportViaForm(url);
+                this.sendReportViaForm(url, '_blank');
             },
 
             saveReport: function (options) {
@@ -270,7 +270,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
 
-            sendReportViaForm: function (url) {
+            sendReportViaForm: function (url, target) {
                 var form = document.createElement('form'),
                     ext_form = Ext.Element(form),
                     input = document.createElement('input'),
@@ -280,7 +280,7 @@ Ext.define('PICS.data.ServerCommunication', {
 
                 ext_form.setAttribute('action', url);
                 ext_form.setAttribute('method', 'post');
-                ext_form.setAttribute('target', '_blank');
+                ext_form.setAttribute('target', target);
 
                 ext_form.appendChild(input);
                 input.setAttribute('name', 'reportJson');
