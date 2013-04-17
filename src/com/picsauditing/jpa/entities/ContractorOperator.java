@@ -126,10 +126,14 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Transient
 	public boolean isWorkStatusPending() {
-		if (!getOperatorAccount().isCorporate())
-			return workStatus.isPending();
-		else
-			return isChildrenWorkStatusEqual(ApprovalStatus.P);
+        boolean result = false;
+		if (!getOperatorAccount().isCorporate()) {
+            result = workStatus.isPending();
+        }
+		else {
+            result = isChildrenWorkStatusEqual(ApprovalStatus.P);
+        }
+        return result;
 	}
 
 	@Transient
