@@ -15,6 +15,7 @@ import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportService;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class ReportApi extends PicsApiSupport {
 	protected int shareId;
 	private ReportResults reportResults;
 	private Report report;
+	private String reportJson;
 
 	private ModelType type;
 	private String fieldId;
@@ -145,11 +147,11 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String print() {
-		JSONObject payloadJson = getJsonFromRequestPayload();
+		JSONObject payloadJson = (JSONObject) JSONValue.parse(reportJson);
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			report = reportService.createOrLoadReport(reportContext);
+			report = reportService.buildReportFromJson(payloadJson, reportId);
 
 			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
 		} catch (Exception e) {
@@ -160,11 +162,11 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String download() {
-		JSONObject payloadJson = getJsonFromRequestPayload();
+		JSONObject payloadJson = (JSONObject) JSONValue.parse(reportJson);
 		ReportContext reportContext = buildReportContext(payloadJson);
 
 		try {
-			report = reportService.createOrLoadReport(reportContext);
+			report = reportService.buildReportFromJson(payloadJson, reportId);
 
 			reportResults = reportService.buildReportResultsForPrinting(reportContext, report);
 
@@ -307,6 +309,10 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setFieldId(String fieldId) {
 		this.fieldId = fieldId;
+	}
+
+	public void setReportJson(String reportJson) {
+		this.reportJson = reportJson;
 	}
 
 }

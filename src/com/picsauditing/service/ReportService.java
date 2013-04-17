@@ -235,7 +235,7 @@ public class ReportService {
 		return report;
 	}
 
-	private Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
+	public Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
 		Report report = ReportBuilder.fromJson(jsonReport);
 		report.setId(reportId);
 		return report;

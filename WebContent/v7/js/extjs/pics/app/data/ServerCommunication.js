@@ -283,7 +283,7 @@ Ext.define('PICS.data.ServerCommunication', {
                 ext_form.setAttribute('target', '_blank');
 
                 ext_form.appendChild(input);
-                input.setAttribute('name', 'report');
+                input.setAttribute('name', 'reportJson');
                 input.setAttribute('value', json);
 
                 ext_form.submit();
