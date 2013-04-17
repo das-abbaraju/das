@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.persistence.NoResultException;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.dao.*;
@@ -31,11 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.Sort;
@@ -71,7 +68,7 @@ public class ReportService {
 	@Autowired
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
-	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	private ManageReportsService manageReportsService;
 	@Autowired
 	private PermissionService permissionService;
 	@Autowired
@@ -80,11 +77,11 @@ public class ReportService {
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
+
 	@Autowired
 	private ReportPermissionInfoConverter reportPermissionInfoConverter;
 
 	private I18nCache i18nCache;
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
@@ -211,7 +208,7 @@ public class ReportService {
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		connectReportPermissionUser(userId, newReport.getId(), true, userId);
+		manageReportsService.connectReportPermissionUser(userId, newReport.getId(), true, userId);
 
 		return newReport;
 	}
@@ -301,86 +298,6 @@ public class ReportService {
 
 		legacyReportConverter.setReportPropertiesFromJsonParameters(report);
 		reportDao.save(report);
-	}
-
-	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
-			boolean editable) throws ReportPermissionException {
-		if (!permissionService.canUserEditReport(permissions, reportId)) {
-			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
-		}
-
-		return connectReportPermissionUser(shareToUserId, reportId, editable, permissions.getUserId());
-	}
-
-	private ReportPermissionUser connectReportPermissionUser(int shareToUserId, int reportId, boolean editable, int shareFromUserId) {
-		ReportPermissionUser reportPermissionUser;
-
-		try {
-			reportPermissionUser = reportPermissionUserDao.findOne(shareToUserId, reportId);
-		} catch (NoResultException nre) {
-			Report report = reportDao.findById(reportId);
-			// TODO use a different DAO
-			User shareToUser = reportDao.find(User.class, shareToUserId);
-			reportPermissionUser = new ReportPermissionUser(shareToUser, report);
-			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
-
-			if (!shareToUser.isGroup()) {
-				reportPreferencesService.loadOrCreateReportUser(shareToUserId, reportId);
-			}
-		}
-
-		reportPermissionUser.setEditable(editable);
-		reportPermissionUserDao.save(reportPermissionUser);
-
-		return reportPermissionUser;
-	}
-
-	public ReportPermissionAccount shareReportWithAccount(int accountId, int reportId, Permissions permissions) throws ReportPermissionException {
-		if (!permissionService.canUserEditReport(permissions, reportId)) {
-			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
-		}
-
-		return connectReportPermissionAccount(accountId, reportId, permissions);
-	}
-
-	private ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId,
-			Permissions permissions) {
-		ReportPermissionAccount reportPermissionAccount;
-
-		try {
-			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-		} catch (NoResultException nre) {
-			Report report = reportDao.findById(reportId);
-			// TODO use a different DAO
-			Account account = reportDao.find(Account.class, accountId);
-			reportPermissionAccount = new ReportPermissionAccount(account, report);
-			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
-		}
-
-		reportPermissionAccountDao.save(reportPermissionAccount);
-
-		return reportPermissionAccount;
-	}
-
-	public void disconnectReportPermissionUser(int userId, int reportId) {
-		try {
-			reportPermissionUserDao.revokePermissions(userId, reportId);
-		} catch (NoResultException nre) {
-
-		}
-	}
-
-	public void disconnectReportPermissionAccount(int accountId, int reportId) {
-		ReportPermissionAccount reportPermissionAccount;
-
-		try {
-			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-			reportPermissionAccountDao.remove(reportPermissionAccount);
-		} catch (NoResultException nre) {
-
-		}
 	}
 
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {

@@ -70,6 +70,8 @@ public class ManageReports extends PicsActionSupport {
 	private String searchTerm;
 	private String sort;
 	private String direction;
+	protected int shareId;
+	protected boolean editable;
 
 	private int pinnedIndex;
 
@@ -247,6 +249,40 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
+	public String shareWithUser() {
+		try {
+			manageReportsService.shareReportWithUser(shareId, reportId, permissions, editable);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithGroup() {
+		try {
+			manageReportsService.shareReportWithUser(shareId, reportId, permissions, editable);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithAccount() {
+		try {
+			manageReportsService.shareReportWithAccount(shareId, reportId, permissions);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	// TODO remove this function because it's redundant. We have shareWith(User|Group|Account)
 	public String shareWithViewPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
@@ -266,6 +302,7 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
+	// TODO remove this function because it's redundant. We have shareWith(User|Group|Account)
 	public String shareWithEditPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
@@ -500,6 +537,14 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setPinnedIndex(int pinnedIndex) {
 		this.pinnedIndex = pinnedIndex;
+	}
+
+	public void setShareId(int shareId) {
+		this.shareId = shareId;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	public Pagination<ReportInfo> getPagination() {

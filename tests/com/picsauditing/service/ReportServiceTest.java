@@ -81,8 +81,6 @@ public class ReportServiceTest {
 	@Mock
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock
-	private ReportPermissionAccountDAO reportPermissionAccountDao;
-	@Mock
 	private User user;
 	@Mock
 	private Account account;
@@ -98,6 +96,8 @@ public class ReportServiceTest {
 	private PermissionService permissionService;
 	@Mock
 	private ReportPreferencesService reportPreferencesService;
+	@Mock
+	private ManageReportsService manageReportsService;
 	@Mock
 	private SqlBuilder sqlBuilder;
 	@Mock
@@ -122,10 +122,10 @@ public class ReportServiceTest {
 		setInternalState(reportService, "reportDao", reportDao);
 		setInternalState(reportService, "reportElementDAO", reportElementDAO);
 		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
-		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
 		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
+		setInternalState(reportService, "manageReportsService", manageReportsService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
 
 		when(user.getId()).thenReturn(USER_ID);
@@ -242,87 +242,6 @@ public class ReportServiceTest {
 		report.setParameters("this is not valid json");
 
 		reportService.validate(report);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
-	}
-
-	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsTrue_ThenReportIsSharedWithEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-		boolean editable = true;
-
-		ReportPermissionUser reportPermissionUser = reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
-
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
-	}
-
-	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsFalse_ThenReportIsSharedWithoutEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-		boolean editable = false;
-
-		ReportPermissionUser reportPermissionUser = reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
-
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-	}
-
-	@Test
-	public void testShareReportWithAccount_WhenUserCanViewAndEdit_ThenReportIsShared() throws ReportPermissionException {
-		when(reportPermissionAccountDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(Account.class, ACCOUNT_ID)).thenReturn(account);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-
-		ReportPermissionAccount reportPermissionAccount = reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-
-		verify(reportPermissionAccountDao).save(reportPermissionAccount);
-		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
-		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
 	}
 
 	@Test

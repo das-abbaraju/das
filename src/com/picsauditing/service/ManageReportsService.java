@@ -4,15 +4,12 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -27,6 +24,10 @@ public class ManageReportsService {
     private ReportDAO reportDAO;
     @Autowired
     private ReportUserDAO reportUserDAO;
+	@Autowired
+	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	@Autowired
+	private ReportPermissionUserDAO reportPermissionUserDao;
     @Autowired
     private ReportInfoProvider reportInfoProvider;
 
@@ -160,7 +161,87 @@ public class ManageReportsService {
         return shareWithPermission(sharerUser, toUser, report, true, permissions);
     }
 
-    public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
+	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
+			boolean editable) throws ReportPermissionException {
+		if (!permissionService.canUserEditReport(permissions, reportId)) {
+			// TODO translate this
+			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+		}
+
+		return connectReportPermissionUser(shareToUserId, reportId, editable, permissions.getUserId());
+	}
+
+	public ReportPermissionAccount shareReportWithAccount(int accountId, int reportId, Permissions permissions) throws ReportPermissionException {
+		if (!permissionService.canUserEditReport(permissions, reportId)) {
+			// TODO translate this
+			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+		}
+
+		return connectReportPermissionAccount(accountId, reportId, permissions);
+	}
+
+	public ReportPermissionUser connectReportPermissionUser(int shareToUserId, int reportId, boolean editable, int shareFromUserId) {
+		ReportPermissionUser reportPermissionUser;
+
+		try {
+			reportPermissionUser = reportPermissionUserDao.findOne(shareToUserId, reportId);
+		} catch (NoResultException nre) {
+			Report report = reportDAO.findById(reportId);
+			// TODO use a different DAO
+			User shareToUser = reportDAO.find(User.class, shareToUserId);
+			reportPermissionUser = new ReportPermissionUser(shareToUser, report);
+			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
+
+			if (!shareToUser.isGroup()) {
+				reportPreferencesService.loadOrCreateReportUser(shareToUserId, reportId);
+			}
+		}
+
+		reportPermissionUser.setEditable(editable);
+		reportPermissionUserDao.save(reportPermissionUser);
+
+		return reportPermissionUser;
+	}
+
+	private ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId,
+																   Permissions permissions) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+		} catch (NoResultException nre) {
+			Report report = reportDAO.findById(reportId);
+			// TODO use a different DAO
+			Account account = reportDAO.find(Account.class, accountId);
+			reportPermissionAccount = new ReportPermissionAccount(account, report);
+			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
+		}
+
+		reportPermissionAccountDao.save(reportPermissionAccount);
+
+		return reportPermissionAccount;
+	}
+
+	public void disconnectReportPermissionUser(int userId, int reportId) {
+		try {
+			reportPermissionUserDao.revokePermissions(userId, reportId);
+		} catch (NoResultException nre) {
+
+		}
+	}
+
+	public void disconnectReportPermissionAccount(int accountId, int reportId) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		} catch (NoResultException nre) {
+
+		}
+	}
+
+	public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
         if (!canRemoveReport(removerUser, report, permissions)) {
             throw new Exception("User " + removerUser.getId() + " does not have permission to remove report "
                     + report.getId());
