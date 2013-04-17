@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
@@ -50,7 +51,8 @@ public class AccountTable extends AbstractTable {
 		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID")))
 				.setMinimumImportance(FieldImportance.Low);
 
-        addOptionalKey(new ReportForeignKey(AccountUser, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias +
+        addOptionalKey(new ReportForeignKey(AccountUser, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
+                UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
                 ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
                 .setMinimumImportance(FieldImportance.Required);
 	}
