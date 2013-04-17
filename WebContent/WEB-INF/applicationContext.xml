@@ -195,6 +195,7 @@
 	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
     <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype" />
     <bean id="ContractorModel" class="com.picsauditing.rbic.ContractorModel" scope="prototype" />
+    <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService" />
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
