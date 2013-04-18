@@ -1,13 +1,16 @@
 package com.picsauditing.model.i18n;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
-import edu.emory.mathcs.backport.java.util.Arrays;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -15,20 +18,44 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 public class LanguageModelTest {
+
 	private LanguageModel languageModel;
 
 	@Mock
 	private LanguageProvider languageProvider;
 
+	@Mock
+	private ContractorAccount contractorAccount;
+	@Mock
+	private AppProperty appProperty;
+
+	private static ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+	private static AppPropertyDAO appPropertyDAO = Mockito.mock(AppPropertyDAO.class);
+	private static CountryDAO countryDAO = Mockito.mock(CountryDAO.class);
+
+	@BeforeClass
+	public static void classSetup() {
+		when(applicationContext.getBean(SpringUtils.APP_PROPERTY_DAO)).thenReturn(appPropertyDAO);
+		when(applicationContext.getBean(SpringUtils.COUNTRY_DAO)).thenReturn(countryDAO);
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		Mockito.reset(appPropertyDAO, countryDAO);
 
 		languageModel = new LanguageModel();
 
@@ -187,50 +214,50 @@ public class LanguageModelTest {
 		assertEquals(canadianFrench, stableLanguageLocales.get(2));
 	}
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetStableLanguageLocales_EnsureListIsUnmodifiable() {
-        List<Language> languages = createLanguageList();
+	@Test(expected = UnsupportedOperationException.class)
+	public void testGetStableLanguageLocales_EnsureListIsUnmodifiable() {
+		List<Language> languages = createLanguageList();
 
 		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
 		List<Locale> stableLanguageLocales = languageModel.getStableLanguageLocales();
 
-        stableLanguageLocales.add(Locale.CHINA);
-    }
+		stableLanguageLocales.add(Locale.CHINA);
+	}
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetStableLanguages_EnsureListIsUnmodifiable() {
-        List<Language> languages = createLanguageList();
+	@Test(expected = UnsupportedOperationException.class)
+	public void testGetStableLanguages_EnsureListIsUnmodifiable() {
+		List<Language> languages = createLanguageList();
 
-        when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
-        List<Language> stableLanguageLocales = languageModel.getStableLanguages();
+		List<Language> stableLanguageLocales = languageModel.getStableLanguages();
 
-        stableLanguageLocales.add(new Language());
-    }
+		stableLanguageLocales.add(new Language());
+	}
 
-    private List<Language> createLanguageList() {
-        Language language1 = new Language();
-        Language language2 = new Language();
-        Language language3 = new Language();
+	private List<Language> createLanguageList() {
+		Language language1 = new Language();
+		Language language2 = new Language();
+		Language language3 = new Language();
 
-        Locale britishEnglish = new Locale("en", "GB");
-        Locale canadianFrench = new Locale("fr", "CA");
-        Locale mexicanSpanish = new Locale("es", "MX");
+		Locale britishEnglish = new Locale("en", "GB");
+		Locale canadianFrench = new Locale("fr", "CA");
+		Locale mexicanSpanish = new Locale("es", "MX");
 
-        language1.setLocale(britishEnglish);
-        language2.setLocale(canadianFrench);
-        language3.setLocale(mexicanSpanish);
+		language1.setLocale(britishEnglish);
+		language2.setLocale(canadianFrench);
+		language3.setLocale(mexicanSpanish);
 
-        List<Language> languages = new ArrayList<Language>();
-        languages.add(language1);
-        languages.add(language2);
-        languages.add(language3);
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language1);
+		languages.add(language2);
+		languages.add(language3);
 
-        return languages;
-    }
+		return languages;
+	}
 
-    @Test
+	@Test
 	public void testSetFirstLanguageAsEnglish() throws Exception {
 		List<String> languages = new ArrayList<String>();
 		languages.add(Locale.CHINESE.getLanguage());
@@ -247,52 +274,159 @@ public class LanguageModelTest {
 	}
 
 
-    @Test
-    public void testGetMatchingStableLocale() throws Exception {
-        List<Language> languageList = mockLanguageList(new  Locale[]{
-                Locale.FRENCH,
-                Locale.GERMAN,
-                Locale.ITALIAN
-        });
+	@Test
+	public void testGetMatchingStableLocale() throws Exception {
+		List<Language> languageList = mockLanguageList(new Locale[]{
+				Locale.FRENCH,
+				Locale.GERMAN,
+				Locale.ITALIAN
+		});
 
-        when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+		when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
 
-        Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
-        assertEquals(Locale.ITALIAN, result);
-    }
+		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+		assertEquals(Locale.ITALIAN, result);
+	}
 
-    @Test
-    public void testGetMatchingStableLocale_WithNull() throws Exception {
-        List<Language> languageList = mockLanguageList(new  Locale[]{
-                Locale.FRENCH,
-                Locale.GERMAN,
-                null,
-                Locale.ITALIAN
-        });
-        Logger logger = Mockito.mock(Logger.class);
+	@Test
+	public void testGetMatchingStableLocale_WithNull() throws Exception {
+		List<Language> languageList = mockLanguageList(new Locale[]{
+				Locale.FRENCH,
+				Locale.GERMAN,
+				null,
+				Locale.ITALIAN
+		});
+		Logger logger = Mockito.mock(Logger.class);
 
-        Whitebox.setInternalState(languageModel, "logger", logger);
+		Whitebox.setInternalState(languageModel, "logger", logger);
 
-        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
 
-        when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+		when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
 
-        Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
-        assertEquals(Locale.ITALIAN, result);
+		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+		assertEquals(Locale.ITALIAN, result);
 
-        verify(logger).error(errorMessageCaptor.capture());
+		verify(logger).error(errorMessageCaptor.capture());
 
-        assertEquals("Null locale found in Stable and Beta locales list: en_US,fr,de,null,it",
-                errorMessageCaptor.getValue());
-    }
+		assertEquals("Null locale found in Stable and Beta locales list: en_US,fr,de,null,it",
+				errorMessageCaptor.getValue());
+	}
 
-    private List<Language> mockLanguageList(Locale[] localesToMock) {
-        List<Language> languageList = new ArrayList<>();
-        for (Locale locale: localesToMock) {
-            Language language = Mockito.mock(Language.class);
-            when(language.getLocale()).thenReturn(locale);
-            languageList.add(language);
-        }
-        return languageList;
-    }
+	private List<Language> mockLanguageList(Locale[] localesToMock) {
+		List<Language> languageList = new ArrayList<>();
+		for (Locale locale : localesToMock) {
+			Language language = Mockito.mock(Language.class);
+			when(language.getLocale()).thenReturn(locale);
+			languageList.add(language);
+		}
+		return languageList;
+	}
+
+	@AfterClass
+	public static void classTeardown() {
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
+		//Whitebox.setInternalState(LanguageModel.class, "languagesToEmailInvoicesInBPROCS", (Set<String>) null);
+	}
+
+	private void setupNullLanguageSpecifiedForBPROCSEmail() {
+		when(appProperty.getValue()).thenReturn(null);
+		when(appPropertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS)).thenReturn(appProperty);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_NoLanguagesSpecified() {
+		String contractorsLanguage = "de";
+		Locale localeContractorAccountShouldReturn = Locale.GERMANY;
+		when(contractorAccount.getLocale()).thenReturn(localeContractorAccountShouldReturn);
+
+		setupNullLanguageSpecifiedForBPROCSEmail();
+		boolean result = languageModel.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	private void setupEnglishToBeEmailedViaBProcs() {
+		when(appProperty.getValue()).thenReturn("en");
+		when(appPropertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS)).thenReturn(appProperty);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveNullContractor() throws Exception {
+		setupEnglishToBeEmailedViaBProcs();
+
+		boolean result = languageModel.invoiceIsToBeEmailedViaBPROCS(null);
+
+		assertFalse(result);
+	}
+
+	@Test
+	public void testNoAppPropertyFound_DoesNotThrowException() {
+		when(appPropertyDAO.find(anyString())).thenReturn(null);
+
+		languageModel.invoiceIsToBeEmailedViaBPROCS(null);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_ReceiveContractorWithNullLocale() throws Exception {
+		setupEnglishToBeEmailedViaBProcs();
+		Locale localeContractorAccountShouldReturn = Locale.GERMANY;
+		when(contractorAccount.getLocale()).thenReturn(localeContractorAccountShouldReturn);
+
+		boolean result = languageModel.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	private void setupLanguageModelEmailListContainsContractorsLanguage() {
+		String languageToAddToEmailViaBPROCSList = "de";
+		Locale localeContractorAccountShouldReturn = Locale.GERMANY;
+
+		setupEnglishToBeEmailedViaBProcs();
+		setupContractorAccountLocale(localeContractorAccountShouldReturn);
+		addLanguageToEmailList(languageToAddToEmailViaBPROCSList);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_LanguageToEmailListCoversContractorsLocale() throws Exception {
+		setupLanguageModelEmailListContainsContractorsLanguage();
+
+		boolean result = languageModel.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertTrue(result);
+	}
+
+	private void setupLanguageModelEmailListDoesNotContainContractorsLanguage() {
+		String languageToRemoveFromEmailViaBPROCSList = "de";
+		Locale localeContractorAccountShouldReturn = Locale.GERMANY;
+
+		setupEnglishToBeEmailedViaBProcs();
+		setupContractorAccountLocale(localeContractorAccountShouldReturn);
+		removeLanguageFromEmailList(languageToRemoveFromEmailViaBPROCSList);
+	}
+
+	@Test
+	public void testInvoiceIsToBeEmailedViaBPROCS_LanguageToEmailListDoesNotContainContractorsLocale() throws Exception {
+		setupLanguageModelEmailListDoesNotContainContractorsLanguage();
+
+		boolean result = languageModel.invoiceIsToBeEmailedViaBPROCS(contractorAccount);
+
+		assertFalse(result);
+	}
+
+	private void setupContractorAccountLocale(Locale locale) {
+		when(contractorAccount.getLocale()).thenReturn(locale);
+	}
+
+	private void addLanguageToEmailList(String language) {
+		languageModel.getLanguagesToEmailInvoicesInBPROCS().add(language);
+	}
+
+	private void removeLanguageFromEmailList(String language) {
+		languageModel.getLanguagesToEmailInvoicesInBPROCS().remove(language);
+	}
+
+	private List<String> getLanguageList() {
+		return Whitebox.getInternalState(LanguageModel.class, "languagesToEmailInvoicesInBPROCS");
+	}
 }

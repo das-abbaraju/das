@@ -123,7 +123,7 @@
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
     <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
     <bean id="BillingService" class="com.picsauditing.PICS.BillingCalculatorSingle" init-method="initService"/>
-    <bean id="brainTree" class="com.picsauditing.billing.BrainTree" />
+    <bean id="brainTree" class="com.picsauditing.billing.BrainTree"/>
     <bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
     <bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
     <bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
@@ -186,15 +186,17 @@
           class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
     <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
           scope="prototype"/>
-    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
-	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
-	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
-	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
-	<bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"/>
-	<bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges" />
-	<bean id="PermissionService" class="com.picsauditing.service.PermissionService" />
-    <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype" />
-    <bean id="ContractorModel" class="com.picsauditing.rbic.ContractorModel" scope="prototype" />
+    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder" scope="prototype"/>
+    <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator"
+          scope="singleton"/>
+    <bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel"/>
+    <bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel"/>
+    <bean id="LanguageModel" class="com.picsauditing.model.i18n.LanguageModel" scope="prototype"
+          init-method="reloadListOfLanguagesToEmailInvoicesViaBPROCS"/>
+    <bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges"/>
+    <bean id="PermissionService" class="com.picsauditing.service.PermissionService"/>
+    <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype"/>
+    <bean id="ContractorModel" class="com.picsauditing.rbic.ContractorModel" scope="prototype"/>
 
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
@@ -217,11 +219,11 @@
           class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
     <bean id="OptionValueAutocompleteService"
 
-          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-    <bean id="ReportService" class="com.picsauditing.service.ReportService" />
-    <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService" />
-    <bean id="ReportPreferencesService" class="com.picsauditing.service.ReportPreferencesService" />
-    <bean id="SqlBuilder" class="com.picsauditing.report.SqlBuilder" />
+          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
+    <bean id="ReportService" class="com.picsauditing.service.ReportService"/>
+    <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService"/>
+    <bean id="ReportPreferencesService" class="com.picsauditing.service.ReportPreferencesService"/>
+    <bean id="SqlBuilder" class="com.picsauditing.report.SqlBuilder"/>
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
@@ -229,7 +231,7 @@
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
-    <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel" />
+    <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
