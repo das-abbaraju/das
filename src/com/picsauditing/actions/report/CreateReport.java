@@ -8,7 +8,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CreateReport extends PicsActionSupport {
 	static private String REPORT_URL = "Report.action?report=";
 
 	@Autowired
-	private ManageReportsService manageReportsService;
+	private PermissionService permissionService;
 
 	private Report report;
 
@@ -37,7 +37,8 @@ public class CreateReport extends PicsActionSupport {
 		dao.save(report);
 
 		try {
-			ReportPermissionUser newOwner = manageReportsService.shareWithEditPermission(getUser(), getUser(), report, permissions);
+			int userId = getUser().getId();
+			ReportPermissionUser newOwner = permissionService.grantUserEditPermission(userId, userId, report.getId());
 			newOwner.setAuditColumns(permissions);
 			dao.save(newOwner);
 		} catch (Exception e) {

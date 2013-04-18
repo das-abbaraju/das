@@ -220,7 +220,7 @@ public class PermissionServiceTest {
 		reportPermissionUser.setEditable(false);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		reportPermissionUser = permissionService.grantEdit(USER_ID, REPORT_ID);
+		reportPermissionUser = permissionService.grantUserEditPermission(USER_ID, USER_ID, REPORT_ID);
 
 		assertTrue(reportPermissionUser.isEditable());
 	}
@@ -231,7 +231,7 @@ public class PermissionServiceTest {
 		reportPermissionUser.setEditable(true);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		reportPermissionUser = permissionService.grantView(USER_ID, REPORT_ID);
+		reportPermissionUser = permissionService.grantUserViewPermission(USER_ID, USER_ID, REPORT_ID);
 
 		assertFalse(reportPermissionUser.isEditable());
 	}

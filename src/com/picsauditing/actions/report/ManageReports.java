@@ -17,6 +17,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -51,8 +52,6 @@ public class ManageReports extends PicsActionSupport {
 	private UserService userService;
 	@Autowired
 	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
-
-	private User toUser;
 
 	// TODO remove this after we have separate pojos for all views
 	private List<ReportInfo> reportList;
@@ -215,8 +214,9 @@ public class ManageReports extends PicsActionSupport {
 	public String transferOwnership() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User newOwner = userService.loadUser(shareId);
 
-			manageReportsService.transferOwnership(getUser(), toUser, report, permissions);
+			manageReportsService.transferOwnership(getUser(), newOwner, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
 			return ERROR;
@@ -249,45 +249,82 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String shareWithUser() {
-		try {
-			manageReportsService.shareReportWithUser(shareId, reportId, permissions, editable);
-		} catch (Exception e) {
-			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
-		}
-
-		return redirectOrReturnNoneForAjaxRequest();
-	}
-
-	public String shareWithGroup() {
-		try {
-			manageReportsService.shareReportWithUser(shareId, reportId, permissions, editable);
-		} catch (Exception e) {
-			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
-		}
-
-		return redirectOrReturnNoneForAjaxRequest();
-	}
-
-	public String shareWithAccount() {
-		try {
-			manageReportsService.shareReportWithAccount(shareId, reportId, permissions);
-		} catch (Exception e) {
-			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
-		}
-
-		return redirectOrReturnNoneForAjaxRequest();
-	}
-
-	// TODO remove this function because it's redundant. We have shareWith(User|Group|Account)
-	public String shareWithViewPermission() {
+	public String shareWithUserViewPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
 
-			manageReportsService.shareWithViewPermission(getUser(), toUser, report, permissions);
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, false);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithUserEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, true);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithGroupViewPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toGroup = userService.loadUser(shareId);
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, false);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithGroupEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toGroup = userService.loadUser(shareId);
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, true);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithAccountViewPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			Account toAccount = dao.find(Account.class, shareId);
+
+			manageReportsService.shareReportWithAccount(getUser(), toAccount, report, permissions);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+			return ERROR;
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unshareUser() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
+
+			manageReportsService.unshareUser(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -302,12 +339,12 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	// TODO remove this function because it's redundant. We have shareWith(User|Group|Account)
-	public String shareWithEditPermission() {
+	public String unshareGroup() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User group = userService.loadUser(shareId);
 
-			manageReportsService.shareWithEditPermission(getUser(), toUser, report, permissions);
+			manageReportsService.unshareGroup(getUser(), group, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -322,11 +359,12 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String unshare() {
+	public String unshareAccount() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			Account toAccount = dao.find(Account.class, shareId);
 
-			manageReportsService.unshare(getUser(), toUser, report, permissions);
+			manageReportsService.unshareAccount(getUser(), toAccount, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
 			return ERROR;
@@ -341,6 +379,7 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
+	// Questionable
 	public String removeReport() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
@@ -481,14 +520,6 @@ public class ManageReports extends PicsActionSupport {
 	private ReportSearch buildReportSearch() {
 		return new ReportSearch.Builder().permissions(permissions).sortType(sort)
 				.sortDirection(direction).build();
-	}
-
-	public User getToUser() {
-		return toUser;
-	}
-
-	public void setToUser(User toUser) {
-		this.toUser = toUser;
 	}
 
 	public List<ReportFavoriteInfo> getReportFavoriteListOverflow() {

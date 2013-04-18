@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.access.UserService;
 import com.picsauditing.service.ReportFavoriteInfoConverter;
 import com.picsauditing.service.ReportPreferencesService;
 import org.junit.AfterClass;
@@ -53,8 +54,6 @@ public class ManageReportsTest {
 	@Mock
 	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
 	@Mock
-	private Report report;
-	@Mock
 	private ReportDAO reportDao;
 	@Mock
 	private ReportUserDAO reportUserDao;
@@ -64,6 +63,13 @@ public class ManageReportsTest {
 	private I18nCache i18nCache;
 	@Mock
 	private HttpServletRequest httpRequest;
+	@Mock
+	private UserService userService;
+
+	@Mock
+	private User user;
+	@Mock
+	private Report report;
 
 	@BeforeClass
 	public static void setupClass() throws Exception {
@@ -86,6 +92,7 @@ public class ManageReportsTest {
 		Whitebox.setInternalState(manageReports, "reportService", reportService);
 		Whitebox.setInternalState(manageReports, "manageReportsService", manageReportsService);
 		Whitebox.setInternalState(manageReports, "reportPreferencesService", reportPreferencesService);
+		Whitebox.setInternalState(manageReports, "userService", userService);
 		Whitebox.setInternalState(manageReports, "reportFavoriteInfoConverter", reportFavoriteInfoConverter);
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
@@ -191,8 +198,8 @@ public class ManageReportsTest {
 
 	@Test
 	public void testTransferOwnership_CallsExpectedMethod() throws Exception {
-		User toUser = new User();
-		Whitebox.setInternalState(manageReports, "toUser", toUser);
+		Whitebox.setInternalState(manageReports, "shareId", USER_ID);
+		when(userService.loadUser(USER_ID)).thenReturn(user);
 		int reportId = 123;
 		Whitebox.setInternalState(manageReports, "reportId", reportId);
 		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
@@ -200,7 +207,7 @@ public class ManageReportsTest {
 
 		manageReports.transferOwnership();
 
-		verify(manageReportsService).transferOwnership(null, toUser, report, permissions);
+		verify(manageReportsService).transferOwnership(null, user, report, permissions);
 	}
 
 	@Test
@@ -213,34 +220,6 @@ public class ManageReportsTest {
 		manageReports.deleteReport();
 
 		verify(manageReportsService).deleteReport(null, report, permissions);
-	}
-
-	@Test
-	public void testShareWithViewPermission_CallsExpectedMethod() throws Exception {
-		User toUser = new User();
-		Whitebox.setInternalState(manageReports, "toUser", toUser);
-		int reportId = 123;
-		Whitebox.setInternalState(manageReports, "reportId", reportId);
-		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
-		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
-
-		manageReports.shareWithViewPermission();
-
-		verify(manageReportsService).shareWithViewPermission(null, toUser, report, permissions);
-	}
-
-	@Test
-	public void testShareWithEditPermission_CallsExpectedMethod() throws Exception {
-		User toUser = new User();
-		Whitebox.setInternalState(manageReports, "toUser", toUser);
-		int reportId = 123;
-		Whitebox.setInternalState(manageReports, "reportId", reportId);
-		when(reportService.loadReportFromDatabase(reportId)).thenReturn(report);
-		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
-
-		manageReports.shareWithEditPermission();
-
-		verify(manageReportsService).shareWithEditPermission(null, toUser, report, permissions);
 	}
 
 	private void setUpI18nCacheText() {

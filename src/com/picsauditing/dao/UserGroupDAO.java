@@ -41,10 +41,17 @@ public class UserGroupDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT ug FROM UserGroup ug " + where);
 		return query.getResultList();
 	}
-	
+
 	public List<UserGroup> findByUser(int userID){
 		Query query = em.createQuery("FROM UserGroup ug WHERE ug.user.id = ?");
 		query.setParameter(1, userID);
+		return query.getResultList();
+	}
+
+	public List<UserGroup> findByGroup(int groupId){
+		Query query = em.createQuery("FROM UserGroup ug WHERE ug.group.id = ?");
+		query.setParameter(1, groupId);
+
 		return query.getResultList();
 	}
 }

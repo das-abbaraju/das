@@ -4,15 +4,12 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
 import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.UserGroup;
 
 public class PermissionService {
 
@@ -28,6 +25,45 @@ public class PermissionService {
     private ReportPermissionAccountDAO reportPermissionAccountDao;
 
     private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
+
+	public boolean canUserViewReport(User user, Report report) {
+		if (report == null) {
+			return false;
+		}
+
+		if (!report.isPrivate()) {
+			return true;
+		}
+
+		if (isOwner(user, report)) {
+			return true;
+		}
+
+		try {
+			reportPermissionUserDao.findOne(user.getId(), report.getId());
+			return true;
+		} catch (NoResultException nre) {
+			// Don't care
+		}
+
+		for (UserGroup group : user.getGroups()) {
+			try {
+				reportPermissionUserDao.findOne(group.getGroup().getId(), report.getId());
+				return true;
+			} catch (NoResultException nre) {
+				// Don't care
+			}
+		}
+
+		try {
+			reportPermissionAccountDao.findOne(user.getAccount().getId(), report.getId());
+			return true;
+		} catch (NoResultException nre) {
+			// Don't care
+		}
+
+		return false;
+	}
 
     public boolean canUserViewReport(Permissions permissions, int reportId) {
         // TODO If it's a PICS report, return true
@@ -73,7 +109,7 @@ public class PermissionService {
         return isOwner(user, report) || isReportDevelopmentGroup(permissions);
     }
 
-    public boolean canUserShareReport(User granterUser, User toUser, Report report, Permissions permissions) {
+    public boolean canUserShareReport(User granterUser, Report report, Permissions permissions) {
         return isOwnerOrHasEdit(granterUser, report, permissions);
     }
 
@@ -116,31 +152,56 @@ public class PermissionService {
         return true;
     }
 
-    public ReportPermissionUser grantEdit(int userId, int reportId) throws Exception {
-        ReportPermissionUser reportPermissionUser = loadOrCreateReportPermissionUser(userId, reportId);
+    public ReportPermissionUser grantUserEditPermission(int sharerId, int sharedToId, int reportId) throws Exception {
+        ReportPermissionUser reportPermissionUser = loadOrCreateReportPermissionUser(sharedToId, reportId);
         reportPermissionUser.setEditable(true);
-        reportPermissionUser.setAuditColumns(new User(userId));
-        reportPermissionAccountDao.save(reportPermissionUser);
+        reportPermissionUser.setAuditColumns(new User(sharerId));
+		reportPermissionUserDao.save(reportPermissionUser);
 
         return reportPermissionUser;
     }
 
-    public ReportPermissionUser grantView(int userId, int reportId) {
-        ReportPermissionUser reportPermissionUser = loadOrCreateReportPermissionUser(userId, reportId);
+    public ReportPermissionUser grantUserViewPermission(int sharerId, int sharedToId, int reportId) {
+        ReportPermissionUser reportPermissionUser = loadOrCreateReportPermissionUser(sharedToId, reportId);
         reportPermissionUser.setEditable(false);
-        reportPermissionUser.setAuditColumns(new User(userId));
-        reportPermissionAccountDao.save(reportPermissionUser);
+        reportPermissionUser.setAuditColumns(new User(sharerId));
+		reportPermissionUserDao.save(reportPermissionUser);
 
         return reportPermissionUser;
     }
 
-    public void unshare(User user, Report report) {
+	public ReportPermissionAccount grantAccountViewPermission(int sharerId, Account toAccount, Report report) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(toAccount.getId(), report.getId());
+		} catch (NoResultException nre) {
+			reportPermissionAccount = new ReportPermissionAccount(toAccount, report);
+			reportPermissionAccount.setAuditColumns(new User(sharerId));
+		}
+
+		reportPermissionAccountDao.save(reportPermissionAccount);
+
+		return reportPermissionAccount;
+	}
+
+    public void unshareUserOrGroup(User user, Report report) {
         try {
             ReportPermissionUser reportPermissionUser = loadReportPermissionUser(user.getId(), report.getId());
-            reportPermissionAccountDao.remove(reportPermissionUser);
-        } catch (NoResultException dontCare) {
+            reportPermissionUserDao.remove(reportPermissionUser);
+        } catch (NoResultException nre) {
+			// Don't care
         }
     }
+
+	public void unshareAccount(Account account, Report report) {
+		try {
+			ReportPermissionAccount reportPermissionAccount = reportPermissionAccountDao.findOne(account.getId(), report.getId());
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		} catch (NoResultException nre) {
+			// Don't care
+		}
+	}
 
     private ReportPermissionUser loadOrCreateReportPermissionUser(int userId, int reportId) {
         ReportPermissionUser reportPermissionUser;

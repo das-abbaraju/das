@@ -68,8 +68,6 @@ public class ReportService {
 	@Autowired
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
-	private ManageReportsService manageReportsService;
-	@Autowired
 	private PermissionService permissionService;
 	@Autowired
 	private LegacyReportConverter legacyReportConverter;
@@ -208,7 +206,7 @@ public class ReportService {
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		manageReportsService.connectReportPermissionUser(userId, newReport.getId(), true, userId);
+		permissionService.grantUserEditPermission(userId, userId, newReport.getId());
 
 		return newReport;
 	}

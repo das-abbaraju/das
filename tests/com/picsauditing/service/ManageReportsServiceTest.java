@@ -7,13 +7,10 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,10 +41,6 @@ public class ManageReportsServiceTest {
     private ReportDAO reportDAO;
     @Mock
     private ReportUserDAO reportUserDAO;
-	@Mock
-	private ReportPermissionUserDAO reportPermissionUserDao;
-	@Mock
-	private ReportPermissionAccountDAO reportPermissionAccountDao;
     @Mock
     private Permissions permissions;
     @Mock
@@ -65,6 +58,8 @@ public class ManageReportsServiceTest {
 	private Account account;
 	@Mock
 	private Report report;
+	@Mock
+	private ReportUser reportUser;
 
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
@@ -78,8 +73,6 @@ public class ManageReportsServiceTest {
         setInternalState(manageReportsService, "reportUserDAO", reportUserDAO);
         setInternalState(manageReportsService, "reportDAO", reportDAO);
         setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
-		setInternalState(manageReportsService, "reportPermissionUserDao", reportPermissionUserDao);
-		setInternalState(manageReportsService, "reportPermissionAccountDao", reportPermissionAccountDao);
         setInternalState(manageReportsService, "permissionService", permissionService);
         setInternalState(manageReportsService, "reportInfoProvider", reportInfoProvider);
 
@@ -122,7 +115,7 @@ public class ManageReportsServiceTest {
         manageReportsService.transferOwnership(fromOwner, toOwner, report, permissions);
 
         verify(reportPreferencesService).loadOrCreateReportUser(fromOwner.getId(), report.getId());
-        verify(permissionService).grantEdit(fromOwner.getId(), report.getId());
+        verify(permissionService).grantUserEditPermission(fromOwner.getId(), fromOwner.getId(), report.getId());
     }
 
     @Test
@@ -154,119 +147,71 @@ public class ManageReportsServiceTest {
     }
 
 	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+	public void testShareReportWithUser_WhenUserCantShare_ThenExceptionIsThrown() throws Exception {
+		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(false);
 
-		manageReportsService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
+		manageReportsService.shareReportWithUserOrGroup(user, user, report, permissions, false);
 	}
 
 	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
+	public void testShareReportWithUser_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws Exception {
+		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
+		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+
+		manageReportsService.shareReportWithUserOrGroup(user, user, report, permissions, false);
+	}
+
+	@Test(expected = ReportPermissionException.class)
+	public void testShareReportWithUser_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws Exception {
 		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
 
-		manageReportsService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
+		manageReportsService.shareReportWithUserOrGroup(user, user, report, permissions, false);
 	}
 
 	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsTrue_ThenReportIsSharedWithEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsTrue_ThenReportIsSharedWithEditPermission() throws Exception {
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
+		when(reportPreferencesService.loadOrCreateReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		boolean editable = true;
 
-		ReportPermissionUser reportPermissionUser = manageReportsService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
+		manageReportsService.shareReportWithUserOrGroup(user, user, report, permissions, editable);
 
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
+		verify(permissionService).grantUserEditPermission(USER_ID, USER_ID, REPORT_ID);
 	}
 
 	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsFalse_ThenReportIsSharedWithoutEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsFalse_ThenReportIsSharedWithViewPermission() throws Exception {
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
+		when(reportPreferencesService.loadOrCreateReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		boolean editable = false;
 
-		ReportPermissionUser reportPermissionUser = manageReportsService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
+		manageReportsService.shareReportWithUserOrGroup(user, user, report, permissions, editable);
 
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
+		verify(permissionService).grantUserViewPermission(USER_ID, USER_ID, REPORT_ID);
 	}
 
 	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+	public void testShareReportWithAccount_WhenUserCantShare_ThenExceptionIsThrown() throws ReportPermissionException {
+		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(false);
 
-		manageReportsService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		manageReportsService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
+		manageReportsService.shareReportWithAccount(user, account, report, permissions);
 	}
 
 	@Test
 	public void testShareReportWithAccount_WhenUserCanViewAndEdit_ThenReportIsShared() throws ReportPermissionException {
-		when(reportPermissionAccountDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDAO.findById(REPORT_ID)).thenReturn(report);
 		when(reportDAO.find(Account.class, ACCOUNT_ID)).thenReturn(account);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
+		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
 
-		ReportPermissionAccount reportPermissionAccount = manageReportsService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
+		manageReportsService.shareReportWithAccount(user, account, report, permissions);
 
-		verify(reportPermissionAccountDao).save(reportPermissionAccount);
-		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
-		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
+		verify(permissionService).grantAccountViewPermission(USER_ID, account, report);
 	}
-
-	@Test
-    public void testShareWithViewPermission_reportUserIsCreatedAndViewIsGrantedToTargetUser() throws Exception {
-        Report report = new Report();
-        report.setId(10);
-        User sharerUser = new User("Joe Owner");
-        sharerUser.setId(1);
-        report.setOwner(sharerUser);
-        User toUser = new User("To User");
-        toUser.setId(2);
-        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
-
-        manageReportsService.shareWithViewPermission(sharerUser, toUser, report, permissions);
-
-        verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
-        verify(permissionService).grantView(toUser.getId(), report.getId());
-    }
-
-    @Test
-    public void testShareWithEditPermission_reportUserIsCreatedAndEditIsGrantedToTargetUser() throws Exception {
-        Report report = new Report();
-        report.setId(10);
-        User sharerUser = new User("Joe Owner");
-        sharerUser.setId(1);
-        report.setOwner(sharerUser);
-        User toUser = new User("To User");
-        toUser.setId(2);
-        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
-
-        manageReportsService.shareWithEditPermission(sharerUser, toUser, report, permissions);
-
-        verify(reportPreferencesService).loadOrCreateReportUser(toUser.getId(), report.getId());
-        verify(permissionService).grantEdit(toUser.getId(), report.getId());
-    }
 
     @Test
     public void testRemoveReport_anyoneWithPermissionShouldBeAbleToRemove() throws Exception {
@@ -296,12 +241,31 @@ public class ManageReportsServiceTest {
         User toUser = new User("To User");
         toUser.setId(2);
         ReportUser reportUser = new ReportUser(toUser.getId(), report);
-        when(permissionService.canUserShareReport(sharerUser, toUser, report, permissions)).thenReturn(true);
+        when(permissionService.canUserShareReport(sharerUser, report, permissions)).thenReturn(true);
         when(reportPreferencesService.loadReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
 
-        manageReportsService.unshare(sharerUser, toUser, report, permissions);
+        manageReportsService.unshareUser(sharerUser, toUser, report, permissions);
 
-        verify(permissionService).unshare(toUser, report);
+        verify(permissionService).unshareUserOrGroup(toUser, report);
     }
+
+	@Test
+	public void testShareWithViewPermission_reportUserIsUnhidden() throws Exception {
+		Report report = new Report();
+		report.setId(10);
+		User sharerUser = new User("Joe Owner");
+		sharerUser.setId(1);
+		report.setOwner(sharerUser);
+		User toUser = new User("To User");
+		toUser.setId(2);
+		when(permissionService.canUserShareReport(sharerUser, report, permissions)).thenReturn(true);
+		ReportUser reportUser = new ReportUser();
+		reportUser.setHidden(true);
+		when(reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId())).thenReturn(reportUser);
+
+		manageReportsService.shareReportWithUserOrGroup(sharerUser, toUser, report, permissions, false);
+
+		assertFalse(reportUser.isHidden());
+	}
 
 }

@@ -97,8 +97,6 @@ public class ReportServiceTest {
 	@Mock
 	private ReportPreferencesService reportPreferencesService;
 	@Mock
-	private ManageReportsService manageReportsService;
-	@Mock
 	private SqlBuilder sqlBuilder;
 	@Mock
 	protected I18nCache i18nCache;
@@ -125,7 +123,6 @@ public class ReportServiceTest {
 		setInternalState(reportService, "legacyReportConverter", legacyReportConverter);
 		setInternalState(reportService, "permissionService", permissionService);
 		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
-		setInternalState(reportService, "manageReportsService", manageReportsService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
 
 		when(user.getId()).thenReturn(USER_ID);
