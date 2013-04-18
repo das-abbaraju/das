@@ -210,7 +210,7 @@
           class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
     <bean id="AuditTypeAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
-    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete"/>
+    <bean id="AutocompleteSharing" class="com.picsauditing.model.general.AutocompleteSharing"/>
     <bean id="ContractorAutocompleteService"
           class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
     <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
