@@ -66395,10 +66395,13 @@ Ext.define('PICS.data.ServerCommunication', {
                 ext_form.setAttribute('action', url);
                 ext_form.setAttribute('method', 'post');
                 ext_form.setAttribute('target', target);
-
                 ext_form.appendChild(input);
+
                 input.setAttribute('name', 'reportJson');
                 input.setAttribute('value', json);
+                input.setAttribute('type', 'hidden');
+
+                Ext.getBody().appendChild(ext_form);
 
                 ext_form.submit();
             },
