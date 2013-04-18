@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserManagementService {
     static final String CANNOT_DEACTIVATE_ERROR_KEY = "UsersManage.CannotInactivate";
@@ -20,6 +21,7 @@ public interface UserManagementService {
     static final String CANNOT_ADD_USER_TO_USER = "You can only inherit permissions from groups";
     static final String CANNOT_ADD_GROUP_TO_ITSELF = "You can't add a group to itself";
     static final String USER_ALREADY_MEMBER_OF_GROUP = "User is already a member of this group";
+    static final String MUST_HAVE_ONE_USER_WITH_PERMISSION = "UsersManage.MustHaveOneUserWithPermission";
 
     User saveWithAuditColumnsAndRefresh(User user, Permissions permissions) throws Exception;
 
@@ -52,4 +54,6 @@ public interface UserManagementService {
     UserGroup addUserToGroup(User user, User group, Permissions permissions) throws Exception;
 
     UserGroupManagementStatus userIsAddableToGroup(User user, User group);
+
+    List<UserGroupManagementStatus> updateUserPermissions(User user, Account account, Permissions permissions, Map<OpPerms, Boolean> requestedPermState);
 }
