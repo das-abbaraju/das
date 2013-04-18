@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -11,11 +12,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -127,15 +123,24 @@ public class ReportContractorApproval extends ReportAccount {
 	public void approveContractor(ContractorAccount cAccount, int operatorID, ApprovalStatus workStatus) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
-				if (permissions.isOperator()) {
-					cOperator.setWorkStatus(workStatus);
-					cOperator.cascadeWorkStatusToParent();
-				} else
-					cOperator.setForcedWorkStatus(workStatus);
+                if (cOperator.getWorkStatus() != workStatus) {
+				    if (permissions.isOperator()) {
+                        cOperator.setWorkStatus(workStatus);
+                        cOperator.cascadeWorkStatusToParent();
+                    } else {
+                        cOperator.setForcedWorkStatus(workStatus);
+                   }
 
-				cOperator.setAuditColumns(permissions);
-				contractorOperatorDAO.save(cOperator);
-				break;
+                   if (cOperator.getOperatorAccount().isCorporate()) {
+                        OperatorAccount corporate = cOperator.getOperatorAccount();
+                        for (OperatorAccount childAccount: corporate.getChildOperators()) {
+                             approveContractor(cAccount, childAccount.getId(), workStatus);
+                        }
+                   }
+                    cOperator.setAuditColumns(permissions);
+                    contractorOperatorDAO.save(cOperator);
+                    break;
+                 }
 			}
 		}
 	}

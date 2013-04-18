@@ -1,9 +1,12 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class CountryTest {
 	Country usa;
@@ -27,7 +30,7 @@ public class CountryTest {
 		uae = new Country("AE");
 
 		// See http://tickets.picsauditing.com/browse/PICS-6555?focusedCommentId=34012&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-34012
-		austria = new Country("AT"); 
+		austria = new Country("AT");
 		lithuania = new Country("LT");
 	}
 
@@ -112,4 +115,31 @@ public class CountryTest {
 		assertTrue(lithuania.isEuropeanUnion());
 	}
 
+	@Test
+	public void testIsHasCountrySubdivisions_AcceptedCountry() {
+		Country countryWithSubdivisions = new Country(Country.COUNTRIES_WITH_SUBDIVISIONS.get(0));
+		List<CountrySubdivision> countrySubdivisionList = new ArrayList<>();
+		countrySubdivisionList.add(new CountrySubdivision("XX"));
+
+		countryWithSubdivisions.setCountrySubdivisions(countrySubdivisionList);
+		assertTrue(countryWithSubdivisions.isHasCountrySubdivisions());
+
+		countrySubdivisionList.clear();
+		countryWithSubdivisions.setCountrySubdivisions(countrySubdivisionList);
+		assertFalse(countryWithSubdivisions.isHasCountrySubdivisions());
+	}
+
+	@Test
+	public void testIsHasCountrySubdivisions_NotAcceptedCountry() {
+		Country countryWithSubdivisions = new Country("XX");
+		List<CountrySubdivision> countrySubdivisionList = new ArrayList<>();
+		countrySubdivisionList.add(new CountrySubdivision("XX"));
+
+		countryWithSubdivisions.setCountrySubdivisions(countrySubdivisionList);
+		assertFalse(countryWithSubdivisions.isHasCountrySubdivisions());
+
+		countrySubdivisionList.clear();
+		countryWithSubdivisions.setCountrySubdivisions(countrySubdivisionList);
+		assertFalse(countryWithSubdivisions.isHasCountrySubdivisions());
+	}
 }

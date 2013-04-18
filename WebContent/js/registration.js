@@ -40,11 +40,6 @@
 
 			    	selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
 			    }
-
-				//autofill Country Subdivision list
-				if ($('.contractor-country').length) {
-				    that.events.update_countrySubdivision_list.call(that, selectedSubdivision);
-				}
 			}
 		},
 
