@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -26,6 +29,7 @@ public class ContractorAuditFile extends BaseTable {
 	}
 
 	@Column(nullable = false)
+	@ReportField(type = FieldType.String)
 	public String getFileType() {
 		return fileType;
 	}
@@ -35,6 +39,7 @@ public class ContractorAuditFile extends BaseTable {
 	}
 
 	@Column(length = 100)
+	@ReportField(type = FieldType.String)
 	public String getDescription() {
 		return description;
 	}
@@ -43,6 +48,7 @@ public class ContractorAuditFile extends BaseTable {
 		this.description = description;
 	}
 
+	@ReportField(type = FieldType.Boolean)
 	public boolean isReviewed() {
 		return reviewed;
 	}
