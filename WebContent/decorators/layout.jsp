@@ -34,6 +34,9 @@
         <footer>
             <s:include value="/struts/layout/_environment.jsp" />
         </footer>
+        
+        <%-- include javascript translations --%>
+        <s:action name="TranslateJS2" executeResult="true" />
 
         <script src="v7/js/script.js?v=${version}"></script>
 

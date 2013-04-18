@@ -840,6 +840,11 @@
                     "path": "app/data/"
                 },
                 {
+                    "clsName": "PICS.data.Translate",
+                    "name": "Translate.js",
+                    "path": "app/data/"
+                },
+                {
                     "clsName": "Ext.container.Viewport",
                     "name": "Viewport.js",
                     "path": "extjs/src/container/"
