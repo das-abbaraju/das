@@ -38,10 +38,4 @@ public class CountryDAO extends PicsDAO {
 	public Country findbyISO(String iso) {
 		return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
 	}
-
-	public Locale findLocaleByCountryISO(String countryISO) {
-		Country countryObj = find(countryISO);
-		Locale countryLocale = countryObj.getLocale();
-		return countryLocale;
-	}
 }
