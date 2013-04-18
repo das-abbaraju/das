@@ -20,7 +20,7 @@ import com.picsauditing.util.PicsDateFormat;
 public class ReportDataConverter {
 
 	private Locale locale;
-	private ReportResults reportResults;
+	private final ReportResults reportResults;
 
 	private static I18nCache i18nCache = I18nCache.getInstance();
 	private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
@@ -67,9 +67,9 @@ public class ReportDataConverter {
 		}
 
 		Object result = convertValueBasedOnCellColumn(cell, true);
-        if (result == null) {
-            result = value;
-        }
+		if (result == null) {
+			result = value;
+		}
 
 		return result;
 	}

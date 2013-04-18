@@ -27,7 +27,7 @@ if (typeof console === "undefined"){
 }
 window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(Array.prototype.slice.call(arguments))}};
 
-(function ($) {
+(function ($, window, document, undefined) {
     /**
      * PICS Application
      * 
@@ -37,7 +37,11 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
      * getClasses()
      * modal()
      */
-    PICS = Object.create((function () {
+    if (!window.PICS) window.PICS = {};
+    
+    PICS = Object.create(PICS);
+    
+    $.extend(PICS, (function () {
         // private storage for classes and initializers
         var _classes = {};
         var _inits = [];
@@ -308,6 +312,14 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 return modal; 
             },
             
+            text: function (key) {
+                var args = arguments;
+                
+                return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
+                    return args[parseInt(p1) + 1];
+                }) : key;
+            },
+            
             throttle: function (func, delay) {
                 var timer;
                 
@@ -328,4 +340,4 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
     }()));
     
     PICS._init();
-}(jQuery));
+}(jQuery, window, document));

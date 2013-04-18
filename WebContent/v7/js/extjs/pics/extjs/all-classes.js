@@ -66694,6 +66694,17 @@ Ext.define('PICS.data.FilterType', {
         };
     }())
 });
+Ext.define('PICS.data.Translate', {
+    statics: {
+        text: function (key) {
+            var args = arguments;
+            
+            return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
+                return args[parseInt(p1) + 1];
+            }) : key;
+        }
+    }
+});
 /**
  * A specialized container representing the viewable application area (the browser viewport).
  *

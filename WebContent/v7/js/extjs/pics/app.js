@@ -13,7 +13,8 @@ Ext.application({
         'PICS.data.ServerCommunication',
         'PICS.data.ServerCommunicationUrl',
         'PICS.data.ColumnType',
-        'PICS.data.FilterType'
+        'PICS.data.FilterType',
+        'PICS.data.Translate'
     ],
 
     constants: {

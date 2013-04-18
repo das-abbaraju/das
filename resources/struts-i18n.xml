@@ -34,6 +34,10 @@
 			<result>/struts/i18n/translate_js.jsp</result>
 		</action>
 		
+		<action name="TranslateJS2" class="com.picsauditing.actions.TranslateJS2">
+			<result>/struts/i18n/javascript.jsp</result>
+		</action>
+		
 		<action name="ApplicableTranslations" class="com.picsauditing.actions.i18n.ApplicableTranslations">
 			<result>/struts/i18n/applicable_translations.jsp</result>
 		</action>
