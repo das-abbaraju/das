@@ -5,10 +5,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.OperatorTable;
+import com.picsauditing.report.tables.*;
 
 import java.util.List;
 import java.util.Map;
@@ -24,10 +21,10 @@ public class AccountOperatorModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "Account");
 		ModelSpec operator = spec.join(AccountTable.Operator);
-		operator.category = FieldCategory.ReportingClientSite;
 		operator.alias = "Operator";
 		ModelSpec reporting = operator.join(OperatorTable.Reporting);
-		reporting.category = FieldCategory.AccountInformation;
+		reporting.category = FieldCategory.ReportingClientSite;
+        reporting.minimumImportance = FieldImportance.Required;
 		reporting.alias = "ReportingClient";
 
 		ModelSpec parent = operator.join(OperatorTable.Parent);
@@ -38,8 +35,19 @@ public class AccountOperatorModel extends AbstractModel {
 		ModelSpec parentOperator = parent.join(AccountTable.Operator);
 		parentOperator.category = FieldCategory.AccountInformation;
 		parentOperator.alias = "parentOperator";
+        parentOperator.minimumImportance = FieldImportance.Required;
 
-		return spec;
+        ModelSpec accountUser = spec.join(AccountTable.AccountUser);
+        accountUser.category = FieldCategory.CustomerServiceRepresentatives;
+        accountUser.minimumImportance = FieldImportance.Required;
+        accountUser.alias = "AccountUser";
+
+        ModelSpec user = accountUser.join(AccountUserTable.User);
+        user.category = FieldCategory.CustomerServiceRepresentatives;
+        user.alias = "AccountManager";
+        user.minimumImportance = FieldImportance.Required;
+
+        return spec;
 	}
 
 	@Override

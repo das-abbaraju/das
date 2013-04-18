@@ -119,7 +119,7 @@ public class OperatorAccount extends Account {
 	 * Yes, No, Multiple
 	 */
 	@Column(nullable = false, length = 8)
-	@ReportField(category = FieldCategory.ClientSitePreferences)
+	@ReportField(category = FieldCategory.Billing)
 	public String getDoContractorsPay() {
 		return this.doContractorsPay;
 	}
@@ -285,7 +285,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Date)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}

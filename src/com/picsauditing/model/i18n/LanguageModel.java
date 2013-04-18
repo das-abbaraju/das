@@ -1,9 +1,9 @@
 package com.picsauditing.model.i18n;
 
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Language;
-import com.picsauditing.jpa.entities.LanguageStatus;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,15 +42,57 @@ public class LanguageModel {
 	public static final Locale ENGLISH = Locale.US;
 
 	@Autowired
+	private AppPropertyDAO propertyDAO;
+
+	@Autowired
 	private CountryDAO countryDAO;
+
 	@Autowired
 	private LanguageProvider languageProvider;
 
-    private final Logger logger = LoggerFactory.getLogger(LanguageModel.class);
+	private final Logger logger = LoggerFactory.getLogger(LanguageModel.class);
 
 	private List<Locale> stableLanguageLocales;
 	private List<Language> stableLanguages;
 	private List<Locale> unifiedLanguageList;
+
+	public Set<String> getLanguagesToEmailInvoicesInBPROCS() {
+		return languagesToEmailInvoicesInBPROCS;
+	}
+
+	public void setLanguagesToEmailInvoicesInBPROCS(Set<String> languagesToEmailInvoicesInBPROCS) {
+		this.languagesToEmailInvoicesInBPROCS = languagesToEmailInvoicesInBPROCS;
+	}
+
+	private Set<String> languagesToEmailInvoicesInBPROCS = new HashSet<String>();
+
+	public void reloadListOfLanguagesToEmailInvoicesViaBPROCS() {
+		AppProperty appProperty = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS);
+
+		String languagesToEmailInvoicesViaBPROCSCSV = null;
+		if (appProperty != null) {
+			languagesToEmailInvoicesViaBPROCSCSV = appProperty.getValue();
+		}
+
+		if (Strings.isNotEmpty(languagesToEmailInvoicesViaBPROCSCSV)) {
+			languagesToEmailInvoicesInBPROCS = new HashSet<String>(Arrays.asList(languagesToEmailInvoicesViaBPROCSCSV.split("\\s*,\\s*")));
+		}
+	}
+
+	public Boolean invoiceIsToBeEmailedViaBPROCS(ContractorAccount contractor) {
+
+		if ((contractor == null) || (contractor.getLocale() == null)) {
+			return false;
+		}
+
+		String languageToCheck = contractor.getLocale().getLanguage();
+
+		if (languagesToEmailInvoicesInBPROCS.contains(languageToCheck)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public boolean isLanguageStable(Locale locale) {
 		for (Language language : getStableLanguages()) {
@@ -100,14 +142,14 @@ public class LanguageModel {
 				stableLanguageLocales.add(stableLanguage.getLocale());
 			}
 		}
-        //return stableLanguageLocales;
-        return Collections.unmodifiableList(stableLanguageLocales);
+		//return stableLanguageLocales;
+		return Collections.unmodifiableList(stableLanguageLocales);
 	}
 
 	public List<Locale> getStableAndBetaLanguageLocales() {
 		List<Language> betaLanguages = getLanguagesByStatus(LanguageStatus.Beta);
 		List<Locale> stableAndBetaLocales = new ArrayList<>();
-        stableAndBetaLocales.addAll(getStableLanguageLocales());
+		stableAndBetaLocales.addAll(getStableLanguageLocales());
 
 		for (Language betaLanguage : betaLanguages) {
 			stableAndBetaLocales.add(betaLanguage.getLocale());
@@ -240,13 +282,13 @@ public class LanguageModel {
 	}
 
 	private Locale getMatchingStableLocale(Locale locale) {
-        List<Locale> stableAndBetaLanguageLocales = getStableAndBetaLanguageLocales();
+		List<Locale> stableAndBetaLanguageLocales = getStableAndBetaLanguageLocales();
 		for (Locale stableLocale : stableAndBetaLanguageLocales) {
-            if (stableLocale == null) {
-                logger.error("Null locale found in Stable and Beta locales list: "
-                        + Strings.implode(stableAndBetaLanguageLocales));
-                continue;
-            }
+			if (stableLocale == null) {
+				logger.error("Null locale found in Stable and Beta locales list: "
+						+ Strings.implode(stableAndBetaLanguageLocales));
+				continue;
+			}
 			if (stableLocale.equals(locale)) {
 				return locale;
 			}

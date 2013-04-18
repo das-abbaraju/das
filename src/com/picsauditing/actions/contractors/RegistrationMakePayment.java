@@ -6,6 +6,9 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.BrainTreeHash;
+import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -18,10 +21,8 @@ import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTree;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.validator.ContractorValidator;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
-	private BrainTreeService paymentService;
+	private BrainTree paymentService;
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
@@ -180,7 +181,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
 						paymentService.processPayment(payment, invoice);
 
-						CreditCard creditCard = paymentService.getCreditCard(id);
+						CreditCard creditCard = paymentService.getCreditCard(contractor);
 						payment.setCcNumber(creditCard.getCardNumber());
 
 						// Only if the transaction succeeds
@@ -324,9 +325,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		key_id = appPropDao.find("brainTree.key_id").getValue();
 
 		// A response was received
-		if (response_code != null) {
-			String newHash = BrainTree.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
-					customer_vault_id, time, key);
+
+        if (response_code != null) {
+			String newHash = BrainTreeHash.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
+                    customer_vault_id, time, key);
 
 			if (response.equals("3")) {
 				Marker ccHashErrors = MarkerFactory.getMarker("CC Hash Errors");
@@ -369,7 +371,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (DELETE_BUTTON.equalsIgnoreCase(button)) {
 			try {
-				paymentService.deleteCreditCard(contractor.getId());
+				paymentService.deleteCreditCard(contractor);
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				// TODO: Test
@@ -386,7 +388,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		int retries = 0, quit = 5;
 		while (transmissionError && retries < quit) {
 			try {
-				cc = paymentService.getCreditCard(contractor.getId());
+				cc = paymentService.getCreditCard(contractor);
 				transmissionError = false;
 				braintreeCommunicationError = false;
 			} catch (Exception communicationProblem) {
@@ -424,7 +426,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		time = DateBean.getBrainTreeDate();
-		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
+		hash = BrainTreeHash.buildHash(orderid, amount, customer_vault_id, time, key);
 
 		contractorAccountDao.save(contractor);
 	}

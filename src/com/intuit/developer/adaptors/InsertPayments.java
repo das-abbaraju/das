@@ -24,7 +24,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 public class InsertPayments extends PaymentAdaptor {

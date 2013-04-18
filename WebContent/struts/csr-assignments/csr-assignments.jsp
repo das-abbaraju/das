@@ -23,8 +23,7 @@
 	            <tr>
 	                <td class="account_id">${row.get("AccountID")}</td>
 	                <td>${row.get("AccountName")}</td>
-	                <%--<td>${row.get("ContractorCustomerServiceName")}</td>                --%>
-	                <td>${row.get("ContractorCustomerServiceUserUsername")}</td>
+	                <td>${row.get("ContractorCustomerServiceUserName")}</td>
 	                <td>${row.get("ContractorRecommendedCSRName")}</td>
 	                <td>
 	                    <div id="text-toggle-button" class="accept button">

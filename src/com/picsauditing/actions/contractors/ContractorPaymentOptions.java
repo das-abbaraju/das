@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.BrainTreeHash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,8 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTree;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.BrainTreeService;
+import com.picsauditing.braintree.CreditCard;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport implements Preparable {
@@ -34,7 +35,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
-	private BrainTreeService paymentService;
+	private BrainTree paymentService;
 	@Autowired
 	protected InvoiceService invoiceService;
 	@Autowired
@@ -168,8 +169,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 
 		// A response was received
 		if (response_code != null) {
-			String newHash = BrainTree.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
-					customer_vault_id, time, key);
+			String newHash = BrainTreeHash.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
+                    customer_vault_id, time, key);
 
 			if (response.equals("3")) {
 				logger.info("CC_Hash_Errors");
@@ -211,7 +212,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 
 		if ("Delete".equalsIgnoreCase(button)) {
 			try {
-				paymentService.deleteCreditCard(contractor.getId());
+				paymentService.deleteCreditCard(contractor);
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				// TODO: Test
@@ -228,7 +229,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		int retries = 0, quit = 5;
 		while (transmissionError && retries < quit) {
 			try {
-				cc = paymentService.getCreditCard(contractor.getId());
+				cc = paymentService.getCreditCard(contractor);
 				transmissionError = false;
 				braintreeCommunicationError = false;
 			} catch (Exception communicationProblem) {
@@ -270,7 +271,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		}
 
 		time = DateBean.getBrainTreeDate();
-		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
+		hash = BrainTreeHash.buildHash(orderid, amount, customer_vault_id, time, key);
 
 		contractorAccountDao.save(contractor);
 		return;

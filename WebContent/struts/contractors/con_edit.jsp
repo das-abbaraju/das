@@ -11,14 +11,34 @@
 <s:include value="conHeader.jsp" />
 
 <script type="text/javascript">
-	function changeCountrySubdivision(country) {
-		$('#countrySubdivision_li').load('CountrySubdivisionListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "", needsSuffix: "true", countrySubdivisionString: '<s:property value="contractor.countrySubdivision.isoCode"/>'});
+	function changeCountrySubdivision() {
+        var elementID = 'countrySubdivision_li';
+        var prefix = '';
+        var countrySubdivisionString = '<s:property value="contractor.countrySubdivision.isoCode"/>';
+
+        changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString);
 	}
 
-	function changeBillingCountrySubdivision(country) {
-		$('#billing_countrySubdivision_li').load('CountrySubdivisionListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.billingCountrySubdivision', needsSuffix: "false", countrySubdivisionString: '<s:property value="contractor.billingCountrySubdivision.isoCode"/>'});
+	function changeBillingCountrySubdivision() {
+        var elementID = 'billing_countrySubdivision_li';
+        var prefix = 'contractor.billingCountrySubdivision';
+        var countrySubdivisionString = '<s:property value="contractor.billingCountrySubdivision.isoCode"/>';
+
+        changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString);
 		$('#country_display').val($('#contractorCountry option:selected').text());
 	}
+
+    function changeCountrySubdivisionFor(elementID, prefix, countrySubdivisionString) {
+        $('#' + elementID).load(
+            'CountrySubdivisionListAjax.action',
+            {
+                countryString: $('#contractorCountry').val()
+                ,   prefix: prefix
+                ,   needsSuffix: "false"
+                ,   countrySubdivisionString: countrySubdivisionString
+            }
+        );
+    }
 
 	function countryChanged(country) {
 		// hide taxID and zip code
@@ -40,14 +60,13 @@
 				$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
 			}
 		}
-		changeCountrySubdivision(country);
-		changeBillingCountrySubdivision(country);
+
+		changeCountrySubdivision();
+		changeBillingCountrySubdivision();
 	}
 
 	$(function() {
 		countryChanged($("#contractorCountry").val());
-		changeCountrySubdivision($("#contractorCountry").val());
-		changeBillingCountrySubdivision($("#contractorBillingCountry").val());
 		$('.datepicker').datepicker();
 		$('.cluetip').cluetip({
 			closeText: "<img src='images/cross.png' width='16' height='16'>",
@@ -64,7 +83,6 @@
 </script>
 
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
-
     <s:if test="permissions.admin && unpaidInvoices.size() > 0">
     	<div class="info">
     		Invoices open for this contractor
@@ -80,7 +98,7 @@
     </s:if>
     
     <s:if test="permissions.admin && contractor.qbSync">
-    	<div class="alert" class="noprint">
+    	<div class="alert noprint">
     		This contractor is still waiting to be synced with QuickBooks!
     	</div>
     </s:if>

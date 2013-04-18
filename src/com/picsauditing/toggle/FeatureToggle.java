@@ -28,8 +28,8 @@ public interface FeatureToggle {
 	String TOGGLE_SHOW_REVIEW_DOC_IN_AUDITGUARD = "Toggle.ShowReviewDocInAuditGUARD";
 	String TOGGLE_SHOW_DR_REPORTS = "Toggle.ShowUserDR";
 	String TOGGLE_USE_V7_MENU_COLUMN = "Toggle.UseVersion7MenuColumns";
-	String TOGGLE_INVOICE_LOCALES_TO_EMAIL_VIA_BPROCS = "Toggle.InvoiceLocalesToEmailViaBPROCS";
-    String TOGGLE_RULES_BASED_INSURANCE_CRITERIA = "Toggle.RBIC";
+	String TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS = "Toggle.InvoiceLanguagesToEmailViaBPROCS";
+	String TOGGLE_RULES_BASED_INSURANCE_CRITERIA = "Toggle.RBIC";
 
 	boolean isFeatureEnabled(String toggleName);
 

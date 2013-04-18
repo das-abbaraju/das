@@ -55,7 +55,7 @@ import com.picsauditing.validator.ContractorValidator;
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
 
-    @Autowired
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
 	protected ContractorValidator contractorValidator;
@@ -446,42 +446,47 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-    public String deactivate() throws Exception {
-        subHeading = "Contractor Edit";
+	public String deactivate() throws Exception {
+		subHeading = "Contractor Edit"; // TODO: This should be i18n
 
-        if (Strings.isEmpty(contractor.getReason())) {
-            addActionError(getText("ContractorEdit.error.DeactivationReason"));
-            return SUCCESS;
-        }
+		if (Strings.isEmpty(contractor.getReason())) {
+			addActionError(getText("ContractorEdit.error.DeactivationReason"));
+			return SUCCESS;
+		}
 
-        if (contractorHasNotExpiredYet() && !contractor.isHasFreeMembership()) {
-            return leaveContractorAlone();
-        }
+		// Contractors will be set not to renew regardless of their membership status
+		setContractorNotToRenew();
+		if (contractorHasNotExpiredYet() && !contractor.isHasFreeMembership()) {
+			return leaveContractorAlone();
+		}
 
-        String expiresMessage = Strings.EMPTY_STRING;
-        String expiresMessage_en = Strings.EMPTY_STRING;
-        String reason = Strings.EMPTY_STRING;
-        if (contractorHasNotExpiredYet()) {
-            expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
-                    contractor.getPaymentExpires());
-            expiresMessage_en = this.getTextParameterized(Locale.ENGLISH,"ContractorEdit.message.AccountExpires",
-                    contractor.getPaymentExpires());
-            reason = AccountStatusChanges.ACCOUNT_ABOUT_TO_EXPIRE_REASON;
-        } else {
-            expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
-            expiresMessage_en = getText(Locale.ENGLISH,"ContractorEdit.message.AccountDeactivated");
-            reason = AccountStatusChanges.ACCOUNT_EXPIRED_REASON;
-        }
+		String expiresMessage = Strings.EMPTY_STRING;
+		String expiresMessage_en = Strings.EMPTY_STRING;
+		String reason = Strings.EMPTY_STRING;
+		if (contractorHasNotExpiredYet()) {
+			expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
+					contractor.getPaymentExpires());
+			expiresMessage_en = this.getTextParameterized(Locale.ENGLISH, "ContractorEdit.message.AccountExpires",
+					contractor.getPaymentExpires());
+			reason = AccountStatusChanges.ACCOUNT_ABOUT_TO_EXPIRE_REASON;
+		} else {
+			expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
+			expiresMessage_en = getText(Locale.ENGLISH, "ContractorEdit.message.AccountDeactivated");
+			reason = AccountStatusChanges.ACCOUNT_EXPIRED_REASON;
+		}
 
-        accountStatusChanges.deactivateContractor(contractor, permissions, reason,
-                expiresMessage_en);
-        this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
+		accountStatusChanges.deactivateContractor(contractor, permissions, reason, expiresMessage_en);
+		this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
 
+		return SUCCESS;
+	}
 
-        return SUCCESS;
-    }
+	private void setContractorNotToRenew() {
+		contractor.setRenew(false);
+		contractorAccountDao.save(contractor);
+	}
 
-    private String leaveContractorAlone() {
+	private String leaveContractorAlone() {
 		String expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
 				contractor.getPaymentExpires());
 		addNote(contractor, "Closed contractor account." + expiresMessage);
@@ -501,7 +506,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			contractor.setStatus(AccountStatus.Active);
 		}
 
-		contractor.setReason("");
+		contractor.setReason(Strings.EMPTY_STRING);
 		contractorAccountDao.save(contractor);
 		addNote(contractor, "Reactivated account");
 		addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountReactivated", id));

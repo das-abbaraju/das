@@ -5,7 +5,7 @@ import java.util.List;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 /**

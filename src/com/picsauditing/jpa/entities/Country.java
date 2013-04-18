@@ -28,7 +28,7 @@ import com.picsauditing.util.Strings;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 	public static final String DEFAULT_COUNTRY_SUBDIVISION_LABEL = "ContractorAccount.countrySubdivision";
-	public static final String COUNTRY_SUBDIVISION_LABEL_FORMAT= "Country.%s.SubdivisionLabel";
+	public static final String COUNTRY_SUBDIVISION_LABEL_FORMAT = "Country.%s.SubdivisionLabel";
 
 	public static final String FRANCE_ISO_CODE = "FR";
 	public static final String GERMANY_ISO_CODE = "DE";
@@ -36,6 +36,8 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	public static final String UAE_ISO_CODE = "AE";
 	public static final String CANADA_ISO_CODE = "CA";
 	public static final String US_ISO_CODE = "US";
+
+	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(US_ISO_CODE, CANADA_ISO_CODE)));
 
 	private static final long serialVersionUID = 6312208192653925848L;
 
@@ -64,17 +66,8 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String english;
 	protected String phone;
 	protected Double corruptionPerceptionIndex;
-	protected Locale locale;
 
 	protected Currency currency = Currency.USD;
-
-	public Locale getLocale() {
-		return locale;
-	}
-
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
 
 	private List<CountrySubdivision> countrySubdivisions = new ArrayList<CountrySubdivision>();
 	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
@@ -185,7 +178,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Transient
 	public boolean isHasCountrySubdivisions() {
-		return countrySubdivisions.size() > 0;
+		return COUNTRIES_WITH_SUBDIVISIONS.contains(getIsoCode()) && countrySubdivisions.size() > 0;
 	}
 
 	@Override

@@ -38,7 +38,6 @@ public class DashboardBuilderTest {
 		report.setId(1);
 		report.setModelType(ModelType.Accounts);
 		report.setName("Account Status");
-		report.setParameters("");
 		widget.setReport(report);
 
 		JSONArray result = DashboardBuilder.build(dashboard);

@@ -26,7 +26,6 @@
 </s:else>
 
 <s:set name="chat_url" value="%{chatUrl}"></s:set>
-<s:set var="countrySubdivision_label_display" value="%{getCountrySubdivisionLabel(#country_value)}" />
 
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />
@@ -166,15 +165,22 @@
 						<s:textfield name="contractor.city" />
 					</li>
 					<li class="countrySubdivision" style="${countrySubdivision_display}">
-						<s:select 
-							label="%{#countrySubdivision_label_display}"
-							list="getCountrySubdivisionList(#country_value)"
-							cssClass="contractor-countrySubdivision"
-							name="countrySubdivision" 
-							listKey="isoCode" 
-							listValue="simpleName" 
-							value="%{contractor.countrySubdivision.isoCode}"
-						/>
+                        <label for="Registration_contractor_countrySubdivision">
+                            <s:property value="getCountrySubdivisionLabelFor(#country_value)" />
+                        </label>
+
+                        <select class="contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
+                            <option value="">- <s:text name="CountrySubdivisionList.list.select.header" /> -</option>
+                            <s:iterator value="getCountrySubdivisionList(#country_value)" var="country_subdivision_list_item">
+                                <s:set var="country_subdivision_selection" value="''" />
+                                <s:if test="countrySubdivision != null && countrySubdivision == #country_subdivision_list_item">
+                                    <s:set var="country_subdivision_selection" value="' selected=\"selected\"'" />
+                                </s:if>
+                                <option value="${isoCode}"${country_subdivision_selection}>${simpleName}</option>
+                            </s:iterator>
+                        </select>
+
+                        <s:fielderror fieldName="countrySubdivision" id="Registration_country_subdivision_error" />
 					</li>
 					<li class="zip" style="${zip_display}">
 						<s:textfield name="contractor.zip" />

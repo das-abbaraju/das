@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 
 @SuppressWarnings("serial")
 @Entity

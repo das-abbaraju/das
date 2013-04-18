@@ -127,7 +127,7 @@ public class ReportUtilTest {
 		column.setSqlFunction(SqlFunction.Count);
 		column.setName("AccountName__Count");
 
-		ReportUtil.addTranslatedLabelsToReportParameters(report, permissions.getLocale());
+		ReportUtil.addTranslatedLabelsToReport(report, permissions.getLocale());
 
 		String locale = LanguageModel.ENGLISH.toString();
 

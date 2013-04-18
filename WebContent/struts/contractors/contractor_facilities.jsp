@@ -95,7 +95,7 @@
 										headerKey=""
 										headerValue="- %{getText('ContractorFacilities.CountrySubdivision')} -"
 										id="search_location"
-										list="getCountrySubdivisionList('US|CA')"
+										list="getCountrySubdivisionList(@com.picsauditing.jpa.entities.Country@COUNTRIES_WITH_SUBDIVISIONS)"
 										listKey="isoCode"
 										listValue="isoCode"
 										name="countrySubdivision" />

@@ -23,7 +23,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentMod;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 public class UpdatePayments extends PaymentAdaptor {

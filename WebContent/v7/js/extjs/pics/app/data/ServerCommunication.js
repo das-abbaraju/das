@@ -97,8 +97,8 @@ Ext.define('PICS.data.ServerCommunication', {
             
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
-                
-                window.open(url);
+
+                this.sendReportViaForm(url, '_self');
             },
 
             favoriteReport: function () {
@@ -233,11 +233,11 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
-            
+
             printReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getPrintReportUrl();
-                
-                window.open(url);
+
+                this.sendReportViaForm(url, '_blank');
             },
 
             saveReport: function (options) {
@@ -269,7 +269,29 @@ Ext.define('PICS.data.ServerCommunication', {
                     }
                 });
             },
-            
+
+            sendReportViaForm: function (url, target) {
+                var form = document.createElement('form'),
+                    ext_form = Ext.Element(form),
+                    input = document.createElement('input'),
+                    report_store = Ext.StoreManager.get('report.Reports'),
+                    report = report_store.first(),
+                    json = report.getRecordDataAsJson(report);
+
+                ext_form.setAttribute('action', url);
+                ext_form.setAttribute('method', 'post');
+                ext_form.setAttribute('target', target);
+                ext_form.appendChild(input);
+
+                input.setAttribute('name', 'reportJson');
+                input.setAttribute('value', json);
+                input.setAttribute('type', 'hidden');
+
+                Ext.getBody().appendChild(ext_form);
+
+                ext_form.submit();
+            },
+
             shareReport: function (options) {
                 var account_id = options.account_id,
                     account_type = options.account_type,

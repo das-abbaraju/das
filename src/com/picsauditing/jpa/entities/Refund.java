@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.braintree.CreditCard;
 
 @Entity
 @DiscriminatorValue(value = "R")

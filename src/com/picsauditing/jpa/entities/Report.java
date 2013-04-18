@@ -49,8 +49,6 @@ public class Report extends BaseTable {
 	private List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
 
 	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
-	@Deprecated
-	private String parameters;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ownerID", nullable = false)
@@ -81,17 +79,6 @@ public class Report extends BaseTable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Deprecated
-	@ReportField(importance = FieldImportance.Low, width = 400)
-	public String getParameters() {
-		return parameters;
-	}
-
-	@Deprecated
-	public void setParameters(String parameters) {
-		this.parameters = parameters;
 	}
 
 	@Transient
@@ -222,11 +209,6 @@ public class Report extends BaseTable {
 
 	public boolean hasNoOwner() {
 		return owner == null || owner.getId() == 0;
-	}
-
-	@Deprecated
-	public boolean hasParameters() {
-		return parameters != null;
 	}
 
 	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
