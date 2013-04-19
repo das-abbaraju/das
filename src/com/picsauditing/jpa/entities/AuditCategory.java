@@ -405,6 +405,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		for (AuditCategory category : subCategories) {
 			category.addAndRemoveRequiredLanguages(add, remove);
 		}
+
 		for (AuditQuestion question : questions) {
 			question.addAndRemoveRequiredLanguages(add, remove);
 		}

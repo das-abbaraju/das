@@ -1,20 +1,13 @@
 package com.picsauditing.actions.auditType;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
-import com.picsauditing.models.audits.TranslationKeysGenerator;
+import com.picsauditing.jpa.entities.*;
 
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType implements Preparable {
@@ -169,7 +162,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 	}
 
 	@Override
-	public List<Locale> getAvailableLocalesFrom(BaseTableRequiringLanguages entity) {
+	public List<Locale> getAvailableLocalesFrom(RequiresLanguages entity) {
 		if (entity == null)
 			entity = category.getAuditType();
 		return super.getAvailableLocalesFrom(entity);
