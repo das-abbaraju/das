@@ -85,8 +85,6 @@
 
     <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
-        <beans:property name="featureToggleChecker" ref="FeatureToggle" />
-        <beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.Csr_SingleAssignment" />
     </beans:bean>
 
 	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>
