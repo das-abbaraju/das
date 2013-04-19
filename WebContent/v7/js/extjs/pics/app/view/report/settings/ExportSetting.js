@@ -7,11 +7,13 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'export',
-        text : 'Export',
-        cls: 'primary export',
+        text : '<i class="icon-table icon-large"></i><span>Spreadsheet</span>',
+        cls: 'default export',
         id: 'export-button',
         tooltip: 'Export this report to Excel',
-        margin: '100 0 0 0'
+        height: 28,
+        margin: '100 0 0 0',
+        width: 200
     }],
     layout: {
         type: 'vbox',

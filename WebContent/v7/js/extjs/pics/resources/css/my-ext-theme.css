@@ -9195,6 +9195,17 @@ textarea.x-form-invalid-field {
   display: block;
   font-size: 17px; }
 
+/* line 386, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_export .x-btn i,
+#report_print .x-btn i {
+  position: relative;
+  top: 2px; }
+
+/* line 393, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_export .x-btn-inner span,
+#report_print .x-btn-inner span {
+  margin-left: 10px; }
+
 /**
  * Button style guide
  * 

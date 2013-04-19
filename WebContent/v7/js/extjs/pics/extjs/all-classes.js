@@ -83051,11 +83051,13 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'export',
-        text : 'Export',
-        cls: 'primary export',
+        text : '<i class="icon-table icon-large"></i><span>Spreadsheet</span>',
+        cls: 'default export',
         id: 'export-button',
         tooltip: 'Export this report to Excel',
-        margin: '100 0 0 0'
+        height: 28,
+        margin: '100 0 0 0',
+        width: 200
     }],
     layout: {
         type: 'vbox',
@@ -83074,11 +83076,13 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : 'Print Preview',
-        cls: 'primary print',
+        text : '<i class="icon-picture icon-large"></i><span>Preview</span>',
+        cls: 'default print',
         id: 'print-button',
         tooltip: 'Preview a printable version of this report',
-        margin: '100 0 0 0'
+        height: 28,
+        margin: '100 0 0 0',
+        width: 200
     }],
     layout: {
         type: 'vbox',
