@@ -22,6 +22,7 @@ public enum ModelType {
 	EmployeeAssessments,
 	Employees,
 	ExceptionLogs,
+    ForcedFlags,
 	InvoiceItems,
 	Invoices,
 	Operators,
