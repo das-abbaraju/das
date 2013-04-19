@@ -112,6 +112,9 @@ public class ContractorCron extends PicsActionSupport {
 	private ExceptionService exceptionService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
+    @Autowired
+    @Qualifier("CsrAssignmentSinglePublisher")
+    private Publisher csrAssignmentSinglePublisher;
 
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
@@ -205,11 +208,8 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
+            runCSRAssignment(contractor);
 
-			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
-					contractor.getCurrentCsr() == null) {
-				runCSRAssignment(contractor);
-			}
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
@@ -1110,13 +1110,11 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		}
 
-		logger.trace("ContractorCron starting CsrAssignment");
-		UserAssignment assignment = userAssignmentDAO.findByContractor(contractor);
-		if (assignment != null) {
-			if (!assignment.getUser().equals(contractor.getCurrentCsr())) {
-				contractor.makeUserCurrentCsrExpireExistingCsr(assignment.getUser(), User.SYSTEM);
-			}
-		}
+        if (contractor.getStatus().isActive() && contractor.getCurrentCsr() == null) {
+		    logger.trace("ContractorCron starting CsrAssignment");
+            csrAssignmentSinglePublisher.publish(contractor.getId());
+        }
+
 	}
 
 	/**
