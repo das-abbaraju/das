@@ -1,12 +1,14 @@
 package com.picsauditing.service;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.NoResultException;
 
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -29,7 +31,13 @@ public class ManageReportsService {
 	@Autowired
 	private UserGroupDAO userGroupDAO;
 	@Autowired
+	private ReportPermissionUserDAO reportPermissionUserDAO;
+	@Autowired
+	private ReportPermissionAccountDAO reportPermissionAccountDAO;
+	@Autowired
     private ReportInfoProvider reportInfoProvider;
+	@Autowired
+	private ReportPermissionInfoConverter reportPermissionInfoConverter;
 
 	public List<ReportInfo> getReportsForOwnedByUser(ReportSearch reportSearch) {
 		return reportDAO.findByOwnerID(reportSearch);
@@ -48,6 +56,23 @@ public class ManageReportsService {
 		ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
 		pagination.initialize(parameters, reportInfoProvider);
 		return pagination.getResults();
+	}
+
+	public List<ReportPermissionInfo> buildUserAccessList(int reportId) {
+		List<ReportPermissionUser> users = reportPermissionUserDAO.findAllUsersByReportId(reportId);
+		List<ReportPermissionInfo> userAccessList = reportPermissionInfoConverter.convertUsersToReportPermissionInfo(users);
+
+		return userAccessList;
+	}
+
+	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(int reportId, Locale locale) {
+		List<ReportPermissionUser> groups = reportPermissionUserDAO.findAllGroupsByReportId(reportId);
+		List<ReportPermissionInfo> groupInfoList = reportPermissionInfoConverter.convertUsersToReportPermissionInfo(groups);
+
+		List<ReportPermissionAccount> accounts = reportPermissionAccountDAO.findAllByReportId(reportId);
+		List<ReportPermissionInfo> accountInfoList = reportPermissionInfoConverter.convertAccountsToReportPermissionInfo(accounts, locale);
+
+		return ListUtils.union(groupInfoList, accountInfoList);
 	}
 
 	public ReportPermissionUser shareReportWithUserOrGroup(User sharerUser, User toUser, Report report, Permissions permissions,

@@ -41,6 +41,8 @@ public class ManageReportsServiceTest {
     private ReportDAO reportDAO;
     @Mock
     private ReportUserDAO reportUserDAO;
+	@Mock
+	private ReportPermissionUserDAO reportPermissionUserDAO;
     @Mock
     private Permissions permissions;
     @Mock
@@ -71,7 +73,8 @@ public class ManageReportsServiceTest {
         manageReportsService = new ManageReportsService();
 
         setInternalState(manageReportsService, "reportUserDAO", reportUserDAO);
-        setInternalState(manageReportsService, "reportDAO", reportDAO);
+		setInternalState(manageReportsService, "reportDAO", reportDAO);
+		setInternalState(manageReportsService, "reportPermissionUserDAO", reportPermissionUserDAO);
         setInternalState(manageReportsService, "reportPreferencesService", reportPreferencesService);
         setInternalState(manageReportsService, "permissionService", permissionService);
         setInternalState(manageReportsService, "reportInfoProvider", reportInfoProvider);

@@ -1,21 +1,21 @@
 package com.picsauditing.service;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.ReportUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class ReportPermissionInfoConverter {
 
 	@Autowired
 	private PermissionService permissionService;
 
-	public List<ReportPermissionInfo> convertToReportPermissionInfo(List<ReportPermissionUser> reportPermissionUsers) {
+	public List<ReportPermissionInfo> convertUsersToReportPermissionInfo(List<ReportPermissionUser> reportPermissionUsers) {
 		if (CollectionUtils.isEmpty(reportPermissionUsers)) {
 			return Collections.emptyList();
 		}
@@ -23,13 +23,13 @@ public class ReportPermissionInfoConverter {
 		List<ReportPermissionInfo> reportPermissionInfoList = new ArrayList<>();
 
 		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
-			reportPermissionInfoList.add(convertToReportPermissionInfo(reportPermissionUser));
+			reportPermissionInfoList.add(convertUserToReportPermissionInfo(reportPermissionUser));
 		}
 
 		return reportPermissionInfoList;
 	}
 
-	private ReportPermissionInfo convertToReportPermissionInfo(ReportPermissionUser reportPermissionUser) {
+	private ReportPermissionInfo convertUserToReportPermissionInfo(ReportPermissionUser reportPermissionUser) {
 		ReportPermissionInfo reportPermissionInfo = new ReportPermissionInfo();
 
 		if (reportPermissionUser == null) {
@@ -40,13 +40,54 @@ public class ReportPermissionInfoConverter {
 		Account account = user.getAccount();
 
 		reportPermissionInfo.setId(user.getId());
-		reportPermissionInfo.setUserName(user.getName());
+		reportPermissionInfo.setName(user.getName());
 		reportPermissionInfo.setOwner(permissionService.isOwner(user, reportPermissionUser.getReport()));
 		reportPermissionInfo.setEditable(reportPermissionUser.isEditable());
-		reportPermissionInfo.setAccountName(account.getName());
-		reportPermissionInfo.setLocation(account.getCity() + ", " + account.getCountrySubdivision());
+		reportPermissionInfo.setLocation(account.getName());
+		reportPermissionInfo.setType(user.isGroup() ? "Group" : "User");
+		reportPermissionInfo.setAccessType(user.isGroup() ? "group" : "user");
 
 		return reportPermissionInfo;
+	}
+
+	public List<ReportPermissionInfo> convertAccountsToReportPermissionInfo(List<ReportPermissionAccount> reportPermissionAccounts, Locale locale) {
+		if (CollectionUtils.isEmpty(reportPermissionAccounts)) {
+			return Collections.emptyList();
+		}
+
+		List<ReportPermissionInfo> reportPermissionInfoList = new ArrayList<>();
+
+		for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
+			reportPermissionInfoList.add(convertAccountToReportPermissionInfo(reportPermissionAccount, locale));
+		}
+
+		return reportPermissionInfoList;
+	}
+
+	private ReportPermissionInfo convertAccountToReportPermissionInfo(ReportPermissionAccount reportPermissionAccount, Locale locale) {
+		ReportPermissionInfo reportPermissionInfo = new ReportPermissionInfo();
+
+		if (reportPermissionAccount == null) {
+			return reportPermissionInfo;
+		}
+
+		Account account = reportPermissionAccount.getAccount();
+
+		reportPermissionInfo.setId(account.getId());
+		reportPermissionInfo.setName(account.getName());
+		reportPermissionInfo.setOwner(false);
+		reportPermissionInfo.setEditable(false);
+		reportPermissionInfo.setLocation(translateLocation(account.getCity(), account.getCountrySubdivision(), locale));
+		reportPermissionInfo.setType(account.getType());
+		reportPermissionInfo.setAccessType("account");
+
+		return reportPermissionInfo;
+	}
+
+	private String translateLocation(String city, CountrySubdivision countrySubdivision, Locale locale) {
+		String countrySubdivisionString = (countrySubdivision == null) ? "" : countrySubdivision.toString();
+
+		return ReportUtil.buildLocationString(city, countrySubdivisionString, locale);
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.servlet.ServletOutputStream;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -357,5 +358,25 @@ public final class ReportUtil {
 		} else {
 			return enumValue.name();
 		}
+	}
+
+	public static String buildLocationString(String city, String countrySubdivision, Locale locale) {
+		String location = Strings.EMPTY_STRING;
+
+		String cityLocation = Strings.EMPTY_STRING;
+		if (StringUtils.isNotEmpty(city)) {
+			cityLocation = city + ", ";
+		}
+
+		if (StringUtils.isNotEmpty(countrySubdivision)) {
+			String key = "CountrySubdivision." + countrySubdivision;
+			String translatedCountrySubdivision = i18nCache.getText(key, locale);
+
+			if (!StringUtils.equals(key, translatedCountrySubdivision)) {
+				location = cityLocation + translatedCountrySubdivision;
+			}
+		}
+
+		return location;
 	}
 }

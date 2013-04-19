@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.report.ReportUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
@@ -22,15 +22,13 @@ public class AutocompleteSharing {
 	@Autowired
 	private AutocompleteDAO autocompleteDAO;
 
-	private static I18nCache i18nCache = I18nCache.getInstance();
-
 	public JSONArray buildSharingAutocomplete(int reportId, String searchTerm, Permissions permissions) throws SQLException {
 		List<BasicDynaBean> searchResults = autocompleteDAO.findPeopleToShareWith(reportId, searchTerm, permissions);
-		return mapResultsToJSON(searchResults, permissions);
+		return mapResultsToJSON(searchResults, permissions.getLocale());
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONArray mapResultsToJSON(List<BasicDynaBean> searchResults, Permissions permissions) {
+	private JSONArray mapResultsToJSON(List<BasicDynaBean> searchResults, Locale locale) {
 		JSONArray jsonResults = new JSONArray();
 
 		for (BasicDynaBean bean : searchResults) {
@@ -39,7 +37,13 @@ public class AutocompleteSharing {
 			jsonResult.put("id", bean.get("id"));
 			jsonResult.put("name", bean.get("name"));
 			jsonResult.put("type", bean.get("resultCategory"));
-			jsonResult.put("location", buildLocationString(bean, permissions.getLocale()));
+
+			String city = (String) bean.get("city");
+			String countrySubdivision = (String) bean.get("countrySubdivision");
+			String userLocation = (String) bean.get("userLocation");
+			String location = buildLocationString(city, countrySubdivision, userLocation, locale);
+			jsonResult.put("location", location);
+
 			jsonResult.put("access_type", bean.get("type"));
 
 			jsonResults.add(jsonResult);
@@ -48,26 +52,9 @@ public class AutocompleteSharing {
 		return jsonResults;
 	}
 
-	private String buildLocationString(BasicDynaBean bean, Locale locale) {
-		String location = "";
+	private String buildLocationString(String city, String countrySubdivision, String userLocation, Locale locale) {
+		String location = ReportUtil.buildLocationString(city, countrySubdivision, locale);
 
-		String city = (String) bean.get("city");
-		String cityLocation = "";
-		if (StringUtils.isNotEmpty(city)) {
-			cityLocation = city + ", ";
-		}
-
-		String countrySubdivision = (String) bean.get("countrySubdivision");
-		if (StringUtils.isNotEmpty(countrySubdivision)) {
-			String key = "CountrySubdivision." + countrySubdivision;
-			String translatedCountrySubdivision = i18nCache.getText(key, locale);
-
-			if (key != translatedCountrySubdivision) {
-				location = cityLocation + translatedCountrySubdivision;
-			}
-		}
-
-		String userLocation = (String) bean.get("userLocation");
 		if (StringUtils.isNotEmpty(userLocation)) {
 			location = userLocation;
 		}

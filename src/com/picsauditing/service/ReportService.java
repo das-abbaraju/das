@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -28,13 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
@@ -61,16 +55,11 @@ public class ReportService {
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
-	private ReportPermissionUserDAO reportPermissionUserDao;
-	@Autowired
 	private PermissionService permissionService;
 	@Autowired
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
-
-	@Autowired
-	private ReportPermissionInfoConverter reportPermissionInfoConverter;
 
 	private I18nCache i18nCache;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
@@ -428,20 +417,4 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public List<ReportPermissionInfo> buildUserAccessList(int reportId) {
-		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllUsersByReportId(reportId);
-
-		List<ReportPermissionInfo> userAccessList = reportPermissionInfoConverter.convertToReportPermissionInfo(reportPermissionUsers);
-
-		return userAccessList;
-	}
-
-	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(int reportId) {
-		List<ReportPermissionUser> groupAccessList = reportPermissionUserDao.findAllGroupsByReportId(reportId);
-		List<ReportPermissionInfo> groupPermissionInfoList = reportPermissionInfoConverter.convertToReportPermissionInfo(groupAccessList);
-
-//		List<ReportPermissionAccount> accountAccessList = reportPermissionAccountDao.buildAccountAccessList(reportId);
-
-		return groupPermissionInfoList;
-	}
 }

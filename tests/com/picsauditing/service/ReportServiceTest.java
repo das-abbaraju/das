@@ -39,8 +39,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportElementDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
@@ -70,8 +68,6 @@ public class ReportServiceTest {
 
 	@Mock
 	private ReportDAO reportDao;
-	@Mock
-	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock
 	private User user;
 	@Mock
@@ -108,7 +104,6 @@ public class ReportServiceTest {
 		reportService = new ReportService();
 
 		setInternalState(reportService, "reportDao", reportDao);
-		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(reportService, "permissionService", permissionService);
 		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
@@ -290,7 +285,6 @@ public class ReportServiceTest {
 		User user = new User(USER_ID);
 		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserViewReport(eq(permissions), anyInt())).thenReturn(true);
-		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report newReport = reportServiceSpy.copy(reportContext);

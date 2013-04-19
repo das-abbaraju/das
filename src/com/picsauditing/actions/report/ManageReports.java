@@ -161,8 +161,8 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String access() {
-		userAccessList = reportService.buildUserAccessList(reportId);
-		groupAccessList = reportService.buildGroupAndAccountAccessList(reportId);
+		userAccessList = manageReportsService.buildUserAccessList(reportId);
+		groupAccessList = manageReportsService.buildGroupAndAccountAccessList(reportId, permissions.getLocale());
 
 		return determineViewName("accessList", "access");
 	}

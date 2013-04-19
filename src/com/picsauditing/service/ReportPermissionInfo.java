@@ -6,11 +6,12 @@ package com.picsauditing.service;
 public class ReportPermissionInfo {
 
 	private int id;
-	private String userName;
+	private String name;
 	private boolean isOwner;
 	private boolean isEditable;
-	private String accountName;
 	private String location;
+	private String type;
+	private String accessType;
 
 	public int getId() {
 		return id;
@@ -20,16 +21,20 @@ public class ReportPermissionInfo {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getName() {
+		return name;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public boolean isOwner() {
 		return isOwner;
+	}
+
+	public void setOwner(boolean owner) {
+		isOwner = owner;
 	}
 
 	public boolean isEditable() {
@@ -40,18 +45,6 @@ public class ReportPermissionInfo {
 		isEditable = editable;
 	}
 
-	public void setOwner(boolean owner) {
-		isOwner = owner;
-	}
-
-	public String getAccountName() {
-		return accountName;
-	}
-
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
-	}
-
 	public String getLocation() {
 		return location;
 	}
@@ -60,4 +53,19 @@ public class ReportPermissionInfo {
 		this.location = location;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getAccessType() {
+		return accessType;
+	}
+
+	public void setAccessType(String accessType) {
+		this.accessType = accessType;
+	}
 }
