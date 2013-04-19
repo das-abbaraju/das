@@ -12,6 +12,9 @@ import java.util.Locale;
 
 public class ReportPermissionInfoConverter {
 
+	public static final String TYPE_USER = "User";
+	public static final String ACCESS_TYPE_USER = "user";
+
 	@Autowired
 	private PermissionService permissionService;
 
@@ -44,8 +47,8 @@ public class ReportPermissionInfoConverter {
 		reportPermissionInfo.setOwner(permissionService.isOwner(user, reportPermissionUser.getReport()));
 		reportPermissionInfo.setEditable(reportPermissionUser.isEditable());
 		reportPermissionInfo.setLocation(account.getName());
-		reportPermissionInfo.setType(user.isGroup() ? "Group" : "User");
-		reportPermissionInfo.setAccessType(user.isGroup() ? "group" : "user");
+		reportPermissionInfo.setType(user.isGroup() ? "Group" : TYPE_USER);
+		reportPermissionInfo.setAccessType(user.isGroup() ? "group" : ACCESS_TYPE_USER);
 
 		return reportPermissionInfo;
 	}

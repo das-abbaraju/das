@@ -6,6 +6,7 @@ import java.util.Locale;
 import javax.persistence.NoResultException;
 
 import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.access.UserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.ListUtils;
@@ -22,9 +23,11 @@ public class ManageReportsService {
     public ReportPreferencesService reportPreferencesService;
     @Autowired
     public PermissionService permissionService;
-    @Autowired
+	@Autowired
+	private UserService userService;
+	@Autowired
     private ReportDAO reportDAO;
-    @Autowired
+	@Autowired
     private ReportUserDAO reportUserDAO;
 	@Autowired
 	private UserDAO userDAO;
@@ -62,7 +65,36 @@ public class ManageReportsService {
 		List<ReportPermissionUser> users = reportPermissionUserDAO.findAllUsersByReportId(report.getId());
 		List<ReportPermissionInfo> userAccessList = reportPermissionInfoConverter.convertUsersToReportPermissionInfo(users);
 
+		makeSureOwnerIsInList(report.getOwner().getId(), userAccessList);
+
 		return userAccessList;
+	}
+
+	// When we can assure that new reports will always have a row in report_permission_user for the owner,
+	// then we can remove this method.
+	private void makeSureOwnerIsInList(int ownerId, List<ReportPermissionInfo> userAccessList) {
+		boolean found = false;
+
+		for (ReportPermissionInfo info : userAccessList) {
+			if (info.getId() == ownerId) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			User owner = userService.loadUser(ownerId);
+
+			ReportPermissionInfo ownerInfo = new ReportPermissionInfo();
+
+			ownerInfo.setId(ownerId);
+			ownerInfo.setName(owner.getName());
+			ownerInfo.setOwner(true);
+			ownerInfo.setEditable(true);
+			ownerInfo.setLocation(owner.getAccount().getName());
+			ownerInfo.setType(ReportPermissionInfoConverter.TYPE_USER);
+			ownerInfo.setAccessType(ReportPermissionInfoConverter.ACCESS_TYPE_USER);
+		}
 	}
 
 	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(Report report, Locale locale) {
