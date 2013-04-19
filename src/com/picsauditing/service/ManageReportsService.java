@@ -94,6 +94,8 @@ public class ManageReportsService {
 			ownerInfo.setLocation(owner.getAccount().getName());
 			ownerInfo.setType(ReportPermissionInfoConverter.TYPE_USER);
 			ownerInfo.setAccessType(ReportPermissionInfoConverter.ACCESS_TYPE_USER);
+
+			userAccessList.add(0, ownerInfo);
 		}
 	}
 
