@@ -254,10 +254,6 @@ public class UsersManage extends PicsActionSupport {
             addActionError(getText("UsersManage.UsernameInUse"));
         } catch (DataIntegrityViolationException e) {
             addActionError(getText("UsersManage.UsernameInUse"));
-        } finally {
-            for (UserAccess userAccess : accessToBeRemoved) {
-                userAccessDAO.remove(userAccess);
-            }
         }
     }
 
@@ -277,41 +273,21 @@ public class UsersManage extends PicsActionSupport {
         user.getOwnedPermissions().size();
     }
 
-	private void updateUserRoles() {
-		Set<OpPerms> userPerms = user.getOwnedOpPerms();
+    private void updateUserRoles() {
+        Map<OpPerms, Boolean> requestedPermState = new HashMap<>();
+        requestedPermState.put(OpPerms.ContractorAdmin, conAdmin);
+        requestedPermState.put(OpPerms.ContractorBilling, conBilling);
+        requestedPermState.put(OpPerms.ContractorSafety, conSafety);
+        requestedPermState.put(OpPerms.ContractorInsurance, conInsurance);
 
-		if (!userPerms.contains(OpPerms.ContractorAdmin) && conAdmin) {
-			user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
-		} else if (userPerms.contains(OpPerms.ContractorAdmin) && !conAdmin) {
-			removeUserRole(OpPerms.ContractorAdmin);
-		}
+        List<UserGroupManagementStatus> statuses = userManagementService.updateUserPermissions(user, account, permissions, requestedPermState);
 
-		if (!userPerms.contains(OpPerms.ContractorBilling) && conBilling) {
-			user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
-		} else if (userPerms.contains(OpPerms.ContractorBilling) && !conBilling) {
-			removeUserRole(OpPerms.ContractorBilling);
-		}
-
-		if (!userPerms.contains(OpPerms.ContractorSafety) && conSafety) {
-			user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
-		} else if (userPerms.contains(OpPerms.ContractorSafety) && !conSafety) {
-			removeUserRole(OpPerms.ContractorSafety);
-		}
-
-		if (!userPerms.contains(OpPerms.ContractorInsurance) && conInsurance) {
-			user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
-		} else if (userPerms.contains(OpPerms.ContractorInsurance) && !conInsurance) {
-			removeUserRole(OpPerms.ContractorInsurance);
-		}
-	}
-
-	private void removeUserRole(OpPerms role) {
-		if (account.getUsersByRole(role).size() > 1) {
-			removeUserAccess(role);
-		} else {
-			addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission", role.getDescription()));
-		}
-	}
+        for (UserGroupManagementStatus status : statuses) {
+            if (!status.isOk) {
+                addActionErrorFromStatus(status);
+            }
+        }
+    }
 
 	private void updateShadowCSR() {
 		if (shadowID == 0) {
@@ -969,17 +945,6 @@ public class UsersManage extends PicsActionSupport {
 
 	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
 		this.usingVersion7Menus = usingVersion7Menus;
-	}
-
-	public void removeUserAccess(OpPerms perm) {
-		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
-		while (permissions.hasNext()) {
-			UserAccess ua = permissions.next();
-			if (ua.getOpPerm() == perm) {
-				permissions.remove();
-				accessToBeRemoved.add(ua);
-			}
-		}
 	}
 
 	public String emailPassword() throws Exception {

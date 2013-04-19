@@ -14,10 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -25,6 +22,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class UserManagerTest {
+    private static final int PERM_USER_ID = 123;
+
     private UserManager userManager;
     private Set<OpPerms> ownedOpPerms;
     private List<UserGroup> userGroups;
@@ -51,6 +50,8 @@ public class UserManagerTest {
     private List<UserAccess> ownedPermissions;
     @Mock
     private UserGroup userGroup;
+    @Mock
+    private List<User> usersByRole;
 
     @Before
     public void setUp() throws Exception {
@@ -67,6 +68,7 @@ public class UserManagerTest {
         when(user.getOwnedOpPerms()).thenReturn(ownedOpPerms);
         when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
         when(group.isGroup()).thenReturn(true);
+        when(account.getUsersByRole(any(OpPerms.class))).thenReturn(usersByRole);
     }
 
     @Test
@@ -470,4 +472,135 @@ public class UserManagerTest {
 
         assertTrue(status.isOk);
     }
+
+    @Test
+    public void testUpdateUserPermissions_DoesNotHaveContractorAdminWantsToAdd() throws Exception {
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(true, false, false, false)
+        );
+
+        verify(user).addOwnedPermissions(OpPerms.ContractorAdmin, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorBilling, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorSafety, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorInsurance, PERM_USER_ID);
+    }
+
+    @Test
+    public void testUpdateUserPermissions_DoesNotHaveContractorSafetyWantsToAdd() throws Exception {
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(false, false, true, false)
+        );
+
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorAdmin, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorBilling, PERM_USER_ID);
+        verify(user).addOwnedPermissions(OpPerms.ContractorSafety, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorInsurance, PERM_USER_ID);
+    }
+
+    @Test
+    public void testUpdateUserPermissions_DoesNotHaveAnyPermsWantsToAddAll() throws Exception {
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(true, true, true, true)
+        );
+
+        verify(user).addOwnedPermissions(OpPerms.ContractorAdmin, PERM_USER_ID);
+        verify(user).addOwnedPermissions(OpPerms.ContractorBilling, PERM_USER_ID);
+        verify(user).addOwnedPermissions(OpPerms.ContractorSafety, PERM_USER_ID);
+        verify(user).addOwnedPermissions(OpPerms.ContractorInsurance, PERM_USER_ID);
+    }
+
+    @Test
+    public void testUpdateUserPermissions_HasAllPermsWantsToAddAll() throws Exception {
+        ownedOpPerms.add(OpPerms.ContractorAdmin);
+        ownedOpPerms.add(OpPerms.ContractorBilling);
+        ownedOpPerms.add(OpPerms.ContractorSafety);
+        ownedOpPerms.add(OpPerms.ContractorInsurance);
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(true, true, true, true)
+        );
+
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorAdmin, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorBilling, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorSafety, PERM_USER_ID);
+        verify(user, never()).addOwnedPermissions(OpPerms.ContractorInsurance, PERM_USER_ID);
+    }
+
+    @Test
+    public void testUpdateUserPermissions_HasContractorAdminPermWantsToRemove_NotOnlyOne() throws Exception {
+        ownedOpPerms.add(OpPerms.ContractorAdmin);
+        List<UserAccess> ownedPermissions = new ArrayList<>();
+        UserAccess ua = new UserAccess();
+        ua.setOpPerm(OpPerms.ContractorAdmin);
+        ownedPermissions.add(ua);
+
+        when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+        when(usersByRole.size()).thenReturn(3);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(false, false, false, false)
+        );
+
+        verify(userAccessDAO).remove(ua);
+        assertTrue(statuses.isEmpty());
+    }
+
+    @Test
+    public void testUpdateUserPermissions_HasContractorAdminPermWantsToRemove_IsOnlyOne() throws Exception {
+        ownedOpPerms.add(OpPerms.ContractorAdmin);
+        List<UserAccess> ownedPermissions = new ArrayList<>();
+        UserAccess ua = new UserAccess();
+        ua.setOpPerm(OpPerms.ContractorAdmin);
+        ownedPermissions.add(ua);
+
+        when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+        when(usersByRole.size()).thenReturn(1);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(false, false, false, false)
+        );
+
+        verify(userAccessDAO, never()).remove(ua);
+        assertFalse(statuses.isEmpty());
+    }
+
+
+    @Test
+    public void testUpdateUserPermissions_HasContractorInsurancePermWantsToRemove_NotOnlyOne() throws Exception {
+        ownedOpPerms.add(OpPerms.ContractorInsurance);
+        List<UserAccess> ownedPermissions = new ArrayList<>();
+        UserAccess ua = new UserAccess();
+        ua.setOpPerm(OpPerms.ContractorInsurance);
+        ownedPermissions.add(ua);
+
+        when(user.getOwnedPermissions()).thenReturn(ownedPermissions);
+        when(permissions.getUserId()).thenReturn(PERM_USER_ID);
+        when(usersByRole.size()).thenReturn(3);
+
+        List<UserGroupManagementStatus> statuses = userManager.updateUserPermissions(
+                user, account, permissions, requestedPermState(false, false, false, false)
+        );
+
+        verify(userAccessDAO).remove(ua);
+        assertTrue(statuses.isEmpty());
+    }
+
+    private Map<OpPerms, Boolean> requestedPermState(boolean conAdmin, boolean conBilling, boolean conSafety, boolean conInsurance) {
+        Map<OpPerms, Boolean> requestedPermState = new HashMap<>();
+        requestedPermState.put(OpPerms.ContractorAdmin, conAdmin);
+        requestedPermState.put(OpPerms.ContractorBilling, conBilling);
+        requestedPermState.put(OpPerms.ContractorSafety, conSafety);
+        requestedPermState.put(OpPerms.ContractorInsurance, conInsurance);
+        return requestedPermState;
+    }
+
 }

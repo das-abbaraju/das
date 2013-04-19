@@ -22,6 +22,7 @@ public class QaUserCreator extends PicsApiSupport {
     private static final Logger logger = LoggerFactory.getLogger(QaUserCreator.class);
     private Account account;
     private Set<Integer> groupId = new HashSet<>();
+    private Set<String> opPerm = new HashSet<>();
 
     @Autowired
     private UserManagementService userManagementService;
@@ -34,11 +35,18 @@ public class QaUserCreator extends PicsApiSupport {
         if (account == null) {
             json.put("status", "ERROR: You must specify an accountId");
         } else {
-            String password = EncodedKey.randomPassword();
-            User user = createAndSaveUser(password);
+            User user = createUser();
 
-            Map<User, Boolean> addStatus = addUserToGroups(user);
-            setSaveStatusInJson(addStatus);
+            Map<User, Boolean> addGroupStatus = addUserToGroups(user);
+            Map<String, Boolean> addPermStatus = addPermsToUser(user);
+
+            // the password encryption only works if the user already has an id, so we have to save twice
+            // plus we're saving twice for the perms (if any)
+            String password = EncodedKey.randomPassword();
+            user.setEncryptedPassword(password);
+            userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
+
+            setSaveStatusInJson(addGroupStatus, addPermStatus);
             json.put("username", user.getUsername());
             json.put("password", password);
         }
@@ -46,29 +54,69 @@ public class QaUserCreator extends PicsApiSupport {
         return JSON;
     }
 
-    private void setSaveStatusInJson(Map<User, Boolean> addStatus) {
+    private void setSaveStatusInJson(Map<User, Boolean> addStatus, Map<String, Boolean> addPermStatus) {
         StringBuffer added = new StringBuffer();
         StringBuffer skipped = new StringBuffer();
+        stringifyGroups(addStatus, added, skipped);
+        stringifyPerms(addPermStatus, added, skipped);
+        if (Strings.isEmpty(skipped.toString()) && Strings.isEmpty(added.toString())) {
+            json.put("status", "SUCCESS: no groups or perms added");
+        } else if (Strings.isEmpty(skipped.toString())) {
+            json.put("status", "SUCCESS: added " + added.toString());
+        } else {
+            json.put("status", "PARTIAL: added " + added.toString() + "; skipped " + skipped.toString());
+        }
+    }
+
+    private void stringifyGroups(Map<User, Boolean> addStatus, StringBuffer added, StringBuffer skipped) {
         for (User user : addStatus.keySet()) {
             if (addStatus.get(user)) {
                 if (!Strings.isEmpty(added.toString())) {
                     added.append(", ");
                 }
-                added.append(user.getId());
+                added.append("group ").append(user.getId());
             } else {
                 if (!Strings.isEmpty(skipped.toString())) {
                     skipped.append(", ");
                 }
-                skipped.append(user.getId());
+                skipped.append("group ").append(user.getId());
             }
         }
-        if (Strings.isEmpty(skipped.toString()) && Strings.isEmpty(added.toString())) {
-            json.put("status", "SUCCESS: no groups added");
-        } else if (Strings.isEmpty(skipped.toString())) {
-            json.put("status", "SUCCESS: added groups " + added.toString());
-        } else {
-            json.put("status", "PARTIAL: added groups " + added.toString() + "; skipped groups " + skipped.toString());
+    }
+
+    private void stringifyPerms(Map<String, Boolean> addPermStatus, StringBuffer added, StringBuffer skipped) {
+        for (String perm : addPermStatus.keySet()) {
+            if (addPermStatus.get(perm)) {
+                if (!Strings.isEmpty(added.toString())) {
+                    added.append(", ");
+                }
+                added.append("perm ").append(perm);
+            } else {
+                if (!Strings.isEmpty(skipped.toString())) {
+                    skipped.append(", ");
+                }
+                skipped.append("perm ").append(perm);
+            }
         }
+    }
+
+    private Map<String, Boolean> addPermsToUser(User user) throws Exception {
+        Map<OpPerms, Boolean> requestedPermState = new HashMap<>();
+        Map<String, Boolean> addStatus = new HashMap<>();
+        Set<String> perms = getOpPerm();
+        for (String perm : perms) {
+            OpPerms op = OpPerms.valueOf(perm);
+            if (op == null) {
+                addStatus.put(perm, Boolean.FALSE);
+            } else {
+                addStatus.put(perm, Boolean.TRUE);
+                requestedPermState.put(op, Boolean.TRUE);
+            }
+        }
+
+        userManagementService.updateUserPermissions(user, account, permissions, requestedPermState);
+
+        return addStatus;
     }
 
     private Map<User, Boolean> addUserToGroups(User user) throws Exception {
@@ -91,7 +139,7 @@ public class QaUserCreator extends PicsApiSupport {
         return status.isOk;
     }
 
-    private User createAndSaveUser(String password) throws Exception {
+    private User createUser() throws Exception {
         User user = userManagementService.initializeNewUser(account);
         user.setUsername(generateTestUserUsername());
         user.setName("Selenium Test User");
@@ -99,9 +147,6 @@ public class QaUserCreator extends PicsApiSupport {
         user.setLastName("Test User");
         user.setEmail("tester@picsauditing.com");
         user.setLocale(Locale.ENGLISH);
-        userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
-        // the password encryption only works if the user already has an id, so we have to save twice
-        user.setEncryptedPassword(password);
         userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
         return user;
     }
@@ -128,6 +173,14 @@ public class QaUserCreator extends PicsApiSupport {
 
     public void setGroupId(Set<Integer> groupIds) {
         this.groupId = groupIds;
+    }
+
+    public Set<String> getOpPerm() {
+        return opPerm;
+    }
+
+    public void setOpPerm(Set<String> opPerm) {
+        this.opPerm = opPerm;
     }
 
     private String guid() {

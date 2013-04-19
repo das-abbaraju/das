@@ -493,4 +493,5 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage.setUser(user);
 		usersManage.setAccount(account);
 	}
+
 }

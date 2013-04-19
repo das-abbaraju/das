@@ -5,6 +5,7 @@ public enum ModelType {
 	AuditTypes,
 	ContractorAudits,
 	ContractorAuditDatas,
+	ContractorAuditFiles,
 	ContractorAuditOperators,
 	ContractorAuditOperatorWorkflows,
 	ContractorFees,

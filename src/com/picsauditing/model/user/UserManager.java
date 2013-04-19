@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UserManager extends UserGroupManager implements UserManagementService {
     private final Logger logger = LoggerFactory.getLogger(UserManager.class);
@@ -285,4 +282,45 @@ public class UserManager extends UserGroupManager implements UserManagementServi
         }
         return false;
     }
+
+    public List<UserGroupManagementStatus> updateUserPermissions(User user, Account account, Permissions permissions, Map<OpPerms, Boolean> requestedPermState) {
+        List<UserGroupManagementStatus> statuses = new ArrayList<>();
+        Set<OpPerms> userPerms = user.getOwnedOpPerms();
+
+        for (OpPerms opPerm : requestedPermState.keySet()) {
+            if (!userPerms.contains(opPerm) && requestedPermState.get(opPerm)) {
+                user.addOwnedPermissions(opPerm, permissions.getUserId());
+            } else if (userPerms.contains(opPerm) && !requestedPermState.get(opPerm)) {
+                UserGroupManagementStatus status = removeUserRole(user, account, opPerm);
+                if (!status.isOk) {
+                    statuses.add(status);
+                }
+            }
+        }
+        return statuses;
+    }
+
+    private UserGroupManagementStatus removeUserRole(User user, Account account, OpPerms role) {
+        UserGroupManagementStatus status = new UserGroupManagementStatus();
+        if (account.getUsersByRole(role).size() > 1) {
+            removeUserAccess(user, role);
+        } else {
+            status.isOk = false;
+            status.notOkErrorKey = MUST_HAVE_ONE_USER_WITH_PERMISSION;
+            status.errorDetail = role.getDescription();
+        }
+        return status;
+    }
+
+    public void removeUserAccess(User user, OpPerms perm) {
+        Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
+        while (permissions.hasNext()) {
+            UserAccess ua = permissions.next();
+            if (ua.getOpPerm() == perm) {
+                permissions.remove();
+                userAccessDAO.remove(ua);
+            }
+        }
+    }
+
 }
