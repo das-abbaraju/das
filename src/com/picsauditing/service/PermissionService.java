@@ -24,7 +24,7 @@ public class PermissionService {
     @Autowired
     private ReportPermissionAccountDAO reportPermissionAccountDao;
 
-    private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
+	private static final Logger logger = LoggerFactory.getLogger(PermissionService.class);
 
 	public boolean canUserViewReport(User user, Report report) {
 		if (report == null) {
@@ -81,6 +81,7 @@ public class PermissionService {
         return true;
     }
 
+	// FIXME this looks like it doesn't work as intended.
     public boolean canUserEditReport(Permissions permissions, int reportId) {
         try {
             ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions, reportId);
@@ -98,6 +99,34 @@ public class PermissionService {
         return isReportDevelopmentGroup(permissions);
     }
 
+	public boolean canUserEditReport(User user, Report report) {
+		try {
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(user.getId(), report.getId());
+
+			if (reportPermissionUser != null && reportPermissionUser.isEditable()) {
+				return true;
+			}
+		} catch (Exception e) {
+			// Don't care
+		}
+
+		for (UserGroup userGroup : user.getGroups()) {
+			try {
+				ReportPermissionUser reportPermissionGroup = reportPermissionUserDao.findOne(userGroup.getGroup().getId(), report.getId());
+
+				if (reportPermissionGroup != null && reportPermissionGroup.isEditable()) {
+					return true;
+				}
+			} catch (NoResultException nre) {
+				// Don't care
+			}
+		}
+
+		// TODO check account when accounts can have edit permission
+
+		return false;
+	}
+
     public boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
         return isOwner(fromOwner, report) || isReportDevelopmentGroup(permissions);
     }
@@ -113,7 +142,11 @@ public class PermissionService {
         return isOwnerOrHasEdit(granterUser, report, permissions);
     }
 
-    public boolean canUserRemoveReport(User removerUser, Report report, Permissions permissions) {
+	public boolean canUserShareReport(User user, Report report) {
+		return isOwnerOrHasEdit(user, report);
+	}
+
+	public boolean canUserRemoveReport(User removerUser, Report report, Permissions permissions) {
         return isOwnerOrHasView(removerUser, report, permissions);
     }
 
@@ -125,7 +158,11 @@ public class PermissionService {
         return isOwner(user, report) || canUserEditReport(permissions, report.getId());
     }
 
-    private boolean isOwnerOrHasView(User user, Report report, Permissions permissions) {
+	private boolean isOwnerOrHasEdit(User user, Report report) {
+		return isOwner(user, report) || canUserEditReport(user, report);
+	}
+
+	private boolean isOwnerOrHasView(User user, Report report, Permissions permissions) {
         return isOwner(user, report) || canUserViewReport(permissions, report.getId());
     }
 

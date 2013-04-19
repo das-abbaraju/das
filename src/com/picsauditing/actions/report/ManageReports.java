@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +26,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.service.ManageReportsService;
-import com.picsauditing.service.ReportFavoriteInfo;
-import com.picsauditing.service.ReportFavoriteInfoConverter;
-import com.picsauditing.service.ReportInfo;
-import com.picsauditing.service.ReportPermissionInfo;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportSearch;
-import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -49,6 +43,8 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
 	@Autowired
+	private PermissionService permissionService;
+	@Autowired
 	private UserService userService;
 	@Autowired
 	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
@@ -63,6 +59,8 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportPermissionInfo> groupAccessList;
 
 	private Pagination<ReportInfo> pagination;
+
+	private boolean isCurrentUserOwner;
 
 	// URL parameters
 	private int reportId;
@@ -149,6 +147,7 @@ public class ManageReports extends PicsActionSupport {
 	// TODO: Fix this method to call David A's new method
 	public String search() {
 		reportList = Collections.emptyList();
+
 		try {
 			reportList = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
 		} catch (IllegalArgumentException iae) {
@@ -161,8 +160,25 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String access() {
-		userAccessList = manageReportsService.buildUserAccessList(reportId);
-		groupAccessList = manageReportsService.buildGroupAndAccountAccessList(reportId, permissions.getLocale());
+		userAccessList = Collections.emptyList();
+		groupAccessList = Collections.emptyList();
+
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User user = userService.loadUser(permissions.getUserId());
+
+			if ( !(permissionService.canUserShareReport(user, report)
+					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
+				throw new ReportPermissionException("User " + permissions.getUserId() + " cannot view access rights for report " + reportId + " because they are not the owner.");
+			}
+
+			isCurrentUserOwner = permissionService.isOwner(user, report);
+
+			userAccessList = manageReportsService.buildUserAccessList(report);
+			groupAccessList = manageReportsService.buildGroupAndAccountAccessList(report, permissions.getLocale());
+		} catch (Exception e) {
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!access.action", e);
+		}
 
 		return determineViewName("accessList", "access");
 	}
@@ -608,4 +624,7 @@ public class ManageReports extends PicsActionSupport {
 		return groupAccessList;
 	}
 
+	public boolean isCurrentUserOwner() {
+		return isCurrentUserOwner;
+	}
 }

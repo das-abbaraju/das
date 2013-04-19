@@ -58,18 +58,18 @@ public class ManageReportsService {
 		return pagination.getResults();
 	}
 
-	public List<ReportPermissionInfo> buildUserAccessList(int reportId) {
-		List<ReportPermissionUser> users = reportPermissionUserDAO.findAllUsersByReportId(reportId);
+	public List<ReportPermissionInfo> buildUserAccessList(Report report) {
+		List<ReportPermissionUser> users = reportPermissionUserDAO.findAllUsersByReportId(report.getId());
 		List<ReportPermissionInfo> userAccessList = reportPermissionInfoConverter.convertUsersToReportPermissionInfo(users);
 
 		return userAccessList;
 	}
 
-	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(int reportId, Locale locale) {
-		List<ReportPermissionUser> groups = reportPermissionUserDAO.findAllGroupsByReportId(reportId);
+	public List<ReportPermissionInfo> buildGroupAndAccountAccessList(Report report, Locale locale) {
+		List<ReportPermissionUser> groups = reportPermissionUserDAO.findAllGroupsByReportId(report.getId());
 		List<ReportPermissionInfo> groupInfoList = reportPermissionInfoConverter.convertUsersToReportPermissionInfo(groups);
 
-		List<ReportPermissionAccount> accounts = reportPermissionAccountDAO.findAllByReportId(reportId);
+		List<ReportPermissionAccount> accounts = reportPermissionAccountDAO.findAllByReportId(report.getId());
 		List<ReportPermissionInfo> accountInfoList = reportPermissionInfoConverter.convertAccountsToReportPermissionInfo(accounts, locale);
 
 		return ListUtils.union(groupInfoList, accountInfoList);
