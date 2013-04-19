@@ -6,21 +6,19 @@ PICS.define('report.manage-report.AccessController', {
             if ($('#ManageReports_access_page').length > 0) {
                 this.configureShareSearch();
 
-                $('#group_access')
-                    .on('click', '.access-options .edit a', $.proxy(this.assignGroupEditPermission, this))
-                    .on('click', '.access-options .view a', $.proxy(this.assignGroupViewPermission, this))
-                    .on('click', '.access-options .remove a', $.proxy(this.removeGroupPermission, this))
-                    .on('click', '.confirm-options .cancel', $.proxy(this.cancelGroupChanges, this))
-                    .on('click', '.confirm-options .remove-permission', $.proxy(this.confirmRemoveGroupPermission, this));
-
-                $('#user_access')
-                    .on('click', '.access-options .owner a', $.proxy(this.assignUserOwner, this))
-                    .on('click', '.access-options .edit a', $.proxy(this.assignUserEditPermission, this))
-                    .on('click', '.access-options .view a', $.proxy(this.assignUserViewPermission, this))
-                    .on('click', '.access-options .remove a', $.proxy(this.removeUserPermission, this))
-                    .on('click', '.confirm-options .assign-ownership', $.proxy(this.confirmAssignUserOwner, this))
-                    .on('click', '.confirm-options .cancel', $.proxy(this.cancelUserChanges, this))
-                    .on('click', '.confirm-options .remove-permission', $.proxy(this.confirmRemoveUserPermission, this));
+                $('#report_access_container')
+                    .on('click', '#group_access .access-options .edit a', $.proxy(this.assignGroupEditPermission, this))
+                    .on('click', '#group_access .access-options .view a', $.proxy(this.assignGroupViewPermission, this))
+                    .on('click', '#group_access .access-options .remove a', $.proxy(this.removeGroupPermission, this))
+                    .on('click', '#group_access .confirm-options .cancel', $.proxy(this.cancelGroupChanges, this))
+                    .on('click', '#group_access .confirm-options .remove-permission', $.proxy(this.confirmRemoveGroupPermission, this))
+                    .on('click', '#user_access .access-options .owner a', $.proxy(this.assignUserOwner, this))
+                    .on('click', '#user_access .access-options .edit a', $.proxy(this.assignUserEditPermission, this))
+                    .on('click', '#user_access .access-options .view a', $.proxy(this.assignUserViewPermission, this))
+                    .on('click', '#user_access .access-options .remove a', $.proxy(this.removeUserPermission, this))
+                    .on('click', '#user_access .confirm-options .assign-ownership', $.proxy(this.confirmAssignUserOwner, this))
+                    .on('click', '#user_access .confirm-options .cancel', $.proxy(this.cancelUserChanges, this))
+                    .on('click', '#user_access .confirm-options .remove-permission', $.proxy(this.confirmRemoveUserPermission, this));
             }
         },
 
@@ -175,7 +173,7 @@ PICS.define('report.manage-report.AccessController', {
                     i.find('a').html([
                         '<div>',
                             '<span class="id">' + this.id + '</span>',
-                            '<span class="name">' + this.name + '</span>',
+                            '<span class="name" title="' + this.name + '">' + this.name + '</span>',
                         '</div>',
                         '<div>',
                             '<span class="type">' + this.type + '</span>',
@@ -391,10 +389,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!shareWithAccountEditPermission.action',
                 data: {
                     reportId: report_id,
-                    account: account_id
+                    shareId: account_id
                 },
                 success: success,
                 error: error
@@ -408,10 +406,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!shareWithGroupEditPermission.action',
                 data: {
                     reportId: report_id,
-                    group: group_id
+                    shareId: group_id
                 },
                 success: success,
                 error: error
@@ -425,10 +423,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: 'ManageReports!shareWithEditPermission.action',
+                url: 'ManageReports!shareWithUserEditPermission.action',
                 data: {
                     reportId: report_id,
-                    toUser: user_id
+                    shareId: user_id
                 },
                 success: success,
                 error: error
@@ -452,31 +450,7 @@ PICS.define('report.manage-report.AccessController', {
                     searchQuery: query
                 },
                 success: function (data, textStatus, jqXHR) {
-                    process([{
-                        id: 1,
-                        name: 'Don Couch',
-                        type: 'User',
-                        location: 'Ancon Marine',
-                        access_type: 'user'
-                    }, {
-                        id: 43616,
-                        name: 'Carey',
-                        type: 'User',
-                        location: 'PICS Auditing LLC',
-                        access_type: 'user'
-                    }, {
-                        id: 3,
-                        name: 'Balloonicorn',
-                        type: 'Group',
-                        location: 'Shire, Middle-earth',
-                        access_type: 'group'
-                    }, {
-                        id: 4,
-                        name: 'PICS Irvine',
-                        type: 'Account',
-                        location: 'Irvine, CA',
-                        access_type: 'account'
-                    }]);
+                    process(data);
 
                     that.jqXHR = null;
                 }
@@ -490,10 +464,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function'? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!shareWithAccountViewPermission.action',
                 data: {
                     reportId: report_id,
-                    account: account_id
+                    shareId: account_id
                 },
                 success: success,
                 error: error
@@ -507,10 +481,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function'? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!shareWithGroupViewPermission.action',
                 data: {
                     reportId: report_id,
-                    group: group_id
+                    shareId: group_id
                 },
                 success: success,
                 error: error
@@ -524,10 +498,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function'? options.error : function () {};
 
             PICS.ajax({
-                url: 'ManageReports!shareWithViewPermission.action',
+                url: 'ManageReports!shareWithUserViewPermission.action',
                 data: {
                     reportId: report_id,
-                    toUser: user_id
+                    shareId: user_id
                 },
                 success: success,
                 error: error
@@ -544,7 +518,7 @@ PICS.define('report.manage-report.AccessController', {
                 url: 'ManageReports!transferOwnership.action',
                 data: {
                     reportId: report_id,
-                    toUser: user_id,
+                    shareId: user_id,
                     success: success,
                     error: error
                 }
@@ -558,10 +532,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!unshareAccount.action',
                 data: {
                     reportId: report_id,
-                    account: account_id
+                    shareId: account_id
                 }
             });
         },
@@ -573,10 +547,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: '',
+                url: 'ManageReports!unshareGroup.action',
                 data: {
                     reportId: report_id,
-                    group: group_id
+                    shareId: group_id
                 }
             });
         },
@@ -588,10 +562,10 @@ PICS.define('report.manage-report.AccessController', {
                 error = typeof options.error == 'function' ? options.error : function () {};
 
             PICS.ajax({
-                url: 'ManageReports!unshare.action',
+                url: 'ManageReports!unshareUser.action',
                 data: {
                     reportId: report_id,
-                    toUser: user_id
+                    shareId: user_id
                 }
             });
         },
