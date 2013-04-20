@@ -26,7 +26,7 @@
                 <s:include value="/struts/report/manage-report/_access-user-access-options.jsp" />
                 
                 <div class="summary">
-                    <span class="name">${person.userName}</span>
+                    <span class="name">${person.name}</span>
                     <p class="location">${person.location}</p>
                 </div>
             </li>

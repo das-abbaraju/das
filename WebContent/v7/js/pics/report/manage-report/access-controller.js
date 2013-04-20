@@ -26,12 +26,20 @@ PICS.define('report.manage-report.AccessController', {
             var $element = $(event.currentTarget),
                 $group = $element.closest('.group'),
                 report_id = $element.data('report-id'),
+                account_id = $group.data('account-id'),
                 group_id = $group.data('group-id');
-
-            this.shareEditPermissionWithGroup({
-                report_id: report_id,
-                group_id: group_id
-            });
+            
+            if (account_id) {
+                this.shareEditPermissionWithAccount({
+                    report_id: report_id,
+                    account_id: account_id
+                });
+            } else if (group_id) {
+                this.shareEditPermissionWithGroup({
+                    report_id: report_id,
+                    group_id: group_id
+                });
+            }
 
             this.resetGroup($group);
 
@@ -46,12 +54,20 @@ PICS.define('report.manage-report.AccessController', {
             var $element = $(event.currentTarget),
                 $group = $element.closest('.group'),
                 report_id = $element.data('report-id'),
+                account_id = $group.data('account-id'),
                 group_id = $group.data('group-id');
-
-            this.shareViewPermissionWithGroup({
-                report_id: report_id,
-                group_id: group_id
-            });
+            
+            if (account_id) {
+                this.shareViewPermissionWithAccount({
+                    report_id: report_id,
+                    account_id: account_id
+                });
+            } else if (group_id) {
+                this.shareViewPermissionWithGroup({
+                    report_id: report_id,
+                    group_id: group_id
+                });
+            }
 
             this.resetGroup($group);
 
@@ -82,7 +98,7 @@ PICS.define('report.manage-report.AccessController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="assign-ownership btn btn-warning" data-href="' + $element.attr('href') + '">Assign</button>',
+                    '<button class="assign-ownership btn btn-warning" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Assign</button>',
                 '</div>'
             ].join('')));
 
@@ -313,7 +329,7 @@ PICS.define('report.manage-report.AccessController', {
             $group.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Remove</button>',
                 '</div>'
             ].join('')));
 
@@ -339,7 +355,7 @@ PICS.define('report.manage-report.AccessController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Remove</button>',
                 '</div>'
             ].join('')));
 
@@ -518,10 +534,10 @@ PICS.define('report.manage-report.AccessController', {
                 url: 'ManageReports!transferOwnership.action',
                 data: {
                     reportId: report_id,
-                    shareId: user_id,
-                    success: success,
-                    error: error
-                }
+                    shareId: user_id
+                },
+                success: success,
+                error: error
             });
         },
 
