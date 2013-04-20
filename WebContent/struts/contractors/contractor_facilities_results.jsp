@@ -5,9 +5,11 @@
 <s:set var="general_contractor_id" value="%{operator.id}" />
 
 <s:if test="searchResults.size() == 0">
-	<div class="alert">
-		<s:text name="ContractorFacilities.NoFoundFacilities" />
-	</div>
+    <s:if test="!isStringEmpty(search)">
+        <div class="alert">
+            <s:text name="ContractorFacilities.NoFoundFacilities" />
+        </div>
+    </s:if>
 </s:if>
 <s:else>
 	<s:if test="countrySubdivision == '' && operator.name == ''">

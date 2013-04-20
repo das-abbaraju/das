@@ -8,24 +8,11 @@
 		<s:text name="global.Facilities" />
 	</title>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
-    <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
-    
-    <style>
-        .operatorlocation
-        {
-            padding-left: 10px;
-            font-size: x-small;
-            color: gray;
-        }
-        
-        #results
-        {
-            padding-top: 10px;
-        }
-    </style>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=${version}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/contractor/contractor_facilities.css?v=${version}" />
 </head>
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
@@ -79,26 +66,18 @@
 						<s:hidden name="id" />
 						<div id="search">
 							<div class="buttons" style="min-height: 30px;">
-								<button class="picsbutton positive">
-									<s:text name="global.Search" />
-								</button>
 								<nobr>
-									<s:text name="ContractorFacilities.ContractorFacilities.Search.Name" />:
-									<s:textfield cssClass="forms clearable" name="operator.name" id="search_operator" />
-								</nobr>
-	
-								<nobr>
-									<s:text name="global.Location" />
-									:
-									<s:select
-										cssClass="forms clearable"
-										headerKey=""
-										headerValue="- %{getText('ContractorFacilities.CountrySubdivision')} -"
-										id="search_location"
-										list="getCountrySubdivisionList(@com.picsauditing.jpa.entities.Country@COUNTRIES_WITH_SUBDIVISIONS)"
-										listKey="isoCode"
-										listValue="isoCode"
-										name="countrySubdivision" />
+									<input type="text"
+                                           id="contractor_facilities_search_box"
+                                           name="search"
+                                           placeholder="<s:text name="ContractorFacilities.SearchNameOrLocation" />"
+                                           value="${search}"
+                                    />
+                                    <input type="button"
+                                           class="picsbutton positive"
+                                           name="method:search"
+                                           value="<s:text name="button.Search" />"
+                                    />
 								</nobr>
 							</div>
 						</div>
