@@ -270,6 +270,10 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			User toUser = userService.loadUser(shareId);
 
+			if (toUser.isGroup()) {
+				throw new Exception("User " + shareId + " is a group, not a user.");
+			}
+
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
@@ -283,6 +287,10 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			User toUser = userService.loadUser(shareId);
+
+			if (toUser.isGroup()) {
+				throw new Exception("User " + shareId + " is a group, not a user.");
+			}
 
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, true);
 		} catch (Exception e) {
@@ -298,6 +306,10 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			User toGroup = userService.loadUser(shareId);
 
+			if (!toGroup.isGroup()) {
+				throw new Exception("User " + shareId + " is a user, not a group.");
+			}
+
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
@@ -311,6 +323,10 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			User toGroup = userService.loadUser(shareId);
+
+			if (!toGroup.isGroup()) {
+				throw new Exception("User " + shareId + " is a user, not a group.");
+			}
 
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, true);
 		} catch (Exception e) {
