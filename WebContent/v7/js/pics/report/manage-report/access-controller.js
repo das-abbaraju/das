@@ -187,11 +187,11 @@ PICS.define('report.manage-report.AccessController', {
                     });
 
                     i.find('a').html([
-                        '<div>',
+                        '<div class="clearfix">',
                             '<span class="id">' + this.id + '</span>',
                             '<span class="name" title="' + this.name + '">' + this.name + '</span>',
                         '</div>',
-                        '<div>',
+                        '<div class="clearfix">',
                             '<span class="type">' + this.type + '</span>',
                             '<span class="location">' + this.location + '</span>',
                         '</div>'
