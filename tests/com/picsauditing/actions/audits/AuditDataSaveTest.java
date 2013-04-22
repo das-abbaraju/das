@@ -169,6 +169,21 @@ public class AuditDataSaveTest {
 		assertEquals("2025-01-31", format.format(date));
 	}
 
+	@Test
+	public void testUniqueCode_ExpirationDate() throws Exception {
+		Date date;
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
+
+		auditData.setAnswer("2025-01-31");
+
+		setupCheckUniqueCode("expirationDate");
+		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
+		assertNotNull(audit.getExpiresDate());
+		date = audit.getExpiresDate();
+		assertEquals("2025-01-31", format.format(date));
+
+	}
+
 	private void setupCheckUniqueCode(String code) {
 		audit.setCreationDate(new Date());
 		audit.setExpiresDate(null);

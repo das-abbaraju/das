@@ -494,6 +494,17 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
+		if ("expirationDate".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			Date expiresDate = DateBean.setToEndOfDay(DateBean.parseDate(auditData.getAnswer()));
+			if (!DateBean.isNullDate(expiresDate))
+				tempAudit.setExpiresDate(expiresDate);
+			// In case the answer is not a valid date we add 1 year
+			if (tempAudit.getExpiresDate() == null) {
+				tempAudit.setExpiresDate(DateBean.setToEndOfDay(DateBean.addMonths(tempAudit.getCreationDate(), 12)));
+			}
+			auditDao.save(tempAudit);
+		}
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
 			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
