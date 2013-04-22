@@ -388,7 +388,7 @@ PICS.define('report.manage-report.AccessController', {
 
             $access_options.show();
 
-            $group.removeClass('remove edit view');
+            $group.removeClass('remove');
         },
 
         resetUser: function ($user) {
@@ -406,7 +406,7 @@ PICS.define('report.manage-report.AccessController', {
 
             $access_options.show();
 
-            $user.removeClass('remove assign edit view');
+            $user.removeClass('remove assign');
         },
 
         shareEditPermissionWithAccount: function (options) {
