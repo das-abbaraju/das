@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="accessType == 'group'">
+<s:if test="group.accessType == 'group'">
     <s:url action="ManageReports" method="shareWithGroupEditPermission" var="share_edit_permission_url">
         <s:param name="reportId">${reportId}</s:param>
         <s:param name="shareId">${group.id}</s:param>
@@ -18,7 +18,7 @@
     </s:url>
 </s:if>
 <s:else>
-    <s:url action="ManageReports" method="shareWithAccountEditPermission" var="share_view_permission_url">
+    <s:url action="ManageReports" method="shareWithAccountEditPermission" var="share_edit_permission_url">
         <s:param name="reportId">${reportId}</s:param>
         <s:param name="shareId">${group.id}</s:param>
     </s:url>

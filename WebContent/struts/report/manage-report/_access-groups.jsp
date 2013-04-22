@@ -7,8 +7,15 @@
     <ul class="group-list unstyled">
         <s:iterator value="#groups" var="group">
             <s:set var="access_type" value="%{#group.editable ? 'edit' : 'view'}" />
+            
+            <s:if test="#group.accessType == 'group'">
+                <s:set var="group_data">data-group-id="${group.id}"</s:set>
+            </s:if>
+            <s:else>
+                <s:set var="group_data">data-account-id="${group.id}"</s:set>
+            </s:else>
         
-            <li class="group ${access_type} clearfix" data-account-id="${group.id}" data-group-id="${group.id}">
+            <li class="group ${access_type} clearfix" ${group_data}>
                 <s:include value="/struts/report/manage-report/_access-group-access-options.jsp" />
                 
                 <div class="summary">
