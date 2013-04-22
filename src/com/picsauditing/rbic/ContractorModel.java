@@ -63,13 +63,9 @@ public class ContractorModel implements Serializable {
         return result;
     }
 
-    public void updateCriteriaLimitForContractor(int flagCriteriaId, int opId, int limit) {
-        InsuranceCriteriaContractorOperator insuranceCriteriaContractorOperator = null;
-
-        try {
-            insuranceCriteriaContractorOperator =
+   public void updateCriteriaLimitForContractor(int flagCriteriaId, int opId, int limit) {
+        InsuranceCriteriaContractorOperator insuranceCriteriaContractorOperator  =
                     insuranceCriteriaContractorOperatorDAO.findBy(flagCriteriaId, contractor.getId(), opId);
-        } catch (NoResultException whyDoesntThisJustReturnNullInsteadOfThrowingAnExceptionUgggghhhhhh) {};
 
         if (insuranceCriteriaContractorOperator == null) {
             insuranceCriteriaContractorOperator = new InsuranceCriteriaContractorOperator();
@@ -93,13 +89,16 @@ public class ContractorModel implements Serializable {
         this.contractor = contractor;
     }
 
-
     public LowMedHigh getSafetyRisk() {
         return contractor.getSafetyRisk();
     }
 
-    public void setSafetyRisk(LowMedHigh safetyRisk) {
-        contractor.setSafetyRisk(safetyRisk);
+    public LowMedHigh getProductRisk() {
+        return contractor.getProductRisk();
+    }
+
+    public LowMedHigh getTransportationRisk() {
+        return contractor.getTransportationRisk();
     }
 
 }

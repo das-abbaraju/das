@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import com.picsauditing.jpa.entities.InsuranceCriteriaContractorOperator;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -16,7 +17,12 @@ public class InsuranceCriteriaContractorOperatorDAO extends PicsDAO {
         query.setParameter("contractorID", contractorID);
         query.setParameter("operatorID", operatorID);
 
-        return (InsuranceCriteriaContractorOperator) query.getSingleResult();
+        InsuranceCriteriaContractorOperator result = null;
+        try {
+           result = (InsuranceCriteriaContractorOperator) query.getSingleResult();
+        }catch (NoResultException exception) { }
+
+        return result;
     }
 
     public List<InsuranceCriteriaContractorOperator> findByContractorId(int contractorID) {
