@@ -196,7 +196,7 @@ public class CaoSave extends AuditActionSupport {
 			if (status.isIncomplete() && Strings.isEmpty(note) && conAudit != null) {
 				if (note == null)
 					note = "";
-				if (conAudit.getAuditType().isPqf()) {
+				if (conAudit.getAuditType().isPicsPqf()) {
 					List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 					note += caoSaveModel.generateNote(temp);
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
@@ -336,7 +336,7 @@ public class CaoSave extends AuditActionSupport {
 					Account.PicsID, null, null);
 		}
 		
-		if (cao.getAudit().getAuditType().isPqf() && newStatus.isSubmitted())
+		if (cao.getAudit().getAuditType().isPicsPqf() && newStatus.isSubmitted())
 			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
 		
 		caoSaveModel.updatePqfOnIncomplete(cao.getAudit(), newStatus);

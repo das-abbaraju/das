@@ -167,6 +167,7 @@ public class EntityFactory {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
+        contractor.getAudits().add(conAudit);
 		return conAudit;
 	}
 

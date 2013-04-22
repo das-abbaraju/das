@@ -152,7 +152,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (contractor.getSafetyRisk() != null && trade.getTrade().getSafetyRiskI() != null) {
 			if (contractor.getSafetyRisk().ordinal() < trade.getTrade().getSafetyRiskI().ordinal()) {
 				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isPqf()) {
+					if (audit.getAuditType().isPicsPqf()) {
 						for (AuditData data : audit.getData()) {
 							if (data.getQuestion().getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT
 									|| data.getQuestion().getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT) {
@@ -168,7 +168,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (contractor.getProductRisk() != null && trade.getTrade().getProductRiskI() != null) {
 			if (contractor.getProductRisk().ordinal() < trade.getTrade().getProductRiskI().ordinal()) {
 				for (ContractorAudit audit : contractor.getAudits()) {
-					if (audit.getAuditType().isPqf()) {
+					if (audit.getAuditType().isPicsPqf()) {
 						for (AuditData data : audit.getData()) {
 							if (data.getQuestion().getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT) {
 								data.setDateVerified(null);

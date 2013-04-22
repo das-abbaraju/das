@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
@@ -100,7 +99,7 @@ public class ContractorScoreTest {
     public void testCalculate_AnnualAddendumForLastYear_CaoStatusNotComplete_Adds0ToScore() throws Exception {
         ContractorAuditOperator contractorAuditOperator = commonSetupForSingleVisibleOperator();
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Pending);
-        when(auditType.isPqf()).thenReturn(false);
+        when(auditType.isPicsPqf()).thenReturn(false);
         when(auditType.isAnnualAddendum()).thenReturn(true);
         when(contractorAudit.getAuditFor()).thenReturn((DateBean.getCurrentYear() - 1)+"");
 
@@ -113,7 +112,7 @@ public class ContractorScoreTest {
     public void testCalculate_AnnualAddendumForLastYear_CaoStatusComplete_Adds25ToScore() throws Exception {
         ContractorAuditOperator contractorAuditOperator = commonSetupForSingleVisibleOperator();
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Complete);
-        when(auditType.isPqf()).thenReturn(false);
+        when(auditType.isPicsPqf()).thenReturn(false);
         when(auditType.isAnnualAddendum()).thenReturn(true);
         when(contractorAudit.getAuditFor()).thenReturn((DateBean.getCurrentYear() - 1)+"");
 
@@ -124,7 +123,7 @@ public class ContractorScoreTest {
 
     private ContractorAuditOperator commonSetupForPqfTests() {
         ContractorAuditOperator contractorAuditOperator = commonSetupForSingleVisibleOperator();
-        when(auditType.isPqf()).thenReturn(true);
+        when(auditType.isPicsPqf()).thenReturn(true);
         return contractorAuditOperator;
     }
 

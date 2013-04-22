@@ -56,7 +56,7 @@ public class FlagCalculator {
 	 *
 	 * if (!worksForOperator || con.getAccountLevel().isBidOnly()) { // This is
 	 * a check for if the contractor doesn't // work for the operator (Search
-	 * for new), or is a bid only if (!criteria.getAuditType().isPqf()) { //
+	 * for new), or is a bid only if (!criteria.getAuditType().isPicsPqf()) { //
 	 * Ignore all audit requirements other than PQF return null; } }
 	 */
 	public Map<FlagCriteria, FlagColor> calculate(ContractorOperator co, List<FlagCriteriaRule> rules) {

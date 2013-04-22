@@ -99,7 +99,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 				loadAuditDocument(document, conAudit);
 			} else {
 				for (ContractorAudit audit : contractor.getAudits()) {
-					if (!audit.isExpired() && (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())) {
+					if (!audit.isExpired() && (audit.getAuditType().isPicsPqf() || audit.getAuditType().isAnnualAddendum())) {
 						loadAuditDocument(document, audit);
 					}
 					document.newPage();
@@ -112,7 +112,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void loadAuditDocument(Document document, ContractorAudit audit) throws DocumentException {
 		String auditName = audit.getAuditType().getName().toString() + " - ";
-		if (audit.getAuditType().isPqf())
+		if (audit.getAuditType().isPicsPqf())
 			auditName += DateBean.format(audit.getEffectiveDateLabel(), "MMM yyyy");
 		else if (!Strings.isEmpty(audit.getAuditFor()))
 			auditName += audit.getAuditFor();

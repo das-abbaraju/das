@@ -289,7 +289,7 @@ public class AuditMenuBuilderTest {
 		when(pqf.getAuditType()).thenReturn(pqfAuditType);
 		when(pqf.getId()).thenReturn(1);
 		when(pqfAuditType.getClassType()).thenReturn(AuditTypeClass.PQF);
-		when(pqfAuditType.isPqf()).thenReturn(true);
+		when(pqfAuditType.isPicsPqf()).thenReturn(true);
 
 		if (hasOperators) {
 			addOperators(pqf);

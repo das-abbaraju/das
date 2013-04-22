@@ -211,7 +211,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
 
 			for (ContractorAudit contractorAudit : con.getAudits()) {
-				if (contractorAudit.getAuditType().isPqf()) {
+				if (contractorAudit.getAuditType().isPicsPqf()) {
 					highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(contractorAudit.getData());
 				}
 			}

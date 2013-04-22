@@ -19,7 +19,7 @@ public class ContractorScore {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (!conAudit.isExpired()) {
 				int numOperators = conAudit.getOperatorsVisible().size();
-				if (conAudit.getAuditType().isPqf()) {
+				if (conAudit.getAuditType().isPicsPqf()) {
 					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
 						float pqfScore = 0;
 						if (cao.getStatus().isComplete() || cao.getStatus().isResubmit()

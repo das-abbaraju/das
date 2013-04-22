@@ -61,9 +61,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int IRELAND_KEPT_ID = 15660;
 	static public final int SOUTH_AFRICA_KEPT_ID = 16282;
 
-	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
-			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
-			"License", "Money", "Number", "ESignature", "Tagit", "MultiSelect", "Percent" };
+    public static final String TYPE_NUMBER = "Number";
+    public static final String TYPE_DATE = "Date";
+    public static final String TYPE_DECIMAL = "Decimal Number";
+    static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
+			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", "FileCertificate",
+			"License", "Money", TYPE_NUMBER, "ESignature", "Tagit", "MultiSelect", "Percent" };
 
 	private int number;
 	private int scoreWeight;
@@ -105,7 +108,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	private List<AuditTransformOption> transformOptions;
 
-	public AuditQuestion() {
+    public AuditQuestion() {
 
 	}
 

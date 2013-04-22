@@ -90,7 +90,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		auditBuilderController.buildAudits(contractor);
 
 		for (ContractorAudit cAudit : contractor.getAudits()) {
-			if (cAudit.getAuditType().isPqf()) {
+			if (cAudit.getAuditType().isPicsPqf()) {
 				for (ContractorAuditOperator cao : cAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Pending)) {
 						cao.changeStatus(AuditStatus.Pending, permissions);

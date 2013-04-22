@@ -199,7 +199,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		}
 
 		if (auditType != null
-				&& auditType.isPqf()
+				&& auditType.isPicsPqf()
 				&& (governingBody == null || Account.PICS_CORPORATE
 						.contains(governingBody.getId()))) {
 			return operator;

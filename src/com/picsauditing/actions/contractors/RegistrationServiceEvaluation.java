@@ -552,7 +552,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
 		ContractorAudit pqf = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPqf()) {
+			if (audit.getAuditType().isPicsPqf()) {
 				pqf = audit;
 				break;
 			}

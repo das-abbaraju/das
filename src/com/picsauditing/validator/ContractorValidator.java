@@ -2,7 +2,6 @@ package com.picsauditing.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -227,7 +226,7 @@ public class ContractorValidator {
 		ContractorAudit contractorsPqf = null;
 
 		for (ContractorAudit contractorAudit : contractorAuditDao.findByContractor(contractor.getId())) {
-			if (contractorAudit.getAuditType().isPqf()) {
+			if (contractorAudit.getAuditType().isPicsPqf()) {
 				contractorsPqf = contractorAudit;
 				break;
 			}

@@ -407,7 +407,7 @@ public class ContractorCron extends PicsActionSupport {
 		boolean pqfRequirementsMet = false;
 		boolean safetyManualRequirementsMet = false;
 		for (ContractorAudit audit:contractor.getAudits()) {
-			if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
+			if (audit.getAuditType().isPicsPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
 				pqfRequirementsMet = true;
 
 				for (AuditData data:audit.getData()) {
@@ -1134,7 +1134,7 @@ public class ContractorCron extends PicsActionSupport {
 		// Save auditor for manual audit for HSE Competency Review
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired()) {
-				if (audit.getAuditType().isPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
+				if (audit.getAuditType().isPicsPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
 					for (AuditData d : audit.getData()) {
 						if (d.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 							pqfCompleteSafetyManualVerified = d.getDateVerified() != null;

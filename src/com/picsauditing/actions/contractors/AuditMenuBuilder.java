@@ -89,7 +89,7 @@ public class AuditMenuBuilder {
 					if (auditType.getClassType().isPqf() && auditType.getId() != AuditType.IHG_INSURANCE_QUESTIONAIRE) {
 						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 								|| auditType.getId() == AuditType.IMPORT_PQF) {
-							if (subMenu.getChildren().size() < MAX_MENU_ITEM || auditType.isPqf()) {
+							if (subMenu.getChildren().size() < MAX_MENU_ITEM || auditType.isPicsPqf()) {
 								MenuComponent childMenu = createMenuItem(subMenu, audit);
 								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID",
 										audit.getId()));
@@ -98,7 +98,7 @@ public class AuditMenuBuilder {
 							addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
 
 							// Put Trades menu after 'PQF' menu entry
-							if (auditType.isPqf()) {
+							if (auditType.isPicsPqf()) {
 								MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"),
 										urlUtils().getActionUrl("ContractorTrades", "id", contractor.getId()));
 								if (!contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate()) {

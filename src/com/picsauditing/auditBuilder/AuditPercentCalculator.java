@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
-import javax.persistence.NoResultException;
-
 public class AuditPercentCalculator {
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
@@ -335,7 +333,7 @@ public class AuditPercentCalculator {
 		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217
 				|| question.getId() == 15353 || question.getId() == 15354) {
 			verifiedCount++;
-		} else if (catData.getAudit().getAuditType().isPqf()) {
+		} else if (catData.getAudit().getAuditType().isPicsPqf()) {
 			boolean needsVerification = false;
 			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
 				if (auditData.getQuestion().equals(answer.getQuestion())) {
@@ -462,7 +460,7 @@ public class AuditPercentCalculator {
 
 			ContractorAuditOperator caoWithStatus = null;
 			if (cao.getStatus().isPending()) {
-				if (conAudit.getAuditType().isPqf() && percentComplete == 100) {
+				if (conAudit.getAuditType().isPicsPqf() && percentComplete == 100) {
 					if (percentVerified == 100)
 						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
 					if (caoWithStatus == null)

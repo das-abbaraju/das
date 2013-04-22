@@ -213,7 +213,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 	private void resetPqf() {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPqf()) {
+			if (audit.getAuditType().isPicsPqf()) {
 				resetCaos(audit);
 				auditBuilder.recalculateCategories(audit);
 				dao.save(audit);

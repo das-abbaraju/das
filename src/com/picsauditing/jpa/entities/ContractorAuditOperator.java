@@ -105,7 +105,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 			auditSubStatus = null;
 		}
 
-		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
+		if (audit.getAuditType().isPicsPqf() || audit.getAuditType().isAnnualAddendum())
 			return caow;
 
 		if (auditStatus.isPending())

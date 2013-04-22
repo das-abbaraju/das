@@ -60,7 +60,7 @@ public class CaoSaveModel {
 	}
 
 	public void updatePqfOnIncomplete(ContractorAudit audit, AuditStatus newStatus) {
-		if (audit.getAuditType().isPqf() && newStatus.isIncomplete()) {
+		if (audit.getAuditType().isPicsPqf() && newStatus.isIncomplete()) {
 			for (AuditData data:audit.getData()) {
 				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 					data.setVerified(false);
@@ -73,7 +73,7 @@ public class CaoSaveModel {
 	}
 
 	public void updatePqfOnSubmittedResubmitter(ContractorAudit audit, AuditStatus newStatus) {
-		if (newStatus.isSubmittedResubmitted() && audit.getAuditType().isPqf()) {
+		if (newStatus.isSubmittedResubmitted() && audit.getAuditType().isPicsPqf()) {
 			auditPercentCalculator.percentCalculateComplete(audit, true);
 		}
 	}
