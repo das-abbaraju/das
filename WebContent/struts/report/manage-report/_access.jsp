@@ -12,14 +12,14 @@
 </s:else>
 
 <s:if test="groupAccessList.size() > 0">
-    <div class="${column_size}">
+    <div id="group_access_container" class="${column_size}">
         <s:set var="groups" value="groupAccessList" />
         <s:include value="/struts/report/manage-report/_access-groups.jsp" />
     </div>
 </s:if>
 
 <s:if test="userAccessList.size() > 0">
-    <div class="${column_size}">
+    <div id="user_access_container" class="${column_size}">
         <s:set var="persons" value="userAccessList" />
         <s:include value="/struts/report/manage-report/_access-users.jsp" />
     </div>

@@ -268,6 +268,10 @@ PICS.define('report.manage-report.AccessController', {
                 that = this;
 
             $group.slideUp(400, function () {
+                var $element = $(this),
+                    $group_access_container = $('#group_access_container'),
+                    $user_access_container = $('#user_access_container');
+                
                 if (account_id) {
                     that.unshareWithAccount({
                         report_id: report_id,
@@ -279,8 +283,15 @@ PICS.define('report.manage-report.AccessController', {
                         group_id: group_id
                     });
                 }
-
-                $(this).remove();
+                
+                // if last group, remove group panel
+                if ($(this).siblings('li').length == 0) {
+                    $group_access_container.remove();
+                    
+                    $user_access_container.toggleClass('span6 span12');
+                } else {
+                    $element.remove();
+                }
             });
         },
 
