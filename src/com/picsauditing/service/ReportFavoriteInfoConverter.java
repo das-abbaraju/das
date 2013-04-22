@@ -34,7 +34,7 @@ public class ReportFavoriteInfoConverter {
 		reportFavoriteInfo.setId(reportUser.getReport().getId());
 		reportFavoriteInfo.setName(reportUser.getReport().getName());
 		reportFavoriteInfo.setFavorite(reportUser.isFavorite());
-		reportFavoriteInfo.setCreatedBy(reportUser.getReport().getCreatedBy());
+		reportFavoriteInfo.setCreatedBy(reportUser.getReport().getOwner());
 		reportFavoriteInfo.setSortOrder(reportUser.getSortOrder());
 		reportFavoriteInfo.setPinnedIndex(reportUser.getPinnedIndex());
 
