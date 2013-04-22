@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.billing.BrainTree;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.braintree.BrainTreeService;
 import com.picsauditing.braintree.CreditCard;
 
 /**
@@ -36,7 +36,7 @@ public class ContractorWidget extends ContractorActionSupport {
 	@Autowired
 	private OpenTasks tasks;
 	@Autowired
-	private BrainTreeService paymentService;
+	private BrainTree paymentService;
 
 	protected boolean reminderTask = false;
 
@@ -140,7 +140,7 @@ public class ContractorWidget extends ContractorActionSupport {
 	public CreditCard getCreditCard() {
 		if (creditCard == null) {
 			try {
-				creditCard = paymentService.getCreditCard(id);
+				creditCard = paymentService.getCreditCard(contractor);
 			} catch (Exception itllJustStayNull) {
 			}
 		}
