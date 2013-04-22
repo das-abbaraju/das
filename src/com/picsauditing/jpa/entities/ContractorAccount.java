@@ -38,11 +38,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.report.fields.FieldType;
@@ -53,8 +58,6 @@ import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
-import com.picsauditing.braintree.BrainTreeService;
-import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
@@ -79,7 +82,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
-    private User recommendedCsr;
+	private User recommendedCsr;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
@@ -154,6 +157,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private InputValidator inputValidator;
 	private VATValidator vatValidator;
 	private CountryDAO countryDAO;
+
+	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
 	public ContractorAccount() {
 		this.type = "Contractor";
@@ -834,77 +839,77 @@ public class ContractorAccount extends Account implements JSONable {
 		this.auditor = auditor;
 	}
 
-    @ManyToOne
-    @JoinColumn(name = "recommendedCsrID")
-    public User getRecommendedCsr() {
-        return recommendedCsr;
-    }
+	@ManyToOne
+	@JoinColumn(name = "recommendedCsrID")
+	public User getRecommendedCsr() {
+		return recommendedCsr;
+	}
 
-    public void setRecommendedCsr(User recommendedCsr) {
-        this.recommendedCsr = recommendedCsr;
-    }
+	public void setRecommendedCsr(User recommendedCsr) {
+		this.recommendedCsr = recommendedCsr;
+	}
 
-    @Transient
-    public boolean hasCurrentCsr() {
-        User csr = getCurrentCsr();
-        if (csr != null) {
-            return true;
-        }
-        return false;
-    }
+	@Transient
+	public boolean hasCurrentCsr() {
+		User csr = getCurrentCsr();
+		if (csr != null) {
+			return true;
+		}
+		return false;
+	}
 
-    // named get/set for convenient ognl reference from JSPs
-    @Transient
-    public User getCurrentCsr() {
-        List<AccountUser> accountReps = getAccountUsers();
-        if (accountReps != null) {
-            for (AccountUser representative : accountReps) {
-                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
-                    return representative.getUser();
-                }
-            }
-        }
-        return null;
-    }
+	// named get/set for convenient ognl reference from JSPs
+	@Transient
+	public User getCurrentCsr() {
+		List<AccountUser> accountReps = getAccountUsers();
+		if (accountReps != null) {
+			for (AccountUser representative : accountReps) {
+				if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+					return representative.getUser();
+				}
+			}
+		}
+		return null;
+	}
 
-    @Transient
-    public void setCurrentCsr(User newCsr, int createdById) {
-        setAuditor(newCsr);
-        makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
-    }
+	@Transient
+	public void setCurrentCsr(User newCsr, int createdById) {
+		setAuditor(newCsr);
+		makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
+	}
 
-    @Transient
-    public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
-        Date now = new Date();
-        expireCurrentCsrs(now);
-        addNewCsrRepresentative(newCsr, now, createdById);
-    }
+	@Transient
+	public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
+		Date now = new Date();
+		expireCurrentCsrs(now);
+		addNewCsrRepresentative(newCsr, now, createdById);
+	}
 
-    private void addNewCsrRepresentative(User newCsr, Date now, int createdById) {
-        AccountUser newCsrRep = new AccountUser();
-        newCsrRep.setAccount(this);
-        newCsrRep.setUser(newCsr);
-        newCsrRep.setStartDate(now);
-        newCsrRep.setEndDate(DateBean.getEndOfTime());
-        newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
-        newCsrRep.setOwnerPercent(100);
-        newCsrRep.setCreatedBy(new User(createdById));
-        newCsrRep.setCreationDate(new Date());
-        addAccountUser(newCsrRep);
-    }
+	private void addNewCsrRepresentative(User newCsr, Date now, int createdById) {
+		AccountUser newCsrRep = new AccountUser();
+		newCsrRep.setAccount(this);
+		newCsrRep.setUser(newCsr);
+		newCsrRep.setStartDate(now);
+		newCsrRep.setEndDate(DateBean.getEndOfTime());
+		newCsrRep.setRole(UserAccountRole.PICSCustomerServiceRep);
+		newCsrRep.setOwnerPercent(100);
+		newCsrRep.setCreatedBy(new User(createdById));
+		newCsrRep.setCreationDate(new Date());
+		addAccountUser(newCsrRep);
+	}
 
-    private void expireCurrentCsrs(Date now) {
-        List<AccountUser> accountReps = getAccountUsers();
-        if (accountReps != null) {
-            for (AccountUser representative : accountReps) {
-                if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
-                    representative.setEndDate(now);
-                }
-            }
-        }
-    }
+	private void expireCurrentCsrs(Date now) {
+		List<AccountUser> accountReps = getAccountUsers();
+		if (accountReps != null) {
+			for (AccountUser representative : accountReps) {
+				if (representative.isCurrent() && representative.getRole().isCustomerServiceRep()) {
+					representative.setEndDate(now);
+				}
+			}
+		}
+	}
 
-    @Transient
+	@Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()
@@ -1619,29 +1624,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public CreditCard getCreditCard() {
-		CreditCard cc = null;
-		BrainTreeService paymentService = (BrainTreeService) SpringUtils.getBean("BrainTreeService");
-
-		// Accounting for transmission errors which result in
-		// exceptions being thrown.
-		boolean transmissionError = true;
-		int retries = 0, quit = 5;
-		while (transmissionError && retries < quit) {
-			try {
-				cc = paymentService.getCreditCard(getId());
-				transmissionError = false;
-			} catch (Exception communicationProblem) {
-				// a message or packet could have been dropped in transmission
-				// wait and resume retrying
-				retries++;
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-				}
-			}
+		try {
+			BrainTree brainTree = SpringUtils.getBean(SpringUtils.BrainTree);
+			return brainTree.getCreditCard(this);
+		} catch (Exception e) {
+			logger.error("An error occurred while trying to get the Credit Card info for contractor with id = {}", id,
+					e);
 		}
 
-		return cc;
+		return null;
 	}
 
 	@Transient
