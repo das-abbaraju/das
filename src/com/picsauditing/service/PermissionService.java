@@ -217,6 +217,23 @@ public class PermissionService {
 			reportPermissionAccount.setAuditColumns(new User(sharerId));
 		}
 
+		reportPermissionAccount.setEditable(false);
+		reportPermissionAccountDao.save(reportPermissionAccount);
+
+		return reportPermissionAccount;
+	}
+
+	public ReportPermissionAccount grantAccountEditPermission(int sharerId, Account toAccount, Report report) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(toAccount.getId(), report.getId());
+		} catch (NoResultException nre) {
+			reportPermissionAccount = new ReportPermissionAccount(toAccount, report);
+			reportPermissionAccount.setAuditColumns(new User(sharerId));
+		}
+
+		reportPermissionAccount.setEditable(true);
 		reportPermissionAccountDao.save(reportPermissionAccount);
 
 		return reportPermissionAccount;

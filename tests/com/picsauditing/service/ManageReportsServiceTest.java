@@ -202,7 +202,7 @@ public class ManageReportsServiceTest {
 	public void testShareReportWithAccount_WhenUserCantShare_ThenExceptionIsThrown() throws ReportPermissionException {
 		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(false);
 
-		manageReportsService.shareReportWithAccount(user, account, report, permissions);
+		manageReportsService.shareReportWithAccountViewPermission(user, account, report, permissions);
 	}
 
 	@Test
@@ -211,7 +211,7 @@ public class ManageReportsServiceTest {
 		when(reportDAO.find(Account.class, ACCOUNT_ID)).thenReturn(account);
 		when(permissionService.canUserShareReport(user, report, permissions)).thenReturn(true);
 
-		manageReportsService.shareReportWithAccount(user, account, report, permissions);
+		manageReportsService.shareReportWithAccountViewPermission(user, account, report, permissions);
 
 		verify(permissionService).grantAccountViewPermission(USER_ID, account, report);
 	}

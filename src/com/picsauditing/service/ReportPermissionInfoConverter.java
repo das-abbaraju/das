@@ -79,7 +79,7 @@ public class ReportPermissionInfoConverter {
 		reportPermissionInfo.setId(account.getId());
 		reportPermissionInfo.setName(account.getName());
 		reportPermissionInfo.setOwner(false);
-		reportPermissionInfo.setEditable(false);
+		reportPermissionInfo.setEditable(reportPermissionAccount.isEditable());
 		reportPermissionInfo.setLocation(translateLocation(account.getCity(), account.getCountrySubdivision(), locale));
 		reportPermissionInfo.setType(account.getType());
 		reportPermissionInfo.setAccessType("account");

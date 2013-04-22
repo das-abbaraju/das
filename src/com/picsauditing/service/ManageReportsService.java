@@ -133,13 +133,22 @@ public class ManageReportsService {
         return reportPermissionUser;
 	}
 
-	public ReportPermissionAccount shareReportWithAccount(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
+	public ReportPermissionAccount shareReportWithAccountViewPermission(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
 		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
 			// TODO translate this
 			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
 		}
 
 		return permissionService.grantAccountViewPermission(sharerUser.getId(), toAccount, report);
+	}
+
+	public ReportPermissionAccount shareReportWithAccountEditPermission(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
+		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
+			// TODO translate this
+			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
+		}
+
+		return permissionService.grantAccountEditPermission(sharerUser.getId(), toAccount, report);
 	}
 
 	public void unshareUser(User revokerUser, User fromUser, Report report, Permissions permissions) throws Exception {
