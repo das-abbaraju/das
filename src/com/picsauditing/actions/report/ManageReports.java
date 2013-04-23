@@ -191,6 +191,14 @@ public class ManageReports extends PicsActionSupport {
 		return jspViewName;
 	}
 
+	private String redirectOrReturnNoneForAjaxRequest() {
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
+		}
+
+		return redirectToPreviousView();
+	}
+
 	public String moveFavoriteUp() {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
@@ -199,18 +207,10 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
+			logger.error("Unexpected exception in ReportApi.moveFavoriteUp().", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
-	}
-
-	private String redirectOrReturnNoneForAjaxRequest() {
-		if (AjaxUtils.isAjax(request())) {
-			return NONE;
-		}
-
-		return redirectToPreviousView();
 	}
 
 	public String moveFavoriteDown() {
@@ -235,13 +235,10 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.transferOwnership(getUser(), newOwner, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
-			return ERROR;
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot transfer ownership.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot transfer ownership.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -256,10 +253,8 @@ public class ManageReports extends PicsActionSupport {
 			// Report doesn't exist, so we don't need to do anything.
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot delete.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot delete.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -277,7 +272,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -295,7 +289,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, true);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -313,7 +306,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -331,7 +323,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, true);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -345,7 +336,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithAccountViewPermission(getUser(), toAccount, report, permissions);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -359,7 +349,6 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.shareReportWithAccountEditPermission(getUser(), toAccount, report, permissions);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -373,13 +362,10 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.unshareUser(getUser(), toUser, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
-			return ERROR;
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -393,13 +379,10 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.unshareGroup(getUser(), group, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
-			return ERROR;
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
@@ -413,13 +396,10 @@ public class ManageReports extends PicsActionSupport {
 			manageReportsService.unshareAccount(getUser(), toAccount, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
-			return ERROR;
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
