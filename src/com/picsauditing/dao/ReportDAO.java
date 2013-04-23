@@ -155,9 +155,14 @@ public class ReportDAO extends PicsDAO {
 				+ permissions.getAccountId() + ") rp ON rp.reportID = r.id");
 
 		// do not return reports this user owns
-		sql.addWhere("r.ownerID != u.id");
+		String notOwnerClause = "(r.ownerID != u.id)";
+		String notHiddenClause = "(ru.hidden = 0)";
+
+		sql.addWhere(notOwnerClause + "AND " + notHiddenClause);
+
 		sql.addGroupBy("r.id");
 		addOrderBy(sql, reportSearch);
+
 		return sql;
 	}
 

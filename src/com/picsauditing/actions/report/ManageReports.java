@@ -265,6 +265,20 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
+	public String removeReport() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			manageReportsService.removeReportUser(getUser(), report, permissions);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.removeReport(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
 	public String deleteReport() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
@@ -424,20 +438,6 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
-	}
-
-	// Questionable
-	public String removeReport() {
-		try {
-			Report report = reportService.loadReportFromDatabase(reportId);
-			manageReportsService.removeReportUser(getUser(), report, permissions);
-		} catch (NoResultException nre) {
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports.removeReport(). ", e);
-		}
-
-		return redirectToPreviousView();
 	}
 
 	public String favorite() {

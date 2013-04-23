@@ -232,7 +232,6 @@ public class ManageReportsService {
 		}
 	}
 
-	// Questionable
 	public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
         if (!permissionService.canUserRemoveReport(removerUser, report, permissions)) {
             throw new Exception("User " + removerUser.getId() + " does not have permission to remove report "
@@ -240,9 +239,11 @@ public class ManageReportsService {
         }
 
         ReportUser reportUser = null;
+
         try {
             reportUser = reportPreferencesService.loadReportUser(removerUser.getId(), report.getId());
-            reportUserDAO.remove(reportUser);
+            reportUser.setHidden(true);
+			reportUserDAO.save(reportUser);
         } catch (NoResultException dontCare) {
         }
 
