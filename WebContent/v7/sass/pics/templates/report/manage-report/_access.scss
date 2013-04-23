@@ -1,5 +1,18 @@
 #ManageReports_access_page
 {
+	#report_access_info
+	{
+		h2
+		{
+			margin-bottom: 0;
+		}
+		
+		p
+		{
+			color: #808285;
+		}
+	}
+	
 	#report_access_search
 	{
 		margin-bottom: 40px;
@@ -134,11 +147,23 @@
 			background: #fcf3cc;
 			border: 1px solid #e67e1c;
 	    	
-	    	a,
+	    	.name,
 	    	p
 	    	{
 	    		color: #e67e1c;
 	    	}
+	    }
+	    
+	    .user.change
+	    {
+			background: #c3e0f9;
+			border: 1px solid #226396;
+			
+			.name,
+			p
+			{
+	    		color: #226396;
+			}
 	    }
 	    
 	    .group.remove,
@@ -147,7 +172,7 @@
 	    	background-color: #ffc6c9;
 	    	border: 1px solid #ac030c;
 	    	
-	    	a,
+	    	.name,
 	    	p
 	    	{
 	    		color: #ac030c;

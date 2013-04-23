@@ -14,7 +14,10 @@
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
-<h4 class="report-subtitle">Look ma I am a subtitle.</h4>
+<div id="report_access_info">
+    <h2>${report.name}</h2>
+    <p>${report.description}</p>
+</div>
 
 <div class="row">
     <div id="report_access_search" class="span4 offset4">

@@ -8,14 +8,13 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
@@ -26,6 +25,15 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportFavoriteInfo;
+import com.picsauditing.service.ReportFavoriteInfoConverter;
+import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportPermissionInfo;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.service.ReportSearch;
+import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
@@ -48,6 +56,8 @@ public class ManageReports extends PicsActionSupport {
 	private UserService userService;
 	@Autowired
 	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
+
+	private Report report;
 
 	// TODO remove this after we have separate pojos for all views
 	private List<ReportInfo> reportList;
@@ -172,6 +182,8 @@ public class ManageReports extends PicsActionSupport {
 					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
 				throw new ReportPermissionException("User " + permissions.getUserId() + " cannot view access rights for report " + reportId + " because they are not the owner.");
 			}
+
+			setReport(report);
 
 			isCurrentUserOwner = permissionService.isOwner(user, report);
 
@@ -649,6 +661,14 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setReferringPage(String referringPage) {
 		this.referringPage = referringPage;
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
 	}
 
 }

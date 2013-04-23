@@ -16,7 +16,15 @@
                 <s:set var="access_type">view</s:set>
             </s:else>
             
-            <li class="user ${access_type} clearfix" data-user-id="${person.id}">
+            <s:if test="permissions.userId == #person.id">
+                <s:set var="current_user">data-current-user="true"</s:set>
+            </s:if>
+            <s:else>
+                <s:set var="current_user" value="%{''}" />
+            </s:else>
+            
+            
+            <li class="user ${access_type} clearfix" data-user-id="${person.id}" ${current_user}>
                 <s:if test="#person.owner">
                     <div class="is-owner pull-right">
                         <i class="icon-key"></i> Owner
