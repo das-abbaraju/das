@@ -388,7 +388,8 @@ public class ContractorCron extends PicsActionSupport {
 		if (contractor.getBalance().compareTo(BigDecimal.ZERO) != 0)
 			return;
 
-		if (!isPqfAndSafetyManualOkay(contractor))
+		Date beginDate = pqfAndSafetyManualSlaStartDate(contractor);
+		if (beginDate == null)
 			return;
 
 		for (ContractorAudit audit:contractor.getAudits()) {
@@ -396,33 +397,67 @@ public class ContractorCron extends PicsActionSupport {
 					audit.hasCaoStatus(AuditStatus.Pending) &&
 					audit.getSlaDate() == null) {
 				Calendar date = Calendar.getInstance();
-				date.add(Calendar.DATE, 10);
+				date.setTime(beginDate);
+				date.add(Calendar.DATE, 14);
 				audit.setSlaDate(DateBean.setToEndOfDay(date.getTime()));
 				dao.save(audit);
 			}
 		}
 	}
 
-	private boolean isPqfAndSafetyManualOkay(ContractorAccount contractor) {
+	private Date pqfAndSafetyManualSlaStartDate(ContractorAccount contractor) {
 		boolean pqfRequirementsMet = false;
 		boolean safetyManualRequirementsMet = false;
+		Date caoDate = null;
+		Date safetyManualDate = null;
+
 		for (ContractorAudit audit:contractor.getAudits()) {
-			if (audit.getAuditType().isPicsPqf() && audit.hasCaoStatus(AuditStatus.Complete)) {
-				pqfRequirementsMet = true;
+			if (audit.getAuditType().isPicsPqf()) {
+				caoDate = findMaxCompleteDate(audit);
+				if (caoDate != null) {
+					pqfRequirementsMet = true;
 
-				for (AuditData data:audit.getData()) {
-					if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
-						if (data.isAnswered() && data.isVerified())
-							safetyManualRequirementsMet = true;
-						break;
-					}
+					safetyManualDate = findSafetyManualVerificationDate(audit);
+					if (safetyManualDate != null)
+						safetyManualRequirementsMet = true;
 				}
-
 				break;
 			}
 		}
 
-		return pqfRequirementsMet && safetyManualRequirementsMet;
+		if (pqfRequirementsMet && safetyManualRequirementsMet) {
+			if (safetyManualDate.after(caoDate))
+				return safetyManualDate;
+			else
+				return caoDate;
+		}
+
+		return null;
+	}
+
+	private Date findSafetyManualVerificationDate(ContractorAudit audit) {
+		for (AuditData data:audit.getData()) {
+			if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
+				if (data.isAnswered() && data.isVerified()) {
+					return data.getDateVerified();
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private Date findMaxCompleteDate(ContractorAudit audit) {
+		audit.hasCaoStatus(AuditStatus.Complete);
+		Date completeDate = null;
+		for (ContractorAuditOperator cao : audit.getOperators()) {
+			if (cao.isVisible() && cao.getStatus().equals(AuditStatus.Complete)) {
+				if (completeDate == null || completeDate.before(cao.getStatusChangedDate())) {
+					completeDate = cao.getStatusChangedDate();
+				}
+			}
+		}
+		return completeDate;
 	}
 
 	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {
