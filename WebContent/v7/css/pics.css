@@ -1358,25 +1358,22 @@ hr {
 }
 /* line 14, ../sass/pics/templates/login/_login-form.scss */
 #login_form .icon-globe {
-  font-size: 20px;
   margin-right: 5px;
-  position: relative;
-  top: 3px;
 }
-/* line 22, ../sass/pics/templates/login/_login-form.scss */
+/* line 19, ../sass/pics/templates/login/_login-form.scss */
 #login_form #supported_locales {
   width: 195px;
 }
-/* line 27, ../sass/pics/templates/login/_login-form.scss */
+/* line 24, ../sass/pics/templates/login/_login-form.scss */
 #login_form #forgot_password {
   margin: -5px 0 5px;
   text-align: right;
 }
-/* line 32, ../sass/pics/templates/login/_login-form.scss */
+/* line 29, ../sass/pics/templates/login/_login-form.scss */
 #login_form #forgot_password a {
   color: #999;
 }
-/* line 38, ../sass/pics/templates/login/_login-form.scss */
+/* line 35, ../sass/pics/templates/login/_login-form.scss */
 #login_form .form-actions {
   text-align: right;
 }
