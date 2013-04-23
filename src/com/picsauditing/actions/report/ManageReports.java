@@ -69,6 +69,7 @@ public class ManageReports extends PicsActionSupport {
 	private String direction;
 	protected int shareId;
 	protected boolean editable;
+	private String referringPage;
 
 	private int pinnedIndex;
 
@@ -181,6 +182,10 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return determineViewName("accessList", "access");
+	}
+
+	public String unauthorized() {
+		return "unauthorized";
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {
@@ -637,4 +642,13 @@ public class ManageReports extends PicsActionSupport {
 	public boolean isCurrentUserOwner() {
 		return isCurrentUserOwner;
 	}
+
+	public String getReferringPage() {
+		return referringPage;
+	}
+
+	public void setReferringPage(String referringPage) {
+		this.referringPage = referringPage;
+	}
+
 }

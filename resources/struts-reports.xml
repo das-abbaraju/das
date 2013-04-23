@@ -23,8 +23,9 @@
 			<result name="sharedWith">/struts/report/manage-report/shared-with.jsp</result>
 			<result name="search">/struts/report/manage-report/search.jsp</result>
 			<result name="access">/struts/report/manage-report/access.jsp</result>
-			
-			<result name="favoritesList">/struts/report/manage-report/_favorites.jsp</result>
+            <result name="unauthorized">/struts/report/manage-report/unauthorized.jsp</result>
+
+            <result name="favoritesList">/struts/report/manage-report/_favorites.jsp</result>
 			<result name="ownedByList">/struts/report/manage-report/_owned-by.jsp</result>
 			<result name="sharedWithList">/struts/report/manage-report/_shared-with.jsp</result>
 			<result name="searchList">/struts/report/manage-report/_search.jsp</result>
