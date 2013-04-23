@@ -1,12 +1,17 @@
 package com.picsauditing.report.models;
 
 import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertEqualsToTheSecond;
 import static com.picsauditing.util.Assert.assertNotContains;
+import static junit.framework.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.fields.Field;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +41,17 @@ public class PaymentCommissionModelTest extends ModelTest {
 	}
 
 	@Test
+	public void testAvailableFields_activationPointsShouldBeRounded() throws Exception {
+		setupSalesCommissionPermission();
+
+		availableFields = model.getAvailableFields();
+
+		Field activationPointsField = availableFields.get("PaymentCommissionActivationPoints".toUpperCase());
+		String activationPointsDatabaseColumnName = activationPointsField.getDatabaseColumnName();
+		assertEquals("ROUND(PaymentCommission.activationpoints, 2)", activationPointsDatabaseColumnName);
+	}
+
+	@Test
 	public void testWhereClause_otherThanSalesRepsShouldNotBeRestricted() throws Exception {
 		List<Filter> filters = new ArrayList<>();
 		String whereClause = model.getWhereClause(filters);
@@ -60,5 +76,11 @@ public class PaymentCommissionModelTest extends ModelTest {
 		String whereClause = model.getWhereClause(filters);
 
 		assertNotContains("AccountUser.userID = ", whereClause);
+	}
+
+	private void setupSalesCommissionPermission() {
+		UserAccess userAccess = new UserAccess();
+		userAccess.setOpPerm(OpPerms.SalesCommission);
+		model.permissions.getPermissions().add(userAccess);
 	}
 }

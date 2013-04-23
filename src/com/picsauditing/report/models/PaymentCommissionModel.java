@@ -80,6 +80,7 @@ public class PaymentCommissionModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
+		formatActivationPoints(fields);
 
 		Field commissionUser = fields.get("UserName".toUpperCase());
 		if (commissionUser != null) {
@@ -96,6 +97,13 @@ public class PaymentCommissionModel extends AbstractModel {
 		removeUnnecessaryFields(fields);
 
 		return fields;
+	}
+
+	private void formatActivationPoints(Map<String, Field> fields) {
+		Field activationPointsField = fields.get("PaymentCommissionActivationPoints".toUpperCase());
+		String activationPointsDatabaseColumnName = activationPointsField.getDatabaseColumnName();
+		String formattedColumnName = "ROUND(" + activationPointsDatabaseColumnName + ", 2)";
+		activationPointsField.setDatabaseColumnName(formattedColumnName);
 	}
 
 	private void setUrlForField(Map<String, Field> availableFields, String fieldKey, String url) {
