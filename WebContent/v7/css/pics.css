@@ -348,7 +348,7 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
     margin: 0;
-    padding: 30px 10px;
+    padding: 30px 0px;
     width: 100%;
   }
 }
@@ -2267,44 +2267,48 @@ hr {
     margin-bottom: 20px;
   }
 }
-/* line 4, ../sass/pics/templates/user/_recover-account.scss */
+/***
+ * TODO:
+ * The creation of this page was wrong because it is a form and not a notice #carey
+ */
+/* line 8, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page .notice {
   padding: 40px 60px;
   width: 220px;
 }
-/* line 10, ../sass/pics/templates/user/_recover-account.scss */
+/* line 14, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page h1 {
   font-size: 25px;
   margin-top: 0px;
 }
-/* line 16, ../sass/pics/templates/user/_recover-account.scss */
+/* line 20, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page .alert h4 {
   text-align: left;
 }
-/* line 21, ../sass/pics/templates/user/_recover-account.scss */
+/* line 25, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page form {
   text-align: left;
   margin: 0px;
 }
-/* line 27, ../sass/pics/templates/user/_recover-account.scss */
+/* line 31, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page .logo {
   margin-bottom: 30px;
 }
-/* line 32, ../sass/pics/templates/user/_recover-account.scss */
+/* line 36, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page .form-actions {
   margin-top: 30px;
   text-align: right;
 }
-/* line 37, ../sass/pics/templates/user/_recover-account.scss */
+/* line 41, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page .form-actions button {
   margin-left: 5px;
 }
-/* line 44, ../sass/pics/templates/user/_recover-account.scss */
+/* line 48, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page #username,
 .AccountRecovery-page #email {
   display: block;
 }
-/* line 50, ../sass/pics/templates/user/_recover-account.scss */
+/* line 54, ../sass/pics/templates/user/_recover-account.scss */
 .AccountRecovery-page #recover_password,
 .AccountRecovery-page #recover_username {
   text-align: left;

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.access.UnauthorizedException;
 import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
@@ -79,7 +79,6 @@ public class ManageReports extends PicsActionSupport {
 	private String direction;
 	protected int shareId;
 	protected boolean editable;
-	private String referringPage;
 
 	private int pinnedIndex;
 
@@ -170,7 +169,7 @@ public class ManageReports extends PicsActionSupport {
 		return determineViewName("searchList", "search");
 	}
 
-	public String access() {
+	public String access() throws UnauthorizedException {
 		userAccessList = Collections.emptyList();
 		groupAccessList = Collections.emptyList();
 
@@ -180,7 +179,9 @@ public class ManageReports extends PicsActionSupport {
 
 			if ( !(permissionService.canUserShareReport(user, report)
 					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
-				throw new ReportPermissionException("User " + permissions.getUserId() + " cannot view access rights for report " + reportId + " because they are not the owner.");
+				throw new UnauthorizedException(
+						"You do not have access to the Report Access page.",
+						getReferer());
 			}
 
 			setReport(report);
@@ -189,15 +190,18 @@ public class ManageReports extends PicsActionSupport {
 
 			userAccessList = manageReportsService.buildUserAccessList(report);
 			groupAccessList = manageReportsService.buildGroupAndAccountAccessList(report, permissions.getLocale());
+		} catch (UnauthorizedException e) {
+			logAndShowUserInDebugMode(
+					"Unexpected exception in ManageReports!access.action", e);
+
+			throw new UnauthorizedException(
+					"You do not have access to the Report Access page.",
+					getReferer());
 		} catch (Exception e) {
 			logAndShowUserInDebugMode("Unexpected exception in ManageReports!access.action", e);
 		}
 
 		return determineViewName("accessList", "access");
-	}
-
-	public String unauthorized() {
-		return "unauthorized";
 	}
 
 	private String determineViewName(String ajaxViewname, String jspViewName) {
@@ -653,14 +657,6 @@ public class ManageReports extends PicsActionSupport {
 
 	public boolean isCurrentUserOwner() {
 		return isCurrentUserOwner;
-	}
-
-	public String getReferringPage() {
-		return referringPage;
-	}
-
-	public void setReferringPage(String referringPage) {
-		this.referringPage = referringPage;
 	}
 
 	public Report getReport() {

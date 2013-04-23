@@ -115,16 +115,14 @@
             </result>
             <result name="xml" type="xml"></result>
             <result name="file" type="file"></result>
+            <result name="403">/struts/exception/403.jsp</result>
         </global-results>
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="Exception"/>
-            <exception-mapping
-                    exception="com.picsauditing.access.GeneralContractorNotApprovedException"
-                    result="GeneralContractorNotApprovedException"/>
-            <exception-mapping exception="com.picsauditing.access.NotLoggedInException"
-                               result="login-redirect"/>
-            <exception-mapping exception="com.picsauditing.access.AjaxNotLoggedInException"
-                               result="login-overlay"/>
+            <exception-mapping exception="com.picsauditing.access.UnauthorizedException" result="403" />
+            <exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException" result="GeneralContractorNotApprovedException"/>
+            <exception-mapping exception="com.picsauditing.access.NotLoggedInException" result="login-redirect"/>
+            <exception-mapping exception="com.picsauditing.access.AjaxNotLoggedInException" result="login-overlay"/>
         </global-exception-mappings>
 
         <action name="ExceptionAction" class="com.picsauditing.actions.ExceptionAction">

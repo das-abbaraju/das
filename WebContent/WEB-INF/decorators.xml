@@ -9,7 +9,7 @@
         <pattern>/NewYearMailer*.action</pattern>
         <pattern>/ReportTester.action</pattern>
     </decorator>
-    <decorator name="simpleLayout" page="simple-layout.jsp">
+    <decorator name="simple-layout" page="simple-layout.jsp">
         <pattern>/AccountRecovery*.action</pattern>
         <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
@@ -18,6 +18,7 @@
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>
     </decorator>
+    
     <decorator name="main" page="main.jsp">
         <pattern>/*.jsp</pattern>
         <pattern>/*.action</pattern>
