@@ -122,18 +122,18 @@ public class ReportContractorApproval extends ReportAccount {
 
 	public void approveContractor(ContractorAccount cAccount, int operatorID, ApprovalStatus workStatus) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
+            OperatorAccount operator = cOperator.getOperatorAccount();
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
                 if (cOperator.getWorkStatus() != workStatus) {
-				    if (permissions.isOperator()) {
+				    if (operator.isOperator()) {
                         cOperator.setWorkStatus(workStatus);
                         cOperator.cascadeWorkStatusToParent();
                     } else {
                         cOperator.setForcedWorkStatus(workStatus);
                    }
 
-                   if (cOperator.getOperatorAccount().isCorporate()) {
-                        OperatorAccount corporate = cOperator.getOperatorAccount();
-                        for (OperatorAccount childAccount: corporate.getChildOperators()) {
+                   if (operator.isCorporate()) {
+                        for (OperatorAccount childAccount: operator.getChildOperators()) {
                              approveContractor(cAccount, childAccount.getId(), workStatus);
                         }
                    }
@@ -145,7 +145,7 @@ public class ReportContractorApproval extends ReportAccount {
 		}
 	}
 
-	public String getWorkStatusDesc(ApprovalStatus workStatus) {
+    public String getWorkStatusDesc(ApprovalStatus workStatus) {
 		return getText(workStatus.getI18nKey());
 	}
 

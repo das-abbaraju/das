@@ -14,6 +14,11 @@ public class ModelSpec {
 	FieldImportance minimumImportance;
 	List<ModelSpec> joins = new ArrayList<ModelSpec>();
 
+	public ModelSpec(String key, String alias, FieldCategory category) {
+		this(key, alias);
+		this.category = category;
+	}
+
 	public ModelSpec(String key, String alias) {
 		this.key = key;
 		this.fromAlias = "";

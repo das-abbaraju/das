@@ -83,15 +83,7 @@
 
     <template message-converter="messageConverter" id="CsrAssignmentSingleTemplate" connection-factory="connectionFactory" exchange="csr-assignments-single-exchange" queue="csr-assignments-single"/>
 
-    <!-- CSR Assignment Single Publisher for Registration w/ Feature Toggle -->
-	<beans:bean id="CsrAssignmentPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
-		<beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
-		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
-		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.Csr_SingleAssignment" />
-	</beans:bean>
-
-    <!-- CSR Assignment Single Publisher for Contractor Dashboard -->
-      <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+    <beans:bean id="CsrAssignmentSinglePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
         <beans:property name="amqpTemplate" ref="CsrAssignmentSingleTemplate" />
     </beans:bean>
 

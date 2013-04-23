@@ -120,9 +120,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 			contractorAuditWithStatuses = new HashMap<ContractorAudit, AuditStatus>();
 			List<ContractorAudit> list = contractor.getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				// .isPqf may be wrong here. Consider using
+				// .isPicsPqf may be wrong here. Consider using
 				// contractorAudit.getAuditType().isRenewable() instead
-				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
+				if (contractorAudit.getAuditType().isPicsPqf() || !contractorAudit.isExpired()) {
 					// We're dealing with a non-archived document
 					if (permissions.isContractor()) {
 						if (contractorAudit.getAuditType().isCanContractorView()) {
@@ -148,7 +148,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			contractorNonExpiredAudits = new ArrayList<ContractorAudit>();
 			List<ContractorAudit> list = getAudits();
 			for (ContractorAudit contractorAudit : list) {
-				if (contractorAudit.getAuditType().isPqf() || !contractorAudit.isExpired()) {
+				if (contractorAudit.getAuditType().isPicsPqf() || !contractorAudit.isExpired()) {
 					if (contractorAudit.isVisibleTo(permissions))
 						contractorNonExpiredAudits.add(contractorAudit);
 				}

@@ -48,7 +48,7 @@ public class ManageTransformOption extends ManageQuestion {
 		}
 
 		AuditQuestion destinationQuestion = auditQuestionDAO.find(Integer.parseInt(destinationId));
-		if (destinationQuestion == null || !destinationQuestion.getCategory().getAuditType().isPqf()) {
+		if (destinationQuestion == null || !destinationQuestion.getCategory().getAuditType().isPicsPqf()) {
 			addActionError("Unable to find PQF Question.");
 			return false;
 		}

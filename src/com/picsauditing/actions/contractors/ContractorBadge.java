@@ -68,7 +68,7 @@ public class ContractorBadge extends ContractorActionSupport {
 
 	private ContractorAudit findPQF() {
 		for (ContractorAudit pqf : contractor.getAudits()) {
-			if (pqf.getAuditType().isPqf())
+			if (pqf.getAuditType().isPicsPqf())
 				return pqf;
 		}
 

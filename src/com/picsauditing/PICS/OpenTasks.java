@@ -526,7 +526,7 @@ public class OpenTasks extends TranslationActionSupport {
 				&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				if (conAudit.getAuditType().isPqf() && hasImportPQF) {
+				if (conAudit.getAuditType().isPicsPqf() && hasImportPQF) {
 					// Show a message for filling out the rest of the PQF if the
 					// Import PQF is COMPLETE
 					if (importPQFComplete) {

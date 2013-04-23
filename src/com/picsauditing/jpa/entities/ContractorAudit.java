@@ -369,7 +369,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	@Transient
 	public Date getEffectiveDateLabel() {
-		if (auditType.isPqf()) {
+		if (auditType.isPicsPqf()) {
 			// We normally don't call getEffectiveDateLabel() for PQF
 			return new Date();
 		}
@@ -910,7 +910,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	@Transient
 	public boolean isOkayToChangeCaoStatus(ContractorAuditOperator cao) {
-		if (auditType.isPqf() && cao.getPercentVerified() == 100) {
+		if (auditType.isPicsPqf() && cao.getPercentVerified() == 100) {
 			for (AuditData data : getData()) {
 				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF && data.isUnverified()) {
 					return false;

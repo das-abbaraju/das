@@ -222,7 +222,6 @@
     	if (!useVersion7Menus) {
         %>
             <div id="bodywrap">
-                <jsp:include page="/struts/misc/main_system_message.jsp" />
                 <table id="header">
                     <!-- !begin header -->
                     <tr>

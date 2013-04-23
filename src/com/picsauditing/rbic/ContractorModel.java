@@ -4,9 +4,9 @@ import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ public class ContractorModel implements Serializable {
     private ContractorAccount contractor;
 
     public List<InsuranceCriteriaContractorOperator> insuranceCriteriaOperators = new ArrayList<>();
-
     public boolean hasTag(int tagID) {
         for (ContractorTag tag : contractor.getOperatorTags()) {
             if (tag.getTag().getId() == tagID) {
@@ -43,33 +42,48 @@ public class ContractorModel implements Serializable {
     }
 
     public String findPqfQuestionAnswer(int questionID) {
-        String result = null;
-        ContractorAudit pqf = null;
-        for (ContractorAudit audit : contractor.getAudits()) {
-            if (audit.getAuditType().isPqf()) {
-                pqf = audit;
-                break;
-            }
-        }
+        List<ContractorAudit> pqf = getPqf(contractor);
+        return  getQuestionById(questionID, pqf);
+    }
 
-        if (pqf != null) {
-            for (AuditData pqfAnswer : pqf.getData())
-                if (pqfAnswer.getQuestion().getId() == questionID) {
-                    result = pqfAnswer.getAnswer();
-                    break;
+    public String findQuestionAnswer(int questionId) {
+        for (ContractorAudit audit : contractor.getAudits()) {
+            for (AuditData pqfAnswer : audit.getData())
+                if (pqfAnswer.getQuestion().getId() == questionId) {
+                    return pqfAnswer.getAnswer();
                 }
         }
+        return null;
+    }
 
-        return result;
+    public double findQuestionAnswerAsNumber(int questionId) {
+        String answer = findQuestionAnswer(questionId);
+        return Strings.isEmpty(answer) ? 0 : Double.parseDouble(answer);
+    }
+
+    public static  String getQuestionById(int questionId, List<ContractorAudit> pqfs) {
+        for (ContractorAudit audit: pqfs) {
+            for (AuditData pqfAnswer : audit.getData())
+                if (pqfAnswer.getQuestion().getId() == questionId) {
+                    return pqfAnswer.getAnswer();
+                }
+        }
+        return null;
+    }
+
+    public static  List<ContractorAudit> getPqf(ContractorAccount contractor) {
+        List<ContractorAudit> results = new ArrayList<>();
+        for (ContractorAudit audit : contractor.getAudits()) {
+            if (audit.getAuditType().isPqf()) {
+                results.add(audit);
+            }
+        }
+        return results;
     }
 
     public void updateCriteriaLimitForContractor(int flagCriteriaId, int opId, int limit) {
-        InsuranceCriteriaContractorOperator insuranceCriteriaContractorOperator = null;
-
-        try {
-            insuranceCriteriaContractorOperator =
+        InsuranceCriteriaContractorOperator insuranceCriteriaContractorOperator  =
                     insuranceCriteriaContractorOperatorDAO.findBy(flagCriteriaId, contractor.getId(), opId);
-        } catch (NoResultException whyDoesntThisJustReturnNullInsteadOfThrowingAnExceptionUgggghhhhhh) {};
 
         if (insuranceCriteriaContractorOperator == null) {
             insuranceCriteriaContractorOperator = new InsuranceCriteriaContractorOperator();
@@ -93,13 +107,16 @@ public class ContractorModel implements Serializable {
         this.contractor = contractor;
     }
 
-
     public LowMedHigh getSafetyRisk() {
         return contractor.getSafetyRisk();
     }
 
-    public void setSafetyRisk(LowMedHigh safetyRisk) {
-        contractor.setSafetyRisk(safetyRisk);
+    public LowMedHigh getProductRisk() {
+        return contractor.getProductRisk();
+    }
+
+    public LowMedHigh getTransportationRisk() {
+        return contractor.getTransportationRisk();
     }
 
 }

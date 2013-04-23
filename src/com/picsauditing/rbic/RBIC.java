@@ -19,7 +19,6 @@ public class RBIC extends PicsActionSupport {
     @Autowired
     private InsuranceCriteriaContractorOperatorDAO insuranceCriteriaContractorOperatorDAO;
 
-    @Anonymous
     public String execute() {
         rulesRunner.setContractor(contractor);
 

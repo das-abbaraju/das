@@ -66032,14 +66032,14 @@ Ext.define('PICS.data.Exception', {
         
         var unknown_error = {
             title: 'Server Communication Error',
-            message: 'Unknown error.'
+            message: 'An unknown error occurred.'
         };
 
         function getErrorFromStatusCode(code) {
             return error_codes[code] || unknown_error;
         }
-        
-        function handle2xxException(response, callback) {
+
+        function handleKnown2xxException(response, callback) {
             var response_text = response.responseText;
             
             try {
@@ -66052,7 +66052,7 @@ Ext.define('PICS.data.Exception', {
                 showException('Exception', e.msg, callback);
             }
         }
-        
+
         function handleNon2xxException(response, callback) {
             var status_code = response.status,
                 error = getErrorFromStatusCode(status_code),
@@ -66062,7 +66062,11 @@ Ext.define('PICS.data.Exception', {
             showException(title, message, callback);
         }
 
-        function has2xxException(response) {
+        function handleUnknown2xxException(response, callback) {
+            showException(unknown_error.title, unknown_error.message);
+        }
+        
+        function hasKnown2xxException(response) {
             var response_text = response && response.responseText,
                 json;
             
@@ -66071,12 +66075,25 @@ Ext.define('PICS.data.Exception', {
             } catch (e) {
                 return false;
             }
-            
+
             return json && json.success == false;
         }
 
         function hasNon2xxException(response) {
-            return response && typeof error_codes[response.status] != 'undefined';
+            return response && response.status.toString()[0] != '2';
+        }
+
+        function hasUnknown2xxException(response) {
+            var response_text = response && response.responseText,
+                json;
+        
+            try {
+                json = Ext.JSON.decode(response_text);
+            } catch (e) {
+                return response.status && response.status.toString()[0] == '2';
+            }
+            
+            return false;
         }
         
         function showException(title, message, callback) {
@@ -66091,23 +66108,25 @@ Ext.define('PICS.data.Exception', {
         }
         
         return {
+            getUnknownError: function () {
+                return unknown_error;
+            },
+
             handleException: function (options) {
                 var response = options.response,
                     callback = typeof options.callback == 'function' ? options.callback : function () {};
                 
-                // success: false error
-                if (has2xxException(response)) {
-                    handle2xxException(response, callback);
-                }
-                
-                // status code error
-                if (hasNon2xxException(response)) {
+                if (hasKnown2xxException(response)) {
+                    handleKnown2xxException(response, callback);
+                } else if (hasUnknown2xxException(response)) {
+                    handleUnknown2xxException(response, callback);
+                } else if (hasNon2xxException(response)) {
                     handleNon2xxException(response, callback);
                 }
             },
             
             hasException: function (response) {
-                return has2xxException(response) || hasNon2xxException(response);
+                return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };
     }())
@@ -66174,6 +66193,44 @@ Ext.define('PICS.data.ServerCommunication', {
             data_table_view.updateGridColumns(new_grid_columns);
         }
 
+        /* For our purposes, a "response object" is one that contains either a status or responseText property or both.
+         * 
+         * Ext.Ajax.request(), on success, returns a status property (of value 2xx) and a reponseText property value: { status: 2xx, responseText: { ... } }
+         * If the backend caught an error, this responseText property will contain a JSON string representing exception data used by PICS.data.Exception.
+         * On failure, Ext.Ajax.request() returns a non-2xx status value but no responseText: { status: non-2xx }
+         * Both of these qualify as "response objects".
+         * 
+         * A store's sync method, however, returns a different set of data. If we need a response object following a call to sync,
+         * then we must create the response object ourselves from the data that sync provides. This method primarily serves that purpose.
+         */
+        function createResponse(operation, jsonData) {
+            var response = {};
+
+            // If the server returned a non-2xx status code, then we can get our response object's "status" value from operation.error.status.
+            if (operation.error && operation.error.status) {
+                response.status = operation.error.status;
+
+            // If the store's reader contains JSON data, then we can create our response object's "responseText" value by converting that data to a string.
+            // Otherwise, we first need to create the JSON data to convert.
+            } else {
+                
+                // Since the response had no error, it was successful but it contained useless data.
+                if (!jsonData) {
+                    var unknown_error = PICS.data.Exception.getUnknownError();
+
+                    jsonData = {
+                        title: unknown_error.title,
+                        message: unknown_error.message,
+                        success: false
+                    };
+                }
+                
+                response.responseText = Ext.encode(jsonData);
+            }
+            
+            return response;
+        }
+
         return {
             copyReport: function () {
                 var report_store = Ext.StoreManager.get('report.Reports'),
@@ -66193,15 +66250,20 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
-                            response = operation.response;
-                        
+                            response = operation.response,
+                            jsonData = this.getReader().jsonData;
+
+                        // sync does not return response when the server sends "success: false"
+                        if (!response) {
+                            response = createResponse(operation, jsonData);
+                        }
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
                             });
                         } else {
-                            var json = this.getReader().jsonData,
-                                report_id = json.id;
+                            var report_id = jsonData.id;
 
                             window.location.href = 'Report.action?report=' + report_id;
                         }
@@ -66218,9 +66280,17 @@ Ext.define('PICS.data.ServerCommunication', {
             favoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getFavoriteReportUrl();
 
-                PICS.Ajax.request({
-                    url: url
+                Ext.Ajax.request({
+                    url: url,
+                    callback: function (options, success, response) {                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        }
+                    }
                 });
+
             },
 
             loadAll: function (options) {
@@ -66228,21 +66298,27 @@ Ext.define('PICS.data.ServerCommunication', {
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     scope = options.scope ? options.scope : this;
 
-                PICS.Ajax.request({
+                Ext.Ajax.request({
                     url: url,
-                    success: function (response) {
-                        var data = response.responseText,
-                            json = Ext.JSON.decode(data);
-
-                        loadReportStore(json);
-
-                        loadColumnStore(json);
-
-                        loadFilterStore(json);
-
-                        loadDataTableStore(json);
-
-                        success_callback.apply(scope, arguments);
+                    callback: function (options, success, response) {                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            var data = response.responseText,
+                                json = Ext.JSON.decode(data);
+    
+                            loadReportStore(json);
+    
+                            loadColumnStore(json);
+    
+                            loadFilterStore(json);
+    
+                            loadDataTableStore(json);
+    
+                            success_callback.apply(scope, arguments);
+                        }
                     }
                 });
             },
@@ -66267,8 +66343,13 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
-                            response = operation.response;
-                        
+                            response = operation.response,
+                            jsonData = this.getReader().jsonData;
+
+                        if (!response) {
+                            response = createResponse(operation, jsonData);
+                        }
+    
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66324,8 +66405,13 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
-                            response = operation.response;
-                        
+                            response = operation.response,
+                            jsonData = this.getReader().jsonData;
+    
+                        if (!response) {
+                            response = createResponse(operation, jsonData);
+                        }
+    
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66369,13 +66455,18 @@ Ext.define('PICS.data.ServerCommunication', {
                 report_store.sync({
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
-                            response = operation.response;
-                        
+                            response = operation.response,
+                            jsonData = this.getReader().jsonData;
+
+                        if (!response) {    
+                            response = createResponse(operation, jsonData);
+                        }
+    
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
                             });
-                        } else {
+                    } else {
                             report.setHasUnsavedChanges(false);
 
                             success_callback();
@@ -66436,16 +66527,34 @@ Ext.define('PICS.data.ServerCommunication', {
                     params: {
                         shareId: account_id
                     },
-                    success: success_callback,
-                    failure: failure_callback
+                    callback: function (options, success, response) {
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            if (success) {
+                                success_callback(response);
+                            } else {
+                                failure_callback(response);
+                            }
+                        }
+                    }
                 });
             },
 
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
-                PICS.Ajax.request({
-                    url: url
+                Ext.Ajax.request({
+                    url: url,
+                    callback: function (options, success, response) {                        
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        }
+                    }
                 });
             }
         };
@@ -83051,11 +83160,13 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'export',
-        text : 'Export',
-        cls: 'primary export',
+        text : '<i class="icon-table icon-large"></i><span>Spreadsheet</span>',
+        cls: 'default export',
         id: 'export-button',
         tooltip: 'Export this report to Excel',
-        margin: '100 0 0 0'
+        height: 28,
+        margin: '100 0 0 0',
+        width: 200
     }],
     layout: {
         type: 'vbox',
@@ -83074,11 +83185,13 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : 'Print Preview',
-        cls: 'primary print',
+        text : '<i class="icon-picture icon-large"></i><span>Preview</span>',
+        cls: 'default print',
         id: 'print-button',
         tooltip: 'Preview a printable version of this report',
-        margin: '100 0 0 0'
+        height: 28,
+        margin: '100 0 0 0',
+        width: 200
     }],
     layout: {
         type: 'vbox',

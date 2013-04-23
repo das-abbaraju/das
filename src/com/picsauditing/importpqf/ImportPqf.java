@@ -67,7 +67,7 @@ public abstract class ImportPqf {
 	private void transformPqf(ContractorAudit conAudit) {
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit audit : conAudit.getContractorAccount().getAudits()) {
-			if (audit.getAuditType().isPqf()) {
+			if (audit.getAuditType().isPicsPqf()) {
 				pqfAudit = audit;
 				break;
 			}

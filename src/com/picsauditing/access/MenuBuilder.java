@@ -571,7 +571,15 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			emailMenu.addChild("New Year Mailer", "NewYearMailer.action", "NewYearMailer");
 		}
-	}
+
+        if (!emailMenu.hasChildren()) {
+            boolean removed = parentMenu.removeChild(emailMenu);
+
+            if (!removed) {
+                logger.warn("Unable to remove email menu with no children.");
+            }
+        }
+    }
 
 	private static void handleSingleChildMenu(MenuComponent menu) {
 		if (menu.getChildren().size() == 1) {

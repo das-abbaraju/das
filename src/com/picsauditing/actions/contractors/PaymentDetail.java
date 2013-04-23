@@ -82,14 +82,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	@RequiredPermission(value = OpPerms.AllContractors)
 	public String execute() throws Exception {
-		if (FIND_CC_BUTTON.equals(button)) {
+        if (contractor == null) {
+            findContractor();
+        }
+
+        if (FIND_CC_BUTTON.equals(button)) {
 			creditCard = paymentService.getCreditCard(contractor);
 			method = PaymentMethod.CreditCard;
 			return SUCCESS;
-		}
-
-		if (contractor == null) {
-			findContractor();
 		}
 
 		if (method == null) {

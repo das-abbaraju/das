@@ -133,7 +133,7 @@ public class ReportContractorApprovalTest extends PicsActionTest {
         reportContractorApproval.approveContractor(contractor, parentOperator.getId(), ApprovalStatus.Y);
 
         assertEquals(ApprovalStatus.Y, childOperatorApproved.getWorkStatus());
-        assertEquals(ApprovalStatus.YF, childOperatorPending.getWorkStatus());
+        assertEquals(ApprovalStatus.Y, childOperatorPending.getWorkStatus());
         assertEquals(ApprovalStatus.YF, parentOperatorPending.getWorkStatus());
     }
 }

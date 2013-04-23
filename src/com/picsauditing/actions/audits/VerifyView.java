@@ -75,7 +75,7 @@ public class VerifyView extends ContractorActionSupport {
 		boolean needsEmr = false;
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
-			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+			if (conAudit.getAuditType().isPicsPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				pqfQuestions = getPQFAnswerMap(conAudit);
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
@@ -175,7 +175,7 @@ public class VerifyView extends ContractorActionSupport {
 					sb.append(sb2.toString());
 				}
 			}
-			if (conAudit.getAuditType().isPqf()) {
+			if (conAudit.getAuditType().isPicsPqf()) {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				for (AuditData ad : temp) {
 					if (!ad.isVerified() && !Strings.isEmpty(ad.getComment())) {
@@ -325,7 +325,7 @@ public class VerifyView extends ContractorActionSupport {
 				@Override
 				public boolean check(ContractorAudit t) {
 					boolean foundSomethingToBeVerified = false;
-					if (t.getAuditType().isPqf()) {
+					if (t.getAuditType().isPicsPqf()) {
 						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
 							if (cao.getStatus().isSubmittedResubmitted()) {
 								foundSomethingToBeVerified = true;
@@ -384,7 +384,7 @@ public class VerifyView extends ContractorActionSupport {
 		boolean hasUpload = false;
 		boolean hasSubmittedStatus = false;
 		for (ContractorAudit audit : getVerificationAudits()) {
-			if (audit.getAuditType().isPqf()) {
+			if (audit.getAuditType().isPicsPqf()) {
 				if (audit.hasCaoStatus(AuditStatus.Submitted)
 						|| audit.hasCaoStatus(AuditStatus.Resubmitted)) {
 					hasSubmittedStatus = true;

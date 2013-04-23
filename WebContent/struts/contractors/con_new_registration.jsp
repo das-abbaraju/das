@@ -476,7 +476,7 @@
 	<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
 	<script type="text/javascript">
 		var chooseADate = '<s:text name="javascript.ChooseADate" />';
-		var name ='<s:property value="permissions.name" />'; 
+		var name ='<s:property value="permissions.name" escapeJavaScript="true" />';
 		var newContractor = '<s:property value="newContractor.id" />';
 
 		$(function() {

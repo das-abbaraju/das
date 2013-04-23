@@ -2,76 +2,61 @@ package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.i18n.RequiredLanguageTransformer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseTableRequiringLanguages extends BaseTable implements JSONable, Serializable, Autocompleteable {
+public abstract class BaseTableRequiringLanguages extends BaseTable implements JSONable, Serializable, Autocompleteable, RequiresLanguages {
+	private RequiredLanguageTransformer transformer = new RequiredLanguageTransformer();
 
 	protected String requiredLanguages = null;
+	protected List<String> languages = new ArrayList<>();
 
-	protected List<String> languages = new ArrayList<String>();
-
+	@Override
 	public String getRequiredLanguages() {
 		return requiredLanguages;
 	}
 
+	@Override
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
 	}
 
+	@Override
 	@Transient
 	public List<String> getLanguages() {
-		if (requiredLanguages != null) {
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
+		this.languages = transformer.getListFromJSON(requiredLanguages);
 		return languages;
 	}
 
+	@Override
 	@Transient
 	public void setLanguages(List<String> languages) {
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
+		List<String> add = transformer.getLanguagesToAdd(getLanguages(), languages);
+		List<String> remove = transformer.getLanguagesToRemove(getLanguages(), languages);
 
-		List<String> add = getLanguageDifferences(getLanguages(), languages);
-		List<String> remove = getLanguageDifferences(languages, getLanguages());
-		if (!add.isEmpty() || !remove.isEmpty())
+		if (!add.isEmpty() || !remove.isEmpty()) {
 			cascadeRequiredLanguages(add, remove);
-			requiredLanguages = jsonArray.toJSONString();
-
-		this.languages = languages;
-	}
-
-	public List<String> getLanguageDifferences(List<String> sourceLanguages, List<String> targetLanguages) {
-		List<String> differences = new ArrayList<String>();
-		for (String language : targetLanguages) {
-			if (!sourceLanguages.contains(language))
-				differences.add(language);
 		}
-		return differences;
+
+        Collections.sort(languages);
+
+        requiredLanguages = transformer.getJSONStringFrom(languages);
+		this.languages = languages;
 	}
 
 	public abstract void cascadeRequiredLanguages(List<String> add, List<String> remove);
 
-	public abstract boolean hasMissingChildRequiredLanguages();
-
+	@Override
 	public void addAndRemoveRequiredLanguages(List<String> add, List<String> remove) {
-		List<String> newLanguages = new ArrayList<String>();
-		newLanguages.addAll(getLanguages());
-		newLanguages.addAll(add);
-		newLanguages.removeAll(remove);
-		setLanguages(newLanguages);
+		transformer.updateRequiredLanguages(this, add, remove);
 	}
 }

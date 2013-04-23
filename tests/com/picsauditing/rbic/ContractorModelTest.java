@@ -1,5 +1,6 @@
 package com.picsauditing.rbic;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -85,6 +86,53 @@ public class ContractorModelTest {
     }
 
     @Test
+    public void testFindPqfquestionAnswer_FromClientSpecificPqf() {
+        int customPqfType = -5;
+        int unknownQuestionId = -10000;
+
+        ContractorAccount contractor = new ContractorAccount();
+        AuditQuestion customQuestion = createPqf(contractor, customPqfType, "customPqf");
+        AuditQuestion pqfQuestion = createPqf(contractor, AuditType.PQF, "pqf");
+
+
+
+        ContractorModel contractorModel = new ContractorModel();
+        contractorModel.setContractor(contractor);
+        assertEquals("pqf", contractorModel.findPqfQuestionAnswer(pqfQuestion.getId()));
+        assertEquals("customPqf", contractorModel.findPqfQuestionAnswer(customQuestion.getId()));
+
+        assertEquals(null, contractorModel.findPqfQuestionAnswer(unknownQuestionId));
+    }
+    @Test
+    public void testFindQuestionAnswer() {
+        int customPqfType = -5;
+
+        ContractorAccount contractor = new ContractorAccount();
+        ContractorAudit audit = EntityFactory.makeContractorAudit(customPqfType, contractor);
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData("42", question);
+        question.setQuestionType("Number");
+        audit.getData().add(data);
+
+        AuditQuestion customQuestion = question;
+
+        ContractorModel contractorModel = new ContractorModel();
+        contractorModel.setContractor(contractor);
+        assertEquals("42", contractorModel.findQuestionAnswer(customQuestion.getId()));
+        assertEquals(42.0, contractorModel.findQuestionAnswerAsNumber(customQuestion.getId()));
+    }
+
+    private static AuditQuestion createPqf(ContractorAccount contractor, int pqf, String answer) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(pqf, contractor);
+        audit.getAuditType().setClassType(AuditTypeClass.PQF);
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditData data = EntityFactory.makeAuditData(answer, question);
+        audit.getData().add(data);
+
+        return question;
+    }
+
+    @Test
     public void testFindPqfQuestionAnswer() throws Exception {
         List<ContractorAudit> contractorAudits = new ArrayList<>();
 
@@ -111,7 +159,7 @@ public class ContractorModelTest {
         ContractorAudit audit = Mockito.mock(ContractorAudit.class);
         AuditType auditType = Mockito.mock(AuditType.class);
         when(audit.getAuditType()).thenReturn(auditType);
-        when(auditType.isPqf()).thenReturn(false);
+        when(auditType.isPicsPqf()).thenReturn(false);
 
         contractorAudits.add(audit);
         when(contractor.getAudits()).thenReturn(contractorAudits);
@@ -128,7 +176,7 @@ public class ContractorModelTest {
         ContractorAudit pqf = Mockito.mock(ContractorAudit.class);
         AuditType pqfAuditType = Mockito.mock(AuditType.class);
         when(pqf.getAuditType()).thenReturn(pqfAuditType);
-        when(pqfAuditType.isPqf()).thenReturn(true);
+        when(pqfAuditType.isPicsPqf()).thenReturn(true);
 
         contractorAudits.add(pqf);
         when(contractor.getAudits()).thenReturn(contractorAudits);

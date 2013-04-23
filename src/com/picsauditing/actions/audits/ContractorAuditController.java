@@ -515,7 +515,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (!conAudit.isExpired()
 				&& !conAudit.hasCaoStatus(AuditStatus.Complete)
 				&& (!conAudit.getAuditType().isCanContractorEdit() && conAudit.getAuditType().getEditPermission() == null)
-				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPqf()) {
+				|| conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().isPicsPqf()) {
 
 			if (contractor.getOperators().size() <= 9) {
 				for (Invoice i : this.getContractor().getInvoices()) {
@@ -554,7 +554,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	 * @return true if they should see the upsell message
 	 */
 	public boolean isNeedsImportPQFQuestion() {
-		if (!conAudit.getAuditType().isPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+		if (!conAudit.getAuditType().isPicsPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending))
 			return false;
 
 		ContractorAccount con = conAudit.getContractorAccount();

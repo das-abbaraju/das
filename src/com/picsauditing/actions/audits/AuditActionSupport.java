@@ -431,7 +431,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 		}
 
-		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPqf()) {
+		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPicsPqf()) {
 			return true;
 		}
 
@@ -565,7 +565,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		}
 
-		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum()) {
+		if (!conAudit.getAuditType().isPicsPqf() && !conAudit.getAuditType().isAnnualAddendum()) {
 			return false;
 		}
 
@@ -949,7 +949,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isHasClosingAuditor() {
-		if (conAudit.getAuditType().isPqf() ||
+		if (conAudit.getAuditType().isPicsPqf() ||
 				conAudit.getAuditType().isAnnualAddendum() ||
 				conAudit.getAuditType().getClassType().isPolicy())
 			return false;

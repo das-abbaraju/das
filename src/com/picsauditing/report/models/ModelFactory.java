@@ -29,12 +29,16 @@ public class ModelFactory {
 			return new AccountContractorAuditModel(permissions);
 		if (type.equals(ModelType.ContractorAuditDatas))
 			return new ContractorAuditDataModel(permissions);
+		if (type.equals(ModelType.ContractorAuditFiles))
+			return new ContractorAuditFileModel(permissions);
 		if (type.equals(ModelType.ContractorAuditOperators))
 			return new AccountContractorAuditOperatorModel(permissions);
 		if (type.equals(ModelType.ContractorFlagDatas))
 			return new ContractorFlagDataModel(permissions);
 		if (type.equals(ModelType.ContractorNumbers))
 			return new ContractorNumberModel(permissions);
+        if (type.equals(ModelType.ForcedFlags))
+            return new ForcedFlagModel(permissions);
 		if (type.equals(ModelType.ContractorOperators))
 			return new ContractorOperatorModel(permissions);
 		if (type.equals(ModelType.Invoices))

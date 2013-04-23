@@ -205,7 +205,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		addNote(contractor, "Welcome Email Sent");
 		addNoteThatRequestRegistered();
 
-		// this is feature toggled in the publisher
 		csrAssignmentSinglePublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());

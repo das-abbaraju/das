@@ -337,9 +337,14 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
-	public boolean isPqf() {
+	public boolean isPicsPqf() {
 		return (id == PQF);
 	}
+
+    @Transient
+    public boolean isPqf() {
+        return this.getClassType().isPqf();
+    }
 
 	@Transient
 	public boolean isDesktop() {
@@ -456,4 +461,5 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 		return hasMissingChild || getLanguages().isEmpty();
 	}
+
 }

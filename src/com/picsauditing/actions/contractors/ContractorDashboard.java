@@ -898,19 +898,45 @@ public class ContractorDashboard extends ContractorActionSupport {
 		List<User> visibleUsersWithPermissions = new ArrayList<User>();
 
 		if (co != null) {
-			for (User user : co.getOperatorAccount().getUsers()) {
-				try {
-					Permissions permissions = permissionBuilder.login(user);
-					if (permissions.hasPermission(operatorPermission)) {
-						visibleUsersWithPermissions.add(user);
-					}
-				} catch (Exception e) {
-					logger.error("Cannot login user", e);
-				}
+			List<OperatorAccount> operators = getPendingNonCorporateOperators();
+
+			for (OperatorAccount operator : operators) {
+				visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission));
 			}
 		}
 
 		return visibleUsersWithPermissions;
+	}
+
+	private List<User> getPermittedUsers(OperatorAccount operator, OpPerms operatorPermission) {
+		List<User> permittedUsers = new ArrayList<>();
+
+		for (User user : operator.getUsers()) {
+			try {
+				Permissions permissions = permissionBuilder.login(user);
+				if (permissions.hasPermission(operatorPermission)) {
+					permittedUsers.add(user);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot login user", e);
+			}
+		}
+
+		return permittedUsers;
+	}
+
+	private List<OperatorAccount> getPendingNonCorporateOperators() {
+		List<OperatorAccount> operators = new ArrayList<>();
+
+		for (ContractorOperator operator:co.getContractorAccount().getOperators()) {
+			if (operator.isWorkStatusPending()
+					&& operator.getOperatorAccount().isOperator()
+					&& !operator.getOperatorAccount().isAutoApproveRelationships()
+					&& operator.getOperatorAccount().isOrIsDescendantOf(co.getOperatorAccount().getId())) {
+				operators.add(operator.getOperatorAccount());
+			}
+		}
+		return operators;
 	}
 
 	public User getPicsRepresentativeForOperator() {

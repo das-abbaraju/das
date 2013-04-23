@@ -1,60 +1,50 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.picsauditing.util.i18n.RequiredLanguageTransformer;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseHistoryRequiringLanguages extends BaseHistory {
+public abstract class BaseHistoryRequiringLanguages extends BaseHistory implements RequiresLanguages {
+	private RequiredLanguageTransformer transformer = new RequiredLanguageTransformer();
 
 	protected String requiredLanguages = null;
-	
 	protected List<String> languages = new ArrayList<String>();
 
+	@Override
 	public String getRequiredLanguages() {
 		return requiredLanguages;
 	}
 
+	@Override
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
 	}
 
+	@Override
 	@Transient
 	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
+		this.languages = transformer.getListFromJSON(requiredLanguages);
 		return languages;
 	}
 
+	@Override
 	@Transient
 	public void setLanguages(List<String> languages) {
 		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
+
+		requiredLanguages = transformer.getJSONStringFrom(languages);
 	}
-	
+
+	@Override
 	public abstract boolean hasMissingChildRequiredLanguages();
 
+	@Override
 	public void addAndRemoveRequiredLanguages(List<String> add, List<String> remove) {
-		List<String> newLanguages = new ArrayList<String>();
-		newLanguages.addAll(getLanguages());
-		newLanguages.addAll(add);
-		newLanguages.removeAll(remove);
-		setLanguages(newLanguages);
+		transformer.updateRequiredLanguages(this, add, remove);
 	}
 }

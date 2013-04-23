@@ -7,7 +7,7 @@ import java.util.Locale;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.BaseHistoryRequiringLanguages;
 import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
+import com.picsauditing.jpa.entities.RequiresLanguages;
 
 @SuppressWarnings("serial")
 public abstract class RequiredLanguagesSupport extends PicsActionSupport {
@@ -44,7 +44,7 @@ public abstract class RequiredLanguagesSupport extends PicsActionSupport {
 		return selectedLocales;
 	}
 
-	public List<Locale> getAvailableLocalesFrom(BaseTableRequiringLanguages entity) {
+	public List<Locale> getAvailableLocalesFrom(RequiresLanguages entity) {
 		availableLocales = new ArrayList<Locale>();
 
 		for (String language : entity.getLanguages()) {
@@ -55,21 +55,8 @@ public abstract class RequiredLanguagesSupport extends PicsActionSupport {
 		return availableLocales;
 	}
 
-	public void addUserPreferredLanguage(BaseTable entity) {
-		if (entity.getId() == 0
-				&& (entity instanceof BaseHistoryRequiringLanguages || entity instanceof BaseTableRequiringLanguages)) {
-			List<String> preferredLanguage = new ArrayList<String>();
-			preferredLanguage.add(permissions.getLocale().getLanguage());
-
-			if (entity instanceof BaseHistoryRequiringLanguages)
-				((BaseHistoryRequiringLanguages) entity).setLanguages(preferredLanguage);
-			if (entity instanceof BaseTableRequiringLanguages)
-				((BaseTableRequiringLanguages) entity).setLanguages(preferredLanguage);
-		}
-	}
-
-	public void addUserPreferredLanguage(BaseHistoryRequiringLanguages entity) {
-		List<String> preferredLanguage = new ArrayList<String>();
+	public void addUserPreferredLanguage(RequiresLanguages entity) {
+		List<String> preferredLanguage = new ArrayList<>();
 		preferredLanguage.add(permissions.getLocale().getLanguage());
 		entity.setLanguages(preferredLanguage);
 	}

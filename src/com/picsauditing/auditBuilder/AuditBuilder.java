@@ -331,7 +331,7 @@ public class AuditBuilder {
 
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
-			if (ca.getAuditType().isPqf()) {
+			if (ca.getAuditType().isPicsPqf()) {
 				pqfAudit = ca;
 				break;
 			}
@@ -360,7 +360,7 @@ public class AuditBuilder {
 
 	private boolean canDelete(ContractorAudit conAudit) {
 		// Never delete the PQF or WCB
-		if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isWCB()) {
+		if (conAudit.getAuditType().isPicsPqf() || conAudit.getAuditType().isWCB()) {
 			return false;
 		}
 
@@ -509,7 +509,7 @@ public class AuditBuilder {
 	}
 
 	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
-		return conAudit.getAuditType().isPqf()
+		return conAudit.getAuditType().isPicsPqf()
 				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
 				|| conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy);
@@ -519,7 +519,7 @@ public class AuditBuilder {
 		Iterator<ContractorAuditOperator> list = caosToChange.iterator();
 		while (list.hasNext()) {
 			ContractorAuditOperator cao = list.next();
-			if (conAudit.getAuditType().isPqf() && status.isComplete() &&
+			if (conAudit.getAuditType().isPicsPqf() && status.isComplete() &&
 					!conAudit.isOkayToChangeCaoStatus(cao)) {
 				continue;
 			}

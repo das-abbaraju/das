@@ -4,11 +4,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -38,7 +34,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "pqfdata")
 public class AuditData extends BaseTable implements java.io.Serializable, Comparable<AuditData> {
 
-	private ContractorAudit audit;
+    private ContractorAudit audit;
 	private AuditQuestion question;
 	private String answer;
 	private String comment;
@@ -48,7 +44,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	private List<AuditDataHistory> dataHistory = new ArrayList<AuditDataHistory>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
 	public ContractorAudit getAudit() {
 		return audit;

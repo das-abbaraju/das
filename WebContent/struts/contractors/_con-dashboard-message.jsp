@@ -4,23 +4,55 @@
 <s:if test="co.operatorAccount.id == permissions.accountId">
     <s:if test="permissions.hasPermission('ViewUnApproved') || (permissions.approvesRelationships && permissions.hasPermission('ContractorApproval'))">
         <s:if test="co.workStatusPending">
+            <s:set name="users_with_permissions" value="getUsersWithPermission('ContractorApproval')"/>
             <div class="alert">
-                <p>
-                    <s:property value="contractor.name" /> <s:text name="ContractorView.ContractorDashboard.PendingApproval" /> <s:property value="%{co.operatorAccount.name}" />.
-                </p>
-                
-                <s:if test="permissions.approvesRelationships && permissions.hasPermission('ContractorApproval')">
+                <s:if test="permissions.operator">
                     <p>
-                        <s:text name="ContractorView.ContractorDashboard.ApproveContractor" />
+                        <s:property value="contractor.name"/> <s:text
+                            name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
+                            value="%{co.operatorAccount.name}"/>.
                     </p>
-                    <div class="contractor-status-buttons">
-                        <button class="btn danger" data-conid="${contractor.id}" data-constatus="N" data-opid="${opID}"><s:text name="AuditStatus.Incomplete.button" /></button>
-                        <button class="btn success" data-conid="${contractor.id}" data-constatus="Y" data-opid="${opID}"><s:text name="AuditStatus.Approved.button" /></button>
-                    </div>
+
+                    <s:if test="permissions.approvesRelationships && permissions.hasPermission('ContractorApproval')">
+                        <p>
+                            <s:text name="ContractorView.ContractorDashboard.ApproveContractor"/>
+                        </p>
+
+                        <div class="contractor-status-buttons">
+                            <button class="btn danger" data-conid="${contractor.id}" data-constatus="N"
+                                    data-opid="${opID}"><s:text name="AuditStatus.Incomplete.button"/></button>
+                            <button class="btn success" data-conid="${contractor.id}" data-constatus="Y"
+                                    data-opid="${opID}"><s:text name="AuditStatus.Approved.button"/></button>
+                        </div>
+                    </s:if>
+                    <s:else>
+
+                        <s:if test="#users_with_permissions.isEmpty()">
+                            <p>
+                                <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
+                                    <s:param>${picsRepresentativeForOperator.name}</s:param>
+                                </s:text>
+                            </p>
+                        </s:if>
+                        <s:else>
+                            <p>
+                                <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+                            </p>
+                            <ul class="users-with-permissions">
+                                <s:iterator value="#users_with_permissions" status="loop_index">
+                                    <li>
+                                        <s:property value="name"/>
+                                    </li>
+                                </s:iterator>
+                            </ul>
+                        </s:else>
+                    </s:else>
                 </s:if>
                 <s:else>
-                    <s:set name="users_with_permissions" value="getUsersWithPermission('ContractorApproval')" />
-                    
+                    <p>
+                        <s:property value="contractor.name"/> <s:text
+                            name="ContractorView.ContractorDashboard.PendingApprovalCorporate"/>.
+                    </p>
                     <s:if test="#users_with_permissions.isEmpty()">
                         <p>
                             <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
@@ -30,12 +62,15 @@
                     </s:if>
                     <s:else>
                         <p>
-                            <s:text name="ContractorView.ContractorDashboard.ApprovalContact" />:
+                            <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
                         </p>
                         <ul class="users-with-permissions">
                             <s:iterator value="#users_with_permissions" status="loop_index">
                                 <li>
-                                    <s:property value="name" />
+                                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                                        <s:param><s:property value="name"/></s:param>
+                                        <s:param><s:property value="account.name"/></s:param>
+                                    </s:text>
                                 </li>
                             </s:iterator>
                         </ul>
@@ -46,8 +81,17 @@
         <s:elseif test="co.workStatusRejected">
             <div class="alert">
                 <p>
-                    <s:property value="contractor.name" /> <s:text name="ContractorView.ContractorDashboard.NotApproved" />  <s:property value="%{co.operatorAccount.name}" />.
+                    <s:property value="contractor.name"/> <s:text
+                        name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
+                        value="%{co.operatorAccount.name}"/>.
                 </p>
+                <s:if test="#users_with_permissions.isEmpty()">
+                    <p>
+                        <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
+                            <s:param>${picsRepresentativeForOperator.name}</s:param>
+                        </s:text>
+                    </p>
+                </s:if>
             </div>
         </s:elseif>
     </s:if>

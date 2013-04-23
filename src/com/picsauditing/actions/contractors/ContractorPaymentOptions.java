@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.BrainTreeService;
 import com.picsauditing.braintree.CreditCard;
 
 @SuppressWarnings("serial")

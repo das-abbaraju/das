@@ -34,7 +34,7 @@ public class AccountLevelAdjuster {
 
 	private void resetPqfToPending(ContractorAccount contractor, Permissions permissions) {
 		for (ContractorAudit cAudit : contractor.getAudits()) {
-			if (cAudit.getAuditType().isPqf()) {
+			if (cAudit.getAuditType().isPicsPqf()) {
 				boolean atLeastOneCaoAffected = false;
 				for (ContractorAuditOperator cao : cAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Pending)) {

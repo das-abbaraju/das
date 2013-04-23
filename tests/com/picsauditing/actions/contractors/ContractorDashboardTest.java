@@ -1,8 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -10,6 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,16 +23,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 
 public class ContractorDashboardTest {
@@ -51,7 +42,15 @@ public class ContractorDashboardTest {
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Mock
 	private Database databaseForTesting;
-	
+	@Mock
+	private PermissionBuilder permissionBuilder;
+	@Mock
+	private Permissions corporatePermissions;
+	@Mock
+	private Permissions operatorPermissions1;
+	@Mock
+	private Permissions operatorPermissions2;
+
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
@@ -76,6 +75,69 @@ public class ContractorDashboardTest {
 		operator.setCorporateFacilities(corporateFacilities);
 
 		permissions = EntityFactory.makePermission();
+	}
+
+	@Test
+	public void testGetUsersWithPermission() throws Exception {
+		OperatorAccount site1 = EntityFactory.makeOperator();
+		OperatorAccount site2 = EntityFactory.makeOperator();
+		OperatorAccount corporate = EntityFactory.makeOperator();
+
+		site1.setType(Account.OPERATOR_ACCOUNT_TYPE);
+		site1.setAutoApproveRelationships(false);
+		site1.setParent(corporate);
+
+		site2.setType(Account.OPERATOR_ACCOUNT_TYPE);
+		site2.setAutoApproveRelationships(false);
+		site2.setParent(corporate);
+
+		corporate.setType(Account.CORPORATE_ACCOUNT_TYPE);
+		corporate.setAutoApproveRelationships(false);
+		corporate.getChildOperators().add(site1);
+		corporate.getChildOperators().add(site2);
+
+		ContractorOperator conOp1 = EntityFactory.addContractorOperator(contractor, site1);
+		ContractorOperator conOp2 = EntityFactory.addContractorOperator(contractor, site2);
+		ContractorOperator conOpCorporate = EntityFactory.addContractorOperator(contractor, corporate);
+
+		conOp1.setWorkStatus(ApprovalStatus.P);
+		conOp2.setWorkStatus(ApprovalStatus.P);
+		conOpCorporate.setWorkStatus(ApprovalStatus.P);
+
+		User operatorUser1 = EntityFactory.makeUser();
+		User operatorUser2 = EntityFactory.makeUser();
+		User corporateUser = EntityFactory.makeUser();
+
+		site1.getUsers().add(operatorUser1);
+		site1.getUsers().add(operatorUser2);
+		site2.getUsers().add(operatorUser2);
+		corporate.getUsers().add(corporateUser);
+
+		when(permissionBuilder.login(operatorUser1)).thenReturn(operatorPermissions1);
+		when(permissionBuilder.login(operatorUser2)).thenReturn(operatorPermissions2);
+		when(permissionBuilder.login(corporateUser)).thenReturn(corporatePermissions);
+		when(operatorPermissions1.hasPermission(OpPerms.AddContractors)).thenReturn(true);
+		when(operatorPermissions2.hasPermission(OpPerms.AddContractors)).thenReturn(false);
+		when(corporatePermissions.hasPermission(OpPerms.AddContractors)).thenReturn(false);
+
+		Whitebox.setInternalState(dashboard, "permissionBuilder", permissionBuilder);
+
+		List<User> users;
+
+		// 2 users, 1 with permission
+		Whitebox.setInternalState(dashboard, "co", conOp1);
+		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		assertEquals(1, users.size());
+
+		// 1 user, no permissions
+		Whitebox.setInternalState(dashboard, "co", conOp2);
+		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		assertEquals(0, users.size());
+
+		// Corporate, 1 with permission
+		Whitebox.setInternalState(dashboard, "co", conOpCorporate);
+		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		assertEquals(1, users.size());
 	}
 
 	@Test
