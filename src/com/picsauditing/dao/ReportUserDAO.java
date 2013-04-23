@@ -126,8 +126,11 @@ public class ReportUserDAO extends PicsDAO {
 		String ownerClause = "r.ownerID = " + permissions.getUserId();
 		String privateClause = "r.private = false";
 		String permissionsClause = "r.id IN (" + permissionsUnion + ")";
+		String canViewClause = "(" + ownerClause + " OR " + privateClause + " OR " + permissionsClause + ")";
 
-		sql.addWhere(ownerClause + " OR " + privateClause + " OR " + permissionsClause);
+		String notDeletedClause = "(r.deleted != 1)";
+
+		sql.addWhere(notDeletedClause + " AND " + canViewClause);
 
 		sql.addOrderBy("f.total DESC");
 		sql.addOrderBy("f.viewCount DESC");
