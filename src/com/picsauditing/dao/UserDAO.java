@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.security.EncodedKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,6 +172,18 @@ where grp.groupID = atype.editAudit;
 		Query query = em.createQuery("SELECT u FROM User u WHERE account.id = ? " + where + " ORDER BY isGroup, name");
 
 		query.setParameter(1, id);
+		return query.getResultList();
+	}
+
+	public List<User> findUsersByAccountId(int accountId) {
+		String queryString = "SELECT u" +
+				" FROM User u" +
+				" WHERE u.account.id = :accountId" +
+				" AND u.isGroup = '" + YesNo.No.toString() + "'";
+
+		Query query = em.createQuery(queryString);
+		query.setParameter("accountId", accountId);
+
 		return query.getResultList();
 	}
 

@@ -437,7 +437,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void sendEmailPendingAccounts() throws Exception {
-		String exclude = Strings.implodeForDB(emailExclusionList, ",");
+		String exclude = Strings.implodeForDB(emailExclusionList);
 
 		String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 
@@ -551,7 +551,7 @@ public class Cron extends PicsActionSupport {
 				pendingEmailTemplates);
 		emailExclusionList.addAll(emailsAlreadySentToPending);
 
-		String excludedEmails = Strings.implodeForDB(emailExclusionList, ",");
+		String excludedEmails = Strings.implodeForDB(emailExclusionList);
 		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 
 		if (!emailExclusionList.isEmpty()) {

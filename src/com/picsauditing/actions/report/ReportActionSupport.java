@@ -226,12 +226,12 @@ public class ReportActionSupport extends PicsActionSupport {
 				Database db = new Database();
 				int count = db
 						.executeUpdate("UPDATE app_filter_stats SET requestCount = requestCount + 1 WHERE searchPage = '"
-								+ name + "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")");
+								+ name + "' AND filterName in (" + Strings.implodeForDB(params) + ")");
 
 				if (count < params.size()) {
 					List<BasicDynaBean> filterNames = db.select(
 							"SELECT filterName FROM app_filter_stats WHERE searchPage = '" + name
-									+ "' AND filterName in (" + Strings.implodeForDB(params, ",") + ")", false);
+									+ "' AND filterName in (" + Strings.implodeForDB(params) + ")", false);
 
 					for (BasicDynaBean bean : filterNames)
 						params.remove(bean.get("filterName"));

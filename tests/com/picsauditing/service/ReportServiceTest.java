@@ -1,16 +1,53 @@
 package com.picsauditing.service;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.persistence.NoResultException;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.DynaProperty;
+import org.apache.commons.beanutils.RowSetDynaClass;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportJson;
@@ -21,27 +58,9 @@ import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.JSONUtilities;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.beanutils.RowSetDynaClass;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.junit.*;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportPermissionAccountDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.report.models.ModelType;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.reflect.Whitebox;
 
 public class ReportServiceTest {
 
@@ -49,10 +68,6 @@ public class ReportServiceTest {
 
 	@Mock
 	private ReportDAO reportDao;
-	@Mock
-	private ReportPermissionUserDAO reportPermissionUserDao;
-	@Mock
-	private ReportPermissionAccountDAO reportPermissionAccountDao;
 	@Mock
 	private User user;
 	@Mock
@@ -89,8 +104,6 @@ public class ReportServiceTest {
 		reportService = new ReportService();
 
 		setInternalState(reportService, "reportDao", reportDao);
-		setInternalState(reportService, "reportPermissionUserDao", reportPermissionUserDao);
-		setInternalState(reportService, "reportPermissionAccountDao", reportPermissionAccountDao);
 		setInternalState(reportService, "permissionService", permissionService);
 		setInternalState(reportService, "reportPreferencesService", reportPreferencesService);
 		setInternalState(reportService, "sqlBuilder", sqlBuilder);
@@ -124,7 +137,9 @@ public class ReportServiceTest {
 		SelectSQL selectSql = getTestSelectSql();
 		when(sqlBuilder.initializeReportAndBuildSql(report, permissions)).thenReturn(selectSql);
 		int resultsToBuild = 3;
-		when(reportDao.runQuery(eq(selectSql.toString()), any(JSONObject.class))).thenAnswer(createQueryResults(resultsToBuild));
+
+		ReportSearchResults mockReportSearchResults = createReportSearchResults(resultsToBuild);
+		when(reportDao.runQuery(eq(selectSql.toString()))).thenReturn(mockReportSearchResults);
 		when(permissions.isAdmin()).thenReturn(true);
 
 		JSONObject responseJson = reportService.buildJsonResponse(reportContext);
@@ -196,87 +211,6 @@ public class ReportServiceTest {
 		report.setColumns(new ArrayList<Column>());
 
 		reportService.validate(report);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithUser_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, false);
-	}
-
-	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsTrue_ThenReportIsSharedWithEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-		boolean editable = true;
-
-		ReportPermissionUser reportPermissionUser = reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
-
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
-	}
-
-	@Test
-	public void testShareReportWithUser_WhenUserCanViewAndEdit_AndEditableIsFalse_ThenReportIsSharedWithoutEditPermission() throws ReportPermissionException {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(User.class, USER_ID)).thenReturn(user);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-		boolean editable = false;
-
-		ReportPermissionUser reportPermissionUser = reportService.shareReportWithUser(USER_ID, REPORT_ID, permissions, editable);
-
-		verify(reportPermissionUserDao).save(reportPermissionUser);
-		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
-		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
-		assertEquals(editable, reportPermissionUser.isEditable());
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCantViewOrEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(false);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-	}
-
-	@Test(expected = ReportPermissionException.class)
-	public void testShareReportWithAccount_WhenUserCanViewButNotEdit_ThenExceptionIsThrown() throws ReportPermissionException {
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
-
-		reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-	}
-
-	@Test
-	public void testShareReportWithAccount_WhenUserCanViewAndEdit_ThenReportIsShared() throws ReportPermissionException {
-		when(reportPermissionAccountDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportDao.findById(REPORT_ID)).thenReturn(report);
-		when(reportDao.find(Account.class, ACCOUNT_ID)).thenReturn(account);
-		when(permissionService.canUserViewReport(permissions, REPORT_ID)).thenReturn(true);
-		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
-
-		ReportPermissionAccount reportPermissionAccount = reportService.shareReportWithAccount(ACCOUNT_ID, REPORT_ID, permissions);
-
-		verify(reportPermissionAccountDao).save(reportPermissionAccount);
-		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
-		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
 	}
 
 	@Test
@@ -351,7 +285,6 @@ public class ReportServiceTest {
 		User user = new User(USER_ID);
 		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserViewReport(eq(permissions), anyInt())).thenReturn(true);
-		when(reportPermissionUserDao.findOne(eq(USER_ID), anyInt())).thenReturn(reportPermissionUser);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report newReport = reportServiceSpy.copy(reportContext);
@@ -384,6 +317,28 @@ public class ReportServiceTest {
 		assertTrue(REPORT_ID == report.getId());
 		verify(reportServiceSpy).validate(report);
 		verify(reportDao).save(report);
+	}
+
+	@Test
+	public void testPrivatizeReport_WhenReportIsPrivatized_ThenReportShouldBePrivate() throws ReportPermissionException {
+		Report report = new Report();
+		report.setPrivate(false);
+		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+
+		reportService.privatizeReport(user, report);
+
+		assertTrue(report.isPrivate());
+	}
+
+	@Test
+	public void testUnprivatizeReport_WhenReportIsUnprivatized_ThenReportShouldNotBePrivate() throws ReportPermissionException {
+		Report report = new Report();
+		report.setPrivate(true);
+		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+
+		reportService.unprivatizeReport(user, report);
+
+		assertFalse(report.isPrivate());
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {
@@ -432,6 +387,7 @@ public class ReportServiceTest {
 		return report;
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONObject buildMinimalPayloadJson() {
 		JSONObject reportJson = new JSONObject();
 		reportJson.put(ReportJson.REPORT_ID, REPORT_ID);
@@ -464,17 +420,25 @@ public class ReportServiceTest {
 		};
 	}
 
-	private Answer<?> createQueryResults(final int rowsToReturn) {
+	private ReportSearchResults createReportSearchResults(int rowsToReturn) {
+		ReportSearchResults mockReportSearchResults = Mockito.mock(ReportSearchResults.class);
+		Answer<List<BasicDynaBean>> result = createQueryResults(rowsToReturn);
+		when(mockReportSearchResults.getResults()).thenAnswer(result);
+		when(mockReportSearchResults.getTotalResultSize()).thenReturn(rowsToReturn);
+		return mockReportSearchResults;
+	}
+
+	private Answer<List<BasicDynaBean>> createQueryResults(final int rowsToReturn) {
+
 		return new Answer<List<BasicDynaBean>>() {
+
 			@Override
 			public List<BasicDynaBean> answer(InvocationOnMock invocation) throws Throwable {
-				Object[] args = invocation.getArguments();
-				JSONObject passedInJson = (JSONObject) args[1];
 				List<BasicDynaBean> queryResults = getTestDatabaseReportData();
-				passedInJson.put(ReportJson.RESULTS_TOTAL, rowsToReturn);
 				return queryResults;
 			}
 		};
+
 	}
 
 	private List<Map<String, String>> buildDatabaseData() {

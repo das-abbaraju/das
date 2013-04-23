@@ -52,7 +52,7 @@ public class JsonReportBuilder {
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
-		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions, report.getId()));
+		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions.getUserId(), report.getId()));
 	}
 
 	public static PermissionService getPermissionService() {

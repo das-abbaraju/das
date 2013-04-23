@@ -114,7 +114,7 @@ public class Filter extends ReportElement {
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();
 		} else {
-			return "(" + Strings.implodeForDB(getValues(), ",") + ")";
+			return "(" + Strings.implodeForDB(getValues()) + ")";
 		}
 	}
 

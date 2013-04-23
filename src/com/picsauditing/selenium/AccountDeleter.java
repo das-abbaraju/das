@@ -11,7 +11,7 @@ public class AccountDeleter {
 	String IDs;
 
 	public AccountDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs, ",");
+		this.IDs = Strings.implodeForDB(IDs);
 	}
 	
 	public AccountDeleter(int ID) {
@@ -22,7 +22,7 @@ public class AccountDeleter {
 	}
 	
 	public AccountDeleter setAccountIDs(List<Integer> IDNumbers) {
-		this.IDs = Strings.implodeForDB(IDNumbers, ",");
+		this.IDs = Strings.implodeForDB(IDNumbers);
 		return this;
 	}
 	

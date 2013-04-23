@@ -52,6 +52,10 @@ public class RegistrationGapAnalysisTest {
 	@Mock
 	private Permissions permissions;
 
+	// Added this because when running tests testGetRecentlyRegistered() and testGetRequestedContractors()
+	// caused failures when run independently because the database in the I18nCache is the same as the
+	// mock in the Action class, which is being called two times instead of just once.
+
 	@BeforeClass
 	public static void classSetup() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", Mockito.mock(Database.class));

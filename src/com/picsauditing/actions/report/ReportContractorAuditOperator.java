@@ -105,7 +105,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
                 if (!isFilteringExpiresDate)
                     sql.addWhere("ca.expiresDate <= NOW()");
                 auditStatusValues.remove(AuditStatus.Expired);
-                auditStatusList = Strings.implodeForDB(auditStatusValues, ",");
+                auditStatusList = Strings.implodeForDB(auditStatusValues);
             } else if (!auditStatusValues.isEmpty() && !isFilteringExpiresDate) {
                 sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
             }

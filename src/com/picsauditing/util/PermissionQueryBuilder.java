@@ -166,7 +166,7 @@ public class PermissionQueryBuilder {
 		// want
 		// if (visibleStatuses.isEmpty()) {}
 		addDefaultStatuses();
-		String statusList = Strings.implodeForDB(visibleStatuses, ",");
+		String statusList = Strings.implodeForDB(visibleStatuses);
 		return accountAlias + ".status IN (" + statusList + ")";
 	}
 

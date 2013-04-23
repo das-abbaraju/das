@@ -3,9 +3,15 @@
     .btn-link
     {
         border: 0;
-        padding-bottom: 7px;
-        padding-top: 7px;
     }
+}
+
+.btn-group.open
+{
+	.btn-link
+	{
+		color: $pics_light_blue;
+	}
 }
 
 .btn-group > .btn:first-child

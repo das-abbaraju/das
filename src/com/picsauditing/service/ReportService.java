@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.persistence.NoResultException;
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -28,18 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportPermissionAccountDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionAccount;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
@@ -66,10 +55,6 @@ public class ReportService {
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
-	private ReportPermissionUserDAO reportPermissionUserDao;
-	@Autowired
-	private ReportPermissionAccountDAO reportPermissionAccountDao;
-	@Autowired
 	private PermissionService permissionService;
 	@Autowired
 	private SqlBuilder sqlBuilder;
@@ -77,7 +62,6 @@ public class ReportService {
 	public ReportPreferencesService reportPreferencesService;
 
 	private I18nCache i18nCache;
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
@@ -199,7 +183,7 @@ public class ReportService {
 		}
 
 		// This is a new report owned by the user, unconditionally give them edit permission
-		connectReportPermissionUser(userId, newReport.getId(), true, userId);
+		permissionService.grantUserEditPermission(userId, userId, newReport.getId());
 
 		return newReport;
 	}
@@ -261,87 +245,6 @@ public class ReportService {
 		if (report.getOwner() == null) {
 			throw new ReportValidationException("Report does not have an owner");
 		}
-
-	}
-
-	public ReportPermissionUser shareReportWithUser(int shareToUserId, int reportId, Permissions permissions,
-			boolean editable) throws ReportPermissionException {
-		if (!permissionService.canUserEditReport(permissions, reportId)) {
-			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
-		}
-
-		return connectReportPermissionUser(shareToUserId, reportId, editable, permissions.getUserId());
-	}
-
-	private ReportPermissionUser connectReportPermissionUser(int shareToUserId, int reportId, boolean editable, int shareFromUserId) {
-		ReportPermissionUser reportPermissionUser;
-
-		try {
-			reportPermissionUser = reportPermissionUserDao.findOne(shareToUserId, reportId);
-		} catch (NoResultException nre) {
-			Report report = reportDao.findById(reportId);
-			// TODO use a different DAO
-			User shareToUser = reportDao.find(User.class, shareToUserId);
-			reportPermissionUser = new ReportPermissionUser(shareToUser, report);
-			reportPermissionUser.setAuditColumns(new User(shareFromUserId));
-
-			if (!shareToUser.isGroup()) {
-				reportPreferencesService.loadOrCreateReportUser(shareToUserId, reportId);
-			}
-		}
-
-		reportPermissionUser.setEditable(editable);
-		reportPermissionUserDao.save(reportPermissionUser);
-
-		return reportPermissionUser;
-	}
-
-	public ReportPermissionAccount shareReportWithAccount(int accountId, int reportId, Permissions permissions) throws ReportPermissionException {
-		if (!permissionService.canUserEditReport(permissions, reportId)) {
-			// TODO translate this
-			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
-		}
-
-		return connectReportPermissionAccount(accountId, reportId, permissions);
-	}
-
-	private ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId,
-			Permissions permissions) {
-		ReportPermissionAccount reportPermissionAccount;
-
-		try {
-			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-		} catch (NoResultException nre) {
-			Report report = reportDao.findById(reportId);
-			// TODO use a different DAO
-			Account account = reportDao.find(Account.class, accountId);
-			reportPermissionAccount = new ReportPermissionAccount(account, report);
-			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
-		}
-
-		reportPermissionAccountDao.save(reportPermissionAccount);
-
-		return reportPermissionAccount;
-	}
-
-	public void disconnectReportPermissionUser(int userId, int reportId) {
-		try {
-			reportPermissionUserDao.revokePermissions(userId, reportId);
-		} catch (NoResultException nre) {
-
-		}
-	}
-
-	public void disconnectReportPermissionAccount(int accountId, int reportId) {
-		ReportPermissionAccount reportPermissionAccount;
-
-		try {
-			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-			reportPermissionAccountDao.remove(reportPermissionAccount);
-		} catch (NoResultException nre) {
-
-		}
 	}
 
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {
@@ -399,16 +302,20 @@ public class ReportService {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws PicsSqlException {
-		List<BasicDynaBean> queryResults = null;
+		ReportSearchResults reportSearchResults = null;
 
 		try {
-			queryResults = reportDao.runQuery(sql.toString(), json);
+			reportSearchResults = reportDao.runQuery(sql.toString());
 		} catch (SQLException se) {
 			throw new PicsSqlException(se, sql.toString());
 		}
 
-		return queryResults;
+		// TODO: Move this further up the stack
+		json.put(ReportJson.RESULTS_TOTAL, reportSearchResults.getTotalResultSize());
+
+		return reportSearchResults.getResults();
 	}
 
 	public ReportResults buildReportResultsForPrinting(ReportContext reportContext, Report report)
@@ -485,4 +392,29 @@ public class ReportService {
 
 		return i18nCache;
 	}
+
+	public void privatizeReport(User user, Report report) throws ReportPermissionException {
+		if (!permissionService.canUserPrivatizeReport(user, report)) {
+			int userId = (user != null) ? user.getId() : -1;
+			int reportId = (report != null) ? report.getId() : -1;
+			throw new ReportPermissionException("User " + userId + " does not have permission to privatize report " + reportId);
+		}
+
+		report.setPrivate(true);
+
+		reportDao.save(report);
+	}
+
+	public void unprivatizeReport(User user, Report report) throws ReportPermissionException {
+		if (!permissionService.canUserPrivatizeReport(user, report)) {
+			int userId = (user != null) ? user.getId() : -1;
+			int reportId = (report != null) ? report.getId() : -1;
+			throw new ReportPermissionException("User " + userId + " does not have permission to unprivatize report " + reportId);
+		}
+
+		report.setPrivate(false);
+
+		reportDao.save(report);
+	}
+
 }

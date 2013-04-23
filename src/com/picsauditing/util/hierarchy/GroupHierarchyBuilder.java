@@ -7,6 +7,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -25,7 +26,7 @@ public class GroupHierarchyBuilder extends AbstractBreadthFirstSearchBuilder {
 
 	@Override
 	protected List<Integer> getIdsForAllParentEntities(List<Integer> entities) {
-		return queryResults(Strings.implodeForDB(entities, ","));
+		return queryResults(Strings.implodeForDB(entities));
 	}
 
 	private List<Integer> queryResults(String queryParameter) {

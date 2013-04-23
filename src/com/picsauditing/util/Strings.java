@@ -109,10 +109,14 @@ public class Strings {
 		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
 	}
 
-	// FIXME THIS FUNCTION IS NOT USING DELIMITER
-	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
+	public static String implodeForDB(Collection<? extends Object> collection) {
 		return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
 	}
+
+    @Deprecated
+    public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
+        return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
+    }
 
 	public static String implode(Collection<? extends Object> collection) {
 		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
@@ -120,7 +124,7 @@ public class Strings {
 
 	public static String implodeIDs(Collection<? extends BaseTable> collection) {
 		if (collection == null)
-			return "";
+			return Strings.EMPTY_STRING;
 
 		StringBuffer buffer = new StringBuffer();
 		for (BaseTable o : collection) {

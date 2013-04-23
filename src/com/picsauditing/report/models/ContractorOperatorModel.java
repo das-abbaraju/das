@@ -64,7 +64,7 @@ public class ContractorOperatorModel extends AbstractModel {
 		}
 
 		if (permissions.isCorporate()) {
-			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren(), ",") + ")";
+			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren()) + ")";
 		}
 
 		return "1 = 0";

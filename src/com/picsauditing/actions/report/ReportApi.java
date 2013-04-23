@@ -29,8 +29,6 @@ import javax.persistence.NoResultException;
 public class ReportApi extends PicsApiSupport {
 
 	@Autowired
-	private ReportDAO reportDao;
-	@Autowired
 	protected ReportService reportService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
@@ -44,8 +42,6 @@ public class ReportApi extends PicsApiSupport {
 	protected boolean includeFilters;
 	protected boolean includeData;
 
-	protected boolean editable;
-	protected int shareId;
 	private ReportResults reportResults;
 	private Report report;
 	private String reportJson;
@@ -178,48 +174,6 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
-	public String shareWithUser() {
-		try {
-			reportService.shareReportWithUser(shareId, reportId, permissions, editable);
-
-			writeJsonShareSuccess(json, getText("Report.ShareSuccess.UserMessage"));
-		} catch (ReportPermissionException rpe) {
-			writeJsonException(json, rpe);
-		} catch (Exception e) {
-			writeJsonException(json, e);
-		}
-
-		return JSON;
-	}
-
-	public String shareWithGroup() {
-		try {
-			reportService.shareReportWithUser(shareId, reportId, permissions, editable);
-
-			writeJsonShareSuccess(json, getText("Report.ShareSuccess.GroupMessage"));
-		} catch (ReportPermissionException rpe) {
-			writeJsonException(json, rpe);
-		} catch (Exception e) {
-			writeJsonException(json, e);
-		}
-
-		return JSON;
-	}
-
-	public String shareWithAccount() {
-		try {
-			reportService.shareReportWithAccount(shareId, reportId, permissions);
-
-			writeJsonShareSuccess(json, getText("Report.ShareSuccess.AccountMessage"));
-		} catch (ReportPermissionException rpe) {
-			writeJsonException(json, rpe);
-		} catch (Exception e) {
-			writeJsonException(json, e);
-		}
-
-		return JSON;
-	}
-
 	public String buildSqlFunctions() {
 		try {
 			json = reportService.buildSqlFunctionsJson(type, fieldId, permissions);
@@ -252,13 +206,6 @@ public class ReportApi extends PicsApiSupport {
 		json.put(REPORT_ID, newReportId);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void writeJsonShareSuccess(JSONObject json, String translatedMessage) {
-		json.put(EXT_JS_TITLE, getText("Report.ShareSuccess.Title"));
-		json.put(EXT_JS_HTML, translatedMessage);
-		json.put(EXT_JS_SUCCESS, true);
-	}
-
 	public void setPage(int page) {
 		this.pageNumber = page;
 	}
@@ -285,14 +232,6 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
-	}
-
-	public void setShareId(int shareId) {
-		this.shareId = shareId;
-	}
-
-	public void setEditable(boolean editable) {
-		this.editable = editable;
 	}
 
 	public ReportResults getReportResults() {

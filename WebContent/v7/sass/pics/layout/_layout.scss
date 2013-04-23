@@ -1,17 +1,19 @@
 body {
-  padding-top: 55px;
-  padding-bottom: 26px;
-  position: relative;
+	padding-top: 55px;
+	padding-bottom: 26px;
+	position: relative;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  body {
-    padding-top: 0;
-  }
+	body {
+		padding-top: 0;
+	}
 }
 
+// layouts
 @import 'simple-layout';
 
+// components
 @import 'environment';
 @import 'menu';
 @import 'page-header';

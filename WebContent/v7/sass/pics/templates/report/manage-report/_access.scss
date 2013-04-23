@@ -1,0 +1,277 @@
+#ManageReports_access_page
+{
+	#report_access_info
+	{
+		h2
+		{
+			margin-bottom: 0;
+		}
+		
+		p
+		{
+			color: #808285;
+		}
+	}
+	
+	#report_access_search
+	{
+		margin-bottom: 40px;
+		position: relative;
+	}
+	
+	#report_access_search_form
+	{
+		margin: 0;
+		
+		input
+        {
+            background: #f1f1f2;
+            padding-left: 30px;
+            width: 254px;
+        }
+        
+        .icon-search
+        {
+            color: #666;
+            left: 10px;
+            position: absolute;
+            top: 8px;
+        }
+        
+        input:focus ~ .icon-search
+        {
+        	color: #73bbe8;
+        }
+	}
+	
+	#share_search_list
+	{
+		width: 300px;
+		
+		.name,
+		.location
+		{
+			display: block;
+			margin-right: 70px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		
+		.name,
+		.id
+		{
+			font-weight: bold;
+		}
+		
+		.id,
+		.type
+		{
+			float: right;
+		}
+		
+		.type
+		{
+			font-style: italic;
+		}
+	}
+	
+	.lt-ie8 #report_access_search_form
+    {
+        display: inline;
+    }
+    
+    #report_access_container
+    {
+    	#group_access h1,
+	    #user_access h1
+	    {
+	    	font-size: 18px;
+	    }
+	    
+	    .group-list,
+	    .user-list
+	    {
+	    	margin-bottom: 20px;
+	    }
+	    
+	    .group,
+		.user
+		{
+			background: #f1f1f2;
+	        border: 1px solid #ccc;
+	        @include border-radius(4px);
+	        line-height: 20px;
+	        margin-bottom: 2px;
+	        padding: 0 9px 0 20px;
+	        
+	        .summary
+	        {
+	        	margin: 0 60px 0 0px;
+	        	min-height: 34px;
+	            padding: 6px 0 8px;
+	        }
+	    	
+	    	.name
+	        {
+	        	color: #454545;
+	            font-size: 14px;
+	            font-weight: bold;
+	            margin-right: 10px;
+	        }
+	        
+	        .location,
+	        .info
+	        {
+	            font-size: 12px;
+	            line-height: 14px;
+	            margin: 0;
+	            overflow: hidden;
+	        	text-overflow: ellipsis;
+	            white-space: nowrap;
+	        }
+	        
+	        .btn-group
+	        {
+	        	margin: 9px 0 0;
+	        	
+	        	.caret
+	        	{
+	        		margin-left: 10px;
+	        	}
+	        }
+		}
+		
+		.user.assign
+	    {
+			background: #fcf3cc;
+			border: 1px solid #e67e1c;
+	    	
+	    	.name,
+	    	p
+	    	{
+	    		color: #e67e1c;
+	    	}
+	    }
+	    
+	    .user.change
+	    {
+			background: #c3e0f9;
+			border: 1px solid #226396;
+			
+			.name,
+			p
+			{
+	    		color: #226396;
+			}
+	    }
+	    
+	    .group.remove,
+	    .user.remove
+	    {
+	    	background-color: #ffc6c9;
+	    	border: 1px solid #ac030c;
+	    	
+	    	.name,
+	    	p
+	    	{
+	    		color: #ac030c;
+	    	}
+	    }
+	    
+	    .user.owner
+	    {
+	    	.access-options
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .group.edit,
+	    .user.edit
+	    {
+	    	.edit
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .group.view,
+	    .user.view
+	    {
+	    	.view
+	    	{
+	    		display: none;
+	    	}
+	    }
+	    
+	    .is-owner
+	    {
+	    	color: #e67e1c;
+	    	line-height: 48px;
+	    	margin-right: 10px;
+	    }
+    }
+}
+
+@media (min-width: 1200px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	    	input
+	    	{
+	    		width: 324px;
+	    	}
+        }
+        
+        #share_search_list
+        {
+        	width: 370px;
+        }
+	}
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	    	input
+	    	{
+	    		width: 182px;
+	    	}	
+        }
+        
+        #share_search_list
+        {
+        	width: 228px;
+        }
+	}
+}
+
+@media (max-width: 767px) {
+	#ManageReports_access_page
+	{
+		#report_access_search_form
+	    {
+	    	input
+	    	{
+	    		@include box-sizing(border-box);
+	    		min-height: 30px;
+		    	padding-left: 14px;
+		    	width: 100%;
+	    	}
+	    	
+	        .icon-search
+	        {
+	            display: none;
+	        }
+        }
+        
+        #share_search_list
+        {
+        	width: 260px;
+        }
+	}
+}

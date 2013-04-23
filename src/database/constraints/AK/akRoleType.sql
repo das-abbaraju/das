@@ -1,0 +1,2 @@
+	--    NO ALTERNATE KEY DEFINED FOR tblRoleType
+

@@ -42,7 +42,7 @@ public class ReportOnClause {
 		String onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
 		if (Strings.isNotEmpty(extraClauses))
 			onClause += " AND " + extraClauses;
-		onClause = onClause.replace(VisibleAccountIDs, Strings.implodeForDB(permissions.getVisibleAccounts(), ","));
+		onClause = onClause.replace(VisibleAccountIDs, Strings.implodeForDB(permissions.getVisibleAccounts()));
 		onClause = onClause.replace(AccountID, permissions.getAccountIdString());
 		onClause = onClause.replace(UserID, permissions.getUserIdString());
 		onClause = onClause.replace(FromAlias, fromAlias);

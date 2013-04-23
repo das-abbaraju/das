@@ -33,7 +33,7 @@ import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.model.billing.helper.ContractorInvoiceState;
 import com.picsauditing.model.billing.helper.ContractorResetter;
 import com.picsauditing.model.billing.helper.InvoiceHelper;
-import com.picsauditing.search.CommissionAuditQueryMapper;
+import com.picsauditing.dao.mapper.CommissionAuditQueryMapper;
 import com.picsauditing.search.Database;
 
 public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {

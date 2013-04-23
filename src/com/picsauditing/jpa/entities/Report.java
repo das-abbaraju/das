@@ -12,18 +12,18 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldImportance;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 @SuppressWarnings("serial")
 @Entity
@@ -32,8 +32,8 @@ import org.hibernate.annotations.Where;
 @Where(clause = "deleted = 0")
 public class Report extends BaseTable {
 
-	private User owner;
 	private ModelType modelType;
+	private User owner;
 	private String name;
 	private String description;
 	private String filterExpression;

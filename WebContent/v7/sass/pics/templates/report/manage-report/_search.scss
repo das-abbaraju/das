@@ -1,0 +1,133 @@
+#ManageReports_search_page
+{
+    #report_search
+    {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    #report_search_form
+    {
+        margin: 0;
+        
+        input
+        {
+            background: #f1f1f2;
+            padding-left: 30px;
+        }
+        
+        .icon-search
+        {
+            color: #666;
+            left: -312px;
+            margin-left: -14px;
+            position: relative;
+        }
+        
+        input:focus ~ .icon-search
+        {
+        	color: #73bbe8;
+        }
+    }
+    
+    .lt-ie8 #report_search_form
+    {
+        display: inline;
+    }
+    
+    .report-list
+    {
+        .report
+        {
+            line-height: 20px;
+        }
+        
+        .report > .favorite,
+        .report > .unfavorite
+        {
+        	float: left;
+        	line-height: 48px;
+        	margin: 0 10px;
+        }
+        
+        .summary
+        {
+        	margin: 0 120px 0 40px;
+            padding: 6px 0 8px;
+        }
+        
+        .name
+        {
+            float: none;
+            line-height: 14px;
+        }
+        
+        .created-by
+        {
+            line-height: 14px;
+        }
+        
+        .description
+        {
+            font-size: 12px;
+            line-height: 14px;
+            margin: 0;
+            overflow: hidden;
+        	text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .number-favorites
+        {
+            color: #e67e1c;
+            font-size: 14px;
+            float: right;
+            line-height: 48px;
+            margin-right: 20px;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+	#ManageReports_search_page
+	{
+		#report_search_form
+	    {
+	        .icon-search
+	        {
+	        	left: -382px;
+	        }
+        }
+	}
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	#ManageReports_search_page
+	{
+		#report_search_form
+	    {
+	        .icon-search
+	        {
+	            left: -242px;
+	        }
+        }
+	}
+}
+
+@media (max-width: 767px) {
+	#ManageReports_search_page
+	{
+		#report_search_form
+	    {
+	    	input
+	    	{
+		    	padding-left: 14px;
+	    	}
+	    	
+	        .icon-search
+	        {
+	            display: none;
+	        }
+        }
+	}
+}

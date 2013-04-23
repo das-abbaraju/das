@@ -2,21 +2,23 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.service.ReportPreferencesService;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.access.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -24,6 +26,13 @@ import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportFavoriteInfo;
+import com.picsauditing.service.ReportFavoriteInfoConverter;
+import com.picsauditing.service.ReportInfo;
+import com.picsauditing.service.ReportPermissionInfo;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.service.ReportSearch;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -38,29 +47,45 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
-	private ReportUserDAO reportUserDao;
-	@Autowired
 	private ManageReportsService manageReportsService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
+	@Autowired
+	private PermissionService permissionService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private ReportFavoriteInfoConverter reportFavoriteInfoConverter;
 
-	private User toOwner;
+	private Report report;
 
-	private List<ReportUser> reportUsers;
-	private List<ReportUser> reportUserOverflow;
-	private List<Report> reports;
+	// TODO remove this after we have separate pojos for all views
+	private List<ReportInfo> reportList;
 
-	private Pagination<Report> pagination;
+	private List<ReportFavoriteInfo> reportFavoriteList;
+	private List<ReportFavoriteInfo> reportFavoriteListOverflow;
+
+	private List<ReportPermissionInfo> userAccessList;
+	private List<ReportPermissionInfo> groupAccessList;
+
+	private Pagination<ReportInfo> pagination;
+
+	private boolean isCurrentUserOwner;
 
 	// URL parameters
 	private int reportId;
 	private String searchTerm;
 	private String sort;
 	private String direction;
+	protected int shareId;
+	protected boolean editable;
+	private String referringPage;
+
+	private int pinnedIndex;
 
 	private HttpServletRequest requestForTesting;
 
-	public static final String LANDING_URL = "ManageReports!favoritesList.action";
+	public static final String LANDING_URL = "ManageReports!favorites.action";
 
 	public static final String ALPHA_SORT = "alpha";
 	public static final String DATE_ADDED_SORT = "dateAdded";
@@ -72,6 +97,7 @@ public class ManageReports extends PicsActionSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
+	@Override
 	public String execute() {
 		try {
 			setUrlForRedirect(LANDING_URL);
@@ -82,113 +108,157 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
-	public String favoritesList() {
+	public String favorites() {
 		try {
-			reportUsers = manageReportsService.buildFavorites(permissions.getUserId());
+			List<ReportUser> favorites = reportPreferencesService.buildFavorites(permissions.getUserId());
+			reportFavoriteList = reportFavoriteInfoConverter.convert(favorites);
 
-			if (CollectionUtils.isEmpty(reportUsers)) {
-				reportUsers = new ArrayList<ReportUser>();
+			if (CollectionUtils.isEmpty(reportFavoriteList)) {
+				reportFavoriteList = Collections.emptyList();
 			}
 
-			if (reportUsers.size() > MAX_REPORTS_IN_MENU) {
-				reportUserOverflow = reportUsers.subList(MAX_REPORTS_IN_MENU,
-						reportUsers.size());
-				reportUsers = reportUsers.subList(0, MAX_REPORTS_IN_MENU);
+			if (reportFavoriteList.size() > MAX_REPORTS_IN_MENU) {
+				reportFavoriteListOverflow = reportFavoriteList.subList(MAX_REPORTS_IN_MENU, reportFavoriteList.size());
+				reportFavoriteList = reportFavoriteList.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
+			logger.error("Unexpected exception in ManageReports!favorites.action", e);
 		}
 
+		return determineViewName("favoritesList", "favorites");
+	}
+
+	public String ownedBy() {
+		reportList = new ArrayList<>();
+
+		try {
+
+			reportList = manageReportsService.getReportsForOwnedByUser(buildReportSearch());
+		} catch (NoResultException nre) {
+			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId()
+					+ " and report id " + reportId, nre);
+		} catch (Exception e) {
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!ownedBy.action", e);
+		}
+
+		return determineViewName("ownedByList", "ownedBy");
+	}
+
+	public String sharedWith() {
+		reportList = Collections.emptyList();
+		try {
+			reportList = manageReportsService.getReportsForSharedWithUser(buildReportSearch());
+		} catch (Exception e) {
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!sharedWith.action", e);
+		}
+
+		return determineViewName("sharedWithList", "sharedWith");
+	}
+
+	// TODO: Fix this method to call David A's new method
+	public String search() {
+		reportList = Collections.emptyList();
+
+		try {
+			reportList = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
+		} catch (IllegalArgumentException iae) {
+			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
+		} catch (Exception e) {
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!search.action", e);
+		}
+
+		return determineViewName("searchList", "search");
+	}
+
+	public String access() {
+		userAccessList = Collections.emptyList();
+		groupAccessList = Collections.emptyList();
+
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User user = userService.loadUser(permissions.getUserId());
+
+			if ( !(permissionService.canUserShareReport(user, report)
+					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
+				throw new ReportPermissionException("User " + permissions.getUserId() + " cannot view access rights for report " + reportId + " because they are not the owner.");
+			}
+
+			setReport(report);
+
+			isCurrentUserOwner = permissionService.isOwner(user, report);
+
+			userAccessList = manageReportsService.buildUserAccessList(report);
+			groupAccessList = manageReportsService.buildGroupAndAccountAccessList(report, permissions.getLocale());
+		} catch (Exception e) {
+			logAndShowUserInDebugMode("Unexpected exception in ManageReports!access.action", e);
+		}
+
+		return determineViewName("accessList", "access");
+	}
+
+	public String unauthorized() {
+		return "unauthorized";
+	}
+
+	private String determineViewName(String ajaxViewname, String jspViewName) {
 		if (AjaxUtils.isAjax(request())) {
-			return "favoritesList";
+			return ajaxViewname;
 		}
 
-		return "favorites";
+		return jspViewName;
+	}
+
+	private String redirectOrReturnNoneForAjaxRequest() {
+		if (AjaxUtils.isAjax(request())) {
+			return NONE;
+		}
+
+		return redirectToPreviousView();
 	}
 
 	public String moveFavoriteUp() {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.moveFavoriteUp(reportUser);
+			reportPreferencesService.moveUnpinnedFavoriteUp(reportUser);
 		} catch (NoResultException nre) {
-			logger.warn("Unable to moveFavoriteUp. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
+			logger.warn("No result found in ReportApi.moveFavoriteUp()", nre);
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportApi.moveFavoriteUp(). ", e);
+			logger.error("Unexpected exception in ReportApi.moveFavoriteUp().", e);
 		}
 
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String moveFavoriteDown() {
 		try {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(permissions.getUserId(), reportId);
 
-			manageReportsService.moveFavoriteDown(reportUser);
+			reportPreferencesService.moveUnpinnedFavoriteDown(reportUser);
 		} catch (NoResultException nre) {
-			logger.warn("Unable to moveFavoriteDown. ReportUser not found for user id " + permissions.getUserId() + " and report id " + reportId, nre);
+			logger.warn("No result found in ReportApi.moveFavoriteDown()", nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportApi.moveFavoriteDown(). ", e);
 		}
 
-		return redirectToPreviousView();
-	}
-
-	public String myReportsList() {
-		try {
-			reportUsers = reportPreferencesService.getAllNonHiddenReportUsers(sort, direction, permissions);
-		} catch (IllegalArgumentException iae) {
-			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
-		}
-
-		if (CollectionUtils.isEmpty(reportUsers)) {
-			reportUsers = new ArrayList<ReportUser>();
-		}
-
-		if (AjaxUtils.isAjax(request())) {
-			return "myReportsList";
-		}
-
-		return "myReports";
-	}
-
-	public String searchList() {
-		reports = new ArrayList<Report>();
-		try {
-			reports = manageReportsService.getReportsForSearch(searchTerm, permissions, getPagination());
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!searchList.action", e);
-			if (permissions.has(OpPerms.Debug)) {
-				addActionError(e.getMessage());
-			}
-		}
-
-		if (AjaxUtils.isAjax(request())) {
-			return "searchList";
-		}
-
-		return "search";
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String transferOwnership() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User newOwner = userService.loadUser(shareId);
 
-			manageReportsService.transferOwnership(getUser(), toOwner, report, permissions);
+			manageReportsService.transferOwnership(getUser(), newOwner, report, permissions);
 		} catch (RecordNotFoundException rnfe) {
 			logger.error("Report " + reportId + " not found. Cannot transfer ownership.", rnfe);
-			return ERROR;
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot transfer ownership.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot transfer ownership.", e);
-			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String deleteReport() {
@@ -200,61 +270,167 @@ public class ManageReports extends PicsActionSupport {
 			// Report doesn't exist, so we don't need to do anything.
 		} catch (ReportValidationException rve) {
 			logger.error("Report " + reportId + " not valid. Cannot delete.", rve);
-			return ERROR;
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot delete.", e);
-			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String shareWithViewPermission() {
+	public String shareWithUserViewPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
 
-			manageReportsService.shareWithViewPermission(getUser(), toOwner, report, permissions);
-		} catch (RecordNotFoundException rnfe) {
-			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
-			return ERROR;
-		} catch (ReportValidationException rve) {
-			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
-			return ERROR;
+			if (toUser.isGroup()) {
+				throw new Exception("User " + shareId + " is a group, not a user.");
+			}
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, false);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String shareWithEditPermission() {
+	public String shareWithUserEditPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
 
-			manageReportsService.shareWithEditPermission(getUser(), toOwner, report, permissions);
-		} catch (RecordNotFoundException rnfe) {
-			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
-			return ERROR;
-		} catch (ReportValidationException rve) {
-			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
-			return ERROR;
+			if (toUser.isGroup()) {
+				throw new Exception("User " + shareId + " is a group, not a user.");
+			}
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toUser, report, permissions, true);
 		} catch (Exception e) {
 			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
-			return ERROR;
 		}
 
-		return NONE;
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String removeReportUser() {
+	public String shareWithGroupViewPermission() {
 		try {
 			Report report = reportService.loadReportFromDatabase(reportId);
-			manageReportsService.removeReportUser(getUser(), report,  permissions);
+			User toGroup = userService.loadUser(shareId);
+
+			if (!toGroup.isGroup()) {
+				throw new Exception("User " + shareId + " is a user, not a group.");
+			}
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, false);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithGroupEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toGroup = userService.loadUser(shareId);
+
+			if (!toGroup.isGroup()) {
+				throw new Exception("User " + shareId + " is a user, not a group.");
+			}
+
+			manageReportsService.shareReportWithUserOrGroup(getUser(), toGroup, report, permissions, true);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithAccountViewPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			Account toAccount = dao.find(Account.class, shareId);
+
+			manageReportsService.shareReportWithAccountViewPermission(getUser(), toAccount, report, permissions);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String shareWithAccountEditPermission() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			Account toAccount = dao.find(Account.class, shareId);
+
+			manageReportsService.shareReportWithAccountEditPermission(getUser(), toAccount, report, permissions);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unshareUser() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User toUser = userService.loadUser(shareId);
+
+			manageReportsService.unshareUser(getUser(), toUser, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unshareGroup() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			User group = userService.loadUser(shareId);
+
+			manageReportsService.unshareGroup(getUser(), group, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unshareAccount() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			Account toAccount = dao.find(Account.class, shareId);
+
+			manageReportsService.unshareAccount(getUser(), toAccount, report, permissions);
+		} catch (RecordNotFoundException rnfe) {
+			logger.error("Report " + reportId + " not found. Cannot share.", rnfe);
+		} catch (ReportValidationException rve) {
+			logger.error("Report " + reportId + " not valid. Cannot share.", rve);
+		} catch (Exception e) {
+			logger.error("There was an exception with report " + reportId + ". Cannot share.", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	// Questionable
+	public String removeReport() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+			manageReportsService.removeReportUser(getUser(), report, permissions);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.removeReportUser(). ", e);
+			logger.error("Unexpected exception in ManageReports.removeReport(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -267,10 +443,10 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
+			logger.error("Unexpected exception in ManageReports.favorite(). ", e);
 		}
 
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	public String unfavorite() {
@@ -280,10 +456,64 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
+			logger.error("Unexpected exception in ManageReports.unfavorite(). ", e);
 		}
 
-		return redirectToPreviousView();
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String privatize() {
+		try {
+			User user = userService.loadUser(permissions.getUserId());
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportService.privatizeReport(user, report);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.privatize(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unprivatize() {
+		try {
+			User user = userService.loadUser(permissions.getUserId());
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportService.unprivatizeReport(user, report);
+		} catch (NoResultException nre) {
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.unprivatize(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String pinFavorite() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportPreferencesService.pinFavorite(getUser(), report, pinnedIndex);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.pin(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
+	}
+
+	public String unpinFavorite() {
+		try {
+			Report report = reportService.loadReportFromDatabase(reportId);
+
+			reportPreferencesService.unpinFavorite(getUser(), report);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.unpin(). ", e);
+		}
+
+		return redirectOrReturnNoneForAjaxRequest();
 	}
 
 	/**
@@ -323,32 +553,20 @@ public class ManageReports extends PicsActionSupport {
 		return getRequest();
 	}
 
-	public User getToOwner() {
-		return toOwner;
+	private void logAndShowUserInDebugMode(String errorMessage, Exception e) {
+		logger.error(errorMessage, e);
+		if (permissions.has(OpPerms.Debug)) {
+			addActionError(e.getMessage());
+		}
 	}
 
-	public void setToOwner(User toOwner) {
-		this.toOwner = toOwner;
+	private ReportSearch buildReportSearch() {
+		return new ReportSearch.Builder().permissions(permissions).sortType(sort)
+				.sortDirection(direction).build();
 	}
 
-	public List<ReportUser> getReportUsers() {
-		return reportUsers;
-	}
-
-	public void setReportUsers(List<ReportUser> reportUsers) {
-		this.reportUsers = reportUsers;
-	}
-
-	public List<ReportUser> getReportUserOverflow() {
-		return reportUserOverflow;
-	}
-
-	public List<Report> getReports() {
-		return reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
+	public List<ReportFavoriteInfo> getReportFavoriteListOverflow() {
+		return reportFavoriteListOverflow;
 	}
 
 	public ReportService getReportService() {
@@ -391,56 +609,66 @@ public class ManageReports extends PicsActionSupport {
 		this.direction = direction;
 	}
 
-	public Pagination<Report> getPagination() {
+	public void setPinnedIndex(int pinnedIndex) {
+		this.pinnedIndex = pinnedIndex;
+	}
+
+	public void setShareId(int shareId) {
+		this.shareId = shareId;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
+	public Pagination<ReportInfo> getPagination() {
 		if (pagination == null) {
-			pagination = new Pagination<Report>();
+			pagination = new Pagination<ReportInfo>();
 			pagination.setParameters(new PaginationParameters());
 		}
 
 		return pagination;
 	}
 
-	public void setPagination(Pagination<Report> pagination) {
+	public void setPagination(Pagination<ReportInfo> pagination) {
 		this.pagination = pagination;
 	}
 
-	public String getAlphaSortDirection() {
-		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction)) {
-			return ASC;
-		}
-
-		return DESC;
+	// TODO remove this
+	public List<ReportInfo> getReportList() {
+		return reportList;
 	}
 
-	public String getDateAddedSortDirection() {
-		if (!DATE_ADDED_SORT.equals(sort) || ASC.equals(direction)) {
-			return DESC;
-		}
-
-		return ASC;
+	public List<ReportFavoriteInfo> getReportFavoriteList() {
+		return reportFavoriteList;
 	}
 
-	public String getLastViewedSortDirection() {
-		if (!LAST_VIEWED_SORT.equals(sort) || ASC.equals(direction)) {
-			return DESC;
-		}
-
-		return ASC;
+	public List<ReportPermissionInfo> getUserAccessList() {
+		return userAccessList;
 	}
 
-	public String getAlphaSort() {
-		return ALPHA_SORT;
+	public List<ReportPermissionInfo> getGroupAccessList() {
+		return groupAccessList;
 	}
 
-	public String getDateAddedSort() {
-		return DATE_ADDED_SORT;
+	public boolean isCurrentUserOwner() {
+		return isCurrentUserOwner;
 	}
 
-	public String getLastViewedSort() {
-		return LAST_VIEWED_SORT;
+	public String getReferringPage() {
+		return referringPage;
 	}
 
-	public String getMyReportsUrl() {
-		return LANDING_URL;
+	public void setReferringPage(String referringPage) {
+		this.referringPage = referringPage;
 	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
+	}
+
 }

@@ -99,6 +99,7 @@
     <bean id="PasswordDAO" class="com.picsauditing.dao.PasswordDAO"/>
     <bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
     <bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
+    <bean id="ReportElementDAO" class="com.picsauditing.dao.ReportElementDAO"/>
     <bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
     <bean id="ReportPermissionUserDAO" class="com.picsauditing.dao.ReportPermissionUserDAO"/>
     <bean id="ReportPermissionAccountDAO" class="com.picsauditing.dao.ReportPermissionAccountDAO"/>
@@ -209,7 +210,7 @@
           class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
     <bean id="AuditTypeAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
-    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete"/>
+    <bean id="AutocompleteSharing" class="com.picsauditing.model.general.AutocompleteSharing"/>
     <bean id="ContractorAutocompleteService"
           class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
     <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
@@ -233,7 +234,10 @@
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
-    <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
+	<bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
+	<bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
+	<bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
+	<bean id="ReportFavoriteInfoConverter" class="com.picsauditing.service.ReportFavoriteInfoConverter" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
@@ -251,7 +255,9 @@
 
     <bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	<bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
+
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="taskExecutor"

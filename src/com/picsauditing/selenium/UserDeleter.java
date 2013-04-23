@@ -11,7 +11,7 @@ public class UserDeleter {
 	String IDs;
 	
 	public UserDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs, ",");
+		this.IDs = Strings.implodeForDB(IDs);
 	}
 	
 	public UserDeleter(int ID) {
@@ -22,7 +22,7 @@ public class UserDeleter {
 	}
 	
 	public UserDeleter setUserIDs(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs, ",");		
+		this.IDs = Strings.implodeForDB(IDs);
 		return this;
 	}
 	

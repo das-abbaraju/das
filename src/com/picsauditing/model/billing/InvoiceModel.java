@@ -17,6 +17,8 @@ import org.springframework.util.CollectionUtils;
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.mapper.CommissionAuditRowMapper;
+import com.picsauditing.dao.mapper.IntegerQueryMapper;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -25,9 +27,7 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.salecommission.invoice.strategy.CommissionAudit;
-import com.picsauditing.search.CommissionAuditRowMapper;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.IntegerQueryMapper;
 import com.picsauditing.util.Strings;
 
 public class InvoiceModel {

@@ -1,9 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -12,6 +9,7 @@ public class ReportPermissionAccount extends BaseTable {
 
 	private Report report;
 	private Account account;
+	private boolean editable;
 
 	public ReportPermissionAccount() {
 	}
@@ -40,4 +38,14 @@ public class ReportPermissionAccount extends BaseTable {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
+
+	@javax.persistence.Column(name = "editable", nullable = false)
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
 }

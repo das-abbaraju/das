@@ -21,7 +21,7 @@
         <s:if test="configEnvironment || i18nReady">
             <div class="form-inline">
                 <label for="supported_locales">
-                    <i class="icon-globe"></i>
+                    <i class="icon-globe icon-large"></i>
                 </label>
 
                 <s:include value="/struts/user/login/_supported-locales-list.jsp" />

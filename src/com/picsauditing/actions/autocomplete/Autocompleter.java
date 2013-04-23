@@ -2,7 +2,6 @@ package com.picsauditing.actions.autocomplete;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.general.Autocomplete;
+import com.picsauditing.model.general.AutocompleteSharing;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
@@ -22,7 +21,7 @@ import com.picsauditing.util.Strings;
 public class Autocompleter extends PicsActionSupport {
 
 	@Autowired
-	private Autocomplete autocomplete;
+	private AutocompleteSharing autocompleteSharing;
 	@Autowired
 	private ReportDAO reportDAO;
 
@@ -74,18 +73,16 @@ public class Autocompleter extends PicsActionSupport {
 
 	public String reportSharingAutocomplete() {
 		try {
-			int reportId = NumberUtils.toInt(getRequest().getParameter("reportId"));
 			if (reportId <= 0) {
 				throw new Exception("Invalid reportId parameter.");
 			}
 
-			json = autocomplete.sharingAutocomplete(reportId, searchQuery, permissions);
+			jsonArray = autocompleteSharing.buildSharingAutocomplete(reportId, searchQuery, permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in reportSharingAutocomplete.", e);
-			writeJsonErrorMessage(e);
 		}
 
-		return JSON;
+		return JSON_ARRAY;
 	}
 
 	private FieldType findFieldType(String fieldId) {
