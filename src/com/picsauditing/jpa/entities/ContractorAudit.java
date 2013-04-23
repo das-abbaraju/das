@@ -153,7 +153,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.Audits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -163,7 +163,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.Audits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
@@ -200,7 +200,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -257,7 +257,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		return true;
 	}
 
-	@ReportField(type = FieldType.String, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits)
 	public String getAuditLocation() {
 		return auditLocation;
 	}
@@ -279,7 +279,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.Integer, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.DocumentsAndAudits)
 	public int getScore() {
 		return score;
 	}
@@ -468,7 +468,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.String, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits)
 	public String getAuditFor() {
 		return auditFor;
 	}

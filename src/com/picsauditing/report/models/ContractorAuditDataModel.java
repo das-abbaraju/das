@@ -1,7 +1,6 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -18,7 +17,7 @@ public class ContractorAuditDataModel extends AbstractModel {
 
     public ModelSpec getJoinSpec() {
         ModelSpec auditData = new ModelSpec(null, "AuditData");
-        auditData.category = FieldCategory.Audits;
+        auditData.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec conAudit = auditData.join(AuditDataTable.Audit);
         conAudit.alias = "Audit";
@@ -35,15 +34,15 @@ public class ContractorAuditDataModel extends AbstractModel {
 
         ModelSpec flagCriteriaContractor = contractor.join(ContractorTable.FlagCriteriaContractor);
         flagCriteriaContractor.alias = "FlagCriteriaContractor";
-        flagCriteriaContractor.category = FieldCategory.Audits;
+        flagCriteriaContractor.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec question = auditData.join(AuditDataTable.Question);
         question.alias = "Question";
-        question.category = FieldCategory.Audits;
+        question.category = FieldCategory.DocumentsAndAudits;
 
         ModelSpec category = question.join(AuditQuestionTable.Category);
         category.alias = "Category";
-        category.category = FieldCategory.Audits;
+        category.category = FieldCategory.DocumentsAndAudits;
 
         return auditData;
     }

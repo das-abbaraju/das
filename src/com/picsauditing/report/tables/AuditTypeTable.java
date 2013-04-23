@@ -11,7 +11,7 @@ public class AuditTypeTable extends AbstractTable {
 
 	public AuditTypeTable() {
 		super("audit_type");
-		addPrimaryKey().setCategory(FieldCategory.Audits);
+		addPrimaryKey().setCategory(FieldCategory.DocumentsAndAudits);
 		addFields(AuditType.class);
 
 		Field auditTypeName;
@@ -19,20 +19,20 @@ public class AuditTypeTable extends AbstractTable {
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("ManageAuditType.action?id={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Low);
-		auditTypeName.setCategory(FieldCategory.Audits);
+		auditTypeName.setCategory(FieldCategory.DocumentsAndAudits);
 		auditTypeName.setWidth(200);
 		addField(auditTypeName);
 
 		Field createdBy;
 		createdBy = new Field("CreatedBy", "createdBy", FieldType.UserID);
 		createdBy.setImportance(FieldImportance.Low);
-		createdBy.setCategory(FieldCategory.Audits);
+		createdBy.setCategory(FieldCategory.DocumentsAndAudits);
 		addField(createdBy);
 
 		Field creationDate;
 		creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
 		creationDate.setImportance(FieldImportance.Low);
-		creationDate.setCategory(FieldCategory.Audits);
+		creationDate.setCategory(FieldCategory.DocumentsAndAudits);
 		addField(creationDate);
 	}
 

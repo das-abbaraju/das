@@ -23,17 +23,17 @@ public class ContractorAuditTable extends AbstractTable {
 		super("contractor_audit");
 		addFields(ContractorAudit.class);
 		Field id = addPrimaryKey();
-		id.setCategory(FieldCategory.Audits);
+		id.setCategory(FieldCategory.DocumentsAndAudits);
 
 		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		addField(creationDate).setCategory(FieldCategory.Audits);
+		addField(creationDate).setCategory(FieldCategory.DocumentsAndAudits);
 
 		Field auditTypeName;
 		auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Required);
-		auditTypeName.setCategory(FieldCategory.Audits);
+		auditTypeName.setCategory(FieldCategory.DocumentsAndAudits);
 		auditTypeName.setWidth(200);
 		addField(auditTypeName);
 	}
@@ -60,12 +60,12 @@ public class ContractorAuditTable extends AbstractTable {
 
 		ReportForeignKey caoKey = addOptionalKey(new ReportForeignKey(SingleCAO, new ContractorAuditOperatorTable(),
 				new ReportOnClause("id", "auditID")));
-		caoKey.setCategory(FieldCategory.Audits);
+		caoKey.setCategory(FieldCategory.DocumentsAndAudits);
 		caoKey.setMinimumImportance(FieldImportance.Required);
 
 		ReportForeignKey data = addOptionalKey(new ReportForeignKey(Data, new AuditDataTable(),
 				new ReportOnClause("id", "auditID")));
-		data.setCategory(FieldCategory.Audits);
+		data.setCategory(FieldCategory.DocumentsAndAudits);
 		data.setMinimumImportance(FieldImportance.Required);
 	}
 }

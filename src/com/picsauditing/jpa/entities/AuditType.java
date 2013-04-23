@@ -131,7 +131,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditTypeClass, category = FieldCategory.Audits, i18nKeyPrefix = "AuditTypeClass", importance = FieldImportance.Required)
+	@ReportField(type = FieldType.AuditTypeClass, category = FieldCategory.DocumentsAndAudits, i18nKeyPrefix = "AuditTypeClass", importance = FieldImportance.Required)
 	public AuditTypeClass getClassType() {
 		return classType;
 	}
@@ -148,7 +148,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.displayOrder = displayOrder;
 	}
 
-	@ReportField(type = FieldType.String, category = FieldCategory.Audits, importance = FieldImportance.Low, width = 400)
+	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Low, width = 400)
 	public String getDescription() {
 		return description;
 	}
@@ -180,7 +180,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.isScheduled = isScheduled;
 	}
 
-	@ReportField(type = FieldType.Boolean, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.DocumentsAndAudits)
 	public boolean isHasAuditor() {
 		return hasAuditor;
 	}
@@ -213,7 +213,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.canOperatorView = canOperatorView;
 	}
 
-	@ReportField(type = FieldType.Integer, category = FieldCategory.Audits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public Integer getMonthsToExpire() {
 		return monthsToExpire;
 	}
@@ -229,7 +229,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.Boolean, category = FieldCategory.Audits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public boolean isRenewable() {
 		return renewable;
 	}
@@ -435,7 +435,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 *         Used for implementing audit score.
 	 */
 	@Transient
-	@ReportField(type = FieldType.Boolean, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.DocumentsAndAudits)
 	public boolean isScoreable() {
 		return scoreType != null;
 	}

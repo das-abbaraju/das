@@ -70,7 +70,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required, category = FieldCategory.MonitoringClientSite)
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -168,7 +168,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.flag = flag;
 	}
 
-	@ReportField(type = FieldType.Date, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.Date, category = FieldCategory.MonitoringClientSite)
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -177,7 +177,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.statusChangedDate = statusChangedDate;
 	}
 
-	@ReportField(type = FieldType.Integer, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.MonitoringClientSite)
 	public int getPercentComplete() {
 		return percentComplete;
 	}
@@ -224,7 +224,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	}
 	
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditSubStatus, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.AuditSubStatus, category = FieldCategory.MonitoringClientSite)
 	public AuditSubStatus getAuditSubStatus() {
 		return auditSubStatus;
 	}

@@ -11,11 +11,11 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 	public ContractorAuditOperatorTable() {
 		super("contractor_audit_operator");
 		Field primaryKey = addPrimaryKey();
-		primaryKey.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		primaryKey.setCategory(FieldCategory.MonitoringClientSite);
 
 		Field statusSubstatus = new Field("StatusSubstatus", "CONCAT(" + ReportOnClause.ToAlias
 				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FieldType.AuditStatus);
-		statusSubstatus.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		statusSubstatus.setCategory(FieldCategory.MonitoringClientSite);
 		addField(statusSubstatus);
 
 		addFields(ContractorAuditOperator.class);
@@ -25,7 +25,7 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 		ReportOnClause auditOnClause = new ReportOnClause("auditID");
 		addOptionalKey(new ReportForeignKey(Audit, new ContractorAuditTable(), auditOnClause));
 		ReportForeignKey operatorKey = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
-		operatorKey.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		operatorKey.setCategory(FieldCategory.MonitoringClientSite);
 		operatorKey.setMinimumImportance(FieldImportance.Required);
 		addOptionalKey(operatorKey);
 	}

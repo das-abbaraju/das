@@ -1,7 +1,6 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -38,12 +37,12 @@ public class AccountOperatorModel extends AbstractModel {
         parentOperator.minimumImportance = FieldImportance.Required;
 
         ModelSpec accountUser = spec.join(AccountTable.AccountUser);
-        accountUser.category = FieldCategory.CustomerServiceRepresentatives;
+        accountUser.category = FieldCategory.CustomerService;
         accountUser.minimumImportance = FieldImportance.Required;
         accountUser.alias = "AccountUser";
 
         ModelSpec user = accountUser.join(AccountUserTable.User);
-        user.category = FieldCategory.CustomerServiceRepresentatives;
+        user.category = FieldCategory.CustomerService;
         user.alias = "AccountManager";
         user.minimumImportance = FieldImportance.Required;
 

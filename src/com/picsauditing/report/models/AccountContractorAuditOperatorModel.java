@@ -31,7 +31,7 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 
 		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
 		operatorAccount.alias = "AuditOperatorAccount";
-		operatorAccount.category = FieldCategory.ClientSiteMonitoringAnAudit;
+		operatorAccount.category = FieldCategory.MonitoringClientSite;
 
 		ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
 		conAudit.alias = "Audit";

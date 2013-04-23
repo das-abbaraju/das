@@ -13,7 +13,7 @@ public class AuditDataTable extends AbstractTable {
 		super("pqfData");
 		addFields(AuditData.class);
 		Field id = addPrimaryKey(FieldType.AuditQuestion);
-		id.setCategory(FieldCategory.Audits);
+		id.setCategory(FieldCategory.DocumentsAndAudits);
 	}
 
 	public void addJoins() {

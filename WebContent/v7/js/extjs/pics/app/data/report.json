@@ -817,7 +817,7 @@
 	{
 		"field_id": "ContractorWelcomeCallTypeName",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "Report.ContractorWelcomeCallTypeName.help",
 		"width": 200,
@@ -927,7 +927,7 @@
 	{
 		"field_id": "ContractorPQFTypeName",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "PQF",
 		"width": 200,
@@ -971,7 +971,7 @@
 	{
 		"field_id": "ContractorWelcomeCallID",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "Report.ContractorWelcomeCallID.help",
 		"width": 200,
@@ -1026,7 +1026,7 @@
 	{
 		"field_id": "ContractorPQFID",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "PQF\u2019s PICS ID",
 		"width": 200,
@@ -1323,7 +1323,7 @@
 	{
 		"field_id": "ContractorWelcomeCallCaoID",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "Report.ContractorWelcomeCallCaoID.help",
 		"width": 200,
@@ -1356,7 +1356,7 @@
 	{
 		"field_id": "ContractorWelcomeCallCaoStatus",
 		"sql_function": null,
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"is_sortable": true,
 		"description": "Report.ContractorWelcomeCallCaoStatus.help",
 		"width": 100,
@@ -1626,7 +1626,7 @@
 	},
 	{
 		"field_id": "ContractorWelcomeCallTypeName",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "Report.ContractorWelcomeCallTypeName.help",
 		"name": "Report.ContractorWelcomeCallTypeName",
 		"value": null,
@@ -1726,7 +1726,7 @@
 	},
 	{
 		"field_id": "ContractorPQFTypeName",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "PQF",
 		"name": "PQF",
 		"value": null,
@@ -1766,7 +1766,7 @@
 	},
 	{
 		"field_id": "ContractorWelcomeCallID",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "Report.ContractorWelcomeCallID.help",
 		"name": "Report.ContractorWelcomeCallID",
 		"value": null,
@@ -1816,7 +1816,7 @@
 	},
 	{
 		"field_id": "ContractorPQFID",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "PQF\u2019s PICS ID",
 		"name": "PQF PICS ID",
 		"value": null,
@@ -2076,7 +2076,7 @@
 	},
 	{
 		"field_id": "ContractorWelcomeCallCaoID",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "Report.ContractorWelcomeCallCaoID.help",
 		"name": "Report.ContractorWelcomeCallCaoID",
 		"value": null,
@@ -2106,7 +2106,7 @@
 	},
 	{
 		"field_id": "ContractorWelcomeCallCaoStatus",
-		"category": "Audits",
+		"category": "DocumentsAndAudits",
 		"description": "Report.ContractorWelcomeCallCaoStatus.help",
 		"name": "Report.ContractorWelcomeCallCaoStatus",
 		"value": null,

@@ -53,7 +53,7 @@ public class ContractorTable extends AbstractTable {
 //		ReportForeignKey oldCsrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(),
 //				new ReportOnClause("welcomeAuditor_id")));
 //		oldCsrKey.setMinimumImportance(FieldImportance.Average);
-//		oldCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+//		oldCsrKey.setCategory(FieldCategory.CustomerService);
 
         ReportForeignKey csrKey = addOptionalKey(
                 new ReportForeignKey(
@@ -65,7 +65,7 @@ public class ContractorTable extends AbstractTable {
                 )
         );
 
-        csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+        csrKey.setCategory(FieldCategory.CustomerService);
         csrKey.setMinimumImportance(FieldImportance.Average);
 
         ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
@@ -96,7 +96,7 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
                 new ReportOnClause("recommendedCsrID")));
         recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
-        recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
+        recommendedCsrKey.setCategory(FieldCategory.CustomerService);
 
         addOptionalKey(new ReportForeignKey(FlagCriteriaContractor, new FlagCriteriaContractorTable(),
                 new ReportOnClause("id", "conID")));
