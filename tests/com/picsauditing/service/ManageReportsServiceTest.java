@@ -230,7 +230,8 @@ public class ManageReportsServiceTest {
 
         reportUser = manageReportsService.removeReportUser(removerUser, report, permissions);
 
-        verify(reportUserDAO).remove(reportUser);
+        assertTrue(reportUser.isHidden());
+		verify(reportUserDAO).save(reportUser);
     }
 
     @Test
