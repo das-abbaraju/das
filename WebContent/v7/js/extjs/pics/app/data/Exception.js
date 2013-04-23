@@ -18,14 +18,14 @@ Ext.define('PICS.data.Exception', {
         
         var unknown_error = {
             title: 'Server Communication Error',
-            message: 'Unknown error.'
+            message: 'An unknown error occurred.'
         };
 
         function getErrorFromStatusCode(code) {
             return error_codes[code] || unknown_error;
         }
-        
-        function handle2xxException(response, callback) {
+
+        function handleKnown2xxException(response, callback) {
             var response_text = response.responseText;
             
             try {
@@ -38,7 +38,7 @@ Ext.define('PICS.data.Exception', {
                 showException('Exception', e.msg, callback);
             }
         }
-        
+
         function handleNon2xxException(response, callback) {
             var status_code = response.status,
                 error = getErrorFromStatusCode(status_code),
@@ -48,7 +48,11 @@ Ext.define('PICS.data.Exception', {
             showException(title, message, callback);
         }
 
-        function has2xxException(response) {
+        function handleUnknown2xxException(response, callback) {
+            showException(unknown_error.title, unknown_error.message);
+        }
+        
+        function hasKnown2xxException(response) {
             var response_text = response && response.responseText,
                 json;
             
@@ -57,12 +61,25 @@ Ext.define('PICS.data.Exception', {
             } catch (e) {
                 return false;
             }
-            
+
             return json && json.success == false;
         }
 
         function hasNon2xxException(response) {
-            return response && typeof error_codes[response.status] != 'undefined';
+            return response && response.status.toString()[0] != '2';
+        }
+
+        function hasUnknown2xxException(response) {
+            var response_text = response && response.responseText,
+                json;
+        
+            try {
+                json = Ext.JSON.decode(response_text);
+            } catch (e) {
+                return response.status && response.status.toString()[0] == '2';
+            }
+            
+            return false;
         }
         
         function showException(title, message, callback) {
@@ -77,23 +94,25 @@ Ext.define('PICS.data.Exception', {
         }
         
         return {
+            getUnknownError: function () {
+                return unknown_error;
+            },
+
             handleException: function (options) {
                 var response = options.response,
                     callback = typeof options.callback == 'function' ? options.callback : function () {};
                 
-                // success: false error
-                if (has2xxException(response)) {
-                    handle2xxException(response, callback);
-                }
-                
-                // status code error
-                if (hasNon2xxException(response)) {
+                if (hasKnown2xxException(response)) {
+                    handleKnown2xxException(response, callback);
+                } else if (hasUnknown2xxException(response)) {
+                    handleUnknown2xxException(response, callback);
+                } else if (hasNon2xxException(response)) {
                     handleNon2xxException(response, callback);
                 }
             },
             
             hasException: function (response) {
-                return has2xxException(response) || hasNon2xxException(response);
+                return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };
     }())
