@@ -21,7 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
+import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
@@ -772,4 +772,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public boolean hasMissingChildRequiredLanguages() {
 		return getLanguages().isEmpty();
 	}
+
+    public static AuditQuestionBuilder builder() {
+        return new AuditQuestionBuilder();
+    }
 }

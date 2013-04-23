@@ -31,6 +31,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
@@ -135,6 +136,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
+    private List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators = new ArrayList<>();
 	private Date lastContactedByAutomatedEmailDate;
 	private User lastContactedByInsideSales;
 	// Transient helper methods
@@ -160,7 +162,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
-	public ContractorAccount() {
+    public ContractorAccount() {
 		this.type = "Contractor";
 	}
 
@@ -186,6 +188,16 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setOperators(List<ContractorOperator> operators) {
 		this.operators = operators;
 	}
+
+
+    @OneToMany(mappedBy = "contractorAccount",  cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+    public List<InsuranceCriteriaContractorOperator> getInsuranceCriteriaContractorOperators() {
+        return insuranceCriteriaContractorOperators;
+    }
+
+    public void setInsuranceCriteriaContractorOperators(List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators) {
+        this.insuranceCriteriaContractorOperators = insuranceCriteriaContractorOperators;
+    }
 
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate
@@ -2238,4 +2250,26 @@ public class ContractorAccount extends Account implements JSONable {
 			return ("ContractorView.action?id=" + this.id);
 		}
 	}
+
+    public InsuranceCriteriaContractorOperator getInsuranceCriteriaContractorOperators(int flagCriteriaId, int opId) {
+        for (InsuranceCriteriaContractorOperator insurance: getInsuranceCriteriaContractorOperators()) {
+            if (insurance.getFlagCriteria().getId() == flagCriteriaId && insurance.getOperatorAccount().getId() == opId) {
+                return insurance;
+            }
+        }
+        return null;
+    }
+
+    public OperatorAccount getOperator(int opId) {
+        for (OperatorAccount operator: getOperatorAccounts()) {
+            if (operator.getId() == opId) {
+                return operator;
+            }
+        }
+        return  null;
+    }
+
+    public static ContractorAccountBuilder builder() {
+        return new ContractorAccountBuilder();
+    }
 }

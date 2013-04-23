@@ -87,49 +87,38 @@ public class ContractorModelTest {
 
     @Test
     public void testFindPqfquestionAnswer_FromClientSpecificPqf() {
-        int customPqfType = -5;
         int unknownQuestionId = -10000;
 
-        ContractorAccount contractor = new ContractorAccount();
-        AuditQuestion customQuestion = createPqf(contractor, customPqfType, "customPqf");
-        AuditQuestion pqfQuestion = createPqf(contractor, AuditType.PQF, "pqf");
+        ContractorModel contractor = ContractorModel.builder().contractor(ContractorAccount.builder()
+                .audit(
+                        ContractorAudit.builder()
+                                .auditType(AuditType.builder().id(AuditType.PQF).auditClass(AuditTypeClass.PQF).build())
+                                .data(AuditData.builder().answer("pqf").question(AuditQuestion.builder().id(1).build()).build())
+                                .build())
+                .audit(
+                        ContractorAudit.builder()
+                                .auditType(AuditType.builder().auditClass(AuditTypeClass.PQF).build())
+                                .data(AuditData.builder().answer("customPqf").question(AuditQuestion.builder().id(2).build()).build())
+                                .build())
+                .build()).build();
 
+        assertEquals("pqf", contractor.findPqfQuestionAnswer(1));
+        assertEquals("customPqf", contractor.findPqfQuestionAnswer(2));
 
-
-        ContractorModel contractorModel = new ContractorModel();
-        contractorModel.setContractor(contractor);
-        assertEquals("pqf", contractorModel.findPqfQuestionAnswer(pqfQuestion.getId()));
-        assertEquals("customPqf", contractorModel.findPqfQuestionAnswer(customQuestion.getId()));
-
-        assertEquals(null, contractorModel.findPqfQuestionAnswer(unknownQuestionId));
+        assertEquals(null, contractor.findPqfQuestionAnswer(unknownQuestionId));
     }
     @Test
     public void testFindQuestionAnswer() {
-        int customPqfType = -5;
+        int id = 1;
+        ContractorModel contractor = ContractorModel.builder().contractor(ContractorAccount.builder()
+                .audit(
+                        ContractorAudit.builder()
+                                .data(AuditData.builder().answer("42").question(AuditQuestion.builder().id(id).build()).build())
+                                .build())
+                .build()).build();
 
-        ContractorAccount contractor = new ContractorAccount();
-        ContractorAudit audit = EntityFactory.makeContractorAudit(customPqfType, contractor);
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        AuditData data = EntityFactory.makeAuditData("42", question);
-        question.setQuestionType("Number");
-        audit.getData().add(data);
-
-        AuditQuestion customQuestion = question;
-
-        ContractorModel contractorModel = new ContractorModel();
-        contractorModel.setContractor(contractor);
-        assertEquals("42", contractorModel.findQuestionAnswer(customQuestion.getId()));
-        assertEquals(42.0, contractorModel.findQuestionAnswerAsNumber(customQuestion.getId()));
-    }
-
-    private static AuditQuestion createPqf(ContractorAccount contractor, int pqf, String answer) {
-        ContractorAudit audit = EntityFactory.makeContractorAudit(pqf, contractor);
-        audit.getAuditType().setClassType(AuditTypeClass.PQF);
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        AuditData data = EntityFactory.makeAuditData(answer, question);
-        audit.getData().add(data);
-
-        return question;
+        assertEquals("42", contractor.findQuestionAnswer(id));
+        assertEquals(42.0, contractor.findQuestionAnswerAsNumber(id));
     }
 
     @Test

@@ -16,3 +16,4 @@ rule "workingOnLowFloor"
     then
         $con.updateCriteriaLimitForContractor(523, 34887, 1000123);
     end
+

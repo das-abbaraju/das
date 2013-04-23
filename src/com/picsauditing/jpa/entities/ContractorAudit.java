@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.builders.ContractorAuditBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
@@ -930,4 +931,8 @@ public class ContractorAudit extends AbstractIndexableTable {
 		}
 		return false;
 	}
+
+    public static ContractorAuditBuilder builder() {
+        return new ContractorAuditBuilder();
+    }
 }

@@ -18,6 +18,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.ibm.icu.impl.ICUService;
+import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
@@ -462,4 +464,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return hasMissingChild || getLanguages().isEmpty();
 	}
 
+    public static AuditTypeBuilder builder() {
+        return new AuditTypeBuilder();
+    }
 }

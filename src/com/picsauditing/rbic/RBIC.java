@@ -2,6 +2,7 @@ package com.picsauditing.rbic;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -18,6 +19,8 @@ public class RBIC extends PicsActionSupport {
     private RulesRunner rulesRunner;
     @Autowired
     private InsuranceCriteriaContractorOperatorDAO insuranceCriteriaContractorOperatorDAO;
+    @Autowired
+    private ContractorAccountDAO contractorAccountDAO;
 
     public String execute() {
         rulesRunner.setContractor(contractor);
@@ -26,6 +29,8 @@ public class RBIC extends PicsActionSupport {
             OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
             rulesRunner.runInsuranceCriteriaRulesForOperator(operatorAccount);
         }
+
+        contractorAccountDAO.save(contractor);
 
         return SUCCESS;
     }

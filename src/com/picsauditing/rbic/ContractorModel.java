@@ -4,6 +4,7 @@ import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.rbic.builders.ContractorModelBuilder;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -82,21 +83,22 @@ public class ContractorModel implements Serializable {
     }
 
     public void updateCriteriaLimitForContractor(int flagCriteriaId, int opId, int limit) {
-        InsuranceCriteriaContractorOperator insuranceCriteriaContractorOperator  =
-                    insuranceCriteriaContractorOperatorDAO.findBy(flagCriteriaId, contractor.getId(), opId);
+        InsuranceCriteriaContractorOperator insurance  = getContractor().getInsuranceCriteriaContractorOperators(flagCriteriaId, opId);
 
-        if (insuranceCriteriaContractorOperator == null) {
-            insuranceCriteriaContractorOperator = new InsuranceCriteriaContractorOperator();
-            FlagCriteria flagCriteria = flagCriteriaDAO.find(flagCriteriaId);
-            OperatorAccount operatorAccount = operatorAccountDAO.find(opId);
-            insuranceCriteriaContractorOperator.setOperatorAccount(operatorAccount);
-            insuranceCriteriaContractorOperator.setFlagCriteria(flagCriteria);
-            insuranceCriteriaContractorOperator.setContractorAccount(contractor);
+        if (insurance == null) {
+            insurance = new InsuranceCriteriaContractorOperator();
+
+            OperatorAccount operator = getContractor().getOperator(opId);
+            FlagCriteria flagCriteria = operator.getFlagCriteria(flagCriteriaId);
+            insurance.setOperatorAccount(operator);
+            insurance.setFlagCriteria(flagCriteria);
+            insurance.setContractorAccount(contractor);
+
+            contractor.getInsuranceCriteriaContractorOperators().add(insurance);
         }
 
-        insuranceCriteriaContractorOperator.setAuditColumns();
-        insuranceCriteriaContractorOperator.setInsuranceLimit(limit);
-        insuranceCriteriaContractorOperatorDAO.save(insuranceCriteriaContractorOperator);
+        insurance.setAuditColumns();
+        insurance.setInsuranceLimit(limit);
     }
 
     public ContractorAccount getContractor() {
@@ -119,4 +121,7 @@ public class ContractorModel implements Serializable {
         return contractor.getTransportationRisk();
     }
 
+    public static ContractorModelBuilder builder() {
+        return new ContractorModelBuilder();
+    }
 }

@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.AuditDataBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -357,4 +358,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return displayValue;
 	}
 
+    public static AuditDataBuilder builder() {
+        return new AuditDataBuilder();
+    }
 }

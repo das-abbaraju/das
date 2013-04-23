@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.OperatorAccountBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -777,4 +778,17 @@ public class OperatorAccount extends Account {
 		}
 		return true;
 	}
+
+    public FlagCriteria getFlagCriteria(int flagCriteriaId) {
+        for (FlagCriteriaOperator flag: getFlagCriteria()) {
+            if (flag.getCriteria().getId() == flagCriteriaId) {
+                return flag.getCriteria();
+            }
+        }
+       return null;
+    }
+
+    public static OperatorAccountBuilder builder() {
+        return new OperatorAccountBuilder();
+    }
 }

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.FlagCriteriaBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -310,4 +311,8 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	public boolean hasMissingChildRequiredLanguages() {
 		return getLanguages().isEmpty();
 	}
+
+    public static FlagCriteriaBuilder builder() {
+        return new FlagCriteriaBuilder();
+    }
 }
