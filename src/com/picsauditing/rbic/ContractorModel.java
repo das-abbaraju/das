@@ -62,6 +62,11 @@ public class ContractorModel implements Serializable {
         return Strings.isEmpty(answer) ? 0 : Double.parseDouble(answer);
     }
 
+    public int findQuestionAnswerAsInt(int questionId) {
+        String answer = findQuestionAnswer(questionId);
+        return Strings.isEmpty(answer) ? 0 : Integer.parseInt(answer);
+    }
+
     public static  String getQuestionById(int questionId, List<ContractorAudit> pqfs) {
         for (ContractorAudit audit: pqfs) {
             for (AuditData pqfAnswer : audit.getData())
