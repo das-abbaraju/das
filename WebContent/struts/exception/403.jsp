@@ -4,7 +4,8 @@
 <meta name="decorator" content="simple-layout"/>
 
 <div id="exception" class="notice">
-    <img src="/v7/img/logo/logo-small.png" alt="PICS" />
+    <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png" alt="PICS"><!--<![endif]-->
+    <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/logo/logo-small.svg" alt="PICS"><!--<![endif]-->
     
     <h1>Unauthorized</h1>
     
@@ -13,15 +14,6 @@
     </p>
     
     <p>
-        If you feel that you've reached this in error, please contact the <a href="//www.picsauditing.com/contact/">PICS Customer Service Department</a> or other PICS representative.
+        If you feel that you've reached this in error, please contact the <a href="http://www.picsauditing.com/contact/" target="_blank">PICS Customer Service Department</a> or other PICS representative.
     </p>
-    
-    <%-- Temporary removal until referrer solution architected
-    
-    <s:if test="exception.referrer != 'empty'">
-        <div class="actions clearfix">
-            <a href="${exception.referrer}" class="btn pull-right">Back</a>
-        </div>
-    </s:if>
-     --%>
 </div>

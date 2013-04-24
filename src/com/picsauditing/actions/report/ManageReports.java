@@ -180,8 +180,7 @@ public class ManageReports extends PicsActionSupport {
 			if ( !(permissionService.canUserShareReport(user, report)
 					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
 				throw new UnauthorizedException(
-						"You do not have access to the Report Access page.",
-						getReferer());
+						"You do not have access to the Report Access page.");
 			}
 
 			setReport(report);
@@ -195,8 +194,7 @@ public class ManageReports extends PicsActionSupport {
 					"Unexpected exception in ManageReports!access.action", e);
 
 			throw new UnauthorizedException(
-					"You do not have access to the Report Access page.",
-					getReferer());
+					"You do not have access to the Report Access page.");
 		} catch (Exception e) {
 			logAndShowUserInDebugMode("Unexpected exception in ManageReports!access.action", e);
 		}

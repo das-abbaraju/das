@@ -107,11 +107,11 @@
 	
 	<error-page>
 		<error-code>404</error-code>
-      	<location>/struts/error/404.jsp</location>
+      	<location>/struts/exception/404.jsp</location>
   	</error-page>
 	<error-page>
 	    <error-code>500</error-code>
-	    <location>/struts/error/500.jsp</location>
+	    <location>/struts/exception/500.jsp</location>
 	</error-page>
 
 	<jsp-config>

@@ -11,18 +11,4 @@ public class UnauthorizedException extends Exception {
 	public UnauthorizedException(String message) {
 		super(message);
 	}
-
-	public UnauthorizedException(String message, String referrer) {
-		super(message);
-
-		this.referrer = referrer;
-	}
-
-	public String getReferrer() {
-		return this.referrer;
-	}
-
-	public void setReferrer(String referrer) {
-		this.referrer = referrer;
-	}
 }
