@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
@@ -23,13 +22,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.model.operators.FacilitiesEditStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.verification.VerificationMode;
 import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.validator.ValidationException;
@@ -48,25 +49,21 @@ import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.models.operators.FacilitiesEditModel;
+import com.picsauditing.model.operators.FacilitiesEditModel;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.validator.FacilitiesEditValidator;
 
-public class FacilitiesEditTest extends PicsTest {
+public class FacilitiesEditTest extends PicsActionTest {
 	private int NON_ZERO_OPERATOR_ID = 123;
 
 	private FacilitiesEdit facilitiesEdit;
 	private User user;
 	private OperatorAccount operator;
+    private FacilitiesEditStatus status;
 
 	@Mock
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
 	private FacilitiesEditModel facilitiesEditModel;
-
-	@Mock
-	private Permissions permissions;
 	@Mock
 	private UserDAO userDAO;
 	@Mock
@@ -74,39 +71,28 @@ public class FacilitiesEditTest extends PicsTest {
 	@Mock
 	private FeatureToggle featureToggle;
 	@Mock
-	private FacilitiesEditValidator facilitiesEditValidator;
-	@Mock
 	private AccountStatusChanges accountStatusChanges;
 
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		MockitoAnnotations.initMocks(this);
 
-		facilitiesEdit = new FacilitiesEdit();
-		autowireEMInjectedDAOs(facilitiesEdit);
+        facilitiesEdit = new FacilitiesEdit();
+        super.setUp(facilitiesEdit);
+
+        PicsTestUtil.autowireDAOsFromDeclaredMocks(facilitiesEdit, this);
 
 		user = EntityFactory.makeUser();
-		// the copy of user.id to permisions.userId happens only on
-		// loadPermissions which
-		// happens in login, which we are not doing here. stub it
+        status = new FacilitiesEditStatus();
+
 		when(permissions.getUserId()).thenReturn(user.getId());
+        when(facilitiesEditModel.manageSingleCurrentAccountUser(any(Permissions.class), any(OperatorAccount.class), any(AccountUser.class))).thenReturn(status);
+        when(facilitiesEditModel.addOneToManyAccountUser(any(Permissions.class), any(OperatorAccount.class), any(AccountUser.class))).thenReturn(status);
+        when(featureToggle.isFeatureEnabled(any(String.class))).thenReturn(true);
 
-		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
-		Whitebox.setInternalState(facilitiesEdit, "permissions", permissions);
-		Whitebox.setInternalState(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
-		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditValidator", facilitiesEditValidator);
-		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
-		Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
-
-		// specific call the real method in the FacilitiesEditMode when adding
-		// roles.
-		Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
-		when(featureToggle.isFeatureEnabled(any(String.class))).thenReturn(true);
-
-		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
-		doCallRealMethod().when(facilitiesEditModel).addRole(any(Permissions.class), any(OperatorAccount.class),
-				any(AccountUser.class));
+        Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
+        Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
+        Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
 
 		operator = new OperatorAccount();
 		operator.setId(NON_ZERO_OPERATOR_ID);
@@ -114,143 +100,56 @@ public class FacilitiesEditTest extends PicsTest {
 	}
 
 	@Test
-	public void testAddRoleAccountRep() throws Exception {
-		AccountUser rep = accountRep();
-		facilitiesEdit.setAccountRep(rep);
-
-		doCallRealMethod().when(facilitiesEditModel).addRole(any(Permissions.class), any(OperatorAccount.class),
-				any(AccountUser.class));
-
-		ArgumentCaptor<OperatorAccount> argument = ArgumentCaptor.forClass(OperatorAccount.class);
-		String strutsReturn = facilitiesEdit.addRole();
-		verify(operatorDAO).save(argument.capture());
-		rep = getAccountUserFromOperator(argument);
-
-		accountUserRolesCommonAssertions(strutsReturn, rep);
-		datesConformToBusinessRulesAccountRep(rep);
-	}
-
-	@Test
-	public void testSaveRole() throws Exception {
-		when(facilitiesEditValidator.validateOwnershipPercentage(anyListOf(AccountUser.class))).thenReturn(
-				Strings.EMPTY_STRING);
-
-		String strutsReturnValue = facilitiesEdit.saveRole();
-
-		saveRoleVerifications(strutsReturnValue, times(1));
-	}
-
-	@Test
-	public void testSaveRole_ValidationError() throws Exception {
-		when(facilitiesEditValidator.validateOwnershipPercentage(anyListOf(AccountUser.class))).thenReturn(
-				"Validation Error");
-
-		String strutsReturnValue = facilitiesEdit.saveRole();
-
-		assertEquals("Validation Error", facilitiesEdit.getActionMessages().iterator().next());
-		saveRoleVerifications(strutsReturnValue, never());
-	}
-
-	private void saveRoleVerifications(String strutsReturnValue, VerificationMode mergeVerificationMode) {
-		assertEquals(PicsActionSupport.REDIRECT, strutsReturnValue);
-		verify(em, mergeVerificationMode).merge(operator);
-		verify(em, never()).persist(operator); // not a new operator, so merged
-												// not persisted
-	}
-
-	@Test
-	public void testAddRoleSalesRep() throws Exception {
-		AccountUser rep = salesRep();
+	public void testAddSalesRepresentative_NoErrorAddsActionMessage() throws Exception {
+        status.isOkMessage = "OK MESSAGE";
+        AccountUser rep = salesRep();
 		facilitiesEdit.setSalesRep(rep);
-		AccountUser accountRep = new AccountUser();
-		User user = new User();
-		user.setId(0);
-		accountRep.setUser(user);
-		facilitiesEdit.setAccountRep(accountRep);
+        when(facilitiesEditModel.addOneToManyAccountUser(permissions, operator, rep)).thenReturn(status);
 
-		ArgumentCaptor<OperatorAccount> argument = ArgumentCaptor.forClass(OperatorAccount.class);
-		String strutsReturn = facilitiesEdit.addRole();
-		verify(operatorDAO).save(argument.capture());
-		rep = getAccountUserFromOperator(argument);
+        facilitiesEdit.addSalesRepresentative();
 
-		accountUserRolesCommonAssertions(strutsReturn, rep);
-		datesConformToBusinessRulesSalesRep(rep);
+        assertTrue(facilitiesEdit.getActionMessages().contains(status.isOkMessage));
 	}
 
-	private AccountUser getAccountUserFromOperator(ArgumentCaptor<OperatorAccount> argument) {
-		List<AccountUser> accountUsers = argument.getValue().getAccountUsers();
-		return accountUsers.get(0);
-	}
+    @Test
+    public void testAddSalesRepresentative_ErrorAddsActionError() throws Exception {
+        status.isOk = false;
+        status.notOkErrorMessage = "NOT OK MESSAGE";
+        AccountUser rep = salesRep();
+        facilitiesEdit.setSalesRep(rep);
+        when(facilitiesEditModel.addOneToManyAccountUser(permissions, operator, rep)).thenReturn(status);
 
-	private void accountUserRolesCommonAssertions(String strutsReturn, AccountUser rep) {
-		Date now = new Date();
+        facilitiesEdit.addSalesRepresentative();
 
-		assertEquals(PicsActionSupport.REDIRECT, strutsReturn);
-		assertEquals("didn't get the expected operator back from the account rep", operator, rep.getAccount());
-		assertNotNull("start date should not be null", rep.getStartDate());
-		assertNotNull("end date should not be null", rep.getEndDate());
+        assertTrue(facilitiesEdit.getActionErrors().contains(status.notOkErrorMessage));
+    }
 
-		auditColumnsAreSet(rep, now);
+    @Test
+    public void testManageAccountRepresentative_NoErrorAddsActionMessage() throws Exception {
+        status.isOkMessage = "OK MESSAGE";
+        AccountUser rep = accountRep();
+        facilitiesEdit.setAccountRep(rep);
+        when(facilitiesEditModel.manageSingleCurrentAccountUser(permissions, operator, rep)).thenReturn(status);
 
-		// not a new operator, so merged not persisted
-		verify(operatorDAO, times(1)).save(operator);
-	}
+        facilitiesEdit.manageAccountRepresentative();
 
-	@Test
-	public void testAddOneAccountRepThenOwnerPercentConformsToBusinessRule() {
-		// success: account users with same role owner percentage = 100 do not
-		// trigger action message
+        assertTrue(facilitiesEdit.getActionMessages().contains(status.isOkMessage));
+    }
 
-		FacilitiesEdit facilitiesEditSpy = spy(facilitiesEdit);
+    @Test
+    public void testManageAccountRepresentative_ErrorAddsActionError() throws Exception {
+        status.isOk = false;
+        status.notOkErrorMessage = "NOT OK MESSAGE";
+        AccountUser rep = accountRep();
+        facilitiesEdit.setAccountRep(rep);
+        when(facilitiesEditModel.manageSingleCurrentAccountUser(permissions, operator, rep)).thenReturn(status);
 
-		AccountUser accountRep = accountUser();
-		accountRep.setRole(UserAccountRole.PICSAccountRep);
-		facilitiesEditSpy.setAccountRep(accountRep);
+        facilitiesEdit.manageAccountRepresentative();
 
-		// TODO: figure out why I have to reset this from the mock for the spy
-		// to work
-		OperatorAccount operator = EntityFactory.makeOperator();
-		facilitiesEditSpy.setOperator(operator);
+        assertTrue(facilitiesEdit.getActionErrors().contains(status.notOkErrorMessage));
+    }
 
-		facilitiesEditSpy.addRole();
-
-		verify(facilitiesEditSpy, never()).addActionMessage(anyString());
-	}
-
-	@Test
-	public void testAddRole_ViolatesBusinessRule() throws ValidationException {
-		FacilitiesEdit facilitiesEditSpy = additionSetupForAddRoleTest();
-		when(facilitiesEditValidator.validateOwnershipPercentage(anyListOf(AccountUser.class), any(AccountUser.class)))
-				.thenReturn("Validation Error");
-
-		String strutsReturnValue = facilitiesEditSpy.addRole();
-
-		assertEquals("Validation Error", facilitiesEditSpy.getActionMessages().iterator().next());
-		assertEquals(PicsActionSupport.REDIRECT, strutsReturnValue);
-		verify(facilitiesEditSpy, never()).addActionMessage(
-				UserAccountRole.PICSAccountRep.getDescription() + " is not 100 percent");
-	}
-
-	private FacilitiesEdit additionSetupForAddRoleTest() {
-		FacilitiesEdit facilitiesEditSpy = spy(facilitiesEdit);
-
-		AccountUser accountRep = accountUser();
-		accountRep.setRole(UserAccountRole.PICSAccountRep);
-		facilitiesEditSpy.setAccountRep(accountRep);
-
-		AccountUser accountRep2 = accountUser();
-		accountRep2.setRole(UserAccountRole.PICSAccountRep);
-
-		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-		accountUsers.add(accountRep2);
-
-		operator.setAccountUsers(accountUsers);
-		facilitiesEditSpy.setOperator(operator);
-
-		return facilitiesEditSpy;
-	}
-
-	@Test
+    @Test
 	public void testGetPrimaryOperatorContactUsers() throws Exception {
 		Set<User> primaryContactSet = new HashSet<User>();
 		List<User> findUser = new ArrayList<User>();
@@ -268,7 +167,6 @@ public class FacilitiesEditTest extends PicsTest {
 		CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
 
 		when(countrySubdivision.getCountry()).thenReturn(country);
-		when(em.merge(operator)).thenReturn(operator);
 
 		operator.setCountry(country);
 		operator.setCountrySubdivision(countrySubdivision);
@@ -286,7 +184,7 @@ public class FacilitiesEditTest extends PicsTest {
 		assertFalse(facilitiesEdit.hasActionMessages());
 		assertTrue(facilitiesEdit.hasActionErrors());
 
-		verify(em, never()).merge(any(OperatorAccount.class));
+		verify(operatorDAO, never()).save(any(OperatorAccount.class));
 	}
 
 	private AccountUser accountRep() {

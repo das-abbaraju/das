@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import javax.naming.NoPermissionException;
 
+import com.picsauditing.model.operators.FacilitiesEditStatus;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,10 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.models.operators.FacilitiesEditModel;
+import com.picsauditing.model.operators.FacilitiesEditModel;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.validator.FacilitiesEditValidator;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
@@ -63,8 +63,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private FacilitiesEditModel facilitiesEditModel;
     @Autowired
     protected CountrySubdivisionDAO countrySubdivisionDAO;
-    @Autowired
-    private FacilitiesEditValidator facilitiesEditValidator;
     @Autowired
     private AccountStatusChanges accountStatusChanges;
 
@@ -137,56 +135,55 @@ public class FacilitiesEdit extends OperatorActionSupport {
         return SUCCESS;
     }
 
-    public String remove() {
-        String validationMessage = facilitiesEditValidator.validateRemoveAccountUser(operator.getAccountUsers(), accountUser);
-        if (Strings.isNotEmpty(validationMessage)) {
-        	addActionMessage(validationMessage);
-        	return REDIRECT;
-        }
-
+    public String removeSalesRepresentative() {
         accountUserDAO.remove(accountUser);
-
+        addActionMessage("Successfully Removed Sales Representative");
         return REDIRECT;
     }
 
-    public String addRole() {
-    	// TODO: delete this once everything has been refactored to correctly send
-    	//       only one accountUser, instead of multiple
-    	AccountUser newAccountUser = null;
-    	if (accountRep != null && accountRep.getUser().getId() > 0) {
-    		newAccountUser = accountRep;
-    	} else {
-        	newAccountUser = salesRep;
-    	}
+    /*
+        My thinking here is that we can have two kinds of generalized AccountUsers - the kind where there's only
+        one current one (AccountReps, CSRs) and the kind where there are multiple current reps, possibly having to
+        total 100% ownership. For each specific kind, we'll have a specific web controller method that marshals the
+        specific resource. Then we just pass that argument to the model to handle it.
 
-    	String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(operator.getAccountUsers(), newAccountUser);
-        if (Strings.isNotEmpty(validationMessage)) {
-        	addActionMessage(validationMessage);
-        	return REDIRECT;
+        For example, manageAccountRepresentative knows to pass accountRep to the model domain service
+     */
+    public String manageAccountRepresentative() {
+        FacilitiesEditStatus status = facilitiesEditModel.manageSingleCurrentAccountUser(permissions, operator, accountRep);
+        if (!status.isOk) {
+            addActionError(status.notOkErrorMessage);
+        } else {
+            addActionMessage(status.isOkMessage);
         }
+        return REDIRECT;
+    }
 
-    	facilitiesEditModel.addRole(permissions, operator, newAccountUser);
-
+    public String addSalesRepresentative() {
+        FacilitiesEditStatus status = facilitiesEditModel.addOneToManyAccountUser(permissions, operator, salesRep);
+        if (!status.isOk) {
+            addActionError(status.notOkErrorMessage);
+        } else {
+            addActionMessage(status.isOkMessage);
+        }
     	return REDIRECT;
     }
 
-    public String copyToChildAccounts() throws Exception {
-        facilitiesEditModel.copyToChildAccounts(operator, accountUser);
-
-        addActionMessage("Successfully Copied to all child operators");
-
+    public String saveSalesRepresentative() {
+        operatorDao.save(operator);
+        addActionMessage("Successfully Saved Sales Representative");
         return REDIRECT;
     }
 
-    public String saveRole() {
-    	String validationMessage = facilitiesEditValidator.validateOwnershipPercentage(operator.getAccountUsers());
-        if (Strings.isNotEmpty(validationMessage)) {
-        	addActionMessage(validationMessage);
-        	return REDIRECT;
-        }
+    public String copySalesRepresentativeToChildAccounts() throws Exception {
+        facilitiesEditModel.copyOneToManyAccountUserToChildAccounts(operator, accountUser);
+        addActionMessage("Successfully Copied to all child operators");
+        return REDIRECT;
+    }
 
-        operatorDao.save(operator);
-
+    public String copyAccountMangerToChildAccounts() throws Exception {
+        facilitiesEditModel.copySingleCurrentAccountUserToChildAccounts(permissions, operator, accountUser);
+        addActionMessage("Successfully Copied to all child operators");
         return REDIRECT;
     }
 
@@ -354,7 +351,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
     	operator.setNeedsIndexing(true);
         return operatorDao.save(operator);
-//      id = operator.getId();
     }
 
     public String ajaxAutoApproveRelationshipModal() throws Exception {

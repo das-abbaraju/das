@@ -791,4 +791,26 @@ public class OperatorAccount extends Account {
     public static OperatorAccountBuilder builder() {
         return new OperatorAccountBuilder();
     }
+
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentAccountRepresentative() {
+        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+        if (accountUser != null) {
+            return accountUser.getUser();
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentAccountRepresentative(User newAccountRep, int createdById) {
+        expireCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+        addNewCurrentAccountUserOfRole(newAccountRep, UserAccountRole.PICSAccountRep, createdById);
+    }
+
+    @Transient
+    public AccountUser getCurrentAccountRepresentativeAccountUser() {
+        return getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+    }
+
 }

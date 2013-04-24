@@ -26,6 +26,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.DateBean;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -1100,4 +1101,57 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public void setDeactivatedBy(User deactivatedBy) {
 		this.deactivatedBy = deactivatedBy;
 	}
+
+    @Transient
+    protected void expireCurrentAccountUserOfRole(UserAccountRole role) {
+        Date now = new Date();
+        List<AccountUser> accountReps = getAccountUsers();
+        if (accountReps != null) {
+            for (AccountUser representative : accountReps) {
+                if (representative.isCurrent() && representative.getRole() == role) {
+                    representative.setEndDate(now);
+                }
+            }
+        }
+    }
+
+    @Transient
+    protected void addNewCurrentAccountUserOfRole(User newAccountUser, UserAccountRole role, int createdById) {
+        if (newAccountUser != null) {
+            Date now = new Date();
+            AccountUser accountUser = new AccountUser();
+            accountUser.setAccount(this);
+            accountUser.setUser(newAccountUser);
+            accountUser.setStartDate(now);
+            accountUser.setEndDate(DateBean.getEndOfTime());
+            accountUser.setRole(role);
+            accountUser.setOwnerPercent(100);
+            accountUser.setCreatedBy(new User(createdById));
+            accountUser.setCreationDate(now);
+            addAccountUser(accountUser);
+        }
+    }
+
+    @Transient
+    protected AccountUser getCurrentAccountUserOfRole(UserAccountRole role) {
+        if (accountUsers != null) {
+            for (AccountUser representative : accountUsers) {
+                if (representative.isCurrent() && representative.getRole() == role) {
+                    return representative;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Transient
+    public boolean isActive() {
+        return (status != null && status.isActive());
+    }
+
+    @Transient
+    public boolean isActiveOrDemo() {
+        return (status != null && status.isActiveOrDemo());
+    }
+
 }

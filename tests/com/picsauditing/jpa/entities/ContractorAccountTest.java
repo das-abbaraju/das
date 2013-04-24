@@ -1,12 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import java.math.BigDecimal;
@@ -47,6 +43,7 @@ public class ContractorAccountTest {
 	private ContractorOperator CO_2 = new ContractorOperator();
 	private ContractorOperator CO_3 = new ContractorOperator();
 	private Map<FeeClass, ContractorFee> fees;
+    private List<AccountUser> accountUsers;
 
 	@Mock
 	private ContractorFee bidOnlyFee;
@@ -90,7 +87,9 @@ public class ContractorAccountTest {
 		contractor = EntityFactory.makeContractor();
 		contractorUnderTest = new ContractorAccount();
 		testOperators = new ArrayList<ContractorOperator>();
+        accountUsers = new ArrayList<>();
 
+        contractorUnderTest.setAccountUsers(accountUsers);
 		Whitebox.setInternalState(contractorUnderTest, "invoiceFeeDAO", feeDao);
 		Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
 		Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
@@ -115,7 +114,79 @@ public class ContractorAccountTest {
 		contractorUnderTest.setFees(fees);
 	}
 
-	@Test
+    @Test
+    public void testGetCurrentCsr_ReturnsCurrentCsr() throws Exception {
+        User currentCsr = mock(User.class);
+        AccountUser currentCsrAccountUser = currentCsr();
+        when(currentCsrAccountUser.getUser()).thenReturn(currentCsr);
+        accountUsers.add(oldCsr());
+        accountUsers.add(currentCsrAccountUser);
+        accountUsers.add(currentSalesRep());
+
+        assertEquals(currentCsr, contractorUnderTest.getCurrentCsr());
+    }
+
+    @Test
+    public void testGetCurrentCsr_ReturnsNullIfNoCurrentCsr() throws Exception {
+        accountUsers.add(oldCsr());
+        accountUsers.add(currentSalesRep());
+
+        assertEquals(null, contractorUnderTest.getCurrentCsr());
+    }
+
+    @Test
+    public void testSetCurrentCsr_ExpiresCurrentCsr() throws Exception {
+        User newCsr = mock(User.class);
+        AccountUser currentCsr = currentCsr();
+        when(currentCsr.getUser()).thenReturn(newCsr);
+
+        contractorUnderTest.setCurrentCsr(newCsr, 1);
+
+        User newCurrentCsr = contractorUnderTest.getCurrentCsr();
+        assertEquals(newCsr, newCurrentCsr);
+    }
+
+    @Test
+    public void testSetCurrentCsr_setsNewCsr() throws Exception {
+        User newCsr = mock(User.class);
+        AccountUser currentCsr = currentCsr();
+        when(currentCsr.getUser()).thenReturn(newCsr);
+        AccountUser oldCsr = oldCsr();
+        AccountUser salesRep = currentSalesRep();
+        accountUsers.add(currentCsr);
+        accountUsers.add(oldCsr);
+        accountUsers.add(salesRep);
+
+        contractorUnderTest.setCurrentCsr(newCsr, 1);
+
+        verify(currentCsr).setEndDate(any(Date.class));
+        verify(oldCsr, never()).setEndDate(any(Date.class));
+        verify(salesRep, never()).setEndDate(any(Date.class));
+    }
+
+
+    private AccountUser currentSalesRep() {
+        AccountUser currentSalesRep = mock(AccountUser.class);
+        when(currentSalesRep.isCurrent()).thenReturn(true);
+        when(currentSalesRep.getRole()).thenReturn(UserAccountRole.PICSSalesRep);
+        return currentSalesRep;
+    }
+
+    private AccountUser currentCsr() {
+        AccountUser currentCsr = mock(AccountUser.class);
+        when(currentCsr.isCurrent()).thenReturn(true);
+        when(currentCsr.getRole()).thenReturn(UserAccountRole.PICSCustomerServiceRep);
+        return currentCsr;
+    }
+
+    private AccountUser oldCsr() {
+        AccountUser oldCsr = mock(AccountUser.class);
+        when(oldCsr.isCurrent()).thenReturn(false);
+        when(oldCsr.getRole()).thenReturn(UserAccountRole.PICSCustomerServiceRep);
+        return oldCsr;
+    }
+
+    @Test
 	public void testGetBillingStatus_PastDueInvoicesIsPastDue() throws Exception {
 		List<Invoice> invoices = new ArrayList<Invoice>();
 		Invoice invoice = mock(Invoice.class);

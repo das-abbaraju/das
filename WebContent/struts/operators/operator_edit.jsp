@@ -110,14 +110,13 @@
             <s:if test="operator.operator">
                 <li>
                     <label><s:text name="FacilitiesEdit.AccountManager"/>:</label>
-                    <s:iterator value="accountManagers" id="au">
-                        <s:property value="#au.user.name"/>
-                    </s:iterator>
+                    <s:property value="operator.currentAccountRepresentative.name"/>
                 </li>
 
                 <s:if test="salesReps.size() > 0">
                     <li>
                         <label><s:text name="FacilitiesEdit.SalesRepresentative"/>:</label>
+
                         <s:iterator value="salesReps" id="au">
                             <s:property value="#au.user.name"/>
                         </s:iterator>
@@ -694,7 +693,7 @@
                         <s:date name="endDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                     </td>
                     <td>
-                        <s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
+                        <s:url var="facilities_edit_remove" action="FacilitiesEdit" method="removeSalesRepresentative">
                             <s:param name="operator" value="%{operator.id}"/>
                             <s:param name="accountUser" value="%{id}"/>
                         </s:url>
@@ -705,7 +704,7 @@
 
                     <s:if test="operator.corporate">
                         <td>
-                            <s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
+                            <s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copySalesRepresentativeToChildAccounts">
                                 <s:param name="operator" value="%{operator.id}"/>
                                 <s:param name="accountUser" value="%{id}"/>
                             </s:url>
@@ -748,7 +747,7 @@
                         </nobr>
                     </td>
                     <td>
-                        <s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role"/>
+                        <s:submit cssClass="picsbutton positive" method="saveSalesRepresentative" value="Save Role"/>
                     </td>
                 </tr>
             </s:if>
@@ -771,34 +770,20 @@
             </td>
             <td <s:if test="operator.corporate">colspan="2"</s:if> >
                 <s:hidden value="PICSSalesRep" name="salesRep.role"/>
-                <s:submit cssClass="picsbutton positive" method="addRole" value="Add Role"/>
+                <s:submit cssClass="picsbutton positive" method="addSalesRepresentative" value="Add Role"/>
             </td>
         </tr>
         </tbody>
     </table>
 </li>
 <li>
-    <label>Account Managers: </label>
+    <label>Account Manager: </label>
 
     <table class="report">
         <thead>
         <tr>
             <td>
                 User
-            </td>
-            <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
-            	<td>
-            		Service Level
-            	</td>
-            </pics:toggle>
-            <td>
-                Ownership
-            </td>
-            <td>
-                Start
-            </td>
-            <td>
-                End
             </td>
             <td></td>
 
@@ -808,100 +793,33 @@
         </tr>
         </thead>
         <tbody>
-        <s:iterator value="operator.accountUsers" status="role">
-            <s:if test="role.description == 'Account Manager' && current">
-                <tr>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:property value="user.name"/>
-                    </td>
-                    <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
-                    	<td onclick="$('#show_<s:property value="id"/>').show();">
-                    		<s:property value="serviceLevel" />
-                    	</td>
-                    </pics:toggle>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:property value="ownerPercent"/>%
-                    </td>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-                    </td>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="endDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-                    </td>
-                    <td>
-                        <s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
-                            <s:param name="operator" value="%{operator.id}"/>
-                            <s:param name="accountUser" value="%{id}"/>
-                        </s:url>
-                        <a href="${facilities_edit_remove}" class="remove">
-                            <s:text name="button.Remove"/>
-                        </a>
-                    </td>
-
-                    <s:if test="operator.corporate">
-                        <td>
-                            <s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
-                                <s:param name="operator" value="%{operator.id}"/>
-                                <s:param name="accountUser" value="%{id}"/>
-                            </s:url>
-                            <a href="${facilities_edit_copy}" class="add">
-                                <s:text name="FacilitiesEdit.CopyToChildAccounts"/>
-                            </a>
-                        </td>
-                    </s:if>
-                </tr>
-                <tr id="show_<s:property value="id"/>" style="display: none;">
-                	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
-                    	<td colspan="5">
-                    </pics:toggle>
-                    <pics:toggleElse>
-                    	<td colspan="4">
-                    </pics:toggleElse>
-                        <nobr>
-                        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
-                        		<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel" />
-                            </pics:toggle>
-                            <s:textfield
-                                    name="operator.accountUsers[%{#role.index}].ownerPercent"
-                                    value="%{ownerPercent}" size="3"
-                                    />%
-                            &nbsp;&nbsp;
-                            <s:textfield
-                                    cssClass="blueMain datepicker" size="10"
-                                    name="operator.accountUsers[%{#role.index}].startDate"
-                                    id="startDate[%{id}]"
-                                    value="%{@com.picsauditing.PICS.DateBean@format(startDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
-                                    />
-                            &nbsp;&nbsp;
-                            <s:textfield cssClass="blueMain datepicker"
-                                         size="10"
-                                         name="operator.accountUsers[%{#role.index}].endDate"
-                                         id="endDate[%{id}]"
-                                         value="%{@com.picsauditing.PICS.DateBean@format(endDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
-                                    />
-                        </nobr>
-                    </td>
-                    <td>
-                        <s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role"/>
-                    </td>
-                </tr>
-            </s:if>
-        </s:iterator>
-
         <tr>
-        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
-            	<td colspan="5">
-            </pics:toggle>
-            <pics:toggleElse>
-            	<td colspan="4">
-            </pics:toggleElse>
-                <s:select name="accountRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0"
-                          headerValue="- Select a User -"/>
+            <td>
+                <s:select
+                        name="accountRep.user.id"
+                        list="userList"
+                        listKey="id"
+                        listValue="name"
+                        headerKey="0"
+                        headerValue="- Select a User -"
+                        value="operator.currentAccountRepresentative.id"/>
             </td>
-            <td <s:if test="operator.corporate">colspan="2"</s:if>>
+            <td>
                 <s:hidden value="PICSAccountRep" name="accountRep.role"/>
-                <s:submit cssClass="picsbutton positive" method="addRole" value="Add Role"/>
+                <s:submit cssClass="picsbutton positive" method="manageAccountRepresentative" value="Save Role"/>
             </td>
+            <s:if test="operator.corporate">
+                <td>
+                    <s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyAccountMangerToChildAccounts">
+                        <s:param name="operator" value="%{operator.id}"/>
+                        <s:param name="accountUser" value="%{operator.currentAccountRepresentativeAccountUser.id}"/>
+                    </s:url>
+                    <a href="${facilities_edit_copy}" class="add">
+                        <s:text name="FacilitiesEdit.CopyToChildAccounts"/>
+                    </a>
+                </td>
+            </s:if>
+
         </tr>
         </tbody>
     </table>
@@ -952,7 +870,12 @@
                         	</td>
                         </pics:toggle>
                         <td>
-                            <s:property value="ownerPercent"/>%
+                            <s:if test="#key.description == 'Account Manager'">
+                                    N/A
+                            </s:if>
+                            <s:else>
+                                <s:property value="ownerPercent"/>%
+                            </s:else>
                         </td>
                         <td>
                             <s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
