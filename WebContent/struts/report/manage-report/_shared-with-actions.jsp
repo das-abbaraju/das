@@ -39,7 +39,7 @@
         <li class="divider"></li>
         
         <li>
-            <a href="${report_remove_url}" class="remove">Remove</a>
+            <a href="${report_remove_url}" class="remove" data-report-id="${report.id}">Remove</a>
         </li>
     </ul>
 </div>

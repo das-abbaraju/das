@@ -48,7 +48,8 @@ PICS.define('report.manage-report.OwnedByController', {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
                 $report_options = $report.find('.report-options'),
-                $report_icons = $report.find('.icons');
+                $report_icons = $report.find('.icons'),
+                report_id = $element.data('report-id');
             
             $report.addClass('delete');
             
@@ -59,7 +60,7 @@ PICS.define('report.manage-report.OwnedByController', {
             $report.append($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="btn cancel">Cancel</button>',
-                    '<button class="btn btn-danger delete">Delete</button>',
+                    '<button class="btn btn-danger delete" data-report-id="' + report_id + '">Delete</button>',
                 '</div>'
             ].join('')));
             

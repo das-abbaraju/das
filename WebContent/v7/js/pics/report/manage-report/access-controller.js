@@ -47,7 +47,7 @@ PICS.define('report.manage-report.AccessController', {
 
             this.resetGroup($group);
 
-            $group.addClass('edit');
+            $group.toggleClass('edit view');
 
             this.updateSelectedPermission($element);
 
@@ -75,7 +75,7 @@ PICS.define('report.manage-report.AccessController', {
 
             this.resetGroup($group);
 
-            $group.addClass('view');
+            $group.toggleClass('edit view');
 
             this.updateSelectedPermission($element);
 
@@ -87,7 +87,9 @@ PICS.define('report.manage-report.AccessController', {
                 $user = $element.closest('.user'),
                 $summary = $user.find('.summary'),
                 $location = $summary.find('.location'),
-                $access_options = $user.find('.access-options');
+                $access_options = $user.find('.access-options'),
+                href = $element.attr('href'),
+                report_id = $element.data('report-id');
 
             $user.addClass('assign');
 
@@ -101,7 +103,7 @@ PICS.define('report.manage-report.AccessController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="assign-ownership btn btn-warning" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Assign</button>',
+                    '<button class="assign-ownership btn btn-warning" data-href="' + href + '" data-report-id="' + report_id + '">Assign</button>',
                 '</div>'
             ].join('')));
 
@@ -121,7 +123,7 @@ PICS.define('report.manage-report.AccessController', {
 
             this.resetUser($user);
 
-            $user.addClass('edit');
+            $user.toggleClass('edit view');
 
             this.updateSelectedPermission($element);
 
@@ -134,6 +136,7 @@ PICS.define('report.manage-report.AccessController', {
                 $summary = $user.find('.summary'),
                 $location = $summary.find('.location'),
                 $access_options = $user.find('.access-options'),
+                href = $element.attr('href'),
                 report_id = $element.data('report-id'),
                 user_id = $user.data('user-id'),
                 is_current_user = $user.data('current-user');
@@ -150,7 +153,7 @@ PICS.define('report.manage-report.AccessController', {
                 $user.prepend($([
                     '<div class="confirm-options btn-group pull-right">',
                         '<button class="cancel btn">Cancel</button>',
-                        '<button class="assign-view btn btn-primary" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Remove</button>',
+                        '<button class="assign-view btn btn-primary" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
                     '</div>'
                 ].join('')));
             } else {
@@ -161,7 +164,7 @@ PICS.define('report.manage-report.AccessController', {
     
                 this.resetUser($user);
     
-                $user.addClass('view');
+                $user.toggleClass('edit view');
     
                 this.updateSelectedPermission($element);
             }
@@ -343,14 +346,15 @@ PICS.define('report.manage-report.AccessController', {
             $user.slideUp(400, function () {
                 that.unshareWithUser({
                     report_id: report_id,
-                    user_id: user_id
+                    user_id: user_id,
+                    success: function () {
+                        if (is_current_user) {
+                            window.location.href = 'ManageReports!favorites.action';
+                        } else {
+                            $user.remove();
+                        }
+                    }
                 });
-
-                if (is_current_user) {
-                    window.location.href = 'ManageReports!favorites.action';
-                } else {
-                    $(this).remove();
-                }
             });
         },
 
@@ -368,7 +372,9 @@ PICS.define('report.manage-report.AccessController', {
                 $group = $element.closest('.group'),
                 $summary = $group.find('.summary'),
                 $location = $summary.find('.location'),
-                $access_options = $group.find('.access-options');
+                $access_options = $group.find('.access-options'),
+                href = $element.attr('href'),
+                report_id = $element.data('report-id');
 
             $group.addClass('remove');
 
@@ -382,7 +388,7 @@ PICS.define('report.manage-report.AccessController', {
             $group.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
                 '</div>'
             ].join('')));
 
@@ -394,7 +400,9 @@ PICS.define('report.manage-report.AccessController', {
                 $user = $element.closest('.user'),
                 $summary = $user.find('.summary'),
                 $location = $summary.find('.location'),
-                $access_options = $user.find('.access-options');
+                $access_options = $user.find('.access-options'),
+                href = $element.attr('href'),
+                report_id = $element.data('report-id');
 
             $user.addClass('remove');
 
@@ -408,13 +416,14 @@ PICS.define('report.manage-report.AccessController', {
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
                     '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + $element.attr('href') + '" data-report-id="' + $element.data('report-id') + '">Remove</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
                 '</div>'
             ].join('')));
 
             event.preventDefault();
         },
 
+        // remove any "confirmation" state from the group—be that remove permission
         resetGroup: function ($group) {
             var $summary = $group.find('.summary'),
                 $info = $summary.find('.info'),
@@ -433,6 +442,8 @@ PICS.define('report.manage-report.AccessController', {
             $group.removeClass('remove');
         },
 
+        // remove any "confirmation" state from the user—be that remove permission, 
+        // transfer ownership, revoking current user edit permission
         resetUser: function ($user) {
             var $summary = $user.find('.summary'),
                 $info = $summary.find('.info'),
@@ -605,7 +616,9 @@ PICS.define('report.manage-report.AccessController', {
                 data: {
                     reportId: report_id,
                     shareId: account_id
-                }
+                },
+                success: success,
+                error: error
             });
         },
 
@@ -620,7 +633,9 @@ PICS.define('report.manage-report.AccessController', {
                 data: {
                     reportId: report_id,
                     shareId: group_id
-                }
+                },
+                success: success,
+                error: error
             });
         },
 
@@ -635,7 +650,9 @@ PICS.define('report.manage-report.AccessController', {
                 data: {
                     reportId: report_id,
                     shareId: user_id
-                }
+                },
+                success: success,
+                error: error
             });
         },
 
