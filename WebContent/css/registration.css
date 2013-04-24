@@ -192,13 +192,6 @@ footer .footer-menu a {
 	width: 588px;
 }
 
-.registration-form .company-information input,.registration-form .contact-information input,.registration-form .account-information input
-	{
-	-webkit-box-shadow: inset 0px 2px 3px -1px #878787;
-	-moz-box-shadow: inset 0px 2px 3px -1px #878787;
-	box-shadow: inset 0px 2px 3px -1px #878787;
-}
-
 .registration-form section {
 	background: #F5F5F5;
 	margin: 2px;
@@ -227,10 +220,6 @@ footer .footer-menu a {
 
 .registration-form li {
 	overflow: hidden;
-}
-
-.registration-form input {
-	float: left;
 }
 
 .registration-form #vat_id
@@ -310,13 +299,6 @@ footer .footer-menu a {
 
 .registration-form .actions a {
 	color: #ba6219;
-}
-
-.registration-form .actions input {
-	float: left;
-	left: 22px;
-	position: relative;
-	top: 35px;
 }
 
 /* registration side bar */
@@ -424,48 +406,29 @@ footer .footer-menu a {
 	margin-bottom: 15px;
 }
 
-.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label
+.registration-form label,
+.client-site-form label,
+.service-evaluation-form label,
+.make-payment-form label,
+.provide-ssip-details-later-message
 	{
 	color: #5d5d5d;
 	display: block;
-	float: left;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 25px;
-	margin-right: 10px;
+}
+
+.registration-form label,
+.client-site-form label,
+.service-evaluation-form label,
+.make-payment-form label
+{
+	float: left;
 	text-align: right;
+	margin-right: 10px;
 	width: 150px;
-}
 
-.registration-form input,.client-site-form input,.service-evaluation-form input,.make-payment-form input
-	{
-	border: 1px solid #878787;
-	height: 20px;
-	padding: 1px 5px;
-	width: 175px;
-}
-
-.service-evaluation-form input.checkbox {
-	width: auto;
-}
-
-.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio
-	{
-	float: left;
-}
-
-.service-evaluation-form ul.checkbox-list li,.service-evaluation-form ul.radio li,.make-payment-form ul.radio li
-	{
-	margin: 0px;
-}
-
-.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input
-	{
-	border: 0px;
-	float: left;
-	padding: 0px;
-	margin-right: 5px;
-	width: auto;
 }
 
 .service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label
@@ -505,13 +468,6 @@ footer .footer-menu a {
 .registration-form .help-text,.client-site-form .help-text,.service-evaluation-form .help-text,.make-payment-form .help-text
 	{
 	display: none;
-}
-
-.registration-form .actions input,.registration-form .actions button,.client-site-form .actions input,.client-site-form .actions button,.service-evaluation-form .actions input,.service-evaluation-form .actions button,.make-payment-form .actions input,.make-payment-form .actions button
-	{
-	height: auto;
-	padding: 9px 20px 10px;
-	width: auto;
 }
 
 .client-site-form .actions p,.service-evaluation-form .actions p,.make-payment-form .actions p
@@ -883,17 +839,6 @@ footer .footer-menu a {
 	margin: 0px 0px 15px;
 }
 
-.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio
-	{
-	background: #eef5fb;
-	padding: 20px;
-	width: 540px;
-}
-
-.service-evaluation-form ul.checkbox-list input {
-	margin: 3px 6px 3px 0px;
-}
-
 .service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label
 	{
 	margin: 0px 0px 5px;
@@ -986,7 +931,8 @@ footer .footer-menu a {
 	width: 560px;
 }
 
-.make-payment .policy li {
+.make-payment .policy li,
+ {
 	display: inline;
 	margin: 0px 10px;
 }
@@ -1179,4 +1125,146 @@ footer .footer-menu a {
 #Registration_contractor_countrySubdivision
 {
 	float: left;
+}
+
+.registration-form .company-information input,
+.registration-form .contact-information input,
+.registration-form .account-information input
+	{
+	-webkit-box-shadow: inset 0px 2px 3px -1px #878787;
+	-moz-box-shadow: inset 0px 2px 3px -1px #878787;
+	box-shadow: inset 0px 2px 3px -1px #878787;
+}
+
+.registration-form input {
+	float: left;
+}
+
+.registration-form .actions input {
+	float: left;
+	left: 22px;
+	position: relative;
+	top: 35px;
+}
+
+.service-evaluation-form input,
+.service-evaluation-form select
+{
+  -webkit-border-radius: 5px 5px;
+  -moz-border-radius: 5px 5px;
+  -ms-border-radius: 5px 5px;
+  -o-border-radius: 5px 5px;
+  border-radius: 5px 5px;
+}
+
+.registration-form input,
+.client-site-form input,
+.service-evaluation-form input,
+.make-payment-form input,
+.service-evaluation-form select
+{
+	border: 1px solid #B5B5B5;
+	width: 175px;
+}
+
+
+.registration-form input,
+.client-site-form input,
+.service-evaluation-form input,
+.make-payment-form input
+	{
+	height: 20px;
+	padding: 1px 5px;
+}
+
+.service-evaluation-form ul.text-input-list li input.year
+{
+	width: 4em;
+}
+
+.service-evaluation-form ul.text-input-list li input.month
+{
+	width: 2em;
+}
+
+.service-evaluation-form ul.text-input-list li input.day
+{
+	width: 2em;
+}
+
+.request-to-provide-ssip-details-container,
+.provide-ssip-details-later-message,
+.ssip-details-container
+{
+	display: none;
+}
+
+.service-evaluation-form input.checkbox {
+	width: auto;
+}
+
+.service-evaluation-form ul.checkbox-list,
+.service-evaluation-form ul.radio,
+.service-evaluation-form ul.text-input-list,
+.make-payment-form ul.radio
+	{
+	float: left;
+}
+
+.service-evaluation-form ul.checkbox-list li,
+.service-evaluation-form ul.radio li,
+.service-evaluation-form ul.text-input-list li
+.make-payment-form ul.radio li
+	{
+	margin: 0px;
+}
+
+.service-evaluation-form ul.text-input-list li
+{
+	display: inline;
+}
+
+.service-evaluation-form ul.checkbox-list input,
+.service-evaluation-form ul.radio input,
+.make-payment-form ul.radio input,
+.service-evaluation-form ul.text-input-list input,
+.service-evaluation-form select
+	{
+	float: left;
+	padding: 4px;
+	margin-right: 5px;
+	width: auto;
+}
+
+.registration-form .actions input,
+.registration-form .actions button,
+.client-site-form .actions input,
+.client-site-form .actions button,
+.service-evaluation-form .actions input,
+.service-evaluation-form .actions button,
+.make-payment-form .actions input,
+.make-payment-form .actions button
+	{
+	height: auto;
+	padding: 9px 20px 10px;
+	width: auto;
+}
+
+.service-evaluation-form ul.checkbox-list,
+.service-evaluation-form ul.radio,
+.service-evaluation-form ul.text-input-list,
+.right-column
+{
+	background: #eef5fb;
+	padding: 20px;
+	width: 540px;
+}
+
+.right-column
+{
+	float: right;
+}
+
+.service-evaluation-form ul.checkbox-list input {
+	margin: 3px 6px 3px 0px;
 }

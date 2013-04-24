@@ -305,6 +305,8 @@
                 var business_interruption_evaluation = $('.business_interruption_evaluation');
                 var transportation_evaluation = $('.transportation_evaluation');
 
+                var request_to_provide_ssip_details_display = false;
+                var ssip_evaluation_display = false;
 				var product_safety_evaluation_display = false;
                 var business_interruption_evaluation_display = false;
                 var transportation_evaluation_display = false;
@@ -349,13 +351,16 @@
 	        init: function () {
                 var company_information = $('.company-information');
 
+                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleRequestToProvideSsipDetailsDisplay);
+                $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
+
                 $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
                 company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
                 // Show or hide the vat id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
-            },
+	        },
 
             showBasicModal: function (event) {
 	            var element = $(this);
@@ -415,6 +420,35 @@
                         }
                     }
                 });
+            },
+
+            toggleRequestToProvideSsipDetailsDisplay: function (event) {
+                var val = $('input[name=registeredWithSsipMemberScheme]:checked').val();
+
+                if (val == "true") {
+                    $('.request-to-provide-ssip-details-container').slideDown(400);
+                } else {
+                    $('.request-to-provide-ssip-details-container').slideUp(400, function () {
+                        $('input[name=requestToProvideSsipDetails]').each(function () {
+                            $(this).prop('checked', false);
+                        });
+                    });
+                }
+
+                $('.ssip-details-container').slideUp(400);
+                $('.provide-ssip-details-later-message').slideUp(400);
+            },
+
+            toggleSsipDetailsDisplay: function (event) {
+                var val = $('input[name=requestToProvideSsipDetails]:checked').val();
+
+                if (val == "true") {
+                    $('.provide-ssip-details-later-message').slideUp(400);
+                    $('.ssip-details-container').slideDown(400);
+                } else {
+                    $('.ssip-details-container').slideUp(400);
+                    $('.provide-ssip-details-later-message').slideDown(400);
+                }
             }
 	    }
 	});

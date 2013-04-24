@@ -28,7 +28,97 @@
 
 <div class="service-evaluation">
 	<s:form cssClass="service-evaluation-form" theme="pics">
-	
+        <section>
+            <h1><s:text name="RegistrationServiceEvaluation.ssip.evaluationHeading" /></h1>
+            <ul>
+                <li>
+                    <label><s:text name="RegistrationServiceEvaluation.ssip.registeredWithMemberScheme" /></label>
+                    <ul class="radio registered-with-ssip-member-scheme-input inline">
+                        <li>
+                            <input type="radio" name="registeredWithSsipMemberScheme" value="true" />
+                            <label>
+                                <s:text name="YesNo.Yes" />
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="registeredWithSsipMemberScheme" value="false" />
+                            <label>
+                                <s:text name="YesNo.No" />
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+                <li class="request-to-provide-ssip-details-container">
+                    <label><s:text name="RegistrationServiceEvaluation.ssip.requestToProvideSsipDetails" /></label>
+                    <ul class="radio request-to-provide-ssip-details-input inline">
+                        <li>
+                            <input type="radio" name="requestToProvideSsipDetails" value="true" />
+                            <label>
+                                <s:text name="YesNo.Yes" />
+                            </label>
+                        </li>
+                        <li>
+                            <input type="radio" name="requestToProvideSsipDetails" value="false" />
+                            <label>
+                                <s:text name="YesNo.No" />
+                            </label>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="provide-ssip-details-later-message right-column">
+                        <s:text name="RegistrationServiceEvaluation.ssip.provideSsipDetailsLaterMessage" />
+                    </div>
+                </li>
+                <li class="ssip-details-container" style="display: none;">
+                    <ul>
+                        <li>
+                            <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfLastAudit" /></label>
+                            <ul class="text-input-list">
+                                <li>
+                                    <input type="text" name="yearOfSsipMembershipExpiration" placeholder="YYYY" maxlength="4" class="year">
+                                </li>
+                                <li>
+                                    <input type="text" name="monthOfSsipMembershipExpiration" placeholder="MM" maxlength="2" class="month">
+                                </li>
+                                <li>
+                                    <input type="text" name="dayOfSsipMembershipExpiration" placeholder="DD" maxlength="2" class="day">
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <label><s:text name="RegistrationServiceEvaluation.ssip.dateOfMembershipExpiration" /></label>
+                            <ul class="text-input-list">
+                                <li>
+                                    <input type="text" name="yearOfSsipMembershipExpiration" placeholder="YYYY" maxlength="4" class="year">
+                                </li>
+                                <li>
+                                    <input type="text" name="monthOfSsipMembershipExpiration" placeholder="MM" maxlength="2" class="month">
+                                </li>
+                                <li>
+                                    <input type="text" name="dayOfSsipMembershipExpiration" placeholder="DD" maxlength="2" class="day">
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <label><s:text name="RegistrationServiceEvaluation.ssip.whichMemberScheme" /></label>
+                            <div class="right-column">
+                                <select>
+                                    <option>
+                                        - <s:text name="RegistrationServiceEvaluation.ssip.selectYourScheme" /> -
+                                    </option>
+                                    <s:iterator var="member_scheme" value="ssipMemberSchemes">
+                                        <option>
+                                            ${member_scheme}
+                                        </option>
+                                    </s:iterator>
+                                </select>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
 		<section>
 			<h1><s:text name="RegistrationServiceEvaluation.ServicesPerformed" /></h1>
 			<ul>
