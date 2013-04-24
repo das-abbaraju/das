@@ -20,7 +20,7 @@ public class ReportPermissionInfoConverter {
 
 	public List<ReportPermissionInfo> convertUsersToReportPermissionInfo(List<ReportPermissionUser> reportPermissionUsers) {
 		if (CollectionUtils.isEmpty(reportPermissionUsers)) {
-			return Collections.emptyList();
+			return new ArrayList<>();
 		}
 
 		List<ReportPermissionInfo> reportPermissionInfoList = new ArrayList<>();
@@ -55,7 +55,7 @@ public class ReportPermissionInfoConverter {
 
 	public List<ReportPermissionInfo> convertAccountsToReportPermissionInfo(List<ReportPermissionAccount> reportPermissionAccounts, Locale locale) {
 		if (CollectionUtils.isEmpty(reportPermissionAccounts)) {
-			return Collections.emptyList();
+			return new ArrayList<>();
 		}
 
 		List<ReportPermissionInfo> reportPermissionInfoList = new ArrayList<>();
