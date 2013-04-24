@@ -14,17 +14,17 @@
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
-<s:url action="ManageReports" method="%{#report.private ? 'unprivatize' : 'privatize'}" var="report_private_url">
+<s:url action="ManageReports" method="%{#report.public ? 'unpublicize' : 'publicize'}" var="report_public_url">
     <s:param name="reportId">${report.id}</s:param>
 </s:url>
 
 <%-- Text --%>
 <s:set var="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
-<s:set var="private_text" value="%{#report.private ? 'Make Public' : 'Make Private'}" />
+<s:set var="public_text" value="%{#report.public ? 'Hide from Search' : 'Show in Search'}" />
 
 <%-- Class --%>
 <s:set var="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
-<s:set var="private_class" value="%{#report.private ? 'public' : 'private'}" />
+<s:set var="public_class" value="%{#report.public ? 'private' : 'public'}" />
 
 <div class="report-options btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
@@ -41,7 +41,7 @@
         </li>
         
         <li>
-            <a href="${report_private_url}" class="${private_class}" data-report-id="${report.id}">${private_text}</a>
+            <a href="${report_public_url}" class="${public_class}" data-report-id="${report.id}">${public_text}</a>
         </li>
         
         <li>
@@ -57,7 +57,7 @@
 </div>
 
 <div class="icons pull-right">
-    <s:if test="#report.private">
-        <i class="icon-eye-close icon-large"></i>
+    <s:if test="#report.public">
+        <i class="icon-search"></i>
     </s:if>
 </div>

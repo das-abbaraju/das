@@ -107,19 +107,19 @@ PICS.define('report.manage-report.OwnedByController', {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
                 $report_options = $report.find('.report-options'),
-                $icons = $report.find('.icons'),
-                $private_action = $report_options.find('.private, .public'),
+                $public_icon = $report.find('.icon-search'),
+                $public_action = $report_options.find('.private, .public'),
                 report_id = $element.data('report-id');
             
             PICS.ajax({
-                url: 'ManageReports!privatize.action',
+                url: 'ManageReports!unpublicize.action',
                 data: {
                     reportId: report_id
                 },
                 success: function (data, textStatus, jqXHR) {
-                    $icons.append($('<i class="icon-large icon-eye-close"></i>'));
-                    $private_action.toggleClass('public private');
-                    $private_action.text('Make Public');
+                    $public_icon.remove();
+                    $public_action.toggleClass('public private');
+                    $public_action.text('Show in Search');
                 }
             });
             
@@ -130,19 +130,19 @@ PICS.define('report.manage-report.OwnedByController', {
             var $element = $(event.currentTarget),
                 $report = $element.closest('.report'),
                 $report_options = $report.find('.report-options'),
-                $private_icon = $report.find('.icon-eye-close'),
-                $private_action = $report_options.find('.private, .public'),
-                report_id = $element.data('reprot-id');
+                $icons = $report.find('.icons'),
+                $public_action = $report_options.find('.private, .public'),
+                report_id = $element.data('report-id');
             
             PICS.ajax({
-                url: 'ManageReports!unprivatize.action',
+                url: 'ManageReports!publicize.action',
                 data: {
                     reportId: report_id
                 },
                 success: function (data, textStatus, jqXHR) {
-                    $private_icon.remove();
-                    $private_action.toggleClass('public private');
-                    $private_action.text('Make Private');
+                    $icons.append($('<i class="icon-search"></i>'));
+                    $public_action.toggleClass('public private');
+                    $public_action.text('Hide from Search');
                 }
             });
             

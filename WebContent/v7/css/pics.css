@@ -1625,6 +1625,11 @@ hr {
   text-align: left;
 }
 
+/* line 6, ../sass/pics/templates/report/manage-report/_owned-by.scss */
+#ManageReports_ownedBy_page .report-list .icon-search {
+  color: #999;
+}
+
 /* line 6, ../sass/pics/templates/report/manage-report/_shared-with.scss */
 #ManageReports_sharedWith_page .report-list .icon-edit {
   color: #999;
