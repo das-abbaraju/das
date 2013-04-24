@@ -892,6 +892,28 @@ public class ContractorAccount extends Account implements JSONable {
         addNewCurrentAccountUserOfRole(newCsr, UserAccountRole.PICSCustomerServiceRep, createdById);
     }
 
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentInsideSalesRepresentative() {
+        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+        if (accountUser != null) {
+            return accountUser.getUser();
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentInsideSalesRepresentative(User newRep, int createdById) {
+        setAuditor(newRep);
+        makeUserCurrentInsideSalesRepExpireExistingRep(newRep, createdById);
+    }
+
+    @Transient
+    public void makeUserCurrentInsideSalesRepExpireExistingRep(User newRep, int createdById) {
+        expireCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+        addNewCurrentAccountUserOfRole(newRep, UserAccountRole.PICSInsideSalesRep, createdById);
+    }
+
     @Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
