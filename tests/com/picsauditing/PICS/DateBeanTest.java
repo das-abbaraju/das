@@ -690,14 +690,44 @@ public class DateBeanTest {
 
     @Test
     public void testDaysBetween_EndOfYearToNewYear() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.HOUR_OF_DAY, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.MONTH, 0);
+        cal.set(Calendar.YEAR, 2009);
+        Date startDate = cal.getTime();
+
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.HOUR_OF_DAY, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, 11);
+        cal.set(Calendar.YEAR, 2008);
+        Date endDate = cal.getTime();
+
+        int daysBetween = DateBean.daysBetween(startDate, endDate);
+
+        assertEquals(-1, daysBetween);
+    }
+
+
+    @Test
+    public void testDaysBetween_EndOfYearToNewYear_() {
         Calendar startDate = Calendar.getInstance();
+        startDate.set(Calendar.MINUTE, 59);
+        startDate.set(Calendar.HOUR_OF_DAY, 1);
         startDate.set(Calendar.DAY_OF_MONTH, 1);
         startDate.set(Calendar.MONTH, 0);
-        startDate.set(Calendar.YEAR, 2008);
+        startDate.set(Calendar.YEAR, 2009);
         Calendar endDate = Calendar.getInstance();
+        endDate.set(Calendar.MINUTE, 59);
+        endDate.set(Calendar.HOUR_OF_DAY, 1);
         endDate.set(Calendar.DAY_OF_MONTH, 31);
         endDate.set(Calendar.MONTH, 11);
-        endDate.set(Calendar.YEAR, 2007);
+        endDate.set(Calendar.YEAR, 2008);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        System.out.println("start date: " + format.format(startDate.getTime()));
+        System.out.println("end date: " + format.format(endDate.getTime()));
         int daysBetween = DateBean.daysBetween(startDate.getTime(), endDate.getTime());
         assertEquals(-1, daysBetween);
     }
