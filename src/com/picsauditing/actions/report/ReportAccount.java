@@ -8,6 +8,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
@@ -136,7 +138,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * 2) Next it determines if the report should run by default.<br>
 	 * 3) It builds the Query and runs the report<br>
 	 * 4) Finally, it returns the results
-	 * 
+	 *
 	 * @see checkPermissions()
 	 * @see runReport
 	 * @see buildQuery()
@@ -210,21 +212,17 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void addAccountFilters() {
-		/** **** Filters for Accounts ********** */
 		filterOnStartsWith();
 		filterOnAccountName();
 		filterOnStatus();
 		filterOnCity();
 		filterOnLocation();
 		filterOnZip();
-
 		filterShowPrimaryContactInformation();
 		filterShowTradeInformation();
 	}
 
 	protected void addContractorSpecificFilters() {
-		/** **** Filters for Contractors ********** */
-
 		filterOnTrades();
 		filterOnContractorIds();
 		filterOnOperators();
@@ -248,13 +246,14 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		filterOnWorkStatus();
 		filterOnInsuranceInformation();
 		filterOnAccountProperties();
+		filterOnInsideSales();
 	}
 
 	/**
 	 * Return the number of active contractors visible to an Operator or a
 	 * Corporate account This method shouldn't be use be Admins, auditors, and
 	 * contractors
-	 * 
+	 *
 	 * @return
 	 */
 	public int getContractorCount() {
@@ -406,7 +405,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void filterOnCountrySubdivisions(List<String> countrySubdivisions, List<String> countries,
-			StringBuilder sb) {
+											   StringBuilder sb) {
 		if (!countrySubdivisions.isEmpty()) {
 			if (!countries.isEmpty())
 				sb.append(" OR ");
@@ -510,10 +509,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void filterOnFlagStatus() {
 		if (!searchForNew && filterOn(getFilter().getFlagStatus())) {
 			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
-            if (sql.hasJoin("generalcontractors gc_flag"))
-			    sql.addWhere("gc_flag.flag IN (" + list + ")");
-            else if (sql.hasJoin("generalcontractors gc"))
-                sql.addWhere("gc.flag IN (" + list + ")");
+			if (sql.hasJoin("generalcontractors gc_flag"))
+				sql.addWhere("gc_flag.flag IN (" + list + ")");
+			else if (sql.hasJoin("generalcontractors gc"))
+				sql.addWhere("gc.flag IN (" + list + ")");
 			setFiltered(true);
 		}
 	}
@@ -530,10 +529,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 			if (getFilter().isNonContactUser()) {
 				sql.addWhere("u.id IN (" + list + ")");
-            } else {
-                sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
+			} else {
+				sql.addJoin("JOIN account_user au on au.accountID = a.id and au.role='PICSCustomerServiceRep' and au.startDate < now() and au.endDate > now()");
 				sql.addWhere("au.userID IN (" + list + ")");
-            }
+			}
 			setFiltered(true);
 		}
 	}
@@ -758,5 +757,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere("a.requiresCompetencyReview = 1");
 		if (getFilter().isSoleProprietership())
 			sql.addWhere("c.soleProprietor = 1");
+	}
+
+	protected void filterOnInsideSales() {
+		if (filterOn(getFilter().getInsideSalesID())) {
+			sql.addJoin("JOIN account_user au ON au.accountID = a.id AND au.role='" +
+					UserAccountRole.PICSInsideSalesRep.toString() + "' " +
+					"AND au.startDate < now() and au.endDate > now()");
+			sql.addWhere("au.userID IN (" + Strings.implode(getFilter().getInsideSalesID()) + ")");
+			setFiltered(true);
+		}
+	}
+
+	public List<User> getInsideSalesList() {
+		return userDAO.findByGroup(User.GROUP_INSIDE_SALES);
 	}
 }
