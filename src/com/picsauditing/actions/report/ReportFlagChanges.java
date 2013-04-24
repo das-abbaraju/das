@@ -166,6 +166,8 @@ public class ReportFlagChanges extends ReportAccount {
 		if (!Strings.isEmpty(opIds)) {
 			sql.addWhere("operator.id in (" + opIds + ")");
 		}
+
+        addFilterToSQL();
 	}
 
 	@Override

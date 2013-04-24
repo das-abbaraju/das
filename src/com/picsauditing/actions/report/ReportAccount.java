@@ -510,7 +510,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void filterOnFlagStatus() {
 		if (!searchForNew && filterOn(getFilter().getFlagStatus())) {
 			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
-			sql.addWhere("gc_flag.flag IN (" + list + ")");
+            if (sql.hasJoin("generalcontractors gc_flag"))
+			    sql.addWhere("gc_flag.flag IN (" + list + ")");
+            else if (sql.hasJoin("generalcontractors gc"))
+                sql.addWhere("gc.flag IN (" + list + ")");
 			setFiltered(true);
 		}
 	}
