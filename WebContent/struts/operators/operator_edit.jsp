@@ -107,7 +107,7 @@
                 </li>
             </s:if>
 
-            <s:if test="operator.operator">
+            <s:if test="operator.operatorCorporate">
                 <li>
                     <label><s:text name="FacilitiesEdit.AccountManager"/>:</label>
                     <s:property value="operator.currentAccountRepresentative.name"/>
