@@ -516,7 +516,7 @@
 							</pics:permission>
 						</s:if>
 
-						<s:if test="%{user.hasGroup(11)}">				
+						<s:if test="%{user.hasGroup(11) || user.hasGroup(71638)}">
 							<li>
 								<label>Countries Serviced</label>
 								<table class="report">
