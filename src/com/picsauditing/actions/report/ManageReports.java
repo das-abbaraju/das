@@ -464,31 +464,31 @@ public class ManageReports extends PicsActionSupport {
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String privatize() {
+	public String publicize() {
 		try {
 			User user = userService.loadUser(permissions.getUserId());
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			reportService.privatizeReport(user, report);
+			reportService.publicizeReport(user, report);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports.privatize(). ", e);
+			logger.error("Unexpected exception in ManageReports.publicize(). ", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();
 	}
 
-	public String unprivatize() {
+	public String unpublicize() {
 		try {
 			User user = userService.loadUser(permissions.getUserId());
 			Report report = reportService.loadReportFromDatabase(reportId);
 
-			reportService.unprivatizeReport(user, report);
+			reportService.unpublicizeReport(user, report);
 		} catch (NoResultException nre) {
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports.unprivatize(). ", e);
+			logger.error("Unexpected exception in ManageReports.unpublicize(). ", e);
 		}
 
 		return redirectOrReturnNoneForAjaxRequest();

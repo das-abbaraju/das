@@ -6,9 +6,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.search.SelectSQL;

@@ -320,25 +320,25 @@ public class ReportServiceTest {
 	}
 
 	@Test
-	public void testPrivatizeReport_WhenReportIsPrivatized_ThenReportShouldBePrivate() throws ReportPermissionException {
+	public void testPublicizeReport_WhenReportIsPublicized_ThenReportShouldBePublic() throws ReportPermissionException {
 		Report report = new Report();
-		report.setPrivate(false);
-		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+		report.setPublic(false);
+		when(permissionService.canUserPublicizeReport(user, report)).thenReturn(true);
 
-		reportService.privatizeReport(user, report);
+		reportService.publicizeReport(user, report);
 
-		assertTrue(report.isPrivate());
+		assertTrue(report.isPublic());
 	}
 
 	@Test
-	public void testUnprivatizeReport_WhenReportIsUnprivatized_ThenReportShouldNotBePrivate() throws ReportPermissionException {
+	public void testUnpublicizeReport_WhenReportIsUnpublicized_ThenReportShouldNotBePublic() throws ReportPermissionException {
 		Report report = new Report();
-		report.setPrivate(true);
-		when(permissionService.canUserPrivatizeReport(user, report)).thenReturn(true);
+		report.setPublic(true);
+		when(permissionService.canUserPublicizeReport(user, report)).thenReturn(true);
 
-		reportService.unprivatizeReport(user, report);
+		reportService.unpublicizeReport(user, report);
 
-		assertFalse(report.isPrivate());
+		assertFalse(report.isPublic());
 	}
 
 	private void verifyColumn(String columnName, Map<String, Column> columnMap) {

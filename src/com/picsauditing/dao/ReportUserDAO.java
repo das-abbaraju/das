@@ -7,10 +7,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,7 +20,6 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.ReportInfo;
-import com.picsauditing.service.ReportSearch;
 import com.picsauditing.util.Strings;
 
 public class ReportUserDAO extends PicsDAO {
@@ -109,7 +105,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
 		sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("IFNULL(ru.favorite, 0) AS " + ReportInfoMapper.FAVORITE_FIELD);
-		sql.addField("r.private AS " + ReportInfoMapper.PRIVATE_FIELD);
+		sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
 		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD); // we do not know their permissions at this point
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
@@ -124,9 +120,9 @@ public class ReportUserDAO extends PicsDAO {
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 
 		String ownerClause = "r.ownerID = " + permissions.getUserId();
-		String privateClause = "r.private = false";
+		String publicClause = "r.public = true";
 		String permissionsClause = "r.id IN (" + permissionsUnion + ")";
-		String canViewClause = "(" + ownerClause + " OR " + privateClause + " OR " + permissionsClause + ")";
+		String canViewClause = "(" + ownerClause + " OR " + publicClause + " OR " + permissionsClause + ")";
 
 		String notDeletedClause = "(r.deleted != 1)";
 

@@ -31,7 +31,7 @@ public class PermissionService {
 			return false;
 		}
 
-		if (!report.isPrivate()) {
+		if (report.isPublic()) {
 			return true;
 		}
 
@@ -150,7 +150,7 @@ public class PermissionService {
         return isOwnerOrHasView(removerUser, report, permissions);
     }
 
-	public boolean canUserPrivatizeReport(User user, Report report) {
+	public boolean canUserPublicizeReport(User user, Report report) {
 		return isOwner(user, report);
 	}
 

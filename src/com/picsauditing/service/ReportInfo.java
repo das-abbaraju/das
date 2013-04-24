@@ -2,7 +2,6 @@ package com.picsauditing.service;
 
 import java.util.Date;
 
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 
 public class ReportInfo {
@@ -11,7 +10,7 @@ public class ReportInfo {
 	private String name;
 	private String description;
 	private boolean favorite;
-	private boolean isPrivate;
+	private boolean isPublic;
 	private int numberOfTimesFavorited;
 	private boolean editable;
 	private User createdBy;
@@ -51,12 +50,12 @@ public class ReportInfo {
 		this.favorite = favorite;
 	}
 
-	public boolean isPrivate() {
-		return isPrivate;
+	public boolean isPublic() {
+		return isPublic;
 	}
 
-	public void setPrivate(boolean isPrivate) {
-		this.isPrivate = isPrivate;
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public int getNumberOfTimesFavorited() {
@@ -111,5 +110,4 @@ public class ReportInfo {
 	public String toString() {
 		return Integer.toString(id);
 	}
-
 }
