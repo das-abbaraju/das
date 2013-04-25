@@ -15,6 +15,8 @@ import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
 import org.apache.struts2.views.util.DefaultUrlHelper;
 
 public class URLUtils implements StreamContentProvider {
+	private static final String URL_SEPARATOR = "/";
+
 	private DefaultUrlHelper urlHelper;
 	private DefaultActionMapper actionMapper;
 	private HttpServletRequest request;
@@ -71,7 +73,7 @@ public class URLUtils implements StreamContentProvider {
 
 	/**
 	 * Generated URI with encoded parameters.
-	 * 
+	 *
 	 * @param action
 	 * @param parameters
 	 *            must be in key, value pairs to be placed into a
@@ -97,7 +99,7 @@ public class URLUtils implements StreamContentProvider {
 
 	/**
 	 * Generated URI with encoded parameters.
-	 * 
+	 *
 	 * @param action
 	 *            action name
 	 * @param method
@@ -107,7 +109,7 @@ public class URLUtils implements StreamContentProvider {
 	 * @param useFullUrl
 	 *            whether to display something like
 	 *            "https://www.picsorganizer.com" beforehand
-	 * @return 
+	 * @return
 	 *         "/Action!method.action?param1key=param1value&amp;param2key=param2value"
 	 */
 	public String getActionUrl(String action, String method, Map<String, Object> parameters, boolean useFullUrl) {
@@ -145,5 +147,60 @@ public class URLUtils implements StreamContentProvider {
 		}
 
 		return response;
+	}
+
+	/**
+	 * Returns the name of the Action method in the URL. If the request is null,
+	 * it will return empty string.
+	 *
+	 * @param request
+	 * @return https://www.picsorganizer.com/ManageReports!ownedBy.action will
+	 *         return "ManageReports"
+	 */
+	public static String getActionMethodNameFromRequest(HttpServletRequest request) {
+		if (request == null || request.getRequestURL() == null) {
+			return Strings.EMPTY_STRING;
+		}
+
+		String url = request.getRequestURL().toString();
+		int indexAction = url.lastIndexOf(".action");
+		int indexMethodSeparator = url.lastIndexOf("!");
+
+		if (indexAction > indexMethodSeparator && (indexAction > -1 && indexMethodSeparator > -1)) {
+			return url.substring(indexMethodSeparator + 1, indexAction);
+		} else if (indexMethodSeparator == -1 && indexAction > -1) {
+			return "execute";
+		}
+
+		return Strings.EMPTY_STRING;
+	}
+
+	/**
+	 * Returns the name of the Action in the URL. If the request is null,
+	 * it will return empty string.
+	 *
+	 * @param request
+	 * @return https://www.picsorganizer.com/ManageReports!ownedBy.action will
+	 *         return "ownedBy"
+	 */
+	public static String getActionNameFromRequest(HttpServletRequest request) {
+		if (request == null || request.getRequestURL() == null) {
+			return Strings.EMPTY_STRING;
+		}
+
+		String url = request.getRequestURL().toString();
+		int indexLastUrlSeparator = url.lastIndexOf(URL_SEPARATOR);
+		int indexAction = url.lastIndexOf(".action");
+		int indexMethodSeparator = url.lastIndexOf("!");
+
+		if (indexLastUrlSeparator > -1) {
+			if (indexAction > -1 && indexMethodSeparator < 0) {
+				return url.substring(indexLastUrlSeparator + 1, indexAction);
+			} else if (indexMethodSeparator < indexAction && indexMethodSeparator > 0) {
+				return url.substring(indexLastUrlSeparator + 1, indexMethodSeparator);
+			}
+		}
+
+		return Strings.EMPTY_STRING;
 	}
 }
