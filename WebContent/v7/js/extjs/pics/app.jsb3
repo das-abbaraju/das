@@ -810,11 +810,6 @@
                     "path": "extjs/src/draw/engine/"
                 },
                 {
-                    "clsName": "PICS.Ajax",
-                    "name": "Ajax.js",
-                    "path": "app/"
-                },
-                {
                     "clsName": "PICS.data.Exception",
                     "name": "Exception.js",
                     "path": "app/data/"

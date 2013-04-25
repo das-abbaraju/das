@@ -176,7 +176,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.saveReport({
             success_callback: function () {
 
-                PICS.app.updateDocumentTitle();
+                PICS.updateDocumentTitle();
 
                 that.application.fireEvent('updatepageheader');
 

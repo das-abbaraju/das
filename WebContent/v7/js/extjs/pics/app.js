@@ -8,7 +8,6 @@ Ext.application({
 
     requires: [
         'PICS.view.report.Viewport',
-        'PICS.Ajax',
         'PICS.data.Exception',
         'PICS.data.ServerCommunication',
         'PICS.data.ServerCommunicationUrl',
@@ -40,25 +39,11 @@ Ext.application({
     },
 
     launch: function () {
-        // save reference to application
-        PICS.app = this;
-
-        PICS.app.configuration = {
-            isEditable: function () { return true; },
-            isFavorite: function () { return true; },
-            setIsFavorite: function (bool) {
-                return true;
-            }
-        };
-
-        PICS.app.updateDocumentTitle = function () {
-            var report_store = Ext.StoreManager.get('report.Reports'),
-                report = report_store.first(),
-                report_name = report.get('name');
-
-            document.title = report_name;
-        },
-
+        Ext.apply(PICS, {
+            text: this.text,
+            updateDocumentTitle: this.updateDocumentTitle
+        });
+        
         PICS.data.ServerCommunication.loadAll({
             success_callback: this.createViewport,
             scope: this
@@ -73,7 +58,7 @@ Ext.application({
                         report_store = Ext.StoreManager.get('report.Reports'),
                         report = report_store.first();
 
-                    PICS.app.updateDocumentTitle();
+                    PICS.updateDocumentTitle();
 
                     // ExtJS has its own onbeforeunload, but it doesn't work in FF.
                     // The native onbeforeunload used here, however, is broadly compatible.
@@ -93,5 +78,19 @@ Ext.application({
                 }
             }
         });
+    },
+    
+    // PICS.text(key, p1, p2, ...)
+    // provide short cut to displaying translation off the PICS._i18n
+    text: function (key) {
+        return PICS.data.Translate.text.apply(this, arguments);
+    },
+    
+    updateDocumentTitle: function () {
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            report_name = report.get('name');
+
+        document.title = report_name;
     }
 });
