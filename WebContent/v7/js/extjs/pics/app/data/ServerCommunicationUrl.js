@@ -143,10 +143,10 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithAccountUrl: function () {
+        getShareWithAccountEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithAccount.action?';
+                path = 'ManageReports!shareWithAccountEditPermission.action?';
 
             var params = {
                 reportId: report_id
@@ -155,27 +155,61 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithGroupUrl: function (is_editable) {
+        getShareWithGroupEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithGroup.action?';
+                path = 'ManageReports!shareWithGroupEditPermission.action?';
 
             var params = {
-                reportId: report_id,
-                editable: is_editable
+                reportId: report_id
             };
 
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithUserUrl: function (is_editable) {
+        getShareWithUserEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithUser.action?';
+                path = 'ManageReports!shareWithUserEditPermission.action?';
 
             var params = {
-                reportId: report_id,
-                editable: is_editable
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithAccountViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithAccountViewPermission.action?';
+
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithGroupViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithGroupViewPermission.action?';
+
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithUserViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithUserViewPermission.action?';
+
+            var params = {
+                reportId: report_id
             };
 
             return path + Ext.Object.toQueryString(params);

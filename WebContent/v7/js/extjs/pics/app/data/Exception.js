@@ -51,7 +51,15 @@ Ext.define('PICS.data.Exception', {
         function handleUnknown2xxException(response, callback) {
             showException(unknown_error.title, unknown_error.message);
         }
-        
+
+        function isSuccessWithEmptyResponse(response) {
+            if (typeof response.status != 'undefined' && typeof response.responseText != 'undefined') {
+                return response.status.toString()[0] == '2' && response.responseText == '';                
+            } else {
+                return false;
+            }
+        }
+
         function hasKnown2xxException(response) {
             var response_text = response && response.responseText,
                 json;
@@ -112,6 +120,14 @@ Ext.define('PICS.data.Exception', {
             },
             
             hasException: function (response) {
+                if (!response) {
+                    Ext.Error.raise('Parameter response required');
+                }
+
+                if (isSuccessWithEmptyResponse(response)) {
+                    return false;
+                }
+
                 return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };

@@ -24,12 +24,12 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                     '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
                         '<div class="search-item">',
                             '<div>',
-                                '<span class="name"><em>{result_name}</em></span>',
-                                '<span class="id"><em>ID {result_id}</em></span>',
+                                '<span class="name"><em>{name}</em></span>',
+                                '<span class="id"><em>ID {id}</em></span>',
                             '</div>',
                             '<div>',
-                                '<span class="company">{result_at}</span>',
-                                '<span class="type">{result_type}</span>',
+                                '<span class="location">{location}</span>',
+                                '<span class="type">{type}</span>',
                             '</div>',
                         '</div>',
                     '</li>',
@@ -48,11 +48,11 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     store: {
         autoLoad: false,
         fields: [
-            'result_type',
-            'result_id',
-            'result_name',
-            'result_at',
-            'search_type'
+            'access_type',
+            'id',
+            'name',
+            'location',
+            'type'
         ],
         proxy: {
             type: 'ajax',
@@ -67,5 +67,5 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
         }
     },
     valueField: 'searchQuery',
-    width: 325    
+    width: 325
 });
