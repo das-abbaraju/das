@@ -605,12 +605,14 @@
                                     <p>
                                         <s:text name="global.CSR"/>:
                                         <strong>
-                                            <s:property value="contractor.currentCsr.name"/>
-                                            /
-                                            <s:property value="contractor.currentCsr.phone"/>
-                                            <span id="CSRNote">(<s:text name="ContractorView.ContractorDashboard.CSRCallNote"/>)</span>
-                                            /
+                                            ${contractor.currentCsr.name}
                                         </strong>
+                                            /
+                                        <strong>
+                                            ${contractor.currentCsr.phone}
+                                            <span id="CSRNote">(<s:text name="ContractorView.ContractorDashboard.CSRCallNote"/>)</span>
+                                        </strong>
+                                        /
                                         <s:text name="ProfileEdit.u.fax"/>:
                                         <s:property value="contractor.currentCsr.fax"/>
                                         /
@@ -618,7 +620,27 @@
                                             <s:property value="contractor.currentCsr.email"/>
                                         </a>
                                     </p>
-                        
+
+                                    <s:if test="contractor.status.pending && contractor.currentInsideSalesRepresentative != null">
+                                        <p>
+                                            <s:text name="ContractorView.InsideSales"/>:
+                                            <strong>
+                                                ${contractor.currentInsideSalesRepresentative.name}
+                                            </strong>
+                                                /
+                                            <strong>
+                                                ${contractor.currentInsideSalesRepresentative.phone}
+                                            </strong>
+                                                /
+                                            <s:text name="ProfileEdit.u.fax"/>:
+                                            ${contractor.currentInsideSalesRepresentative.fax}
+                                            /
+                                            <a href="mailto:${contractor.currentInsideSalesRepresentative.email}" class="email">
+                                                ${contractor.currentInsideSalesRepresentative.email}
+                                            </a>
+                                        </p>
+                                    </s:if>
+
                                     <s:if test="contractor.generalContractorOperatorAccounts.size > 0 && !permissions.generalContractor">
                                         <s:if test="!isStringEmpty(generalContractorsListing)">
                                             <p>

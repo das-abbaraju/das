@@ -904,7 +904,6 @@ public class ContractorAccount extends Account implements JSONable {
 
     @Transient
     public void setCurrentInsideSalesRepresentative(User newRep, int createdById) {
-        setAuditor(newRep);
         makeUserCurrentInsideSalesRepExpireExistingRep(newRep, createdById);
     }
 
