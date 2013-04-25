@@ -2104,13 +2104,13 @@ hr {
 /* line 13, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page header,
 #Reference_navigationRestructure_page .content {
-  margin: 0 -20px;
-  padding: 20px;
   overflow: hidden;
 }
-/* line 20, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 18, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page header {
   background-color: #f1f1f2;
+  padding: 20px 20px 40px;
+  margin: 0 -20px;
 }
 /* line 24, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page header h1 {
@@ -2129,43 +2129,54 @@ hr {
 /* line 41, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .content {
   background-color: #f1f1f2;
+  padding: 0 20px;
+  margin: 0 -20px;
 }
-/* line 45, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 47, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .content .row {
-  margin-bottom: 80px;
-  margin-top: 80px;
+  margin-bottom: 40px;
+  margin-top: 40px;
 }
-/* line 51, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 53, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .content h3 {
   color: #808285;
   font-size: 24px;
   font-weight: normal;
 }
-/* line 58, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 60, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .content h4 {
   color: #73bbe8;
   font-size: 16px;
   font-weight: normal;
 }
-/* line 65, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 67, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .content li {
   color: #666;
   line-height: 24px;
 }
-/* line 72, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 73, ../sass/pics/templates/reference/_navigation-restructure.scss */
+#Reference_navigationRestructure_page .content.odd {
+  background: #fff;
+  border-bottom: 1px solid #dcdcdc;
+}
+/* line 79, ../sass/pics/templates/reference/_navigation-restructure.scss */
+#Reference_navigationRestructure_page .content.last {
+  padding-bottom: 20px;
+}
+/* line 85, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .row.restructure {
   margin-top: 40px;
 }
-/* line 79, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 92, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .restructure .image-container {
   float: right;
   text-align: right;
 }
-/* line 85, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 98, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .restructure img {
   margin-right: -20px;
 }
-/* line 93, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 106, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .overview h1 {
   color: #73bbe8;
   font-size: 24px;
@@ -2173,34 +2184,34 @@ hr {
   line-height: 1;
   margin-top: 0;
 }
-/* line 102, ../sass/pics/templates/reference/_navigation-restructure.scss */
+/* line 115, ../sass/pics/templates/reference/_navigation-restructure.scss */
 #Reference_navigationRestructure_page .overview p {
   color: #666;
 }
 
 @media (min-width: 1200px) {
-  /* line 113, ../sass/pics/templates/reference/_navigation-restructure.scss */
+  /* line 126, ../sass/pics/templates/reference/_navigation-restructure.scss */
   #Reference_navigationRestructure_page header,
   #Reference_navigationRestructure_page .content {
     margin: 0 -30px;
     padding: 30px;
   }
-  /* line 121, ../sass/pics/templates/reference/_navigation-restructure.scss */
+  /* line 134, ../sass/pics/templates/reference/_navigation-restructure.scss */
   #Reference_navigationRestructure_page .restructure img {
     margin-right: -30px;
   }
 }
 @media (max-width: 767px) {
-  /* line 134, ../sass/pics/templates/reference/_navigation-restructure.scss */
+  /* line 147, ../sass/pics/templates/reference/_navigation-restructure.scss */
   #Reference_navigationRestructure_page .content .row {
     margin-top: 40px;
     margin-bottom: 40px;
   }
-  /* line 141, ../sass/pics/templates/reference/_navigation-restructure.scss */
+  /* line 154, ../sass/pics/templates/reference/_navigation-restructure.scss */
   #Reference_navigationRestructure_page .row.restructure {
     margin-top: 0;
   }
-  /* line 146, ../sass/pics/templates/reference/_navigation-restructure.scss */
+  /* line 159, ../sass/pics/templates/reference/_navigation-restructure.scss */
   #Reference_navigationRestructure_page .image-container {
     margin-bottom: 20px;
   }

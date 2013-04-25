@@ -7,18 +7,18 @@
 	{
 		line-height: 24px;
 	}
-
+	
 	header,
 	.content
 	{
-		margin: 0 -20px;
-		padding: 20px;
 		overflow: hidden;
 	}
 	
 	header
 	{
 		background-color: #f1f1f2;
+		padding: 20px 20px 40px;
+		margin: 0 -20px;
 
 		h1
 		{
@@ -40,11 +40,13 @@
 	.content
 	{
 		background-color: #f1f1f2;
+		padding: 0 20px;
+		margin: 0 -20px;
 	
 		.row
 		{
-			margin-bottom: 80px;
-			margin-top: 80px;
+			margin-bottom: 40px;
+			margin-top: 40px;
 		}
 		
 		h3
@@ -65,6 +67,17 @@
 		{
 			color: #666;
 			line-height: 24px;
+		}
+		
+		&.odd
+		{
+			background: #fff;
+			border-bottom: 1px solid #dcdcdc;
+		}
+		
+		&.last
+		{
+			padding-bottom: 20px;
 		}
 	}
 	

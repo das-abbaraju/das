@@ -14,7 +14,7 @@
             PICS Organizer 7.0
         </h2>
     </header>
-
+    
     <div class="content">
         <div class="row restructure">
             <div class="span6 image-container">
@@ -25,7 +25,7 @@
                 <section class="overview">
                     <h1>We've moved some menu items</h1>
                     <p>
-                        Our new menu is cleaner and more intuitive. Below you will find a list of menu items and their new locations. We've also changed some of our menu item names. Updated namesa re displayed within <code>Gray Labels</code>.
+                        Our new menu is cleaner and more intuitive. Below you will find a list of menu items and their new locations. We've also changed some of our menu item names. Updated names are displayed to the right.
                     </p>
                     <p>
                         If you have any questions, please click on the Support menu option and we'll be happy to help.
@@ -33,6 +33,8 @@
                 </section>
             </div>
         </div>
+    </div>
+    <div class="content odd">
         <div class="row contractors">
             <div class="span4">
                 <h3>Contractors</h3>
@@ -62,6 +64,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content">
         <div class="row audit-guard">
             <div class="span4">
                 <h3>AuditGUARD</h3>
@@ -101,6 +105,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content odd">
         <div class="row customer-service">
             <div class="span4">
                 <h3>Customer Service</h3>
@@ -128,6 +134,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content">
         <div class="row insure-guard">
             <div class="span4">
                 <h3>InsureGUARD</h3>
@@ -149,6 +157,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content odd">   
         <div class="row management">
             <div class="span4">
                 <h3>Management</h3>
@@ -192,6 +202,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content">
         <div class="row configuration">
             <div class="span4">
                 <h3>Configuration</h3>
@@ -239,6 +251,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content odd">
         <div class="row development">
             <div class="span4">
                 <h3>Development</h3>
@@ -290,6 +304,8 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="content last">
         <div class="row reports">
             <div class="span4">
                 <h3>Reports</h3>

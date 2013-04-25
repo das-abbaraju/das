@@ -72,7 +72,7 @@
             <div class="span4 offset4">
                 <s:url action="Home" var="home_url" />
 
-                <a class="btn btn-success btn-large" href="${home_url}">Start Using PICS Organizer 7.0 <i class="icon-circle-arrow-right icon-large"></i></a>
+                <a class="btn btn-success btn-large" href="${home_url}">Start Using PICS Organizer 7.0 <i class="icon-circle-arrow-right"></i></a>
                 <p>
                     For a short time, you can choose to revert to the old menu style by going to your Account Settings.
                 </p>

@@ -189,6 +189,6 @@
     </div>
     
     <footer>
-        <a href="${manage_reports_url}" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right icon-large"></i></a>
+        <a href="${manage_reports_url}" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right"></i></a>
     </footer>
 </div>
