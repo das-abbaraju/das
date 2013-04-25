@@ -381,12 +381,12 @@ Ext.define('PICS.data.ServerCommunication', {
                         case 'account':
                             url = PICS.data.ServerCommunicationUrl.getShareWithAccountEditPermissionUrl();
                             break;
-                        case 'user':
-                            url = PICS.data.ServerCommunicationUrl.getShareWithUserEditPermissionUrl();
-                            break;
                         case 'group':
-                        default:
                             url = PICS.data.ServerCommunicationUrl.getShareWithGroupEditPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserEditPermissionUrl();
                             break;
                     }
                 } else {
@@ -394,12 +394,12 @@ Ext.define('PICS.data.ServerCommunication', {
                         case 'account':
                             url = PICS.data.ServerCommunicationUrl.getShareWithAccountViewPermissionUrl();
                             break;
-                        case 'user':
-                            url = PICS.data.ServerCommunicationUrl.getShareWithUserViewPermissionUrl();
-                            break;
                         case 'group':
-                        default:
                             url = PICS.data.ServerCommunicationUrl.getShareWithGroupViewPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserViewPermissionUrl();
                             break;
                     }
                 }
