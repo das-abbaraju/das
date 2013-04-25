@@ -1,5 +1,12 @@
 package com.picsauditing.access;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
@@ -10,12 +17,6 @@ import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
 
 public final class MenuBuilder {
 
@@ -259,7 +260,7 @@ public final class MenuBuilder {
 
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
 			manageMenu
-					.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
+			.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
 					"auditor_assignment_matrix");
 		}
@@ -460,7 +461,7 @@ public final class MenuBuilder {
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
-						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+				.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 
@@ -491,8 +492,13 @@ public final class MenuBuilder {
 			referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
 		}
 
-		referenceMenu.addChild("Navigation Menu", "Tutorial!navigationMenu.action", "navigation_menu");
-		referenceMenu.addChild("Dynamic Reports", "Tutorial!dynamicReport.action", "dynamic_report");
+		referenceMenu.addChild("Navigation Menu",
+				"Reference!navigationMenu.action", "navigation_menu");
+		referenceMenu.addChild("Dynamic Reports",
+				"Reference!dynamicReport.action", "dynamic_report");
+		referenceMenu.addChild("Navigation Restructure",
+				"Reference!navigationRestructure.action",
+				"navigation_restructure");
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
@@ -572,14 +578,14 @@ public final class MenuBuilder {
 			emailMenu.addChild("New Year Mailer", "NewYearMailer.action", "NewYearMailer");
 		}
 
-        if (!emailMenu.hasChildren()) {
-            boolean removed = parentMenu.removeChild(emailMenu);
+		if (!emailMenu.hasChildren()) {
+			boolean removed = parentMenu.removeChild(emailMenu);
 
-            if (!removed) {
-                logger.warn("Unable to remove email menu with no children.");
-            }
-        }
-    }
+			if (!removed) {
+				logger.warn("Unable to remove email menu with no children.");
+			}
+		}
+	}
 
 	private static void handleSingleChildMenu(MenuComponent menu) {
 		if (menu.getChildren().size() == 1) {

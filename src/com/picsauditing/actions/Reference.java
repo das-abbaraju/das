@@ -9,7 +9,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 
 @SuppressWarnings("serial")
-public class Tutorial extends PicsActionSupport {
+public class Reference extends PicsActionSupport {
 
 	@Autowired
 	private UserDAO userDAO;
@@ -29,6 +29,10 @@ public class Tutorial extends PicsActionSupport {
 
 	public String dynamicReport() throws Exception {
 		return "dynamic-report";
+	}
+
+	public String navigationRestructure() {
+		return "navigation-restructure";
 	}
 
 	/**

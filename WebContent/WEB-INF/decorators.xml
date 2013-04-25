@@ -13,7 +13,7 @@
         <pattern>/AccountRecovery*.action</pattern>
         <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
-        <pattern>/Tutorial*.action</pattern>
+        <pattern>/Reference*.action</pattern>
     </decorator>
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>

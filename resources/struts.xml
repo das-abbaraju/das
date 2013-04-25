@@ -193,9 +193,10 @@
             <result>/struts/general/about.jsp</result>
         </action>
 
-        <action name="Tutorial" class="com.picsauditing.actions.Tutorial">
-            <result name="dynamic-report">/struts/tutorial/dynamic-report.jsp</result>
-            <result name="navigation-menu">/struts/tutorial/navigation-menu.jsp</result>
+        <action name="Reference" class="com.picsauditing.actions.Reference">
+            <result name="dynamic-report">/struts/reference/dynamic-report.jsp</result>
+            <result name="navigation-menu">/struts/reference/navigation-menu.jsp</result>
+            <result name="navigation-restructure">/struts/reference/navigation-restructure.jsp</result>
 
             <interceptor-ref name="validation">
                 <param name="excludeMethods">execute,navigationMenu</param>
