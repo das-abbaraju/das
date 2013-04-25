@@ -23,15 +23,19 @@
             
             add: function(contractor, operator, callback) {
                 var contractorFacilities = this;
-                
+                var reqOpId = $('#reqOpId').html();
+                var reqUserId = $('#reqUserId').html();
+
                 var message = translate('JS.ContractorFacilities.message.LinkingOperator');
                 $('#thinkingDiv').html(message + ' <img src="images/ajax_process.gif" alt="' + message + '" />');
-                
+
                 PICS.ajax({
                     url: 'ContractorFacilities!add.action',
                     data: {
                         contractor: contractor,
-                        operator: operator
+                        operator: operator,
+                        reqOpId : reqOpId,
+                        reqUserId : reqUserId
                     },
                     success: function(data, textStatus, XMLHttpRequest) {
                         $('#thinkingDiv').empty();
@@ -55,7 +59,7 @@
                 var contractor = $(this).attr('data-contractor');
                 var generalContractor = $(this).attr('data-general-contractor');
                 var operator = $(this).attr('data-operator');
-                
+
                 contractorFacilities.add.apply(contractorFacilities, 
                     [contractor, operator, function() {
                         contractorFacilities.add.apply(contractorFacilities, [contractor, generalContractor]);
@@ -234,7 +238,7 @@
                 var needsModal = $(this).attr('data-needs-modal');
                 var operator = $(this).attr('data-operator');
                 var operatorName = $(this).attr('data-operator-name');
-                
+
                 PICS.ajax({
                     url: 'ContractorFacilities!validateBidOnly.action',
                     data: {

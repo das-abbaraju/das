@@ -59,6 +59,24 @@
 							data-needs-modal="<s:property value="isNeedsGeneralContractorModal(#operator_result)" />">
  							<s:text name="button.Add" />
 						</a>
+                        <s:if test="reqOpId > 0" >
+                            <div>
+                            <s:url action="ContractorFacilities" method="decline" var="facilities_decline">
+                                <s:param name="id">
+                                    ${contractor_id}
+                                </s:param>
+                                <s:param name="reqOpId">
+                                    <s:property value="reqOpId" />
+                                </s:param>
+                                <s:param name="reqUserId">
+                                    <s:property value="reqUserId" />
+                                </s:param>
+                            </s:url>
+                            <a href="${facilities_decline}" class="remove">
+                                <s:text name="global.Decline" />
+                            </a>
+                            </div>
+                        </s:if>
 					</td>
 				</tr>
 			</s:iterator>

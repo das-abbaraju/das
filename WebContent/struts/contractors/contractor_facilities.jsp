@@ -27,7 +27,10 @@
 		</s:if>
 	
 		<br clear="all" />
-	
+
+        <div id="reqOpId" style="display: none;"><s:property value="reqOpId" /></div>
+        <div id="reqUserId" style="display: none;"><s:property value="reqUserId" /></div>
+
 		<table width="100%">
 			<tr>
 				<td style="width: 44%; vertical-align: top;">
@@ -64,6 +67,8 @@
 					</h3>
 					<form id="facility_search">
 						<s:hidden name="id" />
+                        <s:hidden name="reqOpId" />
+                        <s:hidden name="reqUserId" />
 						<div id="search">
 							<div class="buttons" style="min-height: 30px;">
 								<nobr>

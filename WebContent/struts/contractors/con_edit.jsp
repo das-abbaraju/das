@@ -356,7 +356,15 @@
     								theme="formhelp"
     							/>
     						</li>
-    						<li>
+                            <li>
+                                <label><s:text name="ContractorEdit.AutoAdd" /></label>
+                                <s:radio
+                                    name="contractor.autoAddClientSite"
+                                    list="#{true:getText('ContractorEdit.AutoAdd.Yes'), false:getText('ContractorEdit.AutoAdd.No')}"
+                                    theme="pics"
+                                    labelposition="left"/>
+                            </li>
+    					<li>
     							<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
     							<s:textarea name="contractor.description" cols="40"	rows="15" />
     						</li>

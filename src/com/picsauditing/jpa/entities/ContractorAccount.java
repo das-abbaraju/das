@@ -126,6 +126,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private LcCorPhase lcCorPhase;
 	private Date lcCorNotification;
 	private boolean dontReassign;
+	private boolean autoAddClientSite = true;
 
 	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
@@ -1002,6 +1003,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setRenew(boolean renew) {
 		this.renew = renew;
+	}
+
+	public boolean isAutoAddClientSite() {
+		return autoAddClientSite;
+	}
+
+	public void setAutoAddClientSite(boolean autoAddClientSite) {
+		this.autoAddClientSite = autoAddClientSite;
 	}
 
 	/**
