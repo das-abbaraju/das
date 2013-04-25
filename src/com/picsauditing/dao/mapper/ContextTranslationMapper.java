@@ -20,7 +20,7 @@ public class ContextTranslationMapper implements RowMapper<ContextTranslation> {
 		translation.setKey(rs.getString("Item_nm"));
 		translation.setLocale(rs.getString("Locale_cd"));
 		translation.setTranslation(rs.getString("ItemEntry_tx"));
-		translation.setLastUsed(convertToJavaDate(rs.getDate("")));
+		translation.setLastUsed(new java.util.Date());
 		return translation;
 	}
 

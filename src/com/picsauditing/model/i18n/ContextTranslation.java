@@ -72,8 +72,8 @@ public class ContextTranslation implements Translatable {
 
 	@Override
 	public String getI18nKey() {
-		return new StringBuilder().append(actionName).append(methodName).append(frontEndControlName).append(key)
-				.toString();
+		return new StringBuffer(actionName).append(".").append(methodName).append(".").append(frontEndControlName)
+				.append(".").append(key).toString();
 	}
 
 	/**
@@ -83,6 +83,11 @@ public class ContextTranslation implements Translatable {
 	@Deprecated
 	public String getI18nKey(String property) {
 		return getI18nKey() + property;
+	}
+
+	@Override
+	public String toString() {
+		return getI18nKey();
 	}
 
 }

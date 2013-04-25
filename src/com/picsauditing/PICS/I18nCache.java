@@ -46,11 +46,11 @@ public class I18nCache implements Serializable {
 	private transient static Date LAST_CLEARED;
 
 	private volatile transient Table<String, String, String> cache;
+	private volatile transient Table<String, String, String> translationsForJS;
 	private transient Map<String, Date> cacheUsage;
 
 	private static Database databaseForTesting = null;
 	private static List<I18nCacheBuildAware> buildListeners = new ArrayList<I18nCacheBuildAware>();
-	private static Table<String, String, String> translationsForJS;
 
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 
@@ -227,7 +227,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private String buildLookupKeyForJS(ContextTranslation translation) {
-		return new StringBuilder(translation.getActionName()).append(".").append(translation.getMethodName())
+		return new StringBuffer(translation.getActionName()).append(".").append(translation.getMethodName())
 				.append(".").append(translation.getLocale()).toString();
 	}
 
