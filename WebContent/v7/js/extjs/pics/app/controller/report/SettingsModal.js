@@ -290,9 +290,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
             access_type = request_data.access_type;
 
         if (access_type == 'user') {
-            success_message_body = "Your report has been added to the user's Owned by Me.";
+            success_message_body = "Your report has been added to the user's Shared with Me.";
         } else {
-            success_message_body = "Your report has been added to the users' Owned by Me.";
+            success_message_body = "Your report has been added to the users' Shared with Me.";
         }
 
         var options = {
