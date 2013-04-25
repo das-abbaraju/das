@@ -19,12 +19,16 @@ public class AppTranslationDAO extends PicsDAO {
 
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 
-	private static final Database database = new Database();
+	private final Database database;
 
 	private static final Logger logger = LoggerFactory.getLogger(AppTranslationDAO.class);
 
 	public List<BasicDynaBean> getTranslationsForI18nCache() throws SQLException {
 		return database.select(I18N_CACHE_QUERY, false);
+	}
+
+	public AppTranslationDAO(Database database) {
+		this.database = database;
 	}
 
 	@Deprecated
@@ -49,7 +53,7 @@ public class AppTranslationDAO extends PicsDAO {
 	// this will call the stored procedure and get the appropriate translations
 	public List<ContextTranslation> findAllForJS() {
 		try {
-			return Database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
+			return database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
 		} catch (Exception e) {
 			logger.error("Error while retrieving all the translations for JS.", e);
 		}

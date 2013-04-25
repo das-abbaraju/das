@@ -83,7 +83,7 @@ public class ReportDAO extends PicsDAO {
 		SelectSQL sql = buildQueryForFindByOwnerId(reportSearch);
 
 		try {
-			return Database.select(sql.toString(), new ReportInfoMapper());
+			return new Database().select(sql.toString(), new ReportInfoMapper());
 		} catch (SQLException e) {
 			logger.error("Error while finding owned by reports for ownerID = "
 					+ reportSearch.getPermissions().getUserId());
@@ -123,7 +123,7 @@ public class ReportDAO extends PicsDAO {
 		SelectSQL sql = buildQueryForFindSharedWith(reportSearch, permissions);
 
 		try {
-			return Database.select(sql.toString(), new ReportInfoMapper());
+			return new Database().select(sql.toString(), new ReportInfoMapper());
 		} catch (SQLException e) {
 			logger.error("Error while finding shared with reports for userID = " + permissions.getUserId());
 		}

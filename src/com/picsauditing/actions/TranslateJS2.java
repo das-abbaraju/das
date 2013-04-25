@@ -15,14 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppTranslationDAO;
+import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 public class TranslateJS2 extends PicsActionSupport {
 
-	@Autowired
-	private AppTranslationDAO appTranslationDAO;
 	@Autowired
 	private FeatureToggle featureToggle;
 
@@ -66,7 +65,7 @@ public class TranslateJS2 extends PicsActionSupport {
 
 	private void buildOldStyleTranslationJsonResponse() throws SQLException {
 		@SuppressWarnings("deprecation")
-		List<BasicDynaBean> messages = appTranslationDAO.findTranslationsForJSOldStyle(buildLocales());
+		List<BasicDynaBean> messages = new AppTranslationDAO(new Database()).findTranslationsForJSOldStyle(buildLocales());
 		buildJsonResponseOldStyle(messages);
 	}
 

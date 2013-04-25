@@ -581,7 +581,7 @@ public class I18nCache implements Serializable {
 	private AppTranslationDAO getAppTranslationDAO() {
 		if (appTranslationDAO == null) {
 			// not using the SpringUtils because the SpringContext has not been loaded before this is called.
-			appTranslationDAO = new AppTranslationDAO();
+			appTranslationDAO = new AppTranslationDAO(getDatabase());
 			return appTranslationDAO;
 		}
 

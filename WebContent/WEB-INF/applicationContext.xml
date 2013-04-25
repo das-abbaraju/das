@@ -23,7 +23,6 @@
     <bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
     <bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
     <bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
-    <bean id="AppTranslationDAO" class="com.picsauditing.dao.AppTranslationDAO"/>
     <bean id="AssessmentResultDAO" class="com.picsauditing.dao.AssessmentResultDAO"/>
     <bean id="AssessmentTestDAO" class="com.picsauditing.dao.AssessmentTestDAO"/>
     <bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
