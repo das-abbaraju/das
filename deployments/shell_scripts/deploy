@@ -9,7 +9,7 @@ echo CHECKING IF TOMCAT IS CURRENTLY RUNNING
 if ps aux | grep "[t]omcat" > /dev/null
 then
     echo STOPPING TOMCAT VIA DAEMON COMMAND
-    /opt/tomcat/bin/daemon.sh stop
+    /opt/tomcat/bin/shutdown.sh
     if [ "$?" -ne "0" ]; then
         echo "TOMCAT DID NOT STOP; KILLING PROCESS"
         pkill tomcat
@@ -90,7 +90,7 @@ fi
 ####################################################
 
 echo STARTING TOMCAT
-/opt/tomcat/bin/daemon.sh start
+/opt/tomcat/bin/startup.sh
 if [ "$?" -ne "0" ]; then
     echo "TOMCAT FAILED ON STARTUP; CONTACT LINUX EXPERT"
     exit 1
