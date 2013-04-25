@@ -27,7 +27,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                 }
             }
         },
-        loadingText: 'Searching...',
+        loadingText: 'Searching' + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -52,7 +52,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
                         '<tpl if="this.total_results &gt; 10">',
                             '<a href="#">',
-                                'More Results...',
+                                'More Results' + '&hellip;',
                             '</a>',
                         '</tpl>',
                         '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',

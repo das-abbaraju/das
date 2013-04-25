@@ -76,16 +76,16 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             margin: '0 0 5 0',
             baseCls: 'selected-account',
             tpl: Ext.create('Ext.XTemplate',
-                            '<p>',
-                                '<strong class="selected-account-name">{name}</strong>',
-                            '</p>',
-                            '<p class="selected-account-location">',
-                                '{location}',
-                            '</p>',
-                             '<p class="selected-account-id">',
-                                '{id}',
-                            '</p>'
-                           ),
+                '<p>',
+                    '<strong class="selected-account-name">{name}</strong>',
+                '</p>',
+                '<p class="selected-account-location">',
+                    '{location}',
+                '</p>',
+                 '<p class="selected-account-id">',
+                    '{id}',
+                '</p>'
+            ),
             id: 'selected_account'
         }, {
             xtype: 'displayfield',
@@ -104,8 +104,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-             "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-             "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to share your duplicate report.</p>"
+                '<p class="permission-info">You do not have permission to edit the settings of this report</p>',
+                '<p class="duplicate-info">You can <strong>Duplicate</strong> the report to save it to your reports.  After it\'s saved you\'ll be able to share your duplicate report.</p>'
             ])
         }];
 

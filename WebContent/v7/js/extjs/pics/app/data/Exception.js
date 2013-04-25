@@ -4,11 +4,11 @@ Ext.define('PICS.data.Exception', {
         var error_codes = {
             401: {
                 title: 'Server Communication Error',
-                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>'
+                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>.'
             },
             404: {
                 title: 'Server Communication Error',
-                message: 'File not found.' 
+                message: 'Page not found.' 
             },
             500: {
                 title: 'Server Communication Error',

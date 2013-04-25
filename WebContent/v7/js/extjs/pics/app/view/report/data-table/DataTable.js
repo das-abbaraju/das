@@ -64,7 +64,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             xtype: 'menuseparator'
         }, {
             name: 'function',
-            text: 'Functions...'
+            text: 'Functions' + '&hellip;'
         }, {
             xtype: 'menuseparator'
         }, {
@@ -128,7 +128,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         if (!sql_function) {
-            function_item.setText('Functions...');
+            function_item.setText('Functions' + '&hellip;');
             function_item.name = "function";
         } else {
             function_item.setText('Remove Function');

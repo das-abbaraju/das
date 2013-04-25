@@ -89,7 +89,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         var name = filter.get('name');
 
         if (name.length >= 29) {
-            name = name.substring(0, 29) + '...';
+            name = name.substring(0, 29) + '&hellip;';
         }
 
         return {

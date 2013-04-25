@@ -66018,11 +66018,11 @@ Ext.define('PICS.data.Exception', {
         var error_codes = {
             401: {
                 title: 'Server Communication Error',
-                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>'
+                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>.'
             },
             404: {
                 title: 'Server Communication Error',
-                message: 'File not found.' 
+                message: 'Page not found.' 
             },
             500: {
                 title: 'Server Communication Error',
@@ -83025,7 +83025,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         var name = filter.get('name');
 
         if (name.length >= 29) {
-            name = name.substring(0, 29) + '...';
+            name = name.substring(0, 29) + '&hellip;';
         }
 
         return {
@@ -92360,7 +92360,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                 }
             }
         },
-        loadingText: 'Searching...',
+        loadingText: 'Searching' + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -92385,7 +92385,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
                         '<tpl if="this.total_results &gt; 10">',
                             '<a href="#">',
-                                'More Results...',
+                                'More Results' + '&hellip;',
                             '</a>',
                         '</tpl>',
                         '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',
@@ -92695,7 +92695,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     
     listConfig: {
         cls: 'site-menu-search-list',
-        loadingText: 'Searching...',
+        loadingText: 'Searching' + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -92828,16 +92828,16 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             margin: '0 0 5 0',
             baseCls: 'selected-account',
             tpl: Ext.create('Ext.XTemplate',
-                            '<p>',
-                                '<strong class="selected-account-name">{name}</strong>',
-                            '</p>',
-                            '<p class="selected-account-location">',
-                                '{location}',
-                            '</p>',
-                             '<p class="selected-account-id">',
-                                '{id}',
-                            '</p>'
-                           ),
+                '<p>',
+                    '<strong class="selected-account-name">{name}</strong>',
+                '</p>',
+                '<p class="selected-account-location">',
+                    '{location}',
+                '</p>',
+                 '<p class="selected-account-id">',
+                    '{id}',
+                '</p>'
+            ),
             id: 'selected_account'
         }, {
             xtype: 'displayfield',
@@ -92856,8 +92856,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-             "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-             "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to share your duplicate report.</p>"
+                '<p class="permission-info">You do not have permission to edit the settings of this report</p>',
+                '<p class="duplicate-info">You can <strong>Duplicate</strong> the report to save it to your reports.  After it\'s saved you\'ll be able to share your duplicate report.</p>'
             ])
         }];
 
@@ -92934,7 +92934,6 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     layout: 'fit',
     modal: true,
     resizable: false,
-    title: 'Edit Report',
     width: 352,
     
     updateActiveTabFromAction: function (action) {
@@ -95756,7 +95755,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             xtype: 'menuseparator'
         }, {
             name: 'function',
-            text: 'Functions...'
+            text: 'Functions' + '&hellip;'
         }, {
             xtype: 'menuseparator'
         }, {
@@ -95820,7 +95819,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         if (!sql_function) {
-            function_item.setText('Functions...');
+            function_item.setText('Functions' + '&hellip;');
             function_item.name = "function";
         } else {
             function_item.setText('Remove Function');

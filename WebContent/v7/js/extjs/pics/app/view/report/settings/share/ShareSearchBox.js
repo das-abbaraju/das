@@ -14,7 +14,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     
     listConfig: {
         cls: 'site-menu-search-list',
-        loadingText: 'Searching...',
+        loadingText: 'Searching' + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
