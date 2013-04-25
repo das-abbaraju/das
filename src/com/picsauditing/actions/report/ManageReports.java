@@ -177,8 +177,7 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportService.loadReportFromDatabase(reportId);
 			User user = userService.loadUser(permissions.getUserId());
 
-			if ( !(permissionService.canUserShareReport(user, report)
-					|| permissionService.isReportDevelopmentGroup(permissions)) ) {
+			if (!permissionService.canUserShareReport(user, report, permissions)) {
 				throw new UnauthorizedException(
 						"You do not have access to the Report Access page.");
 			}
