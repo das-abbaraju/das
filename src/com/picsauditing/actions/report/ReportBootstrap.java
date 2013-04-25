@@ -45,7 +45,7 @@ public class ReportBootstrap extends PicsActionSupport {
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), report);
 		reportPreferencesService.stampViewed(reportUser, permissions);
 
-		name = "Loading Report " + report + " ...";
+		name = getText("Report.execute.loading.title", new Object[] { reportObject.getName() });
 
 		return SUCCESS;
 	}

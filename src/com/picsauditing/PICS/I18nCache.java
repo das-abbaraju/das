@@ -40,7 +40,8 @@ public class I18nCache implements Serializable {
 	public static final String I18N_CACHE_KEY = "I18nCache";
 	public static final String CACHE_NAME = "daily";
 	public static final String DEFAULT_LANGUAGE = "en";
-	public static final String DEFAULT_TRANSLATION = "";
+	public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
+	public static final String ACTION_TRANSLATION_KEYWORD = "ACTION";
 
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
@@ -200,7 +201,8 @@ public class I18nCache implements Serializable {
 			List<BasicDynaBean> messages = getAppTranslationDAO().getTranslationsForI18nCache();
 			for (BasicDynaBean message : messages) {
 				String key = String.valueOf(message.get("msgKey"));
-				newCache.put(prepareKeyForCache(key), String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+				newCache.put(prepareKeyForCache(key), String.valueOf(message.get("locale")),
+						String.valueOf(message.get("msgValue")));
 				Date lastUsed = (Date) message.get("lastUsed");
 				newCacheUsage.put(key, lastUsed);
 			}
@@ -211,7 +213,7 @@ public class I18nCache implements Serializable {
 				String translation = contextTranslation.getTranslaton();
 				newCache.put(prepareKeyForCache(key), contextTranslation.getLocale(), translation);
 				newCacheUsage.put(key, contextTranslation.getLastUsed());
-				newTranslationsForJS.put(buildLookupKeyForJS(contextTranslation), key, translation);
+				newTranslationsForJS.put(buildKeyForJS(contextTranslation), key, translation);
 			}
 
 			cache = newCache;
@@ -226,9 +228,12 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	private String buildLookupKeyForJS(ContextTranslation translation) {
-		return new StringBuffer(translation.getActionName()).append(".").append(translation.getMethodName())
-				.append(".").append(translation.getLocale()).toString();
+	private String buildKeyForJS(ContextTranslation translation) {
+		return buildKeyForJS(translation.getActionName(), translation.getMethodName(), translation.getLocale());
+	}
+
+	private String buildKeyForJS(String actionName, String methodName, String locale) {
+		return new StringBuffer(actionName).append(".").append(methodName).append(".").append(locale).toString();
 	}
 
 	private void cleanupAfterCacheIsBuilt(boolean successful, StopWatch stopWatch) {
@@ -238,7 +243,7 @@ public class I18nCache implements Serializable {
 		}
 
 		if (cacheUsage == null) {
-		    cacheUsage = new HashMap<String, Date>();
+			cacheUsage = new HashMap<String, Date>();
 		}
 
 		if (translationsForJS == null) {
@@ -301,9 +306,12 @@ public class I18nCache implements Serializable {
 
 		String fallbackTranslation = key;
 
-		// TODO this should be temporary because we probably need a new column in the DB
-		// that flags whether a translation is ready for primetime. This would require us to
-		// change all the logic that automatically inserts translations into the DB.
+		// TODO this should be temporary because we probably need a new column
+		// in the DB
+		// that flags whether a translation is ready for primetime. This would
+		// require us to
+		// change all the logic that automatically inserts translations into the
+		// DB.
 		if (key.toLowerCase().endsWith("helptext")) {
 			fallbackTranslation = "";
 		}
@@ -311,7 +319,8 @@ public class I18nCache implements Serializable {
 		if (DEFAULT_LANGUAGE.equals(locale)) {
 			logger.error("Translation key '{}' has no english translation.", key);
 		} else {
-			// If a foreign translation was invalid, check the English translation
+			// If a foreign translation was invalid, check the English
+			// translation
 			String englishValue = cache.get(prepareKeyForCache(key), DEFAULT_LANGUAGE);
 
 			if (isValidTranslation(englishValue)) {
@@ -534,7 +543,8 @@ public class I18nCache implements Serializable {
 			return false;
 		}
 
-		// TODO remove this once we have scrubbed the database of "Translation Missing"s
+		// TODO remove this once we have scrubbed the database of
+		// "Translation Missing"s
 		if ("Translation Missing".equalsIgnoreCase(translation)) {
 			return false;
 		}
@@ -559,8 +569,9 @@ public class I18nCache implements Serializable {
 			return Collections.emptyList();
 		}
 
-		List<Map<String, String>> translations = new ArrayList<>();
 		List<String> keys = generateKeys(actionName, methodName, locales);
+
+		List<Map<String, String>> translations = new ArrayList<>();
 		for (String key : keys) {
 			translations.add(Collections.unmodifiableMap(translationsForJS.row(key)));
 		}
@@ -571,8 +582,8 @@ public class I18nCache implements Serializable {
 	private List<String> generateKeys(String actionName, String methodName, Set<String> locales) {
 		List<String> keys = new ArrayList<String>();
 		for (String locale : locales) {
-			StringBuilder key = new StringBuilder(actionName).append(".").append(methodName).append(".").append(locale);
-			keys.add(key.toString());
+			keys.add(buildKeyForJS(actionName, methodName, locale));
+			keys.add(buildKeyForJS(actionName, ACTION_TRANSLATION_KEYWORD, locale));
 		}
 
 		return keys;
@@ -580,7 +591,8 @@ public class I18nCache implements Serializable {
 
 	private AppTranslationDAO getAppTranslationDAO() {
 		if (appTranslationDAO == null) {
-			// not using the SpringUtils because the SpringContext has not been loaded before this is called.
+			// not using the SpringUtils because the SpringContext has not been
+			// loaded before this is called.
 			appTranslationDAO = new AppTranslationDAO(getDatabase());
 			return appTranslationDAO;
 		}
