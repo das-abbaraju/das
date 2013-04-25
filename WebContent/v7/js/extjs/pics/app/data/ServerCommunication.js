@@ -365,34 +365,49 @@ Ext.define('PICS.data.ServerCommunication', {
             },
 
             shareReport: function (options) {
-                var account_id = options.account_id,
-                    account_type = options.account_type,
+                var id = options.id,
+                    access_type = options.access_type,
                     is_editable = options.is_editable,
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = '';
 
-                if (!(account_id && account_type && typeof is_editable != 'undefined')) {
+                if (!(id && access_type && typeof is_editable != 'undefined')) {
                     Ext.Error.raise('Error');
                 }
 
-                switch (account_type) {
-                    case 'account':
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithAccountUrl();
-                        break;
-                    case 'user':
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithUserUrl(is_editable);
-                        break;
-                    case 'group':
-                    default:
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithGroupUrl(is_editable);
-                        break;
+                if (is_editable) {
+                    switch (access_type) {
+                        case 'account':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithAccountEditPermissionUrl();
+                            break;
+                        case 'group':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithGroupEditPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserEditPermissionUrl();
+                            break;
+                    }
+                } else {
+                    switch (access_type) {
+                        case 'account':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithAccountViewPermissionUrl();
+                            break;
+                        case 'group':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithGroupViewPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserViewPermissionUrl();
+                            break;
+                    }
                 }
 
                 Ext.Ajax.request({
                     url: url,
                     params: {
-                        shareId: account_id
+                        shareId: id
                     },
                     callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {

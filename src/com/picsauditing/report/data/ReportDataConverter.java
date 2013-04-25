@@ -112,10 +112,11 @@ public class ReportDataConverter {
 
 		if (displayType == DisplayType.Boolean) {
             if (forPrint) {
-                if (((Integer)value).intValue() == 0) {
-					result = "N";
-				} else {
+            	long numericValue = safeConversionToLong(value);
+                if (numericValue == 1) {
 					result = "Y";
+				} else {
+					result = "N";
 				}
             } else {
 				result = value;
@@ -123,6 +124,16 @@ public class ReportDataConverter {
         }
 
 		return result;
+	}
+
+	private long safeConversionToLong(Object value) {
+		if (value instanceof Integer) {
+			return ((Integer) value).intValue();
+		} else if (value instanceof Long) {
+			return ((Long) value).longValue();
+		}
+
+		return 0;
 	}
 
 	private String convertValueAsMonth(Object value) {

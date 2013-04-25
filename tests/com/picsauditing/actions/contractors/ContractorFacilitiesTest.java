@@ -32,6 +32,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -57,6 +58,8 @@ import com.picsauditing.util.PermissionToViewContractor;
 public class ContractorFacilitiesTest extends PicsActionTest {
 	private ContractorFacilities contractorFacilities;
 
+    @Mock
+    private BasicDynaBean basicDynaBean;
 	@Mock
 	private BillingCalculatorSingle billingCalculatorSingle;
 	@Mock
@@ -230,26 +233,30 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testExecute_SearchCountrySubdivisionProvided() throws Exception {
+	public void testExecute_SearchValueProvided() throws Exception {
 		initializeContractor();
 
-		contractorFacilities.setCountrySubdivision("CountrySubdivision");
-		contractorFacilities.setOperator(new OperatorAccount());
+		contractorFacilities.setSearch("CountrySubdivision");
 
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(new ArrayList<OperatorAccount>());
+        ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
 
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
+        verify(database).select(sqlCaptor.capture(), anyBoolean());
+		verify(entityManager).createQuery(anyString());
 		verify(entityManager, never()).merge(any(ContractorAccount.class));
+        verify(query).getResultList();
+
+        assertTrue(sqlCaptor.getValue().contains("countrySubdivision LIKE '%CountrySubdivision%'"));
+        assertTrue(sqlCaptor.getValue().contains("msgValue LIKE '%CountrySubdivision%'"));
 	}
 
 	@Test
-	public void testExecute_SearchCountrySubdivisionEmpty() throws Exception {
+	public void testExecute_SearchValueEmpty() throws Exception {
 		initializeContractor();
 
-		contractorFacilities.setCountrySubdivision("");
+		contractorFacilities.setSearch("");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
@@ -265,8 +272,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 	public void testSearch_WithResults() throws Exception {
 		ContractorAccount contractorAccount = initializeContractor();
 
-		contractorFacilities.setCountrySubdivision("CountrySubdivision");
-		contractorFacilities.setOperator(new OperatorAccount());
+		contractorFacilities.setSearch("CountrySubdivision");
 
 		OperatorAccount operatorResult = EntityFactory.makeOperator();
 		operatorResult.setOnsiteServices(true);
@@ -280,19 +286,30 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 
 		EntityFactory.addContractorOperator(contractorAccount, operatorResult3);
 
-		ArrayList<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		ArrayList<OperatorAccount> operators = new ArrayList<>();
 		operators.add(operatorResult);
 		operators.add(operatorResult2);
 		operators.add(operatorResult3);
 
+        List<BasicDynaBean> basicDynaBeans = new ArrayList<>();
+        basicDynaBeans.add(basicDynaBean);
+
+        when(basicDynaBean.get("opID")).thenReturn(operatorResult3.getId());
+        when(basicDynaBean.get("name")).thenReturn(operatorResult3.getName());
+        when(basicDynaBean.get("status")).thenReturn(operatorResult3.getStatus());
+        when(basicDynaBean.get("onsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+        when(basicDynaBean.get("offsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+        when(basicDynaBean.get("materialSupplier")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+        when(basicDynaBean.get("transportationServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+        when(database.select(anyString(), anyBoolean())).thenReturn(basicDynaBeans);
 		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(contractorAccount.getOperators()).thenReturn(operators);
+		when(query.getResultList()).thenReturn(contractorAccount.getOperators());
 
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
-		assertEquals(1, contractorFacilities.getSearchResults().size());
 
-		verify(entityManager, never()).merge(any(ContractorAccount.class));
+        verify(entityManager).createQuery(anyString());
+        verify(query).getResultList();
 	}
 
 	@Test
@@ -321,6 +338,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		when(basicDynaBean.get("onsiteServices")).thenReturn(1);
 		when(basicDynaBean.get("offsiteServices")).thenReturn(0);
 		when(basicDynaBean.get("materialSupplier")).thenReturn(0);
+		when(basicDynaBean.get("transportationServices")).thenReturn(0);
 		when(basicDynaBean.get("opID")).thenReturn(1);
 		when(basicDynaBean.get("name")).thenReturn("Test Operator");
 		when(basicDynaBean.get("status")).thenReturn("Active");

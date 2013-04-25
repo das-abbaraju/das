@@ -66065,7 +66065,15 @@ Ext.define('PICS.data.Exception', {
         function handleUnknown2xxException(response, callback) {
             showException(unknown_error.title, unknown_error.message);
         }
-        
+
+        function isSuccessWithEmptyResponse(response) {
+            if (typeof response.status != 'undefined' && typeof response.responseText != 'undefined') {
+                return response.status.toString()[0] == '2' && response.responseText == '';                
+            } else {
+                return false;
+            }
+        }
+
         function hasKnown2xxException(response) {
             var response_text = response && response.responseText,
                 json;
@@ -66126,6 +66134,14 @@ Ext.define('PICS.data.Exception', {
             },
             
             hasException: function (response) {
+                if (!response) {
+                    Ext.Error.raise('Parameter response required');
+                }
+
+                if (isSuccessWithEmptyResponse(response)) {
+                    return false;
+                }
+
                 return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };
@@ -66498,34 +66514,49 @@ Ext.define('PICS.data.ServerCommunication', {
             },
 
             shareReport: function (options) {
-                var account_id = options.account_id,
-                    account_type = options.account_type,
+                var id = options.id,
+                    access_type = options.access_type,
                     is_editable = options.is_editable,
                     success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {},
                     failure_callback = typeof options.failure_callback == 'function' ? options.failure_callback : function () {},
                     url = '';
 
-                if (!(account_id && account_type && typeof is_editable != 'undefined')) {
+                if (!(id && access_type && typeof is_editable != 'undefined')) {
                     Ext.Error.raise('Error');
                 }
 
-                switch (account_type) {
-                    case 'account':
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithAccountUrl();
-                        break;
-                    case 'user':
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithUserUrl(is_editable);
-                        break;
-                    case 'group':
-                    default:
-                        url = PICS.data.ServerCommunicationUrl.getShareReportWithGroupUrl(is_editable);
-                        break;
+                if (is_editable) {
+                    switch (access_type) {
+                        case 'account':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithAccountEditPermissionUrl();
+                            break;
+                        case 'group':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithGroupEditPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserEditPermissionUrl();
+                            break;
+                    }
+                } else {
+                    switch (access_type) {
+                        case 'account':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithAccountViewPermissionUrl();
+                            break;
+                        case 'group':
+                            url = PICS.data.ServerCommunicationUrl.getShareWithGroupViewPermissionUrl();
+                            break;
+                        case 'user':
+                        default:
+                            url = PICS.data.ServerCommunicationUrl.getShareWithUserViewPermissionUrl();
+                            break;
+                    }
                 }
 
                 Ext.Ajax.request({
                     url: url,
                     params: {
-                        shareId: account_id
+                        shareId: id
                     },
                     callback: function (options, success, response) {
                         if (PICS.data.Exception.hasException(response)) {
@@ -66705,10 +66736,10 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithAccountUrl: function () {
+        getShareWithAccountEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithAccount.action?';
+                path = 'ManageReports!shareWithAccountEditPermission.action?';
 
             var params = {
                 reportId: report_id
@@ -66717,27 +66748,61 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithGroupUrl: function (is_editable) {
+        getShareWithGroupEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithGroup.action?';
+                path = 'ManageReports!shareWithGroupEditPermission.action?';
 
             var params = {
-                reportId: report_id,
-                editable: is_editable
+                reportId: report_id
             };
 
             return path + Ext.Object.toQueryString(params);
         },
 
-        getShareReportWithUserUrl: function (is_editable) {
+        getShareWithUserEditPermissionUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
-                path = 'ReportApi!shareWithUser.action?';
+                path = 'ManageReports!shareWithUserEditPermission.action?';
 
             var params = {
-                reportId: report_id,
-                editable: is_editable
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithAccountViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithAccountViewPermission.action?';
+
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithGroupViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithGroupViewPermission.action?';
+
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getShareWithUserViewPermissionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!shareWithUserViewPermission.action?';
+
+            var params = {
+                reportId: report_id
             };
 
             return path + Ext.Object.toQueryString(params);
@@ -67282,7 +67347,7 @@ Ext.define('PICS.view.report.alert.Success', {
     id: 'success_message',
     resizable: false,
     shadow: false,
-    width: 350
+    width: 400
 });
 /**
  * Private utility class for Ext.layout.container.Border.
@@ -92640,12 +92705,12 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                     '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
                         '<div class="search-item">',
                             '<div>',
-                                '<span class="name"><em>{result_name}</em></span>',
-                                '<span class="id"><em>ID {result_id}</em></span>',
+                                '<span class="name"><em>{name}</em></span>',
+                                '<span class="id"><em>ID {id}</em></span>',
                             '</div>',
                             '<div>',
-                                '<span class="company">{result_at}</span>',
-                                '<span class="type">{result_type}</span>',
+                                '<span class="location">{location}</span>',
+                                '<span class="type">{type}</span>',
                             '</div>',
                         '</div>',
                     '</li>',
@@ -92664,11 +92729,11 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     store: {
         autoLoad: false,
         fields: [
-            'result_type',
-            'result_id',
-            'result_name',
-            'result_at',
-            'search_type'
+            'access_type',
+            'id',
+            'name',
+            'location',
+            'type'
         ],
         proxy: {
             type: 'ajax',
@@ -92683,7 +92748,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
         }
     },
     valueField: 'searchQuery',
-    width: 325    
+    width: 325
 });
 Ext.define('PICS.view.report.settings.share.ShareSetting', {
     extend: 'Ext.form.Panel',
@@ -92766,8 +92831,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
                             '<p>',
                                 '<strong class="selected-account-name">{name}</strong>',
                             '</p>',
-                            '<p class="selected-account-at">',
-                                '{at}',
+                            '<p class="selected-account-location">',
+                                '{location}',
                             '</p>',
                              '<p class="selected-account-id">',
                                 '{id}',
@@ -98728,18 +98793,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
     onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
 
+        combo.reset();
+
         if (record) {
             var share_setting_view = this.getShareSetting();
 
             var account_info = {
-                name: record.get('result_name'),
-                at: record.get('result_at')
+                name: record.get('name'),
+                location: record.get('location')
             };
 
             // Save the record data needed for sharing.
             share_setting_view.request_data = {
-                account_id: record.get('result_id'),
-                account_type: record.get('search_type')
+                id: record.get('id'),
+                access_type: record.get('access_type')
             };
 
             // Show the selection.
@@ -98770,22 +98837,25 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         var share_setting_view_element = share_setting_view.getEl(),
             is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
-            account_id = request_data.account_id,
-            account_type = request_data.account_type;
+            id = request_data.id,
+            access_type = request_data.access_type;
+
+        if (access_type == 'user') {
+            success_message_body = "Your report has been added to the user's Shared with Me.";
+        } else {
+            success_message_body = "Your report has been added to the users' Shared with Me.";
+        }
 
         var options = {
-            account_id: account_id,
-            account_type: account_type,
+            id: id,
+            access_type: access_type,
             is_editable: is_editable,
             success_callback: function (response) {
-                var data = response.responseText,
-                    json = Ext.JSON.decode(data);
-
                 report_settings_modal.close();
 
                 that.application.fireEvent('opensuccessmessage', {
-                    title: json.title,
-                    html: json.html
+                    title: 'Report Shared',
+                    html: success_message_body
                 });
             }
         };

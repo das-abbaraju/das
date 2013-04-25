@@ -242,18 +242,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
     onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
 
+        combo.reset();
+
         if (record) {
             var share_setting_view = this.getShareSetting();
 
             var account_info = {
-                name: record.get('result_name'),
-                at: record.get('result_at')
+                name: record.get('name'),
+                location: record.get('location')
             };
 
             // Save the record data needed for sharing.
             share_setting_view.request_data = {
-                account_id: record.get('result_id'),
-                account_type: record.get('search_type')
+                id: record.get('id'),
+                access_type: record.get('access_type')
             };
 
             // Show the selection.
@@ -284,22 +286,25 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         var share_setting_view_element = share_setting_view.getEl(),
             is_editable = share_setting_view_element.down('.icon-edit.selected') ? true : false;
-            account_id = request_data.account_id,
-            account_type = request_data.account_type;
+            id = request_data.id,
+            access_type = request_data.access_type;
+
+        if (access_type == 'user') {
+            success_message_body = "Your report has been added to the user's Shared with Me.";
+        } else {
+            success_message_body = "Your report has been added to the users' Shared with Me.";
+        }
 
         var options = {
-            account_id: account_id,
-            account_type: account_type,
+            id: id,
+            access_type: access_type,
             is_editable: is_editable,
             success_callback: function (response) {
-                var data = response.responseText,
-                    json = Ext.JSON.decode(data);
-
                 report_settings_modal.close();
 
                 that.application.fireEvent('opensuccessmessage', {
-                    title: json.title,
-                    html: json.html
+                    title: 'Report Shared',
+                    html: success_message_body
                 });
             }
         };

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.dao.mapper.ReportInfoMapper;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -35,7 +34,7 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
         try {
             SelectSQL sql = buildQueryForSearch(parameters);
             sql.setPageNumber(parameters.getPageSize(), parameters.getPage());
-            return Database.select(sql.toString(), new ReportInfoMapper());
+            return new Database().select(sql.toString(), new ReportInfoMapper());
         } catch (Exception e) {
             logger.error("Unexpected exception in getPaginationResults()", e);
         }

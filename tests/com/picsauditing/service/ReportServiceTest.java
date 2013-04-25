@@ -284,7 +284,8 @@ public class ReportServiceTest {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		User user = new User(USER_ID);
 		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
-		when(permissionService.canUserViewReport(eq(permissions), anyInt())).thenReturn(true);
+		when(reportDao.findById(REPORT_ID)).thenReturn(report);
+		when(permissionService.canUserViewReport(user, report, permissions)).thenReturn(true);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report newReport = reportServiceSpy.copy(reportContext);

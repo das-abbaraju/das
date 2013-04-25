@@ -8,6 +8,7 @@ import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,10 +17,6 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportPermissionAccountDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserGroup;
 
 public class PermissionServiceTest {
 
@@ -32,9 +29,13 @@ public class PermissionServiceTest {
 	@Mock
 	private User user;
 	@Mock
+	private User owner;
+	@Mock
 	private Report report;
 	@Mock
 	private ReportPermissionUser reportPermissionUser;
+	@Mock
+	private ReportPermissionAccount reportPermissionAccount;
 	@Mock
 	private Permissions permissions;
 
@@ -50,45 +51,44 @@ public class PermissionServiceTest {
 		setInternalState(permissionService, "reportPermissionUserDao", reportPermissionUserDao);
 		setInternalState(permissionService, "reportPermissionAccountDao", reportPermissionAccountDao);
 
+		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
+		when(report.getOwner()).thenReturn(owner);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 	}
 
 	@Test
-	public void testCanUserViewAndCopy_AssociationWithUserReturnsTrue() {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
+	public void testCanUserViewReport_AssociationWithUserReturnsTrue() {
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
-
-		assertTrue(result);
-	}
-
-	@Test
-	public void testCanUserViewAndCopy_AssociationWithAccountReturnsTrue() {
-		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
-		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenReturn(null);
-
-		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(user, report, permissions);
 
 		assertTrue(result);
 	}
 
 	@Test
-	public void testCanUserViewAndCopy_UserInDevGroupReturnsTrue() {
+	public void testCanUserViewReport_AssociationWithAccountReturnsTrue() {
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenReturn(reportPermissionAccount);
+
+		boolean result = permissionService.canUserViewReport(user, report, permissions);
+
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCanUserViewReport_UserInDevGroupReturnsTrue() {
+		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenReturn(null);
 
-		boolean result = permissionService.canUserViewReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserViewReport(user, report, permissions);
 
 		assertTrue(result);
 	}
 
 	@Test
-	public void testCanUserViewAndCopy_ReturnsFalse() {
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NoResultException());
+	public void testCanUserViewReport_ReturnsFalse() {
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 		when(reportPermissionAccountDao.findOne(ACCOUNT_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportPermissionUserDao.findOne(eq(UserGroup.class), anyString())).thenThrow(new NoResultException());
@@ -133,9 +133,9 @@ public class PermissionServiceTest {
 	@Test
 	public void testCanUserEdit_TrueIfEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
-		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		boolean result = permissionService.canUserEditReport(permissions, REPORT_ID);
+		boolean result = permissionService.canUserEditReport(user, report, permissions);
 
 		assertTrue(result);
 	}

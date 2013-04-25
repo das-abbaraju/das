@@ -36,11 +36,10 @@ public class ReportBootstrap extends PicsActionSupport {
 			// Don't care
 		}
 
-		if (!permissionService.canUserViewReport(getUser(), reportObject)) {
+		if (!permissionService.canUserViewReport(getUser(), reportObject, permissions)) {
 			addActionError(getText(ERROR_MESSAGE_I18N_KEY));
 
-			throw new UnauthorizedException(
-					"You do not have access to this report.");
+			throw new UnauthorizedException("You do not have access to this report.");
 		}
 
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(permissions.getUserId(), report);

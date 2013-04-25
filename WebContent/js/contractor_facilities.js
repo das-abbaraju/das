@@ -11,8 +11,6 @@
                     
                     var facilitySearch = $('#facility_search');
                     facilitySearch.delegate('.picsbutton.positive', 'click', this.search);
-                    facilitySearch.delegate('#search_location', 'change', this.search);
-                    facilitySearch.delegate('#search_operator', 'change', this.search);
                     
                     var results = $('#results');
                     results.delegate('#show_all_operators', 'click', this.showAllOperators);

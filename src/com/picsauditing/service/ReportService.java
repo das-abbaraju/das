@@ -160,8 +160,9 @@ public class ReportService {
 
 	public Report copy(ReportContext reportContext) throws Exception {
 		int userId = reportContext.permissions.getUserId();
+		Report oldReport = reportDao.findById(reportContext.reportId);
 
-		if (!permissionService.canUserViewReport(reportContext.permissions, reportContext.reportId)) {
+		if (!permissionService.canUserViewReport(reportContext.user, oldReport, reportContext.permissions)) {
 			throw new Exception("User " + userId + " does not have permission to copy report "
 					+ reportContext.reportId);
 		}

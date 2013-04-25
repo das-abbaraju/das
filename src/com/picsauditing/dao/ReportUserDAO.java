@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class ReportUserDAO extends PicsDAO {
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
 			sql.setLimit(10);
-			return Database.select(sql.toString(), new ReportInfoMapper());
+			return new Database().select(sql.toString(), new ReportInfoMapper());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");
 		}
@@ -59,10 +59,8 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findPinnedFavorites(int userId) {
-		String where = "t.user.id = " + userId +
-				" AND favorite = 1" +
-				" AND pinnedIndex != " + ReportUser.UNPINNED_INDEX +
-				" AND hidden = 0";
+		String where = "t.user.id = " + userId + " AND favorite = 1" + " AND pinnedIndex != "
+				+ ReportUser.UNPINNED_INDEX + " AND hidden = 0";
 
 		String orderBy = "pinnedIndex ASC";
 		int limit = 0;
@@ -73,10 +71,8 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findUnpinnedFavorites(int userId) {
-		String where = "t.user.id = " + userId +
-				" AND favorite = 1" +
-				" AND pinnedIndex = " + ReportUser.UNPINNED_INDEX +
-				" AND hidden = 0";
+		String where = "t.user.id = " + userId + " AND favorite = 1" + " AND pinnedIndex = "
+				+ ReportUser.UNPINNED_INDEX + " AND hidden = 0";
 
 		String orderBy = "sortOrder DESC";
 		int limit = 0;
@@ -106,18 +102,25 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("IFNULL(ru.favorite, 0) AS " + ReportInfoMapper.FAVORITE_FIELD);
 		sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
-		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD); // we do not know their permissions at this point
+		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD); // we do not
+																	// know
+																	// their
+																	// permissions
+																	// at this
+																	// point
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
 		sql.addJoin("LEFT JOIN users AS u ON r.ownerID = u.id");
-    	sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());
+		sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
-		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
-				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
-				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
+		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = "
+				+ permissions.getUserId() + " UNION SELECT reportID FROM report_permission_user WHERE userID IN ("
+				+ Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = "
+				+ permissions.getAccountId();
 
 		String ownerClause = "r.ownerID = " + permissions.getUserId();
 		String publicClause = "r.public = true";
@@ -146,28 +149,22 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findUnpinnedWithNextHighestSortOrder(ReportUser reportUser) {
-		String queryString = "SELECT ru FROM ReportUser ru" +
-				" WHERE ru.user.id = " + reportUser.getUser().getId() +
-				" AND ru.favorite = 1" +
-				" AND ru.sortOrder > " + reportUser.getSortOrder() +
-				" AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX +
-				" ORDER BY ru.sortOrder ASC";
+		String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
+				+ " AND ru.favorite = 1" + " AND ru.sortOrder > " + reportUser.getSortOrder()
+				+ " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder ASC";
 
-		Query query = em.createQuery(queryString);
+		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
 		query.setMaxResults(1);
 
 		return query.getResultList();
 	}
 
 	public List<ReportUser> findUnpinnedWithNextLowestSortOrder(ReportUser reportUser) {
-		String queryString = "SELECT ru FROM ReportUser ru" +
-				" WHERE ru.user.id = " + reportUser.getUser().getId() +
-				" AND ru.favorite = 1" +
-				" AND ru.sortOrder < " + reportUser.getSortOrder() +
-				" AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX +
-				" ORDER BY ru.sortOrder DESC";
+		String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
+				+ " AND ru.favorite = 1" + " AND ru.sortOrder < " + reportUser.getSortOrder()
+				+ " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder DESC";
 
-		Query query = em.createQuery(queryString);
+		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
 		query.setMaxResults(1);
 
 		return query.getResultList();
