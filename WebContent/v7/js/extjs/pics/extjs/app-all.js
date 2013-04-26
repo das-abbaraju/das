@@ -82670,7 +82670,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
 
     operator_store: [
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
-        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greatherThanEquals')],
+        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
         ['Empty', PICS.text('Report.execute.dateFilter.empty')]
     ],
     
@@ -84716,12 +84716,11 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     toggleFavorite: function () {
         var element = this.getEl(),
             icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
+            text = element.down('.x-form-item-body');
         
         icon.addCls('selected');
         
-        // TODO: translate
-        text.setHTML('is');
+        text.setHTML(PICS.text('Report.execute.favoriteToggle.favoriteMessage'));
         
         this.setValue(true);
         
@@ -84731,12 +84730,12 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     toggleUnfavorite: function () {
         var element = this.getEl(),
             icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
+            text = element.down('.x-form-item-body');
         
         icon.removeCls('selected');
         
         // TODO: translate
-        text.setHTML('is not');
+        text.setHTML(PICS.text('Report.execute.favoriteToggle.unfavoriteMessage'));
         
         this.setValue(false);
         
@@ -87138,7 +87137,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         if (count === 0) {
             msg = this.emptyMsg;
         } else {
-            msg = Ext.String.format(PICS.text('Report.execute.pagingToolbar.resultsText'), Ext.util.Format.number(count, '0,000'));
+            msg = PICS.text('Report.execute.pagingToolbar.resultsText', Ext.util.Format.number(count, '0,000'));
         }
 
         this.down('#display_info').setText(msg);

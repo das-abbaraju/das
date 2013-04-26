@@ -38,12 +38,11 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     toggleFavorite: function () {
         var element = this.getEl(),
             icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
+            text = element.down('.x-form-item-body');
         
         icon.addCls('selected');
         
-        // TODO: translate
-        text.setHTML('is');
+        text.setHTML(PICS.text('Report.execute.favoriteToggle.favoriteMessage'));
         
         this.setValue(true);
         
@@ -53,12 +52,12 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     toggleUnfavorite: function () {
         var element = this.getEl(),
             icon = element.down('.icon-star'),
-            text = element.down('.favorite-text');
+            text = element.down('.x-form-item-body');
         
         icon.removeCls('selected');
         
         // TODO: translate
-        text.setHTML('is not');
+        text.setHTML(PICS.text('Report.execute.favoriteToggle.unfavoriteMessage'));
         
         this.setValue(false);
         

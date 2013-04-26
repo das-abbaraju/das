@@ -31,7 +31,7 @@
             
             return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
                 return args[parseInt(p1) + 1];
-            }) : key;
+            }).replace(/'/g, "\\'") : key;
         };
         </script>
 		

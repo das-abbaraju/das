@@ -194,7 +194,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         if (count === 0) {
             msg = this.emptyMsg;
         } else {
-            msg = Ext.String.format(PICS.text('Report.execute.pagingToolbar.resultsText'), Ext.util.Format.number(count, '0,000'));
+            msg = PICS.text('Report.execute.pagingToolbar.resultsText', Ext.util.Format.number(count, '0,000'));
         }
 
         this.down('#display_info').setText(msg);

@@ -4,7 +4,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
 
     operator_store: [
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
-        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greatherThanEquals')],
+        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
         ['Empty', PICS.text('Report.execute.dateFilter.empty')]
     ],
     
