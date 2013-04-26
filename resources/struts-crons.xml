@@ -16,6 +16,10 @@
 			<result type="action-messages"></result>
 		</action>
 
+        <action name="CronDashboard" class="com.picsauditing.actions.CronDashboard">
+            <result>/struts/cron-dashboard.jsp</result>
+        </action>
+
 		<action name="EmployeeQualificationCron" class="com.picsauditing.actions.employees.EmployeeQualificationCron">
 			<result>/struts/employees/employee_qual_cron.jsp</result>
 		</action>

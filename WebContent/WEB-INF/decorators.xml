@@ -5,6 +5,7 @@
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/ManageRecommendedCSRAssignments.action</pattern>
+        <pattern>/CronDashboard.action</pattern>
         <pattern>/ManageReports*.action</pattern>
         <pattern>/NewYearMailer*.action</pattern>
         <pattern>/ReportTester.action</pattern>
