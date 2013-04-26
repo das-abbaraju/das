@@ -496,9 +496,10 @@ public final class MenuBuilder {
 				"Reference!navigationMenu.action", "navigation_menu");
 		referenceMenu.addChild("Dynamic Reports",
 				"Reference!dynamicReport.action", "dynamic_report");
-		referenceMenu.addChild("Navigation Restructure",
-				"Reference!navigationRestructure.action",
-				"navigation_restructure");
+		/*
+		 * referenceMenu.addChild("Navigation Restructure",
+		 * "Reference!navigationRestructure.action", "navigation_restructure");
+		 */
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
