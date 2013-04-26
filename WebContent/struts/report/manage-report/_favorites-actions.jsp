@@ -23,17 +23,17 @@
 <s:set var="report_pin_class" value="%{#report.pinned ? 'unpin' : 'pin'}" />
 
 <%-- Text --%>
-<s:set var="report_pin_text" value="%{#report.pinned ? 'Unpin Position' : 'Pin Position'}" />
+<s:set var="report_pin_text" value="%{#report.pinned ? getText('ManageReports.favorites.dropDown.pin') : getText('ManageReports.favorites.dropDown.unpin')}" />
 
 <s:if test="#reports.size">
     <div class="report-options btn-group pull-right">
         <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
-            <s:text name="ManageReports.myReports.Options" />
+            <s:text name="ManageReports.favorites.dropDown.options" />
         </button>
 
         <ul class="dropdown-menu">
             <li>
-                <a href="${report_favorite_url}" class="unfavorite" data-report-id="${report.id}">Unfavorite</a>
+                <a href="${report_favorite_url}" class="unfavorite" data-report-id="${report.id}"><s:text name="ManageReports.favorites.dropDown.unfavorite" /></a>
             </li>
             
             <li class="divider"></li>
@@ -45,7 +45,7 @@
             <s:if test="#report.canMoveUp()">
                 <li>
                     <a href="${report_favorite_move_up_url}" class="move-up">
-                        <s:text name="ManageReports.myReports.MoveUp" />
+                        <s:text name="ManageReports.favorites.dropDown.moveUp" />
                     </a>
                 </li>
             </s:if>
@@ -53,7 +53,7 @@
             <s:if test="#report.canMoveDown()">
                 <li>
                     <a href="${report_favorite_move_down_url}" class="move-down">
-                        <s:text name="ManageReports.myReports.MoveDown" />
+                        <s:text name="ManageReports.favorites.dropDown.moveDown" />
                     </a>
                 </li>
             </s:if>

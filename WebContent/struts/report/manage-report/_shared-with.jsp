@@ -20,9 +20,9 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 
-                <h4><s:text name="ManageReports.NoSharedWithReports.Info" /></h4>
+                <h4><s:text name="ManageReports.sharedWith.noResults.noSharedWithTitle" /></h4>
                 <p>
-                    <s:text name="ManageReports.NoSharedWithReports.Message" />
+                    <s:text name="ManageReports.sharedWith.noResults.noSharedWithMessage" />
                 </p>
             </div>
         </div>

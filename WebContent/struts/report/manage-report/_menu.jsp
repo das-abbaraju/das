@@ -10,16 +10,16 @@
 <div id="manage_report_menu_container">
     <ul id="manage_report_menu" class="nav nav-tabs">
         <li class="${methodName == 'favorites' ? 'active' : ''}">
-            <a href="${manage_reports_favorites_url}"><s:text name="ManageReports.report.Favorites" /></a>
+            <a href="${manage_reports_favorites_url}"><s:text name="ManageReports.ACTION.tab.favorites" /></a>
         </li>
         <li class="${methodName == 'ownedBy' ? 'active' : ''}">
-            <a href="${manage_reports_owned_by_url}">Owned by Me</a>
+            <a href="${manage_reports_owned_by_url}"><s:text name="ManageReports.ACTION.tab.ownedBy" /></a>
         </li>
         <li class="${methodName == 'sharedWith' ? 'active' : ''}">
-            <a href="${manage_reports_shared_with_url}">Shared with Me</a>
+            <a href="${manage_reports_shared_with_url}"><s:text name="ManageReports.ACTION.tab.sharedWith" /></a>
         </li>
         <li class="${methodName == 'search' ? 'active' : ''}">
-            <a href="${manage_reports_search_url}">Search for Reports</a>
+            <a href="${manage_reports_search_url}"><s:text name="ManageReports.ACTION.tab.search" /></a>
         </li>
     </ul>
 </div>

@@ -30,9 +30,9 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 
-                <h4><s:text name="ManageReports.NoFavorites.Info" /></h4>
+                <h4><s:text name="ManageReports.favorites.noResults.noFavoritesTitle" /></h4>
                 <p>
-                    <s:text name="ManageReports.NoFavorites.Message" />
+                    <s:text name="ManageReports.favorites.noResults.noFavoritesMessage" />
                 </p>
             </div>
         </div>

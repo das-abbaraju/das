@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <section id="user_access">
-    <h1>People with access</h1>
+    <h1><s:text name="ManageReports.access.section.people" /></h1>
     
     <ul class="user-list unstyled">
         <s:iterator value="#persons" var="person">
@@ -27,7 +27,7 @@
             <li class="user ${access_type} clearfix" data-user-id="${person.id}" ${current_user}>
                 <s:if test="#person.owner">
                     <div class="is-owner pull-right">
-                        <i class="icon-key"></i> Owner
+                        <i class="icon-key"></i> <s:text name="ManageReports.access.dropDown.owner" />
                     </div>
                 </s:if>
                 

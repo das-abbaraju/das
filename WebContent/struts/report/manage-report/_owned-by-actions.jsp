@@ -19,8 +19,8 @@
 </s:url>
 
 <%-- Text --%>
-<s:set var="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
-<s:set var="public_text" value="%{#report.public ? 'Hide from Search' : 'Show in Search'}" />
+<s:set var="favorite_text" value="%{#report.favorite ? getText('ManageReports.ownedBy.dropDown.unfavorite') : getText('ManageReports.ownedBy.dropDown.favorite')}" />
+<s:set var="public_text" value="%{#report.public ? getText('ManageReports.ownedBy.dropDown.makePrivate') : getText('ManageReports.ownedBy.dropDown.makePublic') }" />
 
 <%-- Class --%>
 <s:set var="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
@@ -28,7 +28,7 @@
 
 <div class="report-options btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
-        Options
+        <s:text name="ManageReports.ownedBy.dropDown.options" />
     </button>
 
     <ul class="dropdown-menu">
@@ -37,7 +37,9 @@
         </li>
         
         <li>
-            <a href="${report_access_url}">Share&hellip;</a>
+            <a href="${report_access_url}">
+                <s:text name="ManageReports.ownedBy.dropDown.share" />&hellip;
+            </a>
         </li>
         
         <li>
@@ -45,13 +47,17 @@
         </li>
         
         <li>
-            <a href="${report_access_url}">Transfer Ownership&hellip;</a>
+            <a href="${report_access_url}">
+                <s:text name="ManageReports.ownedBy.dropDown.transferOwnership" />&hellip;
+            </a>
         </li>
         
         <li class="divider"></li>
         
         <li>
-            <a href="${report_delete_url}" class="delete" data-report-id="${report.id}">Delete&hellip;</a>
+            <a href="${report_delete_url}" class="delete" data-report-id="${report.id}">
+                <s:text name="ManageReports.ownedBy.dropDown.delete" />&hellip;
+            </a>
         </li>
     </ul>
 </div>

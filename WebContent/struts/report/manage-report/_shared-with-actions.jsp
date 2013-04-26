@@ -15,14 +15,14 @@
 </s:url>
 
 <%-- Favorite Text --%>
-<s:set name="favorite_text" value="%{#report.favorite ? 'Unfavorite' : 'Favorite'}" />
+<s:set name="favorite_text" value="%{#report.favorite ? getText('ManageReports.sharedWith.dropDown.unfavorite') : getText('ManageReports.sharedWith.dropDown.favorite')}" />
 
 <%-- Favorite Class --%>
 <s:set name="favorite_class" value="%{#report.favorite ? 'unfavorite' : 'favorite'}" />
 
 <div class="report-options btn-group pull-right">
     <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
-        Options
+        <s:text name="ManageReports.sharedWith.dropDown.options" />
     </button>
 
     <ul class="dropdown-menu">
@@ -32,14 +32,18 @@
         
         <s:if test="#report.editable">
             <li>
-                <a href="${report_access_url}">Share&hellip;</a>
+                <a href="${report_access_url}">
+                    <s:text name="ManageReprots.sharedWith.dropDown.share" />&hellip;
+                </a>
             </li>
         </s:if>
         
         <li class="divider"></li>
         
         <li>
-            <a href="${report_remove_url}" class="remove" data-report-id="${report.id}">Remove</a>
+            <a href="${report_remove_url}" class="remove" data-report-id="${report.id}">
+                <s:text name="ManageReports.sharedWith.dropDown.remove" />
+            </a>
         </li>
     </ul>
 </div>

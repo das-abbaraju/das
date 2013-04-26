@@ -37,26 +37,26 @@
 <div class="access-options btn-group pull-right">
     <button class="btn dropdown-toggle" data-toggle="dropdown" href="#">
         <s:if test="#group.editable">
-            <i class="icon-edit"></i> Can Edit <span class="caret"></span>
+            <i class="icon-edit"></i> <s:text name="ManageReports.access.dropDown.groupCanEdit" /> <span class="caret"></span>
         </s:if>
         <s:else>
-            <i class="icon-eye-open"></i> Can View <span class="caret"></span>
+            <i class="icon-eye-open"></i> <s:text name="ManageReports.access.dropDown.groupCanView" /> <span class="caret"></span>
         </s:else>
     </button>
     
     <ul class="dropdown-menu">
         <li class="edit">
-            <a href="${share_edit_permission_url}" data-report-id="${reportId}"><i class="icon-edit"></i> Can Edit</a>
+            <a href="${share_edit_permission_url}" data-report-id="${reportId}"><i class="icon-edit"></i> <s:text name="ManageReports.access.dropDown.groupCanEdit" /></a>
         </li>
         
         <li class="view">
-            <a href="${share_view_permission_url}" data-report-id="${reportId}"><i class="icon-eye-open"></i> Can View</a>
+            <a href="${share_view_permission_url}" data-report-id="${reportId}"><i class="icon-eye-open"></i> <s:text name="ManageReports.access.dropDown.groupCanView" /></a>
         </li>
         
         <li class="divider"></li>
         
         <li class="remove">
-            <a href="${unshare_url}" data-report-id="${reportId}"><i class="icon-remove"></i> Remove</a>
+            <a href="${unshare_url}" data-report-id="${reportId}"><i class="icon-remove"></i> <s:text name="ManageReports.access.dropDown.groupRemove" /></a>
         </li>
     </ul>
 </div>
