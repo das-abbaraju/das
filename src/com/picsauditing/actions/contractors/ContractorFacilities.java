@@ -274,6 +274,7 @@ public class ContractorFacilities extends ContractorActionSupport {
         sql.addWhere("a.status IN ('Active'" + (contractor.isDemo() ? ",'Demo','Pending'" : "") + ")");
         sql.addWhere("a.type = 'Operator'");
 
+		sql.addOrderBy("a.nameIndex, a.name, a.country, a.countrySubdivision");
         sql.addGroupBy("a.id");
 
         return sql.toString();
