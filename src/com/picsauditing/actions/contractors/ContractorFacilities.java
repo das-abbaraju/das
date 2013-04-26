@@ -88,6 +88,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private void findOperator() {
 		if (reqOpId > 0) {
 			operator = operatorDao.find(reqOpId);
+			if (operator != null)
+				search = operator.getName();
 		}
 	}
 
