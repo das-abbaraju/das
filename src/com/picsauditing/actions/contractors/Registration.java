@@ -60,9 +60,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
-	@Qualifier("CsrAssignmentSinglePublisher")
-	private Publisher csrAssignmentSinglePublisher;
-	@Autowired
 	private RegistrationValidator registrationValidator;
 
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
@@ -204,8 +201,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");
 		addNoteThatRequestRegistered();
-
-		csrAssignmentSinglePublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}

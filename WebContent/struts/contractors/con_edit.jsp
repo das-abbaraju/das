@@ -523,10 +523,7 @@
     							
     						</ol>
     					</fieldset>
-    					
-    					
-    					
-	    					
+
 	    				<pics:permission perm="UserZipcodeAssignment">
 							<fieldset class="form">
 	    						<h2 class="formLegend">Specific Assignment</h2>
@@ -550,12 +547,24 @@
 	    									value = "%{(contractor.dontReassign)?contractor.currentCsr.id:0}"
 										/>
 	    							</li>
+                                    <s:if test="contractor.status.pending">
+                                        <li>
+                                            <label>Inside Sales Assignment</label>
+                                            <s:select
+                                                name="insideSalesId"
+                                                list="insideSalesList"
+                                                listKey = "id"
+                                                listValue = "name"
+                                                multiple = "false"
+                                                headerKey = "0"
+                                                headerValue = "- Please Select -"
+                                                value = "%{contractor.currentInsideSalesRepresentative.id}"
+                                            />
+                                        </li>
+                                    </s:if>
 	    						</ol>
 							</fieldset>
 						</pics:permission>
-						
-						
-						
 						
     					<fieldset class="form submit">
     						<ol>

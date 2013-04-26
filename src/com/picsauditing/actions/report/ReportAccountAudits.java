@@ -16,19 +16,25 @@ public class ReportAccountAudits extends ReportAccount {
 	public void prepare() throws Exception {
 		super.prepare();
 
-		if (permissions.isPicsEmployee() || (permissions.isOperatorCorporate() && permissions.isRequiresOQ()))
+		if (permissions.isPicsEmployee() || (permissions.isOperatorCorporate() && permissions.isRequiresOQ())) {
 			getFilter().setShowOQ(true);
+		}
+
 		if (permissions.isPicsEmployee()
-				|| (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview()))
+				|| (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview())) {
 			getFilter().setShowHSE(true);
+		}
+
 		if (permissions.isGeneralContractor()) {
 			getFilter().setShowOperator(true);
 		}
 
 		getFilter().setShowInsuranceLimits(true);
 
-		if (permissions.isPicsEmployee())
+		if (permissions.isPicsEmployee()) {
 			getFilter().setShowAddress(true);
+			getFilter().setShowInsideSales(true);
+		}
 
 		getFilter().setShowLocation(true);
 	}
