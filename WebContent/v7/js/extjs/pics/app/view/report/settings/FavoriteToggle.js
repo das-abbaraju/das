@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     extend: 'Ext.form.field.Hidden',
     alias: 'widget.reportfavoritetoggle',
     
-    beforeBodyEl: 'Report <strong class="favorite-text">is not</strong> a Favorite',
+    beforeBodyEl: PICS.text('Report.execute.favoriteToggle.unfavoriteMessage'),
     fieldLabel: '<i class="favorite icon-star"></i>',
     hideLabel: false,
     labelAlign: 'right',
@@ -41,6 +41,8 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
             text = element.down('.favorite-text');
         
         icon.addCls('selected');
+        
+        // TODO: translate
         text.setHTML('is');
         
         this.setValue(true);
@@ -54,6 +56,8 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
             text = element.down('.favorite-text');
         
         icon.removeCls('selected');
+        
+        // TODO: translate
         text.setHTML('is not');
         
         this.setValue(false);

@@ -65993,22 +65993,22 @@ Ext.define('PICS.data.Exception', {
         // List of user-friendly error messages.
         var error_codes = {
             401: {
-                title: 'Server Communication Error',
-                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>.'
+                title: PICS.text('Report.execute.401.title'),
+                message: PICS.text('Report.execute.401.message')
             },
             404: {
-                title: 'Server Communication Error',
-                message: 'Page not found.' 
+                title: PICS.text('Report.execute.404.title'),
+                message: PICS.text('Report.execute.404.message') 
             },
             500: {
-                title: 'Server Communication Error',
-                message: 'Server error occurred.'
+                title: PICS.text('Report.execute.500.title'),
+                message: PICS.text('Report.execute.500.message')
             }
         };
         
         var unknown_error = {
-            title: 'Server Communication Error',
-            message: 'An unknown error occurred.'
+            title: PICS.text('Report.execute.unknownError.title'),
+            message: PICS.text('Report.execute.unknownError.message')
         };
 
         function getErrorFromStatusCode(code) {
@@ -66847,17 +66847,6 @@ Ext.define('PICS.data.FilterType', {
         };
     }())
 });
-Ext.define('PICS.data.Translate', {
-    statics: {
-        text: function (key) {
-            var args = arguments;
-            
-            return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
-                return args[parseInt(p1) + 1];
-            }) : key;
-        }
-    }
-});
 /**
  * A specialized container representing the viewable application area (the browser viewport).
  *
@@ -67357,7 +67346,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     items: [{
         xtype: 'button',
         id: 'report_filter_options_collapse',
-        text: '<i class="icon-chevron-left icon-large"></i> Filter'
+        text: '<i class="icon-chevron-left icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonFilter')
     }, {
         xtype: 'tbfill'
     }, {
@@ -67365,7 +67354,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> Add Filter'
+        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
     }],
     layout: {
         type: 'hbox',
@@ -67383,7 +67372,7 @@ Ext.define('PICS.view.report.filter.FilterPlaceholder', {
         height: 25,
         id: 'report_filter_options_expand',
         text: '<i class="icon-filter"></i>',
-        tooltip: 'Filters',
+        tooltip: PICS.text('Report.execute.filterPlaceholder.tooltipFilter'),
         width: 20
     }],
     margin: '0 10 0 0'
@@ -67400,7 +67389,7 @@ Ext.define('PICS.view.report.filter.FilterToolbar', {
         border: 0,
         cls: 'show-filter-formula',
         height: 23,
-        text: 'Filter Formula'
+        text: PICS.text('Report.execute.filterToolbar.filterFormulaTitle')
     }],
     layout: {
         type: 'vbox',
@@ -67442,7 +67431,7 @@ Ext.define('PICS.view.report.header.Actions', {
             cls: 'save success',
             height: 40,
             scale: 'large',
-            text: 'Save'
+            text: PICS.text('Report.execute.headerActions.buttonSave')
         });
 
         var edit = Ext.create('Ext.button.Button', {
@@ -82379,8 +82368,8 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
             text: '<i class="icon-info-sign"></i>',
             tooltip: [
                 '<div class="filter-formula-tooltip">',
-                    '<h4>Use "()" "AND" "OR"</h4>',
-                    '<span>Example:</span>',
+                    '<h4>' + PICS.text('Report.execute.filterFormula.tooltipFilterFormula1', '"()" "AND" "OR"') + '</h4>',
+                    '<span>' + PICS.text('Report.execute.filterFormula.tooltipFilterFormula2') + ':</span>',
                     '<p>(1 OR (2 AND 3)) AND 4</p>',
                 '</div>'
             ].join(''),
@@ -82441,7 +82430,7 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     placeholder: {
         xtype: 'reportfilterplaceholder'
     },
-    title: 'Filter',
+    title: PICS.text('Report.execute.filterOptions.title'),
     width: 320,
     
     showFormula: function () {
@@ -82549,9 +82538,9 @@ Ext.define('PICS.view.report.filter.base.AccountId', {
     alias: 'widget.reportfilterbaseaccountid',
 
     operator_store: [
-        ['Equals', 'equals'],
-        ['NotEquals', 'does not equal'],
-        ['CurrentAccount', 'current account']
+        ['Equals', PICS.text('Report.execute.accountIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.accountIdFilter.notEquals')],
+        ['CurrentAccount', PICS.text('Report.execute.accountIdFilter.currentAccount')]
     ],
     
     createOperatorField: function () {
@@ -82680,9 +82669,9 @@ Ext.define('PICS.view.report.filter.base.Date', {
     alias: 'widget.reportfilterbasedate',
 
     operator_store: [
-        ['LessThan', 'before'],
-        ['GreaterThanOrEquals', 'on or after'],
-        ['Empty', 'is empty']
+        ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
+        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greatherThanEquals')],
+        ['Empty', PICS.text('Report.execute.dateFilter.empty')]
     ],
     
     createOperatorField: function () {
@@ -82727,7 +82716,7 @@ Ext.define('PICS.view.report.filter.base.Number', {
         ['LessThan', '<'],
         ['GreaterThanOrEquals', '>='],
         ['LessThanOrEquals', '<='],
-        ['Empty', 'is empty']
+        ['Empty', PICS.text('Report.execute.numberFilter.empty')]
     ],
     
     createOperatorField: function () {
@@ -82824,16 +82813,16 @@ Ext.define('PICS.view.report.filter.base.String', {
     alias: 'widget.reportfilterbasestring',
 
     operator_store: [
-        ['Contains', 'contains'],
-        ['NotContains', 'does not contain'],
-        ['BeginsWith', 'begins with'],
-        ['NotBeginsWith', 'does not begin with'],
-        ['EndsWith', 'ends with'],
-        ['NotEndsWith', 'does not end with'],
-        ['Equals', 'equals'],
-        ['NotEquals', 'does not equal'],
-        ['Empty', 'is empty'],
-        ['NotEmpty', 'is not empty']
+        ['Contains', PICS.text('Report.execute.stringFilter.contains')],
+        ['NotContains', PICS.text('Report.execute.stringFilter.notContains')],
+        ['BeginsWith', PICS.text('Report.execute.stringFilter.beginsWith')],
+        ['NotBeginsWith', PICS.text('Report.execute.stringFilter.notBeginsWith')],
+        ['EndsWith', PICS.text('Report.execute.stringFilter.endsWith')],
+        ['NotEndsWith', PICS.text('Report.execute.stringFilter.notEndsWith')],
+        ['Equals', PICS.text('Report.execute.stringFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.stringFilter.notEquals')],
+        ['Empty', PICS.text('Report.execute.stringFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.stringFilter.notEmpty')]
     ],
     
     createOperatorField: function () {
@@ -82871,9 +82860,9 @@ Ext.define('PICS.view.report.filter.base.UserId', {
     alias: 'widget.reportfilterbaseuserid',
 
     operator_store: [
-        ['Equals', 'equals'],
-        ['NotEquals', 'does not equal'],
-        ['CurrentUser', 'current user']
+        ['Equals', PICS.text('Report.execute.userIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.userIdFilter.notEquals')],
+        ['CurrentUser', PICS.text('Report.execute.userIdFilter.currentUser')]
     ],
     
     createOperatorField: function () {
@@ -83043,7 +83032,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 cls: 'remove-filter',
                 height: 20,
                 text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
+                tooltip: PICS.text('Report.execute.filter.tooltipRemove'),
                 width: 20
             }],
             layout: {
@@ -83158,13 +83147,13 @@ Ext.define('PICS.view.report.settings.CopySetting', {
             action: 'cancel',
             cls: 'cancel default',
             height: 28,
-            text: 'Cancel'
+            text: PICS.text('Report.execute.copySetting.buttonCancel')
         }, {
             action: 'copy',
             cls: 'copy primary',
             formBind: true,
             height: 28,
-            text: 'Duplicate'
+            text: PICS.text('Report.execute.copySetting.buttonCopy')
         }],
         layout: {
             pack: 'end'
@@ -83175,13 +83164,13 @@ Ext.define('PICS.view.report.settings.CopySetting', {
     items: [{
         xtype: 'textfield',
         allowBlank: false,
-        fieldLabel: 'Report Name',
+        fieldLabel: PICS.text('Report.execute.copySetting.formLabelName'),
         labelAlign: 'right',
         name: 'name'
     }, {
         xtype: 'textarea',
         allowBlank: false,
-        fieldLabel: 'Description',
+        fieldLabel: PICS.text('Report.execute.copySetting.formLabelDescription'),
         labelAlign: 'right',
         name: 'description'
     }, {
@@ -83189,8 +83178,8 @@ Ext.define('PICS.view.report.settings.CopySetting', {
     }],
     layout: 'form',
     // custom config
-    modal_title: 'Duplicate Report',
-    title: '<i class="icon-copy icon-large"></i>Duplicate'
+    modal_title: PICS.text('Report.execute.copySetting.title'),
+    title: '<i class="icon-copy icon-large"></i>' + PICS.text('Report.execute.copySetting.tabName')
 });
 Ext.define('PICS.view.report.settings.ExportSetting', {
     extend: 'Ext.form.Panel',
@@ -83201,10 +83190,10 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'export',
-        text : '<i class="icon-table icon-large"></i><span>Spreadsheet</span>',
+        text : '<i class="icon-table icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonExport') + '</span>',
         cls: 'default export',
         id: 'export-button',
-        tooltip: 'Export this report to Excel',
+        tooltip: PICS.text('Report.execute.exportSetting.tooltipExport'),
         height: 28,
         margin: '100 0 0 0',
         width: 200
@@ -83214,8 +83203,8 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         align: 'center'
     },
     // custom config
-    modal_title: 'Export Report',
-    title: '<i class="icon-eject icon-large"></i>Export'
+    modal_title: PICS.text('Report.execute.exportSetting.title'),
+    title: '<i class="icon-eject icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName')
 });
 Ext.define('PICS.view.report.settings.PrintSetting', {
     extend: 'Ext.form.Panel',
@@ -83226,10 +83215,10 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>Preview</span>',
+        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.printSetting.buttonPreview') + '</span>',
         cls: 'default print',
         id: 'print-button',
-        tooltip: 'Preview a printable version of this report',
+        tooltip: PICS.text('Report.execute.printSetting.tooltipPreview'),
         height: 28,
         margin: '100 0 0 0',
         width: 200
@@ -83238,9 +83227,9 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
         type: 'vbox',
         align: 'center'
     },
-    title: '<i class="icon-print icon-large"></i>Print',
     // custom config
-    modal_title: 'Print Report'
+    modal_title: PICS.text('Report.execute.printSetting.title'),
+    title: '<i class="icon-print icon-large"></i>' + PICS.text('Report.execute.printSetting.tabName')
 });
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
@@ -84691,7 +84680,7 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     extend: 'Ext.form.field.Hidden',
     alias: 'widget.reportfavoritetoggle',
     
-    beforeBodyEl: 'Report <strong class="favorite-text">is not</strong> a Favorite',
+    beforeBodyEl: PICS.text('Report.execute.favoriteToggle.unfavoriteMessage'),
     fieldLabel: '<i class="favorite icon-star"></i>',
     hideLabel: false,
     labelAlign: 'right',
@@ -84730,6 +84719,8 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
             text = element.down('.favorite-text');
         
         icon.addCls('selected');
+        
+        // TODO: translate
         text.setHTML('is');
         
         this.setValue(true);
@@ -84743,6 +84734,8 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
             text = element.down('.favorite-text');
         
         icon.removeCls('selected');
+        
+        // TODO: translate
         text.setHTML('is not');
         
         this.setValue(false);
@@ -84761,8 +84754,8 @@ Ext.define('PICS.view.report.settings.EditSetting', {
     border: 0,
     id: 'report_edit',
     // custom config
-    modal_title: 'Edit Report',
-    title: '<i class="icon-cog icon-large"></i>Settings',
+    modal_title: PICS.text('Report.execute.editSetting.title'),
+    title: '<i class="icon-cog icon-large"></i>' + PICS.text('Report.execute.editSetting.tabName'),
 
     initComponent: function () {
         var report_store = Ext.StoreManager.get('report.Reports'),
@@ -84792,13 +84785,13 @@ Ext.define('PICS.view.report.settings.EditSetting', {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,
-                text: 'Cancel'
+                text: PICS.text('Report.execute.editSetting.buttonCancel')
             }, {
                 action: 'edit',
                 cls: 'edit primary',
                 formBind: true,
                 height: 28,
-                text: 'Apply'
+                text: PICS.text('Report.execute.editSetting.buttonEdit')
             }],
             layout: {
                 pack: 'end'
@@ -84809,13 +84802,13 @@ Ext.define('PICS.view.report.settings.EditSetting', {
         this.items = [{
             xtype: 'textfield',
             allowBlank: false,
-            fieldLabel: 'Report Name',
+            fieldLabel: PICS.text('Report.execute.editSetting.formLabelName'),
             labelAlign: 'right',
             name: 'name'
         }, {
             xtype: 'textarea',
             allowBlank: false,
-            fieldLabel: 'Description',
+            fieldLabel: PICS.text('Report.execute.editSetting.formLabelDescription'),
             labelAlign: 'right',
             name: 'description'
         }, {
@@ -84829,8 +84822,8 @@ Ext.define('PICS.view.report.settings.EditSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
+                '<p class="permission-info">' + PICS.text('Report.execute.editSetting.noEditTitle') + '</p>',
+                '<p class="duplicate-info">' + PICS.text('Report.execute.editSetting.noEditDescription') + '</p>'
             ])
         }, {
             xtype: 'reportfavoritetoggle'
@@ -86987,7 +86980,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> Add Column'
+        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
     
     initComponent: function () {
@@ -87145,7 +87138,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         if (count === 0) {
             msg = this.emptyMsg;
         } else {
-            msg = Ext.String.format('displayed of {0}', Ext.util.Format.number(count, '0,000'));
+            msg = Ext.String.format(PICS.text('Report.execute.pagingToolbar.resultsText'), Ext.util.Format.number(count, '0,000'));
         }
 
         this.down('#display_info').setText(msg);
@@ -90516,7 +90509,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
     modal: true,
     resizable: false,
     shadow: 'frame',
-    title: 'Column Functions',
+    title: PICS.text('Report.execute.columnFunctionModal.title'),
     width: 300,
     items: [{
         xtype: 'reportcolumnfunctionlist'
@@ -92336,7 +92329,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                 }
             }
         },
-        loadingText: 'Searching' + '&hellip;',
+        loadingText: PICS.text('Report.execute.search.searchLoadingText') + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -92347,7 +92340,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{result_name}</em></span>',
-                                '<span class="id"><em>ID {result_id}</em></span>',
+                                '<span class="id"><em>' + PICS.text('Report.execute.search.searchListId') + ' {result_id}</em></span>',
                             '</div>',
                             '<div>',
                                 '<span class="location">{result_at}</span>',
@@ -92361,14 +92354,14 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
                         '<tpl if="this.total_results &gt; 10">',
                             '<a href="#">',
-                                'More Results' + '&hellip;',
+                                PICS.text('Report.execute.search.moreResults') + '&hellip;',
                             '</a>',
                         '</tpl>',
-                        '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',
+                        '<p>' + PICS.text('Report.execute.search.displayingTotal', '{[this.getTotalRecords()]}', '{[this.total_results]}') + '</p>',
                     '</li>',
                 '</tpl>',
                 '<tpl if="this.total_results == 0">',
-                    '<li class="no-results">No results found</li>',
+                    '<li class="no-results">' + PICS.text('Report.execute.search.noResults') + '</li>',
                 '</tpl>',
             '</ul>',
             {
@@ -92663,7 +92656,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     autoSelect: false,
     cls: 'share-searchbox',
     displayField: 'name',
-    emptyText: 'Search Users and Groups',
+    emptyText: PICS.text('Report.execute.shareSetting.placeholderSearch'),
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
     labelSeparator: '',
@@ -92671,7 +92664,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     
     listConfig: {
         cls: 'site-menu-search-list',
-        loadingText: 'Searching' + '&hellip;',
+        loadingText: PICS.text('Report.execute.shareSetting.searchLoadingText') + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -92682,7 +92675,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{name}</em></span>',
-                                '<span class="id"><em>ID {id}</em></span>',
+                                '<span class="id"><em>' + PICS.text('Report.execute.shareSetting.shareListId') + ' {id}</em></span>',
                             '</div>',
                             '<div>',
                                 '<span class="location">{location}</span>',
@@ -92737,8 +92730,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
     border: 0,
     id: 'report_share',
     // custom config
-    modal_title: 'Share Report',
-    title: '<i class="icon-share icon-large"></i>Share',
+    modal_title: PICS.text('Report.execute.shareSetting.title'),
+    title: '<i class="icon-share icon-large"></i>' + PICS.text('Report.execute.shareSetting.tabName'),
 
     listeners: {
         afterrender: function (cmp, eOpts) {
@@ -92779,13 +92772,13 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,
-                text: 'Cancel'
+                text: PICS.text('Report.execute.shareSetting.buttonCancel')
             }, {
                 action: 'share',
                 cls: 'primary',
                 formBind: true,
                 height: 28,
-                text: 'Share'
+                text: PICS.text('Report.execute.shareSetting.buttonShare')
             }],
             margin: '5 0 0 0',
             layout: {
@@ -92820,7 +92813,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
             labelSeparator: '',
-            value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
+            value: '<p>' + PICS.text('Report.execute.shareSetting.formLabelEdit') + '</p>'
         }];
 
         this.margin = '0 10 0 10';
@@ -92832,8 +92825,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-                '<p class="permission-info">You do not have permission to edit the settings of this report</p>',
-                '<p class="duplicate-info">You can <strong>Duplicate</strong> the report to save it to your reports.  After it\'s saved you\'ll be able to share your duplicate report.</p>'
+                '<p class="permission-info">' + PICS.text('Report.execute.shareSetting.noShareTitle') + '</p>',
+                '<p class="duplicate-info">' + PICS.text('Report.execute.shareSetting.noShareDescription') + '</p>'
             ])
         }];
 
@@ -95723,20 +95716,20 @@ Ext.define('PICS.view.report.data-table.DataTable', {
 
         menu.add({
             name: 'sort_asc',
-            text: 'Sort Ascending'
+            text: PICS.text('Report.execute.columnDropDown.sortAsc')
         }, {
             name: 'sort_desc',
-            text: 'Sort Descending'
+            text: PICS.text('Report.execute.columnDropDown.sortDesc')
         }, {
             xtype: 'menuseparator'
         }, {
             name: 'function',
-            text: 'Functions' + '&hellip;'
+            text: PICS.text('Report.execute.columnDropDown.function') + '&hellip;'
         }, {
             xtype: 'menuseparator'
         }, {
             name: 'remove_column',
-            text: 'Remove'
+            text: PICS.text('Report.execute.columnDropDown.removeColumn')
         });
     },
 
@@ -95775,7 +95768,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             view = this.getView();
         
         if (store.getCount() == 0) {
-            view.emptyText = '<div class="x-grid-empty">no results</div>';
+            view.emptyText = '<div class="x-grid-empty">' + PICS.text('Report.execute.table.noResults') + '</div>';
         } else {
             view.emptyText = '';
         }
@@ -95795,10 +95788,10 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         if (!sql_function) {
-            function_item.setText('Functions' + '&hellip;');
+            function_item.setText(PICS.text('Report.execute.columnDropDown.function') + '&hellip;');
             function_item.name = "function";
         } else {
-            function_item.setText('Remove Function');
+            function_item.setText(PICS.text('Report.execute.columnDropDown.removeFunction'));
             function_item.name = "remove_function";
         }
     }
@@ -95925,7 +95918,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     enableColumnHide: false,
     features: [{
         ftype: 'grouping',
-        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} item{[values.rows.length != 1 ? "s" : ""]})</span>'
+        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} ' + PICS.text('Report.execute.columnFilterList.columnHeaderItems') + ')</span>'
     }],
     hideHeaders: true,
     listeners: {
@@ -96016,7 +96009,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
         height: 45,
         items: [{
             xtype: 'textfield',
-            emptyText: 'Search',
+            emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
             enableKeyEvents: true,
             fieldLabel: '<i class="icon-search icon-large"></i>',
             labelSeparator: '',
@@ -96042,12 +96035,12 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
             action: 'cancel',
             cls: 'default',
             height: 26,
-            text: 'Cancel'
+            text: PICS.text('Report.execute.columnFilterModal.buttonCancel')
         }, {
             action: 'add',
             cls: 'primary',
             height: 26,
-            text: 'Add'
+            text: PICS.text('Report.execute.columnFilterModal.buttonAdd')
         }],
         layout: {
             type: 'hbox',
@@ -96074,7 +96067,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnModal', {
     }],
 
     initComponent: function () {
-        this.setTitle('Add Column');
+        this.setTitle(PICS.text('Report.execute.columnModal.title'));
 
         this.callParent(arguments);
     }
@@ -96089,7 +96082,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterModal', {
     }],
 
     initComponent: function () {
-        this.setTitle('Add Filter');
+        this.setTitle(PICS.text('Report.execute.filterModal.title'));
 
         this.callParent(arguments);
     }
@@ -98506,8 +98499,8 @@ Ext.define('PICS.controller.report.Header', {
             PICS.data.ServerCommunication.saveReport({
                 success_callback: function () {
                     that.application.fireEvent('opensuccessmessage', {
-                        title: 'Report Saved',
-                        html: 'to My Reports in Reports Manager.'
+                        title: PICS.text('Report.execute.successAlert.title'),
+                        html: PICS.text('Report.execute.successAlert.message')
                     });
                 }
             });
@@ -98709,8 +98702,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 settings_modal_view.close();
 
                 that.application.fireEvent('opensuccessmessage', {
-                    title: 'Report Saved',
-                    html: 'to My Reports in Reports Manager.'
+                    title: PICS.text('Report.execute.successAlert.title'),
+                    html: PICS.text('Report.execute.successAlert.message')
                 });
             }
         });

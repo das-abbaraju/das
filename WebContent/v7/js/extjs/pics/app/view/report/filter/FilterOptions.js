@@ -33,7 +33,7 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     placeholder: {
         xtype: 'reportfilterplaceholder'
     },
-    title: 'Filter',
+    title: PICS.text('Report.execute.filterOptions.title'),
     width: 320,
     
     showFormula: function () {

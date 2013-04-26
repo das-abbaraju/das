@@ -17,6 +17,23 @@
 		<meta charset="utf-8">
 		
 		<title>PICS - <decorator:title default="PICS" /></title>
+        
+        <%-- include javascript translations --%>
+        <s:action name="TranslateJS2" executeResult="true" />
+
+        <%-- Translations: globally scoped and integrated into the application --%>
+        
+        <%-- hella balls hacky, placing text method on the global PICS namespace, Ext.create.Application will add this to the scope it creates --%>
+        <%-- this is emulated in index.html, the file that is used to compile the application --%>
+        <script>
+        PICS.text = function (key) {
+            var args = arguments;
+            
+            return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
+                return args[parseInt(p1) + 1];
+            }) : key;
+        };
+        </script>
 		
         <s:if test="#is_development_mode == true">
             <script type="text/javascript" src="${extjs_dir}/ext-debug.js"></script>

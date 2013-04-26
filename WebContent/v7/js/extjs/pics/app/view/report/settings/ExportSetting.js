@@ -7,10 +7,10 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'export',
-        text : '<i class="icon-table icon-large"></i><span>Spreadsheet</span>',
+        text : '<i class="icon-table icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonExport') + '</span>',
         cls: 'default export',
         id: 'export-button',
-        tooltip: 'Export this report to Excel',
+        tooltip: PICS.text('Report.execute.exportSetting.tooltipExport'),
         height: 28,
         margin: '100 0 0 0',
         width: 200
@@ -20,6 +20,6 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         align: 'center'
     },
     // custom config
-    modal_title: 'Export Report',
-    title: '<i class="icon-eject icon-large"></i>Export'
+    modal_title: PICS.text('Report.execute.exportSetting.title'),
+    title: '<i class="icon-eject icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName')
 });

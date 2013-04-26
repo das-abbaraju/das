@@ -18,7 +18,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterList', {
     enableColumnHide: false,
     features: [{
         ftype: 'grouping',
-        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} item{[values.rows.length != 1 ? "s" : ""]})</span>'
+        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} ' + PICS.text('Report.execute.columnFilterList.columnHeaderItems') + ')</span>'
     }],
     hideHeaders: true,
     listeners: {

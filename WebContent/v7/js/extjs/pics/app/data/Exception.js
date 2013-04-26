@@ -3,22 +3,22 @@ Ext.define('PICS.data.Exception', {
         // List of user-friendly error messages.
         var error_codes = {
             401: {
-                title: 'Server Communication Error',
-                message: 'Your session has timed out. Please <a href="Login.action">relogin</a>.'
+                title: PICS.text('Report.execute.401.title'),
+                message: PICS.text('Report.execute.401.message')
             },
             404: {
-                title: 'Server Communication Error',
-                message: 'Page not found.' 
+                title: PICS.text('Report.execute.404.title'),
+                message: PICS.text('Report.execute.404.message') 
             },
             500: {
-                title: 'Server Communication Error',
-                message: 'Server error occurred.'
+                title: PICS.text('Report.execute.500.title'),
+                message: PICS.text('Report.execute.500.message')
             }
         };
         
         var unknown_error = {
-            title: 'Server Communication Error',
-            message: 'An unknown error occurred.'
+            title: PICS.text('Report.execute.unknownError.title'),
+            message: PICS.text('Report.execute.unknownError.message')
         };
 
         function getErrorFromStatusCode(code) {

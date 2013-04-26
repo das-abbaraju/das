@@ -12,8 +12,7 @@ Ext.application({
         'PICS.data.ServerCommunication',
         'PICS.data.ServerCommunicationUrl',
         'PICS.data.ColumnType',
-        'PICS.data.FilterType',
-        'PICS.data.Translate'
+        'PICS.data.FilterType'
     ],
 
     constants: {
@@ -40,7 +39,6 @@ Ext.application({
 
     launch: function () {
         Ext.apply(PICS, {
-            text: this.text,
             updateDocumentTitle: this.updateDocumentTitle
         });
         
@@ -68,7 +66,7 @@ Ext.application({
                             report_has_unsaved_changes = report.getHasUnsavedChanges();
 
                         if (report_has_unsaved_changes) {
-                            return 'Any unsaved changes will be lost.';
+                            return PICS.text('Report.execute.unsavedChanges.title');
                         }
                     };
 
@@ -80,17 +78,11 @@ Ext.application({
         });
     },
     
-    // PICS.text(key, p1, p2, ...)
-    // provide short cut to displaying translation off the PICS._i18n
-    text: function (key) {
-        return PICS.data.Translate.text.apply(this, arguments);
-    },
-    
     updateDocumentTitle: function () {
         var report_store = Ext.StoreManager.get('report.Reports'),
             report = report_store.first(),
             report_name = report.get('name');
-
+        
         document.title = report_name;
     }
 });

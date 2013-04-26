@@ -7,10 +7,10 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>Preview</span>',
+        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.printSetting.buttonPreview') + '</span>',
         cls: 'default print',
         id: 'print-button',
-        tooltip: 'Preview a printable version of this report',
+        tooltip: PICS.text('Report.execute.printSetting.tooltipPreview'),
         height: 28,
         margin: '100 0 0 0',
         width: 200
@@ -19,7 +19,7 @@ Ext.define('PICS.view.report.settings.PrintSetting', {
         type: 'vbox',
         align: 'center'
     },
-    title: '<i class="icon-print icon-large"></i>Print',
     // custom config
-    modal_title: 'Print Report'
+    modal_title: PICS.text('Report.execute.printSetting.title'),
+    title: '<i class="icon-print icon-large"></i>' + PICS.text('Report.execute.printSetting.tabName')
 });

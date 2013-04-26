@@ -22,8 +22,8 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
             text: '<i class="icon-info-sign"></i>',
             tooltip: [
                 '<div class="filter-formula-tooltip">',
-                    '<h4>Use "()" "AND" "OR"</h4>',
-                    '<span>Example:</span>',
+                    '<h4>' + PICS.text('Report.execute.filterFormula.tooltipFilterFormula1', '"()" "AND" "OR"') + '</h4>',
+                    '<span>' + PICS.text('Report.execute.filterFormula.tooltipFilterFormula2') + ':</span>',
                     '<p>(1 OR (2 AND 3)) AND 4</p>',
                 '</div>'
             ].join(''),

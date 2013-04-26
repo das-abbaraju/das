@@ -56,20 +56,20 @@ Ext.define('PICS.view.report.data-table.DataTable', {
 
         menu.add({
             name: 'sort_asc',
-            text: 'Sort Ascending'
+            text: PICS.text('Report.execute.columnDropDown.sortAsc')
         }, {
             name: 'sort_desc',
-            text: 'Sort Descending'
+            text: PICS.text('Report.execute.columnDropDown.sortDesc')
         }, {
             xtype: 'menuseparator'
         }, {
             name: 'function',
-            text: 'Functions' + '&hellip;'
+            text: PICS.text('Report.execute.columnDropDown.function') + '&hellip;'
         }, {
             xtype: 'menuseparator'
         }, {
             name: 'remove_column',
-            text: 'Remove'
+            text: PICS.text('Report.execute.columnDropDown.removeColumn')
         });
     },
 
@@ -108,7 +108,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
             view = this.getView();
         
         if (store.getCount() == 0) {
-            view.emptyText = '<div class="x-grid-empty">no results</div>';
+            view.emptyText = '<div class="x-grid-empty">' + PICS.text('Report.execute.table.noResults') + '</div>';
         } else {
             view.emptyText = '';
         }
@@ -128,10 +128,10 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         }
 
         if (!sql_function) {
-            function_item.setText('Functions' + '&hellip;');
+            function_item.setText(PICS.text('Report.execute.columnDropDown.function') + '&hellip;');
             function_item.name = "function";
         } else {
-            function_item.setText('Remove Function');
+            function_item.setText(PICS.text('Report.execute.columnDropDown.removeFunction'));
             function_item.name = "remove_function";
         }
     }

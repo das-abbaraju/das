@@ -3,9 +3,9 @@ Ext.define('PICS.view.report.filter.base.UserId', {
     alias: 'widget.reportfilterbaseuserid',
 
     operator_store: [
-        ['Equals', 'equals'],
-        ['NotEquals', 'does not equal'],
-        ['CurrentUser', 'current user']
+        ['Equals', PICS.text('Report.execute.userIdFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.userIdFilter.notEquals')],
+        ['CurrentUser', PICS.text('Report.execute.userIdFilter.currentUser')]
     ],
     
     createOperatorField: function () {

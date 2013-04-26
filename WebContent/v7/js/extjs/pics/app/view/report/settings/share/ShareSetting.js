@@ -9,8 +9,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
     border: 0,
     id: 'report_share',
     // custom config
-    modal_title: 'Share Report',
-    title: '<i class="icon-share icon-large"></i>Share',
+    modal_title: PICS.text('Report.execute.shareSetting.title'),
+    title: '<i class="icon-share icon-large"></i>' + PICS.text('Report.execute.shareSetting.tabName'),
 
     listeners: {
         afterrender: function (cmp, eOpts) {
@@ -51,13 +51,13 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,
-                text: 'Cancel'
+                text: PICS.text('Report.execute.shareSetting.buttonCancel')
             }, {
                 action: 'share',
                 cls: 'primary',
                 formBind: true,
                 height: 28,
-                text: 'Share'
+                text: PICS.text('Report.execute.shareSetting.buttonShare')
             }],
             margin: '5 0 0 0',
             layout: {
@@ -92,7 +92,7 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
             labelSeparator: '',
-            value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
+            value: '<p>' + PICS.text('Report.execute.shareSetting.formLabelEdit') + '</p>'
         }];
 
         this.margin = '0 10 0 10';
@@ -104,8 +104,8 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-                '<p class="permission-info">You do not have permission to edit the settings of this report</p>',
-                '<p class="duplicate-info">You can <strong>Duplicate</strong> the report to save it to your reports.  After it\'s saved you\'ll be able to share your duplicate report.</p>'
+                '<p class="permission-info">' + PICS.text('Report.execute.shareSetting.noShareTitle') + '</p>',
+                '<p class="duplicate-info">' + PICS.text('Report.execute.shareSetting.noShareDescription') + '</p>'
             ])
         }];
 
