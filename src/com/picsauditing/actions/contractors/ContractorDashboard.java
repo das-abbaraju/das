@@ -970,24 +970,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return;
 		}
 
-		if (co.isForcedFlag()) {
-			return;
-		}
-
-		List<ContractorOperator> contractorOperators = contractorOperatorDAO
-				.findByContractor(contractor.getId(), permissions);
-		for (ContractorOperator contractorOperator : contractorOperators) {
-			if (contractorOperator.equals(co))
-				continue;
-			if (contractorOperator.isForcedFlag()) {
-				for (Facility facility : co.getOperatorAccount()
-						.getCorporateFacilities()) {
-					if (facility.getCorporate() == contractorOperator
-							.getOperatorAccount()) {
-						corporateFlagOverride = contractorOperator;
-						break;
-					}
-				}
+		for (ContractorOperator conOp:contractor.getOperators()) {
+			if (conOp.isForcedFlag() && co.getOperatorAccount().isOrIsDescendantOf(conOp.getOperatorAccount().getId())) {
+				corporateFlagOverride = conOp;
 			}
 		}
 	}

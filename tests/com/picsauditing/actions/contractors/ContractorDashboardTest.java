@@ -78,6 +78,28 @@ public class ContractorDashboardTest {
 	}
 
 	@Test
+	public void testFindCorporateOverrides() throws Exception {
+		Calendar date = Calendar.getInstance();
+
+		corporate.setType(Account.CORPORATE_ACCOUNT_TYPE);
+		operator.setType(Account.OPERATOR_ACCOUNT_TYPE);
+		Whitebox.setInternalState(dashboard, "co", conCorp);
+		Whitebox.setInternalState(dashboard, "contractor", contractor);
+		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
+		assertTrue(dashboard.getCorporateFlagOverride() == null);
+
+		conCorp.setForceFlag(FlagColor.Red);
+		date.add(Calendar.MONTH, -1);
+		conCorp.setForceBegin(date.getTime());
+		date.add(Calendar.MONTH, 3);
+		conCorp.setForceEnd(date.getTime());
+		Whitebox.setInternalState(dashboard, "co", conCorp);
+		Whitebox.setInternalState(dashboard, "contractor", contractor);
+		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
+		assertTrue(dashboard.getCorporateFlagOverride() != null);
+	}
+
+	@Test
 	public void testGetUsersWithPermission() throws Exception {
 		OperatorAccount site1 = EntityFactory.makeOperator();
 		OperatorAccount site2 = EntityFactory.makeOperator();
