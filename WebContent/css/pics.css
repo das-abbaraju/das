@@ -1656,3 +1656,21 @@ div.blockDialog {
     margin: 10px 0px;
     vertical-align: middle;
 }
+
+/* audit data upload */
+.AuditDataUpload-page p
+{
+    margin: 0px;
+}
+
+.AuditDataUpload-page .upload-reminder
+{
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.AuditDataUpload-page .upload-reminder small
+{
+    font-weight: normal;
+    display: block;
+}

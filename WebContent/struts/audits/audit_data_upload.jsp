@@ -35,9 +35,19 @@
 
                 <s:include value="../actionMessages.jsp" />
 
-                <b>${auditData.question.expandedNumber}</b>&nbsp;&nbsp;
-                <s:property value="auditData.question.name" escape="false"/>
+                <p>
+                    <strong>${auditData.question.expandedNumber}</strong>
+                    <s:property value="auditData.question.name" escape="false"/>
+                </p>
 
+                <p class="upload-reminder">
+                    <s:text name="AuditDataUpload.UploadReminder" />
+                    <small>
+                        <s:text name="global.maxFileUploadBytes">
+                            <s:param>${maxFileUploadSize}</s:param>
+                        </s:text>
+                    </small>
+                </p>
 
                 <s:form enctype="multipart/form-data" method="POST">
                     <s:hidden name="auditID" />
@@ -53,12 +63,6 @@
                                 <s:if test="file != null && file.exists()">
                                     <s:text name="AuditDataUpload.WillReplaceFile" />
                                 </s:if>
-
-                                <div style="margin-bottom:20px;">
-                                    <s:text name="global.maxFileUploadBytes">
-                                        <s:param>${maxFileUploadSize}</s:param>
-                                    </s:text>
-                                </div>
 
                                 <s:file name="file" size="15%"></s:file>
 
