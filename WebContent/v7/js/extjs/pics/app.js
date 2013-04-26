@@ -8,13 +8,11 @@ Ext.application({
 
     requires: [
         'PICS.view.report.Viewport',
-        'PICS.Ajax',
         'PICS.data.Exception',
         'PICS.data.ServerCommunication',
         'PICS.data.ServerCommunicationUrl',
         'PICS.data.ColumnType',
-        'PICS.data.FilterType',
-        'PICS.data.Translate'
+        'PICS.data.FilterType'
     ],
 
     constants: {
@@ -40,25 +38,10 @@ Ext.application({
     },
 
     launch: function () {
-        // save reference to application
-        PICS.app = this;
-
-        PICS.app.configuration = {
-            isEditable: function () { return true; },
-            isFavorite: function () { return true; },
-            setIsFavorite: function (bool) {
-                return true;
-            }
-        };
-
-        PICS.app.updateDocumentTitle = function () {
-            var report_store = Ext.StoreManager.get('report.Reports'),
-                report = report_store.first(),
-                report_name = report.get('name');
-
-            document.title = report_name;
-        },
-
+        Ext.apply(PICS, {
+            updateDocumentTitle: this.updateDocumentTitle
+        });
+        
         PICS.data.ServerCommunication.loadAll({
             success_callback: this.createViewport,
             scope: this
@@ -73,7 +56,7 @@ Ext.application({
                         report_store = Ext.StoreManager.get('report.Reports'),
                         report = report_store.first();
 
-                    PICS.app.updateDocumentTitle();
+                    PICS.updateDocumentTitle();
 
                     // ExtJS has its own onbeforeunload, but it doesn't work in FF.
                     // The native onbeforeunload used here, however, is broadly compatible.
@@ -83,7 +66,7 @@ Ext.application({
                             report_has_unsaved_changes = report.getHasUnsavedChanges();
 
                         if (report_has_unsaved_changes) {
-                            return 'Any unsaved changes will be lost.';
+                            return PICS.text('Report.execute.unsavedChanges.title');
                         }
                     };
 
@@ -93,5 +76,13 @@ Ext.application({
                 }
             }
         });
+    },
+    
+    updateDocumentTitle: function () {
+        var report_store = Ext.StoreManager.get('report.Reports'),
+            report = report_store.first(),
+            report_name = report.get('name');
+        
+        document.title = report_name;
     }
 });

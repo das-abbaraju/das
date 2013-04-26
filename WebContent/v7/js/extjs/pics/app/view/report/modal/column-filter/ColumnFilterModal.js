@@ -17,7 +17,7 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
         height: 45,
         items: [{
             xtype: 'textfield',
-            emptyText: 'Search',
+            emptyText: PICS.text('Report.execute.columnFilterModal.placeholderSearch'),
             enableKeyEvents: true,
             fieldLabel: '<i class="icon-search icon-large"></i>',
             labelSeparator: '',
@@ -43,12 +43,12 @@ Ext.define('PICS.view.report.modal.column-filter.ColumnFilterModal', {
             action: 'cancel',
             cls: 'default',
             height: 26,
-            text: 'Cancel'
+            text: PICS.text('Report.execute.columnFilterModal.buttonCancel')
         }, {
             action: 'add',
             cls: 'primary',
             height: 26,
-            text: 'Add'
+            text: PICS.text('Report.execute.columnFilterModal.buttonAdd')
         }],
         layout: {
             type: 'hbox',

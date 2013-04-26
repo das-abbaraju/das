@@ -18,7 +18,7 @@
     <div class="content">
         <div class="row dashboard">
             <div class="span6 image-container">
-                <img src="v7/img/tutorial/navigation-dashboard.png" />
+                <img src="v7/img/reference/navigation-dashboard.png" />
             </div>
 
             <div class="span6">
@@ -35,7 +35,7 @@
 
         <div class="row settings">
             <div class="span4 image-container">
-                <img src="v7/img/tutorial/navigation-settings.png" />
+                <img src="v7/img/reference/navigation-settings.png" />
             </div>
             <div class="span8">
                 <section class="overview">
@@ -51,7 +51,7 @@
 
         <div class="row support">
             <div class="span6 image-container">
-                <img src="v7/img/tutorial/navigation-support.png" />
+                <img src="v7/img/reference/navigation-support.png" />
             </div>
 
             <div class="span6">
@@ -72,7 +72,7 @@
             <div class="span4 offset4">
                 <s:url action="Home" var="home_url" />
 
-                <a class="btn btn-success btn-large" href="${home_url}">Start Using PICS Organizer 7.0 <i class="icon-circle-arrow-right icon-large"></i></a>
+                <a class="btn btn-success btn-large" href="${home_url}">Start Using PICS Organizer 7.0 <i class="icon-circle-arrow-right"></i></a>
                 <p>
                     For a short time, you can choose to revert to the old menu style by going to your Account Settings.
                 </p>

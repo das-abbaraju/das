@@ -229,7 +229,11 @@ public class LanguageModel {
 		List<Country> countries = new ArrayList<Country>();
 
 		for (Language dialect : dialects) {
-			countries.add(countryDAO.findbyISO(dialect.getCountry()));
+			String countryIsoCode = dialect.getCountry();
+
+			if (countryIsoCode != null) {
+				countries.add(countryDAO.findbyISO(countryIsoCode));
+			}
 		}
 
 		return countries;

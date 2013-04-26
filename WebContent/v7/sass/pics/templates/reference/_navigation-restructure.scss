@@ -1,0 +1,191 @@
+#Reference_navigationRestructure_page
+{
+	background-color: #454545;
+	padding-top: 0;
+	
+	p
+	{
+		line-height: 24px;
+	}
+	
+	header,
+	.content
+	{
+		overflow: hidden;
+	}
+	
+	header
+	{
+		background-color: #f1f1f2;
+		padding: 20px 20px 40px;
+		margin: 0 -20px;
+
+		h1
+		{
+			color: #808285;
+			font-size: 60px;
+			font-weight: normal;
+			line-height: 1;
+			margin: 0;
+		}
+		
+		h2
+		{
+			color: #a84d10;
+			font-size: 14px;
+			line-height: 1;
+		}
+	}
+	
+	.content
+	{
+		background-color: #f1f1f2;
+		padding: 0 20px;
+		margin: 0 -20px;
+	
+		.row
+		{
+			margin-bottom: 40px;
+			margin-top: 40px;
+		}
+		
+		h3
+		{
+			color: #808285;
+			font-size: 24px;
+			font-weight: normal;
+		}
+		
+		h4
+		{
+			color: #73bbe8;
+			font-size: 16px;
+			font-weight: normal;
+		}
+		
+		li
+		{
+			color: #666;
+			line-height: 24px;
+		}
+		
+		&.menu-locations
+		{
+			background: #fff;
+			border-top: 1px solid #dcdcdc;
+		}
+		
+		&.last
+		{
+			padding-bottom: 20px;
+		}
+	}
+
+	.summary
+	{
+		.row	
+		{
+			margin-top: 40px;
+		}
+		
+		.image-container
+		{
+			float: right;
+			text-align: right;
+		}
+		
+		img
+		{
+			margin-right: -20px;
+		}
+	}
+	
+	.overview
+	{
+		h1
+		{
+			color: #73bbe8;
+			font-size: 24px;
+			font-weight: normal;
+			line-height: 1;
+			margin-top: 0;
+		}
+		
+		p
+		{
+			color: #666;
+		}
+	}
+	
+	.nav-list
+	{
+		top: 30px;
+		width: 300px;
+	}
+}
+
+@media (min-width: 1200px) {
+	#Reference_navigationRestructure_page
+	{
+		header,
+		.content
+		{
+			margin: 0 -30px;
+			padding: 30px;
+		}
+		
+		.summary
+		{
+			img
+			{
+				margin-right: -30px;
+			}
+		}
+		
+		.nav-list
+		{
+			width: 370px;
+		}
+	}
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	#Reference_navigationRestructure_page
+	{
+		.nav-list
+		{
+			width: 228px;
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	#Reference_navigationRestructure_page
+	{
+		.content
+		{
+			.row
+			{
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+		}
+		
+		.summary.row
+		{
+			margin-top: 0;
+		}
+		
+		.image-container
+		{
+			margin-bottom: 20px;
+		}
+		
+		.nav-list
+		{
+			position: static;
+			top: 0;
+			width: auto;
+		}
+	}
+}

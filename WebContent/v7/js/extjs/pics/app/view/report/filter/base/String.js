@@ -3,16 +3,16 @@ Ext.define('PICS.view.report.filter.base.String', {
     alias: 'widget.reportfilterbasestring',
 
     operator_store: [
-        ['Contains', 'contains'],
-        ['NotContains', 'does not contain'],
-        ['BeginsWith', 'begins with'],
-        ['NotBeginsWith', 'does not begin with'],
-        ['EndsWith', 'ends with'],
-        ['NotEndsWith', 'does not end with'],
-        ['Equals', 'equals'],
-        ['NotEquals', 'does not equal'],
-        ['Empty', 'is empty'],
-        ['NotEmpty', 'is not empty']
+        ['Contains', PICS.text('Report.execute.stringFilter.contains')],
+        ['NotContains', PICS.text('Report.execute.stringFilter.notContains')],
+        ['BeginsWith', PICS.text('Report.execute.stringFilter.beginsWith')],
+        ['NotBeginsWith', PICS.text('Report.execute.stringFilter.notBeginsWith')],
+        ['EndsWith', PICS.text('Report.execute.stringFilter.endsWith')],
+        ['NotEndsWith', PICS.text('Report.execute.stringFilter.notEndsWith')],
+        ['Equals', PICS.text('Report.execute.stringFilter.equals')],
+        ['NotEquals', PICS.text('Report.execute.stringFilter.notEquals')],
+        ['Empty', PICS.text('Report.execute.stringFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.stringFilter.notEmpty')]
     ],
     
     createOperatorField: function () {

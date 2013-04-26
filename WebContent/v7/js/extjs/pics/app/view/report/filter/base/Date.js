@@ -3,9 +3,9 @@ Ext.define('PICS.view.report.filter.base.Date', {
     alias: 'widget.reportfilterbasedate',
 
     operator_store: [
-        ['LessThan', 'before'],
-        ['GreaterThanOrEquals', 'on or after'],
-        ['Empty', 'is empty']
+        ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
+        ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
+        ['Empty', PICS.text('Report.execute.dateFilter.empty')]
     ],
     
     createOperatorField: function () {

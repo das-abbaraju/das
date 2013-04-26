@@ -1,14 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
@@ -16,32 +7,8 @@ import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -51,6 +18,13 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.ContractorValidator;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -89,10 +63,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
+	private int insideSalesId;
 
 	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
-	private String contractorTypeHelpText = "";
 
+	private String contractorTypeHelpText = "";
 	private HttpServletRequest request;
 
 	public void prepare() throws Exception {
@@ -138,17 +113,17 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (contractor.isContractorTypeRequired(ContractorType.Onsite)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+					contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
 		}
 		if (contractor.isContractorTypeRequired(ContractorType.Offsite)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+					contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
 		}
 		if (contractor.isContractorTypeRequired(ContractorType.Supplier)) {
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+					contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
 		}
 		if (contractor.isContractorTypeRequired(ContractorType.Transportation)) {
 			contractorTypeHelpText += getTextParameterized(
@@ -209,6 +184,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setDontReassign(true);
 			}
 
+			if (contractor.getStatus().isPending() && insideSalesId > 0) {
+				User newRep = userDAO.find(insideSalesId);
+
+				if (newRep != null) {
+					contractor.setCurrentInsideSalesRepresentative(newRep, permissions.getUserId());
+				}
+			}
+
 			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
@@ -218,7 +201,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	protected void checkListOnlyAcceptability() {
-		if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+		if (AccountLevel.ListOnly == contractor.getAccountLevel()) {
 			// Now check if they have a product risk level
 			if (!contractor.isListOnlyEligible()) {
 				addActionError(getText("ContractorEdit.error.ListOnlyRequirements"));
@@ -256,7 +239,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected void handleBrochure(String ftpDir) throws Exception {
 		String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
-		String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
+		String[] validExtensions = {"jpg", "gif", "png", "doc", "pdf"};
 
 		if (!FileUtils.checkFileExtension(extension, validExtensions)) {
 			addActionError(getText("ContractorEdit.error.BrochureFormat"));
@@ -269,7 +252,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected void handleLogo(String ftpDir) throws Exception {
 		String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
-		String[] validExtensions = { "jpg", "gif", "png" };
+		String[] validExtensions = {"jpg", "gif", "png"};
 
 		if (!FileUtils.checkFileExtension(extension, validExtensions)) {
 			addActionError(getText("ContractorEdit.error.LogoFormat"));
@@ -684,11 +667,29 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return userDAO.findWhere("u.isActive = 'Yes' and u.account.id = 1100 and u.assignmentCapacity > 0");
 	}
 
+	public List<User> getInsideSalesList() {
+		List<User> insideSales = userDAO.findByGroup(User.GROUP_INSIDE_SALES);
+		if (insideSales != null) {
+			insideSales.addAll(getCsrList());
+			Collections.sort(insideSales);
+		}
+
+		return insideSales;
+	}
+
 	public int getCsrId() {
 		return csrId;
 	}
 
 	public void setCsrId(int csrId) {
 		this.csrId = csrId;
+	}
+
+	public int getInsideSalesId() {
+		return insideSalesId;
+	}
+
+	public void setInsideSalesId(int insideSalesId) {
+		this.insideSalesId = insideSalesId;
 	}
 }

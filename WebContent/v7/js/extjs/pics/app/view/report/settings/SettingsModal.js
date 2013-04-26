@@ -16,7 +16,6 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     layout: 'fit',
     modal: true,
     resizable: false,
-    title: 'Edit Report',
     width: 352,
     
     updateActiveTabFromAction: function (action) {

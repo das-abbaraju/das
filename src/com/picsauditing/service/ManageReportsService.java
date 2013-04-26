@@ -158,7 +158,7 @@ public class ManageReportsService {
 
 		permissionService.unshareUserOrGroup(fromUser, report);
 
-		removeReportPreferencesIfCannotView(fromUser, report);
+		removeReportPreferencesIfCannotView(fromUser, report, permissions);
 	}
 
 	public void unshareGroup(User revokerUser, User group, Report report, Permissions permissions) throws Exception {
@@ -171,7 +171,7 @@ public class ManageReportsService {
 		for (UserGroup userGroup : userGroupDAO.findByGroup(group.getId())) {
 			User user = userGroup.getUser();
 
-			removeReportPreferencesIfCannotView(user, report);
+			removeReportPreferencesIfCannotView(user, report, permissions);
 		}
 	}
 
@@ -183,12 +183,12 @@ public class ManageReportsService {
 		permissionService.unshareAccount(account, report);
 
 		for (User user : userDAO.findUsersByAccountId(account.getId())) {
-			removeReportPreferencesIfCannotView(user, report);
+			removeReportPreferencesIfCannotView(user, report, permissions);
 		}
 	}
 
-	private void removeReportPreferencesIfCannotView(User user, Report report) {
-		if (!permissionService.canUserViewReport(user, report)) {
+	private void removeReportPreferencesIfCannotView(User user, Report report, Permissions permissions) {
+		if (!permissionService.canUserViewReport(user, report, permissions)) {
 			try {
 				ReportUser reportUser = reportPreferencesService.loadReportUser(user.getId(), report.getId());
 				reportUserDAO.remove(reportUser);

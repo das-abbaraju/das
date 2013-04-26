@@ -13,13 +13,13 @@ Ext.define('PICS.view.report.settings.CopySetting', {
             action: 'cancel',
             cls: 'cancel default',
             height: 28,
-            text: 'Cancel'
+            text: PICS.text('Report.execute.copySetting.buttonCancel')
         }, {
             action: 'copy',
             cls: 'copy primary',
             formBind: true,
             height: 28,
-            text: 'Duplicate'
+            text: PICS.text('Report.execute.copySetting.buttonCopy')
         }],
         layout: {
             pack: 'end'
@@ -30,13 +30,13 @@ Ext.define('PICS.view.report.settings.CopySetting', {
     items: [{
         xtype: 'textfield',
         allowBlank: false,
-        fieldLabel: 'Report Name',
+        fieldLabel: PICS.text('Report.execute.copySetting.formLabelName'),
         labelAlign: 'right',
         name: 'name'
     }, {
         xtype: 'textarea',
         allowBlank: false,
-        fieldLabel: 'Description',
+        fieldLabel: PICS.text('Report.execute.copySetting.formLabelDescription'),
         labelAlign: 'right',
         name: 'description'
     }, {
@@ -44,6 +44,6 @@ Ext.define('PICS.view.report.settings.CopySetting', {
     }],
     layout: 'form',
     // custom config
-    modal_title: 'Duplicate Report',
-    title: '<i class="icon-copy icon-large"></i>Duplicate'
+    modal_title: PICS.text('Report.execute.copySetting.title'),
+    title: '<i class="icon-copy icon-large"></i>' + PICS.text('Report.execute.copySetting.tabName')
 });

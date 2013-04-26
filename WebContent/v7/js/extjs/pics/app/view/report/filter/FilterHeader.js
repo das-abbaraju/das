@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     items: [{
         xtype: 'button',
         id: 'report_filter_options_collapse',
-        text: '<i class="icon-chevron-left icon-large"></i> Filter'
+        text: '<i class="icon-chevron-left icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonFilter')
     }, {
         xtype: 'tbfill'
     }, {
@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> Add Filter'
+        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.filterHeader.buttonAddFilter')
     }],
     layout: {
         type: 'hbox',

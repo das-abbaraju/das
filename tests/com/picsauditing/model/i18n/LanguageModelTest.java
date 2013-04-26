@@ -429,4 +429,16 @@ public class LanguageModelTest {
 	private List<String> getLanguageList() {
 		return Whitebox.getInternalState(LanguageModel.class, "languagesToEmailInvoicesInBPROCS");
 	}
+
+	@Test
+	public void testGetDialectCountriesBasedOn_WhenDialectWithNullCountryFound_ThenNoExceptionIsThrown() {
+		Language dialectWithNullCountry = mock(Language.class);
+		when(dialectWithNullCountry.getCountry()).thenReturn(null);
+		String language = "en";
+		List<Language> dialectsByLanguage = new ArrayList<>();
+		dialectsByLanguage.add(dialectWithNullCountry);
+		when(languageProvider.findDialectsByLanguage(language)).thenReturn(dialectsByLanguage);
+
+		languageModel.getDialectCountriesBasedOn(language);
+	}
 }

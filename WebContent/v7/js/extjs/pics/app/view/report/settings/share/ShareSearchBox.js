@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     autoSelect: false,
     cls: 'share-searchbox',
     displayField: 'name',
-    emptyText: 'Search Users and Groups',
+    emptyText: PICS.text('Report.execute.shareSetting.placeholderSearch'),
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
     labelSeparator: '',
@@ -14,7 +14,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     
     listConfig: {
         cls: 'site-menu-search-list',
-        loadingText: 'Searching...',
+        loadingText: PICS.text('Report.execute.shareSetting.searchLoadingText') + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -25,7 +25,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{name}</em></span>',
-                                '<span class="id"><em>ID {id}</em></span>',
+                                '<span class="id"><em>' + PICS.text('Report.execute.shareSetting.shareListId') + ' {id}</em></span>',
                             '</div>',
                             '<div>',
                                 '<span class="location">{location}</span>',

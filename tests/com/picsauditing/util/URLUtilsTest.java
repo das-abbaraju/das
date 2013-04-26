@@ -111,4 +111,70 @@ public class URLUtilsTest extends PicsActionTest {
 		assertEquals("/Action.action?param1=one&param2=2&param3=true",
 				urlUtils.getActionUrl("Action", "param1", "one", "param2", 2, "param3", true));
 	}
+
+	@Test
+	public void testGetActionNameFromRequest_NullRequest() {
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionNameFromRequest(null));
+	}
+
+	@Test
+	public void testGetActionNameFromRequest_ImproperlyFormattedUrl() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Something?1&2"));
+
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionNameFromRequest_ImproperlyFormattedUrlWithInvalidActionInUrlString() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/So.actionme!thing?1&2"));
+
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionNameFromRequest_JustActionName() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Nothing.action"));
+
+		assertEquals("Nothing", URLUtils.getActionNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionNameFromRequest_JustActionNameWhenUrlHasMethod() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Nothing!method.action"));
+
+		assertEquals("Nothing", URLUtils.getActionNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionMethodNameFromRequest_NullRequest() {
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionMethodNameFromRequest(null));
+	}
+
+	@Test
+	public void testGetActionMethodNameFromRequest_ImproperlyFormattedUrl() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Something?1&2"));
+
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionMethodNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionMethodNameFromRequest_ImproperlyFormattedUrlWithInvalidActionLocationInString() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Some.actionthi!ng?1&2"));
+
+		assertEquals(Strings.EMPTY_STRING, URLUtils.getActionMethodNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionMethodNameFromRequest_JustActionName() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Nothing.action"));
+
+		assertEquals("execute", URLUtils.getActionMethodNameFromRequest(request));
+	}
+
+	@Test
+	public void testGetActionNameMethodFromRequest_JustActionNameWhenUrlHasMethod() {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://www.picsorganizer.com/Nothing!method.action"));
+
+		assertEquals("method", URLUtils.getActionMethodNameFromRequest(request));
+	}
 }

@@ -14,7 +14,7 @@ Ext.define('PICS.view.report.header.Actions', {
             cls: 'save success',
             height: 40,
             scale: 'large',
-            text: 'Save'
+            text: PICS.text('Report.execute.headerActions.buttonSave')
         });
 
         var edit = Ext.create('Ext.button.Button', {

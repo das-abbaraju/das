@@ -1,0 +1,98 @@
+#!/bin/bash
+export PICSORG_MAIN_DIR="/media/sf_PICSORG"
+export PICSORG_TARGET_DIR="$PICSORG_MAIN_DIR/target"
+
+####################################################
+####################################################
+
+echo CHECKING IF TOMCAT IS CURRENTLY RUNNING
+if ps aux | grep "org.apache.catalina.startup.Bootstrap" > /dev/null
+then
+    echo STOPPING TOMCAT VIA DAEMON COMMAND
+    /opt/tomcat/bin/shutdown.sh
+    if [ "$?" -ne "0" ]; then
+        echo "TOMCAT DID NOT STOP; KILLING PROCESS"
+        pkill catalina
+        if ps aux | grep "org.apache.catalina.startup.Bootstrap" > /dev/null
+        then
+            echo "TOMCAT CANNOT BE KILLED VIA THIS SCRIPT; FIND A LINUX EXPERT"
+            exit 1
+        else
+           echo "TOMCAT KILLED SUCCESSFULLY"
+        fi
+    else
+        echo "TOMCAT STOPPED SUCCESSFULLY"
+    fi
+else
+    echo "TOMCAT NOT RUNNING AT THE MOMENT"
+fi
+
+####################################################
+####################################################
+
+echo CLEANING TARGET DIR
+cd $PICSORG_MAIN_DIR
+
+rm -Rf $PICSORG_TARGET_DIR
+if [ "$?" -ne "0" ]; then
+    echo ONCE MORE FOR GOOD MEASURE
+    rm -Rf $PICSORG_TARGET_DIR
+    if [ "$?" -ne "0" ]; then
+         echo "CANNOT CLEAN TARGET DIR; CONTACT LINUX EXPERT"
+         exit 1
+    fi
+fi
+echo TARGET DIR IS CLEANED
+
+####################################################
+####################################################
+
+if [ -f "*.tmp" ]
+then
+    echo DELETING PICSORG TMP FILES
+    rm *.tmp
+    if [ "$?" -ne "0" ]; then
+        echo ONCE MORE FOR GOOD MEASURE
+        rm *.tmp
+        if [ "$?" -ne "0" ]; then
+            echo "CANNOT CLEAN PICSORG TMP FILES; CONTACT LINUX EXPERT"
+            exit 1
+        fi
+    fi
+echo PICSORG TMP FILES DELETED
+fi
+
+####################################################
+####################################################
+
+if [ ! -z $1 ] && [ "$1" = "test" ]
+then
+    echo "COMPILING TESTING AND DEPLOYING WITH test PARAM"
+    mvn prepare-package war:exploded
+    if [ "$?" -ne "0" ]; then
+        echo COMPILING TESTING AND OR DEPLOYMENT FAILED
+        exit 1
+    else
+        echo COMPILING TESTING AND DEPLOYMENT SUCCEEDED
+    fi
+else
+    echo "JUST COMPILING AND DEPLOYING (NO TESTING BY DEFAULT)"
+    mvn -T 4C prepare-package war:exploded -DskipTests
+    if [ "$?" -ne "0" ]; then
+        echo COMPILING AND OR DEPLOYMENT FAILED
+        exit 1
+    else
+        echo COMPILING AND DEPLOYMENT SUCCEEDED
+    fi
+fi
+
+####################################################
+####################################################
+
+echo STARTING TOMCAT
+/opt/tomcat/bin/startup.sh
+if [ "$?" -ne "0" ]; then
+    echo "TOMCAT FAILED ON STARTUP; CONTACT LINUX EXPERT"
+    exit 1
+fi
+echo TOMCAT STARTED SUCCESSFULLY

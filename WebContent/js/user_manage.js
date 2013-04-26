@@ -83,22 +83,6 @@ function removeMember(userGroupID) {
 	$('#memberReport').load('UserGroupSaveAjax.action', data);
 }
 
-function checkGroupName(groupName) {
-    $('#UserSave').attr({'disabled':'disabled'});
-    $('#groupname_status').html(translate('JS.UsersManage.CheckingAvailabilityOfGroupName'));
-    
-    var data = {
-        accountId: accountID,
-        userID: currentUserID,
-        groupName: groupName
-    };
-    $('#groupname_status').load('group_ajax.jsp', data, function() {
-        if($('#groupname_status').html().indexOf('error') == -1)
-            $('#UserSave').attr({'disabled': false});
-        }
-    );
-}
-
 function checkUsername(username) {
 	$('#UserSave').attr({'disabled':'disabled'});
 	$('#username_status').html(translate('JS.UsersManage.CheckingAvailabilityOfUsername'));

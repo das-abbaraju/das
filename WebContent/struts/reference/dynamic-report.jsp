@@ -14,7 +14,7 @@
     <div class="content">
         <div class="row report-overview">
             <div class="span8 image-container">
-                <img src="/v7/img/tutorial/report/overview.png" />
+                <img src="/v7/img/reference/report/overview.png" />
             </div>
             <div class="span4">
                 <section class="overview">
@@ -42,7 +42,7 @@
                 
         <div class="row section-header">
             <div class="span4 image-container">
-                <img src="/v7/img/tutorial/report/report-information.png" />
+                <img src="/v7/img/reference/report/report-information.png" />
             </div>
             <div class="span8">
                 <h2>Report Information</h2>
@@ -51,7 +51,7 @@
         
         <div class="row report-summary">
             <div class="span6 image-container">
-                <img src="/v7/img/tutorial/report/title.png" />
+                <img src="/v7/img/reference/report/title.png" />
             </div>
             <div class="span6">
                 <section class="overview">
@@ -65,7 +65,7 @@
         
         <div class="row report-settings">
             <div class="span5 image-container">
-                <img src="/v7/img/tutorial/report/settings.png" />
+                <img src="/v7/img/reference/report/settings.png" />
             </div>
             <div class="span7">
                 <section class="overview">
@@ -97,7 +97,7 @@
         
         <div class="row section-header">
             <div class="span4 image-container">
-                <img src="/v7/img/tutorial/report/report-data.png" />
+                <img src="/v7/img/reference/report/report-data.png" />
             </div>
             <div class="span8">
                 <h2>Report Data</h2>
@@ -106,7 +106,7 @@
         
         <div class="row report-data">
             <div class="span8 image-container">
-                <img src="/v7/img/tutorial/report/data.png" />
+                <img src="/v7/img/reference/report/data.png" />
             </div>
             <div class="span4">
                 <section class="overview">
@@ -122,7 +122,7 @@
         </div>
         
         <div class="report-toolbar">
-            <img src="/v7/img/tutorial/report/toolbar.png" />
+            <img src="/v7/img/reference/report/toolbar.png" />
         </div>
         
         <div class="row report-data-options">
@@ -143,7 +143,7 @@
         
         <div class="row section-header">
             <div class="span4 image-container">
-                <img src="/v7/img/tutorial/report/report-filter.png" />
+                <img src="/v7/img/reference/report/report-filter.png" />
             </div>
             <div class="span8">
                 <h2>Data Filters</h2>
@@ -152,7 +152,7 @@
         
         <div class="row report-filters">
             <div class="span4 image-container">
-                <img src="/v7/img/tutorial/report/filters.png" />
+                <img src="/v7/img/reference/report/filters.png" />
             </div>
             <div class="span8">
                 <section class="overview">
@@ -175,7 +175,7 @@
         
         <div class="row report-formula">
             <div class="span5 image-container">
-                <img src="/v7/img/tutorial/report/formula.png" />
+                <img src="/v7/img/reference/report/formula.png" />
             </div>
             <div class="span7">
                 <section class="overview">
@@ -189,6 +189,6 @@
     </div>
     
     <footer>
-        <a href="${manage_reports_url}" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right icon-large"></i></a>
+        <a href="${manage_reports_url}" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right"></i></a>
     </footer>
 </div>

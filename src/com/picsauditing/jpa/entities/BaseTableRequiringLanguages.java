@@ -1,16 +1,13 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.i18n.RequiredLanguageTransformer;
+
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
-import com.picsauditing.util.i18n.RequiredLanguageTransformer;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -47,9 +44,9 @@ public abstract class BaseTableRequiringLanguages extends BaseTable implements J
 			cascadeRequiredLanguages(add, remove);
 		}
 
-        Collections.sort(languages);
+		Collections.sort(languages);
 
-        requiredLanguages = transformer.getJSONStringFrom(languages);
+		requiredLanguages = transformer.getJSONStringFrom(languages);
 		this.languages = languages;
 	}
 

@@ -306,7 +306,7 @@
 
                         <s:if test="user.group">
                             <li>
-								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" onchange="checkGroupName(this.value);" />
+								<s:textfield name="user.name" label="UsersManage.DisplayName" size="30" theme="form" />
 								<span id="groupname_status"></span>							
                             </li>
                         </s:if>
@@ -516,7 +516,7 @@
 							</pics:permission>
 						</s:if>
 
-						<s:if test="%{user.hasGroup(11)}">				
+						<s:if test="%{user.hasGroup(11) || user.hasGroup(71638)}">
 							<li>
 								<label>Countries Serviced</label>
 								<table class="report">

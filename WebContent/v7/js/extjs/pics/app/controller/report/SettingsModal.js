@@ -176,15 +176,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.saveReport({
             success_callback: function () {
 
-                PICS.app.updateDocumentTitle();
+                PICS.updateDocumentTitle();
 
                 that.application.fireEvent('updatepageheader');
 
                 settings_modal_view.close();
 
                 that.application.fireEvent('opensuccessmessage', {
-                    title: 'Report Saved',
-                    html: 'to My Reports in Reports Manager.'
+                    title: PICS.text('Report.execute.successAlert.title'),
+                    html: PICS.text('Report.execute.successAlert.message')
                 });
             }
         });

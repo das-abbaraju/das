@@ -11,6 +11,15 @@
         <link rel="stylesheet" type="text/css" href="resources/css/my-ext-theme.css" />
         <link rel="stylesheet" type="text/css" href="/v7/css/libs/font-awesome.css" />
         
+        <!-- This is a hook to get complication due to the fact that translations are separated from the application -->
+        <script>
+        var _i18n = {};
+        
+        ;(function (w) { if (!w.PICS) { w.PICS = {}; } w.PICS.i18n = _i18n; }(window));
+        
+        PICS.text = function () {};
+        </script>
+        
         <script type="text/javascript" src="extjs/ext.js"></script>
         <script type="text/javascript" src="app.js"></script>
     </head>
