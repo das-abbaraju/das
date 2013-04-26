@@ -6,14 +6,14 @@ export PICSORG_TARGET_DIR="$PICSORG_MAIN_DIR/target"
 ####################################################
 
 echo CHECKING IF TOMCAT IS CURRENTLY RUNNING
-if ps aux | grep "[t]omcat" > /dev/null
+if ps aux | grep "org.apache.catalina.startup.Bootstrap" > /dev/null
 then
     echo STOPPING TOMCAT VIA DAEMON COMMAND
     /opt/tomcat/bin/shutdown.sh
     if [ "$?" -ne "0" ]; then
         echo "TOMCAT DID NOT STOP; KILLING PROCESS"
-        pkill tomcat
-        if ps aux | grep "[t]omcat" > /dev/null
+        pkill catalina
+        if ps aux | grep "org.apache.catalina.startup.Bootstrap" > /dev/null
         then
             echo "TOMCAT CANNOT BE KILLED VIA THIS SCRIPT; FIND A LINUX EXPERT"
             exit 1
