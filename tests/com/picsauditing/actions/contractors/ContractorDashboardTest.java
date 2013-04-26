@@ -163,58 +163,6 @@ public class ContractorDashboardTest {
 	}
 
 	@Test
-	public void testFindCorporateOperators() throws Exception {
-		Whitebox.setInternalState(dashboard, "contractorOperatorDAO", contractorOperatorDAO);
-		Whitebox.setInternalState(dashboard, "permissions", permissions);
-		Whitebox.setInternalState(dashboard, "contractor", contractor);
-
-		long time = (new Date()).getTime();
-		List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-		operators.add(conOp);
-		OperatorAccount irrelevantOperator = EntityFactory.makeOperator();
-		ContractorOperator irrelevantConOp = EntityFactory.addContractorOperator(contractor, irrelevantOperator);
-		operators.add(irrelevantConOp);
-		when(contractorOperatorDAO.findByContractor(Matchers.anyInt(), Matchers.any(Permissions.class))).thenReturn(
-				operators);
-
-		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertNull(dashboard.getCorporateFlagOverride()); // no co selected
-
-		Whitebox.setInternalState(dashboard, "co", conOp);
-		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertNull(dashboard.getCorporateFlagOverride()); // no forced flags
-
-		conOp.setForceFlag(FlagColor.Green);
-		conOp.setForceBegin(new Date(time - 24 * 60 * 60 * 1000L));
-		conOp.setForceEnd(new Date(time + 24 * 60 * 60 * 1000L));
-		Whitebox.setInternalState(dashboard, "co", conOp);
-		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertNull(dashboard.getCorporateFlagOverride()); // co has force flag
-
-		conOp.setForceFlag(null);
-		conOp.setForceBegin(null);
-		conOp.setForceEnd(null);
-		irrelevantConOp.setForceFlag(FlagColor.Green);
-		irrelevantConOp.setForceBegin(new Date(time - 24 * 60 * 60 * 1000L));
-		irrelevantConOp.setForceEnd(new Date(time + 24 * 60 * 60 * 1000L));
-		Whitebox.setInternalState(dashboard, "co", conOp);
-		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertNull(dashboard.getCorporateFlagOverride()); // irrelevant co has
-															// force flag
-
-		irrelevantConOp.setForceFlag(null);
-		irrelevantConOp.setForceBegin(null);
-		irrelevantConOp.setForceEnd(null);
-		conCorp.setForceFlag(FlagColor.Green);
-		conCorp.setForceBegin(new Date(time - 24 * 60 * 60 * 1000L));
-		conCorp.setForceEnd(new Date(time + 24 * 60 * 60 * 1000L));
-		operators.add(conCorp);
-		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertNotNull(dashboard.getCorporateFlagOverride()); // parent has force
-																// flag
-	}
-
-	@Test
 	public void testGetIncompleteAnnualUpdates() throws Exception {
 		Calendar date = Calendar.getInstance();
 
