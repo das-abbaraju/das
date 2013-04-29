@@ -597,6 +597,10 @@ public class BillingCalculatorSingle {
 
 				// Activate effective today
 				items.add(new InvoiceItem(fee, activationAmount, new Date()));
+
+				// Add logic to determine if this contractor deserves a SSIP discount
+				// if they are, add the discount line item
+
 				// For Reactivation Fee and Reactivating Membership
 			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
