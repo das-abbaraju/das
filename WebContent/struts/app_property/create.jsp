@@ -11,23 +11,15 @@
     <s:param name="title">Create Application Property</s:param>
 </s:include>
 
-<s:form cssClass="well form-horizontal" action="%{#app_property_create}" name="app_property_create_form" id="app_property_create_form">
-    <fieldset>
-        <div class="control-group">
-            <label class="control-label" for="new_property">Property</label>
-            <div class="controls">
-                <input type="text" name="newProperty" id="new_property">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="new_value">Value</label>
-            <div class="controls">
-                <input type="text" name="newValue" id="new_value">
-            </div>
-        </div>
-        <div class="form-actions">
-            <a href="${app_property_list}" class="btn">Cancel</a>
-            <button type="submit" class="btn btn-primary" name="save">Save</button>
-        </div>
-    </fieldset>
-</s:form>
+<form action="${app_property_create}" name="app_property_create_form" id="app_property_create_form" method="post">
+    <label for="new_property">Property</label>
+    <input type="text" name="newProperty" id="new_property" class="input-xxlarge">
+    
+    <label for="new_value">Value</label>
+    <textarea name="newValue" id="new_value" rows="4" class="input-xxlarge"></textarea>
+    
+    <div class="form-actions input-xxlarge">
+        <a href="${app_property_list}" class="btn">Cancel</a>
+        <button type="submit" class="btn btn-success" name="save">Save</button>
+    </div>
+</form>
