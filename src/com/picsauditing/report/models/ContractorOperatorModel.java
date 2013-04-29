@@ -6,10 +6,8 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.ContractorOperatorTable;
-import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
 public class ContractorOperatorModel extends AbstractModel {
@@ -42,7 +40,12 @@ public class ContractorOperatorModel extends AbstractModel {
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
 
-		Field accountName = fields.get("AccountName".toUpperCase());
+        Field accountType = new Field("ContractorOperatorOperatorType", "ContractorOperatorOperator.type", FieldType.AccountType);
+        accountType.setCategory(FieldCategory.ReportingClientSite);
+        accountType.setTranslationPrefixAndSuffix("AccountType", "");
+        fields.put("ContractorOperatorOperatorType".toUpperCase(), accountType);
+
+        Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
 		return fields;

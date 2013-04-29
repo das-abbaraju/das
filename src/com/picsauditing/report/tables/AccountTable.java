@@ -29,6 +29,7 @@ public class AccountTable extends AbstractTable {
 		addField(accountLegalName).setCategory(FieldCategory.AccountInformation);
 
 		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+        creationDate.setImportance(FieldImportance.Average);
 		addField(creationDate).setCategory(FieldCategory.AccountInformation);
 	}
 
