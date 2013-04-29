@@ -592,23 +592,31 @@ public class BillingCalculatorSingle {
 				// This contractor has never paid their activation fee, make
 				// them now this applies regardless if this is a new reg or
 				// renewal
-				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-				BigDecimal activationAmount = FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor, fee);
-
-				// Activate effective today
-				items.add(new InvoiceItem(fee, activationAmount, new Date()));
+				items.add(createLineItem(contractor, FeeClass.Activation, 1));
 
 				// Add logic to determine if this contractor deserves a SSIP discount
+				if (contractorDeservesSSIPDiscount(contractor)) {
+					items.add(createLineItem(contractor, FeeClass.SSIPDiscountFee, 1));
+				}
 				// if they are, add the discount line item
 
 				// For Reactivation Fee and Reactivating Membership
 			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
-				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-						contractor.getPayingFacilities());
-				// Reactivate effective today
-				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
+				items.add(createLineItem(contractor,FeeClass.Reactivation, contractor.getPayingFacilities()));
 			}
 		}
+	}
+
+	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
+		return true;
+	}
+
+	private InvoiceItem createLineItem(ContractorAccount contractor, FeeClass feeClass, int numberOfSites) {
+		InvoiceFee invoiceFee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfSites);
+		BigDecimal adjustedFeeAmount = feeClass.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
+
+		// Activate effective today
+		return new InvoiceItem(invoiceFee, adjustedFeeAmount, new Date());
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
