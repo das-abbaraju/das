@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <section id="group_access">
-    <h1>Groups with access</h1>
+    <h1><s:text name="ManageReports.access.section.groups" /></h1>
     
     <ul class="group-list unstyled">
         <s:iterator value="#groups" var="group">

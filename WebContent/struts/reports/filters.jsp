@@ -801,6 +801,33 @@
 			</div>
 		</s:if>
 
+        <s:if test="filter.showInsideSales">
+            <div class="filterOption">
+                <a href="#" class="filterBox">
+                    <s:text name="ContractorList.InsideSales" />
+                </a>
+                =
+				<span class="q_status">
+					<s:text name="JS.Filters.status.All" />
+				</span>
+                <br />
+				<span class="clearLink q_box select">
+					<s:select name="filter.insideSalesID"
+                              cssClass="forms"
+                              list="insideSalesList"
+                              listKey="id"
+                              listValue="name"
+                              multiple="true"
+                              size="5"
+                              id="form1_insideSalesID"
+                    />
+					<a href="#" class="clearLink">
+                        <s:text name="Filters.status.Clear" />
+                    </a>
+				</span>
+            </div>
+        </s:if>
+
 		<s:if test="filter.showMarketingUsers">
 			<div class="filterOption">
 				<a href="#" class="filterBox">

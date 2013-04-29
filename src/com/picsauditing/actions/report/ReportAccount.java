@@ -8,6 +8,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
@@ -248,6 +250,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		filterOnWorkStatus();
 		filterOnInsuranceInformation();
 		filterOnAccountProperties();
+		filterOnInsideSales();
 	}
 
 	/**
@@ -512,7 +515,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
             if (sql.hasJoin("generalcontractors gc_flag"))
 			    sql.addWhere("gc_flag.flag IN (" + list + ")");
-            else if (sql.hasJoin("generalcontractors gc"))
+            else
                 sql.addWhere("gc.flag IN (" + list + ")");
 			setFiltered(true);
 		}
@@ -758,5 +761,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere("a.requiresCompetencyReview = 1");
 		if (getFilter().isSoleProprietership())
 			sql.addWhere("c.soleProprietor = 1");
+	}
+
+	protected void filterOnInsideSales() {
+		if (filterOn(getFilter().getInsideSalesID())) {
+			sql.addJoin("JOIN account_user au ON au.accountID = a.id AND au.role='" +
+					UserAccountRole.PICSInsideSalesRep.toString() + "' " +
+					"AND au.startDate < now() and au.endDate > now()");
+			sql.addWhere("au.userID IN (" + Strings.implode(getFilter().getInsideSalesID()) + ")");
+			setFiltered(true);
+		}
+	}
+
+	public List<User> getInsideSalesList() {
+		return userDAO.findByGroup(User.GROUP_INSIDE_SALES);
 	}
 }

@@ -1,34 +1,8 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.Vector;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PicsActionTest;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -36,18 +10,24 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.validator.ContractorValidator;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class ContractorEditTest extends PicsActionTest {
 	private ContractorEdit classUnderTest;
@@ -82,7 +62,7 @@ public class ContractorEditTest extends PicsActionTest {
 	// Recreating Test Class --BLatner
 	private final static int TESTING_CONTACT_ID = 555;
 	private final static int TESTING_ACCOUNT_ID = 2323;
-	private final static int NON_MATHCHING_ID = 23456;
+	private final static int NON_MATCHING_ID = 23456;
 
 	@Before
 	public void setup() throws Exception {
@@ -120,7 +100,7 @@ public class ContractorEditTest extends PicsActionTest {
 		classUnderTest.setContactID(TESTING_CONTACT_ID);
 		save_justGetThroughTheMethod();
 		when(mockContractor.getPrimaryContact()).thenReturn(mockUser);
-		when(mockUser.getId()).thenReturn(NON_MATHCHING_ID);
+		when(mockUser.getId()).thenReturn(NON_MATCHING_ID);
 		when(mockUserDao.find(TESTING_CONTACT_ID)).thenReturn(mockUser);
 
 		// Now calls auditBuilder.buildAudits(contractor);
@@ -186,6 +166,7 @@ public class ContractorEditTest extends PicsActionTest {
 	private void save_justGetThroughTheMethod() {
 		when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
 		when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+		when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isContractor()).thenReturn(true);
 	}
 
@@ -217,8 +198,8 @@ public class ContractorEditTest extends PicsActionTest {
 		testSet.add(ContractorType.Offsite);
 		testSet.add(ContractorType.Transportation);
 		when(testOperator.getAccountTypes()).thenReturn(testSet);
-		when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[] { testOperator }));
-		classUnderTest.setConTypes(Arrays.asList(new ContractorType[] { ContractorType.Transportation }));
+		when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[]{testOperator}));
+		classUnderTest.setConTypes(Arrays.asList(new ContractorType[]{ContractorType.Transportation}));
 
 		classUnderTest.confirmConTypesOK();
 
@@ -232,8 +213,8 @@ public class ContractorEditTest extends PicsActionTest {
 		testSet.add(ContractorType.Offsite);
 		testSet.add(ContractorType.Transportation);
 		when(testOperator.getAccountTypes()).thenReturn(testSet);
-		when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[] { testOperator }));
-		classUnderTest.setConTypes(Arrays.asList(new ContractorType[] { ContractorType.Onsite }));
+		when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[]{testOperator}));
+		classUnderTest.setConTypes(Arrays.asList(new ContractorType[]{ContractorType.Onsite}));
 
 		classUnderTest.confirmConTypesOK();
 
@@ -272,7 +253,7 @@ public class ContractorEditTest extends PicsActionTest {
 		when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.ListOnly);
 		when(mockContractor.isListOnlyEligible()).thenReturn(true);
 		when(mockContractor.getNonCorporateOperators()).thenReturn(
-				Arrays.asList(new ContractorOperator[] { mockCO1, mockCO2 }));
+				Arrays.asList(new ContractorOperator[]{mockCO1, mockCO2}));
 
 		classUnderTest.checkListOnlyAcceptability();
 
@@ -394,6 +375,31 @@ public class ContractorEditTest extends PicsActionTest {
 		String actionResult = classUnderTest.deactivate();
 
 		verifyAccountIsSetNotToRenew(actionResult);
+	}
+
+	@Test
+	public void testSave_ChangeInsideSalesIDGreaterThanZero() throws Exception {
+		AccountUser accountUser = mock(AccountUser.class);
+		User otherInsideSales = mock(User.class);
+
+		List<AccountUser> accountUserList = new ArrayList<>();
+		accountUserList.add(accountUser);
+
+		when(accountUser.getRole()).thenReturn(UserAccountRole.PICSInsideSalesRep);
+		when(accountUser.getUser()).thenReturn(mockUser);
+		when(accountUser.isCurrent()).thenReturn(true);
+		when(mockContractor.getAccountUsers()).thenReturn(accountUserList);
+		when(mockContractor.getStatus()).thenReturn(AccountStatus.Pending);
+		when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
+		when(mockUserDao.find(anyInt())).thenReturn(otherInsideSales);
+		when(otherInsideSales.getId()).thenReturn(TESTING_CONTACT_ID);
+		when(permissions.isContractor()).thenReturn(true);
+
+		classUnderTest.setInsideSalesId(TESTING_CONTACT_ID);
+		assertEquals(ActionSupport.SUCCESS, classUnderTest.save());
+		assertTrue(classUnderTest.hasActionMessages());
+		verify(mockContractor).setCurrentInsideSalesRepresentative(eq(otherInsideSales), anyInt());
+		verify(mockContractorAccountDao, times(1)).save(mockContractor);
 	}
 
 	private void verifyAccountIsSetNotToRenew(String actionResult) {

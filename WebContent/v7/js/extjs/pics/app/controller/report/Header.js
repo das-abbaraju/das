@@ -78,8 +78,8 @@ Ext.define('PICS.controller.report.Header', {
             PICS.data.ServerCommunication.saveReport({
                 success_callback: function () {
                     that.application.fireEvent('opensuccessmessage', {
-                        title: 'Report Saved',
-                        html: 'to My Reports in Reports Manager.'
+                        title: PICS.text('Report.execute.successAlert.title'),
+                        html: PICS.text('Report.execute.successAlert.message')
                     });
                 }
             });

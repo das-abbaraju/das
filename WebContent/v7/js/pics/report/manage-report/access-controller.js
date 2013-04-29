@@ -102,8 +102,8 @@ PICS.define('report.manage-report.AccessController', {
             // add cancel and assign button
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
-                    '<button class="cancel btn">Cancel</button>',
-                    '<button class="assign-ownership btn btn-warning" data-href="' + href + '" data-report-id="' + report_id + '">Assign</button>',
+                    '<button class="cancel btn">' + PICS.text('ManageReports.access.confirmOwner.cancel') + '</button>',
+                    '<button class="assign-ownership btn btn-warning" data-href="' + href + '" data-report-id="' + report_id + '">' + PICS.text('ManageReports.access.confirmOwner.assign') + '</button>',
                 '</div>'
             ].join('')));
 
@@ -152,8 +152,8 @@ PICS.define('report.manage-report.AccessController', {
                 
                 $user.prepend($([
                     '<div class="confirm-options btn-group pull-right">',
-                        '<button class="cancel btn">Cancel</button>',
-                        '<button class="assign-view btn btn-primary" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
+                        '<button class="cancel btn">' + PICS.text('ManageReports.access.confirmSelfView.cancel') + '</button>',
+                        '<button class="assign-view btn btn-primary" data-href="' + href + '" data-report-id="' + report_id + '">' + PICS.text('ManageReports.access.confirmSelfView.view') + '</button>',
                     '</div>'
                 ].join('')));
             } else {
@@ -387,8 +387,8 @@ PICS.define('report.manage-report.AccessController', {
             // add cancel and remove button
             $group.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
-                    '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
+                    '<button class="cancel btn">' + PICS.text('ManageReports.access.confirmRemoveGroup.cancel') + '</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">' + PICS.text('ManageReports.access.confirmRemoveGroup.remove') + '</button>',
                 '</div>'
             ].join('')));
 
@@ -415,8 +415,8 @@ PICS.define('report.manage-report.AccessController', {
             // add cancel and remove button
             $user.prepend($([
                 '<div class="confirm-options btn-group pull-right">',
-                    '<button class="cancel btn">Cancel</button>',
-                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">Remove</button>',
+                    '<button class="cancel btn">' + PICS.text('ManageReports.access.confirmRemoveUser.cancel') + '</button>',
+                    '<button class="remove-permission btn btn-danger" data-href="' + href + '" data-report-id="' + report_id + '">' + PICS.text('ManageReports.access.confirmRemoveUser.remove') + '</button>',
                 '</div>'
             ].join('')));
 

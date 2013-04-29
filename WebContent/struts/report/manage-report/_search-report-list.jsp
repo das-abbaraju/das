@@ -22,9 +22,8 @@
             <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">
                 <i class="icon-star ${is_favorite_class}"></i>
             </a>
-            
             <span class="number-favorites">
-                ${report.numberOfTimesFavorited} <s:text name="ManageReports.report.Favorites" />
+                ${report.numberOfTimesFavorited} <s:text name="ManageReports.search.numberOf.favorites" />
             </span>
             
             <div class="summary">

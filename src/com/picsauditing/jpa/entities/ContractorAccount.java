@@ -126,6 +126,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private LcCorPhase lcCorPhase;
 	private Date lcCorNotification;
 	private boolean dontReassign;
+	private boolean autoAddClientSite = true;
 
 	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
@@ -892,6 +893,27 @@ public class ContractorAccount extends Account implements JSONable {
         addNewCurrentAccountUserOfRole(newCsr, UserAccountRole.PICSCustomerServiceRep, createdById);
     }
 
+    // named get/set for convenient ognl reference from JSPs
+    @Transient
+    public User getCurrentInsideSalesRepresentative() {
+        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+        if (accountUser != null) {
+            return accountUser.getUser();
+        }
+        return null;
+    }
+
+    @Transient
+    public void setCurrentInsideSalesRepresentative(User newRep, int createdById) {
+        makeUserCurrentInsideSalesRepExpireExistingRep(newRep, createdById);
+    }
+
+    @Transient
+    public void makeUserCurrentInsideSalesRepExpireExistingRep(User newRep, int createdById) {
+        expireCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+        addNewCurrentAccountUserOfRole(newRep, UserAccountRole.PICSInsideSalesRep, createdById);
+    }
+
     @Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
@@ -1002,6 +1024,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setRenew(boolean renew) {
 		this.renew = renew;
+	}
+
+	public boolean isAutoAddClientSite() {
+		return autoAddClientSite;
+	}
+
+	public void setAutoAddClientSite(boolean autoAddClientSite) {
+		this.autoAddClientSite = autoAddClientSite;
 	}
 
 	/**

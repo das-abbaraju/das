@@ -1,35 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.ibm.icu.impl.ICUService;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -96,8 +80,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	protected List<AuditCategory> topCategories;
 
-	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[] { 145, 146,
-			143, 170, 261, 168, 148, 147, 169, 166, 167, 144 }));
+	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[]{145, 146,
+			143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
 	public AuditType() {
 	}
@@ -159,7 +143,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	/**
 	 * More than one audit of this type can be active for a contractor at a time
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isHasMultiple() {
@@ -226,7 +210,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 * Can the existing audit be renewed (aka extended aka resubmitted)? <br>
 	 * Examples of true: PQF, Site Specific Audits <br>
 	 * Examples of false: Desktop, Office, Field, Policies
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(type = FieldType.Boolean, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
@@ -271,11 +255,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public String getAssigneeLabel() {
 		return assigneeLabel;
 	}
-	
+
 	public void setAssigneeLabel(String assigneeLabel) {
 		this.assigneeLabel = assigneeLabel;
 	}
-	
+
 	@OneToMany(mappedBy = "auditType")
 	@OrderBy("number")
 	public List<AuditCategory> getCategories() {
@@ -310,7 +294,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	/**
 	 * Return the name of the icon we use on reports for each audit type
-	 * 
+	 *
 	 * @param auditTypeID
 	 * @return
 	 */
@@ -343,10 +327,10 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return (id == PQF);
 	}
 
-    @Transient
-    public boolean isPqf() {
-        return this.getClassType().isPqf();
-    }
+	@Transient
+	public boolean isPqf() {
+		return this.getClassType().isPqf();
+	}
 
 	@Transient
 	public boolean isDesktop() {
@@ -464,7 +448,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return hasMissingChild || getLanguages().isEmpty();
 	}
 
-    public static AuditTypeBuilder builder() {
-        return new AuditTypeBuilder();
-    }
+	public static AuditTypeBuilder builder() {
+		return new AuditTypeBuilder();
+	}
 }

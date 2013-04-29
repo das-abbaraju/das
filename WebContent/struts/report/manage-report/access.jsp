@@ -5,11 +5,11 @@
 <s:url action="ManageReports" method="share" var="manage_report_access_search_url" />
 
 <%-- Text --%>
-<s:set var="access_search_term_placeholder" value="%{'Share with people and groups'}" />
+<s:set var="access_search_term_placeholder" value="%{getText('ManageReports.access.search.placeholder')}" />
 
 <s:include value="/struts/layout/_page-header.jsp">
-    <s:param name="title">Report Access</s:param>
-    <s:param name="subtitle">Share your report and modify access permissions</s:param>
+    <s:param name="title"><s:text name="ManageReports.access.pageHeader.title" /></s:param>
+    <s:param name="subtitle"><s:text name="ManageReports.access.pageHeader.subtitle" /></s:param>
 </s:include>
 
 <s:include value="/struts/report/manage-report/_menu.jsp" />

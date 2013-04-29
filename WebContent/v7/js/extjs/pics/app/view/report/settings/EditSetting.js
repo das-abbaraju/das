@@ -9,8 +9,8 @@ Ext.define('PICS.view.report.settings.EditSetting', {
     border: 0,
     id: 'report_edit',
     // custom config
-    modal_title: 'Edit Report',
-    title: '<i class="icon-cog icon-large"></i>Settings',
+    modal_title: PICS.text('Report.execute.editSetting.title'),
+    title: '<i class="icon-cog icon-large"></i>' + PICS.text('Report.execute.editSetting.tabName'),
 
     initComponent: function () {
         var report_store = Ext.StoreManager.get('report.Reports'),
@@ -40,13 +40,13 @@ Ext.define('PICS.view.report.settings.EditSetting', {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,
-                text: 'Cancel'
+                text: PICS.text('Report.execute.editSetting.buttonCancel')
             }, {
                 action: 'edit',
                 cls: 'edit primary',
                 formBind: true,
                 height: 28,
-                text: 'Apply'
+                text: PICS.text('Report.execute.editSetting.buttonEdit')
             }],
             layout: {
                 pack: 'end'
@@ -57,13 +57,13 @@ Ext.define('PICS.view.report.settings.EditSetting', {
         this.items = [{
             xtype: 'textfield',
             allowBlank: false,
-            fieldLabel: 'Report Name',
+            fieldLabel: PICS.text('Report.execute.editSetting.formLabelName'),
             labelAlign: 'right',
             name: 'name'
         }, {
             xtype: 'textarea',
             allowBlank: false,
-            fieldLabel: 'Description',
+            fieldLabel: PICS.text('Report.execute.editSetting.formLabelDescription'),
             labelAlign: 'right',
             name: 'description'
         }, {
@@ -77,8 +77,8 @@ Ext.define('PICS.view.report.settings.EditSetting', {
         this.items = [{
             xtype: 'component',
             html:  new Ext.Template([
-                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
+                '<p class="permission-info">' + PICS.text('Report.execute.editSetting.noEditTitle') + '</p>',
+                '<p class="duplicate-info">' + PICS.text('Report.execute.editSetting.noEditDescription') + '</p>'
             ])
         }, {
             xtype: 'reportfavoritetoggle'

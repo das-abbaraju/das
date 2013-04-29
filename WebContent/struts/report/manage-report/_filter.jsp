@@ -38,12 +38,12 @@
 
 <div id="manage_report_filter" class="btn-group">
     <a href="${alpha_sort_url}" class="btn ${is_alpha_filter_active_class}">
-        <s:text name="ManageReports.myReports.alphabetical" />
+        <s:text name="ManageReports.ACTION.filter.alphabetical" />
     </a>
     <a href="${date_added_sort_url}" class="btn ${is_date_filter_active_class}">
-        <s:text name="ManageReports.myReports.dateAdded" />
+        <s:text name="ManageReports.ACTION.filter.dateAdded" />
     </a>
     <a href="${last_viewed_sort_url}" class="btn ${is_last_viewed_filter_active_class}">
-        <s:text name="ManageReports.myReports.lastViewed" />
+        <s:text name="ManageReports.ACTION.filter.lastViewed" />
     </a>
 </div>

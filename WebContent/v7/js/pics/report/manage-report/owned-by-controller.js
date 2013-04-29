@@ -59,8 +59,8 @@ PICS.define('report.manage-report.OwnedByController', {
                     
             $report.append($([
                 '<div class="confirm-options btn-group pull-right">',
-                    '<button class="btn cancel">Cancel</button>',
-                    '<button class="btn btn-danger delete" data-report-id="' + report_id + '">Delete</button>',
+                    '<button class="btn cancel">' + PICS.text('ManageReports.ownedBy.confirmDelete.cancel') + '</button>',
+                    '<button class="btn btn-danger delete" data-report-id="' + report_id + '">' + PICS.text('ManageReports.ownedBy.confirmDelete.delete') + '</button>',
                 '</div>'
             ].join('')));
             

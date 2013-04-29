@@ -10,7 +10,7 @@ Ext.define('PICS.view.report.filter.FilterToolbar', {
         border: 0,
         cls: 'show-filter-formula',
         height: 23,
-        text: 'Filter Formula'
+        text: PICS.text('Report.execute.filterToolbar.filterFormulaTitle')
     }],
     layout: {
         type: 'vbox',

@@ -8,7 +8,7 @@ Ext.define('PICS.view.report.filter.base.Number', {
         ['LessThan', '<'],
         ['GreaterThanOrEquals', '>='],
         ['LessThanOrEquals', '<='],
-        ['Empty', 'is empty']
+        ['Empty', PICS.text('Report.execute.numberFilter.empty')]
     ],
     
     createOperatorField: function () {

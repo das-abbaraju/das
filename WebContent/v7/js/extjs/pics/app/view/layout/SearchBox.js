@@ -27,7 +27,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                 }
             }
         },
-        loadingText: 'Searching...',
+        loadingText: PICS.text('Report.execute.search.searchLoadingText') + '&hellip;',
         maxHeight: 700,
         minWidth: 300,
 
@@ -38,7 +38,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                         '<div class="search-item">',
                             '<div>',
                                 '<span class="name"><em>{result_name}</em></span>',
-                                '<span class="id"><em>ID {result_id}</em></span>',
+                                '<span class="id"><em>' + PICS.text('Report.execute.search.searchListId') + ' {result_id}</em></span>',
                             '</div>',
                             '<div>',
                                 '<span class="location">{result_at}</span>',
@@ -52,14 +52,14 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '<li class="more-results {[(this.getTotalRecords() - 1) % 2 === 0 ? "even" : "odd"]}">',
                         '<tpl if="this.total_results &gt; 10">',
                             '<a href="#">',
-                                'More Results...',
+                                PICS.text('Report.execute.search.moreResults') + '&hellip;',
                             '</a>',
                         '</tpl>',
-                        '<p>Displaying {[this.getTotalRecords()]} of {[this.total_results]}</p>',
+                        '<p>' + PICS.text('Report.execute.search.displayingTotal', '{[this.getTotalRecords()]}', '{[this.total_results]}') + '</p>',
                     '</li>',
                 '</tpl>',
                 '<tpl if="this.total_results == 0">',
-                    '<li class="no-results">No results found</li>',
+                    '<li class="no-results">' + PICS.text('Report.execute.search.noResults') + '</li>',
                 '</tpl>',
             '</ul>',
             {

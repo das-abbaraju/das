@@ -36,7 +36,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i> Add Column'
+        text: '<i class="icon-plus icon-large"></i> ' + PICS.text('Report.execute.pagingToolbar.buttonAddColumn')
     }],
     
     initComponent: function () {
@@ -194,7 +194,7 @@ Ext.define('PICS.view.report.data-table.PagingToolbar', {
         if (count === 0) {
             msg = this.emptyMsg;
         } else {
-            msg = Ext.String.format('displayed of {0}', Ext.util.Format.number(count, '0,000'));
+            msg = PICS.text('Report.execute.pagingToolbar.resultsText', Ext.util.Format.number(count, '0,000'));
         }
 
         this.down('#display_info').setText(msg);

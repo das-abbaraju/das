@@ -8,7 +8,7 @@ Ext.define('PICS.view.report.modal.column-filter.FilterModal', {
     }],
 
     initComponent: function () {
-        this.setTitle('Add Filter');
+        this.setTitle(PICS.text('Report.execute.filterModal.title'));
 
         this.callParent(arguments);
     }

@@ -8,6 +8,3 @@
     <h1><s:text name="LoadingPage.title" /></h1>
     <img src="../v7/js/extjs/pics/app/resources/images/loading.gif" />
 </div>
-
-<%-- include javascript translations --%>
-<s:action name="TranslateJS2" executeResult="true" />

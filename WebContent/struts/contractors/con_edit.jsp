@@ -356,7 +356,15 @@
     								theme="formhelp"
     							/>
     						</li>
-    						<li>
+                            <li>
+                                <label><s:text name="ContractorEdit.AutoAdd" /></label>
+                                <s:radio
+                                    name="contractor.autoAddClientSite"
+                                    list="#{true:getText('ContractorEdit.AutoAdd.Yes'), false:getText('ContractorEdit.AutoAdd.No')}"
+                                    theme="pics"
+                                    labelposition="left"/>
+                            </li>
+    					<li>
     							<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
     							<s:textarea name="contractor.description" cols="40"	rows="15" />
     						</li>
@@ -515,10 +523,7 @@
     							
     						</ol>
     					</fieldset>
-    					
-    					
-    					
-	    					
+
 	    				<pics:permission perm="UserZipcodeAssignment">
 							<fieldset class="form">
 	    						<h2 class="formLegend">Specific Assignment</h2>
@@ -542,12 +547,24 @@
 	    									value = "%{(contractor.dontReassign)?contractor.currentCsr.id:0}"
 										/>
 	    							</li>
+                                    <s:if test="contractor.status.pending">
+                                        <li>
+                                            <label>Inside Sales Assignment</label>
+                                            <s:select
+                                                name="insideSalesId"
+                                                list="insideSalesList"
+                                                listKey = "id"
+                                                listValue = "name"
+                                                multiple = "false"
+                                                headerKey = "0"
+                                                headerValue = "- Please Select -"
+                                                value = "%{contractor.currentInsideSalesRepresentative.id}"
+                                            />
+                                        </li>
+                                    </s:if>
 	    						</ol>
 							</fieldset>
 						</pics:permission>
-						
-						
-						
 						
     					<fieldset class="form submit">
     						<ol>

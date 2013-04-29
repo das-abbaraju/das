@@ -18,7 +18,7 @@ Ext.define('PICS.view.report.modal.column-function.ColumnFunctionModal', {
     modal: true,
     resizable: false,
     shadow: 'frame',
-    title: 'Column Functions',
+    title: PICS.text('Report.execute.columnFunctionModal.title'),
     width: 300,
     items: [{
         xtype: 'reportcolumnfunctionlist'

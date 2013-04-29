@@ -1,39 +1,23 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.*;
-
-import javax.naming.NoPermissionException;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EventType;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.naming.NoPermissionException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
@@ -51,12 +35,17 @@ public class ContractorFacilities extends ContractorActionSupport {
     private FacilityChanger facilityChanger;
     @Autowired
     private BillingCalculatorSingle billingService;
+	@Autowired
+	private EmailSender emailSender;
 
     public Boolean competitorAnswer;
     private ContractorType type = null;
     private String msg = null;
     private String search;
     private OperatorAccount operator = null;
+
+	private int reqOpId = 0;
+	private int reqUserId = 0;
 
     private List<ContractorOperator> currentOperators = null;
     private List<OperatorAccount> searchResults = null;
@@ -73,6 +62,7 @@ public class ContractorFacilities extends ContractorActionSupport {
         this.subHeading = getText("ContractorFacilities.title");
         limitedView = true;
         findContractor();
+	    findOperator();
 
         addFacilitiesBasedOnRegistrationRequest();
 
@@ -95,12 +85,21 @@ public class ContractorFacilities extends ContractorActionSupport {
         return SUCCESS;
     }
 
-    public String add() throws Exception {
+	private void findOperator() {
+		if (reqOpId > 0) {
+			operator = operatorDao.find(reqOpId);
+			if (operator != null)
+				search = operator.getName();
+		}
+	}
+
+	public String add() throws Exception {
         prepareFacilityChanger();
 
         if (contractor.meetsOperatorRequirements(operator)) {
             contractor.setRenew(true);
             facilityChanger.add();
+	        sendRequestResponse(322);
 
             reviewCategories(EventType.Locations);
 
@@ -116,6 +115,36 @@ public class ContractorFacilities extends ContractorActionSupport {
 
         return JSON;
     }
+
+	public String decline() throws Exception {
+		sendRequestResponse(323);
+		return setUrlForRedirect("ContractorFacilities.action?id=" + contractor.getId());
+	}
+
+	private void sendRequestResponse(int emailTemplateId) throws Exception {
+		if (reqOpId > 0) {
+			findContractor();
+			findOperator();
+			User reqUser = dao.find(User.class, reqUserId);
+			if (reqUser != null) {
+				try {
+					// Sending a Email to the contractor for upgrade
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(emailTemplateId);
+					emailBuilder.addToken("permissions", permissions);
+					emailBuilder.addToken("contractorName", contractor.getName());
+					emailBuilder.addToken("operatorName", operator.getName());
+					emailBuilder.addToken("userName", reqUser.getName());
+					emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
+					emailBuilder.setToAddresses(reqUser.getEmail());
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setViewableById(Account.EVERYONE);
+					emailSender.send(emailQueue);
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
 
     public String generalContractorOperators() {
         if (operator != null) {
@@ -245,6 +274,7 @@ public class ContractorFacilities extends ContractorActionSupport {
         sql.addWhere("a.status IN ('Active'" + (contractor.isDemo() ? ",'Demo','Pending'" : "") + ")");
         sql.addWhere("a.type = 'Operator'");
 
+		sql.addOrderBy("a.nameIndex, a.name, a.country, a.countrySubdivision");
         sql.addGroupBy("a.id");
 
         return sql.toString();
@@ -345,6 +375,22 @@ public class ContractorFacilities extends ContractorActionSupport {
     public void setOperator(OperatorAccount operator) {
         this.operator = operator;
     }
+
+	public int getReqOpId() {
+		return reqOpId;
+	}
+
+	public void setReqOpId(int reqOpId) {
+		this.reqOpId = reqOpId;
+	}
+
+	public int getReqUserId() {
+		return reqUserId;
+	}
+
+	public void setReqUserId(int reqUserId) {
+		this.reqUserId = reqUserId;
+	}
 
     public String getMsg() {
         return msg;
