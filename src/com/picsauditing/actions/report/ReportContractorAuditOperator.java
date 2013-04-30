@@ -137,7 +137,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
             sql.addJoin("JOIN ambest ambest ON ambest.naic = am.comment and ambest.companyName = am.answer");
             sql.addWhere("aq.questionType = 'AMBest'");
             if (getFilter().getAmBestRating() > 0)
-                sql.addWhere("ambest.ratingcode = " + getFilter().getAmBestRating());
+                sql.addWhere("ROUND(ambest.ratingCode/10000,0) = " + getFilter().getAmBestRating());
             if (getFilter().getAmBestClass() > 0)
                 sql.addWhere("ambest.financialCode =" + getFilter().getAmBestClass());
         }
