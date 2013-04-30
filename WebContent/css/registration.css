@@ -1229,7 +1229,7 @@ footer .footer-menu a {
 .make-payment-form ul.radio input,
 .service-evaluation-form ul.text-input-list input,
 .service-evaluation-form select
-	{
+{
 	float: left;
 	padding: 4px;
 	margin-right: 5px;
@@ -1265,6 +1265,11 @@ footer .footer-menu a {
 	float: right;
 }
 
-.service-evaluation-form ul.checkbox-list input {
+.service-evaluation-form ul.checkbox-list input 
+{
 	margin: 3px 6px 3px 0px;
+}
+#autofill
+{
+	margin-top: 10px; 
 }
