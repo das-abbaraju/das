@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,6 @@ import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -182,7 +173,6 @@ public class ContractorFlagETL {
 	 * question
 	 * 
 	 * @param contractor
-	 * @param changes
 	 * @param answerMap
 	 * @param flagCriteria
 	 */
@@ -254,30 +244,25 @@ public class ContractorFlagETL {
 			ContractorAccount contractor) {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
-		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			OshaResult oshaResult = MultiYearValueCalculator.calculateOshaResultsForEMR(flagCriteria, contractor);
-			if (oshaResult != null) {
+		OshaOrganizer osha = contractor.getOshaOrganizer();
+		Double answer = osha.getRate(OshaType.EMR, flagCriteria.getMultiYearScope(),
+				OshaRateType.EMR);
 
-				if (oshaResult.getAnswer() != null) {
-					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
-							oshaResult.getAnswer());
-					fcc.setVerified(oshaResult.isVerified());
+		if (answer != null && !answer.equals(Double.valueOf(-1))) {
+			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria,
+					Double.toString(answer));
 
-					// conditionally add verified tag
-					String answer2 = null;
-					if (oshaResult.isVerified()) {
-						answer2 = oshaResult.getYear() + "<br/><span class=\"verified\">Verified</span>";
-					}
+			String answer2 = osha.getAnswer2(OshaType.EMR, flagCriteria.getMultiYearScope());
+			flagCriteriaContractor.setAnswer2(answer2);
 
-					fcc.setAnswer2(answer2);
+			boolean verified = osha.isVerified(OshaType.EMR, flagCriteria.getMultiYearScope());
+			flagCriteriaContractor.setVerified(verified);
 
-					changes.add(fcc);
-				} else { // The user did not provide an answer
-					FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);
-					if (flagCriteriaContractor != null) {
-						changes.add(flagCriteriaContractor);
-					}
-				}
+			changes.add(flagCriteriaContractor);
+		} else { // The user did not provide an answer
+			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);
+			if (flagCriteriaContractor != null) {
+				changes.add(flagCriteriaContractor);
 			}
 		}
 

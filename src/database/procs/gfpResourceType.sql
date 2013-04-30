@@ -4,8 +4,8 @@ DROP PROCEDURE IF EXISTS	`gfpResourceType`
 DELIMITER //
 CREATE PROCEDURE	gfpResourceType
 (
-	Resrc_tp		varchar(80)		-- PK1 AK1
-,	ParentResrc_tp		varchar(80)	
+	Resrc_tp		varchar(64)		-- PK1 AK1
+,	ParentResrc_tp		varchar(64)	
 ,	ResrcType_tx		mediumtext	
 ,	Left_id		int signed	
 ,	Right_id		int signed	
@@ -23,7 +23,7 @@ BEGIN
 **	Author:		Solomon S. Shacter
 **	Company:	Innovella, Inc.
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -165,7 +165,8 @@ BEGIN
 		LEAVE GFP;
 	END IF;
 	#######################################################################
-END;
+END	GFP
+;
 ###############################################################################
 END
 //

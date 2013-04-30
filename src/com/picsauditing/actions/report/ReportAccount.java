@@ -513,17 +513,15 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void filterOnFlagStatus() {
 		if (!searchForNew && filterOn(getFilter().getFlagStatus())) {
 			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
-            if (sql.hasJoin("generalcontractors gc_flag"))
-			    sql.addWhere("gc_flag.flag IN (" + list + ")");
-            else
-                sql.addWhere("gc.flag IN (" + list + ")");
+
+            sql.addWhere(getFilter().getGeneralContractorAlias() + ".flag IN (" + list + ")");
 			setFiltered(true);
 		}
 	}
 
 	protected void filterOnWaitingOn() {
 		if (filterOn(getFilter().getWaitingOn())) {
-			report.addFilter(new SelectFilter("waitingOn", "gc.waitingOn = '?'", getFilter().getWaitingOn()));
+			report.addFilter(new SelectFilter("waitingOn", getFilter().getGeneralContractorAlias() + ".waitingOn = '?'", getFilter().getWaitingOn()));
 		}
 	}
 
@@ -723,7 +721,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void filterOnWorkStatus() {
 		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
-			sql.addWhere("gc.workStatus LIKE '" + getFilter().getWorkStatus() + "%'");
+			sql.addWhere(getFilter().getGeneralContractorAlias() + ".workStatus LIKE '" + getFilter().getWorkStatus() + "%'");
 		}
 	}
 

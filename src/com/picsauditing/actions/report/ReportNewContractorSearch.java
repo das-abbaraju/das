@@ -219,9 +219,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	@RequiredPermission(value = OpPerms.AddContractors)
 	public String emailContractor() throws Exception {
 		try {
-			String name = getRequestURL();
-			String serverName = name.replace(ActionContext.getContext().getName() + ".action", "");
-
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(321); // Request for Client Site Addition
@@ -230,7 +227,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			emailBuilder.addToken("operatorName", operator.getName());
-			emailBuilder.addToken("confirmLink", serverName + "ContractorFacilities.action?id=" + contractor.getId() + "&reqOpId=" + operator.getId() + "&reqUserId=" + permissions.getUserId());
+			emailBuilder.addToken("confirmLink", "https://www.picsorganizer.com/ContractorFacilities.action?id=" + contractor.getId() + "&reqOpId=" + operator.getId() + "&reqUserId=" + permissions.getUserId());
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();

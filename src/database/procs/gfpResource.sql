@@ -5,16 +5,16 @@ DELIMITER //
 CREATE PROCEDURE	gfpResource
 (
 	Resrc_id		int signed		-- PK1 
-,	Resrc_tp		varchar(80)		-- PK2 AK1
-,	Resrc_nm		varchar(128)		--  AK2
+,	Resrc_tp		varchar(64)		-- PK2 AK1
+,	Resrc_nm		varchar(256)		--  AK2
 ,	Resrc_tx		mediumtext	
 ,	ADD_dm		datetime	
-,	ADD_nm		varchar(128)	
+,	ADD_nm		varchar(256)	
 ,	UPD_dm		datetime	
-,	UPD_nm		varchar(128)	
+,	UPD_nm		varchar(256)	
 ,	DEL_dm		datetime	
-,	DEL_nm		varchar(128)	
-,	ParentResrc_tp		varchar(80)	
+,	DEL_nm		varchar(256)	
+,	ParentResrc_tp		varchar(64)	
 ,	ResrcType_tx		mediumtext	
 ,	Left_id		int signed	
 ,	Right_id		int signed	
@@ -32,7 +32,7 @@ BEGIN
 **	Author:		Solomon S. Shacter
 **	Company:	Innovella, Inc.
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -278,7 +278,8 @@ BEGIN
 		LEAVE GFP;
 	END IF;
 	#######################################################################
-END;
+END	GFP
+;
 ###############################################################################
 END
 //

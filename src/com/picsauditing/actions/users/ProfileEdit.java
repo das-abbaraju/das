@@ -105,12 +105,12 @@ public class ProfileEdit extends PicsActionSupport {
 		return redirect();
 	}
 
-	private String redirect() throws IOException {
+	public String redirect() throws IOException {
 		if (isUserSetForNewMenu()) {
 			// if the user makes it to this point, we know their user information was saved properly.
 			permissions.setUsingVersion7Menus(true);
 			ActionContext.getContext().getSession().put("permissions", permissions);
-			return setUrlForRedirect("Tutorial!navigationMenu.action");
+			return setUrlForRedirect("Reference!navigationMenu.action");
 		}
 
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));

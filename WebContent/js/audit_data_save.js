@@ -14,6 +14,12 @@ $(function(){
 			reloadQuestion(v);
 		});
 	});
+
+    $('#auditViewArea').delegate('div.hasDependentVisible', 'updateDependent', function() {
+        $.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
+            reloadQuestion(v);
+        });
+    });
 	
 	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
 		$.each($(this).find('div.dependent-questions').text().split(','), function(i,v) {
@@ -84,7 +90,7 @@ function reloadQuestion(qid) {
 	element.block({
 		message: 'Reloading question...'
 	});
-	
+
 	$.post(url, data, function(data, textStatus, XMLHttpRequest) {
 		element.replaceWith(data);
 		

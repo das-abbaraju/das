@@ -23,6 +23,7 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 
 	protected void addJoins() {
 		ReportOnClause auditOnClause = new ReportOnClause("auditID");
+        // TODO Michael Do, can you tell us why this is listed as optional?
 		addOptionalKey(new ReportForeignKey(Audit, new ContractorAuditTable(), auditOnClause));
 		ReportForeignKey operatorKey = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
 		operatorKey.setCategory(FieldCategory.MonitoringClientSite);

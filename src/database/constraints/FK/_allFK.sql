@@ -1,119 +1,3 @@
-ALTER TABLE `tblRole_Resource_RightType`
-DROP INDEX `fk1Role_Resource_RightType`
-;
-
-/*
-**	Name:		tblRole_Resource_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_Resource_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole_Resource_RightType`
-ADD	CONSTRAINT	`fk1Role_Resource_RightType`	FOREIGN KEY
-(
-	Role_id		
-,	Role_tp		
-
-)
-	REFERENCES	`tblRole`
-(
-	Role_id		
-,	Role_tp		
-
-)
-;
-ALTER TABLE `tblPersonType`
-DROP INDEX `fk1PersonType`
-;
-
-/*
-**	Name:		tblPersonType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblPersonType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblPersonType`
-ADD	CONSTRAINT	`fk1PersonType`	FOREIGN KEY
-(
-	Person_tp		
-
-)
-	REFERENCES	`tblResourceType`
-(
-	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblReport`
-DROP INDEX `fk1Report`
-;
-
-/*
-**	Name:		tblReport
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblReport foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblReport`
-ADD	CONSTRAINT	`fk1Report`	FOREIGN KEY
-(
-	Report_id		
-,	Report_tp		
-
-)
-	REFERENCES	`tblResource`
-(
-	Resrc_id		
-,	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblReportType`
-DROP INDEX `fk1ReportType`
-;
-
-/*
-**	Name:		tblReportType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblReportType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblReportType`
-ADD	CONSTRAINT	`fk1ReportType`	FOREIGN KEY
-(
-	Report_tp		
-
-)
-	REFERENCES	`tblResourceType`
-(
-	Resrc_tp		
-
-)
-;
 ALTER TABLE `tblResource`
 DROP INDEX `fk1Resource`
 ;
@@ -123,9 +7,9 @@ DROP INDEX `fk1Resource`
 **	Type:		Constraint: Foreign Key
 **	Purpose:	To constrain tblResource foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -142,27 +26,149 @@ ADD	CONSTRAINT	`fk1Resource`	FOREIGN KEY
 
 )
 ;
-ALTER TABLE `tblResource_RightType`
-DROP INDEX `fk1Resource_RightType`
+ALTER TABLE `tblItemType`
+DROP INDEX `fk1ItemType`
 ;
 
 /*
-**	Name:		tblResource_RightType
+**	Name:		tblItemType
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblResource_RightType foreign Key data.
+**	Purpose:	To constrain tblItemType foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblResource_RightType`
-ADD	CONSTRAINT	`fk1Resource_RightType`	FOREIGN KEY
+ALTER	TABLE		`tblItemType`
+ADD	CONSTRAINT	`fk1ItemType`	FOREIGN KEY
 (
-	Resrc_id		
-,	Resrc_tp		
+	Item_tp		
+
+)
+	REFERENCES	`tblResourceType`
+(
+	Resrc_tp		
+
+)
+;
+ALTER TABLE `tblItem_Locale`
+DROP INDEX `fk1Item_Locale`
+;
+
+/*
+**	Name:		tblItem_Locale
+**	Type:		Constraint: Foreign Key
+**	Purpose:	To constrain tblItem_Locale foreign Key data.
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+ALTER	TABLE		`tblItem_Locale`
+ADD	CONSTRAINT	`fk1Item_Locale`	FOREIGN KEY
+(
+	Item_id		
+,	Item_tp		
+
+)
+	REFERENCES	`tblItem`
+(
+	Item_id		
+,	Item_tp		
+
+)
+;
+ALTER TABLE `tblItem_Context_Locale`
+DROP INDEX `fk1Item_Context_Locale`
+;
+
+/*
+**	Name:		tblItem_Context_Locale
+**	Type:		Constraint: Foreign Key
+**	Purpose:	To constrain tblItem_Context_Locale foreign Key data.
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+ALTER	TABLE		`tblItem_Context_Locale`
+ADD	CONSTRAINT	`fk1Item_Context_Locale`	FOREIGN KEY
+(
+	Item_id		
+,	Item_tp		
+,	Context_id		
+,	Context_tp		
+
+)
+	REFERENCES	`tblItem_Context`
+(
+	Item_id		
+,	Item_tp		
+,	Context_id		
+,	Context_tp		
+
+)
+;
+ALTER TABLE `tblItem_Context`
+DROP INDEX `fk1Item_Context`
+;
+
+/*
+**	Name:		tblItem_Context
+**	Type:		Constraint: Foreign Key
+**	Purpose:	To constrain tblItem_Context foreign Key data.
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+ALTER	TABLE		`tblItem_Context`
+ADD	CONSTRAINT	`fk1Item_Context`	FOREIGN KEY
+(
+	Item_id		
+,	Item_tp		
+
+)
+	REFERENCES	`tblItem`
+(
+	Item_id		
+,	Item_tp		
+
+)
+;
+ALTER TABLE `tblItem`
+DROP INDEX `fk1Item`
+;
+
+/*
+**	Name:		tblItem
+**	Type:		Constraint: Foreign Key
+**	Purpose:	To constrain tblItem foreign Key data.
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+ALTER	TABLE		`tblItem`
+ADD	CONSTRAINT	`fk1Item`	FOREIGN KEY
+(
+	Item_id		
+,	Item_tp		
 
 )
 	REFERENCES	`tblResource`
@@ -172,26 +178,26 @@ ADD	CONSTRAINT	`fk1Resource_RightType`	FOREIGN KEY
 
 )
 ;
-ALTER TABLE `tblResourceType_RightType`
-DROP INDEX `fk1ResourceType_RightType`
+ALTER TABLE `tblContextType`
+DROP INDEX `fk1ContextType`
 ;
 
 /*
-**	Name:		tblResourceType_RightType
+**	Name:		tblContextType
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblResourceType_RightType foreign Key data.
+**	Purpose:	To constrain tblContextType foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblResourceType_RightType`
-ADD	CONSTRAINT	`fk1ResourceType_RightType`	FOREIGN KEY
+ALTER	TABLE		`tblContextType`
+ADD	CONSTRAINT	`fk1ContextType`	FOREIGN KEY
 (
-	Resrc_tp		
+	Context_tp		
 
 )
 	REFERENCES	`tblResourceType`
@@ -200,55 +206,27 @@ ADD	CONSTRAINT	`fk1ResourceType_RightType`	FOREIGN KEY
 
 )
 ;
-ALTER TABLE `tblRightType`
-DROP INDEX `fk1RightType`
+ALTER TABLE `tblContext`
+DROP INDEX `fk1Context`
 ;
 
 /*
-**	Name:		tblRightType
+**	Name:		tblContext
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRightType foreign Key data.
+**	Purpose:	To constrain tblContext foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblRightType`
-ADD	CONSTRAINT	`fk1RightType`	FOREIGN KEY
+ALTER	TABLE		`tblContext`
+ADD	CONSTRAINT	`fk1Context`	FOREIGN KEY
 (
-	Right_tp		
-
-)
-	REFERENCES	`tblResourceType`
-(
-	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblPerson`
-DROP INDEX `fk1Person`
-;
-
-/*
-**	Name:		tblPerson
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblPerson foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblPerson`
-ADD	CONSTRAINT	`fk1Person`	FOREIGN KEY
-(
-	Person_id		
-,	Person_tp		
+	Context_id		
+,	Context_tp		
 
 )
 	REFERENCES	`tblResource`
@@ -258,557 +236,149 @@ ADD	CONSTRAINT	`fk1Person`	FOREIGN KEY
 
 )
 ;
-ALTER TABLE `tblRole`
-DROP INDEX `fk1Role`
+ALTER TABLE `tblItem_Locale`
+DROP INDEX `fk2Item_Locale`
 ;
 
 /*
-**	Name:		tblRole
+**	Name:		tblItem_Locale
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole foreign Key data.
+**	Purpose:	To constrain tblItem_Locale foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblRole`
-ADD	CONSTRAINT	`fk1Role`	FOREIGN KEY
+ALTER	TABLE		`tblItem_Locale`
+ADD	CONSTRAINT	`fk2Item_Locale`	FOREIGN KEY
 (
-	Role_id		
-,	Role_tp		
+	Locale_cd		
 
 )
-	REFERENCES	`tblResource`
+	REFERENCES	`app_language`
 (
-	Resrc_id		
-,	Resrc_tp		
+	locale		
 
 )
 ;
-ALTER TABLE `tblUserType`
-DROP INDEX `fk1UserType`
+ALTER TABLE `tblItem_Context_Locale`
+DROP INDEX `fk2Item_Context_Locale`
 ;
 
 /*
-**	Name:		tblUserType
+**	Name:		tblItem_Context_Locale
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUserType foreign Key data.
+**	Purpose:	To constrain tblItem_Context_Locale foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblUserType`
-ADD	CONSTRAINT	`fk1UserType`	FOREIGN KEY
+ALTER	TABLE		`tblItem_Context_Locale`
+ADD	CONSTRAINT	`fk2Item_Context_Locale`	FOREIGN KEY
 (
-	User_tp		
+	Item_id		
+,	Item_tp		
+,	Locale_cd		
 
 )
-	REFERENCES	`tblResourceType`
+	REFERENCES	`tblItem_Locale`
 (
-	Resrc_tp		
+	Item_id		
+,	Item_tp		
+,	Locale_cd		
 
 )
 ;
-ALTER TABLE `tblUser`
-DROP INDEX `fk1User`
+ALTER TABLE `tblItem_Context`
+DROP INDEX `fk2Item_Context`
 ;
 
 /*
-**	Name:		tblUser
+**	Name:		tblItem_Context
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser foreign Key data.
+**	Purpose:	To constrain tblItem_Context foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblUser`
-ADD	CONSTRAINT	`fk1User`	FOREIGN KEY
+ALTER	TABLE		`tblItem_Context`
+ADD	CONSTRAINT	`fk2Item_Context`	FOREIGN KEY
 (
-	User_id		
-,	User_tp		
+	Context_id		
+,	Context_tp		
 
 )
-	REFERENCES	`tblResource`
+	REFERENCES	`tblContext`
 (
-	Resrc_id		
-,	Resrc_tp		
+	Context_id		
+,	Context_tp		
 
 )
 ;
-ALTER TABLE `tblRole_ResourceType_RightType`
-DROP INDEX `fk1Role_ResourceType_RightType`
+ALTER TABLE `tblItem`
+DROP INDEX `fk2Item`
 ;
 
 /*
-**	Name:		tblRole_ResourceType_RightType
+**	Name:		tblItem
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_ResourceType_RightType foreign Key data.
+**	Purpose:	To constrain tblItem foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblRole_ResourceType_RightType`
-ADD	CONSTRAINT	`fk1Role_ResourceType_RightType`	FOREIGN KEY
+ALTER	TABLE		`tblItem`
+ADD	CONSTRAINT	`fk2Item`	FOREIGN KEY
 (
-	Role_id		
-,	Role_tp		
+	Item_tp		
 
 )
-	REFERENCES	`tblRole`
+	REFERENCES	`tblItemType`
 (
-	Role_id		
-,	Role_tp		
+	Item_tp		
 
 )
 ;
-ALTER TABLE `tblUser_Role`
-DROP INDEX `fk1User_Role`
+ALTER TABLE `tblContext`
+DROP INDEX `fk2Context`
 ;
 
 /*
-**	Name:		tblUser_Role
+**	Name:		tblContext
 **	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser_Role foreign Key data.
+**	Purpose:	To constrain tblContext foreign Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER	TABLE		`tblUser_Role`
-ADD	CONSTRAINT	`fk1User_Role`	FOREIGN KEY
+ALTER	TABLE		`tblContext`
+ADD	CONSTRAINT	`fk2Context`	FOREIGN KEY
 (
-	User_id		
-,	User_tp		
+	Context_tp		
 
 )
-	REFERENCES	`tblUser`
+	REFERENCES	`tblContextType`
 (
-	User_id		
-,	User_tp		
-
-)
-;
-ALTER TABLE `tblRoleType`
-DROP INDEX `fk1RoleType`
-;
-
-/*
-**	Name:		tblRoleType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRoleType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRoleType`
-ADD	CONSTRAINT	`fk1RoleType`	FOREIGN KEY
-(
-	Role_tp		
-
-)
-	REFERENCES	`tblResourceType`
-(
-	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblUser_Person`
-DROP INDEX `fk1User_Person`
-;
-
-/*
-**	Name:		tblUser_Person
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser_Person foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblUser_Person`
-ADD	CONSTRAINT	`fk1User_Person`	FOREIGN KEY
-(
-	User_id		
-,	User_tp		
-
-)
-	REFERENCES	`tblUser`
-(
-	User_id		
-,	User_tp		
-
-)
-;
-ALTER TABLE `tblPerson`
-DROP INDEX `fk2Person`
-;
-
-/*
-**	Name:		tblPerson
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblPerson foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblPerson`
-ADD	CONSTRAINT	`fk2Person`	FOREIGN KEY
-(
-	Person_tp		
-
-)
-	REFERENCES	`tblPersonType`
-(
-	Person_tp		
-
-)
-;
-ALTER TABLE `tblUser_Role`
-DROP INDEX `fk2User_Role`
-;
-
-/*
-**	Name:		tblUser_Role
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser_Role foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblUser_Role`
-ADD	CONSTRAINT	`fk2User_Role`	FOREIGN KEY
-(
-	Role_id		
-,	Role_tp		
-
-)
-	REFERENCES	`tblRole`
-(
-	Role_id		
-,	Role_tp		
-
-)
-;
-ALTER TABLE `tblReport`
-DROP INDEX `fk2Report`
-;
-
-/*
-**	Name:		tblReport
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblReport foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblReport`
-ADD	CONSTRAINT	`fk2Report`	FOREIGN KEY
-(
-	Report_tp		
-
-)
-	REFERENCES	`tblReportType`
-(
-	Report_tp		
-
-)
-;
-ALTER TABLE `tblUser_Person`
-DROP INDEX `fk2User_Person`
-;
-
-/*
-**	Name:		tblUser_Person
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser_Person foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblUser_Person`
-ADD	CONSTRAINT	`fk2User_Person`	FOREIGN KEY
-(
-	Person_id		
-,	Person_tp		
-
-)
-	REFERENCES	`tblPerson`
-(
-	Person_id		
-,	Person_tp		
-
-)
-;
-ALTER TABLE `tblRole`
-DROP INDEX `fk2Role`
-;
-
-/*
-**	Name:		tblRole
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole`
-ADD	CONSTRAINT	`fk2Role`	FOREIGN KEY
-(
-	Role_tp		
-
-)
-	REFERENCES	`tblRoleType`
-(
-	Role_tp		
-
-)
-;
-ALTER TABLE `tblResource_RightType`
-DROP INDEX `fk2Resource_RightType`
-;
-
-/*
-**	Name:		tblResource_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblResource_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblResource_RightType`
-ADD	CONSTRAINT	`fk2Resource_RightType`	FOREIGN KEY
-(
-	Right_tp		
-
-)
-	REFERENCES	`tblRightType`
-(
-	Right_tp		
-
-)
-;
-ALTER TABLE `tblResourceType_RightType`
-DROP INDEX `fk2ResourceType_RightType`
-;
-
-/*
-**	Name:		tblResourceType_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblResourceType_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblResourceType_RightType`
-ADD	CONSTRAINT	`fk2ResourceType_RightType`	FOREIGN KEY
-(
-	Right_tp		
-
-)
-	REFERENCES	`tblRightType`
-(
-	Right_tp		
-
-)
-;
-ALTER TABLE `tblRole_ResourceType_RightType`
-DROP INDEX `fk2Role_ResourceType_RightType`
-;
-
-/*
-**	Name:		tblRole_ResourceType_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_ResourceType_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole_ResourceType_RightType`
-ADD	CONSTRAINT	`fk2Role_ResourceType_RightType`	FOREIGN KEY
-(
-	Resrc_tp		
-
-)
-	REFERENCES	`tblResourceType`
-(
-	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblRole_Resource_RightType`
-DROP INDEX `fk2Role_Resource_RightType`
-;
-
-/*
-**	Name:		tblRole_Resource_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_Resource_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole_Resource_RightType`
-ADD	CONSTRAINT	`fk2Role_Resource_RightType`	FOREIGN KEY
-(
-	Resrc_id		
-,	Resrc_tp		
-
-)
-	REFERENCES	`tblResource`
-(
-	Resrc_id		
-,	Resrc_tp		
-
-)
-;
-ALTER TABLE `tblUser`
-DROP INDEX `fk2User`
-;
-
-/*
-**	Name:		tblUser
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblUser foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblUser`
-ADD	CONSTRAINT	`fk2User`	FOREIGN KEY
-(
-	User_tp		
-
-)
-	REFERENCES	`tblUserType`
-(
-	User_tp		
-
-)
-;
-ALTER TABLE `tblRole_Resource_RightType`
-DROP INDEX `fk3Role_Resource_RightType`
-;
-
-/*
-**	Name:		tblRole_Resource_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_Resource_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole_Resource_RightType`
-ADD	CONSTRAINT	`fk3Role_Resource_RightType`	FOREIGN KEY
-(
-	Resrc_id		
-,	Resrc_tp		
-,	Right_tp		
-
-)
-	REFERENCES	`tblResource_RightType`
-(
-	Resrc_id		
-,	Resrc_tp		
-,	Right_tp		
-
-)
-;
-ALTER TABLE `tblRole_ResourceType_RightType`
-DROP INDEX `fk3Role_ResourceType_RightType`
-;
-
-/*
-**	Name:		tblRole_ResourceType_RightType
-**	Type:		Constraint: Foreign Key
-**	Purpose:	To constrain tblRole_ResourceType_RightType foreign Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER	TABLE		`tblRole_ResourceType_RightType`
-ADD	CONSTRAINT	`fk3Role_ResourceType_RightType`	FOREIGN KEY
-(
-	Resrc_tp		
-,	Right_tp		
-
-)
-	REFERENCES	`tblResourceType_RightType`
-(
-	Resrc_tp		
-,	Right_tp		
+	Context_tp		
 
 )
 ;

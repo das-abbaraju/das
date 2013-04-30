@@ -24,18 +24,34 @@
         }
     }
 
-    #app_property_edit_form,
-    #app_property_create_form
+    #app_property_create_form,
+    #app_property_edit_form
     {
         .form-actions
         {
             text-align: right;
-            width: 220px;
         }
 
         .form-actions .btn
         {
-            margin-left: 10px;
+            margin-left: 5px;
         }
+
+        textarea
+        {
+            @include box-sizing(border-box);
+        }
+
+        input
+        {
+            @include box-sizing(border-box);
+            height: 30px;
+            padding: 4px 6px;
+        }
+    }
+
+    #app_property_edit_form span
+    {
+        height: 30px;
     }
 }

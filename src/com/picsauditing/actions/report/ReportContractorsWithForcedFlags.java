@@ -59,7 +59,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addJoin("JOIN generalcontractors gc ON gc.genid = o.id and gc.subid = ff.conid");
 		sql.addWhere("ff.forceFlag IS NOT NULL");
 		if(permissions.isOperatorCorporate()) {
-			String opIds = " ff.opid = " + permissions.getAccountId() + " OR ";
+			String opIds = " ff.opid = " + permissions.getAccountId() + " OR " + " ff.opid = " + permissions.getTopAccountID() + " OR ";
 			if(permissions.isOperator()) 
 				opIds += " ff.opid IN (SELECT corporateID from facilities where opID = " + permissions.getAccountId()+")";
 			else 

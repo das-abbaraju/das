@@ -51,11 +51,7 @@ public class ReportFlagChanges extends ReportAccount {
 
 	@Override
 	protected void buildQuery() {
-
-		super.buildQuery();
-
 		getFilter().setShowFlagStatus(true);
-
 		getFilter().setShowTaxID(false);
 		getFilter().setShowCcOnFile(false);
 		getFilter().setShowPrimaryInformation(false);
@@ -69,7 +65,11 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowAuditStatusFlagChanges(true);
 		getFilter().setShowAuditQuestionFlagChanges(true);
 
-		String opIds = "";
+        getFilter().setGeneralContractorAlias("gc_flag");
+
+        super.buildQuery();
+
+        String opIds = "";
 		List<Integer> ops = new Vector<Integer>();
 
 		if (filterOn(getFilter().getOperator())) {
@@ -166,8 +166,6 @@ public class ReportFlagChanges extends ReportAccount {
 		if (!Strings.isEmpty(opIds)) {
 			sql.addWhere("operator.id in (" + opIds + ")");
 		}
-
-        addFilterToSQL();
 	}
 
 	@Override
@@ -183,7 +181,7 @@ public class ReportFlagChanges extends ReportAccount {
 		}
 	}
 
-	public List<User> getAccountManagers() {
+    public List<User> getAccountManagers() {
 		if (accountManagers == null) {
 			UserDAO dao = SpringUtils.getBean(SpringUtils.USER_DAO);
 			accountManagers = dao.findByGroup(User.GROUP_MARKETING);
