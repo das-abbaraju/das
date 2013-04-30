@@ -31,6 +31,7 @@ public interface FeatureToggle {
 	String TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS = "Toggle.InvoiceLanguagesToEmailViaBPROCS";
 	String TOGGLE_RULES_BASED_INSURANCE_CRITERIA = "Toggle.RBIC";
 	String TOGGLE_NEW_JS_TRANSLATIONS = "Toggle.NewJsTranslations";
+	String TOGGLE_REGISTRATION_AUTOFILL = "Toggle.RegistrationAutoFill";
 
 	boolean isFeatureEnabled(String toggleName);
 

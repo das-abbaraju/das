@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
@@ -40,6 +41,9 @@
 </div>
 					
 <div class="registration">
+    <pics:toggle name="<%=FeatureToggle.TOGGLE_REGISTRATION_AUTOFILL%>">
+        <input type="button" class="btn" id="autofill" value="Autofill"/>
+    </pics:toggle>
 	<aside class="registration-side-bar">
 		<div class="info-join">
 			<section>
@@ -96,7 +100,7 @@
 	
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
-        <input id="request_locale" type="hidden" name="request_locale" value="" />
+        <input id="locale" type="hidden" name="locale" value="" />
 	
 		<s:if test="contractor.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />

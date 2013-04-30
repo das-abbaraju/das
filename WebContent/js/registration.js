@@ -176,7 +176,7 @@
         getDialectList: function (event) {
             var element = $(event.currentTarget),
                 language = element.val(),
-                request_locale = $("#request_locale");
+                locale = $("#locale");
 
             PICS.ajax({
                 url: 'RegistrationAjax.action',
@@ -191,7 +191,7 @@
 
                     //if no dialects, refresh page
                     if (dialect_dropdown == '') {
-                        request_locale.val(language);
+                        locale.val(language);
                         element.closest('form').submit();
                     }
                 }
@@ -202,11 +202,11 @@
             var element = $(event.currentTarget),
                 dialect = element.val(),
                 language = $('#registration_language').val(),
-                request_locale = $("#request_locale");
+                locale = $("#locale");
 
-            request_locale.val(language + "_" + dialect);
+            locale.val(language + "_" + dialect);
 
-            element.closest('form').submit();
+            //element.closest('form').submit();
         }
 	};
 
@@ -357,10 +357,35 @@
                 $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+                $('#autofill').bind('click', this.autofill);
                 company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+                
                 // Show or hide the vat id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
-	        },
+            },
+
+            autofill: function (event) {
+                var email = "my.email" + new Date().getTime() + "@test.com";
+                
+                // Company Info
+              $('[name=language]').children().first().attr("selected","selected");
+              $('[name=dialect]').children().last().attr("selected","selected");
+              $('[name="contractor.country.isoCode"]').children().first().attr("selected","selected");
+              $('[name="contractor.name"]').val("My Company" +  new Date().getTime() );
+              $('[name="contractor.address"]').val("123 Anywhere St");
+              $('[name="contractor.city"]').val("Springfield");
+              $('[name="countrySubdivision"]').children().last().attr("selected","selected");
+              $('[name="contractor.zip"]').val("12345");
+              // Contact Info
+              $('[name="user.firstName"]').val("John");
+              $('[name="user.lastName"]').val("Doe");
+              $('[name="user.email"]').val(email);
+              $('[name="user.phone"]').val("555-555-5555");
+              // Account Info
+              $('[name="user.username"]').val(email);
+              $('[name="user.password"]').val("password1");
+              $('[name="confirmPassword"]').val("password1");
+            },
 
             showBasicModal: function (event) {
 	            var element = $(this);
