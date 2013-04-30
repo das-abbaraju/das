@@ -7,9 +7,9 @@ DROP INDEX `akResource`
 **	Type:		Constraint: Alternate Key
 **	Purpose:	To constrain tblResource "meaningful" alternate Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **

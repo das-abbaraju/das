@@ -7,9 +7,9 @@ DROP INDEX `pkResource`
 **	Type:		Constraint: Primary Key
 **	Purpose:	To constrain tblResource "meaningless" primary Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -21,5 +21,9 @@ ADD CONSTRAINT	`pkResource`	PRIMARY KEY
 ,	Resrc_tp		
 
 )
+;
+ALTER TABLE	`pics_alpha1`.`tblresource`
+CHANGE
+	`Resrc_id`	`Resrc_id`	INT(10) UNSIGNED NOT NULL AUTO_INCREMENT
 ;
 

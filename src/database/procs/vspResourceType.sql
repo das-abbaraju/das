@@ -4,17 +4,17 @@ DROP PROCEDURE IF EXISTS	`vspResourceType`
 DELIMITER //
 CREATE PROCEDURE	vspResourceType
 (
-	Resrc_tp		varchar(80)		
-,	ParentResrc_tp		varchar(80)		
-,	ResrcType_tx		mediumtext		
-,	Left_id		int signed		
-,	Right_id		int signed		
-,	Level_id		int signed		
-,	Order_id		int signed		
+	Resrc_tp		VARCHAR(80)		
+,	ParentResrc_tp		VARCHAR(80)		
+,	ResrcType_tx		MEDIUMTEXT		
+,	Left_id		INT SIGNED		
+,	Right_id		INT SIGNED		
+,	Level_id		INT SIGNED		
+,	Order_id		INT SIGNED		
 
-,	_SYSRIGHT		VARCHAR(30)		-- Intended DML action
-,	_Mode_cd		VARCHAR(16)		-- Database cascade mode code
-,	OUT 	_IsValid_fg	BOOLEAN
+,	SYSRIGHT		VARCHAR(30)		-- Intended DML action
+,	Mode_cd		VARCHAR(16)		-- Database cascade mode code
+,	OUT 	IsValid_fg	BOOLEAN
 )
 BEGIN
 /*
@@ -24,17 +24,17 @@ BEGIN
 **	Author:		Solomon S. Shacter
 **	Company:	Innovella, Inc.
 **
-**	Modified:	4/12/2013
+**	Modified:	4/9/2013
 **	Modnumber:
 **	Modification:	
 **
 */
 ###############################################################################
-DECLARE	_SYSTABLE	VARCHAR(255) DEFAULT 'tblResourceType';
-DECLARE	_Proc_nm	VARCHAR(255) DEFAULT 'vspResourceType';
-DECLARE	_Key_cd		VARCHAR(16) DEFAULT 'PK';
-DECLARE _RowExists_fg	TINYINT	DEFAULT 0;
-DECLARE _ProcFailed_fg	BOOLEAN DEFAULT FALSE;
+DECLARE	SYSTABLE	VARCHAR(255) DEFAULT 'tblResourceType';
+DECLARE	Proc_nm	VARCHAR(255) DEFAULT 'vspResourceType';
+DECLARE	Key_cd		VARCHAR(16) DEFAULT 'PK';
+DECLARE RowExists_fg	TINYINT	DEFAULT 0;
+DECLARE ProcFailed_fg	BOOLEAN DEFAULT FALSE;
 ###############################################################################
 VSP:
 BEGIN
@@ -47,57 +47,19 @@ BEGIN
 	--	Duplicate names within a type are not allowed
 	--	Alternate (Candidate) Key Check
 	#######################################################################
-
-
 	IF
-	EXISTS
-	(
-		SELECT	1
-		FROM
-			tblResourceType
-		WHERE
-				Resrc_tp	= _Resrc_tp
-
-	)
+		Resrc_tp	IS NULL
+	OR 	Resrc_tp = ''
 	THEN
-		SET _IsValid_fg	= TRUE;	-- Return if the attributes did not change
-		LEAVE VSP;
-	ELSE
-		CALL	rspResourceType
+		CALL	errNullArg
 		(
-			@Resrc_tp	:= _Resrc_tp
-		,	@ParentResrc_tp	:= _ParentResrc_tp
-		,	@ResrcType_tx	:= _ResrcType_tx
-		,	@Left_id	:= _Left_id
-		,	@Right_id	:= _Right_id
-		,	@Level_id	:= _Level_id
-		,	@Order_id	:= _Order_id
-
-		,	@Key_cd		:= 'AK'
-		,	@RowExists_fg
+			@Proc_nm	:= Proc_nm
+		,	@Action_nm	:= SYSRIGHT
 		);
-
-		IF
-			@RowExists_fg	= 1	-- AK exists and not for this PK
-		THEN
-			SET _IsValid_fg	= FALSE;
-			CALL 	errAKExist
-			(
-				@Proc_nm	:= _Proc_nm
-			,	@Table_nm	:= 'tblResourceType'
-			,	@Key_nm		:= ', Resrc_tp'
-			);
-			LEAVE VSP;
-		END IF;
+		LEAVE VSP;
 	END IF;
-
-
-
-
-
-
 	#######################################################################
-END;
+END VSP;
 ###############################################################################
 END
 //

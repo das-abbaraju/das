@@ -1,576 +1,1161 @@
-DROP PROCEDURE IF EXISTS	`rspPerson`
+DROP PROCEDURE IF EXISTS	`rsp_language`
 ;
 
 DELIMITER //
-CREATE PROCEDURE	rspPerson
+CREATE PROCEDURE	rsp_language
 (
-	Person_id		int signed		
-,	Person_tp		varchar(80)		
-,	Person_nm		varchar(128)		
-,	First_nm		varchar(128)		
-,	Last_nm		varchar(128)		
-,	Middle_nm		varchar(128)		
-,	Gender_cd		varchar(48)		
-,	FirstSNDX_cd		varchar(48)		
-,	LastSNDX_cd		varchar(48)		
-,	Birth_dm		datetime		
+	locale		varchar(128)		
+,	language		varchar(128)		
+,	country		varchar(128)		
+,	status		varchar(128)		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
-**	Name:		rspPerson
+**	Name:		rsp_language
 **	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblPerson
+**	Purpose:	Check existence of a record in app_language
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Person_id IS NULL OR Person_id = 0 THEN SET Person_id =  -2147483647;	END IF;
-	IF Person_tp IS NULL OR Person_tp = '' THEN SET Person_tp = '-2147483647';	END IF;
-	IF Person_nm IS NULL OR Person_nm = '' THEN SET Person_nm = '-2147483647';	END IF;
-	IF First_nm IS NULL OR First_nm = '' THEN SET First_nm = '-2147483647';	END IF;
-	IF Last_nm IS NULL OR Last_nm = '' THEN SET Last_nm = '-2147483647';	END IF;
-	IF Middle_nm IS NULL OR Middle_nm = '' THEN SET Middle_nm = '-2147483647';	END IF;
-	IF Gender_cd IS NULL OR Gender_cd = '' THEN SET Gender_cd = '-2147483647';	END IF;
-	IF FirstSNDX_cd IS NULL OR FirstSNDX_cd = '' THEN SET FirstSNDX_cd = '-2147483647';	END IF;
-	IF LastSNDX_cd IS NULL OR LastSNDX_cd = '' THEN SET LastSNDX_cd = '-2147483647';	END IF;
-	IF Birth_dm IS NULL OR Birth_dm = '' THEN SET Birth_dm = '0000-00-00 00:00:00';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF locale IS NULL OR locale = '' THEN SET locale = '-2147483647';	END IF;
+	IF language IS NULL OR language = '' THEN SET language = '-2147483647';	END IF;
+	IF country IS NULL OR country = '' THEN SET country = '-2147483647';	END IF;
+	IF status IS NULL OR status = '' THEN SET status = '-2147483647';	END IF;
 
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPerson`
+			FROM	app_language
 			WHERE
-				Person_id	= Person_id
-			AND	Person_tp	= Person_tp
+				app_language.locale	= locale
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
+	END IF;
+
+
+	#######################################################################
+	-- Attribute lookup
+	#######################################################################
+	IF	Key_cd	= 'AL'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	app_language
+			WHERE
+				(
+				locale	= locale
+			OR	locale	= '-2147483647'
+				)
+			AND	(
+				language	= language
+			OR	language	= '-2147483647'
+				)
+			AND	(
+				country	= country
+			OR	country	= '-2147483647'
+				)
+			AND	(
+				status	= status
+			OR	status	= '-2147483647'
+				)
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+	#######################################################################
+END	RSP
+;
+###############################################################################
+END
+//
+DELIMITER ;
+;
+DROP PROCEDURE IF EXISTS	`rspContext`
+;
+
+DELIMITER //
+CREATE PROCEDURE	rspContext
+(
+	Context_id		int signed		
+,	Context_tp		varchar(64)		
+,	Context_nm		varchar(256)		
+,	Context_cd		varchar(128)		
+
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
+)
+BEGIN
+/*
+**	Name:		rspContext
+**	Type:		DB API Procedure: Referential 
+**	Purpose:	Check existence of a record in tblContext
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+###############################################################################
+###############################################################################
+RSP:
+BEGIN
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Context_id IS NULL OR Context_id = 0 THEN SET Context_id =  -2147483647;	END IF;
+	IF Context_tp IS NULL OR Context_tp = '' THEN SET Context_tp = '-2147483647';	END IF;
+	IF Context_nm IS NULL OR Context_nm = '' THEN SET Context_nm = '-2147483647';	END IF;
+	IF Context_cd IS NULL OR Context_cd = '' THEN SET Context_cd = '-2147483647';	END IF;
+
+	#######################################################################
+	-- Primary Key lookup
+	#######################################################################
+	IF 	Key_cd	= 'PK'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblContext
+			WHERE
+				tblContext.Context_id	= Context_id
+			AND	tblContext.Context_tp	= Context_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPerson`
+			FROM	tblContext
 			WHERE
-				Person_id	= Person_id
-			AND	Person_tp	= Person_tp
+				tblContext.Context_id	= Context_id
+			AND	tblContext.Context_tp	= Context_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK2'
+	IF	Key_cd = 'FK2'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPerson`
+			FROM	tblContext
 			WHERE
-				Person_tp	= Person_tp
+				tblContext.Context_tp	= Context_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPerson`
+			FROM	tblContext
 			WHERE
-				Person_tp	= Person_tp
-			AND	Person_nm	= Person_nm
+				tblContext.Context_tp	= Context_tp
+			AND	tblContext.Context_nm	= Context_nm
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPerson`
+			FROM	tblContext
 			WHERE
 				(
-				Person_id	= Person_id
-			OR	Person_id	=  -2147483647
+				Context_id	= Context_id
+			OR	Context_id	=  -2147483647
 				)
 			AND	(
-				Person_tp	= Person_tp
-			OR	Person_tp	= '-2147483647'
+				Context_tp	= Context_tp
+			OR	Context_tp	= '-2147483647'
 				)
 			AND	(
-				Person_nm	= Person_nm
-			OR	Person_nm	= '-2147483647'
+				Context_nm	= Context_nm
+			OR	Context_nm	= '-2147483647'
 				)
 			AND	(
-				First_nm	= First_nm
-			OR	First_nm	= '-2147483647'
-				)
-			AND	(
-				Last_nm	= Last_nm
-			OR	Last_nm	= '-2147483647'
-				)
-			AND	(
-				Middle_nm	= Middle_nm
-			OR	Middle_nm	= '-2147483647'
-				)
-			AND	(
-				Gender_cd	= Gender_cd
-			OR	Gender_cd	= '-2147483647'
-				)
-			AND	(
-				FirstSNDX_cd	= FirstSNDX_cd
-			OR	FirstSNDX_cd	= '-2147483647'
-				)
-			AND	(
-				LastSNDX_cd	= LastSNDX_cd
-			OR	LastSNDX_cd	= '-2147483647'
-				)
-			AND	(
-				Birth_dm	= Birth_dm
-			OR	Birth_dm	= '0000-00-00 00:00:00'
+				Context_cd	= Context_cd
+			OR	Context_cd	= '-2147483647'
 				)
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //
 DELIMITER ;
 ;
-DROP PROCEDURE IF EXISTS	`rspPersonType`
+DROP PROCEDURE IF EXISTS	`rspContextType`
 ;
 
 DELIMITER //
-CREATE PROCEDURE	rspPersonType
+CREATE PROCEDURE	rspContextType
 (
-	Person_tp		varchar(80)		
+	Context_tp		varchar(64)		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
-**	Name:		rspPersonType
+**	Name:		rspContextType
 **	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblPersonType
+**	Purpose:	Check existence of a record in tblContextType
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Person_tp IS NULL OR Person_tp = '' THEN SET Person_tp = '-2147483647';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Context_tp IS NULL OR Context_tp = '' THEN SET Context_tp = '-2147483647';	END IF;
 
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPersonType`
+			FROM	tblContextType
 			WHERE
-				Person_tp	= Person_tp
+				tblContextType.Context_tp	= Context_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPersonType`
+			FROM	tblContextType
 			WHERE
-				Person_tp	= Person_tp
+				tblContextType.Context_tp	= Context_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblPersonType`
+			FROM	tblContextType
 			WHERE
 				(
-				Person_tp	= Person_tp
-			OR	Person_tp	= '-2147483647'
+				Context_tp	= Context_tp
+			OR	Context_tp	= '-2147483647'
 				)
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //
 DELIMITER ;
 ;
-DROP PROCEDURE IF EXISTS	`rspReport`
+DROP PROCEDURE IF EXISTS	`rspItem`
 ;
 
 DELIMITER //
-CREATE PROCEDURE	rspReport
+CREATE PROCEDURE	rspItem
 (
-	Report_id		int signed		
-,	Report_tp		varchar(80)		
-,	Report_nm		varchar(128)		
-,	Report_cd		varchar(48)		
+	Item_id		int signed		
+,	Item_tp		varchar(64)		
+,	Item_nm		varchar(256)		
+,	Item_cd		varchar(128)		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
-**	Name:		rspReport
+**	Name:		rspItem
 **	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblReport
+**	Purpose:	Check existence of a record in tblItem
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Report_id IS NULL OR Report_id = 0 THEN SET Report_id =  -2147483647;	END IF;
-	IF Report_tp IS NULL OR Report_tp = '' THEN SET Report_tp = '-2147483647';	END IF;
-	IF Report_nm IS NULL OR Report_nm = '' THEN SET Report_nm = '-2147483647';	END IF;
-	IF Report_cd IS NULL OR Report_cd = '' THEN SET Report_cd = '-2147483647';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Item_id IS NULL OR Item_id = 0 THEN SET Item_id =  -2147483647;	END IF;
+	IF Item_tp IS NULL OR Item_tp = '' THEN SET Item_tp = '-2147483647';	END IF;
+	IF Item_nm IS NULL OR Item_nm = '' THEN SET Item_nm = '-2147483647';	END IF;
+	IF Item_cd IS NULL OR Item_cd = '' THEN SET Item_cd = '-2147483647';	END IF;
 
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReport`
+			FROM	tblItem
 			WHERE
-				Report_id	= Report_id
-			AND	Report_tp	= Report_tp
+				tblItem.Item_id	= Item_id
+			AND	tblItem.Item_tp	= Item_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReport`
+			FROM	tblItem
 			WHERE
-				Report_id	= Report_id
-			AND	Report_tp	= Report_tp
+				tblItem.Item_id	= Item_id
+			AND	tblItem.Item_tp	= Item_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK2'
+	IF	Key_cd = 'FK2'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReport`
+			FROM	tblItem
 			WHERE
-				Report_tp	= Report_tp
+				tblItem.Item_tp	= Item_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReport`
+			FROM	tblItem
 			WHERE
-				Report_tp	= Report_tp
-			AND	Report_nm	= Report_nm
+				tblItem.Item_tp	= Item_tp
+			AND	tblItem.Item_nm	= Item_nm
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReport`
+			FROM	tblItem
 			WHERE
 				(
-				Report_id	= Report_id
-			OR	Report_id	=  -2147483647
+				Item_id	= Item_id
+			OR	Item_id	=  -2147483647
 				)
 			AND	(
-				Report_tp	= Report_tp
-			OR	Report_tp	= '-2147483647'
+				Item_tp	= Item_tp
+			OR	Item_tp	= '-2147483647'
 				)
 			AND	(
-				Report_nm	= Report_nm
-			OR	Report_nm	= '-2147483647'
+				Item_nm	= Item_nm
+			OR	Item_nm	= '-2147483647'
 				)
 			AND	(
-				Report_cd	= Report_cd
-			OR	Report_cd	= '-2147483647'
+				Item_cd	= Item_cd
+			OR	Item_cd	= '-2147483647'
 				)
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //
 DELIMITER ;
 ;
-DROP PROCEDURE IF EXISTS	`rspReportType`
+DROP PROCEDURE IF EXISTS	`rspItem_Context`
 ;
 
 DELIMITER //
-CREATE PROCEDURE	rspReportType
+CREATE PROCEDURE	rspItem_Context
 (
-	Report_tp		varchar(80)		
+	Item_id		int signed		
+,	Item_tp		varchar(64)		
+,	Context_id		int signed		
+,	Context_tp		varchar(64)		
+,	Order_id		int signed		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
-**	Name:		rspReportType
+**	Name:		rspItem_Context
 **	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblReportType
+**	Purpose:	Check existence of a record in tblItem_Context
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Report_tp IS NULL OR Report_tp = '' THEN SET Report_tp = '-2147483647';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Item_id IS NULL OR Item_id = 0 THEN SET Item_id =  -2147483647;	END IF;
+	IF Item_tp IS NULL OR Item_tp = '' THEN SET Item_tp = '-2147483647';	END IF;
+	IF Context_id IS NULL OR Context_id = 0 THEN SET Context_id =  -2147483647;	END IF;
+	IF Context_tp IS NULL OR Context_tp = '' THEN SET Context_tp = '-2147483647';	END IF;
+	IF Order_id IS NULL OR Order_id = 0 THEN SET Order_id =  -2147483647;	END IF;
 
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReportType`
+			FROM	tblItem_Context
 			WHERE
-				Report_tp	= Report_tp
+				tblItem_Context.Item_id	= Item_id
+			AND	tblItem_Context.Item_tp	= Item_tp
+			AND	tblItem_Context.Context_id	= Context_id
+			AND	tblItem_Context.Context_tp	= Context_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReportType`
+			FROM	tblItem_Context
 			WHERE
-				Report_tp	= Report_tp
+				tblItem_Context.Item_id	= Item_id
+			AND	tblItem_Context.Item_tp	= Item_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK2'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Context
+			WHERE
+				tblItem_Context.Context_id	= Context_id
+			AND	tblItem_Context.Context_tp	= Context_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblReportType`
+			FROM	tblItem_Context
 			WHERE
 				(
-				Report_tp	= Report_tp
-			OR	Report_tp	= '-2147483647'
+				Item_id	= Item_id
+			OR	Item_id	=  -2147483647
+				)
+			AND	(
+				Item_tp	= Item_tp
+			OR	Item_tp	= '-2147483647'
+				)
+			AND	(
+				Context_id	= Context_id
+			OR	Context_id	=  -2147483647
+				)
+			AND	(
+				Context_tp	= Context_tp
+			OR	Context_tp	= '-2147483647'
+				)
+			AND	(
+				Order_id	= Order_id
+			OR	Order_id	=  -2147483647
 				)
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
+###############################################################################
+END
+//
+DELIMITER ;
+;
+DROP PROCEDURE IF EXISTS	`rspItem_Context_Locale`
+;
+
+DELIMITER //
+CREATE PROCEDURE	rspItem_Context_Locale
+(
+	Item_id		int signed		
+,	Item_tp		varchar(64)		
+,	Context_id		int signed		
+,	Context_tp		varchar(64)		
+,	Locale_cd		varchar(128)		
+,	ItemEntry_tx		text		
+
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
+)
+BEGIN
+/*
+**	Name:		rspItem_Context_Locale
+**	Type:		DB API Procedure: Referential 
+**	Purpose:	Check existence of a record in tblItem_Context_Locale
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+###############################################################################
+###############################################################################
+RSP:
+BEGIN
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Item_id IS NULL OR Item_id = 0 THEN SET Item_id =  -2147483647;	END IF;
+	IF Item_tp IS NULL OR Item_tp = '' THEN SET Item_tp = '-2147483647';	END IF;
+	IF Context_id IS NULL OR Context_id = 0 THEN SET Context_id =  -2147483647;	END IF;
+	IF Context_tp IS NULL OR Context_tp = '' THEN SET Context_tp = '-2147483647';	END IF;
+	IF Locale_cd IS NULL OR Locale_cd = '' THEN SET Locale_cd = '-2147483647';	END IF;
+	IF ItemEntry_tx IS NULL OR ItemEntry_tx = '' THEN SET ItemEntry_tx = '-2147483647';	END IF;
+
+	#######################################################################
+	-- Primary Key lookup
+	#######################################################################
+	IF 	Key_cd	= 'PK'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Context_Locale
+			WHERE
+				tblItem_Context_Locale.Item_id	= Item_id
+			AND	tblItem_Context_Locale.Item_tp	= Item_tp
+			AND	tblItem_Context_Locale.Context_id	= Context_id
+			AND	tblItem_Context_Locale.Context_tp	= Context_tp
+			AND	tblItem_Context_Locale.Locale_cd	= Locale_cd
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK1'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Context_Locale
+			WHERE
+				tblItem_Context_Locale.Item_id	= Item_id
+			AND	tblItem_Context_Locale.Item_tp	= Item_tp
+			AND	tblItem_Context_Locale.Context_id	= Context_id
+			AND	tblItem_Context_Locale.Context_tp	= Context_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK2'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Context_Locale
+			WHERE
+				tblItem_Context_Locale.Item_id	= Item_id
+			AND	tblItem_Context_Locale.Item_tp	= Item_tp
+			AND	tblItem_Context_Locale.Locale_cd	= Locale_cd
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+
+	#######################################################################
+	-- Attribute lookup
+	#######################################################################
+	IF	Key_cd	= 'AL'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Context_Locale
+			WHERE
+				(
+				Item_id	= Item_id
+			OR	Item_id	=  -2147483647
+				)
+			AND	(
+				Item_tp	= Item_tp
+			OR	Item_tp	= '-2147483647'
+				)
+			AND	(
+				Context_id	= Context_id
+			OR	Context_id	=  -2147483647
+				)
+			AND	(
+				Context_tp	= Context_tp
+			OR	Context_tp	= '-2147483647'
+				)
+			AND	(
+				Locale_cd	= Locale_cd
+			OR	Locale_cd	= '-2147483647'
+				)
+			AND	(
+				ItemEntry_tx	LIKE ItemEntry_tx
+			OR	ItemEntry_tx	LIKE '-2147483647'
+				)
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+	#######################################################################
+END	RSP
+;
+###############################################################################
+END
+//
+DELIMITER ;
+;
+DROP PROCEDURE IF EXISTS	`rspItem_Locale`
+;
+
+DELIMITER //
+CREATE PROCEDURE	rspItem_Locale
+(
+	Item_id		int signed		
+,	Item_tp		varchar(64)		
+,	Locale_cd		varchar(128)		
+,	Entry_tp		varchar(64)		
+,	Entry_tx		text		
+,	EFF_dm		datetime		
+,	USE_dm		datetime		
+
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
+)
+BEGIN
+/*
+**	Name:		rspItem_Locale
+**	Type:		DB API Procedure: Referential 
+**	Purpose:	Check existence of a record in tblItem_Locale
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+###############################################################################
+###############################################################################
+RSP:
+BEGIN
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Item_id IS NULL OR Item_id = 0 THEN SET Item_id =  -2147483647;	END IF;
+	IF Item_tp IS NULL OR Item_tp = '' THEN SET Item_tp = '-2147483647';	END IF;
+	IF Locale_cd IS NULL OR Locale_cd = '' THEN SET Locale_cd = '-2147483647';	END IF;
+	IF Entry_tp IS NULL OR Entry_tp = '' THEN SET Entry_tp = '-2147483647';	END IF;
+	IF Entry_tx IS NULL OR Entry_tx = '' THEN SET Entry_tx = '-2147483647';	END IF;
+	IF EFF_dm IS NULL OR EFF_dm = '' THEN SET EFF_dm = '0000-00-00 00:00:00';	END IF;
+	IF USE_dm IS NULL OR USE_dm = '' THEN SET USE_dm = '0000-00-00 00:00:00';	END IF;
+
+	#######################################################################
+	-- Primary Key lookup
+	#######################################################################
+	IF 	Key_cd	= 'PK'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Locale
+			WHERE
+				tblItem_Locale.Item_id	= Item_id
+			AND	tblItem_Locale.Item_tp	= Item_tp
+			AND	tblItem_Locale.Locale_cd	= Locale_cd
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK1'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Locale
+			WHERE
+				tblItem_Locale.Item_id	= Item_id
+			AND	tblItem_Locale.Item_tp	= Item_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK2'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Locale
+			WHERE
+				tblItem_Locale.Locale_cd	= Locale_cd
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+
+	#######################################################################
+	-- Attribute lookup
+	#######################################################################
+	IF	Key_cd	= 'AL'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItem_Locale
+			WHERE
+				(
+				Item_id	= Item_id
+			OR	Item_id	=  -2147483647
+				)
+			AND	(
+				Item_tp	= Item_tp
+			OR	Item_tp	= '-2147483647'
+				)
+			AND	(
+				Locale_cd	= Locale_cd
+			OR	Locale_cd	= '-2147483647'
+				)
+			AND	(
+				Entry_tp	= Entry_tp
+			OR	Entry_tp	= '-2147483647'
+				)
+			AND	(
+				Entry_tx	LIKE Entry_tx
+			OR	Entry_tx	LIKE '-2147483647'
+				)
+			AND	(
+				EFF_dm	= EFF_dm
+			OR	EFF_dm	= '0000-00-00 00:00:00'
+				)
+			AND	(
+				USE_dm	= USE_dm
+			OR	USE_dm	= '0000-00-00 00:00:00'
+				)
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+	#######################################################################
+END	RSP
+;
+###############################################################################
+END
+//
+DELIMITER ;
+;
+DROP PROCEDURE IF EXISTS	`rspItemType`
+;
+
+DELIMITER //
+CREATE PROCEDURE	rspItemType
+(
+	Item_tp		varchar(64)		
+
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
+)
+BEGIN
+/*
+**	Name:		rspItemType
+**	Type:		DB API Procedure: Referential 
+**	Purpose:	Check existence of a record in tblItemType
+**	Author:		Solomon S. Shacter
+**	Generated:	4/29/2013
+**
+**	Modified:	4/29/2013
+**	Modnumber:	00
+**	Modification:	Original
+**
+*/
+###############################################################################
+###############################################################################
+RSP:
+BEGIN
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
+	IF Item_tp IS NULL OR Item_tp = '' THEN SET Item_tp = '-2147483647';	END IF;
+
+	#######################################################################
+	-- Primary Key lookup
+	#######################################################################
+	IF 	Key_cd	= 'PK'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItemType
+			WHERE
+				tblItemType.Item_tp	= Item_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+	#######################################################################
+	-- Foreign Key lookup
+	#######################################################################
+	IF	Key_cd = 'FK1'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItemType
+			WHERE
+				tblItemType.Item_tp	= Item_tp
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+
+
+	#######################################################################
+	-- Attribute lookup
+	#######################################################################
+	IF	Key_cd	= 'AL'
+	THEN
+		IF
+		EXISTS
+		(
+			SELECT	1
+			FROM	tblItemType
+			WHERE
+				(
+				Item_tp	= Item_tp
+			OR	Item_tp	= '-2147483647'
+				)
+
+		)
+		THEN
+			SET RowExists_fg	= 1;
+		ELSE
+			SET RowExists_fg	= 0;
+		END IF;
+		LEAVE RSP;
+	END IF;
+	#######################################################################
+END	RSP
+;
 ###############################################################################
 END
 //
@@ -583,18 +1168,18 @@ DELIMITER //
 CREATE PROCEDURE	rspResource
 (
 	Resrc_id		int signed		
-,	Resrc_tp		varchar(80)		
-,	Resrc_nm		varchar(128)		
+,	Resrc_tp		varchar(64)		
+,	Resrc_nm		varchar(256)		
 ,	Resrc_tx		mediumtext		
 ,	ADD_dm		datetime		
-,	ADD_nm		varchar(128)		
+,	ADD_nm		varchar(256)		
 ,	UPD_dm		datetime		
-,	UPD_nm		varchar(128)		
+,	UPD_nm		varchar(256)		
 ,	DEL_dm		datetime		
-,	DEL_nm		varchar(128)		
+,	DEL_nm		varchar(256)		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
@@ -602,18 +1187,18 @@ BEGIN
 **	Type:		DB API Procedure: Referential 
 **	Purpose:	Check existence of a record in tblResource
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
 	IF Resrc_id IS NULL OR Resrc_id = 0 THEN SET Resrc_id =  -2147483647;	END IF;
 	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
 	IF Resrc_nm IS NULL OR Resrc_nm = '' THEN SET Resrc_nm = '-2147483647';	END IF;
@@ -628,79 +1213,82 @@ BEGIN
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
+				tblResource.Resrc_id	= Resrc_id
+			AND	tblResource.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResource.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_tp	= Resrc_tp
-			AND	Resrc_nm	= Resrc_nm
+				tblResource.Resrc_tp	= Resrc_tp
+			AND	tblResource.Resrc_nm	= Resrc_nm
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
 				(
 				Resrc_id	= Resrc_id
@@ -745,13 +1333,15 @@ BEGIN
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //
@@ -763,16 +1353,16 @@ DROP PROCEDURE IF EXISTS	`rspResourceType`
 DELIMITER //
 CREATE PROCEDURE	rspResourceType
 (
-	Resrc_tp		varchar(80)		
-,	ParentResrc_tp		varchar(80)		
+	Resrc_tp		varchar(64)		
+,	ParentResrc_tp		varchar(64)		
 ,	ResrcType_tx		mediumtext		
 ,	Left_id		int signed		
 ,	Right_id		int signed		
 ,	Level_id		int signed		
 ,	Order_id		int signed		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
@@ -780,18 +1370,18 @@ BEGIN
 **	Type:		DB API Procedure: Referential 
 **	Purpose:	Check existence of a record in tblResourceType
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
 	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
 	IF ParentResrc_tp IS NULL OR ParentResrc_tp = '' THEN SET ParentResrc_tp = '-2147483647';	END IF;
 	IF ResrcType_tx IS NULL OR ResrcType_tx = '' THEN SET ResrcType_tx = '-2147483647';	END IF;
@@ -803,56 +1393,58 @@ BEGIN
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResourceType.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResourceType.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
 				(
 				Resrc_tp	= Resrc_tp
@@ -885,1586 +1477,15 @@ BEGIN
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
+END	RSP
 ;
-DROP PROCEDURE IF EXISTS	`rspRightType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspRightType
-(
-	Right_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspRightType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblRightType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Right_tp IS NULL OR Right_tp = '' THEN SET Right_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRightType`
-			WHERE
-				Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRightType`
-			WHERE
-				Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRightType`
-			WHERE
-				(
-				Right_tp	= Right_tp
-			OR	Right_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspRole`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspRole
-(
-	Role_id		int signed		
-,	Role_tp		varchar(80)		
-,	Role_nm		varchar(128)		
-,	Role_cd		varchar(48)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspRole
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblRole
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Role_id IS NULL OR Role_id = 0 THEN SET Role_id =  -2147483647;	END IF;
-	IF Role_tp IS NULL OR Role_tp = '' THEN SET Role_tp = '-2147483647';	END IF;
-	IF Role_nm IS NULL OR Role_nm = '' THEN SET Role_nm = '-2147483647';	END IF;
-	IF Role_cd IS NULL OR Role_cd = '' THEN SET Role_cd = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole`
-			WHERE
-				Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Alternate Key lookup
-	#######################################################################
-	IF	_Key_cd = 'AK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole`
-			WHERE
-				Role_tp	= Role_tp
-			AND	Role_nm	= Role_nm
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole`
-			WHERE
-				(
-				Role_id	= Role_id
-			OR	Role_id	=  -2147483647
-				)
-			AND	(
-				Role_tp	= Role_tp
-			OR	Role_tp	= '-2147483647'
-				)
-			AND	(
-				Role_nm	= Role_nm
-			OR	Role_nm	= '-2147483647'
-				)
-			AND	(
-				Role_cd	= Role_cd
-			OR	Role_cd	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspRoleType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspRoleType
-(
-	Role_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspRoleType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblRoleType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Role_tp IS NULL OR Role_tp = '' THEN SET Role_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRoleType`
-			WHERE
-				Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRoleType`
-			WHERE
-				Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRoleType`
-			WHERE
-				(
-				Role_tp	= Role_tp
-			OR	Role_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspUser`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspUser
-(
-	User_id		int signed		
-,	User_tp		varchar(80)		
-,	User_nm		varchar(128)		
-,	Password_cd		varchar(48)		
-,	Domain_nm		varchar(128)		
-,	Email_tx		mediumtext		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspUser
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblUser
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF User_id IS NULL OR User_id = 0 THEN SET User_id =  -2147483647;	END IF;
-	IF User_tp IS NULL OR User_tp = '' THEN SET User_tp = '-2147483647';	END IF;
-	IF User_nm IS NULL OR User_nm = '' THEN SET User_nm = '-2147483647';	END IF;
-	IF Password_cd IS NULL OR Password_cd = '' THEN SET Password_cd = '-2147483647';	END IF;
-	IF Domain_nm IS NULL OR Domain_nm = '' THEN SET Domain_nm = '-2147483647';	END IF;
-	IF Email_tx IS NULL OR Email_tx = '' THEN SET Email_tx = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser`
-			WHERE
-				User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Alternate Key lookup
-	#######################################################################
-	IF	_Key_cd = 'AK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser`
-			WHERE
-				User_tp	= User_tp
-			AND	User_nm	= User_nm
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser`
-			WHERE
-				(
-				User_id	= User_id
-			OR	User_id	=  -2147483647
-				)
-			AND	(
-				User_tp	= User_tp
-			OR	User_tp	= '-2147483647'
-				)
-			AND	(
-				User_nm	= User_nm
-			OR	User_nm	= '-2147483647'
-				)
-			AND	(
-				Password_cd	= Password_cd
-			OR	Password_cd	= '-2147483647'
-				)
-			AND	(
-				Domain_nm	= Domain_nm
-			OR	Domain_nm	= '-2147483647'
-				)
-			AND	(
-				Email_tx	LIKE Email_tx
-			OR	Email_tx	LIKE '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspUserType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspUserType
-(
-	User_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspUserType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblUserType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF User_tp IS NULL OR User_tp = '' THEN SET User_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUserType`
-			WHERE
-				User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUserType`
-			WHERE
-				User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUserType`
-			WHERE
-				(
-				User_tp	= User_tp
-			OR	User_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspResource_RightType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspResource_RightType
-(
-	Resrc_id		int signed		
-,	Resrc_tp		varchar(80)		
-,	Right_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspResource_RightType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblResource_RightType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Resrc_id IS NULL OR Resrc_id = 0 THEN SET Resrc_id =  -2147483647;	END IF;
-	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
-	IF Right_tp IS NULL OR Right_tp = '' THEN SET Right_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResource_RightType`
-			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResource_RightType`
-			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResource_RightType`
-			WHERE
-				Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResource_RightType`
-			WHERE
-				(
-				Resrc_id	= Resrc_id
-			OR	Resrc_id	=  -2147483647
-				)
-			AND	(
-				Resrc_tp	= Resrc_tp
-			OR	Resrc_tp	= '-2147483647'
-				)
-			AND	(
-				Right_tp	= Right_tp
-			OR	Right_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspResourceType_RightType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspResourceType_RightType
-(
-	Resrc_tp		varchar(80)		
-,	Right_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspResourceType_RightType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblResourceType_RightType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
-	IF Right_tp IS NULL OR Right_tp = '' THEN SET Right_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResourceType_RightType`
-			WHERE
-				Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResourceType_RightType`
-			WHERE
-				Resrc_tp	= Resrc_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResourceType_RightType`
-			WHERE
-				Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblResourceType_RightType`
-			WHERE
-				(
-				Resrc_tp	= Resrc_tp
-			OR	Resrc_tp	= '-2147483647'
-				)
-			AND	(
-				Right_tp	= Right_tp
-			OR	Right_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspRole_Resource_RightType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspRole_Resource_RightType
-(
-	Role_id		int signed		
-,	Role_tp		varchar(80)		
-,	Resrc_id		int signed		
-,	Resrc_tp		varchar(80)		
-,	Right_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspRole_Resource_RightType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblRole_Resource_RightType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Role_id IS NULL OR Role_id = 0 THEN SET Role_id =  -2147483647;	END IF;
-	IF Role_tp IS NULL OR Role_tp = '' THEN SET Role_tp = '-2147483647';	END IF;
-	IF Resrc_id IS NULL OR Resrc_id = 0 THEN SET Resrc_id =  -2147483647;	END IF;
-	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
-	IF Right_tp IS NULL OR Right_tp = '' THEN SET Right_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_Resource_RightType`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-			AND	Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_Resource_RightType`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_Resource_RightType`
-			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK3'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_Resource_RightType`
-			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_Resource_RightType`
-			WHERE
-				(
-				Role_id	= Role_id
-			OR	Role_id	=  -2147483647
-				)
-			AND	(
-				Role_tp	= Role_tp
-			OR	Role_tp	= '-2147483647'
-				)
-			AND	(
-				Resrc_id	= Resrc_id
-			OR	Resrc_id	=  -2147483647
-				)
-			AND	(
-				Resrc_tp	= Resrc_tp
-			OR	Resrc_tp	= '-2147483647'
-				)
-			AND	(
-				Right_tp	= Right_tp
-			OR	Right_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspRole_ResourceType_RightType`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspRole_ResourceType_RightType
-(
-	Role_id		int signed		
-,	Role_tp		varchar(80)		
-,	Resrc_tp		varchar(80)		
-,	Right_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspRole_ResourceType_RightType
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblRole_ResourceType_RightType
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF Role_id IS NULL OR Role_id = 0 THEN SET Role_id =  -2147483647;	END IF;
-	IF Role_tp IS NULL OR Role_tp = '' THEN SET Role_tp = '-2147483647';	END IF;
-	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
-	IF Right_tp IS NULL OR Right_tp = '' THEN SET Right_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_ResourceType_RightType`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-			AND	Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_ResourceType_RightType`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_ResourceType_RightType`
-			WHERE
-				Resrc_tp	= Resrc_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK3'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_ResourceType_RightType`
-			WHERE
-				Resrc_tp	= Resrc_tp
-			AND	Right_tp	= Right_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblRole_ResourceType_RightType`
-			WHERE
-				(
-				Role_id	= Role_id
-			OR	Role_id	=  -2147483647
-				)
-			AND	(
-				Role_tp	= Role_tp
-			OR	Role_tp	= '-2147483647'
-				)
-			AND	(
-				Resrc_tp	= Resrc_tp
-			OR	Resrc_tp	= '-2147483647'
-				)
-			AND	(
-				Right_tp	= Right_tp
-			OR	Right_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspUser_Person`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspUser_Person
-(
-	User_id		int signed		
-,	User_tp		varchar(80)		
-,	Person_id		int signed		
-,	Person_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspUser_Person
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblUser_Person
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF User_id IS NULL OR User_id = 0 THEN SET User_id =  -2147483647;	END IF;
-	IF User_tp IS NULL OR User_tp = '' THEN SET User_tp = '-2147483647';	END IF;
-	IF Person_id IS NULL OR Person_id = 0 THEN SET Person_id =  -2147483647;	END IF;
-	IF Person_tp IS NULL OR Person_tp = '' THEN SET Person_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Person`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-			AND	Person_id	= Person_id
-			AND	Person_tp	= Person_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Person`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Person`
-			WHERE
-				Person_id	= Person_id
-			AND	Person_tp	= Person_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Person`
-			WHERE
-				(
-				User_id	= User_id
-			OR	User_id	=  -2147483647
-				)
-			AND	(
-				User_tp	= User_tp
-			OR	User_tp	= '-2147483647'
-				)
-			AND	(
-				Person_id	= Person_id
-			OR	Person_id	=  -2147483647
-				)
-			AND	(
-				Person_tp	= Person_tp
-			OR	Person_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
-###############################################################################
-END
-//
-DELIMITER ;
-;
-DROP PROCEDURE IF EXISTS	`rspUser_Role`
-;
-
-DELIMITER //
-CREATE PROCEDURE	rspUser_Role
-(
-	User_id		int signed		
-,	User_tp		varchar(80)		
-,	Role_id		int signed		
-,	Role_tp		varchar(80)		
-
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
-)
-BEGIN
-/*
-**	Name:		rspUser_Role
-**	Type:		DB API Procedure: Referential 
-**	Purpose:	Check existence of a record in tblUser_Role
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
-###############################################################################
-BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
-	IF User_id IS NULL OR User_id = 0 THEN SET User_id =  -2147483647;	END IF;
-	IF User_tp IS NULL OR User_tp = '' THEN SET User_tp = '-2147483647';	END IF;
-	IF Role_id IS NULL OR Role_id = 0 THEN SET Role_id =  -2147483647;	END IF;
-	IF Role_tp IS NULL OR Role_tp = '' THEN SET Role_tp = '-2147483647';	END IF;
-
-	#######################################################################
-	-- Primary Key lookup
-	#######################################################################
-	IF 	_Key_cd	= 'PK'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Role`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-			AND	Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK1'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Role`
-			WHERE
-				User_id	= User_id
-			AND	User_tp	= User_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-	#######################################################################
-	-- Foreign Key lookup
-	#######################################################################
-	IF	_Key_cd = 'FK2'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Role`
-			WHERE
-				Role_id	= Role_id
-			AND	Role_tp	= Role_tp
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-
-
-	#######################################################################
-	-- Attribute lookup
-	#######################################################################
-	IF	_Key_cd	= 'AL'
-	THEN
-		IF
-		EXISTS
-		(
-			SELECT	1
-			FROM	`tblUser_Role`
-			WHERE
-				(
-				User_id	= User_id
-			OR	User_id	=  -2147483647
-				)
-			AND	(
-				User_tp	= User_tp
-			OR	User_tp	= '-2147483647'
-				)
-			AND	(
-				Role_id	= Role_id
-			OR	Role_id	=  -2147483647
-				)
-			AND	(
-				Role_tp	= Role_tp
-			OR	Role_tp	= '-2147483647'
-				)
-
-		)
-		THEN
-			SET _RowExists_fg	= 1;
-		ELSE
-			SET _RowExists_fg	= 0;
-		END IF;
-	END IF;
-	#######################################################################
-END;
 ###############################################################################
 END
 //

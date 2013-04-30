@@ -7,9 +7,9 @@ DROP INDEX `pkResourceType`
 **	Type:		Constraint: Primary Key
 **	Purpose:	To constrain tblResourceType "meaningless" primary Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **

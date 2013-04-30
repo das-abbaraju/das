@@ -18,9 +18,9 @@ AS
 **	Type:		View
 **	Purpose:	To return materialized data from one or more tables.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -34,7 +34,7 @@ SELECT
 ,	tblResourceType.Level_id
 ,	tblResourceType.Order_id
 FROM
-	[pics_alpha1].[tblResourceType]
+	tblResourceType
 
 ;
 
