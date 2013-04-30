@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
@@ -41,9 +40,9 @@
 </div>
 					
 <div class="registration">
-    <pics:toggle name="<%=FeatureToggle.TOGGLE_REGISTRATION_AUTOFILL%>">
+    <s:if test="!isLiveEnvironment()" >
         <input type="button" class="btn" id="autofill" value="Autofill"/>
-    </pics:toggle>
+    </s:if>
 	<aside class="registration-side-bar">
 		<div class="info-join">
 			<section>
