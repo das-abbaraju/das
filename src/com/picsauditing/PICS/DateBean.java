@@ -223,7 +223,7 @@ public class DateBean {
 	}
 
 	public static int getPreviousWCBYear() {
-		return getEffectiveWCBYear(new Date());
+		return getEffectiveWCBYear(today());
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class DateBean {
 	 * @return
 	 */
 	public static boolean isGracePeriodForWCB() {
-		return isGracePeriodForWCB(new Date());
+		return isGracePeriodForWCB(today());
 	}
 
 	private static boolean isGracePeriodForWCB(Date now) {
@@ -490,7 +490,7 @@ public class DateBean {
 	}
 
 	public static boolean isToday(Date firstDate) {
-		return (daysBetween(firstDate, new Date()) == 0);
+		return (daysBetween(firstDate, today()) == 0);
 	}
 
 	public static boolean isSameDate(Date firstDate, Date secondDate) {
@@ -516,6 +516,21 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 
 		return DateBean.daysBetween(cal.getTime(), firstDate);
+	}
+
+	public static Date parseDate(String date, String format) {
+		if (Strings.isEmpty(date) || Strings.isEmpty(format)) {
+			throw new IllegalArgumentException("You must provide a date and format.");
+		}
+
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+			return dateFormat.parse(date);
+		} catch (Exception e) {
+			logger.error("Error parsing date = {}", date, e);
+		}
+
+		return null;
 	}
 
 	public static Date parseDate(String dateString) {
@@ -715,7 +730,7 @@ public class DateBean {
 	}
 
 	public static String getBrainTreeDate() {
-		Date d = new Date();
+		Date d = today();
 		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.Braintree);
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -736,7 +751,7 @@ public class DateBean {
 	public static String getCurrentMonthName() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM");
 
-		return dateFormat.format(new Date());
+		return dateFormat.format(today());
 	}
 
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone) {
@@ -759,7 +774,7 @@ public class DateBean {
 	}
 
 	public static String prettyDate(Date dateValue) {
-		long msToUnlock = dateValue.getTime() - new Date().getTime();
+		long msToUnlock = dateValue.getTime() - today().getTime();
 
 		String ago = (msToUnlock < 0) ? " ago" : Strings.EMPTY_STRING;
 		msToUnlock = Math.abs(msToUnlock);
@@ -834,5 +849,18 @@ public class DateBean {
 		} while (startDate.isBefore(endDate));
 
 		return workDays;
+	}
+
+	public static boolean isBeyondSpecifiedDays(Date date, int daysFromToday) {
+		if (date == null || daysFromToday > 0) {
+			throw new IllegalArgumentException("Date cannot be null and daysFromToday must be greater than zero");
+		}
+
+		Date daysOut = addDays(today(), daysFromToday);
+		return daysOut.compareTo(date) < 0;
+	}
+
+	private static Date today() {
+		return new Date();
 	}
 }

@@ -154,6 +154,7 @@ public class BillingCalculatorSingleTest {
 		}
 	}
 
+
 	@Test
 	public void testCalculateInvoiceTotal() throws Exception {
 		InvoiceItem anotherItem = mock(InvoiceItem.class);
