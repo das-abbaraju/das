@@ -76,6 +76,11 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + " AND c.trirAverage < "
 				+ getFilter().getIncidenceRateAvgMax() + ")"
 				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
+
+        if (permissions.isOperatorCorporate())
+        {
+            sql.addGroupBy("a.id, ca.auditFor");
+        }
 	}
 
 	@Override
