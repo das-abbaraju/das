@@ -7,6 +7,9 @@
 
     <constant name="struts.url.includeParams" value="none"/>
     <constant name="struts.multipart.maxSize" value="1610613504"/>
+	<constant name="struts.multipart.saveDir" value="/var/tmp"/>
+	<constant name="struts.messages.error.uploading" value="Struts Uploading Error"/>
+	<constant name="struts.messages.error.file.too.large" value="Struts sez file is bigger than 1610613504"/>
 
     <constant name="struts.enable.SlashesInActionNames" value="true"/>
     <constant name="struts.mapper.alwaysSelectFullNamespace"
