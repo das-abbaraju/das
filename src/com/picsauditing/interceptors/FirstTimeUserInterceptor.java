@@ -26,7 +26,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 					.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 
 			if (redirectUserToTutorial(permissions)) {
-				invocation.getStack().set("url", "Tutorial!navigationMenu.action");
+				invocation.getStack().set("url", "Reference!navigationMenu.action");
 				return "redirect";
 			}
 		} catch (Exception e) {

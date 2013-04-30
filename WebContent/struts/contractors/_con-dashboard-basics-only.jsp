@@ -10,14 +10,16 @@
 	</span>
 </h1>
 
-<s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
-	<s:param name="contractor">${contractor.id}</s:param>
-</s:url>
-<s:text name="ContractorView.AddContractorToDatabase">
-	<s:param>
-		${new_contractor_search_add}
-	</s:param>
-</s:text>
+<s:if test="contractor.autoAddClientSite" >
+    <s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
+        <s:param name="contractor">${contractor.id}</s:param>
+    </s:url>
+    <s:text name="ContractorView.AddContractorToDatabase">
+        <s:param>
+            ${new_contractor_search_add}
+        </s:param>
+    </s:text>
+</s:if>
 <div class="clear"></div>
 
 <table id="contractor_dashboard">

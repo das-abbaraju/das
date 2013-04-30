@@ -1150,15 +1150,34 @@ hr {
   word-wrap: break-word;
 }
 /* line 31, ../sass/pics/templates/app-property/_app-property.scss */
-.ManageAppProperty-page #app_property_edit_form .form-actions,
-.ManageAppProperty-page #app_property_create_form .form-actions {
+.ManageAppProperty-page #app_property_create_form .form-actions,
+.ManageAppProperty-page #app_property_edit_form .form-actions {
   text-align: right;
-  width: 220px;
 }
-/* line 37, ../sass/pics/templates/app-property/_app-property.scss */
-.ManageAppProperty-page #app_property_edit_form .form-actions .btn,
-.ManageAppProperty-page #app_property_create_form .form-actions .btn {
-  margin-left: 10px;
+/* line 36, ../sass/pics/templates/app-property/_app-property.scss */
+.ManageAppProperty-page #app_property_create_form .form-actions .btn,
+.ManageAppProperty-page #app_property_edit_form .form-actions .btn {
+  margin-left: 5px;
+}
+/* line 41, ../sass/pics/templates/app-property/_app-property.scss */
+.ManageAppProperty-page #app_property_create_form textarea,
+.ManageAppProperty-page #app_property_edit_form textarea {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/* line 46, ../sass/pics/templates/app-property/_app-property.scss */
+.ManageAppProperty-page #app_property_create_form input,
+.ManageAppProperty-page #app_property_edit_form input {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 4px 6px;
+}
+/* line 54, ../sass/pics/templates/app-property/_app-property.scss */
+.ManageAppProperty-page #app_property_edit_form span {
+  height: 30px;
 }
 
 /* line 4, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */

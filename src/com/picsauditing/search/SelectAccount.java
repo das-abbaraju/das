@@ -147,6 +147,7 @@ public class SelectAccount extends SelectSQL {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
 			String operatorVisibility = permissions.getAccountIdString();
+			operatorVisibility +="," +permissions.getPrimaryCorporateAccountID();
 
 			if (permissions.isGeneralContractor()) {
 				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
