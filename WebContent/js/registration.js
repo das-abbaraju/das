@@ -34,7 +34,7 @@
 				});
 
 				var selectedSubdivision = null;
-				
+
 				if ($('#requested_contractor').length) {
 			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
 
@@ -72,7 +72,7 @@
 						} else {
 							zip_element.slideDown(400);
 						}
-						
+
 						if (selectedSubdivision) {
 							countrySubdivision_element.find("select").val(selectedSubdivision);
 						}
@@ -336,7 +336,7 @@
                 } else {
                     business_interruption_evaluation.slideUp(400);
                 }
-                
+
                 if (transportation_evaluation_display) {
                     transportation_evaluation.slideDown(400);
                 } else {
@@ -351,7 +351,7 @@
 	        init: function () {
                 var company_information = $('.company-information');
 
-                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleRequestToProvideSsipDetailsDisplay);
+                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
                 $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
 
                 $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
@@ -422,14 +422,14 @@
                 });
             },
 
-            toggleRequestToProvideSsipDetailsDisplay: function (event) {
-                var val = $('input[name=registeredWithSsipMemberScheme]:checked').val();
+            toggleReadyToProvideSsipDetailsDisplay: function (event) {
+                var val = $('#registeredWithSsipMemberScheme:checked').val();
 
-                if (val == "true") {
+                if (val == "Yes") {
                     $('.request-to-provide-ssip-details-container').slideDown(400);
                 } else {
                     $('.request-to-provide-ssip-details-container').slideUp(400, function () {
-                        $('input[name=requestToProvideSsipDetails]').each(function () {
+                        $('input[name=readyToProvideSsipDetails]').each(function () {
                             $(this).prop('checked', false);
                         });
                     });
@@ -440,9 +440,9 @@
             },
 
             toggleSsipDetailsDisplay: function (event) {
-                var val = $('input[name=requestToProvideSsipDetails]:checked').val();
+                var val = $('input[name=readyToProvideSsipDetails]:checked').val();
 
-                if (val == "true") {
+                if (val == "Yes") {
                     $('.provide-ssip-details-later-message').slideUp(400);
                     $('.ssip-details-container').slideDown(400);
                 } else {
