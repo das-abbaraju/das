@@ -4,22 +4,22 @@ DROP PROCEDURE IF EXISTS	`ispResource`
 DELIMITER //
 CREATE PROCEDURE	ispResource
 (
-	Resrc_id		int signed		-- PK1 
-,	Resrc_tp		varchar(80)		-- PK2 AK1
-,	Resrc_nm		varchar(128)		--  AK2
-,	Resrc_tx		mediumtext	
-,	ADD_dm		datetime	
-,	ADD_nm		varchar(128)	
-,	UPD_dm		datetime	
-,	UPD_nm		varchar(128)	
-,	DEL_dm		datetime	
-,	DEL_nm		varchar(128)	
-,	ParentResrc_tp		varchar(80)	
-,	ResrcType_tx		mediumtext	
-,	Left_id		int signed	
-,	Right_id		int signed	
-,	Level_id		int signed	
-,	Order_id		int signed	
+	Resrc_id		INT SIGNED		-- PK1 
+,	Resrc_tp		VARCHAR(80)		-- PK2 AK1
+,	Resrc_nm		VARCHAR(128)		--  AK2
+,	Resrc_tx		MEDIUMTEXT	
+,	ADD_dm		DATETIME	
+,	ADD_nm		VARCHAR(128)	
+,	UPD_dm		DATETIME	
+,	UPD_nm		VARCHAR(128)	
+,	DEL_dm		DATETIME	
+,	DEL_nm		VARCHAR(128)	
+,	ParentResrc_tp		VARCHAR(80)	
+,	ResrcType_tx		MEDIUMTEXT	
+,	Left_id		INT SIGNED	
+,	Right_id		INT SIGNED	
+,	Level_id		INT SIGNED	
+,	Order_id		INT SIGNED	
 
 ,	CallingProc_nm	VARCHAR(128)	-- CallingProc	The sproc calling this proc
 ,	Source_nm	VARCHAR(128)	-- SourceSystem	System name
@@ -83,6 +83,14 @@ BEGIN
 	(
 		@Resrc_id	:= Resrc_id
 	,	@Resrc_tp	:= Resrc_tp
+	,	@Resrc_nm	:= Resrc_nm
+	,	@Resrc_tx	:= Resrc_tx
+	,	@ADD_dm	:= ADD_dm
+	,	@ADD_nm	:= ADD_nm
+	,	@UPD_dm	:= UPD_dm
+	,	@UPD_nm	:= UPD_nm
+	,	@DEL_dm	:= DEL_dm
+	,	@DEL_nm	:= DEL_nm
 
 	,	@Key_cd		:= Key_cd
 	,	@RowExists_fg
@@ -107,16 +115,19 @@ BEGIN
 	-- Return if Alternate Key VIEW record exists
 	#######################################################################
 	SELECT
-		Resrc_id	INTO _Resrc_id
-	,	Resrc_tp	INTO _Resrc_tp
-
+ 		vwResource.Resrc_id	
+	,	vwResource.Resrc_tp
+	INTO
+		Resrc_id
+	,	Resrc_tp
 	FROM
 		vwResource
 	WHERE
-		Resrc_tp	= Resrc_tp
-	AND	Resrc_nm	= Resrc_nm
+		vwResource.Resrc_tp	= Resrc_tp
+	AND	vwResource.Resrc_nm	= Resrc_nm
 
 	;
+
 	IF
 		FOUND_ROWS()	> 0
 	THEN
@@ -141,24 +152,31 @@ BEGIN
 	,	@Resrc_tp	:= Resrc_tp
 	,	@Resrc_nm	:= Resrc_nm
 	,	@Resrc_tx	:= Resrc_tx
-	,	@ADD_dm	:= ADD_dm
-	,	@ADD_nm	:= ADD_nm
-	,	@UPD_dm	:= UPD_dm
-	,	@UPD_nm	:= UPD_nm
-	,	@DEL_dm	:= DEL_dm
-	,	@DEL_nm	:= DEL_nm
+	,	@ADD_dm
+	,	@ADD_nm
+	,	@UPD_dm
+	,	@UPD_nm
+	,	@DEL_dm
+	,	@DEL_nm
+-- 	,	@ADD_dm	:= ADD_dm
+-- 	,	@ADD_nm	:= ADD_nm
+-- 	,	@UPD_dm	:= UPD_dm
+-- 	,	@UPD_nm	:= UPD_nm
+-- 	,	@DEL_dm	:= DEL_dm
+-- 	,	@DEL_nm	:= DEL_nm
 
 	,	@SYSRIGHT	:= SYSRIGHT
 	,	@Mode_cd	:= Mode_cd
 	,	@IsValid_fg
 	);
+
 	IF	@IsValid_fg	= FALSE
 	THEN
 		SET ProcFailed_fg	= TRUE;
 		CALL 	errFailedCall
 		(
 			@Proc_nm	:= Proc_nm
-		,	@CallingProc_nm	:= CallingProc_nm
+		,	@CallingProc_nm	:= 'vspResource'
 		);
 		LEAVE	ISP;
 	END IF;
@@ -174,6 +192,12 @@ BEGIN
 		CALL	rspResourceType
 		(
 			@Resrc_tp	:= Resrc_tp
+		,	@ParentResrc_tp	:= ParentResrc_tp
+		,	@ResrcType_tx	:= ResrcType_tx
+		,	@Left_id	:= Left_id
+		,	@Right_id	:= Right_id
+		,	@Level_id	:= Level_id
+		,	@Order_id	:= Order_id
 
 		,	@Key_cd		:= Key_cd
 		,	@RowExists_fg
@@ -188,7 +212,7 @@ BEGIN
 				@Proc_nm	:= Proc_nm
 			,	@Table_nm	:= SYSTABLE
 			,	@Action_nm	:= SYSRIGHT
-			,	@Key_nm		:= 			,		 Resrc_tp
+			,	@Key_nm		:= 'Resrc_tp'
 			);
 
 			CALL 	errFailedMode
@@ -217,7 +241,7 @@ BEGIN
 		,	@Level_id	:= Level_id
 		,	@Order_id	:= Order_id
 
-		,	@CallingProc_nm	:= CallingProc_nm
+		,	@CallingProc_nm	:= 'ispResourceType'
 		,	@Source_nm	:= Source_nm
 		,	@Token_cd	:= Token_cd
 		,	@Mode_cd	:= 'R'	-- This Table Is Restricted and Does Not Allow A Cascade From an FK Table.
@@ -261,14 +285,15 @@ BEGIN
 	,	Resrc_tp
 	,	Resrc_nm
 	,	Resrc_tx
-	,	ADD_dm
-	,	ADD_nm
-	,	UPD_dm
-	,	UPD_nm
-	,	DEL_dm
-	,	DEL_nm
+	,	@ADD_dm
+	,	@ADD_nm
+	,	@UPD_dm
+	,	@UPD_nm
+	,	@DEL_dm
+	,	@DEL_nm
 
 	);
+	SET Resrc_id	= LAST_INSERT_ID();
 END;
 	#######################################################################
 	-- Insert this transaction in the transaction history log
@@ -296,3 +321,29 @@ END
 DELIMITER ;
 ;
 
+/*
+CALL	ispResource
+(
+	@Resrc_id	:= NULL
+,	@Resrc_tp	:= NULL
+,	@Resrc_nm	:= NULL
+,	@Resrc_tx	:= NULL
+,	@ADD_dm	:= NULL
+,	@ADD_nm	:= NULL
+,	@UPD_dm	:= NULL
+,	@UPD_nm	:= NULL
+,	@DEL_dm	:= NULL
+,	@DEL_nm	:= NULL
+,	@ParentResrc_tp	:= NULL
+,	@ResrcType_tx	:= NULL
+,	@Left_id	:= NULL
+,	@Right_id	:= NULL
+,	@Level_id	:= NULL
+,	@Order_id	:= NULL
+,	@CallingProc_nm	:= NULL
+,	@Source_nm	:= NULL
+,	@Token_cd	:= NULL
+,	@Mode_cd	:= NULL
+)
+;
+*/

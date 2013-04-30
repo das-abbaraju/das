@@ -5,18 +5,18 @@ DELIMITER //
 CREATE PROCEDURE	rspResource
 (
 	Resrc_id		int signed		
-,	Resrc_tp		varchar(80)		
-,	Resrc_nm		varchar(128)		
+,	Resrc_tp		varchar(64)		
+,	Resrc_nm		varchar(256)		
 ,	Resrc_tx		mediumtext		
 ,	ADD_dm		datetime		
-,	ADD_nm		varchar(128)		
+,	ADD_nm		varchar(256)		
 ,	UPD_dm		datetime		
-,	UPD_nm		varchar(128)		
+,	UPD_nm		varchar(256)		
 ,	DEL_dm		datetime		
-,	DEL_nm		varchar(128)		
+,	DEL_nm		varchar(256)		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
@@ -24,18 +24,18 @@ BEGIN
 **	Type:		DB API Procedure: Referential 
 **	Purpose:	Check existence of a record in tblResource
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
 	IF Resrc_id IS NULL OR Resrc_id = 0 THEN SET Resrc_id =  -2147483647;	END IF;
 	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
 	IF Resrc_nm IS NULL OR Resrc_nm = '' THEN SET Resrc_nm = '-2147483647';	END IF;
@@ -50,79 +50,82 @@ BEGIN
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_id	= Resrc_id
-			AND	Resrc_tp	= Resrc_tp
+				tblResource.Resrc_id	= Resrc_id
+			AND	tblResource.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Foreign Key lookup
 	#######################################################################
-	IF	_Key_cd = 'FK1'
+	IF	Key_cd = 'FK1'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResource.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
-				Resrc_tp	= Resrc_tp
-			AND	Resrc_nm	= Resrc_nm
+				tblResource.Resrc_tp	= Resrc_tp
+			AND	tblResource.Resrc_nm	= Resrc_nm
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResource`
+			FROM	tblResource
 			WHERE
 				(
 				Resrc_id	= Resrc_id
@@ -167,13 +170,15 @@ BEGIN
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //

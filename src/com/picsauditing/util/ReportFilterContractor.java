@@ -106,6 +106,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] generalContractor;
 	protected int[] insideSalesID;
 
+    protected String generalContractorAlias = "gc";
+
 	// // setting the filter
 	public boolean isShowContractor() {
 		return showContractor;
@@ -977,4 +979,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setInsideSalesID(int[] insideSalesID) {
 		this.insideSalesID = insideSalesID;
 	}
+
+    public String getGeneralContractorAlias() {
+        return generalContractorAlias;
+    }
+
+    public void setGeneralContractorAlias(String generalContractorAlias) {
+        this.generalContractorAlias = generalContractorAlias;
+    }
 }

@@ -29,7 +29,7 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 		Collection<Autocompleteable> result = new HashSet<Autocompleteable>();
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q)) {
-				locationAutocompleteService.getItemsForSearch(q, permissions);
+				return locationAutocompleteService.getItemsForSearch(q, permissions);
 			}
 		} else if (itemKeys.length > 0) {
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode IN (" +

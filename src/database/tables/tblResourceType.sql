@@ -6,17 +6,17 @@ DROP TABLE IF EXISTS	`tblResourceType`
 **	Type:		Database Table
 **	Purpose:	To hold tblResourceType data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 CREATE TABLE IF NOT EXISTS	`tblResourceType`
 (
-	Resrc_tp		varchar(80)		NOT NULL
-,	ParentResrc_tp		varchar(80)		NULL
+	Resrc_tp		varchar(64)		NOT NULL
+,	ParentResrc_tp		varchar(64)		NULL
 ,	ResrcType_tx		mediumtext		NULL
 ,	Left_id		int signed		NULL
 ,	Right_id		int signed		NULL

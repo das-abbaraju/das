@@ -12,7 +12,7 @@ public class EmrStatistics extends SafetyStatistics {
 		super(year, OshaType.EMR, data);
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		
-		answerMap.put(OshaRateType.SeverityRate, makeZeroAnswerData(QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR));
+		answerMap.put(OshaRateType.EMR, makeZeroAnswerData(QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR));
 
 		for (AuditData answer : data) {
 			if (answer.getQuestion().getId() == QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR

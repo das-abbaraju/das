@@ -1,53 +1,57 @@
-ALTER TABLE `tblPerson`
-DROP INDEX `akPerson`
+	--    NO ALTERNATE KEY DEFINED FOR app_language
+ALTER TABLE `tblContext`
+DROP INDEX `akContext`
 ;
 
 /*
-**	Name:		tblPerson
+**	Name:		tblContext
 **	Type:		Constraint: Alternate Key
-**	Purpose:	To constrain tblPerson "meaningful" alternate Key data.
+**	Purpose:	To constrain tblContext "meaningful" alternate Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER TABLE	`tblPerson`
-ADD CONSTRAINT	`akPerson`	UNIQUE 
+ALTER TABLE	`tblContext`
+ADD CONSTRAINT	`akContext`	UNIQUE 
 (
-	Person_tp		
-,	Person_nm		
+	Context_tp		
+,	Context_nm		
 
 )
 ;
-	--    NO ALTERNATE KEY DEFINED FOR tblPersonType
-ALTER TABLE `tblReport`
-DROP INDEX `akReport`
+	--    NO ALTERNATE KEY DEFINED FOR tblContextType
+ALTER TABLE `tblItem`
+DROP INDEX `akItem`
 ;
 
 /*
-**	Name:		tblReport
+**	Name:		tblItem
 **	Type:		Constraint: Alternate Key
-**	Purpose:	To constrain tblReport "meaningful" alternate Key data.
+**	Purpose:	To constrain tblItem "meaningful" alternate Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
-ALTER TABLE	`tblReport`
-ADD CONSTRAINT	`akReport`	UNIQUE 
+ALTER TABLE	`tblItem`
+ADD CONSTRAINT	`akItem`	UNIQUE 
 (
-	Report_tp		
-,	Report_nm		
+	Item_tp		
+,	Item_nm		
 
 )
 ;
-	--    NO ALTERNATE KEY DEFINED FOR tblReportType
+	--    NO ALTERNATE KEY DEFINED FOR tblItem_Context
+	--    NO ALTERNATE KEY DEFINED FOR tblItem_Context_Locale
+	--    NO ALTERNATE KEY DEFINED FOR tblItem_Locale
+	--    NO ALTERNATE KEY DEFINED FOR tblItemType
 ALTER TABLE `tblResource`
 DROP INDEX `akResource`
 ;
@@ -57,9 +61,9 @@ DROP INDEX `akResource`
 **	Type:		Constraint: Alternate Key
 **	Purpose:	To constrain tblResource "meaningful" alternate Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -81,9 +85,9 @@ DROP INDEX `akResourceType`
 **	Type:		Constraint: Alternate Key
 **	Purpose:	To constrain tblResourceType "meaningful" alternate Key data.
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
@@ -95,61 +99,4 @@ ADD CONSTRAINT	`akResourceType`	UNIQUE
 
 )
 ;
-	--    NO ALTERNATE KEY DEFINED FOR tblRightType
-ALTER TABLE `tblRole`
-DROP INDEX `akRole`
-;
-
-/*
-**	Name:		tblRole
-**	Type:		Constraint: Alternate Key
-**	Purpose:	To constrain tblRole "meaningful" alternate Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER TABLE	`tblRole`
-ADD CONSTRAINT	`akRole`	UNIQUE 
-(
-	Role_tp		
-,	Role_nm		
-
-)
-;
-	--    NO ALTERNATE KEY DEFINED FOR tblRoleType
-ALTER TABLE `tblUser`
-DROP INDEX `akUser`
-;
-
-/*
-**	Name:		tblUser
-**	Type:		Constraint: Alternate Key
-**	Purpose:	To constrain tblUser "meaningful" alternate Key data.
-**	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
-**
-**	Modified:	4/12/2013
-**	Modnumber:	00
-**	Modification:	Original
-**
-*/
-ALTER TABLE	`tblUser`
-ADD CONSTRAINT	`akUser`	UNIQUE 
-(
-	User_tp		
-,	User_nm		
-
-)
-;
-	--    NO ALTERNATE KEY DEFINED FOR tblUserType
-	--    NO ALTERNATE KEY DEFINED FOR tblResource_RightType
-	--    NO ALTERNATE KEY DEFINED FOR tblResourceType_RightType
-	--    NO ALTERNATE KEY DEFINED FOR tblRole_Resource_RightType
-	--    NO ALTERNATE KEY DEFINED FOR tblRole_ResourceType_RightType
-	--    NO ALTERNATE KEY DEFINED FOR tblUser_Person
-	--    NO ALTERNATE KEY DEFINED FOR tblUser_Role
 

@@ -4,16 +4,16 @@ DROP PROCEDURE IF EXISTS	`rspResourceType`
 DELIMITER //
 CREATE PROCEDURE	rspResourceType
 (
-	Resrc_tp		varchar(80)		
-,	ParentResrc_tp		varchar(80)		
+	Resrc_tp		varchar(64)		
+,	ParentResrc_tp		varchar(64)		
 ,	ResrcType_tx		mediumtext		
 ,	Left_id		int signed		
 ,	Right_id		int signed		
 ,	Level_id		int signed		
 ,	Order_id		int signed		
 
-,		_Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
-,	OUT 	_RowExists_fg	TINYINT	
+,		Key_cd		VARCHAR(16)		-- = 'PK'	-- Search key code
+,	OUT 	RowExists_fg	TINYINT	
 )
 BEGIN
 /*
@@ -21,18 +21,18 @@ BEGIN
 **	Type:		DB API Procedure: Referential 
 **	Purpose:	Check existence of a record in tblResourceType
 **	Author:		Solomon S. Shacter
-**	Generated:	4/12/2013
+**	Generated:	4/29/2013
 **
-**	Modified:	4/12/2013
+**	Modified:	4/29/2013
 **	Modnumber:	00
 **	Modification:	Original
 **
 */
 ###############################################################################
-DECLARE	_RETURN		INT DEFAULT 0;
 ###############################################################################
+RSP:
 BEGIN
-	IF _Key_cd IS NULL OR _Key_cd = '' THEN SET _Key_cd = 'PK';	END IF;
+	IF Key_cd IS NULL OR Key_cd = '' THEN SET Key_cd = 'PK';	END IF;
 	IF Resrc_tp IS NULL OR Resrc_tp = '' THEN SET Resrc_tp = '-2147483647';	END IF;
 	IF ParentResrc_tp IS NULL OR ParentResrc_tp = '' THEN SET ParentResrc_tp = '-2147483647';	END IF;
 	IF ResrcType_tx IS NULL OR ResrcType_tx = '' THEN SET ResrcType_tx = '-2147483647';	END IF;
@@ -44,56 +44,58 @@ BEGIN
 	#######################################################################
 	-- Primary Key lookup
 	#######################################################################
-	IF 	_Key_cd	= 'PK'
+	IF 	Key_cd	= 'PK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResourceType.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 
 	#######################################################################
 	-- Alternate Key lookup
 	#######################################################################
-	IF	_Key_cd = 'AK'
+	IF	Key_cd = 'AK'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
-				Resrc_tp	= Resrc_tp
+				tblResourceType.Resrc_tp	= Resrc_tp
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 
 	#######################################################################
 	-- Attribute lookup
 	#######################################################################
-	IF	_Key_cd	= 'AL'
+	IF	Key_cd	= 'AL'
 	THEN
 		IF
 		EXISTS
 		(
 			SELECT	1
-			FROM	`tblResourceType`
+			FROM	tblResourceType
 			WHERE
 				(
 				Resrc_tp	= Resrc_tp
@@ -126,13 +128,15 @@ BEGIN
 
 		)
 		THEN
-			SET _RowExists_fg	= 1;
+			SET RowExists_fg	= 1;
 		ELSE
-			SET _RowExists_fg	= 0;
+			SET RowExists_fg	= 0;
 		END IF;
+		LEAVE RSP;
 	END IF;
 	#######################################################################
-END;
+END	RSP
+;
 ###############################################################################
 END
 //
