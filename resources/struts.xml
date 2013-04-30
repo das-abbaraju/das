@@ -7,6 +7,7 @@
 
     <constant name="struts.url.includeParams" value="none"/>
     <constant name="struts.multipart.maxSize" value="1610613504"/>
+	<constant name="struts.multipart.saveDir" value="/var/pics/www_files/tmp"/>
 
     <constant name="struts.enable.SlashesInActionNames" value="true"/>
     <constant name="struts.mapper.alwaysSelectFullNamespace"
