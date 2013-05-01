@@ -335,39 +335,21 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, AuditData> findContractorAuditAnswers(int contractorId, int auditTypeId, Set<Integer> questionIds) {
+	public List<AuditData> findContractorAuditAnswers(int contractorId, int auditTypeId, int questionId) {
 		TypedQuery<AuditData> query = em
 				.createQuery(
-						"FROM AuditData d WHERE d.audit.auditType.id = :auditTypeId AND d.audit.contractorAccount.id = :contractorId AND d.question.id IN ( :questionIds ) ORDER BY d.audit.id DESC",
+						"FROM AuditData d WHERE d.audit.auditType.id = :auditTypeId AND d.audit.contractorAccount.id = :contractorId AND d.question.id IN ( :questionId ) ORDER BY d.audit.id DESC",
 						AuditData.class);
 		query.setParameter("contractorId", contractorId);
 		query.setParameter("auditTypeId", auditTypeId);
-		query.setParameter("questionIds", questionIds);
+		query.setParameter("questionId", questionId);
 
 		try {
-
-
-			List<AuditData> auditDataList = query.getResultList();
-			if (CollectionUtils.isEmpty(auditDataList)) {
-				return Collections.emptyMap();
-			}
-
-			Map<Integer, AuditData> questionAnswers = new HashMap<>();
-			for (AuditData auditData : auditDataList) {
-				AuditQuestion question = auditData.getQuestion();
-				if (question != null) {
-					int questionId = question.getId();
-					if (!questionAnswers.containsKey(questionId)) {
-						questionAnswers.put(questionId, auditData);
-					}
-				}
-			}
+            return query.getResultList();
 		} catch (Exception e) {
 			logger.error(MessageFormat.format(
-					"An error occurred while running query contractoID =  {0}, auditTypeId = {1}", contractorId, auditTypeId),
-					e);
+					"An error occurred while running query contractoID =  {0}, auditTypeId = {1}", contractorId, auditTypeId), e);
+            return Collections.emptyList();
 		}
-
-		return Collections.emptyMap();
 	}
 }

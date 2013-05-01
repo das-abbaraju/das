@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.SsipScheme;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -851,16 +851,26 @@ public class DateBean {
 		return workDays;
 	}
 
-	public static boolean isBeyondSpecifiedDays(Date date, int daysFromToday) {
-		if (date == null || daysFromToday > 0) {
+	public static boolean isBeyond(Date date, int amount, Interval interval) {
+		if (date == null || amount < 1) {
 			throw new IllegalArgumentException("Date cannot be null and daysFromToday must be greater than zero");
 		}
 
-		Date daysOut = addDays(today(), daysFromToday);
-		return daysOut.compareTo(date) < 0;
+        Date checkDate;
+        switch(interval) {
+            case Days: checkDate = addDays(today(), amount); break;
+            case Months: checkDate = addMonths(today(), amount); break;
+            default: throw new IllegalArgumentException();
+        }
+
+		return checkDate.compareTo(date) < 0;
 	}
 
 	private static Date today() {
 		return new Date();
 	}
+
+    public enum Interval {
+        Days, Months
+    }
 }

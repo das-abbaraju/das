@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -619,31 +621,30 @@ public class BillingCalculatorSingle {
 	}
 
 	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
-		Set<Integer> questionIds = new HashSet<>();
-		Map<Integer, AuditData> answers = auditDataDAO.findContractorAuditAnswers(contractor.getId(), 514, questionIds);
-		if (MapUtils.isEmpty(answers)) {
+		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF, RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
+        List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP, RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE);
+		if (CollectionUtils.isEmpty(ssipExpirations) || CollectionUtils.isEmpty(ssipRegistrations)) {
 			return false;
 		}
 
-		return meetsSSIPDiscountCriteria(answers.get(123), answers.get(456));
+		return meetsDiscountCriteria(ssipRegistrations.get(0), ssipExpirations.get(0));
 	}
 
-	private boolean meetsSSIPDiscountCriteria(AuditData includeSSIPInRegistration, AuditData ssipExpirationDate) {
-		return includedSSIPInRegistration(includeSSIPInRegistration) && hasSSIPInValidDateRange(ssipExpirationDate);
+	private boolean meetsDiscountCriteria(AuditData ssipRegistration, AuditData ssipExpirationDate) {
+		return ssipIsPresent(ssipRegistration) && isWithinDateRange(ssipExpirationDate);
 	}
 
-	private boolean includedSSIPInRegistration(AuditData includeSSIPInRegistration) {
-		return (includeSSIPInRegistration != null && includeSSIPInRegistration.isAnswered() && YesNo.Yes.toString()
-				.equals(includeSSIPInRegistration.getAnswer()));
+	private boolean ssipIsPresent(AuditData data) {
+		return (data != null && data.isAnswered() && YesNo.Yes.toString().equals(data.getAnswer()));
 	}
 
-	private boolean hasSSIPInValidDateRange(AuditData ssipExpirationDate) {
-		if (ssipExpirationDate != null && !ssipExpirationDate.isAnswered()) {
+	private boolean isWithinDateRange(AuditData data) {
+		if (data != null && !data.isAnswered()) {
 			return false;
 		}
 
-		Date ssipExDate = DateBean.parseDate(ssipExpirationDate.getAnswer(), PicsDateFormat.Iso);
-		return ssipExDate != null && DateBean.isBeyondSpecifiedDays(ssipExDate, 90);
+		Date ssipExDate = DateBean.parseDate(data.getAnswer(), PicsDateFormat.Iso);
+		return ssipExDate != null && DateBean.isBeyond(ssipExDate, 30, DateBean.Interval.Days);
 	}
 
 	private InvoiceItem createLineItem(ContractorAccount contractor, FeeClass feeClass, int numberOfSites) {
