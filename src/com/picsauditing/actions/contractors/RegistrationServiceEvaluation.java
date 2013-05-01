@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
+
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
 	private Map<Integer, AuditData> answerMap = new HashMap<>();
@@ -914,16 +918,21 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	public boolean shouldShowSsip() {
-		ContractorAccount account = (ContractorAccount) getAccount();
-		Country country = account.getCountry();
-
-		if (country.isUK()) {
-			return true;
+		AppProperty ssipClientSiteIdsProperty = appPropertyDAO.find(AppProperty.SSIP_CLIENT_SITE_ID_LIST_KEY);
+		if (ssipClientSiteIdsProperty == null) {
+			return false;
 		}
 
+		String value = ssipClientSiteIdsProperty.getValue();
+		String[] ssipClientSiteIds = (value != null) ? value.split(",") : new String[]{};
+
+		ContractorAccount account = (ContractorAccount) getAccount();
+
 		for (OperatorAccount operator : account.getOperatorAccounts()) {
-			if (operator.getCountry() != null && operator.getCountry().isUK()) {
-				return true;
+			for (String ssipClientSiteId : ssipClientSiteIds) {
+				if (ssipClientSiteId.trim().equals("" + operator.getId())) {
+					return true;
+				}
 			}
 		}
 
