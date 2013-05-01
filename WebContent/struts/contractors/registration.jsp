@@ -99,8 +99,6 @@
 	
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
-        <input id="locale" type="hidden" name="locale" value="" />
-	
 		<s:if test="contractor.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
 			<s:hidden name="user" />

@@ -163,10 +163,6 @@
 		        registration_page = $('.Registration-page');
 
 		    if (registration_page.length > 0) {
-                registration_page.on('change', '#dialect_selection', function (event) {
-                    that.setDialect.call(that, event);
-                });
-
                 registration_page.on('change', '#registration_language', function (event) {
                     that.getDialectList.call(that, event);
                 });
@@ -175,8 +171,7 @@
 
         getDialectList: function (event) {
             var element = $(event.currentTarget),
-                language = element.val(),
-                locale = $("#locale");
+                language = element.val();
 
             PICS.ajax({
                 url: 'RegistrationAjax.action',
@@ -189,24 +184,9 @@
 
                     dialect_container_element.html(dialect_dropdown);
 
-                    //if no dialects, refresh page
-                    if (dialect_dropdown == '') {
-                        locale.val(language);
-                        element.closest('form').submit();
-                    }
+      
                 }
             });
-        },
-
-        setDialect: function (event, base_language) {
-            var element = $(event.currentTarget),
-                dialect = element.val(),
-                language = $('#registration_language').val(),
-                locale = $("#locale");
-
-            locale.val(language + "_" + dialect);
-
-            //element.closest('form').submit();
         }
 	};
 

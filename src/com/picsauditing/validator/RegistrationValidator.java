@@ -1,5 +1,20 @@
 package com.picsauditing.validator;
 
+import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PICS.I18nCache;
@@ -9,16 +24,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
-import java.util.Vector;
-
-import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
 
 public class RegistrationValidator implements Validator {
 
@@ -31,16 +36,14 @@ public class RegistrationValidator implements Validator {
 	@Autowired
 	private VATValidator vatValidator;
 
+	private Map<String, String> errors = new HashMap<String, String>();
 	private static I18nCache i18nCache;
-
-	private ValidatorContext validatorContext;
 
 	@Override
 	public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
 		if (validatorContext == null) {
 			throw new IllegalStateException("You must set the ValidatorContext to use this validator.");
 		}
-
 		HttpServletRequest request = (HttpServletRequest) valueStack.getContext().get(HTTP_REQUEST);
 		if (request != null && MapUtils.isNotEmpty(request.getParameterMap())
 				&& request.getParameterMap().containsKey("language") && request.getParameterMap().size() == 1
@@ -48,26 +51,35 @@ public class RegistrationValidator implements Validator {
 			return;
 		}
 
-		this.validatorContext = validatorContext;
-
-		ContractorAccount contractor = (ContractorAccount) valueStack.findValue("contractor");
-		User user = (User) valueStack.findValue("user");
-		String language = valueStack.findString("language");
-		String dialect = valueStack.findString("dialect");
-
-		String countrySubdivision = valueStack.findString("countrySubdivision");
-
-		if (contractor == null) {
-			contractor = new ContractorAccount();
+		Map<String, String> errors = validate2((User) valueStack.findValue("user"), valueStack.findString("language"),
+				valueStack.findString("dialect"), (ContractorAccount) valueStack.findValue("contractor"),
+				valueStack.findString("countrySubdivision"),
+				(LanguageModel) valueStack.findValue("supportedLanguages"), valueStack.findString(CONFIRM_PASSWORD_KEY));
+		for (String key : errors.keySet()) {
+			validatorContext.addFieldError(key, getText(errors.get(key), validatorContext.getLocale()));
 		}
+	}
 
-		if (user == null) {
-			user = new User();
-		}
+	private Map<String, String> validate2(User user, String language, String dialect, ContractorAccount contractor,
+			String countrySubdivision, LanguageModel languageModel, String confirmPassword) {
+		errors = new HashMap<String, String>();
 
-		// Contractor Account
+		user = (user == null) ? new User() : user;
+
+		errors.putAll(validateContractor(language, dialect, contractor, countrySubdivision, languageModel,
+				inputValidator, vatValidator));
+		validateUser(user, confirmPassword);
+
+		return errors;
+	}
+
+	public static Map<String, String> validateContractor(String language, String dialect, ContractorAccount contractor,
+			String countrySubdivision, LanguageModel languageModel, InputValidator inputValidator,
+			VATValidator vatValidator) {
+		Map<String, String> errors = new HashMap<String, String>();
+		contractor = (contractor == null) ? new ContractorAccount() : contractor;
 		String errorMessageKey = inputValidator.validateCompanyName(contractor.getName());
-		addFieldErrorIfMessage("contractor.name", errorMessageKey);
+		errors.put("contractor.name", errorMessageKey);
 
 		Country country = contractor.getCountry();
 		String countryIso = Strings.EMPTY_STRING;
@@ -76,39 +88,55 @@ public class RegistrationValidator implements Validator {
 		}
 
 		if (Strings.isEmpty(countrySubdivision)) {
-			if ((country != null && country.isHasCountrySubdivisions()) || Country.COUNTRIES_WITH_SUBDIVISIONS
-					.contains(countryIso)) {
-				addFieldError("countrySubdivision", getText(InputValidator.REQUIRED_KEY));
+			if ((country != null && country.isHasCountrySubdivisions())
+					|| Country.COUNTRIES_WITH_SUBDIVISIONS.contains(countryIso)) {
+				errors.put("countrySubdivision", InputValidator.REQUIRED_KEY);
 			}
 		}
 
-		if (!inputValidator.isLanguageValid(language, (LanguageModel) valueStack.findValue("supportedLanguages"))) {
+		if (!inputValidator.isLanguageValid(language, languageModel)) {
 			language = Locale.ENGLISH.getLanguage();
 		}
 
 		if (StringUtils.isEmpty(dialect) || !inputValidator.containsOnlySafeCharacters(dialect)) {
-			addFieldError("contractor.dialect", getText(InputValidator.REQUIRED_KEY));
+			errors.put("contractor.dialect", InputValidator.REQUIRED_KEY);
 		}
 
 		errorMessageKey = inputValidator.validateName(countryIso);
-		addFieldErrorIfMessage("contractor.country.isoCode", errorMessageKey);
+		errors.put("contractor.country.isoCode", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateName(contractor.getAddress());
-		addFieldErrorIfMessage("contractor.address", errorMessageKey);
+		errors.put("contractor.address", errorMessageKey);
 
 		errorMessageKey = inputValidator.validateName(contractor.getCity());
-		addFieldErrorIfMessage("contractor.city", errorMessageKey);
+		errors.put("contractor.city", errorMessageKey);
 
 		if (shouldRequireZipCode(contractor.getCountry())) {
 			errorMessageKey = inputValidator.validateName(contractor.getZip());
-			addFieldErrorIfMessage("contractor.zip", errorMessageKey);
+			errors.put("contractor.zip", errorMessageKey);
 		}
 
-		if (!isValidVAT(contractor.getVatId(), contractor.getCountry())) {
-			addFieldErrorIfMessage("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
+		if (!isValidVAT(contractor.getVatId(), contractor.getCountry(), vatValidator, inputValidator)) {
+			errors.put("contractor.vatId", InputValidator.INVALID_VAT_ID_KEY);
 		}
 
-		// User
+		removeEmptyValues(errors);
+		return errors;
+	}
+
+	private static <K> Map<K, String> removeEmptyValues(Map<K, String> map) {
+		for (Iterator<K> iterator = map.keySet().iterator(); iterator.hasNext();) {
+			K k = iterator.next();
+			if (StringUtils.isEmpty(map.get(k))) {
+				iterator.remove();
+			}
+		}
+
+		return map;
+	}
+
+	private void validateUser(User user, String confirmPassword) {
+		String errorMessageKey;
 		errorMessageKey = inputValidator.validateFirstName(user.getFirstName());
 		addFieldErrorIfMessage("user.firstName", errorMessageKey);
 
@@ -126,17 +154,18 @@ public class RegistrationValidator implements Validator {
 		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
 		addFieldErrorIfMessage("user.username", errorMessageKey);
 
-		Vector<String> errors = passwordValidator.validatePassword(user, user.getPassword());
-		if (CollectionUtils.isNotEmpty(errors)) {
-			addFieldError("user.password", errors.get(0));
+		Vector<String> passwordErrors = passwordValidator.validatePassword(user, user.getPassword());
+		if (CollectionUtils.isNotEmpty(passwordErrors)) {
+			addFieldErrorIfMessage("user.password", passwordErrors.get(0));
 		}
 
-		if (!StringUtils.equals(user.getPassword(), valueStack.findString(CONFIRM_PASSWORD_KEY))) {
+		if (!StringUtils.equals(user.getPassword(), confirmPassword)) {
 			addFieldErrorIfMessage(CONFIRM_PASSWORD_KEY, InputValidator.PASSWORDS_MUST_MATCH_KEY);
 		}
 	}
 
-	private boolean isValidVAT(String vat, Country country) {
+	private static boolean isValidVAT(String vat, Country country, VATValidator vatValidator,
+			InputValidator inputValidator) {
 		if (vatValidator.shouldValidate(country)) {
 			try {
 				vatValidator.validated(vat);
@@ -152,7 +181,7 @@ public class RegistrationValidator implements Validator {
 		return true;
 	}
 
-	private boolean shouldRequireZipCode(Country country) {
+	private static boolean shouldRequireZipCode(Country country) {
 		if (country == null) {
 			return false;
 		}
@@ -165,18 +194,14 @@ public class RegistrationValidator implements Validator {
 		return true;
 	}
 
-	private void addFieldError(String fieldName, String errorMessage) {
-		validatorContext.addFieldError(fieldName, errorMessage);
-	}
-
 	private void addFieldErrorIfMessage(String fieldName, String errorMessageKey) {
 		if (StringUtils.isNotEmpty(errorMessageKey)) {
-			addFieldError(fieldName, getText(errorMessageKey));
+			errors.put(fieldName, errorMessageKey);
 		}
 	}
 
-	private String getText(String key) {
-		return getI18nCache().getText(key, validatorContext.getLocale());
+	private String getText(String key, Locale locale) {
+		return getI18nCache().getText(key, locale);
 	}
 
 	// the purpose of this is for testing
