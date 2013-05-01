@@ -41,11 +41,11 @@ public abstract class AbstractAutocompleteService<T> {
 
 	@SuppressWarnings("unchecked")
 	private JSONObject formatJson(T item, Permissions permissions) {
-		JSONObject o = new JSONObject();
-		o.put("key", getKey(item));
-		o.put("value", getValue(item, permissions));
+		JSONObject json = new JSONObject();
+		json.put("key", getKey(item));
+		json.put("value", getValue(item, permissions));
 
-		return o;
+		return json;
 	}
 
 	protected abstract Collection<T> getItemsForSearch(String search, Permissions permissions);

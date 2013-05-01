@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * This class is prefaced with 'Pics' due to the naming collision with java.text.DateFormat.
- * 
+ *
  * The only non-intuitive aspect of date formats is months. 'M' or 'MM' will display as a
  * number, 'MMM' will display as an abbreviation of a month (e.g. Feb), and 'MMMM' or more
  * will display the full month name (e.g. November).
@@ -39,7 +39,7 @@ public abstract class PicsDateFormat {
 	public static String formatDateIsoOrBlank(Date date) {
 		return formatDateOrBlank(date, Iso);
 	}
-	
+
 	public static String formatDateOrBlank(Date date, String format) {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat(format);
