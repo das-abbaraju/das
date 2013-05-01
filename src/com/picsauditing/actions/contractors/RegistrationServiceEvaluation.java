@@ -927,10 +927,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	public List<AuditOptionValue> getSsipMemberSchemes() {
-//		System.out.println("getAccount().isContractor() = " + getAccount().isContractor());
-//		System.out.println("getAccount().getId() = " + getAccount().getId());
-//		System.out.println("getUser().getId() = " + getUser().getName() + ":" + getUser().getId());
-//		return Arrays.asList(SsipScheme.values());
 		AuditQuestion question = questionDao.find(QUESTION_ID_SSIP_SCHEME);
 
 		AuditOptionGroup auditOptionGroup = question.getOption();

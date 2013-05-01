@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ page import="com.picsauditing.actions.contractors.RegistrationServiceEvaluation" %>
 
 <title><s:text name="ContractorRegistration.title" /></title>
 
@@ -39,13 +40,13 @@
                         <label><s:text name="RegistrationServiceEvaluation.ssip.registeredWithMemberScheme" /></label>
                         <ul class="radio registered-with-ssip-member-scheme-input inline">
                             <li>
-                                <input type="radio" id="registeredWithSsipMemberScheme" name="answerMap[16914].answer" value="Yes" />
+                                <input type="radio" id="registeredWithSsipMemberScheme" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="Yes" />
                                 <label>
                                     <s:text name="YesNo.Yes" />
                                 </label>
                             </li>
                             <li>
-                                <input type="radio" name="answerMap[16914].answer" value="No" />
+                                <input type="radio" name="answerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP%>].answer" value="No" />
                                 <label>
                                     <s:text name="YesNo.No" />
                                 </label>
@@ -107,7 +108,7 @@
                             <li>
                                 <label><s:text name="RegistrationServiceEvaluation.ssip.whichMemberScheme" /></label>
                                 <div class="right-column">
-                                    <select name="ssipAnswerMap[16948].answer">
+                                    <select name="ssipAnswerMap[<%=RegistrationServiceEvaluation.QUESTION_ID_SSIP_SCHEME%>].answer">
                                         <option>
                                             - <s:text name="RegistrationServiceEvaluation.ssip.selectYourScheme" /> -
                                         </option>
