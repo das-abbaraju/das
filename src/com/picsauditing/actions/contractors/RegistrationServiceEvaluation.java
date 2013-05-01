@@ -192,6 +192,10 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	private boolean validateSsipAuditAnswers() {
+		if (!shouldShowSsip()) {
+			return true;
+		}
+
 		buildAndLoadSsipDatesIntoAnswerMap();
 
 		AuditData registeredWithSsipData = answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP);
