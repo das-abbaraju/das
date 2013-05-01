@@ -168,7 +168,7 @@
                 });
 
                 registration_page.on('change', '#dialect_selection', function (event) {
-                    that.submitForm();
+                    that.updatePageLanguageBasedOnSelectedLanguageAndDialect();
                 });
 		    }
 		},
@@ -187,18 +187,31 @@
                 success: function (data, textStatus, jqXHR) {
                     var dialect_dropdown = $.trim(data),  //trim carriage returns
                         dialect_container_element = $('#registration_dialect');
-                     alert('hi');
+
                     dialect_container_element.html(dialect_dropdown);
 
                     if (dialect_dropdown == '') {
-                         that.updatePageLanguage();
+                         that.updatePageLanguageBasedOnSelectedLanguageAndDialect();
                     }
                 }
             });
         },
 
-        updatePageLanguage: function (event) {
-            element.closest('form').submit();
+        getRequestLocale: function () {
+            var language = $('[name=language]').val(),
+                dialect = $('[name=dialect]').val();
+            
+            return dialect ? language + '_' + dialect : language;
+        }, 
+        
+        updatePageLanguageBasedOnSelectedLanguageAndDialect: function (event) {
+            var $input = $(document.createElement('input'));
+
+                $input.attr('name', 'request_locale');
+                $input.attr('value', this.getRequestLocale());
+                $('.registration-form').append($input);
+                
+                $('.registration-form').submit();
         }
 	};
 
