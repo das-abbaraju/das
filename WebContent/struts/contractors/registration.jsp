@@ -41,7 +41,7 @@
 					
 <div class="registration">
     <s:if test="!isLiveEnvironment()" >
-        <input type="button" class="btn" id="autofill" value="Autofill"/>
+        <a class="btn" id="autofill">Autofill</a>
     </s:if>
 	<aside class="registration-side-bar">
 		<div class="info-join">
