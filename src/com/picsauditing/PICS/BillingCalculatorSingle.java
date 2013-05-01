@@ -621,8 +621,10 @@ public class BillingCalculatorSingle {
 	}
 
 	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
-		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF, RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
-        List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP, RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE);
+		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF,
+				RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
+		List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP,
+				RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE);
 		if (CollectionUtils.isEmpty(ssipExpirations) || CollectionUtils.isEmpty(ssipRegistrations)) {
 			return false;
 		}

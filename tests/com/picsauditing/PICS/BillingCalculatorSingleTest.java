@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -80,6 +81,8 @@ public class BillingCalculatorSingleTest {
 	private OperatorAccount operator;
 	@Mock
 	private InvoiceModel invoiceModel;
+	@Mock
+	private AuditDataDAO auditDataDAO;
 
 	@AfterClass
 	public static void classTearDown() {
@@ -95,6 +98,7 @@ public class BillingCalculatorSingleTest {
 		Whitebox.setInternalState(billingService, "taxService", taxService);
 		Whitebox.setInternalState(billingService, "feeDAO", invoiceFeeDAO);
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
+		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
 
 		assert(OAMocksSet.isEmpty());
 
@@ -480,6 +484,8 @@ public class BillingCalculatorSingleTest {
 		when(contractor.getFees()).thenReturn(contractorFees);
 		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Activation);
+
+		when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
 
 		billingService.createInvoice(contractor, BillingStatus.Current, user);
 
