@@ -536,7 +536,7 @@ public class PicsMenu {
 					"ReportContractorScore");
 		}
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
-			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
+//			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
 			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010", "ReportEmrRates");
 			if (permissions.isAuditor()) {
 				subMenu.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
@@ -551,7 +551,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.TRIRReport)) {
-			addChildAction(subMenu, "GraphTrirRates");
+//			addChildAction(subMenu, "GraphTrirRates");
 			final String url = "ReportIncidenceRate.action?filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild(getTitle("ReportIncidenceRate"), url, "ReportIncidenceRate");
 		}
