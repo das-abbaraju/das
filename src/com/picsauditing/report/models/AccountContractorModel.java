@@ -79,6 +79,10 @@ public class AccountContractorModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
-		return fields;
+
+        Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
+        flagColor.setUrl("ContractorFlag.action?id={AccountID}");
+
+        return fields;
 	}
 }
