@@ -24,6 +24,12 @@ import java.util.*;
  * @author Trevor
  */
 public class EmailBuilder {
+	public static final String PERMISSIONS = "permissions";
+	public static final String CONTRACTOR = "contractor";
+	public static final String USER = "user";
+	public static final String PRIMARY_CONTACT = "primaryContact";
+	public static final String LOCALE = "locale";
+
 	private String fromAddress = null;
 	private String password = null;
 	private EmailTemplate template;
@@ -80,7 +86,7 @@ public class EmailBuilder {
 			email.setContractorAccount(new ContractorAccount(conID));
 
 		if (permissions != null) {
-			tokens.put("permissions", permissions);
+			tokens.put(PERMISSIONS, permissions);
 			if (permissions.getUserId() > 0) {
 				email.setCreatedBy(new User());
 				email.getCreatedBy().setId(permissions.getUserId());
@@ -94,7 +100,7 @@ public class EmailBuilder {
 		// Include i18nCache for every email
 		if (!tokens.containsKey("i18nCache")) {
 			tokens.put("i18nCache", I18nCache.getInstance());
-			tokens.put("locale", locale);
+			tokens.put(LOCALE, locale);
 		}
 
 		// If we're using the default template, pull up the correct translation
@@ -121,15 +127,6 @@ public class EmailBuilder {
 		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
 
-// TODO See reopened PICS-6588
-//		if (!body.contains("SubscriptionFooter")) {
-//			if (email.isHtml()) {
-//				body = body + getHTMLFooter(email.getToAddresses());
-//			} else {
-//				body = body + getFooter(email.getToAddresses());
-//			}
-//		}
-
 		email.setBody(body);
 
 		if (debug) {
@@ -146,25 +143,6 @@ public class EmailBuilder {
 
 	}
 
-// TODO See reopened PICS-6588
-//	private String getHTMLFooter(String email) {
-//		translationActionSupport = new TranslationActionSupport();
-//		return translationActionSupport.getText("EmailTemplate.footer.frontHTML") + " " + email + ", "
-//				+ translationActionSupport.getText("EmailTemplate.footer.middle")
-//				+ " <a href='/EmailOptOut.action?email=" + email + "'>" + getHost() + "/EmailOptOut.action?email="
-//				+ email + "</a>.  " + translationActionSupport.getText("EmailTemplate.footer.back") + ".";
-//	}
-
-// TODO See reopened PICS-6588
-//	private String getFooter(String email) {
-//		translationActionSupport = new TranslationActionSupport();
-//		return translationActionSupport.getText("EmailTemplate.footer.frontNonHTML") + " " + email + ", "
-//				+ translationActionSupport.getText("EmailTemplate.footer.middle") + " " + getHost()
-//				+ "/EmailOptOut.action?email=" + email + ".  "
-//				+ translationActionSupport.getText("EmailTemplate.footer.back") + ".";
-//
-//	}
-
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers
 	public void setConAudit(ContractorAudit conAudit) throws EmailException {
@@ -174,7 +152,7 @@ public class EmailBuilder {
 
 	public void setContractor(ContractorAccount contractor, OpPerms role) throws EmailException {
 		conID = contractor.getId();
-		addToken("contractor", contractor);
+		addToken(CONTRACTOR, contractor);
 
 		Set<String> emails = new HashSet<String>();
 		for (User user : contractor.getUsersByRole(role)) {
@@ -196,7 +174,7 @@ public class EmailBuilder {
 	}
 
 	public void setUser(User user) {
-		addToken("user", user);
+		addToken(USER, user);
 		toAddresses = user.getEmail();
 	}
 
@@ -255,26 +233,28 @@ public class EmailBuilder {
 	private Locale getUserLocale() {
 		Locale locale = null;
 
-		if (tokens.containsKey("permissions") && tokens.get("permissions") != null
-				&& tokens.get("permissions") instanceof Permissions) {
-			Permissions permissions = (Permissions) tokens.get("permissions");
+		if (tokensContainsValueFor(PERMISSIONS) && tokens.get(PERMISSIONS) instanceof Permissions) {
+			Permissions permissions = (Permissions) tokens.get(PERMISSIONS);
 			locale = permissions.getLocale();
 		}
 
-		if (tokens.containsKey("contractor") && tokens.get("contractor") != null
-				&& tokens.get("contractor") instanceof ContractorAccount) {
-			ContractorAccount contractor = (ContractorAccount) tokens.get("contractor");
+		if (tokensContainsValueFor(CONTRACTOR) && tokens.get(CONTRACTOR) instanceof ContractorAccount) {
+			ContractorAccount contractor = (ContractorAccount) tokens.get(CONTRACTOR);
 			locale = contractor.getLocale();
 		}
 
-		if (tokens.containsKey("user") && tokens.get("user") != null && tokens.get("user") instanceof User) {
-			User user = (User) tokens.get("user");
+		if (tokensContainsValueFor(USER) && tokens.get(USER) instanceof User) {
+			User user = (User) tokens.get(USER);
 			locale = user.getLocale();
 		}
 
-		if (tokens.containsKey("primaryContact") && tokens.get("primaryContact") != null && tokens.get("primaryContact") instanceof User) {
-			User user = (User) tokens.get("primaryContact");
+		if (tokensContainsValueFor(PRIMARY_CONTACT) && tokens.get(PRIMARY_CONTACT) instanceof User) {
+			User user = (User) tokens.get(PRIMARY_CONTACT);
 			locale = user.getLocale();
+		}
+
+		if (tokensContainsValueFor(LOCALE) && tokens.get(LOCALE) instanceof Locale) {
+			locale = (Locale) tokens.get(LOCALE);
 		}
 
 		if (locale == null) {
@@ -282,6 +262,10 @@ public class EmailBuilder {
 		}
 
 		return locale;
+	}
+
+	private boolean tokensContainsValueFor(String key) {
+		return tokens.containsKey(key) && tokens.get(key) != null;
 	}
 
 	private String getUserTranslation(Locale locale, Collection<Translation> translations) {
@@ -313,7 +297,7 @@ public class EmailBuilder {
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
-		addToken("permissions", permissions);
+		addToken(PERMISSIONS, permissions);
 	}
 
 	public void setServerName(String serverName) {

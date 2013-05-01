@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -76,11 +77,20 @@ public class RegistrationRequestEmailHelper {
 
 	@Deprecated
 	public EmailQueue buildInitialEmail(ContractorRegistrationRequest request) throws Exception {
+		return buildInitialEmail(request, null);
+	}
+
+	@Deprecated
+	public EmailQueue buildInitialEmail(ContractorRegistrationRequest request, Locale locale) throws Exception {
 		if (request != null) {
 			builder.addToken("newContractor", request);
 			builder.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 			builder.setToAddresses(request.getEmail());
 			builder.setTemplate(templateDAO.find(OLD_INITIAL_EMAIL));
+
+			if (locale != null) {
+				builder.addToken(EmailBuilder.LOCALE, locale);
+			}
 
 			return builder.build();
 		}
@@ -95,7 +105,13 @@ public class RegistrationRequestEmailHelper {
 
 	@Deprecated
 	public void sendInitialEmail(ContractorRegistrationRequest request, String fileDirectory) throws Exception {
-		EmailQueue email = buildInitialEmail(request);
+		sendInitialEmail(request, null, fileDirectory);
+	}
+
+	@Deprecated
+	public void sendInitialEmail(ContractorRegistrationRequest request, Locale locale, String fileDirectory) throws
+			Exception {
+		EmailQueue email = buildInitialEmail(request, locale);
 		OperatorForm form = getContractorLetterFromHierarchy(request);
 
 		sendInitialEmail(email, form, fileDirectory);

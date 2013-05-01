@@ -194,6 +194,28 @@
 					</div>
 				</li>
 				<li id="loadUsersList"></li>
+                <li>
+                    <label for="registration_request_email_language">
+                        <s:text name="ContractorRegistrationRequest.EmailLanguage" />
+                    </label>
+                    <select name="emailLanguage" id="registration_request_email_language">
+                        <option value="">
+                            <s:text name="ContractorRegistrationRequest.SelectEmailLanguage" />
+                        </option>
+                        <s:iterator value="supportedLanguages.unifiedLanguageList" var="email_language_locale">
+                            <s:set var="email_language_selected" value="''" />
+                            <s:if test="#email_language_locale == permissions.locale">
+                                <s:set var="email_language_selected" value="' selected=\"selected\"'" />
+                            </s:if>
+                            <option value="${email_language_locale.toLanguageTag()}"${email_language_selected}>
+                                <s:set var="email_language_display"
+                                       value="%{#email_language_locale.getDisplayName(permissions.locale)}"
+                                />
+                                <s:property value="@org.apache.commons.lang3.StringUtils@capitalize(#email_language_display)"/>
+                            </option>
+                        </s:iterator>
+                    </select>
+                </li>
 				<li>
 					<a href="javascript:;" class="preview" id="preview_email">
 						<s:text name="RequestNewContractor.PreviewEmail" />
