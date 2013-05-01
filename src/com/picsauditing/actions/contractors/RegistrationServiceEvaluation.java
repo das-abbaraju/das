@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.SsipScheme;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -650,6 +649,10 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	private void saveAnswersForSsipAudit() throws Exception {
+		if (!shouldPersistSsipQuestions()) {
+			return;
+		}
+
 		for (Integer qid : ssipAnswerMap.keySet()) {
 			AuditData auditData = ssipAnswerMap.get(qid);
 			AuditData newData = auditDataDAO.findAnswerByAuditQuestion(ssipAudit.getId(), qid);
@@ -665,6 +668,20 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				auditDataDAO.save(auditData);
 			}
 		}
+	}
+
+	private boolean shouldPersistSsipQuestions() {
+		AuditData registeredWithSsip = answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP);
+
+		if (registeredWithSsip != null && YesNo.No.name().equals(registeredWithSsip.getAnswer())) {
+			return false;
+		}
+
+		if (readyToProvideSsipDetails != null && YesNo.No.name().equals(readyToProvideSsipDetails)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private void buildAndLoadSsipDatesIntoAnswerMap() {
