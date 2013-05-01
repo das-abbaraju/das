@@ -8,11 +8,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.ContractorAuditOperatorTable;
-import com.picsauditing.report.tables.ContractorAuditTable;
-import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
@@ -57,7 +53,16 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 			flag.category = FieldCategory.AccountInformation;
 		}
 
-		return spec;
+        ModelSpec fatalities = conAudit.join(ContractorAuditTable.Fatalities);
+        fatalities.alias = "Fatalities";
+
+        ModelSpec trir = conAudit.join(ContractorAuditTable.Trir);
+        trir.alias = "Trir";
+
+        ModelSpec emr = conAudit.join(ContractorAuditTable.Emr);
+        emr.alias = "Emr";
+
+        return spec;
 	}
 
 	@Override

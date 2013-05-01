@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.jpa.entities.builders.AuditDataBuilder;
+import com.picsauditing.report.tables.FieldImportance;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -65,7 +66,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.question = question;
 	}
 
-	@ReportField(type = FieldType.String)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getAnswer() {
 		return answer;
 	}
@@ -84,7 +85,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.auditor = auditor;
 	}
 
-	@ReportField(type = FieldType.String)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getComment() {
 		return comment;
 	}
@@ -108,7 +109,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getDateVerified() {
 		return dateVerified;
 	}
