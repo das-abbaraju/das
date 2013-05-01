@@ -1023,6 +1023,10 @@ public class ContractorCron extends PicsActionSupport {
 
 				// CO stuff
 				// roll up first-level Operator CO data
+				if (operator.getStatus() != AccountStatus.Active && operator.getStatus() != AccountStatus.Demo) {
+					continue;
+				}
+
 				if (operator.getCorporateFacilities() != null) {
 					for (Facility facility : operator.getCorporateFacilities()) {
 						OperatorAccount parent = facility.getCorporate();
