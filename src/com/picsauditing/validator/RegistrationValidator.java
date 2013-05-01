@@ -98,7 +98,7 @@ public class RegistrationValidator implements Validator {
 			language = Locale.ENGLISH.getLanguage();
 		}
 
-		if (StringUtils.isEmpty(dialect) || !inputValidator.containsOnlySafeCharacters(dialect)) {
+		if (isDialectInvalid(language, dialect, languageModel, inputValidator)) {
 			errors.put("contractor.dialect", InputValidator.REQUIRED_KEY);
 		}
 
@@ -122,6 +122,15 @@ public class RegistrationValidator implements Validator {
 
 		removeEmptyValues(errors);
 		return errors;
+	}
+
+	private static boolean isDialectInvalid(String language, String dialect, LanguageModel languageModel, InputValidator inputValidator) {
+		if (!languageModel.getDialectCountriesBasedOn(language).isEmpty()) {
+
+			return StringUtils.isEmpty(dialect) || !inputValidator.containsOnlySafeCharacters(dialect);
+		}
+
+		return !StringUtils.isEmpty(dialect);
 	}
 
 	private static <K> Map<K, String> removeEmptyValues(Map<K, String> map) {

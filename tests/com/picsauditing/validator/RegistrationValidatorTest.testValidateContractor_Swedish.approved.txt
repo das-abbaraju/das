@@ -1,2 +1,0 @@
-contractor.dialect : JS.Validation.Required 
-contractor.vatId : JS.Validation.InvalidVAT 

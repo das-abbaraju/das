@@ -166,12 +166,18 @@
                 registration_page.on('change', '#registration_language', function (event) {
                     that.getDialectList.call(that, event);
                 });
+
+                registration_page.on('change', '#dialect_selection', function (event) {
+                    that.submitForm();
+                });
 		    }
 		},
 
         getDialectList: function (event) {
             var element = $(event.currentTarget),
-                language = element.val();
+                language = element.val(),
+                that = this;
+
 
             PICS.ajax({
                 url: 'RegistrationAjax.action',
@@ -181,12 +187,18 @@
                 success: function (data, textStatus, jqXHR) {
                     var dialect_dropdown = $.trim(data),  //trim carriage returns
                         dialect_container_element = $('#registration_dialect');
-
+                     alert('hi');
                     dialect_container_element.html(dialect_dropdown);
 
-      
+                    if (dialect_dropdown == '') {
+                         that.updatePageLanguage();
+                    }
                 }
             });
+        },
+
+        updatePageLanguage: function (event) {
+            element.closest('form').submit();
         }
 	};
 

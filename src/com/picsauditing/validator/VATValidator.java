@@ -59,13 +59,19 @@ public class VATValidator {
     }
 
     public class ValidationException extends Exception {
+		public ValidationException() {
+			super();
+		}
 
+		public ValidationException(String message) {
+			super(message);
+		}
     }
 
     class Validator {
         private final Pattern GENERIC_VAT_REGEX = Pattern.compile("[A-Z]{2}[- ]?[\\d\\w -]{2,15}\\z", Pattern.CASE_INSENSITIVE);
         private final Pattern CHECK_FOR_DUPLICATES = Pattern.compile("[A-Z]{2}(\\d)\\1+\\z");
-        private final Pattern CHECK_FOR_OBFUSCATION = Pattern.compile("[A-Z]{2}(\\w)\\1{3,}\\w+\\z");
+        private final Pattern CHECK_FOR_POSSIBLE_FRAUD = Pattern.compile("[A-Z]{2}(\\w)\\1{3,}\\w+\\z");
         private final Pattern CHECK_FOR_YESNO = Pattern.compile("[A-Z]{2}((yes)|(no)|(n/?a))\\z", Pattern.CASE_INSENSITIVE);
 
         String vatNumber;
@@ -81,8 +87,8 @@ public class VATValidator {
             if (CHECK_FOR_DUPLICATES.matcher(vatNumber).matches()) {
 				throw new ValidationException();
 			}
-            if (CHECK_FOR_OBFUSCATION.matcher(vatNumber).matches()) {
-				throw new ValidationException();
+            if (CHECK_FOR_POSSIBLE_FRAUD.matcher(vatNumber).matches()) {
+				throw new ValidationException("VAT # received: "+vatNumber+" is possibly fraudulent");
 			}
             if (CHECK_FOR_YESNO.matcher(vatNumber).matches()) {
 				throw new ValidationException();
