@@ -44,4 +44,24 @@ public class AccountContractorModelTest extends ModelTest {
 		checkFields();
 	}
 
+    @Test
+    public void testAvailableFieldsForNonCorporateUser() throws Exception {
+        permissions.setAccountType("Admin");
+        model = new AccountContractorModel(permissions);
+        availableFields = model.getAvailableFields();
+
+        excludedFields.add("ContractorFlagFlagColor");
+        checkFields();
+    }
+
+    @Test
+    public void testAvailableFieldsForCorporateUser() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new AccountContractorModel(permissions);
+        availableFields = model.getAvailableFields();
+
+        includedFields.add("ContractorFlagFlagColor");
+        checkFields();
+    }
+
 }
