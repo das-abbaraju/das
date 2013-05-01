@@ -12,7 +12,7 @@ import com.picsauditing.model.i18n.ContextTranslation;
 
 public class ContextTranslationMapper implements RowMapper<ContextTranslation> {
 
-	public static final String MSGKEY_DELIMITER = ".";
+	public static final String MSGKEY_DELIMITER = "\\.";
 
 	@Override
 	public ContextTranslation mapRow(ResultSet rs, int rowNum) throws SQLException {

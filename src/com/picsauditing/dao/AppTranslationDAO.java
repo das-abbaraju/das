@@ -58,12 +58,8 @@ public class AppTranslationDAO extends PicsDAO {
 
 	public List<ContextTranslation> findAllForJS() {
 		try {
-			FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-			if ((featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_NEW_JS_TRANSLATIONS))) {
-				return loadTranslationsUsingStoredProc();
-			} else {
+//				return loadTranslationsUsingStoredProc();
 				return loadTranslationsFromTableDirectly();
-			}
 		} catch (Exception e) {
 			logger.error("Error while retrieving all the translations for JS.", e);
 		}
