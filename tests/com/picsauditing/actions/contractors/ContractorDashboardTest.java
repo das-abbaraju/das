@@ -148,17 +148,17 @@ public class ContractorDashboardTest {
 
 		// 2 users, 1 with permission
 		Whitebox.setInternalState(dashboard, "co", conOp1);
-		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		users = dashboard.getOperatorUsersWithPermission(OpPerms.AddContractors);
 		assertEquals(1, users.size());
 
 		// 1 user, no permissions
 		Whitebox.setInternalState(dashboard, "co", conOp2);
-		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		users = dashboard.getOperatorUsersWithPermission(OpPerms.AddContractors);
 		assertEquals(0, users.size());
 
 		// Corporate, 1 with permission
 		Whitebox.setInternalState(dashboard, "co", conOpCorporate);
-		users = dashboard.getUsersWithPermission(OpPerms.AddContractors);
+		users = dashboard.getOperatorUsersWithPermission(OpPerms.AddContractors);
 		assertEquals(1, users.size());
 	}
 

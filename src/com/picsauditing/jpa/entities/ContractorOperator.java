@@ -1,10 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -85,7 +83,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	/**
-	 * Default to P and then be approved or rejected
+	 * Default to P and then be status or rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
@@ -464,4 +462,26 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 			}
 		}
 	}
+
+    public static ContractorOperatorBuilder builder() {
+        return new ContractorOperatorBuilder();
+    }
+
+    public List<ContractorOperator> getChildOperatorAccountsWithStatus(ContractorAccount contractorAccount, ApprovalStatus ... status) {
+        List<ContractorOperator> found = new ArrayList<>();
+        List<ApprovalStatus> statuses = Arrays.asList(status);
+        for (OperatorAccount o : this.getOperatorAccount().getChildOperators()) {
+            for (ContractorOperator co : o.getContractorOperators()) {
+                if (co.getContractorAccount().equals(contractorAccount) && statuses.contains(co.getWorkStatus()))   {
+                    found.add(co);
+                }
+            }
+        }
+
+        return found;
+    }
+
+    public boolean isWorkingStatus(ApprovalStatus status) {
+        return getWorkStatus() == status;
+    }
 }

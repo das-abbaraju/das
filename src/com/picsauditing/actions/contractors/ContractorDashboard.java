@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.user.ContractorDashboardApprovalMessage;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -894,25 +895,59 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return percentComplete;
 	}
 
-	public List<User> getUsersWithPermission(OpPerms operatorPermission) {
-		List<User> visibleUsersWithPermissions = new ArrayList<User>();
+	public List<User> getOperatorUsersWithPermission(OpPerms operatorPermission) {
+		List<User> visibleUsersWithPermissions = new ArrayList<>();
 
 		if (co != null) {
 			List<OperatorAccount> operators = getPendingNonCorporateOperators();
 
 			for (OperatorAccount operator : operators) {
-				visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission));
+				visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission, 10));
 			}
 		}
 
 		return visibleUsersWithPermissions;
 	}
 
-	private List<User> getPermittedUsers(OperatorAccount operator, OpPerms operatorPermission) {
+    public List<User> getCorporateUsersWithPermission(OpPerms operatorPermission) {
+        List<User> visibleUsersWithPermissions = new ArrayList<>();
+
+        if (co != null) {
+            List<OperatorAccount> operators = getPendingCorporateOperators();
+
+            for (OperatorAccount operator : operators) {
+                visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission, 10));
+            }
+        }
+
+        return visibleUsersWithPermissions;
+    }
+
+    public List<OperatorAccount> getApprovedClientSites() {
+        return getApprovedNonCorporateOperators();
+    }
+
+    private List<OperatorAccount> getApprovedNonCorporateOperators() {
+        List<OperatorAccount> operatorAccounts = new ArrayList<>();
+        for (ContractorOperator co: contractor.getNonCorporateOperators()) {
+            if (co.getWorkStatus() == ApprovalStatus.Approved &&
+                    co.getOperatorAccount().isOrIsDescendantOf(permissions.getTopAccountID())) {
+                operatorAccounts.add(co.getOperatorAccount());
+            }
+        }
+
+        return operatorAccounts;
+    }
+
+    private List<User> getPermittedUsers(OperatorAccount operator, OpPerms operatorPermission, int limit) {
 		List<User> permittedUsers = new ArrayList<>();
 
 		for (User user : operator.getUsers()) {
 			try {
+                if (user.isGroup()) {
+                    continue;
+                }
+
 				Permissions permissions = permissionBuilder.login(user);
 				if (permissions.hasPermission(operatorPermission)) {
 					permittedUsers.add(user);
@@ -920,6 +955,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 			} catch (Exception e) {
 				logger.error("Cannot login user", e);
 			}
+            if (permittedUsers.size() > limit) {
+                break;
+            }
 		}
 
 		return permittedUsers;
@@ -938,6 +976,19 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 		return operators;
 	}
+
+    private List<OperatorAccount> getPendingCorporateOperators() {
+        List<OperatorAccount> operators = new ArrayList<>();
+
+        for (ContractorOperator operator:co.getContractorAccount().getOperators()) {
+            if (operator.isWorkStatusPending()
+                    && operator.getOperatorAccount().isCorporate()
+                    && co.getOperatorAccount().isOrIsDescendantOf(operator.getOperatorAccount().getId())) {
+                operators.add(operator.getOperatorAccount());
+            }
+        }
+        return operators;
+    }
 
 	public User getPicsRepresentativeForOperator() {
 		if (co != null) {
@@ -1056,5 +1107,12 @@ public class ContractorDashboard extends ContractorActionSupport {
         findContractor();
         csrAssignmentSinglePublisher.publish(contractor.getId());
         return setUrlForRedirect("ContractorView.action?id=" + contractor.getId());
+    }
+
+    public ContractorDashboardApprovalMessage.Result getDashboardMessageResult() {
+        return ContractorDashboardApprovalMessage.getMessage(co, permissions,
+                getOperatorUsersWithPermission(OpPerms.ContractorApproval),
+                getCorporateUsersWithPermission(OpPerms.ContractorApproval)
+        );
     }
 }

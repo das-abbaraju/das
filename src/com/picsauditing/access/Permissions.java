@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.access.builders.PermissionsBuilder;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -133,35 +134,41 @@ public class Permissions implements Serializable {
 
 	public void login(User user) {
 		clear();
-		userID = user.getId();
-		if (userID == 0) {
-			return;
+		if ( user.getId() == 0) {
+            return;
 		}
 
-		loggedIn = true;
-		forcePasswordReset = user.isForcePasswordReset();
-		active = user.isActiveB();
-
-		username = user.getUsername();
-		name = user.getName();
-		email = user.getEmail();
-		phone = user.getPhone();
-		fax = user.getFax();
-		locale = user.getLocale();
-		shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
-		shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
-		if (user.getAccount().getCountry() != null) {
-			country = user.getAccount().getCountry().getIsoCode();
-		} else {
-			country = "";
-		}
-
-		setStableLocale(user);
-		setTimeZone(user);
-		setAccountPerms(user);
+        loginWithoutVerifyingLanguage(user);
+        setStableLocale(user);
 	}
 
-	public void setTimeZone(User user) {
+    public Permissions loginWithoutVerifyingLanguage(User user) {
+        clear();
+        userID = user.getId();
+        loggedIn = true;
+        forcePasswordReset = user.isForcePasswordReset();
+        active = user.isActiveB();
+
+        username = user.getUsername();
+        name = user.getName();
+        email = user.getEmail();
+        phone = user.getPhone();
+        fax = user.getFax();
+        locale = user.getLocale();
+        shadowedUserID = (user.getShadowedUser() != null ? user.getShadowedUser().getId() : userID);
+        shadowedUserName = (user.getShadowedUser() != null ? user.getShadowedUser().getName() : username);
+        if (user.getAccount().getCountry() != null) {
+            country = user.getAccount().getCountry().getIsoCode();
+        } else {
+            country = "";
+        }
+
+        setTimeZone(user);
+        setAccountPerms(user);
+        return this;
+    }
+
+    public void setTimeZone(User user) {
 		timezone = user.getTimezone();
 	}
 
@@ -785,4 +792,12 @@ public class Permissions implements Serializable {
             }
 		}
 	}
+
+    public static PermissionsBuilder builder() {
+        return new PermissionsBuilder();
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountID = accountId;
+    }
 }

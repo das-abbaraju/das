@@ -1025,7 +1025,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setRenew(boolean renew) {
 		this.renew = renew;
 	}
-
+   @Transient
 	public boolean isAutoAddClientSite() {
 		return autoAddClientSite;
 	}
