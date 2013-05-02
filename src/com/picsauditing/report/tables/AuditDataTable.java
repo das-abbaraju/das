@@ -12,8 +12,6 @@ public class AuditDataTable extends AbstractTable {
 	public AuditDataTable() {
 		super("pqfData");
 		addFields(AuditData.class);
-		Field id = addPrimaryKey(FieldType.AuditQuestion);
-		id.setCategory(FieldCategory.DocumentsAndAudits);
 	}
 
 	public void addJoins() {
