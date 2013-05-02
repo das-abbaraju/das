@@ -40,6 +40,9 @@
 </div>
 					
 <div class="registration">
+    <s:if test="!isLiveEnvironment()" >
+        <a class="btn" id="autofill">Autofill</a>
+    </s:if>
 	<aside class="registration-side-bar">
 		<div class="info-join">
 			<section>
@@ -96,8 +99,6 @@
 	
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
-        <input id="request_locale" type="hidden" name="request_locale" value="" />
-	
 		<s:if test="contractor.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
 			<s:hidden name="user" />

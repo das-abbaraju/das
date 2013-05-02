@@ -26,4 +26,9 @@ public class ContractorAccountBuilder {
 
         return this;
     }
+
+    public ContractorAccountBuilder id(int i) {
+        contractor.setId(i);
+        return this;
+    }
 }

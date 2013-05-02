@@ -48,6 +48,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	public static final int PRODUCT_SAFETY_EVAL = 1683;
 	public static final int SERVICE_SAFETY_EVAL = 1721;
 	public static final int TRANSPORTATION_SAFETY_EVAL = 3251;
+	public static final int SSIP_EVALUATION = 3707;
+	public static final int SSIP = 3732;
 
 	private AuditType auditType;
 	private AuditCategory parent;
@@ -356,25 +358,25 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		if (cmp != 0)
 			return cmp;
-		
+
 		String[] thisFullNumber = getFullNumber().split("\\.");
 		String[] otherFullNumber = other.getFullNumber().split("\\.");
-		
+
 		for (int i = 0; i < Math.max(thisFullNumber.length, otherFullNumber.length); i++) {
-			if (thisFullNumber.length-1 < i) 
+			if (thisFullNumber.length-1 < i)
 				return -1;
 			if (otherFullNumber.length-1 < i)
 				return 1;
-			
+
 			int thisNumber = Integer.parseInt(thisFullNumber[i]);
 			int otherNumber = Integer.parseInt(otherFullNumber[i]);
-			
+
 			int numCompare = thisNumber-otherNumber;
-			
+
 			if (numCompare != 0)
 				return numCompare;
 		}
-		
+
 		return getFullNumber().compareTo(other.getFullNumber());
 	}
 

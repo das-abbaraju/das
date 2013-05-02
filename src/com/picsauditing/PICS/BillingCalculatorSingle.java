@@ -8,9 +8,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.DataObservable;
@@ -20,7 +24,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -31,6 +35,7 @@ import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.BillingStatus;
@@ -51,9 +56,11 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
+import com.picsauditing.util.PicsDateFormat;
 
 public class BillingCalculatorSingle {
 
@@ -73,8 +80,6 @@ public class BillingCalculatorSingle {
 	private UserAssignmentDAO uaDAO;
 	@Autowired
 	private AuditTypeRuleCache ruleCache;
-	@Autowired
-	private AuditDecisionTableDAO auditDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
@@ -97,6 +102,8 @@ public class BillingCalculatorSingle {
 	private TaxService taxService;
 	@Autowired
 	private InvoiceModel invoiceModel;
+	@Autowired
+	private AuditDataDAO auditDataDAO;
 
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
@@ -421,27 +428,32 @@ public class BillingCalculatorSingle {
 		return invoiceTotal;
 	}
 
-	private void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {
+	private static void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {
 		BillingStatus billingStatus = contractor.getBillingStatus();
-		if (billingStatus.isActivation()) {
-			invoice.setDueDate(new Date());
-		} else if (billingStatus.isReactivation()) {
-			invoice.setDueDate(new Date());
-		} else if (billingStatus.isUpgrade()) {
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
-			invoice.setDueDate(contractor.getPaymentExpires());
+		invoice.setDueDate(calculateInvoiceDueDate(contractor, billingStatus, new Date(), invoice.getDueDate()));
+	}
+
+	public static Date calculateInvoiceDueDate(ContractorAccount contractor, BillingStatus billingStatus, Date today,
+			Date dueDate) {
+		if (BillingStatus.Activation == billingStatus) {
+			dueDate = today;
+		} else if (BillingStatus.Reactivation == billingStatus) {
+			dueDate = today;
+		} else if (BillingStatus.Upgrade == billingStatus) {
+			dueDate = DateBean.addDays(today, 7);
+		} else if (BillingStatus.Renewal == billingStatus || BillingStatus.RenewalOverdue == billingStatus) {
+			dueDate = contractor.getPaymentExpires();
 		}
 
-		if (invoice.getDueDate() == null) {
-			// For all other statuses like (Current)
-			invoice.setDueDate(DateBean.addDays(new Date(), 30));
+		if (dueDate == null) {
+			dueDate = DateBean.addDays(today, 30);
 		}
 
 		// Make sure the invoice isn't due within 7 days for active accounts
-		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7) {
-			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		if (contractor.getStatus().isActive() && DateBean.daysBetween(today, dueDate) < 7) {
+			dueDate = DateBean.addDays(today, 7);
 		}
+		return dueDate;
 	}
 
 	private void setContractorRenewToTrueIfNeeded(ContractorAccount contractor) {
@@ -592,19 +604,57 @@ public class BillingCalculatorSingle {
 				// This contractor has never paid their activation fee, make
 				// them now this applies regardless if this is a new reg or
 				// renewal
-				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-				BigDecimal activationAmount = FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor, fee);
+				InvoiceItem activation = createLineItem(contractor, FeeClass.Activation, 1);
+				items.add(activation);
 
-				// Activate effective today
-				items.add(new InvoiceItem(fee, activationAmount, new Date()));
+				if (contractorDeservesSSIPDiscount(contractor)) {
+					InvoiceItem lineItem = createLineItem(contractor, FeeClass.SSIPDiscountFee, 1);
+					lineItem.setAmount(activation.getAmount().multiply(BigDecimal.valueOf(-1)));
+					items.add(lineItem);
+				}
+
 				// For Reactivation Fee and Reactivating Membership
 			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
-				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-						contractor.getPayingFacilities());
-				// Reactivate effective today
-				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
+				items.add(createLineItem(contractor, FeeClass.Reactivation, contractor.getPayingFacilities()));
 			}
 		}
+	}
+
+	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
+		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF,
+				RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
+		List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP,
+				RegistrationServiceEvaluation.QUESTION_ID_SSIP_EXPIRATION_DATE);
+		if (CollectionUtils.isEmpty(ssipExpirations) || CollectionUtils.isEmpty(ssipRegistrations)) {
+			return false;
+		}
+
+		return meetsDiscountCriteria(ssipRegistrations.get(0), ssipExpirations.get(0));
+	}
+
+	private boolean meetsDiscountCriteria(AuditData ssipRegistration, AuditData ssipExpirationDate) {
+		return ssipIsPresent(ssipRegistration) && isWithinDateRange(ssipExpirationDate);
+	}
+
+	private boolean ssipIsPresent(AuditData data) {
+		return (data != null && data.isAnswered() && YesNo.Yes.toString().equals(data.getAnswer()));
+	}
+
+	private boolean isWithinDateRange(AuditData data) {
+		if (data != null && !data.isAnswered()) {
+			return false;
+		}
+
+		Date ssipExDate = DateBean.parseDate(data.getAnswer(), PicsDateFormat.Iso);
+		return ssipExDate != null && DateBean.isBeyond(ssipExDate, 30, DateBean.Interval.Days);
+	}
+
+	private InvoiceItem createLineItem(ContractorAccount contractor, FeeClass feeClass, int numberOfSites) {
+		InvoiceFee invoiceFee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfSites);
+		BigDecimal adjustedFeeAmount = feeClass.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
+
+		// Activate effective today
+		return new InvoiceItem(invoiceFee, adjustedFeeAmount, new Date());
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
@@ -619,6 +669,7 @@ public class BillingCalculatorSingle {
 				}
 			}
 		}
+
 		return false;
 	}
 

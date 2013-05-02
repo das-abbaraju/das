@@ -67,6 +67,14 @@ public class UserDAO extends PicsDAO {
 				+ "where grp.groupID = atype.editAudit", User.class);
 		userList.addAll(query.getResultList());
 
+		/*
+		SELECT * FROM users u
+JOIN usergroup member ON member.userID = u.id
+JOIN users grp ON grp.id = member.groupID
+JOIN useraccess ua ON ua.userID = grp.id
+WHERE ua.accessType='AuditEdit'
+AND grp.accountID=10566;
+		 */
 		/* 
 		 * SELECT *
 from users u
@@ -75,6 +83,21 @@ join audit_type atype on atype.assignAudit in (84453)
 where grp.groupID = atype.editAudit;
 
 		 */
+		return userList;
+	}
+
+	public List<User> findCorporateAuditors(int corporateId) {
+		List<User> userList = new ArrayList<User>();
+
+		Query query = em.createNativeQuery("select * from users u "
+				+ "JOIN usergroup member ON member.userID = u.id "
+				+ "JOIN users grp ON grp.id = member.groupID "
+				+ "JOIN useraccess ua ON ua.userID = grp.id "
+				+ "WHERE ua.accessType='AuditEdit' "
+				+ "AND ua.viewFlag = 1 "
+				+ "AND u.isActive = 1 "
+				+ "AND grp.accountID=" + corporateId, User.class);
+		userList.addAll(query.getResultList());
 		return userList;
 	}
 

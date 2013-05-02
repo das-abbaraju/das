@@ -8,7 +8,7 @@ export PICSORG_TARGET_DIR="$PICSORG_MAIN_DIR/target"
 echo CHECKING IF TOMCAT IS CURRENTLY RUNNING
 if ps aux | grep "org.apache.catalina.startup.Bootstrap" > /dev/null
 then
-    echo STOPPING TOMCAT VIA DAEMON COMMAND
+    echo STOPPING TOMCAT
     /opt/tomcat/bin/shutdown.sh
     if [ "$?" -ne "0" ]; then
         echo "TOMCAT DID NOT STOP; KILLING PROCESS"
@@ -90,7 +90,7 @@ fi
 ####################################################
 
 echo STARTING TOMCAT
-/opt/tomcat/bin/startup.sh
+/opt/tomcat/bin/catalina.sh run
 if [ "$?" -ne "0" ]; then
     echo "TOMCAT FAILED ON STARTUP; CONTACT LINUX EXPERT"
     exit 1

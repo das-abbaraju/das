@@ -1,29 +1,16 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,28 +18,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.PICS.RegistrationRequestEmailHelper;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
-import com.picsauditing.util.URLUtils;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class RequestNewContractorTest {
 	private RequestNewContractor requestNewContractor;
@@ -486,7 +461,7 @@ public class RequestNewContractorTest {
 		assertFalse(requestNewContractor.hasActionErrors());
 		assertTrue(requestNewContractor.hasActionMessages());
 
-		verify(emailHelper).sendInitialEmail(any(ContractorRegistrationRequest.class), anyString());
+		verify(emailHelper).sendInitialEmail(any(ContractorRegistrationRequest.class), any(Locale.class), anyString());
 		verify(entityManager).persist(any(ContractorRegistrationRequest.class));
 	}
 
@@ -656,19 +631,20 @@ public class RequestNewContractorTest {
 		EmailQueue email = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
 
 		assertNull(email);
-		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
+		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class), any(Locale.class));
 	}
 
 	@Test
 	public void testBuildInitialEmail_WithRequest() throws Exception {
 		EmailQueue email = mock(EmailQueue.class);
-		when(emailHelper.buildInitialEmail(any(ContractorRegistrationRequest.class))).thenReturn(email);
+		when(emailHelper.buildInitialEmail(any(ContractorRegistrationRequest.class),
+				any(Locale.class))).thenReturn(email);
 
 		requestNewContractor.setNewContractor(registrationRequest);
 		EmailQueue built = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
 
 		assertNotNull(built);
-		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
+		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class), any(Locale.class));
 	}
 
 	@Test

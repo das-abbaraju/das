@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -10,9 +11,13 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -23,6 +28,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
+
+	private static final Logger logger = LoggerFactory.getLogger(AuditDataDAO.class);
+
 	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditData row = find(id);
@@ -31,8 +39,9 @@ public class AuditDataDAO extends PicsDAO {
 
 	@Transactional(propagation = Propagation.NESTED)
 	public int remove(Set<Integer> ids) {
-		if (ids == null || ids.size() == 0)
+		if (ids == null || ids.size() == 0) {
 			return 0;
+		}
 		String idList = Strings.implode(ids, ",");
 		Query query = em.createQuery("DELETE AuditData c WHERE c.id IN (" + idList + ")");
 		return query.executeUpdate();
@@ -48,7 +57,7 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter(1, questionID);
 		return query.getResultList();
 	}
-	
+
 	public List<AuditData> findByQuestionIDs(List<Integer> questionIDs) {
 		String queryString = "FROM AuditData d WHERE d.question.id IN (" + Strings.implode(questionIDs, ", ") + ")";
 		return em.createQuery(queryString).getResultList();
@@ -76,15 +85,16 @@ public class AuditDataDAO extends PicsDAO {
 	 * Find all answers for given questions for this contractor Questions can
 	 * come from any audit type that is Pending, Submitted, Resubmitted or
 	 * Active but must only have one possible answer
-	 * 
+	 *
 	 * @param conID
 	 * @param questionIds
 	 * @return Map containing QuestionID => AuditData
 	 */
 	public Map<Integer, AuditData> findAnswersByContractor(int conID, Collection<Integer> questionIds) {
 		Map<Integer, AuditData> indexedResult = new HashMap<Integer, AuditData>();
-		if (questionIds.size() == 0)
+		if (questionIds.size() == 0) {
 			return indexedResult;
+		}
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.contractorAccount.id = :conID "
 				+ "AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate > :today) " + "AND d.question.id IN ("
@@ -96,17 +106,20 @@ public class AuditDataDAO extends PicsDAO {
 
 		for (AuditData row : result) {
 			int id = row.getQuestion().getId();
-			if (!Strings.isEmpty(row.getAudit().getAuditFor()) && !AuditType.CANADIAN_PROVINCES.contains(row.getAudit().getAuditType().getId()))
+			if (!Strings.isEmpty(row.getAudit().getAuditFor())
+					&& !AuditType.CANADIAN_PROVINCES.contains(row.getAudit().getAuditType().getId())) {
 				throw new RuntimeException("ERROR AuditDataDAO:findAnswersByContractor(" + conID + "," + id
 						+ ") getAuditFor not empty for audit id: " + row.getAudit().getId());
+			}
 			if (indexedResult.containsKey(id)) {
-				if (row.getCreationDate().after(indexedResult.get(id).getCreationDate()))
+				if (row.getCreationDate().after(indexedResult.get(id).getCreationDate())) {
 					indexedResult.put(id, row);
+				}
 			} else {
 				indexedResult.put(id, row);
 			}
 		}
-		
+
 		return indexedResult;
 	}
 
@@ -123,11 +136,11 @@ public class AuditDataDAO extends PicsDAO {
 
 	/**
 	 * Get a list of questions that must be verified for this audit.
-	 * 
+	 *
 	 * This queries questions that have been answered where one or more of the
 	 * operators attached to this contractor require validation for the given
 	 * question
-	 * 
+	 *
 	 * @param auditId
 	 * @return
 	 */
@@ -166,8 +179,9 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public AnswerMap findAnswers(int auditID, Collection<Integer> questionIds) {
-		if (questionIds.size() == 0)
+		if (questionIds.size() == 0) {
 			return null;
+		}
 
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE audit.id = ? AND question.id IN ("
 				+ Strings.implode(questionIds) + ") " + "ORDER BY d.creationDate");
@@ -175,15 +189,10 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	// TODO merge with findAnswerByConQuestions and findCurrentAnswers and
-	// return a Map<
-	public Map<Integer, AuditData> findTODOHERE(int conID, Collection<Integer> questionIds) {
-		return null;
-	}
-
 	public AnswerMap findCurrentAnswers(int conId, Collection<Integer> questionIds) {
-		if (questionIds.size() == 0)
+		if (questionIds.size() == 0) {
 			return new AnswerMap(Collections.<AuditData> emptyList());
+		}
 
 		Query query = em
 				.createNativeQuery(
@@ -195,8 +204,9 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	public AnswerMap findAnswersByAuditAndQuestions(ContractorAudit audit, Collection<Integer> questionIds) {
-		if (questionIds.size() == 0)
+		if (questionIds.size() == 0) {
 			return new AnswerMap(Collections.<AuditData> emptyList());
+		}
 
 		Query query = em.createQuery("SELECT d FROM AuditData d"
 				+ " WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
@@ -238,7 +248,7 @@ public class AuditDataDAO extends PicsDAO {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param auditIds
 	 * @return Answers in the subcategories named Policy Limits for the given
 	 *         auditIds
@@ -258,7 +268,7 @@ public class AuditDataDAO extends PicsDAO {
 
 	/**
 	 * Convert a ResultList into an AnswerMap
-	 * 
+	 *
 	 * @return
 	 */
 	static private AnswerMap mapData(List<AuditData> result) {
@@ -323,5 +333,23 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createQuery("From AuditData d WHERE " + where);
 
 		return query.getResultList();
+	}
+
+	public List<AuditData> findContractorAuditAnswers(int contractorId, int auditTypeId, int questionId) {
+		TypedQuery<AuditData> query = em
+				.createQuery(
+						"FROM AuditData d WHERE d.audit.auditType.id = :auditTypeId AND d.audit.contractorAccount.id = :contractorId AND d.question.id IN ( :questionId ) ORDER BY d.audit.id DESC",
+						AuditData.class);
+		query.setParameter("contractorId", contractorId);
+		query.setParameter("auditTypeId", auditTypeId);
+		query.setParameter("questionId", questionId);
+
+		try {
+            return query.getResultList();
+		} catch (Exception e) {
+			logger.error(MessageFormat.format(
+					"An error occurred while running query contractoID =  {0}, auditTypeId = {1}", contractorId, auditTypeId), e);
+            return Collections.emptyList();
+		}
 	}
 }

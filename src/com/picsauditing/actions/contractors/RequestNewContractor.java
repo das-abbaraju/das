@@ -62,6 +62,7 @@ public class RequestNewContractor extends AccountActionSupport {
 	private int requestID;
 	// For previews
 	private EmailQueue email;
+	private Locale emailLanguage;
 	// URL helper
 	private URLUtils urlUtils = new URLUtils();
 
@@ -256,7 +257,7 @@ public class RequestNewContractor extends AccountActionSupport {
 
 			// Save the contractor before sending the email
 			newContractor = crrDAO.save(newContractor);
-			emailHelper.sendInitialEmail(newContractor, getFtpDir());
+			emailHelper.sendInitialEmail(newContractor, emailLanguage, getFtpDir());
 		} else {
 			if (status != null)
 				newContractor.setStatus(status);
@@ -465,8 +466,16 @@ public class RequestNewContractor extends AccountActionSupport {
 		return email;
 	}
 
+	public Locale getEmailLanguage() {
+		return emailLanguage;
+	}
+
+	public void setEmailLanguage(Locale emailLanguage) {
+		this.emailLanguage = emailLanguage;
+	}
+
 	private EmailQueue buildInitialEmail() throws Exception {
-		return emailHelper.buildInitialEmail(newContractor);
+		return emailHelper.buildInitialEmail(newContractor, emailLanguage);
 	}
 
 	private void checkContactFields() {

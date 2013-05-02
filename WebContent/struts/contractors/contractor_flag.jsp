@@ -170,7 +170,7 @@
 						<div style="margin-left: 10px;">
 							<s:if test="co.forceOverallFlag != null || getFlagDataOverrides(co.operatorAccount).size() > 0">
 								<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
-									<s:if test="co.forceOverallFlag != null">
+									<s:if test="co.forceOverallFlag != null && !displayCorporate">
 										<s:text name="ContractorFlag.ManualForceFlagInfo">
 											<s:param>
 												<s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" />

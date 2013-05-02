@@ -118,7 +118,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "dao", dao);
 
-		boolean valid = serviceEvaluation.validateAnswers();
+		boolean valid = serviceEvaluation.validatePqfAuditAnswers();
 		assertTrue(valid);
 	}
 

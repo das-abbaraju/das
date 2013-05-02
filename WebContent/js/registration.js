@@ -34,7 +34,7 @@
 				});
 
 				var selectedSubdivision = null;
-				
+
 				if ($('#requested_contractor').length) {
 			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
 
@@ -72,7 +72,7 @@
 						} else {
 							zip_element.slideDown(400);
 						}
-						
+
 						if (selectedSubdivision) {
 							countrySubdivision_element.find("select").val(selectedSubdivision);
 						}
@@ -163,12 +163,12 @@
 		        registration_page = $('.Registration-page');
 
 		    if (registration_page.length > 0) {
-                registration_page.on('change', '#dialect_selection', function (event) {
-                    that.setDialect.call(that, event);
-                });
-
                 registration_page.on('change', '#registration_language', function (event) {
                     that.getDialectList.call(that, event);
+                });
+
+                registration_page.on('change', '#dialect_selection', function (event) {
+                    that.updatePageLanguageBasedOnSelectedLanguageAndDialect();
                 });
 		    }
 		},
@@ -176,7 +176,8 @@
         getDialectList: function (event) {
             var element = $(event.currentTarget),
                 language = element.val(),
-                request_locale = $("#request_locale");
+                that = this;
+
 
             PICS.ajax({
                 url: 'RegistrationAjax.action',
@@ -189,24 +190,28 @@
 
                     dialect_container_element.html(dialect_dropdown);
 
-                    //if no dialects, refresh page
                     if (dialect_dropdown == '') {
-                        request_locale.val(language);
-                        element.closest('form').submit();
+                         that.updatePageLanguageBasedOnSelectedLanguageAndDialect();
                     }
                 }
             });
         },
 
-        setDialect: function (event, base_language) {
-            var element = $(event.currentTarget),
-                dialect = element.val(),
-                language = $('#registration_language').val(),
-                request_locale = $("#request_locale");
+        getRequestLocale: function () {
+            var language = $('[name=language]').val(),
+                dialect = $('[name=dialect]').val();
+            
+            return dialect ? language + '_' + dialect : language;
+        }, 
+        
+        updatePageLanguageBasedOnSelectedLanguageAndDialect: function (event) {
+            var $input = $(document.createElement('input'));
 
-            request_locale.val(language + "_" + dialect);
-
-            element.closest('form').submit();
+                $input.attr('name', 'request_locale');
+                $input.attr('value', this.getRequestLocale());
+                $('.registration-form').append($input);
+                
+                $('.registration-form').submit();
         }
 	};
 
@@ -305,6 +310,8 @@
                 var business_interruption_evaluation = $('.business_interruption_evaluation');
                 var transportation_evaluation = $('.transportation_evaluation');
 
+                var request_to_provide_ssip_details_display = false;
+                var ssip_evaluation_display = false;
 				var product_safety_evaluation_display = false;
                 var business_interruption_evaluation_display = false;
                 var transportation_evaluation_display = false;
@@ -334,7 +341,7 @@
                 } else {
                     business_interruption_evaluation.slideUp(400);
                 }
-                
+
                 if (transportation_evaluation_display) {
                     transportation_evaluation.slideDown(400);
                 } else {
@@ -349,12 +356,42 @@
 	        init: function () {
                 var company_information = $('.company-information');
 
+                $('.registered-with-ssip-member-scheme-input').bind('click', this.toggleReadyToProvideSsipDetailsDisplay);
+                $('.request-to-provide-ssip-details-input').bind('click', this.toggleSsipDetailsDisplay);
+
                 $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+                $('.registration').delegate('#autofill', 'click', this.autofillRegistrationFormForDev);
                 company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+                
                 // Show or hide the vat id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
+            },
+
+            autofillRegistrationFormForDev: function (event) {
+                var email = "my.email" + new Date().getTime() + "@test.com";
+    
+                // Company Info
+                $('[name=language]').children().first().attr("selected","selected");
+                $('[name=dialect]').children().last().attr("selected","selected");
+                $('[name="contractor.country.isoCode"]').children().first().attr("selected","selected");
+                $('[name="contractor.name"]').val("My Company" +  new Date().getTime() );
+                $('[name="contractor.address"]').val("123 Anywhere St");
+                $('[name="contractor.city"]').val("Springfield");
+                $('[name="countrySubdivision"]').children().last().attr("selected","selected");
+                $('[name="contractor.zip"]').val("12345");
+                  
+                // Contact Info
+                $('[name="user.firstName"]').val("John");
+                $('[name="user.lastName"]').val("Doe");
+                $('[name="user.email"]').val(email);
+                $('[name="user.phone"]').val("555-555-5555");
+                  
+                // Account Info
+                $('[name="user.username"]').val(email);
+                $('[name="user.password"]').val("password1");
+                $('[name="confirmPassword"]').val("password1");
             },
 
             showBasicModal: function (event) {
@@ -415,6 +452,35 @@
                         }
                     }
                 });
+            },
+
+            toggleReadyToProvideSsipDetailsDisplay: function (event) {
+                var val = $('#registeredWithSsipMemberScheme:checked').val();
+
+                if (val == "Yes") {
+                    $('.request-to-provide-ssip-details-container').slideDown(400);
+                } else {
+                    $('.request-to-provide-ssip-details-container').slideUp(400, function () {
+                        $('input[name=readyToProvideSsipDetails]').each(function () {
+                            $(this).prop('checked', false);
+                        });
+                    });
+                }
+
+                $('.ssip-details-container').slideUp(400);
+                $('.provide-ssip-details-later-message').slideUp(400);
+            },
+
+            toggleSsipDetailsDisplay: function (event) {
+                var val = $('input[name=readyToProvideSsipDetails]:checked').val();
+
+                if (val == "Yes") {
+                    $('.provide-ssip-details-later-message').slideUp(400);
+                    $('.ssip-details-container').slideDown(400);
+                } else {
+                    $('.ssip-details-container').slideUp(400);
+                    $('.provide-ssip-details-later-message').slideDown(400);
+                }
             }
 	    }
 	});

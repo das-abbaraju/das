@@ -1,15 +1,11 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,20 +14,6 @@ import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -42,25 +24,44 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
-	private Map<AuditCategory, AuditCatData> categories = new HashMap<AuditCategory, AuditCatData>();
-	private Map<Integer, AuditData> answerMap = new HashMap<Integer, AuditData>();
+
+	private Map<Integer, AuditData> answerMap = new HashMap<>();
+	private Map<Integer, AuditData> ssipAnswerMap = new HashMap<>();
 	private ContractorAudit conAudit;
+	private ContractorAudit ssipAudit;
 	private boolean showBidOnly;
+
 	private boolean showCompetitor;
 	private boolean isSoleProprietor;
 	private boolean isBidOnly;
-    private boolean hasTransportationQuestions;
-
+	private boolean hasTransportationQuestions;
 	private boolean requireOnsite;
+
 	private boolean requireOffsite;
 	private boolean requireMaterialSupplier;
 	private boolean requireTransportation;
-
 	private String servicesHelpText = "";
 
 	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
+
+	private String readyToProvideSsipDetails;
+
+	private int yearOfLastSsipMemberAudit;
+	private int monthOfLastSsipMemberAudit;
+	private int dayOfLastSsipMemberAudit;
+
+	private int yearOfSsipMembershipExpiration;
+	private int monthOfSsipMembershipExpiration;
+	private int dayOfSsipMembershipExpiration;
+
+	public static final int QUESTION_ID_REGISTERED_WITH_SSIP = 16914;
+	public static final int QUESTION_ID_SSIP_AUDIT_DATE = 16915;
+	public static final int QUESTION_ID_SSIP_EXPIRATION_DATE = 16916;
+	public static final int QUESTION_ID_SSIP_SCHEME = 16948;
 
 	public RegistrationServiceEvaluation() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
@@ -88,8 +89,13 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (contractor.getRequestedBy() != null && !contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR))
 			showCompetitor = false;
 
-		loadQuestions();
-		loadAnswers();
+		loadPqfQuestionsAndAudit();
+		loadSsipAudit();
+
+		buildAndLoadSsipDatesIntoAnswerMap();
+
+		loadPqfAnswers();
+		loadSsipAnswers();
 
 		return SUCCESS;
 	}
@@ -152,16 +158,23 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		loadQuestions();
+		loadPqfQuestionsAndAudit();
+		loadSsipAudit();
 
-		if (!validateAnswers()) {
+		if (!validatePqfAuditAnswers() || !validateSsipAuditAnswers()) {
+			addActionError("All Questions Must Be Answered.");
 			return SUCCESS;
 		}
 
-		saveAnswers();
-		loadAnswers();
+		saveAnswersForPqfAudit();
+		saveAnswersForSsipAudit();
+
+		loadPqfAnswers();
+		loadSsipAnswers();
+
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
+
 		contractor.syncBalance();
 		billingService.calculateContractorInvoiceFees(contractor);
 		contractorAccountDao.save(contractor);
@@ -171,19 +184,107 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
 			contractor.setMembershipDate(new Date());
-			if (contractor.getBalance() == null)
+
+			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
+			}
+
 			contractorAccountDao.save(contractor);
 		}
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
 
-	public boolean validateAnswers() {
-		Set<Integer> catIds = new HashSet<Integer>();
-		Map<AuditCategory, AuditCatData> cats = new HashMap<AuditCategory, AuditCatData>();
-		ContractorAudit ca = new ContractorAudit();
-		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	private boolean validateSsipAuditAnswers() {
+		if (!shouldShowSsip()) {
+			return true;
+		}
+
+		buildAndLoadSsipDatesIntoAnswerMap();
+
+		AuditData registeredWithSsipData = answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP);
+		if (registeredWithSsipData == null) {
+			return false;
+		}
+
+		String registeredAnswer = registeredWithSsipData.getAnswer();
+		if (YesNo.No.toString().equals(registeredAnswer)) {
+			return true;
+		}
+
+		if (readyToProvideSsipDetails == null) {
+			return false;
+		}
+
+		if (YesNo.No.toString().equals(readyToProvideSsipDetails)) {
+			return true;
+		}
+
+		AuditData auditDateData = ssipAnswerMap.get(QUESTION_ID_SSIP_AUDIT_DATE);
+		if (auditDateData == null || auditDateData.getAnswer() == null) {
+			return false;
+		}
+
+		if (DateBean.parseDate(auditDateData.getAnswer()) == null) {
+			return false;
+		}
+
+		AuditData expirationDateData = ssipAnswerMap.get(QUESTION_ID_SSIP_EXPIRATION_DATE);
+		if (expirationDateData == null || expirationDateData.getAnswer() == null) {
+			return false;
+		}
+
+		if (DateBean.parseDate(expirationDateData.getAnswer()) == null) {
+			return false;
+		}
+
+		AuditData ssipSchemeData = ssipAnswerMap.get(QUESTION_ID_SSIP_SCHEME);
+		if (ssipSchemeData == null) {
+			return false;
+		}
+		String ssipSchemeAnswer = ssipSchemeData.getAnswer();
+		// KLUDGE: This is better than matching a magic string
+		// Detects whether the user has selected a scheme, in which case the answer will
+		// start with a letter. If they haven't selected an option, the value will be
+		// something like "- Please select a scheme -".
+		if (ssipSchemeAnswer == null || ssipSchemeAnswer.trim().startsWith("-")) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean validatePqfAuditAnswers() {
+		Set<Integer> requiredPqfCategoryIds = buildRequiredPqfCategoryIds();
+		ContractorAudit conAudit = getContractorPQF(requiredPqfCategoryIds);
+
+		Map<AuditCategory, AuditCatData> pqfCategories = new HashMap<>();
+		for (AuditCatData catData : conAudit.getCategories()) {
+			if (requiredPqfCategoryIds.contains(catData.getCategory().getId())) {
+				pqfCategories.put(catData.getCategory(), catData);
+			}
+		}
+
+		List<AuditQuestion> requiredQuestions = new ArrayList<>();
+		for (AuditCategory pqfCategory : pqfCategories.keySet()) {
+			for (AuditQuestion question : pqfCategory.getQuestions()) {
+				if (question.isValidQuestion(new Date())) {
+					requiredQuestions.add(question);
+				}
+			}
+		}
+
+		for (AuditQuestion question : requiredQuestions) {
+			if (!answerMap.containsKey(question.getId())) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private Set<Integer> buildRequiredPqfCategoryIds() {
+		Set<Integer> catIds = new HashSet<>();
 
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices()) {
 			catIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
@@ -198,30 +299,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			catIds.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
 		}
 
-		ca = getContractorPQF(catIds);
-
-		for (AuditCatData catData : ca.getCategories()) {
-			if (catIds.contains(catData.getCategory().getId())) {
-				cats.put(catData.getCategory(), catData);
-			}
-		}
-
-		for (AuditCategory cat : cats.keySet()) {
-			for (AuditQuestion q : cat.getQuestions()) {
-				if (q.isValidQuestion(new Date())) {
-					questions.add(q);
-				}
-			}
-		}
-
-		for (AuditQuestion q : questions) {
-			if (!answerMap.containsKey(q.getId())) {
-				addActionError("All Questions Must Be Answered.");
-				return false;
-			}
-		}
-
-		return true;
+		return catIds;
 	}
 
 	public Map<Integer, AuditData> getAnswerMap() {
@@ -232,8 +310,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		return conAudit;
 	}
 
-	public Map<AuditCategory, AuditCatData> getCategories() {
-		return categories;
+	public ContractorAudit getSsipAudit() {
+		return ssipAudit;
+	}
+
+	public void setSsipAudit(ContractorAudit ssipAudit) {
+		this.ssipAudit = ssipAudit;
 	}
 
 	public boolean isViewBlanks() {
@@ -256,7 +338,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	public List<AuditQuestion> getInfoQuestions() {
 		if (infoQuestions == null || infoQuestions.size() == 0) {
-			loadQuestions();
+			loadPqfQuestionsAndAudit();
         }
 
 		return infoQuestions;
@@ -368,6 +450,62 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
         return hasTransportationQuestions;
     }
 
+	public int getDayOfSsipMembershipExpiration() {
+		return dayOfSsipMembershipExpiration;
+	}
+
+	public void setDayOfSsipMembershipExpiration(int dayOfSsipMembershipExpiration) {
+		this.dayOfSsipMembershipExpiration = dayOfSsipMembershipExpiration;
+	}
+
+	public int getMonthOfSsipMembershipExpiration() {
+		return monthOfSsipMembershipExpiration;
+	}
+
+	public void setMonthOfSsipMembershipExpiration(int monthOfSsipMembershipExpiration) {
+		this.monthOfSsipMembershipExpiration = monthOfSsipMembershipExpiration;
+	}
+
+	public int getYearOfSsipMembershipExpiration() {
+		return yearOfSsipMembershipExpiration;
+	}
+
+	public void setYearOfSsipMembershipExpiration(int yearOfSsipMembershipExpiration) {
+		this.yearOfSsipMembershipExpiration = yearOfSsipMembershipExpiration;
+	}
+
+	public int getDayOfLastSsipMemberAudit() {
+		return dayOfLastSsipMemberAudit;
+	}
+
+	public void setDayOfLastSsipMemberAudit(int dayOfLastSsipMemberAudit) {
+		this.dayOfLastSsipMemberAudit = dayOfLastSsipMemberAudit;
+	}
+
+	public int getMonthOfLastSsipMemberAudit() {
+		return monthOfLastSsipMemberAudit;
+	}
+
+	public void setMonthOfLastSsipMemberAudit(int monthOfLastSsipMemberAudit) {
+		this.monthOfLastSsipMemberAudit = monthOfLastSsipMemberAudit;
+	}
+
+	public int getYearOfLastSsipMemberAudit() {
+		return yearOfLastSsipMemberAudit;
+	}
+
+	public void setYearOfLastSsipMemberAudit(int yearOfLastSsipMemberAudit) {
+		this.yearOfLastSsipMemberAudit = yearOfLastSsipMemberAudit;
+	}
+
+	public String isReadyToProvideSsipDetails() {
+		return readyToProvideSsipDetails;
+	}
+
+	public void setReadyToProvideSsipDetails(String readyToProvideSsipDetails) {
+		this.readyToProvideSsipDetails = readyToProvideSsipDetails;
+	}
+
 	public boolean isShowSafetyAssessment() {
 		if (contractor != null
 				&& (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isMaterialSupplier() || contractor
@@ -410,26 +548,21 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 	}
 
-	private void loadQuestions() {
-		// get the categories for a contractor based on their
-		// Onsite/Offsite/Material Supplier status
-		Set<Integer> categoryIds = new HashSet<Integer>();
+	private void loadPqfQuestionsAndAudit() {
+		Set<Integer> pqfCategoryIds = new HashSet<>();
+		// First SSIP question is saved in the pqf
+		pqfCategoryIds.add(AuditCategory.SSIP);
+		pqfCategoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
+		pqfCategoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+		pqfCategoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+		pqfCategoryIds.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
 
-		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
-		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
-		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
-		categoryIds.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
+		conAudit = getContractorPQF(pqfCategoryIds);
 
-		conAudit = getContractorPQF(categoryIds);
+		Map<AuditCategory, AuditCatData> pqfCategories = buildCategoriesMap(pqfCategoryIds, conAudit);
 
-		for (AuditCatData catData : conAudit.getCategories()) {
-			if (categoryIds.contains(catData.getCategory().getId())) {
-				categories.put(catData.getCategory(), catData);
-			}
-		}
-
-		// find the questions for the above categories
-		for (AuditCategory category : categories.keySet()) {
+		// find the questions for all the categories
+		for (AuditCategory category : pqfCategories.keySet()) {
 			for (AuditQuestion question : category.getQuestions()) {
 				if (question.isValidQuestion(new Date())) {
                     infoQuestions.add(question);
@@ -442,40 +575,177 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 	}
 
-	private void loadAnswers() {
-		Set<Integer> questionIds = new HashSet<Integer>();
+	private void loadSsipAudit() {
+		Set<Integer> ssipCategoryIds = new HashSet<>();
+		ssipCategoryIds.add(AuditCategory.SSIP_EVALUATION);
+		ssipAudit = getSSIPVerification(ssipCategoryIds);
+	}
+
+	private Map<AuditCategory, AuditCatData> buildCategoriesMap(Set<Integer> categoryIds, ContractorAudit audit) {
+		Map<AuditCategory, AuditCatData> categories = new HashMap<>();
+
+		for (AuditCatData catData : audit.getCategories()) {
+			if (categoryIds.contains(catData.getCategory().getId())) {
+				categories.put(catData.getCategory(), catData);
+			}
+		}
+
+		return categories;
+	}
+
+	private void loadPqfAnswers() {
+		Set<Integer> questionIds = new HashSet<>();
+
 		for (AuditQuestion question : infoQuestions) {
 			questionIds.add(question.getId());
 		}
 
-		// find the answers to the questions
+		// find the answers to the pqf questions
 		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 
 		for (AuditQuestion question : infoQuestions) {
 			if (answerMap.get(question.getId()) == null) {
-				AuditData answer = new AuditData();
-				answer.setAnswer("");
-				answer.setAudit(conAudit);
-				answer.setQuestion(question);
-				answer.setAuditColumns(permissions);
-				answerMap.put(question.getId(), answer);
+				AuditData auditData = new AuditData();
+				auditData.setAnswer("");
+				auditData.setAudit(conAudit);
+				auditData.setQuestion(question);
+				auditData.setAuditColumns(permissions);
+				answerMap.put(question.getId(), auditData);
 			}
 		}
 	}
 
-	private void saveAnswers() throws Exception {
+	private void loadSsipAnswers() {
+		Set<Integer> questionIds = new HashSet<>();
+		questionIds.add(QUESTION_ID_SSIP_AUDIT_DATE);
+		questionIds.add(QUESTION_ID_SSIP_EXPIRATION_DATE);
+		questionIds.add(QUESTION_ID_SSIP_SCHEME);
+
+		// find the answers to the ssip questions
+		ssipAnswerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
+
+		for (int questionId : questionIds) {
+			if (ssipAnswerMap.get(questionId) != null) {
+				continue;
+			}
+
+			AuditData auditData = new AuditData();
+			auditData.setAnswer("");
+			auditData.setAudit(ssipAudit);
+			auditData.setQuestion(questionDao.find(questionId));
+			auditData.setAuditColumns(permissions);
+			ssipAnswerMap.put(questionId, auditData);
+		}
+	}
+
+	private void saveAnswersForPqfAudit() throws Exception {
 		for (Integer qid : answerMap.keySet()) {
-			AuditData data = answerMap.get(qid);
+			AuditData auditData = answerMap.get(qid);
 			AuditData newData = auditDataDAO.findAnswerByAuditQuestion(conAudit.getId(), qid);
-			if (!Strings.isEmpty(data.getAnswer())) {
-				if (newData != null)
-					data.setId(newData.getId());
-				data.setAudit(conAudit);
-				data.setQuestion(questionDao.find(qid));
-				data.setAuditColumns(permissions);
-				auditDataDAO.save(data);
+
+			if (!Strings.isEmpty(auditData.getAnswer())) {
+				if (newData != null) {
+					auditData.setId(newData.getId());
+				}
+
+				auditData.setAudit(conAudit);
+				auditData.setQuestion(questionDao.find(qid));
+				auditData.setAuditColumns(permissions);
+				auditDataDAO.save(auditData);
+ 			}
+		}
+	}
+
+	private void saveAnswersForSsipAudit() throws Exception {
+		if (!shouldPersistSsipQuestions()) {
+			return;
+		}
+
+		for (Integer qid : ssipAnswerMap.keySet()) {
+			AuditData auditData = ssipAnswerMap.get(qid);
+			AuditData newData = auditDataDAO.findAnswerByAuditQuestion(ssipAudit.getId(), qid);
+
+			if (!Strings.isEmpty(auditData.getAnswer())) {
+				if (newData != null) {
+					auditData.setId(newData.getId());
+				}
+
+				auditData.setAudit(ssipAudit);
+				auditData.setQuestion(questionDao.find(qid));
+				auditData.setAuditColumns(permissions);
+				auditDataDAO.save(auditData);
 			}
 		}
+	}
+
+	private boolean shouldPersistSsipQuestions() {
+		AuditData registeredWithSsip = answerMap.get(QUESTION_ID_REGISTERED_WITH_SSIP);
+
+		if (registeredWithSsip != null && YesNo.No.name().equals(registeredWithSsip.getAnswer())) {
+			return false;
+		}
+
+		if (readyToProvideSsipDetails != null && YesNo.No.name().equals(readyToProvideSsipDetails)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private void buildAndLoadSsipDatesIntoAnswerMap() {
+		Map<Integer, AuditData> answerMapForDates = new HashMap<>();
+
+		String membershipDateString = null;
+
+		if (userHasFilledOutMembershipDate()) {
+			String year = "" + yearOfLastSsipMemberAudit;
+
+			String monthLeadingZeroIfNeeded = (monthOfLastSsipMemberAudit < 10) ? "0" : "";
+			String month = monthLeadingZeroIfNeeded + monthOfLastSsipMemberAudit;
+
+			String dayLeadingZeroIfNeeded = (dayOfLastSsipMemberAudit < 10) ? "0" : "";
+			String day = dayLeadingZeroIfNeeded + dayOfLastSsipMemberAudit;
+
+			membershipDateString = year + "-" + month + "-" + day;
+		}
+
+		AuditData membershipAuditData = new AuditData();
+		membershipAuditData.setAnswer(membershipDateString);
+		membershipAuditData.setAudit(ssipAudit);
+		answerMapForDates.put(QUESTION_ID_SSIP_AUDIT_DATE, membershipAuditData);
+
+		String expirationDateString = null;
+
+		if (hasFilledOutMembershipExpiration()) {
+			String year = "" + yearOfSsipMembershipExpiration;
+
+			String monthLeadingZeroIfNeeded = (monthOfSsipMembershipExpiration < 10) ? "0" : "";
+			String month = monthLeadingZeroIfNeeded + monthOfSsipMembershipExpiration;
+
+			String dayLeadingZeroIfNeeded = (dayOfSsipMembershipExpiration < 10) ? "0" : "";
+			String day = dayLeadingZeroIfNeeded + dayOfSsipMembershipExpiration;
+
+			expirationDateString = year + "-" + month + "-" + day;
+		}
+
+		AuditData expirationAuditData = new AuditData();
+		expirationAuditData.setAnswer(expirationDateString);
+		expirationAuditData.setAudit(ssipAudit);
+		answerMapForDates.put(QUESTION_ID_SSIP_EXPIRATION_DATE, expirationAuditData);
+
+		ssipAnswerMap.putAll(answerMapForDates);
+	}
+
+	private boolean hasFilledOutMembershipExpiration() {
+		return yearOfSsipMembershipExpiration != 0
+				&& monthOfSsipMembershipExpiration != 0
+				&& dayOfSsipMembershipExpiration != 0;
+	}
+
+	private boolean userHasFilledOutMembershipDate() {
+		return yearOfLastSsipMemberAudit != 0
+				&& monthOfLastSsipMemberAudit != 0
+				&& dayOfLastSsipMemberAudit != 0;
 	}
 
 	private void calculateRiskLevels() {
@@ -542,33 +812,34 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	/**
 	 * This method finds a contractor's PQF. If it does not exists, it will
 	 * create a new one and save it to the database.
-	 * 
+	 *
 	 * It will also add all categories required for registration.
-	 * 
+	 *
 	 * @param categoryIds
 	 *            The categories required by the contractor based on the types
 	 *            of trades selected.
 	 */
 	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
-		ContractorAudit pqf = null;
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPicsPqf()) {
-				pqf = audit;
+		ContractorAudit audit = null;
+
+		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (conAudit.getAuditType().isPicsPqf()) {
+				audit = conAudit;
 				break;
 			}
 		}
 
 		// The pqf doesn't exist yet, it should be created.
-		if (pqf == null) {
-			pqf = new ContractorAudit();
-			pqf.setContractorAccount(contractor);
-			pqf.setAuditType(new AuditType(AuditType.PQF));
-			pqf.setAuditColumns(new User(User.SYSTEM));
+		if (audit == null) {
+			audit = new ContractorAudit();
+			audit.setContractorAccount(contractor);
+			audit.setAuditType(new AuditType(AuditType.PQF));
+			audit.setAuditColumns(new User(User.SYSTEM));
 		}
 
 		// Add the categories that are required for this contractor
 		Set<Integer> categoriesToAdd = new HashSet<Integer>(categoryIds);
-		for (AuditCatData catData : pqf.getCategories()) {
+		for (AuditCatData catData : audit.getCategories()) {
 			int catID = catData.getCategory().getId();
 			if (categoriesToAdd.contains(catID)) {
 				categoriesToAdd.remove(catID);
@@ -578,20 +849,61 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		// If there are categories left in the categoryIds set, then they need
 		// to be added now.
 		for (Integer catID : categoriesToAdd) {
-			addAuditCategories(pqf, catID);
+			addAuditCategories(audit, catID);
 		}
 
-		auditDao.save(pqf);
+		auditDao.save(audit);
 
 		// refresh the audit to force the categories to reload
 		auditDao.refresh(conAudit);
 
-		return pqf;
+		return audit;
+	}
+
+	private ContractorAudit getSSIPVerification(Set<Integer> categoryIds) {
+		ContractorAudit ssip = null;
+
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().isSsip()) {
+				ssip = audit;
+				break;
+			}
+		}
+
+		// The ssip audit doesn't exist yet, it should be created.
+		if (ssip == null) {
+			ssip = new ContractorAudit();
+			ssip.setContractorAccount(contractor);
+			ssip.setAuditType(new AuditType(AuditType.SSIP));
+			ssip.setAuditColumns(new User(User.SYSTEM));
+		}
+
+		// Add the categories that are required for this contractor
+		Set<Integer> categoriesToAdd = new HashSet<Integer>(categoryIds);
+		for (AuditCatData catData : ssip.getCategories()) {
+			int catID = catData.getCategory().getId();
+			if (categoriesToAdd.contains(catID)) {
+				categoriesToAdd.remove(catID);
+			}
+		}
+
+		// If there are categories left in the categoryIds set, then they need
+		// to be added now.
+		for (Integer catID : categoriesToAdd) {
+			addAuditCategories(ssip, catID);
+		}
+
+		auditDao.save(ssip);
+
+		// refresh the audit to force the categories to reload
+		auditDao.refresh(ssipAudit);
+
+		return ssip;
 	}
 
 	/**
 	 * Adds an AuditCatData to an audit.
-	 * 
+	 *
 	 * @param audit
 	 * @param categoryId
 	 */
@@ -603,5 +915,45 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		catData.setOverride(false);
 		catData.setAuditColumns(new User(User.SYSTEM));
 		audit.getCategories().add(catData);
+	}
+
+	public boolean shouldShowSsip() {
+		AppProperty ssipClientSiteIdsProperty = appPropertyDAO.find(AppProperty.SSIP_CLIENT_SITE_ID_LIST_KEY);
+		if (ssipClientSiteIdsProperty == null) {
+			return false;
+		}
+
+		String value = ssipClientSiteIdsProperty.getValue();
+		String[] ssipClientSiteIds = (value != null) ? value.split(",") : new String[]{};
+
+		ContractorAccount account = (ContractorAccount) getAccount();
+
+		for (OperatorAccount operator : account.getOperatorAccounts()) {
+			for (String ssipClientSiteId : ssipClientSiteIds) {
+				if (ssipClientSiteId.trim().equals("" + operator.getId())) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public List<AuditOptionValue> getSsipMemberSchemes() {
+		AuditQuestion question = questionDao.find(QUESTION_ID_SSIP_SCHEME);
+
+		AuditOptionGroup auditOptionGroup = question.getOption();
+
+		List<AuditOptionValue> optionValues = auditOptionGroup.getValues();
+
+		return optionValues;
+	}
+
+	public Map<Integer, AuditData> getSsipAnswerMap() {
+		return ssipAnswerMap;
+	}
+
+	public void setSsipAnswerMap(Map<Integer, AuditData> ssipAnswerMap) {
+		this.ssipAnswerMap = ssipAnswerMap;
 	}
 }

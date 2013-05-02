@@ -662,10 +662,10 @@ AdvancedValidationAware {
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
-			if (permissions.isAdmin() || !permissions.has(OpPerms.AssignAudits)) {
+			if (permissions.isAdmin() && !permissions.isOperatorCorporate()) {
 				safetyList.addAll(userDAO.findByGroup(User.GROUP_SAFETY));
 			} else {
-				safetyList.addAll(userDAO.findAuditors(permissions.getAllInheritedGroupIds()));
+				safetyList.addAll(userDAO.findCorporateAuditors(permissions.getAccountId()));
 			}
 		}
 		return safetyList;

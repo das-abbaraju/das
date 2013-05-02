@@ -1,10 +1,15 @@
 package com.picsauditing.dao;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.PICS.DBBean;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.DatabaseUtil;
+import com.picsauditing.util.SpringUtils;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import com.picsauditing.model.i18n.ContextTranslation;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+
 
 public class AppTranslationDAO extends PicsDAO {
 
@@ -50,15 +56,46 @@ public class AppTranslationDAO extends PicsDAO {
 		return sql.toString();
 	}
 
-	// this will call the stored procedure and get the appropriate translations
 	public List<ContextTranslation> findAllForJS() {
 		try {
-			return database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
+//				return loadTranslationsUsingStoredProc();
+				return loadTranslationsFromTableDirectly();
 		} catch (Exception e) {
 			logger.error("Error while retrieving all the translations for JS.", e);
 		}
 
 		return Collections.emptyList();
+	}
+
+	private List<ContextTranslation> loadTranslationsUsingStoredProc() throws SQLException {
+		return database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
+	}
+
+	private List<ContextTranslation> loadTranslationsFromTableDirectly() throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		ContextTranslationMapper rowMapper = new ContextTranslationMapper();
+
+		List<ContextTranslation> results = new ArrayList<ContextTranslation>();
+		try {
+			connection = DBBean.getDBConnection();
+			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			String sql = "select * from app_translation where js = 1";
+			resultSet = statement.executeQuery(sql);
+
+			int row = 0;
+			while (resultSet.next()) {
+				results.add(rowMapper.mapRowFromAppTranslation(resultSet));
+				row++;
+			}
+		} finally {
+			DatabaseUtil.closeResultSet(resultSet);
+			DatabaseUtil.closeStatement(preparedStatement);
+			DatabaseUtil.closeConnection(connection);
+		}
+
+		return results;
 	}
 
 	private String buildStoredProcedureCall() {

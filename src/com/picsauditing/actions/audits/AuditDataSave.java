@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.access.OpPerms;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -358,7 +359,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if (isAudit && !isAnnualUpdate) {
 			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 			if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
-					&& permissions.isAdmin()) {
+					&& (permissions.isAdmin() || permissions.hasPermission(OpPerms.AuditEdit))) {
 				newCopy.setDateVerified(new Date());
 				newCopy.setAuditor(getUser());
 			}
@@ -373,8 +374,10 @@ public class AuditDataSave extends AuditActionSupport {
 			newCopy.setAuditor(null);
 		}
 
-		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
+		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) &&
+				(permissions.isPicsEmployee() || permissions.hasPermission(OpPerms.AuditEdit))) {
 			newCopy.setWasChanged(YesNo.Yes);
+		}
 
 		newCopy.setAnswer(auditData.getAnswer());
 	}

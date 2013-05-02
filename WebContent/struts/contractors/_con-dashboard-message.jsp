@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="co.operatorAccount.id == permissions.accountId">
+<%-- <s:if test="co.operatorAccount.id == permissions.accountId">
     <s:if test="permissions.hasPermission('ViewUnApproved') || (permissions.approvesRelationships && permissions.hasPermission('ContractorApproval'))">
         <s:if test="co.workStatusPending">
-            <s:set name="users_with_permissions" value="getUsersWithPermission('ContractorApproval')"/>
+            <s:set name="users_with_permissions" value="getOperatorUsersWithPermission('ContractorApproval')"/>
             <div class="alert">
                 <s:if test="permissions.operator">
                     <p>
@@ -95,4 +95,141 @@
             </div>
         </s:elseif>
     </s:if>
+</s:if> --%>
+<s:set name="result" value="dashboardMessageResult" />
+<s:set name="users_with_permissions" value="getOperatorUsersWithPermission('ContractorApproval')"/>
+<s:set name="corporate_users_with_permissions" value="getCorporateUsersWithPermission('ContractorApproval')"/>
+${result}
+
+<s:if test="#result.showButtons">
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+        <div class="contractor-status-buttons">
+            <button class="btn danger" data-conid="${contractor.id}" data-constatus="N"
+                    data-opid="${opID}"><s:text name="AuditStatus.Incomplete.button"/></button>
+            <button class="btn success" data-conid="${contractor.id}" data-constatus="Y"
+                    data-opid="${opID}"><s:text name="AuditStatus.Approved.button"/></button>
+        </div>
+    </div>
 </s:if>
+<s:elseif test="#result.contractorNotApprovedWithAccountManager">
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+        <p>
+            <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
+                <s:param>${picsRepresentativeForOperator.name}</s:param>
+            </s:text>
+        </p>
+    </div>
+</s:elseif>
+
+<s:elseif test="#result.contractorNotApproved">
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+    </div>
+</s:elseif>
+
+<s:elseif test="#result.showListOperator">
+    <div class="alert">
+        <p>
+            <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+        </p>
+        <ul class="users-with-permissions">
+            <s:iterator value="#users_with_permissions" status="loop_index">
+                <li>
+                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                        <s:param><s:property value="name"/></s:param>
+                        <s:param><s:property value="account.name"/></s:param>
+                    </s:text>
+                </li>
+            </s:iterator>
+        </ul>
+    </div>
+</s:elseif>
+
+<s:elseif test="#result.showListCorporate">
+    <div class="alert">
+        <p>
+            <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+        </p>
+        <ul class="users-with-permissions">
+            <s:iterator value="#corporate_users_with_permissions" status="loop_index">
+                <li>
+                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                        <s:param><s:property value="name"/></s:param>
+                        <s:param><s:property value="account.name"/></s:param>
+                    </s:text>
+                </li>
+            </s:iterator>
+        </ul>
+    </div>
+</s:elseif>
+
+<s:elseif test="#result.contractorNotApprovedExpectSomeSites"> <!--Corporate Not Approved.  Child sites: Approved, Not Approved -->
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+    </div>
+    <ul class="users-with-permissions">
+        <s:iterator value="approvedNonCorporateOperators" status="loop_index">
+            <li>
+                <s:text name="ContractorView.ContractorDashboard.CorporateApprovedSites">
+                    <s:param><s:property value="name"/></s:param>
+                </s:text>
+            </li>
+        </s:iterator>
+    </ul>
+
+</s:elseif>
+
+<s:elseif test="#result.showEverySiteExceptApprovedOnes"> <!--Corporate Approved.  Child sites: Approved, Not Approved -->
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+
+        <ul class="users-with-permissions">
+            <s:iterator value="usersWithPermissions" status="loop_index">
+                <li>
+                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                        <s:param><s:property value="name"/></s:param>
+                        <s:param><s:property value="account.name"/></s:param>
+                    </s:text>
+                </li>
+            </s:iterator>
+        </ul>
+    </div>
+</s:elseif>
+
+<s:elseif test="#result.showListAccountManager">
+    <div class="alert">
+        <p>
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
+        </p>
+
+        <p>
+            <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
+                <s:param>${picsRepresentativeForOperator.name}</s:param>
+            </s:text>
+        </p>
+    </div>
+</s:elseif>

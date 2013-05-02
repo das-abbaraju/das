@@ -1,24 +1,15 @@
 package com.picsauditing.actions;
 
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.beanutils.BasicDynaBean;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.dao.AppTranslationDAO;
-import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
+import java.util.*;
 
 public class TranslateJS2 extends PicsActionSupport {
 
@@ -34,12 +25,7 @@ public class TranslateJS2 extends PicsActionSupport {
 
 	@Anonymous
 	public String execute() throws Exception {
-		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_NEW_JS_TRANSLATIONS)) {
-			buildTranslationJsonResponse();
-		} else {
-			buildOldStyleTranslationJsonResponse();
-		}
-
+	    buildTranslationJsonResponse();
 		return SUCCESS;
 	}
 
@@ -63,12 +49,6 @@ public class TranslateJS2 extends PicsActionSupport {
 		}
 	}
 
-	private void buildOldStyleTranslationJsonResponse() throws SQLException {
-		@SuppressWarnings("deprecation")
-		List<BasicDynaBean> messages = new AppTranslationDAO(new Database()).findTranslationsForJSOldStyle(buildLocales());
-		buildJsonResponseOldStyle(messages);
-	}
-
 	private Set<String> buildLocales() {
 		Set<String> locales = new HashSet<String>();
 		locales.add(Locale.ENGLISH.toString());
@@ -80,16 +60,6 @@ public class TranslateJS2 extends PicsActionSupport {
 		}
 
 		return locales;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void buildJsonResponseOldStyle(List<BasicDynaBean> messages) {
-		for (BasicDynaBean message : messages) {
-			String msgKey = message.get("msgKey").toString();
-			if (!translations.containsKey(msgKey)) {
-				translations.put(msgKey, message.get("msgValue").toString());
-			}
-		}
 	}
 
 	public JSONObject getTranslations() {

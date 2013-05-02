@@ -18,6 +18,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.google.common.collect.ImmutableSet;
+import com.picsauditing.jpa.entities.builders.UserBuilder;
 import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -617,10 +619,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 				perm.setGrantFlag(true);
 				permissions.add(perm);
 			}
-			// PicsLogger.log(message)
 
 			stopwatch.stop();
-			return permissions;
+			return Collections.unmodifiableSet(permissions);
 		}
 
 		// get all the groups this user (or group) is a part of
@@ -641,8 +642,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		}
 
 		stopwatch.stop();
-		return permissions;
-	}
+        return Collections.unmodifiableSet(permissions);
+
+    }
 
 	/**
 	 * @param permissions
@@ -926,13 +928,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 					return perm.getGrantFlag();
 				}
 				// Default to OpType.View
-				return perm.getViewFlag();
+                return falseIfNull(perm.getViewFlag());
 			}
 		}
 		return false;
 	}
 
-	@Transient
+    private static boolean falseIfNull(Boolean viewFlag) {
+        return viewFlag == null ? false : viewFlag;
+    }
+
+    @Transient
 	public boolean hasPermission(OpPerms opPerm) {
 		return this.hasPermission(opPerm, OpType.View);
 	}
@@ -1068,4 +1074,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean isDeleted() {
 		return Strings.isNotEmpty(username) && username.startsWith(DELETED_PREFIX);
 	}
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
 }

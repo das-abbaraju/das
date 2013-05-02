@@ -160,11 +160,13 @@ public class LanguageModel {
 
 	public List<Locale> getUnifiedLanguageList() {
 		if (unifiedLanguageList == null) {
-			unifiedLanguageList = new ArrayList<Locale>();
-			Set<String> languagesWithVariants = new TreeSet<String>();
+			unifiedLanguageList = new ArrayList<>();
+			Set<String> languagesWithVariants = new TreeSet<>();
 
 			for (Language stableLanguageWithVariant : getStableLanguages()) {
-				unifiedLanguageList.add(stableLanguageWithVariant.getLocale());
+				if (!unifiedLanguageList.contains(stableLanguageWithVariant.getLocale())) {
+					unifiedLanguageList.add(stableLanguageWithVariant.getLocale());
+				}
 
 				if (Strings.isNotEmpty(stableLanguageWithVariant.getCountry())) {
 					languagesWithVariants.add(stableLanguageWithVariant.getLanguage());
@@ -173,7 +175,9 @@ public class LanguageModel {
 
 			// Add beta languages
 			for (Language betaLanguage : getLanguagesByStatus(LanguageStatus.Beta)) {
-				unifiedLanguageList.add(betaLanguage.getLocale());
+				if (!unifiedLanguageList.contains(betaLanguage.getLocale())) {
+					unifiedLanguageList.add(betaLanguage.getLocale());
+				}
 
 				if (Strings.isNotEmpty(betaLanguage.getCountry())) {
 					languagesWithVariants.add(betaLanguage.getLanguage());
@@ -181,7 +185,10 @@ public class LanguageModel {
 			}
 
 			for (String language : languagesWithVariants) {
-				unifiedLanguageList.add(new Locale(language));
+				Locale localeWithVariant = new Locale(language);
+				if (!unifiedLanguageList.contains(localeWithVariant)) {
+					unifiedLanguageList.add(localeWithVariant);
+				}
 			}
 
 			Collections.sort(unifiedLanguageList, new Comparator<Locale>() {
@@ -300,5 +307,4 @@ public class LanguageModel {
 
 		return null;
 	}
-
 }
