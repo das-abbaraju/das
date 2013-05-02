@@ -975,6 +975,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 				corporateFlagOverride = conOp;
 			}
 		}
+
+		if (corporateFlagOverride != null && corporateFlagOverride.getOperatorAccount() == co.getOperatorAccount()) {
+			corporateFlagOverride = null;
+		}
 	}
 
 	private void calculateEarliestIndividualFlagSummaries() {
