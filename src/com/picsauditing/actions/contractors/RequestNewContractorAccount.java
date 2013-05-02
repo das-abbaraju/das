@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.actions.validation.AjaxValidator;
+import com.picsauditing.validator.RequestNewContractorValidator;
+import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,7 +27,6 @@ import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -42,7 +46,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class RequestNewContractorAccount extends ContractorActionSupport {
+public class RequestNewContractorAccount extends ContractorActionSupport implements AjaxValidator {
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -61,6 +65,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserSwitchDAO userSwitchDAO;
+	@Autowired
+	private RequestNewContractorValidator validator;
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
@@ -246,10 +252,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return usersAndSwitchTos;
 	}
 
-	public Date getToday() {
-		return new Date();
-	}
-
 	public RequestContactType[] getContactTypes() {
 		return RequestContactType.values();
 	}
@@ -260,14 +262,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 
 		return false;
-	}
-
-	public boolean isCountrySubdivisionMissing() {
-		if (contractor != null && contractor.getCountry() != null) {
-			return contractor.getCountry().isHasCountrySubdivisions() && contractor.getCountrySubdivision() == null;
-		}
-
-		return true;
 	}
 
 	private void initializeRequest() {
@@ -508,5 +502,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 			contractor.getOperatorTags().add(tag);
 		}
+	}
+
+	// For the Ajax Validation
+	public Validator getCustomValidator() {
+		return validator;
+	}
+
+	// For server-side validation
+	@Override
+	public void validate() {
+		validator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
 }
