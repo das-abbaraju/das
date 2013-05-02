@@ -96,7 +96,7 @@ public class ContractorDashboardTest {
 		Whitebox.setInternalState(dashboard, "co", conCorp);
 		Whitebox.setInternalState(dashboard, "contractor", contractor);
 		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
-		assertTrue(dashboard.getCorporateFlagOverride() != null);
+		assertTrue(dashboard.getCorporateFlagOverride() == null);
 	}
 
 	@Test
