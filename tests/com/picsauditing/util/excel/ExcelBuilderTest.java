@@ -37,7 +37,7 @@ public class ExcelBuilderTest {
 		{
 			Permissions permissions = EntityFactory.makePermission();
 			AbstractModel table = ModelFactory.build(ModelType.Contractors, permissions);
-			EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+			EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
 			availableFields = table.getAvailableFields();
 		}
 
