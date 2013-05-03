@@ -12,7 +12,6 @@ public enum ModelType {
 	ContractorFlagDatas,
 	ContractorNumbers,
     ContractorOperators,
-	ContractorOperatorForcedFlags,
 	Contractors,
 	ContractorSearch,
 	ContractorStatistics,
