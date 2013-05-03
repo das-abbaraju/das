@@ -44,10 +44,10 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 	@Override
 	public String getItemsSelected() {
 		JSONArray itemsAlreadySelected = null;
-		
+
 		AuditData answerStored = auditDataDAO.findAnswerByAuditQuestion(
 				auditId, questionId);
-		
+
 		if (answerStored != null && !Strings.isEmpty(answerStored.getAnswer())) {
 			itemsAlreadySelected = (JSONArray) JSONValue
 				.parse(answerStored.getAnswer());
@@ -55,7 +55,7 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 
 		if (itemsAlreadySelected == null)
 			itemsAlreadySelected = new JSONArray();
-		
+
 		jsonArray = itemsAlreadySelected;
 
 		return JSON_ARRAY;
@@ -65,7 +65,7 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 	private JSONObject toTaggitJson(AuditOptionValue auditOptionValue) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", auditOptionValue.getUniqueCode());
-		obj.put("value", auditOptionValue.getName().toString());
+		obj.put("text", auditOptionValue.getName().toString());
 		return obj;
 	}
 
