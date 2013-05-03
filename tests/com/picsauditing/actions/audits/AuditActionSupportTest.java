@@ -56,6 +56,36 @@ public class AuditActionSupportTest extends PicsTest {
 	}
 
 	@Test
+	public void testIsCanViewRequirements() {
+		ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
+		audit.getAuditType().setClassType(AuditTypeClass.Audit);
+
+		Workflow workflow = new Workflow();
+		workflow.setHasRequirements(true);
+		audit.getAuditType().setWorkFlow(workflow);
+
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+		// COR
+		audit.getAuditType().setId(AuditType.COR);
+		cao.changeStatus(AuditStatus.Submitted, null);
+		assertTrue(test.isCanViewRequirements());
+
+		//SSIP
+		audit.getAuditType().setId(AuditType.SSIP);
+		cao.changeStatus(AuditStatus.Resubmitted, null);
+		assertTrue(test.isCanViewRequirements());
+
+		// Other
+		audit.getAuditType().setId(AuditType.DESKTOP);
+		cao.changeStatus(AuditStatus.Submitted, null);
+		assertTrue(test.isCanViewRequirements());
+
+	}
+
+	@Test
 	public void testIsCanEditAudit() {
 		ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
 		audit.getAuditType().setClassType(AuditTypeClass.Audit);

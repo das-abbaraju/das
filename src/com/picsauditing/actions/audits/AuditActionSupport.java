@@ -585,6 +585,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 			if (conAudit.getAuditType().getId() == AuditType.COR) {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Pending);
+			} else if (conAudit.getAuditType().getId() == AuditType.SSIP) {
+				return conAudit.hasCaoStatusAfter(AuditStatus.Resubmit);
 			} else {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
 			}

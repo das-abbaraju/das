@@ -33,6 +33,10 @@ public class ContractorOperatorModel extends AbstractModel {
 		account.minimumImportance = FieldImportance.Average;
 		account.join(AccountTable.Contact);
 
+        ModelSpec percentForcedFlag = spec.join(ContractorOperatorTable.ForcedFlagPercent);
+        percentForcedFlag.alias = "ForcedFlag";
+        percentForcedFlag.category = FieldCategory.AccountInformation;
+
 		return spec;
 	}
 
@@ -48,7 +52,12 @@ public class ContractorOperatorModel extends AbstractModel {
         Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
-		return fields;
+        if (permissions.isOperatorCorporate()) {
+            Field operatorName = fields.get("ContractorOperatorOperatorName".toUpperCase());
+            operatorName.setUrl("FacilitiesEdit.action?operator={ContractorOperatorOperatorID}");
+        }
+
+        return fields;
 	}
 
 	@Override
