@@ -211,10 +211,14 @@ public class QBWebConnectorSvcSkeleton {
 	public SendRequestXMLResponse sendRequestXML(SendRequestXML sendRequestXML) throws Exception {
 		SendRequestXMLResponse response = new SendRequestXMLResponse();
 
-		if (start(sendRequestXML.getTicket())) {
+		if ((sendRequestXML != null) && start(sendRequestXML.getTicket())) {
 
-			PicsLogger.log(sendRequestXML.getTicket() + ": performing request side of step: "
-					+ currentSession.getCurrentStep().name());
+			StringBuilder myLogStatement = new StringBuilder();
+
+			myLogStatement.append(sendRequestXML.getTicket());
+			myLogStatement.append(": performing request side of step: ");
+			logCurrentSessionStepName(myLogStatement);
+			PicsLogger.log(myLogStatement.toString());
 
 			// This contains important information about the client's QB
 			// installation, and will only be present on the first call
@@ -237,22 +241,38 @@ public class QBWebConnectorSvcSkeleton {
 						PicsLogger.log("Skipping " + currentSession.getCurrentStep().name());
 					}
 				} catch (Exception e) {
-					PicsLogger.log("Error occurred while doing " + currentSession.getCurrentStep().name());
-					PicsLogger.log("shouldWeRunThisStep() = " + shouldWeRunThisStep());
-					PicsLogger.log("currentAdaptor = " + qbXml);
+					myLogStatement = new StringBuilder();
+					myLogStatement.append("Error occurred while doing ");
+					logCurrentSessionStepName(myLogStatement);
+					myLogStatement.append(Strings.NEW_LINE);
+					myLogStatement.append("shouldWeRunThisStep() = ");
+					myLogStatement.append(shouldWeRunThisStep());
+					myLogStatement.append(Strings.NEW_LINE);
+					myLogStatement.append("currentAdaptor = ");
+					myLogStatement.append(qbXml);
+					PicsLogger.log(myLogStatement.toString());
 					e.printStackTrace();
 					throw e;
 				}
 
 				qbXml = fixCharactersForQuickBooksSpecification(qbXml);
-
-				PicsLogger.log(sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
+				myLogStatement = new StringBuilder();
+				myLogStatement.append(sendRequestXML.getTicket());
+				myLogStatement.append(": sendRequestXml() returning :"+Strings.NEW_LINE);
+				myLogStatement.append(qbXml);
+				PicsLogger.log(myLogStatement.toString());
 				response.setSendRequestXMLResult(qbXml);
 			}
 		}
 
 		stop();
 		return response;
+	}
+
+	private void logCurrentSessionStepName(StringBuilder myLogStatement) {
+		if (currentSession != null && currentSession.getCurrentStep() != null) {
+			myLogStatement.append(currentSession.getCurrentStep().name());
+		}
 	}
 
 	private String fixCharactersForQuickBooksSpecification(String qbXml) {
