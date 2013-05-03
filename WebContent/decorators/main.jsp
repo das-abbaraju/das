@@ -92,6 +92,8 @@
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2-override.css?v=${version}" />
 
         <link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.css?v=${version}" />
         <!--[if lt IE 8]><link rel="stylesheet" href="v7/css/vendor/font-awesome-ie7.css"><![endif]-->

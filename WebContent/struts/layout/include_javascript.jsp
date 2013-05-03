@@ -66,5 +66,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
 <script type="text/javascript" src="TranslateJS.action"></script>
 
+<script src="v7/js/vendor/select2.js?v=${version}"></script>
+
 <!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js?v=${version}"></script><![endif]-->
 <!--[if IE 6]><script>$('body').supersleight({shim: 'images/x.gif'});</script><![endif]-->
