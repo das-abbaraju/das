@@ -21,7 +21,7 @@
         LanguageModel languageModel = (LanguageModel) SpringUtils.getBean("LanguageModel");
         // TODO Find a way to avoid using SpringUtils
 %>
-<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= languageModel.getNearestStableAndBetaLocale(locale).getLanguage() %>.js?v=${version}"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= languageModel.getClosestVisibleLocale(locale).getLanguage() %>.js?v=${version}"></script>
 <% } %>
 
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js?v=${version}"></script>

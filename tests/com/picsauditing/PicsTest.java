@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
+import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,6 +32,7 @@ public abstract class PicsTest {
 	
 	@Mock protected EntityManager em;
 	@Mock protected I18nCache i18nCache;
+	@Mock protected PicsEnvironment picsEnvironment;
 
 	private PicsTestUtil testUtil = new PicsTestUtil();
 	

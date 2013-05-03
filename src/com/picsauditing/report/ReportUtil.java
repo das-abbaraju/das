@@ -1,46 +1,30 @@
 package com.picsauditing.report;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.persistence.EnumType;
-import javax.servlet.ServletOutputStream;
-
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.util.SpringUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import javax.persistence.EnumType;
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -103,7 +87,7 @@ public final class ReportUtil {
 	}
 
 	public static Map<String, String> getTranslatedFunctionsForField(Locale locale, DisplayType type) {
-		Map<String,String> translatedFunctions = new TreeMap<String, String>();
+		Map<String, String> translatedFunctions = new TreeMap<String, String>();
 /*
 		for (SqlFunction function : type.getFunctions()) {
 			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
@@ -198,7 +182,7 @@ public final class ReportUtil {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
 		LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
-		List<Locale> locales = languageModel.getStableLanguageLocales();
+		Set<Locale> locales = languageModel.getVisibleLocales();
 		SqlFunction[] methods = SqlFunction.values();
 		String fileName = "Column translations for DR";
 
@@ -242,7 +226,7 @@ public final class ReportUtil {
 	}
 
 	private static int createExcelSheet(Map<String, String> translations, HSSFWorkbook workBook,
-			HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
+										HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
 		HSSFSheet sheet = workBook.createSheet();
 
 		sheet.setDefaultColumnStyle(0, cellStyle);
@@ -285,7 +269,7 @@ public final class ReportUtil {
 	}
 
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
-			SqlFunction[] methods, Locale locale) {
+												   SqlFunction[] methods, Locale locale) {
 		for (Report report : reports) {
 			Map<String, Field> availableFields = ModelFactory
 					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
@@ -319,7 +303,7 @@ public final class ReportUtil {
 		return permissions;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions) throws ClassNotFoundException {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();

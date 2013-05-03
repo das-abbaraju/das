@@ -112,8 +112,8 @@ public class UsersManage extends PicsActionSupport {
 			userIsGroup = user.getIsGroup();
 		}
 
-		if (!supportedLanguages.getStableLanguageLocales().contains(user.getLocale())) {
-			user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(user.getLocale()));
+		if (!supportedLanguages.getVisibleLocales().contains(user.getLocale())) {
+			user.setLocale(supportedLanguages.getClosestVisibleLocale(user.getLocale()));
 		}
 
 		if (!YesNo.toBoolean(userIsGroup) && CollectionUtils.isEmpty(user.getPermissions())) {

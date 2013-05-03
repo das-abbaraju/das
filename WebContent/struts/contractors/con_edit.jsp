@@ -183,7 +183,7 @@
     								<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
     								<s:select
     									name="contractor.locale"
-                                        list="supportedLanguages.stableAndBetaLanguageLocales"
+                                        list="supportedLanguages.visibleLocales"
                                         listValue="displayName"
                                     />
     							</li>

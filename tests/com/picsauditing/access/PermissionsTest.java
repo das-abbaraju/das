@@ -176,7 +176,7 @@ public class PermissionsTest {
 	public void testSetStableLocale_LanguageModelIsNotNullAndLocaleIsStable() throws Exception {
 		Locale german = Locale.GERMAN;
 
-		when(languageModel.getNearestStableAndBetaLocale(eq(german), anyString())).thenReturn(german);
+		when(languageModel.getClosestVisibleLocale(eq(german), anyString())).thenReturn(german);
 		when(user.getLocale()).thenReturn(german);
 
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);
@@ -189,7 +189,7 @@ public class PermissionsTest {
 		Locale german = Locale.GERMAN;
 		Locale english = Locale.ENGLISH;
 
-		when(languageModel.getNearestStableAndBetaLocale(eq(german), anyString())).thenReturn(english);
+		when(languageModel.getClosestVisibleLocale(eq(german), anyString())).thenReturn(english);
 		when(user.getLocale()).thenReturn(german);
 
 		Whitebox.invokeMethod(permissions, "setStableLocale", user);

@@ -126,7 +126,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 
-		permissions.setLocale(supportedLanguages.getNearestStableAndBetaLocale(permissions.getLocale()));
+		permissions.setLocale(supportedLanguages.getClosestVisibleLocale(permissions.getLocale()));
 	}
 
 	private void gatherTasksAboutDeclaringTrades() {

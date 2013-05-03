@@ -65,7 +65,11 @@ public class Language extends BaseTranslatable implements Comparable<Language> {
 
 	@Override
 	public int compareTo(Language otherLocale) {
-		return this.locale.toString().compareTo(otherLocale.toString());
+		if (locale != null && otherLocale.getLocale() != null) {
+			return this.locale.toString().compareTo(otherLocale.toString());
+		}
+
+		return this.language.compareTo(otherLocale.getLanguage());
 	}
 
 	@Override

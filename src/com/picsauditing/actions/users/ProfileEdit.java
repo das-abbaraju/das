@@ -220,8 +220,8 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		// Update invalid locale to valid one
-		if (!supportedLanguages.getStableAndBetaLanguageLocales().contains(u.getLocale())) {
-			u.setLocale(supportedLanguages.getNearestStableAndBetaLocale(u.getLocale()));
+		if (!supportedLanguages.getVisibleLocales().contains(u.getLocale())) {
+			u.setLocale(supportedLanguages.getClosestVisibleLocale(u.getLocale()));
 		}
 
 		return null;

@@ -116,7 +116,7 @@
                     <li>
                         <s:select
                             label="User.locale"
-                            list="supportedLanguages.stableLanguagesSansDialect"
+                            list="supportedLanguages.visibleLanguagesSansDialect"
                             listKey="key"
                             listValue="value"
                             name="language"

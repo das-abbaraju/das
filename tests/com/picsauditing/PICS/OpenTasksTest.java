@@ -842,7 +842,7 @@ public class OpenTasksTest extends PicsActionTest {
 		assertNotNull(permissions);
 		assertNotNull(injectedLanguageModel);
 
-		verify(languageModel).getNearestStableAndBetaLocale(any(Locale.class));
+		verify(languageModel).getClosestVisibleLocale(any(Locale.class));
 	}
 
 	@Test
@@ -862,7 +862,7 @@ public class OpenTasksTest extends PicsActionTest {
 
 		assertNotNull(permissionsFromOpenTasks);
 
-		verify(languageModel).getNearestStableAndBetaLocale(any(Locale.class));
+		verify(languageModel).getClosestVisibleLocale(any(Locale.class));
 		// Finally
 		ActionContext.setContext(previousContext);
 	}

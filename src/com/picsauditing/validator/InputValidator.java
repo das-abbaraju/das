@@ -170,7 +170,7 @@ public class InputValidator {
 			return false;
 		}
 
-		List<KeyValue> stableLanguages = supportedLanguages.getStableLanguagesSansDialect();
+		List<KeyValue> stableLanguages = supportedLanguages.getVisibleLanguagesSansDialect();
 
 		if (stableLanguages == null) {
 			return false;

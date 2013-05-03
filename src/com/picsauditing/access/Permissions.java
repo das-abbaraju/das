@@ -782,11 +782,11 @@ public class Permissions implements Serializable {
 
 	private void setStableLocale(User user) {
 		if (languageModel != null) {
-			locale = languageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
+			locale = languageModel.getClosestVisibleLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
 		} else {
             LanguageModel localTempLanguageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
             if (localTempLanguageModel != null) {
-                locale = localTempLanguageModel.getNearestStableAndBetaLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
+                locale = localTempLanguageModel.getClosestVisibleLocale(user.getLocale(), user.getAccount().getCountry().getIsoCode());
             } else {
 			    locale = LanguageModel.ENGLISH;
             }

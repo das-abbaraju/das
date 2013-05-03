@@ -5,6 +5,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.system.PicsEnvironment;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,18 +44,17 @@ public class LanguageModel {
 
 	@Autowired
 	private AppPropertyDAO propertyDAO;
-
 	@Autowired
 	private CountryDAO countryDAO;
-
 	@Autowired
 	private LanguageProvider languageProvider;
 
 	private final Logger logger = LoggerFactory.getLogger(LanguageModel.class);
 
-	private List<Locale> stableLanguageLocales;
-	private List<Language> stableLanguages;
-	private List<Locale> unifiedLanguageList;
+	private Set<Language> visibleLanguages;
+	private Set<Locale> unifiedLanguageList;
+
+	private PicsEnvironment picsEnvironment;
 
 	public Set<String> getLanguagesToEmailInvoicesInBPROCS() {
 		return languagesToEmailInvoicesInBPROCS;
@@ -64,7 +64,7 @@ public class LanguageModel {
 		this.languagesToEmailInvoicesInBPROCS = languagesToEmailInvoicesInBPROCS;
 	}
 
-	private Set<String> languagesToEmailInvoicesInBPROCS = new HashSet<String>();
+	private Set<String> languagesToEmailInvoicesInBPROCS = new HashSet<>();
 
 	public void reloadListOfLanguagesToEmailInvoicesViaBPROCS() {
 		AppProperty appProperty = propertyDAO.find(FeatureToggle.TOGGLE_INVOICE_LANGUAGES_TO_EMAIL_VIA_BPROCS);
@@ -75,7 +75,7 @@ public class LanguageModel {
 		}
 
 		if (Strings.isNotEmpty(languagesToEmailInvoicesViaBPROCSCSV)) {
-			languagesToEmailInvoicesInBPROCS = new HashSet<String>(Arrays.asList(languagesToEmailInvoicesViaBPROCSCSV.split("\\s*,\\s*")));
+			languagesToEmailInvoicesInBPROCS = new HashSet<>(Arrays.asList(languagesToEmailInvoicesViaBPROCSCSV.split("\\s*,\\s*")));
 		}
 	}
 
@@ -94,8 +94,8 @@ public class LanguageModel {
 		}
 	}
 
-	public boolean isLanguageStable(Locale locale) {
-		for (Language language : getStableLanguages()) {
+	public boolean isLanguageVisible(Locale locale) {
+		for (Language language : getVisibleLanguages()) {
 			if (language.getLanguage().equals(locale.getLanguage())) {
 				return true;
 			}
@@ -104,8 +104,8 @@ public class LanguageModel {
 		return false;
 	}
 
-	public List<KeyValue> getStableLanguagesSansDialect() {
-		List<String> supportedLanguageKeys = extractLanguagesFromStableVariants();
+	public List<KeyValue> getVisibleLanguagesSansDialect() {
+		List<String> supportedLanguageKeys = extractLanguageIsoCodesFrom(getVisibleLanguages());
 		setFirstLanguageAsEnglish(supportedLanguageKeys);
 
 		return languageAndDisplayAsKeyValues(supportedLanguageKeys);
@@ -117,118 +117,81 @@ public class LanguageModel {
 	 * Note also that stability is a factor of the language alone.
 	 * The dialects always follow the language itself af far as being stable is concerned.
 	 */
-	public List<Language> getStableLanguages() {
-		if (stableLanguages == null) {
-			stableLanguages = languageProvider.findByStatus(LanguageStatus.Stable);
-		}
+	public Set<Language> getVisibleLanguages() {
+		if (visibleLanguages == null) {
+			visibleLanguages = new TreeSet<>();
+			// Always add stable and beta languages
+			List<Language> stableAndBetaLanguages = languageProvider.findByStatuses(new LanguageStatus[]{
+					LanguageStatus.Stable, LanguageStatus.Beta
+			});
 
-		if (stableLanguages == null || stableLanguages.isEmpty()) {
-			addEnglishAsStableLanguage();
-		}
-
-		if (stableLanguages.size() > 0) {
-			Collections.sort(stableLanguages);
-		}
-
-		return Collections.unmodifiableList(stableLanguages);
-	}
-
-	public List<Locale> getStableLanguageLocales() {
-		if (stableLanguageLocales == null) {
-			List<Language> stableLanguageVariants = getStableLanguages();
-			stableLanguageLocales = new ArrayList<Locale>();
-
-			for (Language stableLanguage : stableLanguageVariants) {
-				stableLanguageLocales.add(stableLanguage.getLocale());
+			if (stableAndBetaLanguages != null) {
+				visibleLanguages.addAll(stableAndBetaLanguages);
 			}
 		}
-		//return stableLanguageLocales;
-		return Collections.unmodifiableList(stableLanguageLocales);
-	}
 
-	public List<Locale> getStableAndBetaLanguageLocales() {
-		List<Language> betaLanguages = getLanguagesByStatus(LanguageStatus.Beta);
-		List<Locale> stableAndBetaLocales = new ArrayList<>();
-		stableAndBetaLocales.addAll(getStableLanguageLocales());
-
-		for (Language betaLanguage : betaLanguages) {
-			stableAndBetaLocales.add(betaLanguage.getLocale());
+		if (visibleLanguages.isEmpty()) {
+			addEnglishAsVisibleLanguage();
 		}
 
-		return stableAndBetaLocales;
+		if (picsEnvironment().isShowAlphaLanguages()) {
+			List<Language> alphaLanguages = languageProvider.findByStatus(LanguageStatus.Alpha);
+			if (alphaLanguages != null) {
+				visibleLanguages.addAll(alphaLanguages);
+			}
+		}
+
+		return Collections.unmodifiableSet(visibleLanguages);
 	}
 
-	public List<Locale> getUnifiedLanguageList() {
+	public Set<Locale> getVisibleLocales() {
+		Set<Locale> visibleLocales = new TreeSet<>(new ByLanguageTag());
+
+		for (Language visibleLanguage : getVisibleLanguages()) {
+			visibleLocales.add(visibleLanguage.getLocale());
+		}
+
+		return Collections.unmodifiableSet(visibleLocales);
+	}
+
+	public Set<Locale> getUnifiedLanguageList() {
 		if (unifiedLanguageList == null) {
-			unifiedLanguageList = new ArrayList<>();
+			unifiedLanguageList = new TreeSet<>(new ByLanguageTag());
 			Set<String> languagesWithVariants = new TreeSet<>();
 
-			for (Language stableLanguageWithVariant : getStableLanguages()) {
-				if (!unifiedLanguageList.contains(stableLanguageWithVariant.getLocale())) {
-					unifiedLanguageList.add(stableLanguageWithVariant.getLocale());
-				}
+			for (Language visibleLanguage : getVisibleLanguages()) {
+				unifiedLanguageList.add(visibleLanguage.getLocale());
 
-				if (Strings.isNotEmpty(stableLanguageWithVariant.getCountry())) {
-					languagesWithVariants.add(stableLanguageWithVariant.getLanguage());
+				if (Strings.isNotEmpty(visibleLanguage.getCountry())) {
+					languagesWithVariants.add(visibleLanguage.getLanguage());
 				}
 			}
-
-			// Add beta languages
-			for (Language betaLanguage : getLanguagesByStatus(LanguageStatus.Beta)) {
-				if (!unifiedLanguageList.contains(betaLanguage.getLocale())) {
-					unifiedLanguageList.add(betaLanguage.getLocale());
-				}
-
-				if (Strings.isNotEmpty(betaLanguage.getCountry())) {
-					languagesWithVariants.add(betaLanguage.getLanguage());
-				}
-			}
-
 			for (String language : languagesWithVariants) {
-				Locale localeWithVariant = new Locale(language);
-				if (!unifiedLanguageList.contains(localeWithVariant)) {
-					unifiedLanguageList.add(localeWithVariant);
-				}
+				unifiedLanguageList.add(new Locale(language));
 			}
-
-			Collections.sort(unifiedLanguageList, new Comparator<Locale>() {
-				@Override
-				public int compare(Locale first, Locale second) {
-					return first.toString().compareTo(second.toString());
-				}
-			});
 		}
 
-		return Collections.unmodifiableList(unifiedLanguageList);
+		return Collections.unmodifiableSet(unifiedLanguageList);
 	}
 
-	public Locale getNearestStableAndBetaLocale(Locale locale) {
-		return getNearestStableAndBetaLocale(locale, null);
+	public Locale getClosestVisibleLocale(Locale locale) {
+		return getClosestVisibleLocale(locale, null);
 	}
 
-	public Locale getNearestStableAndBetaLocale(Locale locale, String country) {
-		Locale nearestStableLocale = getMatchingStableLocale(locale);
+	public Locale getClosestVisibleLocale(Locale locale, String country) {
+		Locale closestVisibleLocale = getMatchingVisibleLanguageLocale(locale);
 
-		if (nearestStableLocale == null && Strings.isNotEmpty(country)) {
+		if (closestVisibleLocale == null && Strings.isNotEmpty(country)
+				&& !country.equals(locale.getCountry())) {
 			Locale localeWithCountry = new Locale(locale.getLanguage(), country);
-			nearestStableLocale = getMatchingStableLocale(localeWithCountry);
+			closestVisibleLocale = getMatchingVisibleLanguageLocale(localeWithCountry);
 		}
 
-		if (nearestStableLocale == null) {
-			nearestStableLocale = ENGLISH;
+		if (closestVisibleLocale == null) {
+			closestVisibleLocale = ENGLISH;
 		}
 
-		return nearestStableLocale;
-	}
-
-	public List<Language> getLanguagesByStatus(LanguageStatus languageStatus) {
-		List<Language> languagesByStatus = languageProvider.findByStatus(languageStatus);
-
-		if (languagesByStatus == null) {
-			languagesByStatus = Collections.emptyList();
-		}
-
-		return languagesByStatus;
+		return closestVisibleLocale;
 	}
 
 	public List<Country> getDialectCountriesBasedOn(String language) {
@@ -246,10 +209,10 @@ public class LanguageModel {
 		return countries;
 	}
 
-	private List<String> extractLanguagesFromStableVariants() {
-		List<String> supportedLanguageKeys = new ArrayList<String>();
+	private List<String> extractLanguageIsoCodesFrom(Collection<Language> visibleLanguages) {
+		List<String> supportedLanguageKeys = new ArrayList<>();
 
-		for (Language language : getStableLanguages()) {
+		for (Language language : visibleLanguages) {
 			if (!supportedLanguageKeys.contains(language.getLanguage())) {
 				supportedLanguageKeys.add(language.getLanguage());
 			}
@@ -267,7 +230,7 @@ public class LanguageModel {
 	}
 
 	private List<KeyValue> languageAndDisplayAsKeyValues(List<String> supportedLanguageKeys) {
-		List<KeyValue> supportedLanguages = new ArrayList<KeyValue>();
+		List<KeyValue> supportedLanguages = new ArrayList<>();
 
 		for (String languageKey : supportedLanguageKeys) {
 			Locale locale = new Locale(languageKey);
@@ -279,32 +242,52 @@ public class LanguageModel {
 		return supportedLanguages;
 	}
 
-	private void addEnglishAsStableLanguage() {
-		if (stableLanguages == null) {
-			stableLanguages = new ArrayList<Language>();
-		}
-
+	private void addEnglishAsVisibleLanguage() {
 		Language english = new Language();
 		english.setLocale(ENGLISH);
 		english.setLanguage(ENGLISH.getLanguage());
 		english.setCountry(ENGLISH.getCountry());
 
-		stableLanguages.add(english);
+		visibleLanguages.add(english);
 	}
 
-	private Locale getMatchingStableLocale(Locale locale) {
-		List<Locale> stableAndBetaLanguageLocales = getStableAndBetaLanguageLocales();
-		for (Locale stableLocale : stableAndBetaLanguageLocales) {
-			if (stableLocale == null) {
-				logger.error("Null locale found in Stable and Beta locales list: "
-						+ Strings.implode(stableAndBetaLanguageLocales));
+	private Locale getMatchingVisibleLanguageLocale(Locale locale) {
+		Set<Locale> visibleLocales = getVisibleLocales();
+		for (Locale visibleLocale : visibleLocales) {
+			if (visibleLocale == null) {
+				logger.error("Null locale found in getVisibleLocales: "
+						+ Strings.implode(visibleLocales));
 				continue;
 			}
-			if (stableLocale.equals(locale)) {
+			if (visibleLocale.equals(locale)) {
 				return locale;
 			}
 		}
 
 		return null;
+	}
+
+	private PicsEnvironment picsEnvironment() {
+		if (picsEnvironment == null) {
+			picsEnvironment = new PicsEnvironment(propertyDAO.getProperty(AppProperty.VERSION_MAJOR),
+					propertyDAO.getProperty(AppProperty.VERSION_MINOR));
+		}
+
+		return picsEnvironment;
+	}
+
+	private class ByLanguageTag implements Comparator<Locale> {
+		@Override
+		public int compare(Locale locale1, Locale locale2) {
+			if (locale1 == null) {
+				return -1;
+			}
+
+			if (locale2 == null) {
+				return 1;
+			}
+
+			return locale1.toLanguageTag().compareTo(locale2.toLanguageTag());
+		}
 	}
 }

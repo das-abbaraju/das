@@ -140,7 +140,7 @@ $(function() {
 				</s:if>
 				<s:else>
 					<s:select name="locale"
-                              list="supportedLanguages.stableLanguageLocales"
+                              list="supportedLanguages.visibleLocales"
                               listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
                               theme="" />
 					<div class="fieldhelp">

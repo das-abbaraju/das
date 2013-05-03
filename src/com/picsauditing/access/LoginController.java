@@ -82,7 +82,7 @@ public class LoginController extends PicsActionSupport {
 
 			if (ActionContext.getContext().getLocale() == null) {
 				ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-						.getStableLanguages());
+						.getVisibleLanguages());
 				ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
 			}
 
@@ -157,7 +157,7 @@ public class LoginController extends PicsActionSupport {
 		permissions.clear();
 		// If the user was using a beta language, default back to English because
 		// only stable languages are available on the main language dropdown
-		if (userLocale != null && !supportedLanguages.isLanguageStable(userLocale)) {
+		if (userLocale != null && !supportedLanguages.isLanguageVisible(userLocale)) {
 			// TODO: Does this also need to happen in any other login situation?
 			ActionContext.getContext().setLocale(LanguageModel.ENGLISH);
 		}

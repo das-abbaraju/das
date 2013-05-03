@@ -3,7 +3,7 @@
 
 <s:select
     label=""
-    list="supportedLanguages.stableLanguagesSansDialect"
+    list="supportedLanguages.visibleLanguagesSansDialect"
     listKey="key"
     listValue="value"
     id="supported_locales"

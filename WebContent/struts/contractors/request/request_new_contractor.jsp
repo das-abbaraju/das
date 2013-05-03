@@ -160,7 +160,7 @@
                         <li class="match-found contact-email"></li>
                         <li>
                             <s:select
-                                    list="supportedLanguages.stableLanguageLocales"
+                                    list="supportedLanguages.visibleLocales"
                                     listValue="displayName"
                                     name="primaryContact.locale"
                                     theme="formhelp"

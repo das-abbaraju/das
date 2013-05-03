@@ -353,7 +353,7 @@
 								<li>
                                     <s:select
 										name="user.locale"
-										list="supportedLanguages.stableLanguageLocales"
+										list="supportedLanguages.visibleLocales"
 										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 										theme="form" />
                                 </li>

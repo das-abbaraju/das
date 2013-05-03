@@ -104,8 +104,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			defaultConTypeHelpText();
 		}
 
-		if (contractor != null && !supportedLanguages.getStableLanguageLocales().contains(contractor.getLocale())) {
-			contractor.setLocale(supportedLanguages.getNearestStableAndBetaLocale(contractor.getLocale()));
+		if (contractor != null && !supportedLanguages.getVisibleLocales().contains(contractor.getLocale())) {
+			contractor.setLocale(supportedLanguages.getClosestVisibleLocale(contractor.getLocale()));
 		}
 	}
 

@@ -5,8 +5,8 @@ import com.picsauditing.util.Strings;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("unchecked")
@@ -14,11 +14,11 @@ public class ExtractBrowserLanguage {
 	public static final String ACCEPT_LANGUAGE = "accept-language";
 
 	private HttpServletRequest httpServletRequest;
-	private List<Language> stableLanguages;
+	private Collection<Language> stableLanguages;
 	private String browserLanguage;
 	private String browserDialect;
 
-	public ExtractBrowserLanguage(HttpServletRequest httpServletRequest, List<Language> stableLanguages) {
+	public ExtractBrowserLanguage(HttpServletRequest httpServletRequest, Collection<Language> stableLanguages) {
 		this.httpServletRequest = httpServletRequest;
 		this.stableLanguages = stableLanguages;
 

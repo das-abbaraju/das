@@ -7,7 +7,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.validator.InputValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -354,7 +353,7 @@ public class InputValidatorTest {
 	@Test
 	public void testIsLanguageValid_WhenStableLanguagesAreNull_ThenReturnFalse() {
 		String language = Locale.ENGLISH.getLanguage();
-		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(null);
+		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(null);
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
 
@@ -364,7 +363,7 @@ public class InputValidatorTest {
 	@Test
 	public void testIsLanguageValid_WhenNoStableLanguages_ThenReturnFalse() {
 		String language = Locale.ENGLISH.getLanguage();
-		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(new ArrayList<KeyValue>());
+		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(new ArrayList<KeyValue>());
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
 
@@ -376,7 +375,7 @@ public class InputValidatorTest {
 		String language = Locale.ENGLISH.getLanguage();
 		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
 		stableLanguages.add(new KeyValue(language, ""));
-		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(stableLanguages);
+		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(stableLanguages);
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
 
@@ -389,7 +388,7 @@ public class InputValidatorTest {
 		String languageFrench = Locale.FRENCH.getLanguage();
 		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
 		stableLanguages.add(new KeyValue(languageFrench, ""));
-		when(supportedLanguages.getStableLanguagesSansDialect()).thenReturn(stableLanguages);
+		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(stableLanguages);
 
 		boolean result = inputValidator.isLanguageValid(languageEnglish, supportedLanguages);
 

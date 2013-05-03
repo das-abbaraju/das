@@ -1,33 +1,31 @@
 package com.picsauditing;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.search.Database;
 import org.apache.struts2.StrutsStatics;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.mockito.Mock;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.search.Database;
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public class PicsActionTest {
 	protected ActionContext actionContext;
@@ -100,7 +98,7 @@ public class PicsActionTest {
 		ActionContext.setContext(actionContext);
 		cookies = new Cookie[1];
 		cookies[0] = new Cookie("foo", "foo");
-		when(languageModel.getNearestStableAndBetaLocale(any(Locale.class))).thenReturn(Locale.US);
+		when(languageModel.getClosestVisibleLocale(any(Locale.class))).thenReturn(Locale.US);
 		when(request.getCookies()).thenReturn(cookies);
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.example.com/example.html"));
 		when(request.getRequestURI()).thenReturn("/example.html");

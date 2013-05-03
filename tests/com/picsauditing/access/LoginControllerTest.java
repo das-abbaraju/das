@@ -478,7 +478,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Locale germany = Locale.GERMANY;
 
 		ActionContext.getContext().setLocale(germany);
-		when(languageModel.isLanguageStable(germany)).thenReturn(false);
+		when(languageModel.isLanguageVisible(germany)).thenReturn(false);
 		when(permissions.getLocale()).thenReturn(germany);
 
 		Whitebox.invokeMethod(loginController, "logout");
@@ -493,7 +493,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Locale italy = Locale.ITALY;
 
 		ActionContext.getContext().setLocale(italy);
-		when(languageModel.isLanguageStable(italy)).thenReturn(true);
+		when(languageModel.isLanguageVisible(italy)).thenReturn(true);
 		when(permissions.getLocale()).thenReturn(italy);
 
 		Whitebox.invokeMethod(loginController, "logout");

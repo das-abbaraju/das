@@ -19,14 +19,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.util.system.PicsEnvironment;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -76,7 +76,7 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 AdvancedValidationAware {
 
-	protected static final int DELETE_COOKIE_AGE = 0;
+    protected static final int DELETE_COOKIE_AGE = 0;
 	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
@@ -185,53 +185,26 @@ AdvancedValidationAware {
 		return !isConfigEnvironment();
 	}
 
-	private String picsEnvironment;
+	private PicsEnvironment picsEnvironment;
 
-	public String getPicsEnvironment() {
-		/*
+    private PicsEnvironment getEnvironmentDeterminer() {
+        /*
 		 * Note: Lazy-loading like this is often overused in action code
 		 * (because the class only stays instantiated for as long as it takes to
 		 * render the page, and get-accessors normally only get called once in
 		 * that time); however, in this case, the PICS enviromnent is queried
 		 * numerous times during every page load.
 		 */
-		if (picsEnvironment == null) {
-			picsEnvironment = determinePicsEnvironment();
-		}
-		return picsEnvironment;
+        if (picsEnvironment == null) {
+            picsEnvironment = new PicsEnvironment(propertyDAO.getProperty(AppProperty.VERSION_MAJOR),
+                    propertyDAO.getProperty(AppProperty.VERSION_MINOR));
+        }
 
-	}
+        return picsEnvironment;
+    }
 
-	private String determinePicsEnvironment() {
-
-		// The (new) official way to determine the enviroment is using -Dpics.env=something
-		String env = System.getProperty("pics.env");
-		if (Strings.isNotEmpty(env)) {
-			return env.trim().toLowerCase();
-		}
-
-		// In the absense of -Dpics.env, see if there is an explicit subdomain mentioned in the URL that can tell us
-		Pattern p = Pattern.compile("(demo[0-9]+|alpha|config|beta|stable|old|qa-beta|qa-stable)\\..*");
-		Matcher m;
-		m = p.matcher(getServerName());
-		if (m.matches()) {
-			return m.group(1);
-		}
-
-		// "localhost" can be "localhost", "localhost:123456", "foo.bar.baz.local", or "foo.bar.baz.local:123456"
-		p = Pattern.compile("(localhost|.*\\.local)(:[0-9]+)?");
-		m = p.matcher(getServerName());
-		if (m.matches()) {
-			return "localhost";
-		}
-
-		// The URL must be WWW (or an IP address), so check the beta-audience level to see if we must have been redirected to beta
-		if (isBetaVersion()) {
-			return "beta";
-		}
-
-		// With no evidence to the contrary, we'd better assume we're on stable
-		return "stable";
+	public String getPicsEnvironment() {
+		return getEnvironmentDeterminer().getEnvironment();
 	}
 
 	public boolean isConfigEnvironment() {
@@ -244,37 +217,27 @@ AdvancedValidationAware {
 	}
 
 	public boolean isAlphaEnvironment() {
-		return "alpha".equals(getPicsEnvironment());
+		return getEnvironmentDeterminer().isAlpha();
 	}
 
-	public boolean isBetaEnvironment() throws UnknownHostException {
-		return "beta".equals(getPicsEnvironment());
+	public boolean isBetaEnvironment() {
+		return getEnvironmentDeterminer().isBeta();
 	}
 
 	public boolean isQaEnvironment() {
-		return getPicsEnvironment().startsWith("qa-");
-	}
-
-	/**
-	 * Compares the hard-coded version number in the PicsOrganizerVersion class
-	 * with app_properties in the database. If the Java code is a higher number,
-	 * then it's more advanced, i.e. a Beta version.
-	 */
-	public boolean isBetaVersion() {
-		AppVersion dbVersion = new AppVersion(propertyDAO.getProperty("VERSION.major"), propertyDAO.getProperty("VERSION.minor"));
-		return AppVersion.current.greaterThan(dbVersion);
+		return getEnvironmentDeterminer().isQa();
 	}
 
 	public boolean isConfigurationEnvironment() {
-		return "config".equals(getPicsEnvironment());
+		return getEnvironmentDeterminer().isConfiguration();
 	}
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
-		return "stable".equals(getPicsEnvironment());
+		return getEnvironmentDeterminer().isStable();
 	}
 
 	public boolean isLocalhostEnvironment() {
-		return "localhost".equals(getPicsEnvironment());
+		return getEnvironmentDeterminer().isLocalhost();
 	}
 
 	public boolean isI18nReady() {
@@ -1096,7 +1059,7 @@ AdvancedValidationAware {
 		// We're using a whitelist strategy because we don't want to pass junk downstream
 		String language = Locale.ENGLISH.getDisplayLanguage();
 
-		if (supportedLanguages.isLanguageStable(locale)) {
+		if (supportedLanguages.isLanguageVisible(locale)) {
 			language = locale.getDisplayLanguage();
 		}
 

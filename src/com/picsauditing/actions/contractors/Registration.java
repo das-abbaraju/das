@@ -139,7 +139,7 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 
 		if (Strings.isEmpty(language)) {
 			ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-					.getStableLanguages());
+					.getVisibleLanguages());
 			Locale locale = languageUtility.getBrowserLocale();
 			language = languageUtility.getBrowserLanguage();
 			dialect = languageUtility.getBrowserDialect();
@@ -487,7 +487,7 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 			}
 		}
 
-		user.setLocale(supportedLanguages.getNearestStableAndBetaLocale(locale));
+		user.setLocale(supportedLanguages.getClosestVisibleLocale(locale));
 
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);

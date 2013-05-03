@@ -53,7 +53,7 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		
+
 		contractorFlagAnswerDisplay = new ContractorFlagAnswerDisplay();
 		
 		autowireDAOsFromDeclaredMocks(contractorFlagAnswerDisplay, this);
@@ -62,6 +62,7 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 		contractorFlagAnswerDisplay.setContractorOperator(contractorOperator);
 		Whitebox.setInternalState(contractorFlagAnswerDisplay, "textProvider", textProvider);
 		Whitebox.setInternalState(contractorFlagAnswerDisplay, "i18nCache", i18nCache);
+		Whitebox.setInternalState(contractorFlagAnswerDisplay, "picsEnvironment", picsEnvironment);
 	}
 	
 	@Test

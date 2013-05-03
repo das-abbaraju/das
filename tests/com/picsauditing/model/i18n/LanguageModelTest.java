@@ -1,16 +1,15 @@
 package com.picsauditing.model.i18n;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Language;
 import com.picsauditing.jpa.entities.LanguageStatus;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
+import org.apache.struts2.ServletActionContext;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -18,11 +17,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.*;
@@ -33,78 +30,84 @@ public class LanguageModelTest {
 	private LanguageModel languageModel;
 
 	@Mock
-	private LanguageProvider languageProvider;
-
+	private ActionContext actionContext;
+	@Mock
+	private AppProperty appProperty;
+	@Mock
+	private AppPropertyDAO appPropertyDAO;
 	@Mock
 	private ContractorAccount contractorAccount;
 	@Mock
-	private AppProperty appProperty;
-
-	private static ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
-	private static AppPropertyDAO appPropertyDAO = Mockito.mock(AppPropertyDAO.class);
-	private static CountryDAO countryDAO = Mockito.mock(CountryDAO.class);
-
-	@BeforeClass
-	public static void classSetup() {
-		when(applicationContext.getBean(SpringUtils.APP_PROPERTY_DAO)).thenReturn(appPropertyDAO);
-		when(applicationContext.getBean(SpringUtils.COUNTRY_DAO)).thenReturn(countryDAO);
-		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
-	}
+	private HttpServletRequest httpServletRequest;
+	@Mock
+	private LanguageProvider languageProvider;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
-		Mockito.reset(appPropertyDAO, countryDAO);
+		ActionContext.setContext(actionContext);
 
 		languageModel = new LanguageModel();
 
+		when(actionContext.get(ServletActionContext.HTTP_REQUEST)).thenReturn(httpServletRequest);
+		when(httpServletRequest.getServerName()).thenReturn("localhost");
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(createLanguageList());
+
 		Whitebox.setInternalState(languageModel, "languageProvider", languageProvider);
+		Whitebox.setInternalState(languageModel, "propertyDAO", appPropertyDAO);
+	}
+
+	@AfterClass
+	public static void classTearDown() {
+		ActionContext.setContext(null);
 	}
 
 	@Test
-	public void testIsLanguageStable_NoAppLanguageDataMeansEnglishOnly() throws Exception {
-		assertTrue(languageModel.isLanguageStable(Locale.ENGLISH));
-		assertFalse(languageModel.isLanguageStable(Locale.FRENCH));
-		assertFalse(languageModel.isLanguageStable(Locale.GERMAN));
+	public void testIsLanguageVisible_NoAppLanguageDataMeansEnglishOnly() throws Exception {
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(null);
+		assertTrue(languageModel.isLanguageVisible(Locale.ENGLISH));
+		assertFalse(languageModel.isLanguageVisible(Locale.FRENCH));
+		assertFalse(languageModel.isLanguageVisible(Locale.GERMAN));
 	}
 
 	@Test
-	public void testIsLanguageStable_NoAppLanguageDataMeansEnglishOnlyTryVariants() throws Exception {
-		assertTrue(languageModel.isLanguageStable(new Locale("en", "GB")));
-		assertTrue(languageModel.isLanguageStable(new Locale("en", "US")));
-		assertTrue(languageModel.isLanguageStable(new Locale("en", "CA")));
-		assertTrue(languageModel.isLanguageStable(new Locale("en", "SA")));
+	public void testIsLanguageVisible_NoAppLanguageDataMeansEnglishOnlyTryVariants() throws Exception {
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(null);
+		assertTrue(languageModel.isLanguageVisible(new Locale("en", "GB")));
+		assertTrue(languageModel.isLanguageVisible(new Locale("en", "US")));
+		assertTrue(languageModel.isLanguageVisible(new Locale("en", "CA")));
+		assertTrue(languageModel.isLanguageVisible(new Locale("en", "SA")));
 	}
 
 	@Test
-	public void testIsLanguageStable_WithAppLanguageData() throws Exception {
+	public void testIsLanguageVisible_WithAppLanguageData() throws Exception {
 		Language language1 = mock(Language.class);
 		Language language2 = mock(Language.class);
 
 		when(language1.getLanguage()).thenReturn("fr");
 		when(language2.getLanguage()).thenReturn("de");
 
-		List<Language> languages = new ArrayList<Language>();
+		List<Language> languages = new ArrayList<>();
 		languages.add(language1);
 		languages.add(language2);
 
-		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languages);
 
-		assertFalse(languageModel.isLanguageStable(Locale.ENGLISH));
-		assertTrue(languageModel.isLanguageStable(Locale.FRENCH));
-		assertTrue(languageModel.isLanguageStable(Locale.GERMAN));
+		assertFalse(languageModel.isLanguageVisible(Locale.ENGLISH));
+		assertTrue(languageModel.isLanguageVisible(Locale.FRENCH));
+		assertTrue(languageModel.isLanguageVisible(Locale.GERMAN));
 	}
 
 	@Test
-	public void testGetStableLanguageValues_NoAppLanguageDataMeansEnglishOnly() throws Exception {
-		assertNotNull(languageModel.getStableLanguagesSansDialect());
-		assertEquals(1, languageModel.getStableLanguagesSansDialect().size());
-		assertEquals(Locale.ENGLISH.getLanguage(), languageModel.getStableLanguagesSansDialect().get(0).getKey());
+	public void testGetVisibleLanguagesSansDialect_NoAppLanguageDataMeansEnglishOnly() throws Exception {
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(null);
+		assertNotNull(languageModel.getVisibleLanguagesSansDialect());
+		assertEquals(1, languageModel.getVisibleLanguagesSansDialect().size());
+		assertEquals(Locale.ENGLISH.getLanguage(), languageModel.getVisibleLanguagesSansDialect().get(0).getKey());
 	}
 
 	@Test
-	public void testStableLanguageValues_WithAppLanguageData() throws Exception {
+	public void testGetVisibleLanguagesSansDialect_WithAppLanguageData() throws Exception {
 		Language language1 = new Language();
 		Language language2 = new Language();
 
@@ -118,9 +121,9 @@ public class LanguageModelTest {
 		languages.add(language1);
 		languages.add(language2);
 
-		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languages);
 
-		final List<KeyValue> supportedLanguages = languageModel.getStableLanguagesSansDialect();
+		final List<KeyValue> supportedLanguages = languageModel.getVisibleLanguagesSansDialect();
 		assertNotNull(supportedLanguages);
 		assertEquals(2, supportedLanguages.size());
 		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(0).getKey());
@@ -128,43 +131,28 @@ public class LanguageModelTest {
 	}
 
 	@Test
-	public void testGetStableLanguageVariants_NoAppLanguageDataMeansEnglishUnitedStatesOnly() throws Exception {
-		assertNotNull(languageModel.getStableLanguages());
-		assertEquals(1, languageModel.getStableLanguages().size());
-		assertEquals(LanguageModel.ENGLISH.getCountry(), languageModel.getStableLanguages().get(0).getCountry());
+	public void testGetVisibleLanguages_NoAppLanguageDataMeansEnglishUnitedStatesOnly() throws Exception {
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(null);
+		Set<Language> visibleLanguages = languageModel.getVisibleLanguages();
+		assertNotNull(visibleLanguages);
+		assertEquals(1, visibleLanguages.size());
+
+		Iterator<Language> iterator = visibleLanguages.iterator();
+		while (iterator.hasNext()) {
+			assertEquals(LanguageModel.ENGLISH.getCountry(), iterator.next().getCountry());
+		}
 	}
 
 	@Test
-	public void testGetStableLanguageVariants_VariantsOnlyNoLanguage() throws Exception {
-		Language language1 = mock(Language.class);
-		Language language2 = mock(Language.class);
-		Language language3 = mock(Language.class);
-
-		when(language1.getLocale()).thenReturn(new Locale("en", "GB"));
-		when(language1.getLanguage()).thenReturn("en");
-		when(language1.getCountry()).thenReturn("GB");
-		when(language2.getLocale()).thenReturn(new Locale("fr", "CA"));
-		when(language2.getLanguage()).thenReturn("fr");
-		when(language2.getCountry()).thenReturn("CA");
-		when(language3.getLocale()).thenReturn(new Locale("es", "MX"));
-		when(language3.getLanguage()).thenReturn("en");
-		when(language3.getCountry()).thenReturn("MX");
-
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(language1);
-		languages.add(language2);
-		languages.add(language3);
-
-		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
-
-		for (Language stableLanguage : languageModel.getStableLanguages()) {
+	public void testGetVisibleLanguages_VariantsOnlyNoLanguage() throws Exception {
+		for (Language stableLanguage : languageModel.getVisibleLanguages()) {
 			assertNotNull(stableLanguage.getCountry());
 		}
 	}
 
 	@Test
 	public void testSetFirstLanguageAsEnglish_HasEnglish() throws Exception {
-		List<String> languageKeys = new ArrayList<String>();
+		List<String> languageKeys = new ArrayList<>();
 		languageKeys.add("de");
 		languageKeys.add("fr");
 		languageKeys.add("en");
@@ -176,7 +164,7 @@ public class LanguageModelTest {
 
 	@Test
 	public void testSetFirstLanguageAsEnglish_NoEnglish() throws Exception {
-		List<String> languageKeys = new ArrayList<String>();
+		List<String> languageKeys = new ArrayList<>();
 		languageKeys.add("de");
 		languageKeys.add("fr");
 		languageKeys.add("es");
@@ -187,40 +175,31 @@ public class LanguageModelTest {
 	}
 
 	@Test
-	public void testGetStableLanguageLocales() throws Exception {
-		Language language1 = new Language();
-		Language language2 = new Language();
-		Language language3 = new Language();
+	public void testGetVisibleLocales() throws Exception {
+		List<Language> languages = createLanguageList();
 
-		Locale britishEnglish = new Locale("en", "GB");
-		Locale canadianFrench = new Locale("fr", "CA");
-		Locale mexicanSpanish = new Locale("es", "MX");
+		Set<Locale> visibleLocales = languageModel.getVisibleLocales();
+		assertNotNull(visibleLocales);
+		assertEquals(3, visibleLocales.size());
 
-		language1.setLocale(britishEnglish);
-		language2.setLocale(canadianFrench);
-		language3.setLocale(mexicanSpanish);
-
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(language1);
-		languages.add(language2);
-		languages.add(language3);
-
-		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
-
-		List<Locale> stableLanguageLocales = languageModel.getStableLanguageLocales();
-		assertNotNull(stableLanguageLocales);
-		assertEquals(britishEnglish, stableLanguageLocales.get(0));
-		assertEquals(mexicanSpanish, stableLanguageLocales.get(1));
-		assertEquals(canadianFrench, stableLanguageLocales.get(2));
+		Iterator<Locale> iterator = visibleLocales.iterator();
+		while (iterator.hasNext()) {
+			// en_GB
+			assertEquals(languages.get(0).getLocale(), iterator.next());
+			// es_MX
+			assertEquals(languages.get(2).getLocale(), iterator.next());
+			// fr_CA
+			assertEquals(languages.get(1).getLocale(), iterator.next());
+		}
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
-	public void testGetStableLanguageLocales_EnsureListIsUnmodifiable() {
+	public void testGetVisibleLocales_EnsureListIsUnmodifiable() {
 		List<Language> languages = createLanguageList();
 
 		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
 
-		List<Locale> stableLanguageLocales = languageModel.getStableLanguageLocales();
+		Set<Locale> stableLanguageLocales = languageModel.getVisibleLocales();
 
 		stableLanguageLocales.add(Locale.CHINA);
 	}
@@ -229,9 +208,9 @@ public class LanguageModelTest {
 	public void testGetStableLanguages_EnsureListIsUnmodifiable() {
 		List<Language> languages = createLanguageList();
 
-		when(languageProvider.findByStatus(LanguageStatus.Stable)).thenReturn(languages);
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languages);
 
-		List<Language> stableLanguageLocales = languageModel.getStableLanguages();
+		Set<Language> stableLanguageLocales = languageModel.getVisibleLanguages();
 
 		stableLanguageLocales.add(new Language());
 	}
@@ -246,10 +225,18 @@ public class LanguageModelTest {
 		Locale mexicanSpanish = new Locale("es", "MX");
 
 		language1.setLocale(britishEnglish);
-		language2.setLocale(canadianFrench);
-		language3.setLocale(mexicanSpanish);
+		language1.setLanguage("en");
+		language1.setCountry("GB");
 
-		List<Language> languages = new ArrayList<Language>();
+		language2.setLocale(canadianFrench);
+		language2.setLanguage("fr");
+		language2.setCountry("CA");
+
+		language3.setLocale(mexicanSpanish);
+		language3.setLanguage("es");
+		language3.setCountry("MX");
+
+		List<Language> languages = new ArrayList<>();
 		languages.add(language1);
 		languages.add(language2);
 		languages.add(language3);
@@ -259,7 +246,7 @@ public class LanguageModelTest {
 
 	@Test
 	public void testSetFirstLanguageAsEnglish() throws Exception {
-		List<String> languages = new ArrayList<String>();
+		List<String> languages = new ArrayList<>();
 		languages.add(Locale.CHINESE.getLanguage());
 		languages.add(Locale.FRENCH.getLanguage());
 		languages.add(Locale.ENGLISH.getLanguage());
@@ -275,21 +262,21 @@ public class LanguageModelTest {
 
 
 	@Test
-	public void testGetMatchingStableLocale() throws Exception {
+	public void testGetMatchingVisibleLanguageLocale() throws Exception {
 		List<Language> languageList = mockLanguageList(new Locale[]{
 				Locale.FRENCH,
 				Locale.GERMAN,
 				Locale.ITALIAN
 		});
 
-		when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languageList);
 
-		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingVisibleLanguageLocale", new Locale("it"));
 		assertEquals(Locale.ITALIAN, result);
 	}
 
 	@Test
-	public void testGetMatchingStableLocale_WithNull() throws Exception {
+	public void testGetMatchingVisibleLanguageLocale_WithNull() throws Exception {
 		List<Language> languageList = mockLanguageList(new Locale[]{
 				Locale.FRENCH,
 				Locale.GERMAN,
@@ -302,14 +289,14 @@ public class LanguageModelTest {
 
 		ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
 
-		when(languageProvider.findByStatus(LanguageStatus.Beta)).thenReturn(languageList);
+		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languageList);
 
-		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingStableLocale", new Locale("it"));
+		Locale result = Whitebox.invokeMethod(languageModel, "getMatchingVisibleLanguageLocale", new Locale("it"));
 		assertEquals(Locale.ITALIAN, result);
 
 		verify(logger).error(errorMessageCaptor.capture());
 
-		assertEquals("Null locale found in Stable and Beta locales list: en_US,fr,de,null,it",
+		assertEquals("Null locale found in getVisibleLocales: null,de,fr,it",
 				errorMessageCaptor.getValue());
 	}
 
@@ -321,12 +308,6 @@ public class LanguageModelTest {
 			languageList.add(language);
 		}
 		return languageList;
-	}
-
-	@AfterClass
-	public static void classTeardown() {
-		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
-		//Whitebox.setInternalState(LanguageModel.class, "languagesToEmailInvoicesInBPROCS", (Set<String>) null);
 	}
 
 	private void setupNullLanguageSpecifiedForBPROCSEmail() {

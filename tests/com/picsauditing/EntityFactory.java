@@ -348,7 +348,7 @@ public class EntityFactory {
 		Permissions permission = new Permissions();
 		try {
             LanguageModel languageModel = mock(LanguageModel.class);
-            when(languageModel.getNearestStableAndBetaLocale(any(Locale.class), anyString())).thenReturn(Locale.US);
+            when(languageModel.getClosestVisibleLocale(any(Locale.class), anyString())).thenReturn(Locale.US);
             Whitebox.setInternalState(permission, "languageModel", languageModel);
 			permission.login(user);
 		} catch (Exception e) {

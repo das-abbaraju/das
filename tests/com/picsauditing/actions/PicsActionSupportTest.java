@@ -1,23 +1,15 @@
 package com.picsauditing.actions;
 
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import org.json.simple.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -27,14 +19,17 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.User;
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Mockito.*;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -338,6 +333,16 @@ public class PicsActionSupportTest extends PicsActionTest {
 	public void testIsLocalhostEnvironment_DotLocal_8080() throws Exception {
 		when(request.getServerName()).thenReturn(new String("foo.local:8080"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+
+	@Test
+	public void testIsLocalhostEnvironment_AppPropertyVersionIsLowButLocalTakesPriority() throws Exception {
+		when(request.getServerName()).thenReturn(new String("localhost:8080"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
