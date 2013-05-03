@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.dao.mapper.LegacyTranslationMapper;
 import com.picsauditing.dao.mapper.ContextTranslationMapper;
 import com.picsauditing.model.i18n.ContextTranslation;
 import com.picsauditing.search.Database;
@@ -72,30 +73,9 @@ public class AppTranslationDAO extends PicsDAO {
 	}
 
 	private List<ContextTranslation> loadTranslationsFromTableDirectly() throws SQLException {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-		ContextTranslationMapper rowMapper = new ContextTranslationMapper();
-
-		List<ContextTranslation> results = new ArrayList<ContextTranslation>();
-		try {
-			connection = DBBean.getDBConnection();
-			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			String sql = "select * from app_translation where js = 1";
-			resultSet = statement.executeQuery(sql);
-
-			int row = 0;
-			while (resultSet.next()) {
-				results.add(rowMapper.mapRowFromAppTranslation(resultSet));
-				row++;
-			}
-		} finally {
-			DatabaseUtil.closeResultSet(resultSet);
-			DatabaseUtil.closeStatement(preparedStatement);
-			DatabaseUtil.closeConnection(connection);
-		}
-
-		return results;
+		String sql = "select * from app_translation where js = 1";
+		LegacyTranslationMapper rowMapper = new LegacyTranslationMapper();
+		return database.select(sql, rowMapper);
 	}
 
 	private String buildStoredProcedureCall() {

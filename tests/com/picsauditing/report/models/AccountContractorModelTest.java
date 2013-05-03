@@ -36,7 +36,7 @@ public class AccountContractorModelTest extends ModelTest {
 	@Test
 	public void testAvailableFieldsForAdmin() throws Exception {
 		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
-		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+		EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
 		model = new AccountContractorModel(permissions);
 		availableFields = model.getAvailableFields();
 

@@ -127,6 +127,14 @@
                     <li id="registration_dialect">
                         <s:include value="/struts/contractors/_registration-dialects.jsp" />
                     </li>
+                    <li>
+                        <s:select
+                                id="timezone"
+                                name="contractor.timezone"
+                                list="@com.picsauditing.util.TimeZoneUtil@timeZones()"
+                                value="contractor.timezone.iD"
+                                theme="form" />
+                    </li>
                     <li class="country">
                         <s:select
                             list="countryList"

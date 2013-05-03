@@ -103,11 +103,13 @@ public class BrainTree {
 
         @Override
         public String getAccountID() {
+            if (invoice == null) return null;
             return String.valueOf(invoice.getAccount().getId());
         }
 
         @Override
         public String getInvoiceID() {
+            if (invoice == null) return null;
             return String.valueOf(invoice.getId());
         }
 

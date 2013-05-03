@@ -478,11 +478,20 @@ public class OpenTasks extends TranslationActionSupport {
 										conAudit.getCreationDate());
 							}
 						} else {
-							text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
+							String i18nKey = "ContractorWidget.message." + AuditStatus.Pending + "." + conAudit.getAuditType().getId();
+							if (hasKey(i18nKey)) {
+								text = getTextParameterized(locale, i18nKey,
+										conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
+										conAudit.getScheduledDate(), showAuditor,
+										(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
 
-									conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
-									conAudit.getScheduledDate(), showAuditor,
-									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
+							} else {
+								text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
+
+										conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
+										conAudit.getScheduledDate(), showAuditor,
+										(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
+							}
 							if (conAudit.getAuditType().isImplementation()) {
 								text += "<br/>" + getText(locale, "ContractorWidget.message.ImplementationAuditNote");
 							}
@@ -520,6 +529,14 @@ public class OpenTasks extends TranslationActionSupport {
 					}
 					openTasks.add(text);
 					addedOpenTask = true;
+				}
+			} else if (conAudit.getAuditType().getId() == AuditType.SSIP && conAudit.hasCaoStatus(AuditStatus.Resubmitted)) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
+						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+				String i18nKey = "ContractorWidget.message." + AuditStatus.Resubmitted + "." + conAudit.getAuditType().getId();
+				openTasks.add(getTextParameterized(locale, i18nKey,
+						conAudit.getId(), auditName, showAuditFor, auditFor));
+				addedOpenTask = true;
 				}
 			}
 		} else if (conAudit.getAuditType().isCanContractorEdit()
@@ -615,7 +632,11 @@ public class OpenTasks extends TranslationActionSupport {
 								&& cao.getStatus().isPending()) {
 							needed++;
 						}
-						if (cao.getStatus().before(AuditStatus.Complete)) {
+						if (conAudit.getAuditType().getId() == AuditType.SSIP) {
+							if (conAudit.hasCaoStatus(AuditStatus.Pending) || conAudit.hasCaoStatus(AuditStatus.Resubmitted)) {
+							needed++;
+							}
+						} else if (cao.getStatus().before(AuditStatus.Complete)) {
 							needed++;
 						}
 					}

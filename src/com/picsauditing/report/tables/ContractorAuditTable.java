@@ -44,7 +44,7 @@ public class ContractorAuditTable extends AbstractTable {
 	}
 
 	public void addJoins() {
-		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID"))).setMinimumImportance(FieldImportance.Average);
 
 		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")))
 				.setMinimumImportance(FieldImportance.Average);

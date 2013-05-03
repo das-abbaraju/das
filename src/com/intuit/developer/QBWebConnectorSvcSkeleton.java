@@ -211,10 +211,14 @@ public class QBWebConnectorSvcSkeleton {
 	public SendRequestXMLResponse sendRequestXML(SendRequestXML sendRequestXML) throws Exception {
 		SendRequestXMLResponse response = new SendRequestXMLResponse();
 
-		if (start(sendRequestXML.getTicket())) {
+		if ((sendRequestXML != null) && start(sendRequestXML.getTicket())) {
 
-			PicsLogger.log(sendRequestXML.getTicket() + ": performing request side of step: "
-					+ currentSession.getCurrentStep().name());
+			StringBuilder myLogStatement = new StringBuilder();
+
+			myLogStatement.append(sendRequestXML.getTicket());
+			myLogStatement.append(": performing request side of step: ");
+			logCurrentSessionStepName(myLogStatement);
+			PicsLogger.log(myLogStatement.toString());
 
 			// This contains important information about the client's QB
 			// installation, and will only be present on the first call
@@ -228,31 +232,53 @@ public class QBWebConnectorSvcSkeleton {
 
 				try {
 					if (shouldWeRunThisStep()) {
+						QBXmlAdaptor currentAdaptor = null;
+						if (currentSession != null && currentSession.getCurrentStep() != null) {
+							currentAdaptor = currentSession.getCurrentStep().getAdaptorInstance();
 
-						QBXmlAdaptor currentAdaptor = currentSession.getCurrentStep().getAdaptorInstance();
+							qbXml = currentAdaptor.getQbXml(currentSession);
+						}
 
-						qbXml = currentAdaptor.getQbXml(currentSession);
+
 
 					} else {
-						PicsLogger.log("Skipping " + currentSession.getCurrentStep().name());
+						if (currentSession != null && currentSession.getCurrentStep() != null)  {
+							PicsLogger.log("Skipping " + currentSession.getCurrentStep().name());
+						}
 					}
 				} catch (Exception e) {
-					PicsLogger.log("Error occurred while doing " + currentSession.getCurrentStep().name());
-					PicsLogger.log("shouldWeRunThisStep() = " + shouldWeRunThisStep());
-					PicsLogger.log("currentAdaptor = " + qbXml);
+					myLogStatement = new StringBuilder();
+					myLogStatement.append("Error occurred while doing ");
+					logCurrentSessionStepName(myLogStatement);
+					myLogStatement.append(Strings.NEW_LINE);
+					myLogStatement.append("shouldWeRunThisStep() = ");
+					myLogStatement.append(shouldWeRunThisStep());
+					myLogStatement.append(Strings.NEW_LINE);
+					myLogStatement.append("currentAdaptor = ");
+					myLogStatement.append(qbXml);
+					PicsLogger.log(myLogStatement.toString());
 					e.printStackTrace();
 					throw e;
 				}
 
 				qbXml = fixCharactersForQuickBooksSpecification(qbXml);
-
-				PicsLogger.log(sendRequestXML.getTicket() + ": sendRequestXml() returning :\n" + qbXml);
+				myLogStatement = new StringBuilder();
+				myLogStatement.append(sendRequestXML.getTicket());
+				myLogStatement.append(": sendRequestXml() returning :"+Strings.NEW_LINE);
+				myLogStatement.append(qbXml);
+				PicsLogger.log(myLogStatement.toString());
 				response.setSendRequestXMLResult(qbXml);
 			}
 		}
 
 		stop();
 		return response;
+	}
+
+	private void logCurrentSessionStepName(StringBuilder myLogStatement) {
+		if (currentSession != null && currentSession.getCurrentStep() != null) {
+			myLogStatement.append(currentSession.getCurrentStep().name());
+		}
 	}
 
 	private String fixCharactersForQuickBooksSpecification(String qbXml) {
@@ -356,13 +382,26 @@ public class QBWebConnectorSvcSkeleton {
 
 		ReceiveResponseXMLResponse response = new ReceiveResponseXMLResponse();
 
-		if (start(receiveResponseXML.getTicket())) {
+		if (receiveResponseXML != null && start(receiveResponseXML.getTicket())) {
 
-			PicsLogger.log(receiveResponseXML.getTicket() + ": received responseXML at step: "
-					+ currentSession.getCurrentStep().name());
-			PicsLogger.log(receiveResponseXML.getTicket() + ":\t response: " + receiveResponseXML.getResponse());
-			PicsLogger.log(receiveResponseXML.getTicket() + ":\t message: " + receiveResponseXML.getMessage());
-			PicsLogger.log(receiveResponseXML.getTicket() + ":\t hrResult: " + receiveResponseXML.getHresult());
+			StringBuilder myLogStatement = new StringBuilder();
+
+			myLogStatement.append(receiveResponseXML.getTicket());
+			myLogStatement.append(": received responseXML at step: ");
+			logCurrentSessionStepName(myLogStatement);
+			myLogStatement.append(Strings.NEW_LINE);
+			myLogStatement.append(receiveResponseXML.getTicket());
+			myLogStatement.append(":\t response: ");
+			myLogStatement.append(receiveResponseXML.getResponse());
+			myLogStatement.append(Strings.NEW_LINE);
+			myLogStatement.append(receiveResponseXML.getTicket());
+			myLogStatement.append(":\t message: ");
+			myLogStatement.append(receiveResponseXML.getMessage());
+			myLogStatement.append(Strings.NEW_LINE);
+			myLogStatement.append(receiveResponseXML.getTicket());
+			myLogStatement.append(":\t hrResult: ");
+			myLogStatement.append(receiveResponseXML.getHresult());
+			PicsLogger.log(myLogStatement.toString());
 
 			int percentDone = 0;
 
@@ -421,7 +460,11 @@ public class QBWebConnectorSvcSkeleton {
 	private boolean shouldWeRunThisStep() {
 		AppPropertyDAO appPropsDao = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
 
-		AppProperty find = appPropsDao.find("PICSQBLOADER.doStep." + currentSession.getCurrentStep());
+		QBIntegrationWorkFlow blah = null;
+		if (currentSession != null && currentSession.getCurrentStep() != null)  {
+			blah =  currentSession.getCurrentStep();
+		}
+		AppProperty find = appPropsDao.find("PICSQBLOADER.doStep." + blah);
 
 		if (find == null || find.getValue() == null) {
 			return false;
@@ -433,7 +476,13 @@ public class QBWebConnectorSvcSkeleton {
 	private void moveToNextStep() {
 
 		do {
+			if (currentSession != null
+					&& currentSession.getCurrentStep() != null
+					) {
 			currentSession.setCurrentStep(currentSession.getCurrentStep().incrementStep());
+			} else {
+				return;
+			}
 		} while (!shouldWeRunThisStep() && currentSession.getCurrentStep() != QBIntegrationWorkFlow.Finished);
 
 	}

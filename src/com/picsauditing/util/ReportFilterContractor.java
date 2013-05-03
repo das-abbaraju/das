@@ -9,8 +9,10 @@ import com.picsauditing.model.account.AccountStatusChanges;
 
 import java.util.*;
 
-@SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
+
+	private static final long serialVersionUID = 1L;
+
 	// /////// Filter Visibility /////////////
 	protected boolean showContractor = false;
 	protected boolean showOperator = true;

@@ -99,7 +99,14 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
-		Field contractorsRequiringAnnualUpdateEmail = new Field(
+        Field fatalities = fields.get("FatalitiesAnswer".toUpperCase());
+        fatalities.setType(FieldType.Number);
+        Field trir = fields.get("TrirAnswer".toUpperCase());
+        trir.setType(FieldType.Number);
+        Field emr = fields.get("EmrAnswer".toUpperCase());
+        emr.setType(FieldType.Number);
+
+        Field contractorsRequiringAnnualUpdateEmail = new Field(
 				CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL,
 				"(Audit.auditTypeID = 1 AND AuditOperator.status = 'Resubmit') " +
 				"OR (Audit.auditTypeID = 11 AND Audit.auditFor = 2012 AND AuditOperator.status = 'Pending') " +

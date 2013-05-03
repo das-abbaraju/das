@@ -11,6 +11,7 @@ public class ContractorOperatorTable extends AbstractTable {
 	public static final String Operator = "Operator";
 	public static final String Contractor = "Contractor";
 	public static final String ForcedByUser = "ForcedByUser";
+    public static final String ForcedFlagPercent = "ForcedFlagPercent";
 
 	public ContractorOperatorTable() {
 		super("generalcontractors");
@@ -69,5 +70,8 @@ public class ContractorOperatorTable extends AbstractTable {
 		ReportForeignKey forcedByUser = new ReportForeignKey(ForcedByUser, new UserTable(), new ReportOnClause("forcedBy"));
 		forcedByUser.setMinimumImportance(FieldImportance.Average);
 		addOptionalKey(forcedByUser);
+
+        ReportForeignKey forcedFlagPercent = new ReportForeignKey(ForcedFlagPercent, new ForcedFlagPercentageView(), new ReportOnClause("genID","opID"));
+        addOptionalKey(forcedFlagPercent);
 	}
 }
