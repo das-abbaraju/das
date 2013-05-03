@@ -10,11 +10,28 @@
 
 .select2-choices
 {
-    font-size: 13px;
-    line-height: 13px;
+    font-size: 12px;
+    line-height: 12px;
 }
 
 .select2-drop
 {
-    z-index: 11000
+    z-index: 11000;
+}
+
+.select2-results li
+{
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.select2-results .select2-result-label
+{
+    font-size: 12px;
+}
+
+/* multiselect input */
+.Audit-page .multiselect
+{
+    width: 400px;
 }
