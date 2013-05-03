@@ -3,7 +3,7 @@
 INSERT INTO invoice_fee (fee, defaultamount, visible, feeClass, minFacilities, maxFacilities,
                          qbFullName, createdBy, updatedBy, creationDate, updateDate,
                          effectiveDate, displayOrder, commissionEligible)
-  VALUES ("SSIP Activation Discount", -199, 1, "SSIPDiscountFee", 1, 10000, "SSIP Discount", 53137, 53137, NOW(), NOW(), NOW(), 255, 1);
+  VALUES ("SSIP Activation Fee Discount", -199, 1, "SSIPDiscountFee", 1, 10000, "SSIP01", 53137, 53137, NOW(), NOW(), NOW(), 255, 1);
 
 -- Add translation item
 INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed,
