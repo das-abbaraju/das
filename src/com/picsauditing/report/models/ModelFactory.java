@@ -41,6 +41,8 @@ public class ModelFactory {
             return new ForcedFlagModel(permissions);
 		if (type.equals(ModelType.ContractorOperators))
 			return new ContractorOperatorModel(permissions);
+        if (type.equals(ModelType.ContractorOperatorForcedFlags))
+            return new ContractorOperatorForcedFlagModel(permissions);
 		if (type.equals(ModelType.Invoices))
 			return new InvoiceModel(permissions);
 		if (type.equals(ModelType.Operators))

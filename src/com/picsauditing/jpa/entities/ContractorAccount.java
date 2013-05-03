@@ -1050,7 +1050,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.lastUpgradeDate = lastUpgradeDate;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllContractors)
 	public BigDecimal getBalance() {
 		return balance;
 	}
