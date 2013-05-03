@@ -227,14 +227,12 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Tagit'">
-			<input
-				class="audit-tagit"
+			<input type="hidden"
+				class="multiselect"
 				name="auditData.answer"
-				data-audit-id="${auditID}"
-				data-question-id="${q.id}"
 				data-option-group-id="${q.option.id}"
+                value="${a.answer}"
 			/>
-            
             <s:submit type="button" value="Submit" cssClass="question-save" />
 		</s:if>
 
