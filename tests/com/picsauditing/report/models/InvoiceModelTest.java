@@ -12,7 +12,7 @@ public class InvoiceModelTest extends ModelTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+		EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
 		model = new InvoiceModel(permissions);
 	}
 
