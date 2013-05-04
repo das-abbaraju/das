@@ -30,6 +30,10 @@
 </s:if>
 
 <div class="service-evaluation">
+    <s:if test="!isLiveEnvironment()" >
+        <a class="btn" id="autofill">Autofill</a>
+    </s:if>
+
 	<s:form cssClass="service-evaluation-form" theme="pics">
 
         <s:if test="#requires_ssip_evaluation == true">
