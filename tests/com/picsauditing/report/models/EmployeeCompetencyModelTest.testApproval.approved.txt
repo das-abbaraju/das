@@ -1,0 +1,6 @@
+General: EmployeeCompetencyEmployeeFirstName
+General: EmployeeCompetencyCompetencyLabel
+AccountInformation: EmployeeCompetencyEmployeeAccountID
+General: EmployeeCompetencyEmployeeLastName
+General: EmployeeCompetencySkilled
+AccountInformation: EmployeeCompetencyEmployeeAccountName

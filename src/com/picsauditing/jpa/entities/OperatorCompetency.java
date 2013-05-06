@@ -6,6 +6,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -20,6 +23,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	private OperatorAccount operator;
 	private JobCompetencyStats jobCompentencyStats;
 
+    @ReportField(type = FieldType.String)
 	public String getCategory() {
 		return category;
 	}
@@ -28,6 +32,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.category = category;
 	}
 
+    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getLabel() {
 		return label;
 	}
@@ -36,6 +41,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.label = label;
 	}
 
+    @ReportField(type = FieldType.String)
 	public String getDescription() {
 		return description;
 	}

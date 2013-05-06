@@ -17,5 +17,7 @@ public enum FieldCategory {
 	Commission,
 	Invoicing,
 	ClientSitePreferences,
+    Employee,
+    Competency,
 	General;
 }

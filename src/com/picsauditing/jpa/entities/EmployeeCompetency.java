@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,6 +37,7 @@ public class EmployeeCompetency extends BaseTable {
 		this.competency = competency;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isSkilled() {
 		return skilled;
 	}

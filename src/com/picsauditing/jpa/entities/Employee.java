@@ -19,6 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
@@ -64,6 +67,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 4)
+    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -74,6 +78,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 5)
+    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getLastName() {
 		return lastName;
 	}
@@ -108,6 +113,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Enumerated(EnumType.STRING)
+    //TODO add EmployeeClassification DR FieldType
+    @ReportField(type = FieldType.String)
 	public EmployeeClassification getClassification() {
 		return classification;
 	}
@@ -128,6 +135,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	// parameters = { @Parameter(name = "enumClass", value =
 	// "com.picsauditing.jpa.entities.UserStatus") })
 	@Enumerated(EnumType.STRING)
+    //TODO Add UserStatus DR FieldType
+    @ReportField(type = FieldType.String)
 	public UserStatus getStatus() {
 		return status;
 	}
@@ -150,6 +159,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
+    @ReportField(type = FieldType.Date)
 	public Date getHireDate() {
 		return hireDate;
 	}
@@ -159,7 +169,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getFireDate() {
+    @ReportField(type = FieldType.Date)
+    public Date getFireDate() {
 		return fireDate;
 	}
 
@@ -167,7 +178,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.fireDate = fireDate;
 	}
 
-	public String getTitle() {
+    @ReportField(type = FieldType.String)
+    public String getTitle() {
 		return title;
 	}
 
@@ -175,7 +187,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.title = title;
 	}
 
-	public String getLocation() {
+    @ReportField(type = FieldType.String)
+    public String getLocation() {
 		return location;
 	}
 
@@ -184,7 +197,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
-	public String getEmail() {
+    @ReportField(type = FieldType.String)
+    public String getEmail() {
 		return email;
 	}
 
@@ -193,7 +207,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
-	public String getPhone() {
+    @ReportField(type = FieldType.String)
+    public String getPhone() {
 		return phone;
 	}
 
@@ -211,7 +226,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
-	public Date getBirthDate() {
+    @ReportField(type = FieldType.Date)
+    public Date getBirthDate() {
 		return birthDate;
 	}
 

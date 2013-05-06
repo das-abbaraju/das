@@ -6,6 +6,7 @@ public class ReportForeignKey {
 	private ReportOnClause onClause;
 	private FieldCategory category;
 	private JoinType joinType = JoinType.LeftJoin;
+    //TODO Michael, Should we change this to Required? -Trevor
 	private FieldImportance minimumImportance = FieldImportance.Low;
 
 	public ReportForeignKey(String name, AbstractTable toTable, ReportOnClause onClause) {

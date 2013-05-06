@@ -37,6 +37,8 @@ public class ModelFactory {
 			return new ContractorFlagDataModel(permissions);
 		if (type.equals(ModelType.ContractorNumbers))
 			return new ContractorNumberModel(permissions);
+        if (type.equals(ModelType.EmployeeCompetencies))
+            return new EmployeeCompetencyModel(permissions);
         if (type.equals(ModelType.ForcedFlags))
             return new ForcedFlagModel(permissions);
         if (type.equals(ModelType.ForcedFlagPercents))

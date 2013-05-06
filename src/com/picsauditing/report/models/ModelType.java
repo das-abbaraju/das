@@ -21,6 +21,7 @@ public enum ModelType {
 	Emails,
 	EmailSubscriptions,
 	EmployeeAssessments,
+    EmployeeCompetencies,
 	Employees,
 	ExceptionLogs,
     ForcedFlags,
