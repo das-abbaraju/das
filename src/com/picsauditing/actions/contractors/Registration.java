@@ -12,7 +12,6 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.RegistrationValidator;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.ServletActionContext;
@@ -26,7 +25,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings({"deprecation", "serial"})
 public class Registration extends ContractorActionSupport implements AjaxValidator {
@@ -508,15 +510,4 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 		registrationValidator.validate(ActionContext.getContext().getValueStack(), new DelegatingValidatorContext(this));
 	}
 
-    public Map<String, String> getTimezones() {
-        Map<String, String> timezones = new LinkedHashMap<String, String>();
-        timezones.putAll(TimeZoneUtil.timeZones());
-
-        for (String key : timezones.keySet()) {
-            String value = timezones.get(key);
-            timezones.put(key, getText(value));
-        }
-
-        return timezones;
-    }
 }

@@ -144,7 +144,7 @@
                             listValue="name"
                         />
                     </li>
-                    <li>
+					<li>
 						<s:textfield name="contractor.name" />
 					</li>
                     <li class="contractor-name-duplicate">
@@ -197,16 +197,7 @@
 					<li id="vat_id">
 						<s:textfield name="contractor.vatId" />
 					</li>
-                    <li>
-                        <s:select
-                                id="timezone"
-                                name="contractor.timezone"
-                                headerKey=""
-                                headerValue=" - Select your timezone - "
-                                list="timezones"
-                                value="contractor.timezone.iD" />
-                    </li>
-                </ul>
+				</ul>
 			</section>
 		</div>
 		
