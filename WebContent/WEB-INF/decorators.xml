@@ -15,6 +15,7 @@
         <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
         <pattern>/Reference*.action</pattern>
+        <pattern>/Temp*.action</pattern>
     </decorator>
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>
