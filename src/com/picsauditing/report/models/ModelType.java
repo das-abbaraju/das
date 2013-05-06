@@ -24,6 +24,7 @@ public enum ModelType {
 	Employees,
 	ExceptionLogs,
     ForcedFlags,
+    ForcedFlagPercents,
 	InvoiceItems,
 	Invoices,
 	Operators,
