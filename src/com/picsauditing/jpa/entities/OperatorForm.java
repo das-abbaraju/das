@@ -26,6 +26,7 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 	protected String file;
 	protected String formType;
 	private Locale locale;
+	private boolean clientSiteOnly;
 	protected OperatorForm parent;
 	protected List<OperatorForm> children = new ArrayList<OperatorForm>();
 
@@ -90,6 +91,14 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	public boolean isClientSiteOnly() {
+		return clientSiteOnly;
+	}
+
+	public void setClientSiteOnly(boolean clientSiteOnly) {
+		this.clientSiteOnly = clientSiteOnly;
 	}
 
 	@Transient

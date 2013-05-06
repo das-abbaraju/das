@@ -94,6 +94,15 @@ $(function() {
 			</s:else>
 		</li>
 			<s:if test="id!=0 && parentId==0">
+            <li>
+                <label><s:text name="ReportResources.Visibility" />:</label>
+                <s:if test="resource.clientSiteOnly" >
+                    <s:text name="global.Operators" />
+                </s:if>
+                <s:else>
+                    <s:text name="global.Contractors" />
+                </s:else>
+            </li>
 			<li>
 				<label><s:text name="ManageResources.ExistingFiles" />:</label>
 				<table class="report">
@@ -149,6 +158,10 @@ $(function() {
 					</div>
 				</s:else>
 			</li>
+                <li>
+                    <label><s:text name="ManageResources.OperatorOnly" />: </label>
+                    <s:checkbox name="onlyClientSite" />
+                </li>
 			<li>
 				<label><s:text name="global.File" />: </label>
 				<s:file name="file" />

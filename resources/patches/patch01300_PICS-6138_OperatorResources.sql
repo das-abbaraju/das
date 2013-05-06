@@ -1,0 +1,1 @@
+ALTER TABLE `operatorforms` ADD COLUMN `clientSiteOnly` tinyint(4) default 0;

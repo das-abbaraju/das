@@ -43,6 +43,7 @@ public class ManageResources extends PicsActionSupport {
 	private int childId;
 	private OperatorAccount operator;
 	private String accountName;
+	private boolean onlyClientSite;
 
 	@Override
 	public String execute() throws Exception {
@@ -149,6 +150,9 @@ public class ManageResources extends PicsActionSupport {
 			resource.setAccount(parentResource.getAccount());
 			resource.setParent(parentResource);
 		}
+
+		resource.setClientSiteOnly(isOnlyClientSite());
+
 		if (resource.getId() == 0)
 			resource.setFile("temporary"); // to be updated later
 
@@ -469,4 +473,11 @@ public class ManageResources extends PicsActionSupport {
 		this.accountName = accountName;
 	}
 
+	public boolean isOnlyClientSite() {
+		return onlyClientSite;
+	}
+
+	public void setOnlyClientSite(boolean onlyClientSite) {
+		this.onlyClientSite = onlyClientSite;
+	}
 }

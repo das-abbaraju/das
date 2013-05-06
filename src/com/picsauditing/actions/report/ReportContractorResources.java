@@ -87,6 +87,11 @@ public class ReportContractorResources extends ReportActionSupport {
 		if (!Strings.isEmpty(filter.getStartsWith())) {
 			sql.addWhere("o.formName LIKE '" + Strings.escapeQuotes(filter.getStartsWith()) + "%'");
 		}
+
+		if (permissions.isContractor()) {
+			sql.addWhere("o.clientSiteOnly=0");
+		}
+
 		sql.addField("a.name operator");
 		sql.addField("o.id id");
 		sql.addField("o.opID opID");

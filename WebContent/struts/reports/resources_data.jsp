@@ -17,6 +17,9 @@
 	    <th><s:text name="global.Resource" /></th>
 	    <td><s:text name="global.Languages" /></td>
 	    <td><s:text name="global.Operator" /></td>
+        <s:if test="!permissions.contractor" >
+            <th><s:text name="ReportResources.Visibility" /></th>
+        </s:if>
 	    <s:if test="canManageForm">
 	    	<td><s:text name="global.Edit" /></td>
 	    </s:if>
@@ -34,7 +37,17 @@
 					<a href="Resources!download.action?id=<s:property value="#resource.id" />&amp;loc=<s:property value="#locale.toString()" />"  target="_blank" title="<s:text name="global.ClickToView"/>"><s:property value="#localeName" /></a>
 				</s:iterator>
 			</td>
-			<td><s:property value="operatorName"/></td>
+            <td><s:property value="operatorName"/></td>
+            <s:if test="!permissions.contractor">
+                <td>
+                    <s:if test="#resource.clientSiteOnly">
+                        <s:text name="global.Operators"/>
+                    </s:if>
+                    <s:else>
+                        <s:text name="global.Contractors"/>
+                    </s:else>
+                </td>
+            </s:if>
 			<s:if test="canManageForm">
 				<td><s:if test="isEditableByUser(#resource)" ><a href="ManageResources.action?id=<s:property value="#resource.id" />" class="edit"><s:text name="button.Edit" /></a></s:if></td>
 			</s:if>

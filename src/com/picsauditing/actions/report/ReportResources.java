@@ -88,6 +88,7 @@ public class ReportResources extends ReportActionSupport {
 		sql.addField("o.formName formName");
 		sql.addField("o.parentID parentID");
 		sql.addField("o.locale locale");
+		sql.addField("o.clientSiteOnly clientSiteOnly");
 		sql.addJoin("JOIN accounts a ON a.id = o.opID");
 		sql.addOrderBy("a.name");
 		sql.addOrderBy("o.formName");
@@ -228,6 +229,7 @@ public class ReportResources extends ReportActionSupport {
 		private int operatorId;
 		private String operatorName;
 		private String formName;
+		private boolean clientSiteOnly;
 		private ArrayList<Locale> locales = new ArrayList<Locale>();
 		
 		public Resource(BasicDynaBean row) {
@@ -239,6 +241,7 @@ public class ReportResources extends ReportActionSupport {
 			operatorId = Integer.parseInt(row.get("opID").toString());
 			operatorName = row.get("operator").toString();
 			formName = row.get("formName").toString();
+			clientSiteOnly = row.get("clientSiteOnly") == 1;
 			addLocale(createLocale(row.get("locale").toString()));
 		}
 
@@ -284,6 +287,14 @@ public class ReportResources extends ReportActionSupport {
 		
 		public void addLocale(Locale locale) {
 			locales.add(locale);
+		}
+
+		public boolean isClientSiteOnly() {
+			return clientSiteOnly;
+		}
+
+		public void setClientSiteOnly(boolean clientSiteOnly) {
+			this.clientSiteOnly = clientSiteOnly;
 		}
 
 		@Override
