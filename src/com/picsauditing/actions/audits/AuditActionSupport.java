@@ -415,6 +415,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		}
 
+		if (permissions.isContractor() && type.isWCB() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
+			return false;
+		}
+
 		if (type.getClassType().isPolicy()) {
 			// we don't want the contractors to edit the effective dates on the
 			// old policy
