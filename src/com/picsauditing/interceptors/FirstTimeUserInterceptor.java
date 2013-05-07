@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.report.ManageReports;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 				return "redirect";
 			}
 
-			if (shouldRedirectToReportsManagerTutorial(permissions)) {
+			if (shouldRedirectToReportsManagerTutorial(permissions, invocation)) {
 				invocation.getStack().set("url", REFERENCE_REPORTS_MANAGER_ACTION);
 				return "redirect";
 			}
@@ -46,13 +47,19 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 				.isUsingVersion7Menus());
 	}
 
-	private boolean shouldRedirectToReportsManagerTutorial(Permissions permissions) {
+	private boolean shouldRedirectToReportsManagerTutorial(Permissions permissions, ActionInvocation invocation) {
 		if (permissions == null) {
 			return false;
 		}
 
-		return (permissions.isLoggedIn() && permissions.isDynamicReportsUser()
+		return (permissions.isLoggedIn() && hittingReportsManager(invocation)
 				&& permissions.getReportsManagerTutorialDate() == null );
 	}
+
+	private boolean hittingReportsManager(ActionInvocation invocation) {
+		Object action = invocation.getAction();
+		return action.getClass().equals(ManageReports.class);
+	}
+
 
 }

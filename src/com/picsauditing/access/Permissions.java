@@ -733,10 +733,6 @@ public class Permissions implements Serializable {
 		return dynamicReportsUser;
 	}
 
-	public void setDynamicReportsUser(boolean dynamicReportsUser) {
-		this.dynamicReportsUser = dynamicReportsUser;
-	}
-
 	public Date getReportsManagerTutorialDate() {
 		return reportsManagerTutorialDate;
 	}

@@ -71,7 +71,7 @@ public class Reference extends PicsActionSupport {
 	}
 
 	private boolean isFirstTimeReportsManagerUser() {
-		return (permissions.isDynamicReportsUser() && permissions.getReportsManagerTutorialDate() == null);
+		return (permissions.getReportsManagerTutorialDate() == null);
 	}
 
 	private void setReportsManagerTutorialDate() {

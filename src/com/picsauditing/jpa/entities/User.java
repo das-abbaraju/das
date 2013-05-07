@@ -1080,11 +1080,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
         return new UserBuilder();
     }
 
-	@Transient
-	public boolean isDynamicReportsUser() {
-		return getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_DR_REPORTS);
-	}
-
 	@Temporal(TemporalType.DATE)
 	public Date getReportsManagerTutorialDate() {
 		return reportsManagerTutorialDate;
