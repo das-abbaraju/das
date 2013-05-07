@@ -23,7 +23,7 @@
 <s:set var="report_pin_class" value="%{#report.pinned ? 'unpin' : 'pin'}" />
 
 <%-- Text --%>
-<s:set var="report_pin_text" value="%{#report.pinned ? getText('ManageReports.favorites.dropDown.pin') : getText('ManageReports.favorites.dropDown.unpin')}" />
+<s:set var="report_pin_text" value="%{#report.pinned ? getText('ManageReports.favorites.dropDown.unpin') : getText('ManageReports.favorites.dropDown.pin')}" />
 
 <s:if test="#reports.size">
     <div class="report-options btn-group pull-right">
