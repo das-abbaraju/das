@@ -1,40 +1,23 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldImportance;
-import org.hibernate.annotations.Where;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Where;
+import org.json.simple.JSONObject;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee")
-@IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 3) })
+@IndexableOverride(overrides = {@IndexOverrideWeight(methodName = "getId", weight = 3)})
 public class Employee extends AbstractIndexableTable implements Comparable<Employee> {
 	private String firstName;
 	private String lastName;
@@ -64,10 +47,11 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+	private List<OperatorCompetencyEmployeeFile> competencyFiles = new ArrayList<>();
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 4)
-    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -78,7 +62,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 5)
-    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getLastName() {
 		return lastName;
 	}
@@ -94,7 +78,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	/**
 	 * Used for Indexable/Interface
-	 * 
+	 *
 	 * @return Returns display name
 	 */
 	@Transient
@@ -113,8 +97,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Enumerated(EnumType.STRING)
-    //TODO add EmployeeClassification DR FieldType
-    @ReportField(type = FieldType.String)
+	//TODO add EmployeeClassification DR FieldType
+	@ReportField(type = FieldType.String)
 	public EmployeeClassification getClassification() {
 		return classification;
 	}
@@ -135,8 +119,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	// parameters = { @Parameter(name = "enumClass", value =
 	// "com.picsauditing.jpa.entities.UserStatus") })
 	@Enumerated(EnumType.STRING)
-    //TODO Add UserStatus DR FieldType
-    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
+	//TODO Add UserStatus DR FieldType
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public UserStatus getStatus() {
 		return status;
 	}
@@ -147,7 +131,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	/**
 	 * PICS Worker Number aka Worker Access Code
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPicsNumber() {
@@ -159,7 +143,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
-    @ReportField(type = FieldType.Date)
+	@ReportField(type = FieldType.Date)
 	public Date getHireDate() {
 		return hireDate;
 	}
@@ -169,8 +153,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
-    @ReportField(type = FieldType.Date)
-    public Date getFireDate() {
+	@ReportField(type = FieldType.Date)
+	public Date getFireDate() {
 		return fireDate;
 	}
 
@@ -178,8 +162,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.fireDate = fireDate;
 	}
 
-    @ReportField(type = FieldType.String)
-    public String getTitle() {
+	@ReportField(type = FieldType.String)
+	public String getTitle() {
 		return title;
 	}
 
@@ -187,8 +171,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.title = title;
 	}
 
-    @ReportField(type = FieldType.String)
-    public String getLocation() {
+	@ReportField(type = FieldType.String)
+	public String getLocation() {
 		return location;
 	}
 
@@ -197,8 +181,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
-    @ReportField(type = FieldType.String)
-    public String getEmail() {
+	@ReportField(type = FieldType.String)
+	public String getEmail() {
 		return email;
 	}
 
@@ -207,8 +191,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
-    @ReportField(type = FieldType.String)
-    public String getPhone() {
+	@ReportField(type = FieldType.String)
+	public String getPhone() {
 		return phone;
 	}
 
@@ -226,8 +210,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	}
 
 	@Temporal(TemporalType.DATE)
-    @ReportField(type = FieldType.Date)
-    public Date getBirthDate() {
+	@ReportField(type = FieldType.Date)
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
@@ -279,7 +263,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.employeeSites = employeeSites;
 	}
 
-	@OneToMany(mappedBy = "employee", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "employee", cascade = {CascadeType.ALL})
 	public Set<EmployeeQualification> getEmployeeQualifications() {
 		return employeeQualifications;
 	}
@@ -288,7 +272,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		this.employeeQualifications = employeeQualifications;
 	}
 
-	@OneToMany(mappedBy = "employee", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "employee", cascade = {CascadeType.REMOVE})
 	public List<AssessmentResult> getAssessmentResults() {
 		return assessmentResults;
 	}
@@ -340,6 +324,15 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	public void setAudits(List<ContractorAudit> audits) {
 		this.audits = audits;
+	}
+
+	@OneToMany(mappedBy = "employee")
+	public List<OperatorCompetencyEmployeeFile> getCompetencyFiles() {
+		return competencyFiles;
+	}
+
+	public void setCompetencyFiles(List<OperatorCompetencyEmployeeFile> competencyFiles) {
+		this.competencyFiles = competencyFiles;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -427,6 +420,45 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 		return (status == UserStatus.Inactive || status == UserStatus.Deleted);
 	}
 
+	@Transient
+	public OperatorCompetencyEmployeeFileStatus getOverallFileStatus() {
+		OperatorCompetencyEmployeeFileStatus fileStatus = OperatorCompetencyEmployeeFileStatus.NA;
+
+		for (OperatorCompetency requiresDocumentation : getCompetenciesRequiringDocumentation()) {
+			fileStatus = getFileStatusForCompetency(requiresDocumentation);
+			if (fileStatus == OperatorCompetencyEmployeeFileStatus.NEEDED) {
+				break;
+			}
+		}
+
+		return fileStatus;
+	}
+
+	@Transient
+	public OperatorCompetencyEmployeeFileStatus getFileStatusForCompetency(OperatorCompetency operatorCompetency) {
+		OperatorCompetencyEmployeeFileStatus fileStatus = OperatorCompetencyEmployeeFileStatus.NEEDED;
+
+		for (OperatorCompetencyEmployeeFile competencyEmployeeFile : getCompetencyFiles()) {
+			if (competencyEmployeeFile.getCompetency().equals(operatorCompetency)) {
+				fileStatus = OperatorCompetencyEmployeeFileStatus.PROVIDED;
+			}
+		}
+
+		return fileStatus;
+	}
+
+	@Transient
+	private List<OperatorCompetency> getCompetenciesRequiringDocumentation() {
+		List<OperatorCompetency> competenciesRequiringDocumentation = new ArrayList<>();
+		for (EmployeeCompetency employeeCompetency : getEmployeeCompetencies()) {
+			if (employeeCompetency.getCompetency().isRequiresDocumentation()) {
+				competenciesRequiringDocumentation.add(employeeCompetency.getCompetency());
+			}
+		}
+
+		return competenciesRequiringDocumentation;
+	}
+
 	@Override
 	public int compareTo(Employee o) {
 		String otherLastName = Strings.isEmpty(o.getLastName()) ? "" : o.getLastName();
@@ -445,12 +477,12 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 			return title.compareTo(otherTitle);
 		}
 
-        if (id < o.getId()) {
-            return -1;
-        } else if (id > o.getId()) {
-            return 1;
-        } else {
-    		return 0;
-        }
+		if (id < o.getId()) {
+			return -1;
+		} else if (id > o.getId()) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }

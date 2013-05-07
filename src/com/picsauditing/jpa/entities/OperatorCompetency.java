@@ -1,16 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -22,8 +20,10 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	private String description;
 	private OperatorAccount operator;
 	private JobCompetencyStats jobCompentencyStats;
+	private List<OperatorCompetencyCourse> courses = new ArrayList<>();
+	private List<OperatorCompetencyEmployeeFile> employeeFiles = new ArrayList<>();
 
-    @ReportField(type = FieldType.String)
+	@ReportField(type = FieldType.String)
 	public String getCategory() {
 		return category;
 	}
@@ -32,7 +32,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.category = category;
 	}
 
-    @ReportField(type = FieldType.String, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
 	public String getLabel() {
 		return label;
 	}
@@ -41,7 +41,7 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.label = label;
 	}
 
-    @ReportField(type = FieldType.String)
+	@ReportField(type = FieldType.String)
 	public String getDescription() {
 		return description;
 	}
@@ -69,6 +69,24 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.jobCompentencyStats = jobCompentencyStats;
 	}
 
+	@OneToMany(mappedBy = "competency")
+	public List<OperatorCompetencyCourse> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<OperatorCompetencyCourse> courses) {
+		this.courses = courses;
+	}
+
+	@OneToMany(mappedBy = "competency")
+	public List<OperatorCompetencyEmployeeFile> getEmployeeFiles() {
+		return employeeFiles;
+	}
+
+	public void setEmployeeFiles(List<OperatorCompetencyEmployeeFile> employeeFiles) {
+		this.employeeFiles = employeeFiles;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -84,12 +102,20 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	@SuppressWarnings("unchecked")
 	@Transient
 	public JSONArray toTableJSON() {
+		List<String> courseTypeKeys = new ArrayList<>();
+		for (OperatorCompetencyCourse course : getCourses()) {
+			courseTypeKeys.add(course.getCourseType().getI18nKey());
+		}
+
+		final String[] courseTypeKeysArray = (String[]) courseTypeKeys.toArray();
+
 		return new JSONArray() {
 			{
 				add(id);
 				add(category);
 				add(label);
 				add(description);
+
 			}
 		};
 	}
@@ -106,5 +132,16 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		}
 
 		return this.category.compareTo(o.getCategory());
+	}
+
+	@Transient
+	public boolean isRequiresDocumentation() {
+		for (OperatorCompetencyCourse course : courses) {
+			if (course.getCourseType().isRequiresDocumentation()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

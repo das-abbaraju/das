@@ -3,10 +3,7 @@ package com.picsauditing.jpa.entities;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -37,7 +34,7 @@ public class EmployeeCompetency extends BaseTable {
 		this.competency = competency;
 	}
 
-    @ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean)
 	public boolean isSkilled() {
 		return skilled;
 	}
@@ -46,4 +43,22 @@ public class EmployeeCompetency extends BaseTable {
 		this.skilled = skilled;
 	}
 
+	@Transient
+	public boolean isMissingDocumentation() {
+		boolean missing = false;
+		if (competency.isRequiresDocumentation()) {
+			boolean found = false;
+			for (OperatorCompetencyEmployeeFile employeeFile : employee.getCompetencyFiles()) {
+				if (employeeFile.getCompetency().equals(competency)) {
+					found = true;
+				}
+			}
+
+			if (!found) {
+				missing = true;
+			}
+		}
+
+		return missing;
+	}
 }
