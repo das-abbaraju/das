@@ -115,6 +115,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
 	private int assignmentCapacity;
+	private Date reportsManagerTutorialDate;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -1077,5 +1078,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
     public static UserBuilder builder() {
         return new UserBuilder();
+    }
+
+	@Temporal(TemporalType.DATE)
+	public Date getReportsManagerTutorialDate() {
+		return reportsManagerTutorialDate;
+	}
+
+	public void setReportsManagerTutorialDate(Date reportsManagerTutorialDate) {
+		this.reportsManagerTutorialDate = reportsManagerTutorialDate;
     }
 }

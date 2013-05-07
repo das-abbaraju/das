@@ -60,4 +60,28 @@ public class Reference extends PicsActionSupport {
 		userDAO.save(user);
 	}
 
+	public String reportsManager() throws Exception {
+		loadPermissions(false);
+
+		if (isFirstTimeReportsManagerUser()) {
+			setReportsManagerTutorialDate();
+		}
+
+		return "reports-manager";
+	}
+
+	private boolean isFirstTimeReportsManagerUser() {
+		return (permissions.getReportsManagerTutorialDate() == null);
+	}
+
+	private void setReportsManagerTutorialDate() {
+		Date reportsManagerTutorialDate = new Date();
+		permissions.setReportsManagerTutorialDate(reportsManagerTutorialDate);
+
+		User user = userDAO.find(permissions.getUserId());
+		user.setReportsManagerTutorialDate(reportsManagerTutorialDate);
+
+		userDAO.save(user);
+	}
+
 }

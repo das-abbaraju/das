@@ -82,6 +82,8 @@ public class Permissions implements Serializable {
 
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
+	private boolean dynamicReportsUser;
+	private Date reportsManagerTutorialDate;
     // this is for injecting for unit tests
 	private transient LanguageModel languageModel;
     private int primaryCorporateAccountID;
@@ -725,6 +727,18 @@ public class Permissions implements Serializable {
 
 	public void setUsingVersion7MenusDate(Date usingVersion7MenusDate) {
 		this.usingVersion7MenusDate = usingVersion7MenusDate;
+	}
+
+	public boolean isDynamicReportsUser() {
+		return dynamicReportsUser;
+	}
+
+	public Date getReportsManagerTutorialDate() {
+		return reportsManagerTutorialDate;
+	}
+
+	public void setReportsManagerTutorialDate(Date reportsManagerTutorialDate) {
+		this.reportsManagerTutorialDate = reportsManagerTutorialDate;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
