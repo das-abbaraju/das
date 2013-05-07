@@ -26,6 +26,8 @@ public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 	private Date expiration;
 
 	private List<OperatorCompetency> competenciesMissingDocumentation;
+	// Utilities
+	private URLUtils urlUtils;
 
 	@Override
 	public String execute() throws Exception {
@@ -42,8 +44,7 @@ public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 
 			addActionMessage(getTextParameterized("EmployeeDocumentFileUpload.SuccessfullyUploadedFileFor",
 					fileFileName, competency.getLabel(), employee.getDisplayName()));
-			URLUtils urlUtils = new URLUtils();
-			String url = urlUtils.getActionUrl("EmployeeSkillsTraining", "employee", employee.getId());
+			String url = urlUtils().getActionUrl("EmployeeSkillsTraining", "employee", employee.getId());
 
 			return setUrlForRedirect(url);
 		} else {
@@ -118,5 +119,13 @@ public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 
 	public void setExpiration(Date expiration) {
 		this.expiration = expiration;
+	}
+
+	private URLUtils urlUtils() {
+		if (urlUtils == null) {
+			urlUtils = new URLUtils();
+		}
+
+		return urlUtils;
 	}
 }

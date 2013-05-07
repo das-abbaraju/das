@@ -1,13 +1,11 @@
 package com.picsauditing.actions.employees;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.report.RecordNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +15,6 @@ import java.util.TreeMap;
 public class EmployeeSkillsTraining extends PicsActionSupport {
 	public static final String CURRENT = "EmployeeSkillsTraining.Current";
 	public static final String EXPIRED = "EmployeeSkillsTraining.Expired";
-
-	@Autowired
-	private EmployeeDAO employeeDAO;
 
 	private Employee employee;
 
