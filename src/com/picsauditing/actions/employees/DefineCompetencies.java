@@ -62,6 +62,9 @@ public class DefineCompetencies extends OperatorActionSupport {
 				competency.setOperator(operator);
 			}
 
+			competency.setAuditColumns(permissions);
+			operatorCompetencyDAO.save(competency);
+
 			if (courseType != null) {
 				OperatorCompetencyCourse course = getOperatorCompetencyCourse(competency);
 				course.setAuditColumns(permissions);
@@ -76,9 +79,6 @@ public class DefineCompetencies extends OperatorActionSupport {
 			if (competency.isRequiresDocumentation()) {
 				addToAllEmployees(competency);
 			}
-
-			competency.setAuditColumns(permissions);
-			operatorCompetencyDAO.save(competency);
 		} else {
 			addActionError(getText("DefineCompetencies.NoCompetencySelected"));
 		}
