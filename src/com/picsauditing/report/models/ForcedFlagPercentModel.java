@@ -21,6 +21,7 @@ public class ForcedFlagPercentModel extends AbstractModel {
     public ModelSpec getJoinSpec() {
         ModelSpec spec = new ModelSpec(null, "ForcedFlag");
         ModelSpec opAccount = spec.join(ForcedFlagPercentageView.Operator);
+        opAccount.minimumImportance = FieldImportance.Average;
         opAccount.alias = "ContractorOperatorOperator";
 
         return spec;

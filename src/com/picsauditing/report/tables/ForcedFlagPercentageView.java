@@ -9,8 +9,9 @@ public class ForcedFlagPercentageView extends AbstractTable {
     public static final String Contractor = "Contractor";
 
     public ForcedFlagPercentageView() {
-		super("(SELECT gc.genID AS opID, gc.workStatus, (ROUND(COUNT(DISTINCT CASE WHEN gc.forceFlag IS NOT NULL OR fdo.forceFlag IS NOT NULL THEN gc.`subID` ELSE NULL END)/COUNT(DISTINCT subID)*100,2)) AS percentForced \n" +
+		super("(SELECT gc.genID AS opID, gc.subID as conID, gc.workStatus, (ROUND(COUNT(DISTINCT CASE WHEN gc.forceFlag IS NOT NULL OR fdo.forceFlag IS NOT NULL THEN gc.`subID` ELSE NULL END)/COUNT(DISTINCT subID)*100,2)) AS percentForced \n" +
                 "FROM generalcontractors gc \n" +
+                "JOIN accounts a ON gc.subID = a.id AND a.status = 'Active'\n" +
                 "LEFT JOIN flag_data_override fdo ON fdo.`conID` = gc.`subID` AND fdo.`opID` = gc.`genID` \n" +
                 "GROUP BY gc.genID)");
 
