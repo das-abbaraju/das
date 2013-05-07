@@ -496,6 +496,8 @@ public final class MenuBuilder {
 				"Reference!navigationMenu.action", "navigation_menu");
 		referenceMenu.addChild("Dynamic Reports",
 				"Reference!dynamicReport.action", "dynamic_report");
+		referenceMenu.addChild("Reports Manager",
+				"Reference!reportsManager.action", "reports_manager");
 		/*
 		 * referenceMenu.addChild("Navigation Restructure",
 		 * "Reference!navigationRestructure.action", "navigation_restructure");
