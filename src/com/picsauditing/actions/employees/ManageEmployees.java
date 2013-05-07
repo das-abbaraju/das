@@ -1,20 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.json.simple.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.Grepper;
@@ -25,31 +10,16 @@ import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AssessmentResult;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.EmployeeQualification;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.JobContractor;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.JobSiteTask;
-import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTagCategory;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 import com.picsauditing.validator.InputValidator;
+import org.json.simple.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {
@@ -518,7 +488,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public boolean isHseOperator(OperatorAccount operator) {
-		return operator != null && operator.isRequiresCompetencyReview() && operatorHasHSECompetencyTag(operator);
+		boolean hseOperator = false;
+		if (operator != null && operator.isRequiresCompetencyReview()) {
+			if (operatorHasHSECompetencyTag(operator)) {
+				hseOperator = true;
+			}
+
+			if (operatorHasRequiredCompetencies(operator)) {
+				hseOperator = true;
+			}
+		}
+
+		return hseOperator;
 	}
 
 	// Notes
@@ -620,6 +601,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 	}
 
+	private boolean operatorHasRequiredCompetencies(OperatorAccount operator) {
+		for (OperatorCompetency operatorCompetency : operator.getCompetencies()) {
+			if (operatorCompetency.isRequiresDocumentation()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void loadActiveEmployees() {
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 	}
@@ -676,7 +667,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 					if ((os.getSite() != null && used.getJobSite() != null && used.getJobSite().equals(os.getSite()))
 							|| (os.getSite() == null && used.getJobSite() == null && os.getOperator().equals(
-									used.getOperator())))
+							used.getOperator())))
 						iterator.remove();
 				}
 			}

@@ -1,15 +1,12 @@
 package com.picsauditing.actions.employees;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.picsauditing.dao.EmployeeSiteDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.EmployeeSiteDAO;
-import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.util.Strings;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ManageEmployeeSite extends ManageEmployees {
@@ -32,6 +29,8 @@ public class ManageEmployeeSite extends ManageEmployees {
 				employeeSite.setOperator(jobSite.getOperator());
 			}
 
+			addCompetenciesIfRequiredByOperator(employeeSite.getOperator());
+
 			employeeSite.setAuditColumns(permissions);
 			employeeSite.defaultDates();
 
@@ -52,6 +51,28 @@ public class ManageEmployeeSite extends ManageEmployees {
 		}
 
 		return SUCCESS;
+	}
+
+	private void addCompetenciesIfRequiredByOperator(OperatorAccount operator) {
+		for (OperatorCompetency operatorCompetency : operator.getCompetencies()) {
+			if (operatorCompetency.isRequiresDocumentation()) {
+				boolean found = false;
+				for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+					if (employeeCompetency.getCompetency().equals(operatorCompetency)) {
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					EmployeeCompetency employeeCompetency = new EmployeeCompetency();
+					employeeCompetency.setCompetency(operatorCompetency);
+					employeeCompetency.setEmployee(employee);
+					employeeCompetency.setAuditColumns(permissions);
+					employeeDAO.save(employeeCompetency);
+				}
+			}
+		}
 	}
 
 	public String addNew() {
