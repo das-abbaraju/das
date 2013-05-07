@@ -136,7 +136,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	// "com.picsauditing.jpa.entities.UserStatus") })
 	@Enumerated(EnumType.STRING)
     //TODO Add UserStatus DR FieldType
-    @ReportField(type = FieldType.String)
+    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public UserStatus getStatus() {
 		return status;
 	}

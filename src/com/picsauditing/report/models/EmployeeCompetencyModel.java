@@ -12,8 +12,15 @@ public class EmployeeCompetencyModel extends AbstractModel {
         ModelSpec empComp = new ModelSpec(null, "EmployeeCompetency");
 
         empComp.join(EmployeeCompetencyTable.Competency);
-        ModelSpec emp = empComp.join(EmployeeCompetencyTable.Employee);
-        emp.join(EmployeeTable.Account);
+        ModelSpec employee = empComp.join(EmployeeCompetencyTable.Employee);
+        ModelSpec contractor = employee.join(EmployeeTable.Account);
+
+        if (permissions.isOperatorCorporate()) {
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
+            flag.alias = "ContractorOperator";
+            flag.minimumImportance = FieldImportance.Average;
+            flag.category = FieldCategory.AccountInformation;
+        }
 
         return empComp;
     }
