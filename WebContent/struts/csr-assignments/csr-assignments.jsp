@@ -2,11 +2,26 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:url action="ManageRecommendedCSRAssignments" method="save" var="save_approved" />
+<s:url action="Report" var="report">
+    <s:param name="report" value="107" />
+</s:url>
 
-<s:form action="%{#save_approved}" name="save_approved_form" id="save_approved_form">
-    <input type="hidden" value="" name="acceptRecommendations" id="accepted" />
-    <input type="hidden" value="" name="rejectRecommendations" id="rejected" />
-    <button class="btn btn-primary" id="save_assignments" type="submit">Save</button>
+<div class="row">
+    <div class="span6">
+        <s:include value="/struts/layout/_page-header.jsp">
+            <s:param name="title">Recommended CSR Assignments</s:param>
+            <s:param name="subtitle"><i class="icon-external-link"></i><a href="${report}">Open Report</a></s:param>    
+        </s:include>
+    </div>
+    <div class="span4 offset2 apply-actions">
+        <s:set name="totalRecords" value="queryResults.size()"/>
+        <span><span id="selected_records">${totalRecords}</span> of ${totalRecords} Records Selected</span>
+        <button class="btn btn-primary btn-large" id="apply_selected_assignments">Apply Accepted</button>
+    </div>
+</div>
+
+<form action="${save_approved}" name="save_approved_csr" id="save_approved_csr" method="post">
+    <input type="hidden" value="" name="acceptRecommendations" id="acceptedCSR" />
 
 	<table class="table table-striped" id="csr_assignments">
 	    <thead>
@@ -15,23 +30,22 @@
 	            <th class="value">Contractor Name</th>
 	            <th class="actions">Current CSR</th>
 	            <th class="actions">Recommended CSR</th>
-	            <th class="actions">Action</th>
+	            <th class="actions"><input id="accept_all" type="checkbox" checked="checked" />Accept</th>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <s:iterator value="queryResults" var="row">
-	            <tr>
+                <tr>
 	                <td class="account_id">${row.get("AccountID")}</td>
 	                <td>${row.get("AccountName")}</td>
 	                <td>${row.get("ContractorCustomerServiceUserName")}</td>
 	                <td>${row.get("ContractorRecommendedCSRName")}</td>
 	                <td>
-	                    <div id="text-toggle-button" class="accept button">
-	                        <input type="checkbox" class="status" checked="checked" />
-	                    </div>
+                        <input type="checkbox" class="accept-recommended" checked="checked" value="${row.get("AccountID")}" />
 	                </td>
 	            </tr>
 	        </s:iterator>
 	    </tbody>
 	</table>
-</s:form>
+    <input type="submit"/>
+</form>

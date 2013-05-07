@@ -1,0 +1,49 @@
+.ManageRecommendedCSRAssignments-page
+{
+    th
+    {
+        background-color: #454545;
+        color: #cccccc;
+    }
+    
+    td
+    {
+        border: 1px solid #cccccc;
+    }
+    
+    input[type='checkbox']
+    {
+        margin-top: 0px;
+    }
+
+    .icon-external-link
+    {
+        color: $pics_link_blue;
+        margin-right: 5px;
+    }
+    
+    .apply-actions
+    {
+        line-height:60px;
+        margin-bottom:20px; 
+        margin-top:20px; 
+        text-align:right;  
+    }
+    
+    #apply_selected_assignments
+    {
+        margin-left:15px;
+    }
+    
+    #accept_all
+    {
+        margin-right: 5px;
+    }
+
+    //bootstrap override
+    .table-striped tbody > tr:nth-child(odd) > td,
+    .table-striped tbody > tr:nth-child(odd) > th
+    {
+      background-color: $pics_cool_grey;
+    }
+}
