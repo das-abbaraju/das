@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `operator_competency_employee_file` (
   `employeeID`   INT(11)     NOT NULL,
   `fileName`     VARCHAR(50) NOT NULL,
   `fileType`     VARCHAR(10) NOT NULL,
-  `fileImage`    BLOB        NOT NULL,
+  `fileImage`    LONGBLOB    NOT NULL,
   `expiration`   DATE        NOT NULL,
   `createdBy`    INT(11)     NOT NULL,
   `updatedBy`    INT(11)     NULL DEFAULT NULL,
