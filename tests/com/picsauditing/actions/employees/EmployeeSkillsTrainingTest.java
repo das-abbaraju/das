@@ -145,4 +145,30 @@ public class EmployeeSkillsTrainingTest {
 			assertEquals(employeeFile, map.get(key).get(0));
 		}
 	}
+
+	@Test
+	public void testDownload_WithoutEmployeeFile() {
+		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
+		assertTrue(employeeSkillsTraining.hasActionErrors());
+		assertNull(employeeSkillsTraining.getFileContainer());
+	}
+
+	@Test
+	public void testDownload_WithEmployeeFile() {
+		when(employeeFile.getFileName()).thenReturn("filename.file");
+		when(employeeFile.getFileContent()).thenReturn("Hello World".getBytes());
+
+		employeeSkillsTraining.setEmployeeFile(employeeFile);
+		assertEquals(PicsActionSupport.FILE_DOWNLOAD, employeeSkillsTraining.download());
+		assertFalse(employeeSkillsTraining.hasActionErrors());
+		assertNotNull(employeeSkillsTraining.getFileContainer());
+	}
+
+	@Test
+	public void testDownload_WithInvalidEmployeeFile() {
+		employeeSkillsTraining.setEmployeeFile(employeeFile);
+		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
+		assertTrue(employeeSkillsTraining.hasActionErrors());
+		assertNull(employeeSkillsTraining.getFileContainer());
+	}
 }

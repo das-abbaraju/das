@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.URLUtils;
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,8 +39,6 @@ public class EmployeeDocumentationFileUploadTest {
 	private Employee employee;
 	@Mock
 	private EmployeeDAO employeeDAO;
-	@Mock
-	private File file;
 	@Mock
 	private OperatorCompetency operatorCompetency;
 	@Mock
@@ -123,12 +124,17 @@ public class EmployeeDocumentationFileUploadTest {
 	}
 
 	@Test
-	public void testSave() throws Exception {
+	public void testSave_Happy() throws Exception {
 		ArgumentCaptor<OperatorCompetencyEmployeeFile> fileCaptor = ArgumentCaptor.forClass(OperatorCompetencyEmployeeFile.class);
 		List<OperatorCompetencyEmployeeFile> files = new ArrayList<>();
 		when(employee.getCompetencyFiles()).thenReturn(files);
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyObject())).thenReturn("/EmployeeSkillsTraining");
 
-		assertEquals(PicsActionSupport.SUCCESS, employeeDocumentationFileUpload.save());
+		File file = new File("tmp");
+		FileUtils.writeByteArrayToFile(file, "Hello World".getBytes());
+
+		employeeDocumentationFileUpload.setFile(file);
+		assertEquals(PicsActionSupport.REDIRECT, employeeDocumentationFileUpload.save());
 		verify(employeeDAO).save(fileCaptor.capture());
 
 		assertFalse(employeeDocumentationFileUpload.hasActionErrors());
@@ -139,5 +145,7 @@ public class EmployeeDocumentationFileUploadTest {
 		assertEquals("filename.file", fileCaptor.getValue().getFileName());
 		assertEquals("FILE", fileCaptor.getValue().getFileType());
 		assertFalse(files.isEmpty());
+
+		file.delete();
 	}
 }

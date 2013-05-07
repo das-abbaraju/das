@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import org.apache.commons.io.FileUtils;
+
 import javax.persistence.*;
+import java.io.File;
 import java.util.Date;
 
 @Entity

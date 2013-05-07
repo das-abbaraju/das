@@ -6,7 +6,10 @@ import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.util.Strings;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,7 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 	public static final String EXPIRED = "EmployeeSkillsTraining.Expired";
 
 	private Employee employee;
+	private OperatorCompetencyEmployeeFile employeeFile;
 
 	private List<OperatorCompetency> competenciesMissingDocumentation;
 	private Map<String, List<OperatorCompetencyEmployeeFile>> filesByStatus;
@@ -30,12 +34,33 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public String download() {
+		if (employeeFile == null || Strings.isEmpty(employeeFile.getFileName()) || employeeFile.getFileContent() == null) {
+			addActionError(getText("EmployeeSkillsTraining.MissingFile"));
+			return SUCCESS;
+		} else {
+			fileContainer = new FileDownloadContainer.Builder()
+					.contentType("text/csv")
+					.contentDisposition("attachment; filename=" + employeeFile.getFileName())
+					.fileInputStream(new ByteArrayInputStream(employeeFile.getFileContent())).build();
+			return FILE_DOWNLOAD;
+		}
+	}
+
 	public Employee getEmployee() {
 		return employee;
 	}
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
+	}
+
+	public OperatorCompetencyEmployeeFile getEmployeeFile() {
+		return employeeFile;
+	}
+
+	public void setEmployeeFile(OperatorCompetencyEmployeeFile employeeFile) {
+		this.employeeFile = employeeFile;
 	}
 
 	public List<OperatorCompetency> getCompetenciesMissingDocumentation() {

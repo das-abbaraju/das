@@ -53,18 +53,12 @@ public class EmployeeDocumentationFileUpload extends PicsActionSupport {
 		}
 	}
 
-	private String getFileExtension(String fileFileName) {
-		int extensionStart = fileFileName.lastIndexOf(".");
-		String extension = fileFileName.substring(extensionStart + 1);
-		return extension.toUpperCase();
-	}
-
 	private void saveEmployeeFile() throws Exception {
 		OperatorCompetencyEmployeeFile employeeFile = new OperatorCompetencyEmployeeFile();
 		employeeFile.setCompetency(competency);
 		employeeFile.setEmployee(employee);
 		employeeFile.setFileName(fileFileName);
-		employeeFile.setFileType(getFileExtension(fileFileName));
+		employeeFile.setFileType(com.picsauditing.util.FileUtils.getExtension(fileFileName).toUpperCase());
 		employeeFile.setFileContent(FileUtils.readFileToByteArray(file));
 		employeeFile.setExpiration(expiration);
 		employeeFile.setAuditColumns(permissions);
