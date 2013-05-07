@@ -348,11 +348,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
 		saveRequiredFieldsAndSaveEntities();
 
-		if (RequestContactType.DECLINED == contactType) {
+		if (contactType == RequestContactType.DECLINED) {
 			contractor.setStatus(AccountStatus.Declined);
 			contractor.setReason(contactNote);
-		} else {
-			contractor.setStatus(AccountStatus.Requested);
 		}
 
 		if (newRequest) {
