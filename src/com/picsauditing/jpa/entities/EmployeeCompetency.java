@@ -49,7 +49,7 @@ public class EmployeeCompetency extends BaseTable {
 		if (competency.isRequiresDocumentation()) {
 			boolean found = false;
 			for (OperatorCompetencyEmployeeFile employeeFile : employee.getCompetencyFiles()) {
-				if (employeeFile.getCompetency().equals(competency)) {
+				if (employeeFile.getCompetency().equals(competency) && !employeeFile.isExpired()) {
 					found = true;
 				}
 			}

@@ -14,6 +14,7 @@
 	</title>
 	<style type="text/css">
 		table.table {
+			margin-bottom: 2em;
 			width: auto;
 		}
 

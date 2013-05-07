@@ -438,8 +438,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	public OperatorCompetencyEmployeeFileStatus getFileStatusForCompetency(OperatorCompetency operatorCompetency) {
 		OperatorCompetencyEmployeeFileStatus fileStatus = OperatorCompetencyEmployeeFileStatus.NEEDED;
 
-		for (OperatorCompetencyEmployeeFile competencyEmployeeFile : getCompetencyFiles()) {
-			if (competencyEmployeeFile.getCompetency().equals(operatorCompetency)) {
+		for (OperatorCompetencyEmployeeFile employeeFile : getCompetencyFiles()) {
+			if (employeeFile.getCompetency().equals(operatorCompetency) && !employeeFile.isExpired()) {
 				fileStatus = OperatorCompetencyEmployeeFileStatus.PROVIDED;
 			}
 		}
