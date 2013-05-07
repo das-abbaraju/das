@@ -70,31 +70,78 @@ public class FirstTimeUserInterceptorTest {
     }
 
     @Test
-    public void testRedirectUserToTutorial_NullPermissions() throws Exception {
-        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "redirectUserToTutorial",
+    public void testShouldRedirectToV7NavigationTutorial_NullPermissions() throws Exception {
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToV7NavigationTutorial",
                 (Permissions) null);
         assertFalse(result);
     }
 
     @Test
-    public void testRedirectUserToTutorial_AlreadyUsedDynamicReports() throws Exception {
+    public void testShouldRedirectToV7NavigationTutorial_AlreadyUsedDynamicReports() throws Exception {
         when(permissions.isLoggedIn()).thenReturn(true);
         when(permissions.isUsingVersion7Menus()).thenReturn(true);
         when(permissions.getUsingVersion7MenusDate()).thenReturn(new Date());
 
-        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "redirectUserToTutorial",
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToV7NavigationTutorial",
                 permissions);
 
         assertFalse(result);
     }
 
     @Test
-    public void testRedirectUserToTutorial_FirstTimeUser() throws Exception {
+    public void testShouldRedirectToV7NavigationTutorial_FirstTimeUser() throws Exception {
         when(permissions.isLoggedIn()).thenReturn(true);
         when(permissions.isUsingVersion7Menus()).thenReturn(true);
         when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
 
-        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "redirectUserToTutorial",
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToV7NavigationTutorial",
+                permissions);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIntercept_reportsManagerTutorial_RedirectForFirstTimeUser() throws Exception {
+        when(permissions.isLoggedIn()).thenReturn(true);
+        when(permissions.isUsingVersion7Menus()).thenReturn(false);
+        when(permissions.isDynamicReportsUser()).thenReturn(true);
+        when(permissions.getReportsManagerTutorialDate()).thenReturn(null);
+
+        when(session.get("permissions")).thenReturn(permissions);
+
+        String result = firstTimeUserInterceptor.intercept(invocation);
+
+        assertEquals("redirect", result);
+    }
+
+    @Test
+    public void testShouldRedirectToReportsManagerTutorial_NullPermissions() throws Exception {
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToReportsManagerTutorial",
+                (Permissions) null);
+        assertFalse(result);
+    }
+
+    @Test
+    public void testShouldRedirectToReportsManagerTutorial_notFirstVisit() throws Exception {
+        when(permissions.isLoggedIn()).thenReturn(true);
+        when(permissions.isUsingVersion7Menus()).thenReturn(false);
+        when(permissions.isDynamicReportsUser()).thenReturn(true);
+        when(permissions.getReportsManagerTutorialDate()).thenReturn(new Date());
+
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToReportsManagerTutorial",
+                permissions);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testShouldRedirectToReportsManagerTutorial_FirstTimeUser() throws Exception {
+	    when(permissions.isLoggedIn()).thenReturn(true);
+	    when(permissions.isUsingVersion7Menus()).thenReturn(false);
+	    when(permissions.isDynamicReportsUser()).thenReturn(true);
+	    when(permissions.getReportsManagerTutorialDate()).thenReturn(null);
+
+        Boolean result = Whitebox.invokeMethod(firstTimeUserInterceptor, "shouldRedirectToReportsManagerTutorial",
                 permissions);
 
         assertTrue(result);

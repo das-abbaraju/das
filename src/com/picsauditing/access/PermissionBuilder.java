@@ -48,6 +48,8 @@ public class PermissionBuilder {
 	private void populatePermissionsWithUserInfo(Permissions permissions, User user) {
 		permissions.setUsingVersion7Menus(user.isUsingVersion7Menus());
 		permissions.setUsingVersion7MenusDate(user.getUsingVersion7MenusDate());
+		permissions.setDynamicReportsUser(user.isDynamicReportsUser());
+		permissions.setReportsManagerTutorialDate(user.getReportsManagerTutorialDate());
 	}
 
 	private boolean useInheritedGroups() {

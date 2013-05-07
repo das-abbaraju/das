@@ -7,17 +7,13 @@ import com.picsauditing.access.Permissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * This Interceptor was built to intercept any request from a first-time Dynamic
- * Report user and redirect them to a Tutorial page, but only the first time
- * they logged-in. This could be re-purposed and used for other similar
- * activities.
- */
 public class FirstTimeUserInterceptor extends AbstractInterceptor {
 
 	private static final long serialVersionUID = -8713997040045564789L;
 
 	private static final Logger logger = LoggerFactory.getLogger(FirstTimeUserInterceptor.class);
+	public static final String REFERENCE_NAVIGATION_MENU_ACTION = "Reference!navigationMenu.action";
+	public static final String REFERENCE_REPORTS_MANAGER_ACTION = "Reference!reportsManager.action";
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
@@ -25,24 +21,38 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 			Permissions permissions = (Permissions) ActionContext.getContext().getSession()
 					.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 
-			if (redirectUserToTutorial(permissions)) {
-				invocation.getStack().set("url", "Reference!navigationMenu.action");
+			if (shouldRedirectToV7NavigationTutorial(permissions)) {
+				invocation.getStack().set("url", REFERENCE_NAVIGATION_MENU_ACTION);
+				return "redirect";
+			}
+
+			if (shouldRedirectToReportsManagerTutorial(permissions)) {
+				invocation.getStack().set("url", REFERENCE_REPORTS_MANAGER_ACTION);
 				return "redirect";
 			}
 		} catch (Exception e) {
-			logger.info("Error occured when trying to redirect user to Menu Tutorial", e);
+			logger.info("Error occurred when trying to redirect user to tutorial", e);
 		}
 
 		return invocation.invoke();
 	}
 
-	private boolean redirectUserToTutorial(Permissions permissions) {
+	private boolean shouldRedirectToV7NavigationTutorial(Permissions permissions) {
 		if (permissions == null) {
 			return false;
 		}
 
 		return (permissions.isLoggedIn() && permissions.getUsingVersion7MenusDate() == null && permissions
 				.isUsingVersion7Menus());
+	}
+
+	private boolean shouldRedirectToReportsManagerTutorial(Permissions permissions) {
+		if (permissions == null) {
+			return false;
+		}
+
+		return (permissions.isLoggedIn() && permissions.isDynamicReportsUser()
+				&& permissions.getReportsManagerTutorialDate() == null );
 	}
 
 }
