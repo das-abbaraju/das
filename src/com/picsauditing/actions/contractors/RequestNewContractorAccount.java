@@ -144,7 +144,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 			{
 				put("contractor", contractor.getId());
 
-				int operatorID = requestRelationship.getOperatorAccount().getId();
+				OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
+				int operatorID = (clientSiteAccount != null) ? clientSiteAccount.getId() : 0;
+
 				if (operatorID > 0) {
 					put("requestRelationship.operatorAccount", operatorID);
 				}
@@ -428,8 +430,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void addNote(String additionalNote) {
 		// Save notes to RR note field and a new Note entity
-		addNote(contractor, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, requestRelationship
-				.getOperatorAccount().getId(), null);
+		OperatorAccount clientSiteAccount = requestRelationship.getOperatorAccount();
+		int clientSiteId = (clientSiteAccount != null) ? clientSiteAccount.getId() : 1;
+
+		addNote(contractor, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, clientSiteId, null);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)

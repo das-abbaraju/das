@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.contractors.RequestNewContractorAccount;
+import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,12 @@ public class RequestNewContractorValidator implements Validator {
 		ContractorAccount contractor = (ContractorAccount) valueStack.findValue("contractor");
 
 		AccountStatus status = contractor.getStatus();
-
 		if (status.isDeclined() || status.isDeactivated() || status.isDeleted()) {
+			return;
+		}
+
+		RequestContactType contactType = (RequestContactType) valueStack.findValue("contactType");
+		if (contactType == RequestContactType.DECLINED) {
 			return;
 		}
 
@@ -87,7 +92,6 @@ public class RequestNewContractorValidator implements Validator {
 			addFieldError("requestRelationship.reasonForRegistration", getText("RequestNewContractor.error.EnterRegistrationReason"));
 		}
 
-		RequestNewContractorAccount.RequestContactType contactType = (RequestNewContractorAccount.RequestContactType) valueStack.findValue("contactType");
 		String contactNote = valueStack.findString("contactNote");
 
 		if (contactType != null && StringUtils.isEmpty(contactNote)) {
