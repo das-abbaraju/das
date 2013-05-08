@@ -1,6 +1,8 @@
 package com.picsauditing.actions.employees;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -36,6 +38,8 @@ public class EmployeeSkillsTrainingTest {
 	private OperatorCompetency operatorCompetency;
 	@Mock
 	private OperatorCompetencyEmployeeFile employeeFile;
+	@Mock
+	private Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,6 +48,11 @@ public class EmployeeSkillsTrainingTest {
 
 		employeeSkillsTraining = new EmployeeSkillsTraining();
 		employeeSkillsTraining.setEmployee(employee);
+
+		Whitebox.setInternalState(employeeSkillsTraining, "permissions", permissions);
+
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(true);
 	}
 
 	@AfterClass
@@ -147,14 +156,14 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testDownload_WithoutEmployeeFile() {
+	public void testDownload_WithoutEmployeeFile() throws Exception {
 		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
 		assertTrue(employeeSkillsTraining.hasActionErrors());
 		assertNull(employeeSkillsTraining.getFileContainer());
 	}
 
 	@Test
-	public void testDownload_WithEmployeeFile() {
+	public void testDownload_WithEmployeeFile() throws Exception {
 		when(employeeFile.getFileName()).thenReturn("filename.file");
 		when(employeeFile.getFileContent()).thenReturn("Hello World".getBytes());
 
@@ -165,7 +174,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testDownload_WithInvalidEmployeeFile() {
+	public void testDownload_WithInvalidEmployeeFile() throws Exception {
 		employeeSkillsTraining.setEmployeeFile(employeeFile);
 		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
 		assertTrue(employeeSkillsTraining.hasActionErrors());

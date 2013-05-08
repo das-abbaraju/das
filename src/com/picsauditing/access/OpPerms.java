@@ -143,6 +143,8 @@ public enum OpPerms implements Translatable {
 	DefineCompetencies("Define Competencies", "Allows operators to create compentency requirements for satisfying job roles.", true, true, true, false, true),
 	ManageEmployees("Manage Employees", "Allows Contractors to view or edit their employees.", true, true, true, false, true),
 	EmployeeList("Employee List", "Allows operators and administrators to view the employee list.", true, true, true, false, true),
+	UploadEmployeeDocumentation("Upload Employee Documentation", "Allows operators to upload documentation for " +
+			"employees.", false, true, true, false, true),
 	
 	// Contractor watch
 	ContractorWatch("Contractor Watch", "Allows operators to view the activity of watched contractors.", true, true, true, false, true),

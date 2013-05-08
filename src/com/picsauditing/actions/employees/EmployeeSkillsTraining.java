@@ -1,5 +1,8 @@
 package com.picsauditing.actions.employees;
 
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -27,6 +30,14 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		if (!canViewPage()) {
+			if (permissions.isContractor()) {
+				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
+			} else {
+				throw new NoRightsException(OpPerms.UploadEmployeeDocumentation, OpType.View);
+			}
+		}
+
 		if (employee == null) {
 			throw new RecordNotFoundException("Employee");
 		}
@@ -34,7 +45,21 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String download() {
+	private boolean canViewPage() {
+		return permissions.isOperator() && permissions.has(OpPerms.UploadEmployeeDocumentation)
+				|| permissions.isContractor() && permissions.has(OpPerms.ContractorSafety)
+				|| permissions.isPicsEmployee();
+	}
+
+	public String download() throws Exception {
+		if (!canViewPage()) {
+			if (permissions.isContractor()) {
+				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
+			} else {
+				throw new NoRightsException(OpPerms.UploadEmployeeDocumentation, OpType.View);
+			}
+		}
+
 		if (employeeFile == null || Strings.isEmpty(employeeFile.getFileName()) || employeeFile.getFileContent() == null) {
 			addActionError(getText("EmployeeSkillsTraining.MissingFile"));
 			return SUCCESS;
