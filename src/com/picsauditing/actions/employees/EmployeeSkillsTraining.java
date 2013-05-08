@@ -30,14 +30,6 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (!canViewPage()) {
-			if (permissions.isContractor()) {
-				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
-			} else {
-				throw new NoRightsException(OpPerms.UploadEmployeeDocumentation, OpType.View);
-			}
-		}
-
 		if (employee == null) {
 			throw new RecordNotFoundException("Employee");
 		}
@@ -45,14 +37,14 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private boolean canViewPage() {
-		return permissions.isOperator() && permissions.has(OpPerms.UploadEmployeeDocumentation)
+	public boolean isCanAccessDocumentation() {
+		return permissions.isOperatorCorporate() && permissions.has(OpPerms.UploadEmployeeDocumentation)
 				|| permissions.isContractor() && permissions.has(OpPerms.ContractorSafety)
 				|| permissions.isPicsEmployee();
 	}
 
 	public String download() throws Exception {
-		if (!canViewPage()) {
+		if (!isCanAccessDocumentation()) {
 			if (permissions.isContractor()) {
 				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
 			} else {

@@ -72,6 +72,40 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
+	public void testIsCanAccessDocumentation_ContractorNotSafety() {
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(false);
+		assertFalse(employeeSkillsTraining.isCanAccessDocumentation());
+	}
+
+	@Test
+	public void testIsCanAccessDocumentation_OperatorUploadDocumentation() {
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(false);
+		when(permissions.has(OpPerms.UploadEmployeeDocumentation)).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		assertTrue(employeeSkillsTraining.isCanAccessDocumentation());
+	}
+
+	@Test
+	public void testIsCanAccessDocumentation_OperatorNoUploadDocumentation() {
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(false);
+		when(permissions.has(OpPerms.UploadEmployeeDocumentation)).thenReturn(false);
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		assertFalse(employeeSkillsTraining.isCanAccessDocumentation());
+	}
+
+	@Test
+	public void testIsCanAccessDocumentation_PicsEmployee() {
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(false);
+		when(permissions.has(OpPerms.UploadEmployeeDocumentation)).thenReturn(false);
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isOperatorCorporate()).thenReturn(false);
+		when(permissions.isPicsEmployee()).thenReturn(true);
+		assertTrue(employeeSkillsTraining.isCanAccessDocumentation());
+	}
+
+	@Test
 	public void testGetCompetenciesMissingDocumentation_NoEmployeeCompetenciesMeansNoneMissing() throws Exception {
 		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency>emptyList());
 
