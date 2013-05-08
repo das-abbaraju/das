@@ -53,8 +53,9 @@ public class OperatorAccount extends Account {
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
 	public static final int SUNOCO = 27406;
+    public static final int TESORO = 1436;
 
-	private OperatorAccount parent;
+    private OperatorAccount parent;
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;

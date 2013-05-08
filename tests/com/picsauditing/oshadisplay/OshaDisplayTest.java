@@ -206,7 +206,7 @@ public class OshaDisplayTest {
 			if ("TrirAbsolute".equals(row.getTitle())) {
 				assertEquals("1.2", row.getCells().get(4));
 			} else if ("LwcrAbsolute".equals(row.getTitle())) {
-				assertEquals("", row.getCells().get(4));
+				assertEquals("4.0", row.getCells().get(4));
 			}
 		}
 
