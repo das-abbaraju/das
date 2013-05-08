@@ -1,15 +1,18 @@
 package com.picsauditing.actions.employees;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +26,14 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class EmployeeSkillsTrainingTest {
 	private EmployeeSkillsTraining employeeSkillsTraining;
 
+	@Mock
+	private BasicDAO basicDAO;
 	@Mock
 	private Database databaseForTesting;
 	@Mock
@@ -40,6 +46,8 @@ public class EmployeeSkillsTrainingTest {
 	private OperatorCompetencyEmployeeFile employeeFile;
 	@Mock
 	private Permissions permissions;
+	@Mock
+	private URLUtils urlUtils;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,8 +57,12 @@ public class EmployeeSkillsTrainingTest {
 		employeeSkillsTraining = new EmployeeSkillsTraining();
 		employeeSkillsTraining.setEmployee(employee);
 
+		Whitebox.setInternalState(employeeSkillsTraining, "dao", basicDAO);
 		Whitebox.setInternalState(employeeSkillsTraining, "permissions", permissions);
+		Whitebox.setInternalState(employeeSkillsTraining, "urlUtils", urlUtils);
 
+		when(employeeFile.getCompetency()).thenReturn(operatorCompetency);
+		when(employeeFile.getEmployee()).thenReturn(employee);
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(true);
 	}
@@ -106,7 +118,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetCompetenciesMissingDocumentation_NoEmployeeCompetenciesMeansNoneMissing() throws Exception {
+	public void testGetCompetenciesMissingDocumentation_NoEmployeeCompetenciesMeansNoneMissing() throws NoRightsException {
 		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency>emptyList());
 
 		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining.getCompetenciesMissingDocumentation();
@@ -115,7 +127,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetCompetenciesMissingDocumentation_AllCompetenciesHaveDocumentation() throws Exception {
+	public void testGetCompetenciesMissingDocumentation_AllCompetenciesHaveDocumentation() throws NoRightsException {
 		List<EmployeeCompetency> competencies = new ArrayList<>();
 		competencies.add(employeeCompetency);
 
@@ -128,7 +140,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetCompetenciesMissingDocumentation_NoCompetenciesHaveDocumentation() throws Exception {
+	public void testGetCompetenciesMissingDocumentation_NoCompetenciesHaveDocumentation() throws NoRightsException {
 		List<EmployeeCompetency> competencies = new ArrayList<>();
 		competencies.add(employeeCompetency);
 
@@ -143,7 +155,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetFilesByStatus_NoCompetencyFilesEmptyMap() throws Exception {
+	public void testGetFilesByStatus_NoCompetencyFilesEmptyMap() throws NoRightsException {
 		when(employee.getCompetencyFiles()).thenReturn(Collections.<OperatorCompetencyEmployeeFile>emptyList());
 
 		Map<String, List<OperatorCompetencyEmployeeFile>> map = employeeSkillsTraining.getFilesByStatus();
@@ -152,7 +164,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetFilesByStatus_FileIsCurrentAndContainedInCurrent() throws Exception {
+	public void testGetFilesByStatus_FileIsCurrentAndContainedInCurrent() throws NoRightsException {
 		List<OperatorCompetencyEmployeeFile> files = new ArrayList<>();
 		files.add(employeeFile);
 
@@ -171,7 +183,7 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetFilesByStatus_FileIsNotCurrentAndContainedInExpired() throws Exception {
+	public void testGetFilesByStatus_FileIsNotCurrentAndContainedInExpired() throws NoRightsException {
 		List<OperatorCompetencyEmployeeFile> files = new ArrayList<>();
 		files.add(employeeFile);
 
@@ -190,14 +202,14 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testDownload_WithoutEmployeeFile() throws Exception {
+	public void testDownload_WithoutEmployeeFile() throws NoRightsException {
 		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
 		assertTrue(employeeSkillsTraining.hasActionErrors());
 		assertNull(employeeSkillsTraining.getFileContainer());
 	}
 
 	@Test
-	public void testDownload_WithEmployeeFile() throws Exception {
+	public void testDownload_WithEmployeeFile() throws NoRightsException {
 		when(employeeFile.getFileName()).thenReturn("filename.file");
 		when(employeeFile.getFileContent()).thenReturn("Hello World".getBytes());
 
@@ -208,10 +220,43 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testDownload_WithInvalidEmployeeFile() throws Exception {
+	public void testDownload_WithInvalidEmployeeFile() throws NoRightsException {
 		employeeSkillsTraining.setEmployeeFile(employeeFile);
 		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.download());
 		assertTrue(employeeSkillsTraining.hasActionErrors());
 		assertNull(employeeSkillsTraining.getFileContainer());
+	}
+
+	@Test
+	public void testDelete_WithoutEmployeeFile() throws Exception {
+		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.delete());
+		assertTrue(employeeSkillsTraining.hasActionErrors());
+		assertFalse(employeeSkillsTraining.hasActionMessages());
+
+		verify(basicDAO, never()).remove(any(OperatorCompetencyEmployeeFile.class));
+	}
+
+	@Test
+	public void testDelete_WithEmployeeFile() throws Exception {
+		when(employeeFile.getFileName()).thenReturn("filename.file");
+		when(employeeFile.getFileContent()).thenReturn("Hello World".getBytes());
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyObject())).thenReturn("/EmployeeSkillsTraining");
+
+		employeeSkillsTraining.setEmployeeFile(employeeFile);
+		assertEquals(PicsActionSupport.REDIRECT, employeeSkillsTraining.delete());
+		assertFalse(employeeSkillsTraining.hasActionErrors());
+		assertTrue(employeeSkillsTraining.hasActionMessages());
+
+		verify(basicDAO).remove(any(OperatorCompetencyEmployeeFile.class));
+	}
+
+	@Test
+	public void testDelete_WithInvalidEmployeeFile() throws Exception {
+		employeeSkillsTraining.setEmployeeFile(employeeFile);
+		assertEquals(PicsActionSupport.SUCCESS, employeeSkillsTraining.delete());
+		assertTrue(employeeSkillsTraining.hasActionErrors());
+		assertFalse(employeeSkillsTraining.hasActionMessages());
+
+		verify(basicDAO, never()).remove(any(OperatorCompetencyEmployeeFile.class));
 	}
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "operator_competency_employee_file")
-public class OperatorCompetencyEmployeeFile extends BaseTable {
+public class OperatorCompetencyEmployeeFile extends BaseTable implements Comparable<OperatorCompetencyEmployeeFile> {
 	private OperatorCompetency competency;
 	private Employee employee;
 	private String fileName;
@@ -73,5 +73,19 @@ public class OperatorCompetencyEmployeeFile extends BaseTable {
 	@Transient
 	public boolean isExpired() {
 		return expiration.before(new Date());
+	}
+
+	@Override
+	public int compareTo(OperatorCompetencyEmployeeFile o) {
+		if (this.expiration != null && o.getExpiration() != null && !this.expiration.equals(o.getExpiration())) {
+			// Sort dates descending
+			return this.expiration.compareTo(o.getExpiration()) * -1;
+		}
+
+		if (this.competency != null && o.getCompetency() != null) {
+			return this.competency.getLabel().compareTo(o.getCompetency().getLabel());
+		}
+
+		return 0;
 	}
 }

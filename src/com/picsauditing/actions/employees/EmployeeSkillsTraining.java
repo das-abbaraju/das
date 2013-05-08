@@ -11,12 +11,10 @@ import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class EmployeeSkillsTraining extends PicsActionSupport {
 	public static final String CURRENT = "EmployeeSkillsTraining.Current";
@@ -27,6 +25,8 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 
 	private List<OperatorCompetency> competenciesMissingDocumentation;
 	private Map<String, List<OperatorCompetencyEmployeeFile>> filesByStatus;
+
+	private URLUtils urlUtils;
 
 	@Override
 	public String execute() throws Exception {
@@ -43,16 +43,10 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 				|| permissions.isPicsEmployee();
 	}
 
-	public String download() throws Exception {
-		if (!isCanAccessDocumentation()) {
-			if (permissions.isContractor()) {
-				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
-			} else {
-				throw new NoRightsException(OpPerms.UploadEmployeeDocumentation, OpType.View);
-			}
-		}
+	public String download() throws NoRightsException {
+		throwNoRightsIfNoDocumentAccess();
 
-		if (employeeFile == null || Strings.isEmpty(employeeFile.getFileName()) || employeeFile.getFileContent() == null) {
+		if (employeeFileIsInvalid()) {
 			addActionError(getText("EmployeeSkillsTraining.MissingFile"));
 			return SUCCESS;
 		} else {
@@ -61,6 +55,35 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 					.contentDisposition("attachment; filename=" + employeeFile.getFileName())
 					.fileInputStream(new ByteArrayInputStream(employeeFile.getFileContent())).build();
 			return FILE_DOWNLOAD;
+		}
+	}
+
+	public String delete() throws Exception {
+		if (employeeFileIsInvalid()) {
+			addActionError(getText("EmployeeSkillsTraining.MissingFile"));
+			return SUCCESS;
+		} else {
+			int employeeID = employeeFile.getEmployee().getId();
+			addActionMessage(getTextParameterized("EmployeeSkillsTraining.SuccessfullyDeleted",
+					employeeFile.getFileName(), employeeFile.getCompetency().getLabel(),
+					employeeFile.getEmployee().getDisplayName()));
+			dao.remove(employeeFile);
+
+			return setUrlForRedirect(urlUtils().getActionUrl("EmployeeSkillsTraining", "employee", employeeID));
+		}
+	}
+
+	private boolean employeeFileIsInvalid() {
+		return employeeFile == null || Strings.isEmpty(employeeFile.getFileName()) || employeeFile.getFileContent() == null;
+	}
+
+	private void throwNoRightsIfNoDocumentAccess() throws NoRightsException {
+		if (!isCanAccessDocumentation()) {
+			if (permissions.isContractor()) {
+				throw new NoRightsException(OpPerms.ContractorSafety, OpType.View);
+			} else {
+				throw new NoRightsException(OpPerms.UploadEmployeeDocumentation, OpType.View);
+			}
 		}
 	}
 
@@ -113,8 +136,20 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 					filesByStatus.get(EXPIRED).add(employeeFile);
 				}
 			}
+
+			for (String status : filesByStatus.keySet()) {
+				Collections.sort(filesByStatus.get(status));
+			}
 		}
 
 		return filesByStatus;
+	}
+
+	private URLUtils urlUtils() {
+		if (urlUtils == null) {
+			urlUtils = new URLUtils();
+		}
+
+		return urlUtils;
 	}
 }
