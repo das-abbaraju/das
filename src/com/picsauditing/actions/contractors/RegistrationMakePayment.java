@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class RegistrationMakePayment extends ContractorActionSupport {
+public class RegistrationMakePayment extends RegistrationAction {
 	private static final String DELETE_BUTTON = "Delete";
 	private static final String EMAIL_BUTTON = "email";
 

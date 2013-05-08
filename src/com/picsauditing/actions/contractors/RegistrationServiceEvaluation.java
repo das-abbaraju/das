@@ -17,7 +17,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class RegistrationServiceEvaluation extends ContractorActionSupport {
+public class RegistrationServiceEvaluation extends RegistrationAction {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired

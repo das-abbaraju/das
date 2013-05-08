@@ -29,7 +29,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 @SuppressWarnings({"deprecation", "serial"})
-public class Registration extends ContractorActionSupport implements AjaxValidator {
+public class Registration extends RegistrationAction implements AjaxValidator {
 
 	public static final String DEMO_CONTRACTOR_NAME_MARKER = "^^^";
 	private User user;
@@ -302,19 +302,6 @@ public class Registration extends ContractorActionSupport implements AjaxValidat
 
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
-	}
-
-	public Country getContractorCountry() {
-		if (contractor != null && contractor.getCountry() != null) {
-			return contractor.getCountry();
-		}
-
-		return countryDAO.find(Country.US_ISO_CODE);
-	}
-
-	@Override
-	public String getPicsPhoneNumber() {
-		return getContractorCountry().getPhone();
 	}
 
 	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {

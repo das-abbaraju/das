@@ -21,7 +21,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class RegistrationAddClientSite extends ContractorActionSupport {
+public class RegistrationAddClientSite extends RegistrationAction {
 	@Autowired
 	ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
