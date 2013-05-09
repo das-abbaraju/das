@@ -83,10 +83,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	// Links
 	private URLUtils urlUtil = new URLUtils();
 
+	private ContractorAccount duplicateContractor;
+
 	public enum RequestContactType {
-		EMAIL("RequestNewContractor.button.ContactedByEmail", "User.email"), PHONE(
-				"RequestNewContractor.button.ContactedByPhone", "User.phone"), DECLINED(
-				"ContractorRegistrationRequest.reasonForDecline", "AccountStatus.Declined");
+		EMAIL("RequestNewContractor.button.ContactedByEmail", "User.email"),
+		PHONE("RequestNewContractor.button.ContactedByPhone", "User.phone"),
+		DECLINED("ContractorRegistrationRequest.reasonForDecline", "AccountStatus.Declined");
 
 		private String note;
 		private String button;
@@ -157,6 +159,29 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 	}
 
 	@SkipValidation
+	@RequiredPermission(value = OpPerms.RequestNewContractor)
+	public String resolveDuplicate() {
+		if (duplicateContractor == null) {
+			addFieldError("duplicateContractor", getText("RequestNewContractor.error.DuplicatedContractorId"));
+			return INPUT;
+		}
+
+		ContractorAccount oldContractor = requestRelationship.getContractorAccount();
+
+		contractor = duplicateContractor;
+		primaryContact = duplicateContractor.getPrimaryContact();
+		requestRelationship.setContractorAccount(duplicateContractor);
+		dao.save(requestRelationship);
+
+		oldContractor.setReason("Closed as duplicate of account id:" + duplicateContractor.getId());
+		oldContractor.setName("See duplicate account #" + duplicateContractor.getId());
+		oldContractor.setStatus(AccountStatus.Deleted);
+		dao.save(oldContractor);
+
+		return SUCCESS;
+	}
+
+	@SkipValidation
 	public String emailPreview() throws Exception {
 		email = buildEmail();
 
@@ -222,6 +247,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 
 	public EmailQueue getEmail() {
 		return email;
+	}
+
+	public void setDuplicateContractor(ContractorAccount duplicateContractor) {
+		this.duplicateContractor = duplicateContractor;
 	}
 
 	public boolean isContactable() {

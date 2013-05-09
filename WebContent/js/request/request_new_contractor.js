@@ -15,7 +15,9 @@
                     element.delegate('.check-matches', 'keyup', PICS.debounce(that.checkMatches, 250));
                     element.delegate('.popup-on-match', 'change', this.showMatchModal);
                     element.delegate('.contact-note-required', 'click', this.showContactNote);
-                    
+                    element.delegate('.duplicated-show', 'click', this.showResolvedDuplicate);
+                    element.delegate('.duplicated-hide', 'click', this.hideResolvedDuplicate);
+
                     $('.datepicker').datepicker({
                         changeMonth : true,
                         changeYear : true,
@@ -164,14 +166,29 @@
 
                 $('#contact_note').find('textarea').attr('placeholder', placeholder);
                 $('#contact_note').removeClass('hide');
+
+                $('#duplicated_contractor_id').addClass('hide');
+                $('.duplicated_contractor_button').hide();
             },
-            
+
+            showResolvedDuplicate: function (event) {
+                $('#duplicated_contractor_id').removeClass('hide');
+                $('.duplicated_contractor_button').show();
+
+                $('#contact_note').addClass('hide');
+            },
+
+            hideResolvedDuplicate: function (event) {
+                $('#duplicated_contractor_id').addClass('hide');
+                $('.duplicated_contractor_button').hide();
+            },
+
             showMatchModal: function (event) {
                 var classname = $(this).attr('data-class');
                 var listDiv = $('.match-list.' + classname);
                 var type = $(this).attr('data-type');
                 var term = $(this).val();
-                
+
                 PICS.ajax({
                     url: 'RequestNewContractorSearch.action',
                     data: {
