@@ -175,7 +175,44 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			}
 		});
 
+		addRequiredCompetenciesIfMissing();
+
 		return setUrlForRedirect(url);
+	}
+
+	private void addRequiredCompetenciesIfMissing() {
+		for (EmployeeSite employeeSite : employee.getEmployeeSites()) {
+			OperatorAccount operator = employeeSite.getOperator();
+			if (Strings.isEmpty(operator.getName())) {
+				operator = dao.find(OperatorAccount.class, operator.getId());
+			}
+
+			for (OperatorCompetency operatorCompetency : operator.getCompetencies()) {
+				if (operatorCompetency.isRequiresDocumentation() && employeeMissingCompetency(operatorCompetency)) {
+					addRequiredEmployeeCompetencies(operatorCompetency);
+				}
+			}
+		}
+	}
+
+	private void addRequiredEmployeeCompetencies(OperatorCompetency operatorCompetency) {
+		EmployeeCompetency employeeCompetency = new EmployeeCompetency();
+		employeeCompetency.setEmployee(employee);
+		employeeCompetency.setCompetency(operatorCompetency);
+		employeeCompetency.setAuditColumns(permissions);
+		dao.save(employeeCompetency);
+
+		employee.getEmployeeCompetencies().add(employeeCompetency);
+	}
+
+	private boolean employeeMissingCompetency(OperatorCompetency operatorCompetency) {
+		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+			if (employeeCompetency.getCompetency().equals(operatorCompetency)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public String inactivate() {

@@ -1,20 +1,15 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.employees.ManageEmployees.EmployeeMissingTasks;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.URLUtils;
+import com.picsauditing.validator.InputValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,36 +18,14 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.employees.ManageEmployees.EmployeeMissingTasks;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AssessmentResult;
-import com.picsauditing.jpa.entities.AssessmentTest;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.EmployeeQualification;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.JobContractor;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.JobSiteTask;
-import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTagCategory;
-import com.picsauditing.jpa.entities.UserStatus;
-import com.picsauditing.util.URLUtils;
-import com.picsauditing.validator.InputValidator;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class ManageEmployeesTest extends PicsActionTest {
 	private ManageEmployees manageEmployees;
@@ -151,7 +124,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testFindAccount_ID() {
-		parameters.put("id", new String[] { "123" });
+		parameters.put("id", new String[]{"123"});
 
 		when(contractor.getId()).thenReturn(123);
 		when(entityManager.find(Account.class, 123)).thenReturn(contractor);
@@ -873,7 +846,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 	@Test
 	public void testAddInitialSites_Clients() throws Exception {
 		manageEmployees.setEmployee(employee);
-		manageEmployees.setInitialClients(new int[] { 1 });
+		manageEmployees.setInitialClients(new int[]{1});
 		Whitebox.invokeMethod(manageEmployees, "addInitialSites");
 		verify(entityManager).persist(any(EmployeeSite.class));
 	}
@@ -888,7 +861,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 		when(query.getResultList()).thenReturn(jobSites);
 
 		manageEmployees.setEmployee(employee);
-		manageEmployees.setInitialJobSites(new int[] { 1 });
+		manageEmployees.setInitialJobSites(new int[]{1});
 
 		Whitebox.invokeMethod(manageEmployees, "addInitialSites");
 		verify(entityManager).persist(any(EmployeeSite.class));
@@ -933,6 +906,61 @@ public class ManageEmployeesTest extends PicsActionTest {
 		assertTrue(hasHseTag);
 	}
 
+	@Test
+	public void testAddRequiredCompetenciesIfMissing_CompetencyMissing() throws Exception {
+		List<EmployeeSite> employeeSites = new ArrayList<>();
+		EmployeeSite employeeSite = mock(EmployeeSite.class);
+		employeeSites.add(employeeSite);
+
+		setupOperatorWithRequiredCompetency(employeeSite, true);
+
+		List<EmployeeCompetency> employeeCompetencies = new ArrayList<>();
+		when(employee.getEmployeeCompetencies()).thenReturn(employeeCompetencies);
+		when(employee.getEmployeeSites()).thenReturn(employeeSites);
+		manageEmployees.setEmployee(employee);
+		Whitebox.invokeMethod(manageEmployees, "addRequiredCompetenciesIfMissing");
+
+		assertFalse(employeeCompetencies.isEmpty());
+	}
+
+	@Test
+	public void testAddRequiredCompetenciesIfMissing_CompetencyExists() throws Exception {
+		List<EmployeeSite> employeeSites = new ArrayList<>();
+		EmployeeSite employeeSite = mock(EmployeeSite.class);
+		employeeSites.add(employeeSite);
+
+		OperatorCompetency operatorCompetency = setupOperatorWithRequiredCompetency(employeeSite, true);
+
+		List<EmployeeCompetency> employeeCompetencies = new ArrayList<>();
+		EmployeeCompetency employeeCompetency = mock(EmployeeCompetency.class);
+		employeeCompetencies.add(employeeCompetency);
+		when(employeeCompetency.getCompetency()).thenReturn(operatorCompetency);
+
+		when(employee.getEmployeeCompetencies()).thenReturn(employeeCompetencies);
+		when(employee.getEmployeeSites()).thenReturn(employeeSites);
+		manageEmployees.setEmployee(employee);
+		Whitebox.invokeMethod(manageEmployees, "addRequiredCompetenciesIfMissing");
+
+		assertFalse(employeeCompetencies.isEmpty());
+		// Has not added any
+		assertEquals(1, employeeCompetencies.size());
+	}
+
+	private OperatorCompetency setupOperatorWithRequiredCompetency(EmployeeSite employeeSite,
+																   boolean requiresDocumentation) {
+		OperatorAccount operator = mock(OperatorAccount.class);
+		when(operator.getName()).thenReturn("Test Operator With Required Competencies");
+		when(employeeSite.getOperator()).thenReturn(operator);
+
+		List<OperatorCompetency> operatorCompetencies = new ArrayList<>();
+		OperatorCompetency operatorCompetency = mock(OperatorCompetency.class);
+		operatorCompetencies.add(operatorCompetency);
+		when(operator.getCompetencies()).thenReturn(operatorCompetencies);
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(requiresDocumentation);
+
+		return operatorCompetency;
+	}
+
 	private void setUpEmployeeAndAccount() {
 		when(contractor.isContractor()).thenReturn(true);
 		when(contractor.getType()).thenReturn("Contractor");
@@ -943,6 +971,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 		when(employee.getLastName()).thenReturn("Tester");
 		when(employee.getStatus()).thenReturn(UserStatus.Active);
 		when(employee.getTitle()).thenReturn("Title");
+		// Prepare lists
+		when(employee.getEmployeeSites()).thenReturn(Collections.<EmployeeSite>emptyList());
+		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency>emptyList());
 	}
 
 	private OperatorAccount setUpOperatorAndContractorOperator(boolean enableHse, boolean enableOQ) {
