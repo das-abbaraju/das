@@ -12,9 +12,34 @@
     border: 0;
 }
 
+#primary_navigation [data-toggle=collapse]
+{
+    border: 0;
+    background-color: transparent;
+    display: none;
+    float: right;
+    line-height: 50px;
+}
+
+@media (max-width: 979px) {
+    #primary_navigation {
+        margin-bottom: 0;
+    }
+    
+    #primary_navigation .brand
+    {
+        margin-left: 5px;
+    }
+    
+    #primary_navigation [data-toggle=collapse]
+    {
+        display: block;
+    }
+}
+
 #primary_navigation .nav > li.account > a
 {
-    color: #f1f1f2;
+    color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     background-color: #3f93c0;
     background-image: -moz-linear-gradient(top, #73bbe8, #3f93c0);
@@ -32,18 +57,36 @@
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 
-#primary_navigation .nav > li.account > a:active,
-#primary_navigation .nav > li.account > a:hover
+#primary_navigation .nav > li.account > a:hover,
+#primary_navigation .nav > li.account > a:focus
 {
+    background-color: #3f93c0;
     color: #fff;
+    text-decoration: none;
+    background-position: 0 -15px;
+    -webkit-transition: background-position .1s linear;
+    -moz-transition: background-position .1s linear;
+    -o-transition: background-position .1s linear;
+    transition: background-position .1s linear;
 }
 
-#contractor_menu
+#primary_navigation .nav > li.account > a:active
+{
+    background-color: #3f93c0 \9;
+    background-color: #3f93c0;
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+}
+
+#secondary_navigation
 {
     top: 53px;
 }
 
-#contractor_menu .navbar-inner
+#secondary_navigation .navbar-inner
 {
     background: #333;
     background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#252525),color-stop(100%,#333));
@@ -55,13 +98,30 @@
     border-bottom: 0;
     border-top: 1px solid #020303;
     color: #f1f1f2;
-    height: 29px;
     line-height: 29px;
     min-height: 29px;
-    padding: 0 10px;
+    padding-bottom: 0;
+    padding-top: 0;
 }
 
-#contractor_menu .nav > li > a
+#secondary_navigation [data-toggle=collapse]
+{
+    border: 0;
+    background-color: transparent;
+    color: #f1f1f2;
+    display: none;
+    float: right;
+    line-height: 28px;
+}
+
+@media (max-width: 979px) {
+    #secondary_navigation [data-toggle=collapse]
+    {
+        display: block;
+    }
+}
+
+#secondary_navigation .nav > li > a
 {
     border: 0;
     color: #ccc;
@@ -69,15 +129,15 @@
     text-shadow: none;
 }
 
-#contractor_menu .nav > li > a:active,
-#contractor_menu .nav > li > a:hover
+#secondary_navigation .nav > li > a:hover
 {
     color: #f1f1f2;
+    background-color: #3f93c0;
 }
 
-#contractor_menu .nav li.dropdown.open > .dropdown-toggle,
-#contractor_menu .nav li.dropdown.active > .dropdown-toggle,
-#contractor_menu .nav li.dropdown.open.active > .dropdown-toggle
+#secondary_navigation .nav li.dropdown.open > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.active > .dropdown-toggle,
+#secondary_navigation .nav li.dropdown.open.active > .dropdown-toggle
 {
     color: #f1f1f2;
     background: #252525;
@@ -88,29 +148,18 @@
     background-image: linear-gradient(#000,#252525);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
 }
-
-#contractor_menu .nav > li.company > a
-{
-    padding-left: 0;
-}
-
-#contractor_menu .nav > li.account > a
-{
-    
-}
 </style>
 
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <button type="button" data-toggle="collapse" data-target="#primary_navigation_collapse">
+                <i class="icon-reorder icon-large"></i>
             </button>
             
-            <div class="nav-collapse collapse">
-                <a class="brand" href="/"></a>
+            <a class="brand" href="/"></a>
+            
+            <div id="primary_navigation_collapse" class="nav-collapse collapse">
                 <ul class="nav">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Company</a>
@@ -214,16 +263,14 @@
     </div>
 </div>
 
-<div id="contractor_menu" class="navbar navbar-fixed-top">
+<div id="secondary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <button type="button" data-toggle="collapse" data-target="#secondary_navigation_collapse">
+                <i class="icon-reorder"></i>
             </button>
             
-            <div class="nav-collapse collapse">
+            <div id="secondary_navigation_collapse" class="nav-collapse collapse">
                 <ul class="nav">
                     <li class="dropdown company">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Company</a>
