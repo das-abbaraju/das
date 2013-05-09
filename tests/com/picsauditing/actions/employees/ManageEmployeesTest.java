@@ -949,6 +949,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 	private OperatorCompetency setupOperatorWithRequiredCompetency(EmployeeSite employeeSite,
 																   boolean requiresDocumentation) {
 		OperatorAccount operator = mock(OperatorAccount.class);
+		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
 		when(operator.getName()).thenReturn("Test Operator With Required Competencies");
 		when(employeeSite.getOperator()).thenReturn(operator);
 

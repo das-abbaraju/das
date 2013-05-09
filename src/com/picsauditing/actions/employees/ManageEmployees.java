@@ -189,13 +189,13 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 			for (OperatorCompetency operatorCompetency : operator.getCompetencies()) {
 				if (operatorCompetency.isRequiresDocumentation() && employeeMissingCompetency(operatorCompetency)) {
-					addRequiredEmployeeCompetencies(operatorCompetency);
+					addRequiredEmployeeCompetency(operatorCompetency);
 				}
 			}
 		}
 	}
 
-	private void addRequiredEmployeeCompetencies(OperatorCompetency operatorCompetency) {
+	private void addRequiredEmployeeCompetency(OperatorCompetency operatorCompetency) {
 		EmployeeCompetency employeeCompetency = new EmployeeCompetency();
 		employeeCompetency.setEmployee(employee);
 		employeeCompetency.setCompetency(operatorCompetency);
