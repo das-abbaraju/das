@@ -35,6 +35,11 @@
 		{
 			color: #A84D10 !important;
 		}
+
+		#duplicated_contractor_cancel_button
+		{
+			margin: 0 20px 0 0;
+		}
 	</style>
 </head>
 <body>
@@ -506,15 +511,45 @@
 										</a>
 									</s:else>
 								</s:iterator>
+								<s:if test="contractor.status.requested">
+									<a
+										href="javascript:;"
+										class="picsbutton duplicated-show">
+										<s:text name="RequestNewContractor.Duplicated" />
+									</a>
+								</s:if>
 							</li>
 							<li id="contact_note" class="hide">
 								<textarea name="contactNote" cols="80" rows="3"></textarea>
 							</li>
+
+							<li id="duplicated_contractor_id" class="hide">
+								<s:text name="RequestNewContractor.placeholder.EnterContractorId" var="contractorIdPlaceholder" />
+								<form>
+									<input name="duplicateContractor" type="text" placeholder="${contractorIdPlaceholder}" />
+								</form>
+							</li>
+							<li>
+								<a
+									id="duplicated_contractor_cancel_button"
+									href="javascript:;"
+									class="picsbutton duplicated-hide hide duplicated_contractor_button">
+									<s:text name="RequestNewContractor.button.Cancel" />
+								</a>
+								<s:submit
+									cssClass="picsbutton primary hide duplicated_contractor_button"
+									method="resolveDuplicate"
+									value="%{getText('RequestNewContractor.button.Apply')}"
+								/>
+							</li>
+
+							<s:fielderror fieldName="duplicateContractor" theme="formhelp" />
+
 						</s:if>
 					</ol>
 				</fieldset>
 			</s:if>
-			
+
 			<fieldset class="form submit">
 				<s:submit
 					cssClass="picsbutton positive"
