@@ -33,7 +33,7 @@
         <s:if test="#report.editable">
             <li>
                 <a href="${report_access_url}">
-                    <s:text name="ManageReprots.sharedWith.dropDown.share" />&hellip;
+                    <s:text name="ManageReports.sharedWith.dropDown.share" />&hellip;
                 </a>
             </li>
         </s:if>
