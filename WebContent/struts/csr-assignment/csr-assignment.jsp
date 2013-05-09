@@ -5,6 +5,7 @@
 <s:url action="Report" var="report">
     <s:param name="report" value="107" />
 </s:url>
+<s:set name="totalRecords" value="queryResults.size()"/>
 
 <div class="row">
     <div class="span6">
@@ -13,8 +14,7 @@
             <s:param name="subtitle"><i class="icon-external-link"></i><a href="${report}">Open Report</a></s:param>    
         </s:include>
     </div>
-    <div class="span4 offset2 apply-actions">
-        <s:set name="totalRecords" value="queryResults.size()"/>
+    <div class="span5 offset1 apply-actions">
         <span><span id="selected_records">${totalRecords}</span> of ${totalRecords} Records Selected</span>
         <button class="btn btn-primary btn-large" id="apply_selected_assignments">Apply Accepted</button>
     </div>

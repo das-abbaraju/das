@@ -1168,7 +1168,7 @@
 		</action>
 
 		<action name="ManageRecommendedCSRAssignment" class="com.picsauditing.actions.ManageRecommendedCSRAssignment">
-			<result>struts/csr-assignments/csr-assignment.jsp</result>
+			<result>struts/csr-assignment/csr-assignment.jsp</result>
 		</action>
 
 		<action name="Deactivated" class="com.picsauditing.actions.errors.Deactivated">
