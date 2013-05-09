@@ -41,31 +41,37 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                    </formats>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.7.1</version>
-                <configuration>
-                    <targetJdk>${compileSource}</targetJdk>
-                    <format>xml</format>
-                    <sourceEncoding>utf-8</sourceEncoding>
-                    <minimumTokens>100</minimumTokens>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+    <properties>
+        <spring.version>3.1.1.RELEASE</spring.version>
+        <hibernate.version>4.1.4.Final</hibernate.version>
+        <slf4j.version>1.6.6</slf4j.version>
+        <struts.version>2.3.4.1</struts.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <integrationSourceDirectory>integration_tests</integrationSourceDirectory>
+        <integrationOutputDirectory>target/integration_test-classes</integrationOutputDirectory>
+        <compileSource>1.6</compileSource>
+        <drools.version>5.5.0.Final</drools.version>
+        <!--<jacoco.version>0.6.2.201302030002</jacoco.version>-->
+        <!--<jacoco.version>0.6.1.201212231917</jacoco.version>-->
+        <jacoco.version>0.5.10.201208310627</jacoco.version>
+    </properties>
+
+    <!--<reporting>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.jacoco</groupId>-->
+                <!--<artifactId>jacoco-maven-plugin</artifactId>-->
+                <!--<version>${jacoco.version}</version>-->
+                <!--<reportSets>-->
+                    <!--<reportSet>-->
+                        <!--<reports>-->
+                            <!--<report>report</report>-->
+                        <!--</reports>-->
+                    <!--</reportSet>-->
+                <!--</reportSets>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</reporting>-->
 
     <build>
         <sourceDirectory>src</sourceDirectory>
@@ -177,12 +183,12 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
+                <version>2.14.1</version>
                 <configuration>
                     <additionalClasspathElements>
                         <additionalClasspathElement>tests/</additionalClasspathElement>
                     </additionalClasspathElements>
-                    <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:-UseSplitVerifier</argLine>
+                    <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:-UseSplitVerifier ${argLine}</argLine>
                     <excludes>
                         <exclude>**/*ITest.java</exclude>
                         <exclude>**/I18nCacheThreadTest.java</exclude>
@@ -202,38 +208,67 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.report</artifactId>
+                        <version>${jacoco.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.agent</artifactId>
+                        <version>${jacoco.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                        <version>3.0.10</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.reporting</groupId>
+                        <artifactId>maven-reporting-api</artifactId>
+                        <version>3.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.reporting</groupId>
+                        <artifactId>maven-reporting-impl</artifactId>
+                        <version>2.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-site-renderer</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
-                        <id>site</id>
-                        <phase>pre-site</phase>
+                        <id>jacoco-initialize</id>
                         <goals>
-                            <goal>clean</goal>
+                            <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>instrument</id>
-                        <phase>site</phase>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>instrument</goal>
-                            <goal>cobertura</goal>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>**/*Test.class</exclude>
-                            <exclude>com/picsauditing/quickbooks/**/*.class</exclude>
-                            <exclude>com/picsauditing/actions/imports/**/*.class</exclude>
-                            <exclude>org/nace/webservices/services/*.class</exclude>
-                            <exclude>com/intuit/developer/**/*.class</exclude>
-                            <exclude>com/picsauditing/access/PicsMenu.class</exclude>
-                            <exclude>com/picsauditing/util/Base64.class</exclude>
-                        </excludes>
-                    </instrumentation>
+                    <check></check>
+                    <excludes>
+                        <exclude>**/*Test.class</exclude>
+                        <exclude>com/picsauditing/quickbooks/**/*.class</exclude>
+                        <exclude>com/picsauditing/actions/imports/**/*.class</exclude>
+                        <exclude>org/nace/webservices/services/*.class</exclude>
+                        <exclude>com/intuit/developer/**/*.class</exclude>
+                        <exclude>com/picsauditing/access/PicsMenu.class</exclude>
+                        <exclude>com/picsauditing/util/Base64.class</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -263,18 +298,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <spring.version>3.1.1.RELEASE</spring.version>
-        <hibernate.version>4.1.4.Final</hibernate.version>
-        <slf4j.version>1.6.6</slf4j.version>
-        <struts.version>2.3.4.1</struts.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <integrationSourceDirectory>integration_tests</integrationSourceDirectory>
-        <integrationOutputDirectory>target/integration_test-classes</integrationOutputDirectory>
-        <compileSource>1.6</compileSource>
-        <drools.version>5.5.0.Final</drools.version>
-    </properties>
 
     <dependencies>
         <dependency>
