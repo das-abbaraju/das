@@ -1,5 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
+
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
@@ -33,6 +38,7 @@ public class ContractorFee extends BaseTable {
 
 	@Enumerated(EnumType.STRING)
 	@JoinColumn(name = "feeClass", nullable = false)
+    @ReportField(type = FieldType.FeeClass, category = FieldCategory.Billing, i18nKeyPrefix = "FeeClass", importance = FieldImportance.Average)
 	public FeeClass getFeeClass() {
 		return feeClass;
 	}
@@ -55,6 +61,7 @@ public class ContractorFee extends BaseTable {
 		this.currentAmount = currentAmount;
 	}
 
+    @ReportField(type = FieldType.Float, category = FieldCategory.Billing, importance = FieldImportance.Required)
 	public BigDecimal getCurrentAmount() {
 		return currentAmount;
 	}
@@ -73,6 +80,7 @@ public class ContractorFee extends BaseTable {
 		this.newAmount = newAmount;
 	}
 
+    @ReportField(type = FieldType.Float, category = FieldCategory.Billing, importance = FieldImportance.Required)
 	public BigDecimal getNewAmount() {
 		return newAmount;
 	}

@@ -35,6 +35,8 @@ public class ModelFactory {
 			return new AccountContractorAuditOperatorModel(permissions);
 		if (type.equals(ModelType.ContractorFlagDatas))
 			return new ContractorFlagDataModel(permissions);
+        if (type.equals(ModelType.ContractorFees))
+            return new ContractorFeeModel(permissions);
 		if (type.equals(ModelType.ContractorNumbers))
 			return new ContractorNumberModel(permissions);
         if (type.equals(ModelType.EmployeeCompetencies))

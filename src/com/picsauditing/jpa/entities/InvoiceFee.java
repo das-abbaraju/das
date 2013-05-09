@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -121,7 +122,8 @@ public class InvoiceFee extends BaseTable {
 		this.minFacilities = minFacilities;
 	}
 
-	public int getMaxFacilities() {
+    @ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
+    public int getMaxFacilities() {
 		return maxFacilities;
 	}
 

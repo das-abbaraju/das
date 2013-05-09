@@ -21,6 +21,7 @@ public class ContractorTable extends AbstractTable {
     public static final String Tag = "Tag";
     public static final String ContractorStatistics = "ContractorStatistics";
     public static final String ContractorTrade = "ContractorTrade";
+    public static final String ContractorFee = "ContractorFee";
     public static final String WelcomeCall = "WelcomeCall";
 
     public ContractorTable() {
@@ -100,5 +101,7 @@ public class ContractorTable extends AbstractTable {
 
         addOptionalKey(new ReportForeignKey(FlagCriteriaContractor, new FlagCriteriaContractorTable(),
                 new ReportOnClause("id", "conID")));
+
+        addRequiredKey(new ReportForeignKey(ContractorFee, new ContractorFeeTable(), new ReportOnClause("id", "conID")));
     }
 }
