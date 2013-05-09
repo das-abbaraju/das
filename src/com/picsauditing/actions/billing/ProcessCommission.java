@@ -44,6 +44,27 @@ public class ProcessCommission extends PicsApiSupport {
 		return JSON;
 	}
 
+	@SuppressWarnings("unchecked")
+	@ApiRequired
+	@RequiredPermission(value = OpPerms.SalesCommission)
+	public String processPaymentCommission() {
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("invoice_id", invoiceId);
+
+		try {
+			commissionModel.processPaymentCommissionForInvoice(invoiceId);
+			jsonResponse.put("status", "success");
+		} catch (Exception e) {
+			logger.error("An error occurred while processing the invoice commissions for invoiceId = {}", invoiceId, e);
+			jsonResponse.put("status", "failure");
+			jsonResponse.put("exception_message", e.getMessage());
+		}
+
+		json = jsonResponse;
+
+		return JSON;
+	}
+
 	public void setInvoiceId(int invoiceId) {
 		this.invoiceId = invoiceId;
 	}

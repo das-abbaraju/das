@@ -40,12 +40,24 @@ public class CommissionModel {
 	@Autowired
 	private PaymentCommissionDAO paymentCommissionDAO;
 
-	public void processCommissionForInvoice(int invoiceId) {
+	public void processPaymentCommissionForInvoice(int invoiceId) {
+		Invoice invoice = findInvoice(invoiceId);
+
+		deleteExistingPaymentCommissions(invoiceId);
+		processPaymentCommission(invoice);
+	}
+
+	private Invoice findInvoice(int invoiceId) throws NoResultException {
 		Invoice invoice = invoiceModel.findInvoiceById(invoiceId);
 		if (invoice == null) {
 			// if there is no invoice, no reason to continue
 			throw new NoResultException("Invoice not found.");
 		}
+		return invoice;
+	}
+
+	public void processCommissionForInvoice(int invoiceId) {
+		Invoice invoice = findInvoice(invoiceId);
 
 		deleteExistingPaymentCommissions(invoiceId);
 		deleteExistingInvoiceCommissions(invoiceId);
