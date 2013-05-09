@@ -1531,41 +1531,41 @@ hr {
 }
 
 /* line 4, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page th {
+.ManageRecommendedCSRAssignment-page th {
   background-color: #454545;
   color: #cccccc;
 }
 /* line 10, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page td {
+.ManageRecommendedCSRAssignment-page td {
   border: 1px solid #cccccc;
 }
 /* line 15, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page input[type='checkbox'] {
+.ManageRecommendedCSRAssignment-page input[type='checkbox'] {
   margin-top: 0px;
 }
 /* line 20, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page .icon-external-link {
+.ManageRecommendedCSRAssignment-page .icon-external-link {
   color: #226396;
   margin-right: 5px;
 }
 /* line 26, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page .apply-actions {
+.ManageRecommendedCSRAssignment-page .apply-actions {
   line-height: 60px;
   margin-bottom: 20px;
   margin-top: 20px;
   text-align: right;
 }
 /* line 34, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page #apply_selected_assignments {
+.ManageRecommendedCSRAssignment-page #apply_selected_assignments {
   margin-left: 15px;
 }
 /* line 39, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page #accept_all {
+.ManageRecommendedCSRAssignment-page #accept_all {
   margin-right: 5px;
 }
 /* line 46, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignments-page .table-striped tbody > tr:nth-child(odd) > td,
-.ManageRecommendedCSRAssignments-page .table-striped tbody > tr:nth-child(odd) > th {
+.ManageRecommendedCSRAssignment-page .table-striped tbody > tr:nth-child(odd) > td,
+.ManageRecommendedCSRAssignment-page .table-striped tbody > tr:nth-child(odd) > th {
   background-color: #f1f1f2;
 }
 
