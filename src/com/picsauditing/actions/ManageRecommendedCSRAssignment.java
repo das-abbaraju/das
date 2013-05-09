@@ -24,10 +24,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.ReportSearchResults;
 import com.picsauditing.util.Strings;
 
-public class ManageRecommendedCSRAssignments extends PicsActionSupport {
+public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 	private static final long serialVersionUID = -1613254037742590324L;
 
-    private final Logger logger = LoggerFactory.getLogger(ManageRecommendedCSRAssignments.class);
+    private final Logger logger = LoggerFactory.getLogger(ManageRecommendedCSRAssignment.class);
 
 
 	@Autowired
@@ -59,6 +59,7 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 		JSONObject json = new JSONObject();
 		ReportSearchResults reportSearchResults = reportDao.runQuery(sql.toString());
 		json.put(ReportJson.RESULTS_TOTAL, reportSearchResults.getTotalResultSize());
+
 		queryResults = reportSearchResults.getResults();
 
 		return queryResults;
@@ -75,7 +76,7 @@ public class ManageRecommendedCSRAssignments extends PicsActionSupport {
 			logger.info(numRowsAffected + " changes rejected, ids: " + rejectRecommendations);
 		}
 
-		return this.setUrlForRedirect("ManageRecommendedCSRAssignments.action");
+		return this.setUrlForRedirect("ManageRecommendedCSRAssignment.action");
 	}
 
 	public String startNewRun() {

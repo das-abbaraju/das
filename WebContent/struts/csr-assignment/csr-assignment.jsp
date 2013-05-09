@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:url action="ManageRecommendedCSRAssignments" method="save" var="save_approved" />
+<s:url action="ManageRecommendedCSRAssignment" method="save" var="save_approved" />
 <s:url action="Report" var="report">
     <s:param name="report" value="107" />
 </s:url>
@@ -9,7 +9,7 @@
 <div class="row">
     <div class="span6">
         <s:include value="/struts/layout/_page-header.jsp">
-            <s:param name="title">Recommended CSR Assignments</s:param>
+            <s:param name="title">Recommended CSR Assignment</s:param>
             <s:param name="subtitle"><i class="icon-external-link"></i><a href="${report}">Open Report</a></s:param>    
         </s:include>
     </div>
@@ -47,5 +47,4 @@
 	        </s:iterator>
 	    </tbody>
 	</table>
-    <input type="submit"/>
 </form>

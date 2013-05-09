@@ -1167,8 +1167,8 @@
 			<result>struts/dev/account_timezone_populator.jsp</result>
 		</action>
 
-		<action name="ManageRecommendedCSRAssignments" class="com.picsauditing.actions.ManageRecommendedCSRAssignments">
-			<result>struts/csr-assignments/csr-assignments.jsp</result>
+		<action name="ManageRecommendedCSRAssignment" class="com.picsauditing.actions.ManageRecommendedCSRAssignment">
+			<result>struts/csr-assignments/csr-assignment.jsp</result>
 		</action>
 
 		<action name="Deactivated" class="com.picsauditing.actions.errors.Deactivated">
