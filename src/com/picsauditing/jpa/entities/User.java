@@ -738,7 +738,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 			}
 		}
 
-		return this.name.compareToIgnoreCase(o.getName());
+		return Strings.compareToIgnoreCase(name, o.getName());
 	}
 
 	@Transient

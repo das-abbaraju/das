@@ -576,7 +576,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public List<User> getUserList() {
 		Set<User> primaryContactSet = new TreeSet<User>();
 
-		primaryContactSet.addAll(userDAO.findByAccountID(contractor.getId(), "Yes", "No"));
+		List<User> users = userDAO.findByAccountID(contractor.getId(), "Yes", "No");
+		primaryContactSet.addAll(users);
 
 		// Include users that can switch to groups
 		Set<User> groupSet = new HashSet<User>();
