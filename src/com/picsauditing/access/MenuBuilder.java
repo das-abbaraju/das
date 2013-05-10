@@ -1,7 +1,10 @@
 package com.picsauditing.access;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -260,7 +263,7 @@ public final class MenuBuilder {
 
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
 			manageMenu
-			.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
+					.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
 					"auditor_assignment_matrix");
 		}
@@ -456,17 +459,19 @@ public final class MenuBuilder {
 		}
 
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
-//			legacyMenu.addChild(getText("GraphEmrRates.title"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
+			// legacyMenu.addChild(getText("GraphEmrRates.title"),
+			// "GraphEmrRates.action?years=2010", "GraphEmrRates");
 			legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
-				.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 
 		if (permissions.hasPermission(OpPerms.TRIRReport)) {
-//			legacyMenu.addChild(getText("GraphTrirRates.title"), "GraphTrirRates.action", "GraphTrirRates");
+			// legacyMenu.addChild(getText("GraphTrirRates.title"),
+			// "GraphTrirRates.action", "GraphTrirRates");
 			legacyMenu.addChild(getText("ReportIncidenceRate.title"),
 					"ReportIncidenceRate.action?filter.shaType=OSHA&filter.shaLocation=Corporate",
 					"ReportIncidenceRate");
@@ -492,12 +497,9 @@ public final class MenuBuilder {
 			referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
 		}
 
-		referenceMenu.addChild("Navigation Menu",
-				"Reference!navigationMenu.action", "navigation_menu");
-		referenceMenu.addChild("Dynamic Reports",
-				"Reference!dynamicReport.action", "dynamic_report");
-		referenceMenu.addChild("Reports Manager",
-				"Reference!reportsManager.action", "reports_manager");
+		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
+		referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
+		referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
 		/*
 		 * referenceMenu.addChild("Navigation Restructure",
 		 * "Reference!navigationRestructure.action", "navigation_restructure");
@@ -634,7 +636,8 @@ public final class MenuBuilder {
 	private static MenuComponent buildUniqueFavoritesMenuComponent() {
 		MenuComponent menuComponent = new MenuComponent();
 		menuComponent.setName("Favorites"); // this should be i18n
-		// This should always be in English because the front-end is using it to determine what to replace
+		// This should always be in English because the front-end is using it to
+		// determine what to replace
 		menuComponent.setHtmlId("Favorites");
 		menuComponent.setCssClass("label");
 		return menuComponent;
@@ -653,5 +656,25 @@ public final class MenuBuilder {
 
 		// From user menu
 		menu.addChild("Schedule", "MySchedule.action", "my_schedule");
+	}
+
+	public static String getMibewURL(Locale locale, Permissions permissions) throws UnsupportedEncodingException {
+		String mibew_language_code = i18nCache.getText("Mibew.LanguageCode", locale);
+
+		StringBuilder mibewURL = new StringBuilder();
+		mibewURL.append("https://chat.picsorganizer.com/client.php?");
+		mibewURL.append("locale=");
+		mibewURL.append(URLEncoder.encode(mibew_language_code, "UTF-8"));
+		mibewURL.append("&style=PICS&name=");
+		mibewURL.append(URLEncoder.encode(permissions.getName(), "UTF-8"));
+		mibewURL.append("&accountName=");
+		mibewURL.append(URLEncoder.encode(permissions.getAccountName(), "UTF-8"));
+		mibewURL.append("&accountId=");
+		mibewURL.append(permissions.getAccountId());
+		mibewURL.append("&userId=");
+		mibewURL.append(permissions.getUserId());
+		mibewURL.append("&email=");
+		mibewURL.append(URLEncoder.encode(permissions.getEmail(), "UTF-8"));
+		return mibewURL.toString();
 	}
 }
