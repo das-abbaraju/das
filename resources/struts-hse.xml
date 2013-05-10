@@ -76,5 +76,11 @@
 			<result>struts/employees/documentation_file_upload.jsp</result>
 			<result name="input">struts/employees/documentation_file_upload.jsp</result>
 		</action>
+
+		<action name="ReportEmployeeDocumentation"
+		        class="com.picsauditing.actions.employees.ReportEmployeeDocumentation">
+			<param name="filter.ajax">false</param>
+			<result>struts/employees/report_employee_documentation.jsp</result>
+		</action>
 	</package>
 </struts>
