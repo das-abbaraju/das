@@ -34,7 +34,18 @@ public class EmployeeSkillsTraining extends PicsActionSupport {
 			throw new RecordNotFoundException("Employee");
 		}
 
+		updateSkilledBasedOnDocumentation();
+
 		return SUCCESS;
+	}
+
+	private void updateSkilledBasedOnDocumentation() {
+		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+			if (employeeCompetency.getCompetency().isRequiresDocumentation()) {
+				employeeCompetency.setSkilled(employeeCompetency.isDocumentationValid());
+				dao.save(employeeCompetency);
+			}
+		}
 	}
 
 	public boolean isCanAccessDocumentation() {

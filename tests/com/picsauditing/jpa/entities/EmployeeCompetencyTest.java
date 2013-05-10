@@ -72,4 +72,30 @@ public class EmployeeCompetencyTest {
 
 		assertTrue(employeeCompetency.isMissingDocumentation());
 	}
+
+	@Test
+	public void testIsDocumentationValid_CompetencyDoesNotRequireDocumentation() {
+		assertTrue(employeeCompetency.isDocumentationValid());
+	}
+
+	@Test
+	public void testIsDocumentationValid_CompetencyRequiresDocumentationAndDocumentationIsMissingOrExpired() {
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(true);
+
+		assertFalse(employeeCompetency.isDocumentationValid());
+	}
+
+	@Test
+	public void testIsDocumentationValid_CompetencyRequiresDocumentationAndDocumentationIsCurrent() {
+		List<OperatorCompetencyEmployeeFile> files = new ArrayList<>();
+		files.add(employeeFile);
+
+		when(employee.getCompetencyFiles()).thenReturn(files);
+		when(employeeFile.getCompetency()).thenReturn(operatorCompetency);
+		when(employeeFile.getFileName()).thenReturn("file.name");
+		when(employeeFile.isExpired()).thenReturn(false);
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(true);
+
+		assertTrue(employeeCompetency.isDocumentationValid());
+	}
 }

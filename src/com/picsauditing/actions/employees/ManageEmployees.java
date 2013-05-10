@@ -673,6 +673,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employeeSite.defaultDates();
 
 				dao.save(employeeSite);
+				employee.getEmployeeSites().add(employeeSite);
 			}
 		}
 
@@ -689,6 +690,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employeeSite.defaultDates();
 
 				dao.save(employeeSite);
+				employee.getEmployeeSites().add(employeeSite);
 			}
 		}
 	}

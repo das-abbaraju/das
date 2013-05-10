@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.util.Strings;
 
 import javax.persistence.*;
 
@@ -60,5 +61,22 @@ public class EmployeeCompetency extends BaseTable {
 		}
 
 		return missing;
+	}
+
+	@Transient
+	public boolean isDocumentationValid() {
+		if (competency.isRequiresDocumentation()) {
+			boolean current = false;
+			for (OperatorCompetencyEmployeeFile employeeFile : employee.getCompetencyFiles()) {
+				if (employeeFile.getCompetency().equals(competency) && Strings.isNotEmpty(employeeFile.getFileName())
+						&& !employeeFile.isExpired()) {
+					current = true;
+				}
+			}
+
+			return current;
+		}
+
+		return true;
 	}
 }

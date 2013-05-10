@@ -259,4 +259,50 @@ public class EmployeeSkillsTrainingTest {
 
 		verify(basicDAO, never()).remove(any(OperatorCompetencyEmployeeFile.class));
 	}
+
+	@Test
+	public void testUpdateSkilledBasedOnDocumentation_NoRequiredCompetencies() throws Exception {
+		List<EmployeeCompetency> competencies = new ArrayList<>();
+		competencies.add(employeeCompetency);
+
+		when(employee.getEmployeeCompetencies()).thenReturn(competencies);
+		when(employeeCompetency.getCompetency()).thenReturn(operatorCompetency);
+
+		Whitebox.invokeMethod(employeeSkillsTraining, "updateSkilledBasedOnDocumentation");
+
+		verify(employeeCompetency, never()).setSkilled(anyBoolean());
+		verify(basicDAO, never()).save(any(EmployeeCompetency.class));
+	}
+
+	@Test
+	public void testUpdateSkilledBasedOnDocumentation_ValidDocumentation() throws Exception {
+		List<EmployeeCompetency> competencies = new ArrayList<>();
+		competencies.add(employeeCompetency);
+
+		when(employee.getEmployeeCompetencies()).thenReturn(competencies);
+		when(employeeCompetency.getCompetency()).thenReturn(operatorCompetency);
+		when(employeeCompetency.isDocumentationValid()).thenReturn(true);
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(true);
+
+		Whitebox.invokeMethod(employeeSkillsTraining, "updateSkilledBasedOnDocumentation");
+
+		verify(employeeCompetency).setSkilled(true);
+		verify(basicDAO).save(any(EmployeeCompetency.class));
+	}
+
+	@Test
+	public void testUpdateSkilledBasedOnDocumentation_InvalidDocumentation() throws Exception {
+		List<EmployeeCompetency> competencies = new ArrayList<>();
+		competencies.add(employeeCompetency);
+
+		when(employee.getEmployeeCompetencies()).thenReturn(competencies);
+		when(employeeCompetency.getCompetency()).thenReturn(operatorCompetency);
+		when(employeeCompetency.isDocumentationValid()).thenReturn(false);
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(true);
+
+		Whitebox.invokeMethod(employeeSkillsTraining, "updateSkilledBasedOnDocumentation");
+
+		verify(employeeCompetency).setSkilled(false);
+		verify(basicDAO).save(any(EmployeeCompetency.class));
+	}
 }

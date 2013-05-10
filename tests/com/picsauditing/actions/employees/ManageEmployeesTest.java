@@ -973,7 +973,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 		when(employee.getStatus()).thenReturn(UserStatus.Active);
 		when(employee.getTitle()).thenReturn("Title");
 		// Prepare lists
-		when(employee.getEmployeeSites()).thenReturn(Collections.<EmployeeSite>emptyList());
+		when(employee.getEmployeeSites()).thenReturn(new ArrayList<EmployeeSite>());
 		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency>emptyList());
 	}
 
