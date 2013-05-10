@@ -229,7 +229,7 @@
     					</s:if>
     					<s:else>
     						<pics:permission perm="AddContractors">
-                                <s:if test="#row.get('c.autoAddClientSite') == 1">
+                                <s:if test="#row.get('autoAdd') == 1">
                                     <s:if test="permissions.corporate">
                                         <a class="add" href="${contractor_facilities}">
                                             <s:text name="button.Add"/>

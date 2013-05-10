@@ -132,7 +132,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.phone");
 		sql.addField("c.score");
 		sql.addField("c.showInDirectory");
-		sql.addField("c.autoAddClientSite");
+		sql.addField("c.autoAddClientSite as autoAdd");
 
 		sql.addAudit(AuditType.PQF);
 
