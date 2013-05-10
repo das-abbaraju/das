@@ -360,7 +360,7 @@
 					</div>
 					<div id="helpchat" style="float:left;">
 						<pics:toggle name="<%=FeatureToggle.TOGGLE_MIBEW_CHAT%>">
-                            <a href="https://chat.picsorganizer.com/client.php?locale=<%=mibew_language_code%>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>"
+                            <a href="https://chat.picsorganizer.com/client.php?locale=<%=mibew_language_code%>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;accountName=<%=URLEncoder.encode(permissions.getAccountName())%>&amp;accountId=<%=URLEncoder.encode(permissions.getAccountId())%>&amp;userId=<%=URLEncoder.encode(permissions.getUserId())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>"
                                 target="_blank"
                                 onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('https://chat.picsorganizer.com/client.php?locale=<%=mibew_language_code%>&amp;style=PICS&amp;name=<%=URLEncoder.encode(permissions.getName())%>&amp;email=<%=URLEncoder.encode(permissions.getEmail())%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=i18nCache.getText("Header.Chat", locale)%>
                             </a>
