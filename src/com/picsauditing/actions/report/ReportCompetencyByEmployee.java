@@ -56,13 +56,13 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
             if (permissions.getAccountStatus().isDemo())
                 accountStatus += ", 'Demo'";
 
-            sql.addJoin("JOIN generalcontractors gc ON gc.subID = Set1.id AND gc.genID IN "
+            sql.addJoin("JOIN generalcontractors gc ON gc.subID = Set1.accountID AND gc.genID IN "
                     + "(SELECT f.opID FROM facilities f WHERE f.corporateID NOT IN ("
                     + Strings.implode(Account.PICS_CORPORATE) + ") AND f.corporateID IN ("
                     + Strings.implode(permissions.getCorporateParent()) + "))");
             sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
             sql.addJoin(String.format(
-                    "LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = Set1.id",
+                    "LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = Set1.accountID",
                     permissions.getAccountId()));
             sql.addField("ISNULL(gcw.subID) notWorksFor");
         }
