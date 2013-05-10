@@ -18,7 +18,7 @@
     <div class="content summary">
         <div class="row">
             <div class="span6 image-container">
-                <img src="/v7/img/reference/navigation-restructure.jpg" />
+                <img src="/v7/img/reference/navigation-restructure/restructure.jpg" />
             </div>
             
             <div class="span6">
