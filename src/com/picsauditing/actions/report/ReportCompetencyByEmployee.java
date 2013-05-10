@@ -12,6 +12,8 @@ import com.picsauditing.util.ReportFilterEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByEmployee extends ReportEmployee {
+
+    private final Logger logger = LoggerFactory.getLogger(ReportCompetencyByEmployee.class);
 
     public ReportCompetencyByEmployee() {
         orderByDefault = "Set1.name, Set1.lastName, Set1.firstName";
@@ -52,13 +56,13 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
             if (permissions.getAccountStatus().isDemo())
                 accountStatus += ", 'Demo'";
 
-            sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN "
+            sql.addJoin("JOIN generalcontractors gc ON gc.subID = Set1.id AND gc.genID IN "
                     + "(SELECT f.opID FROM facilities f WHERE f.corporateID NOT IN ("
                     + Strings.implode(Account.PICS_CORPORATE) + ") AND f.corporateID IN ("
                     + Strings.implode(permissions.getCorporateParent()) + "))");
             sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
             sql.addJoin(String.format(
-                    "LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",
+                    "LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = Set1.id",
                     permissions.getAccountId()));
             sql.addField("ISNULL(gcw.subID) notWorksFor");
         }
@@ -96,7 +100,7 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
         try {
             db.executeUpdate(createTempTable);
         } catch (SQLException se) {
-            se.printStackTrace();
+            logger.error(se.getMessage());
         }
 
         run(sql);
@@ -104,7 +108,7 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
         try {
             db.executeUpdate(dropTempTable);
         } catch (SQLException se) {
-            se.printStackTrace();
+            logger.error(se.getMessage());
         }
 
         if (download || "download".equals(button))
