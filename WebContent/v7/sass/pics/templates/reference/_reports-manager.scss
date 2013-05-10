@@ -1,0 +1,233 @@
+#Reference_reportsManager_page
+{
+	background-color: #454545;
+	padding-top: 0;
+	
+	p
+	{
+		line-height: 24px;
+	}
+	
+	hr
+	{
+		border-bottom: 1px solid #dcdcdc;
+		border-top: 0;
+	}
+
+	header,
+	.content,
+	footer
+	{
+		margin: 0 -20px;
+		padding: 20px;
+		overflow: hidden;
+	}
+	
+	header
+	{
+		background-color: #f1f1f2;
+
+		h1
+		{
+			color: #808285;
+			font-size: 60px;
+			font-weight: normal;
+			line-height: 1;
+			margin: 0;
+		}
+		
+		h2
+		{
+			color: #a84d10;
+			font-size: 14px;
+			line-height: 1;
+		}
+	}
+	
+	.content
+	{
+		background-color: #f1f1f2;
+		
+		h2
+		{
+			color: #808285;
+			font-size: 60px;
+			font-weight: normal;
+			line-height: 1;
+			margin: 0;
+			text-align: center;
+		}
+		
+		dt
+		{
+			color: #226396;
+		}
+	
+		.row
+		{
+			margin-bottom: 80px;
+			margin-top: 80px;
+		}
+		
+		li
+		{
+			margin-bottom: 50px;
+		}
+		
+		[class^="icon-"]
+		{
+			float: left;
+			font-size: 50px;
+		}
+		
+		.icon-key
+		{
+			color: #e67e1c;
+		}
+		
+		.icon-search
+		{
+			color: #73bbe8;
+		}
+		
+		.icon-minus-sign
+		{
+			color: #ac030c;
+		}
+		
+		.icon-remove-sign
+		{
+			color: #808285;
+		}
+		
+		[class^="icon-"] + section
+		{
+			margin-left: 93px;
+		}
+	}
+	
+	.row.menu,
+	.row.favorites,
+	.row.owned-by,
+	.row.shared-with,
+	.row.search
+	{
+		.image-container
+		{
+			float: right;
+			text-align: right;
+		}
+		
+		img
+		{
+			margin-right: -20px;
+		}
+	}
+	
+	.row.favorites-pinning
+	{
+		img
+		{
+			margin-left: -20px;
+		}
+	}
+	
+	.overview
+	{
+		h1
+		{
+			color: #73bbe8;
+			font-size: 24px;
+			font-weight: normal;
+			line-height: 1;
+			margin-top: 0;
+		}
+		
+		p
+		{
+			color: #666;
+		}
+	}
+	
+	footer
+	{
+		background-color: #ccc;
+		@include background-image(linear-gradient(#eaeaea, #ccc));
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
+		border-top: 1px solid #999;
+		text-align: center;
+		
+		a
+		{
+			margin-bottom: 10px;
+		}
+		
+		.icon-circle-arrow-right
+		{
+			margin-left: 5px;
+			vertical-align: middle;
+		}
+		
+		p
+		{
+			color: #808285;
+		}
+	}
+}
+
+@media (min-width: 1200px) {
+	#Reference_reportsManager_page
+	{
+		header,
+		.content,
+		footer
+		{
+			margin: 0 -30px;
+			padding: 30px;
+		}
+		
+		.row.menu,
+		.row.favorites,
+		.row.owned-by,
+		.row.shared-with,
+		.row.search
+		{
+			img
+			{
+				margin-right: -30px;
+			}
+		}
+	
+		.row.favorites-pinning
+		{
+			img
+			{
+				margin-left: -30px;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	#Reference_reportsManager_page
+	{
+		.content
+		{
+			.row
+			{
+				margin-top: 40px;
+				margin-bottom: 40px;
+			}
+		}
+		
+		.row.menu
+		{
+			margin-top: 0;
+		}
+		
+		.image-container
+		{
+			margin-bottom: 20px;
+		}
+	}
+}

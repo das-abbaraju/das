@@ -35,6 +35,16 @@ public class Reference extends PicsActionSupport {
 		return "navigation-restructure";
 	}
 
+	public String reportsManager() throws Exception {
+		loadPermissions(false);
+
+		if (isFirstTimeReportsManagerUser()) {
+			setReportsManagerTutorialDate();
+		}
+
+		return "reports-manager";
+	}
+
 	/**
 	 * Determines whether or not the user logged in is a first-time Dynamic
 	 * Report user that needs their user updated so they do not see the Tutorial
@@ -58,16 +68,6 @@ public class Reference extends PicsActionSupport {
 		}
 
 		userDAO.save(user);
-	}
-
-	public String reportsManager() throws Exception {
-		loadPermissions(false);
-
-		if (isFirstTimeReportsManagerUser()) {
-			setReportsManagerTutorialDate();
-		}
-
-		return "reports-manager";
 	}
 
 	private boolean isFirstTimeReportsManagerUser() {
