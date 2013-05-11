@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" href="css/reports.css?v=${version}" />
 
-<div class="server_info">
+<div class="server-info">
     <h2>Operating System Info</h2>
     <table class="report">
     <thead>
@@ -95,12 +95,11 @@
     <h2>
         Environment
     </h2>
-    <ul class="environment_tester">
+    <ul class="environment-tester">
         <li class="${liveClass}">Stable</li>
         <li class="${betaClass}">Beta</li>
         <li class="${qaClass}">QA</li>
         <li class="${alphaClass}">Alpha</li>
         <li class="${localhostClass}">Localhost</li>
-    
     </ul>
 </div>

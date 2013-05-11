@@ -384,18 +384,19 @@ select.hidden {
 }
 
 /* Server Info */
-.server_info h2
+
+.server-info h2
 {
     padding: 15px 0px 15px 0px;
 }
 
-.server_info ul.environment_tester
+.server-info ul.environment-tester
 {
     list-style: none;
     margin-left: 0px;
 }
 
-.server_info .environment_tester li
+.server-info .environment-tester li
 {
     background: #333;
     margin-bottom: 5px;
@@ -403,12 +404,12 @@ select.hidden {
     width: 100px;
 }
 
-.server_info .environment_tester .active
+.server-info .environment-tester .active
 {
     background: #33c033;
 }
 
-.server_info .environment_tester .inactive
+.server-info .environment-tester .inactive
 {
     background: #ccc;
 }
