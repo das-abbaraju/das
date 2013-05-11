@@ -85,6 +85,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 
 	private ContractorAccount duplicateContractor;
 
+	public static final String REASON_REQUEST_DECLINED = "Request Declined";
+
 	public enum RequestContactType {
 		EMAIL("RequestNewContractor.button.ContactedByEmail", "User.email"),
 		PHONE("RequestNewContractor.button.ContactedByPhone", "User.phone"),
@@ -173,7 +175,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 		requestRelationship.setContractorAccount(duplicateContractor);
 		dao.save(requestRelationship);
 
-		oldContractor.setReason("Closed as duplicate of account id:" + duplicateContractor.getId());
+		oldContractor.setReason(REASON_REQUEST_DECLINED);
 		oldContractor.setName("See duplicate account #" + duplicateContractor.getId());
 		oldContractor.setStatus(AccountStatus.Deleted);
 		dao.save(oldContractor);

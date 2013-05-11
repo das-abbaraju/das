@@ -382,3 +382,34 @@ table.report tbody .Green td {color:#272;}
 select.hidden {
 	display: none;
 }
+
+/* Server Info */
+
+.server-info h2
+{
+    padding: 15px 0px 15px 0px;
+}
+
+.server-info ul.environment-tester
+{
+    list-style: none;
+    margin-left: 0px;
+}
+
+.server-info .environment-tester li
+{
+    background: #333;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    width: 100px;
+}
+
+.server-info .environment-tester .active
+{
+    background: #33c033;
+}
+
+.server-info .environment-tester .inactive
+{
+    background: #ccc;
+}

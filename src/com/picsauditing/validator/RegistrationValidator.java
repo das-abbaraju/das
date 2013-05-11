@@ -102,6 +102,9 @@ public class RegistrationValidator implements Validator {
 			errors.put("contractor.dialect", InputValidator.REQUIRED_KEY);
 		}
 
+		errorMessageKey = inputValidator.validateTimezone(contractor.getTimezone());
+		errors.put("contractor.timezone", errorMessageKey);
+
 		errorMessageKey = inputValidator.validateName(countryIso);
 		errors.put("contractor.country.isoCode", errorMessageKey);
 

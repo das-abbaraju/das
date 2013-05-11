@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.picsauditing.model.i18n.LanguageModel;
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -30,7 +31,7 @@ public class RegistrationValidatorTest {
 		contractor.setCountry(new Country("en_US"));
 		String countrySubdivision = null;
 
-		verifyValidation(language, dialect,contractor, countrySubdivision, Arrays.asList(new Country[] { new Country("US") }));
+		verifyValidation(language, dialect, contractor, countrySubdivision, Arrays.asList(new Country[] { new Country("US") }));
 	}
 
 	@Test
@@ -44,9 +45,10 @@ public class RegistrationValidatorTest {
 		contractor.setVatId("SE989898999901");
 		contractor.setCountry(new Country("SE"));
 		contractor.setZip("113 51");
+		contractor.setTimezone(TimeZone.getDefault());
 		String countrySubdivision = null;
 
-		verifyValidation(language, dialect,  contractor, countrySubdivision, Collections.<Country>emptyList());
+		verifyValidation(language, dialect, contractor, countrySubdivision, Collections.<Country>emptyList());
 	}
 
 	private void verifyValidation(String language, String dialect, ContractorAccount contractor,
