@@ -3,6 +3,7 @@ package com.picsauditing.validator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -246,6 +247,14 @@ public class InputValidator {
 
 		if (!containsOnlySafeCharacters(name)) {
 			return NO_SPECIAL_CHARS_KEY;
+		}
+
+		return NO_ERROR;
+	}
+
+	public String validateTimezone(TimeZone timezone) {
+		if (timezone == null) {
+			return REQUIRED_KEY;
 		}
 
 		return NO_ERROR;

@@ -2,4 +2,5 @@ contractor.address : JS.Validation.Required
 contractor.city : JS.Validation.Required 
 contractor.dialect : JS.Validation.Required 
 contractor.name : JS.Validation.Required 
+contractor.timezone : JS.Validation.Required 
 contractor.zip : JS.Validation.Required 
