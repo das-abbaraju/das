@@ -1,17 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import org.json.simple.JSONObject;
+
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
@@ -25,16 +18,8 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	private Date orientationDate;
 	private Date orientationExpiration;
 
-	private int[] monthsToExp = { 36, 24, 12, 6, 0 };
+	private int[] monthsToExp = {36, 24, 12, 6, 0};
 	private int months;
-
-	public EmployeeSite() {
-		// monthsToExp = new HashMap<Integer, Integer>();
-		// monthsToExp.put(1, 36);
-		// monthsToExp.put(2, 24);
-		// monthsToExp.put(3, 12);
-		// monthsToExp.put(4, 6);
-	}
 
 	@Transient
 	public int getMonthsToExp() {
@@ -152,5 +137,10 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 		json.put("orientationDate", orientationDate.getTime());
 
 		return json;
+	}
+
+	@Transient
+	public boolean isActive() {
+		return isCurrent() && (jobSite == null || jobSite.isActive(new Date()));
 	}
 }

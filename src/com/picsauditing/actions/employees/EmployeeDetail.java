@@ -1,38 +1,13 @@
 package com.picsauditing.actions.employees;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.AssessmentResultDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.JobSiteTaskDAO;
-import com.picsauditing.dao.JobTaskDAO;
-import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AssessmentResult;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.EmployeeCompetency;
-import com.picsauditing.jpa.entities.EmployeeQualification;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.EmployeeSite;
-import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobRole;
-import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.DoubleMap;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class EmployeeDetail extends AccountActionSupport {
@@ -67,8 +42,9 @@ public class EmployeeDetail extends AccountActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (employee == null || employee.getId() == 0)
+		if (employee == null || employee.getId() == 0) {
 			throw new RecordNotFoundException("Missing employee id");
+		}
 
 		account = employee.getAccount();
 
@@ -87,19 +63,21 @@ public class EmployeeDetail extends AccountActionSupport {
 	}
 
 	private void buildCompetencies() {
-		missingCompetencies = new HashMap<JobRole, List<OperatorCompetency>>();
-		skilledCompetencies = new ArrayList<OperatorCompetency>();
+		missingCompetencies = new HashMap<>();
+		skilledCompetencies = new ArrayList<>();
 
 		for (EmployeeRole er : employee.getEmployeeRoles()) {
 			for (JobCompetency jc : er.getJobRole().getJobCompetencies()) {
 				EmployeeCompetency ec = findEmployeeCompetency(jc.getCompetency());
 
 				if (ec != null && ec.isSkilled()) {
-					if (!skilledCompetencies.contains(jc.getCompetency()))
+					if (!skilledCompetencies.contains(jc.getCompetency())) {
 						skilledCompetencies.add(jc.getCompetency());
+					}
 				} else {
-					if (missingCompetencies.get(er.getJobRole()) == null)
+					if (missingCompetencies.get(er.getJobRole()) == null) {
 						missingCompetencies.put(er.getJobRole(), new ArrayList<OperatorCompetency>());
+					}
 
 					missingCompetencies.get(er.getJobRole()).add(jc.getCompetency());
 				}
@@ -109,32 +87,56 @@ public class EmployeeDetail extends AccountActionSupport {
 
 	private EmployeeCompetency findEmployeeCompetency(OperatorCompetency oc) {
 		for (EmployeeCompetency ec : employee.getEmployeeCompetencies()) {
-			if (ec.getCompetency().equals(oc))
+			if (ec.getCompetency().equals(oc)) {
 				return ec;
+			}
 		}
 
 		return null;
 	}
 
 	public Map<JobRole, List<OperatorCompetency>> getMissingCompetencies() {
-		if (missingCompetencies == null)
+		if (missingCompetencies == null) {
 			buildCompetencies();
+		}
 
 		return missingCompetencies;
 	}
 
 	public List<OperatorCompetency> getSkilledCompetencies() {
-		if (skilledCompetencies == null)
+		if (skilledCompetencies == null) {
 			buildCompetencies();
+		}
 
 		return skilledCompetencies;
 	}
 
 	public boolean isCanViewContractor() {
-		ContractorOperator co = coDAO.find(employee.getAccount().getId(), permissions.getAccountId());
+		boolean canViewContractor = false;
+		if (permissions.isPicsEmployee()) {
+			canViewContractor = true;
+		}
 
-		if (co != null)
+		if (permissions.isContractor()) {
+			canViewContractor = permissions.getAccountId() == employee.getAccount().getId();
+		}
+
+		if (permissions.isOperatorCorporate()) {
+			ContractorOperator co = coDAO.find(employee.getAccount().getId(), permissions.getAccountId());
+			canViewContractor = co != null;
+		}
+
+		return canViewContractor;
+	}
+
+	public boolean isCanViewOperator() {
+		if (permissions.isPicsEmployee()) {
 			return true;
+		}
+
+		if (permissions.isOperatorCorporate()) {
+			return permissions.getVisibleAccounts().contains(employee.getAccount().getId());
+		}
 
 		return false;
 	}
@@ -161,19 +163,38 @@ public class EmployeeDetail extends AccountActionSupport {
 
 	public List<EmployeeSite> getWorksAt() {
 		if (worksAt == null) {
-			worksAt = new ArrayList<EmployeeSite>();
+			worksAt = new ArrayList<>();
 			for (EmployeeSite site : employee.getEmployeeSites()) {
-				if (site.getJobSite() == null || site.getJobSite().isActive(new Date()))
+				if (site.isActive() && isCanViewEmployeeSite(site)) {
 					worksAt.add(site);
+				}
 			}
 		}
 
 		return worksAt;
 	}
 
+	private boolean isCanViewEmployeeSite(EmployeeSite site) {
+		boolean canViewEmployeeSite = false;
+
+		if (permissions.isPicsEmployee()) {
+			canViewEmployeeSite = true;
+		}
+
+		if (permissions.isContractor()) {
+			canViewEmployeeSite = permissions.getAccountId() == employee.getAccount().getId();
+		}
+
+		if (permissions.isOperatorCorporate()) {
+			canViewEmployeeSite = permissions.getVisibleAccounts().contains(site.getOperator().getId());
+		}
+
+		return canViewEmployeeSite;
+	}
+
 	public Map<JobTask, List<AssessmentResult>> getQualification() {
 		if (qualification == null) {
-			qualification = new TreeMap<JobTask, List<AssessmentResult>>();
+			qualification = new TreeMap<>();
 			List<JobTask> tasks = taskDAO.findByEmployee(employee.getId());
 
 			for (JobTask task : tasks) {
@@ -185,8 +206,9 @@ public class EmployeeDetail extends AccountActionSupport {
 	}
 
 	public Map<JobSite, List<JobTask>> getTasks() {
-		if (tasksByJob == null)
+		if (tasksByJob == null) {
 			tasksByJob = siteTaskDAO.findByEmployee(employee.getId());
+		}
 
 		return tasksByJob;
 	}
@@ -199,8 +221,9 @@ public class EmployeeDetail extends AccountActionSupport {
 			while (iterator.hasNext()) {
 				AssessmentResult result = iterator.next();
 				if (result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
-						|| !result.getAssessmentTest().isCurrent())
+						|| !result.getAssessmentTest().isCurrent()) {
 					iterator.remove();
+				}
 			}
 		}
 
