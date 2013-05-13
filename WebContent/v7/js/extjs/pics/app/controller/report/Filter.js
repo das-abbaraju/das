@@ -406,7 +406,8 @@ Ext.define('PICS.controller.report.Filter', {
             operator = cmp.value,
             value_field = cmp.next('[name=value]'),
             filter = filter_input_form.getRecord(),
-            filter_value = filter.get('value');
+            filter_value = filter.get('value'),
+            is_empty = value_field.isHidden();
 
         // hide value field depending on operator selected
         if (typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
@@ -417,7 +418,7 @@ Ext.define('PICS.controller.report.Filter', {
         filter_input_form.updateRecord();
 
         // refresh report if filter value present--whether explicit or implied.
-        if ((value_field && value_field.isHidden()) || (filter_value != null && filter_value != '')) {
+        if (filter_value || (value_field && value_field.isHidden()) || is_empty) {
             PICS.data.ServerCommunication.loadData();
         }
     },

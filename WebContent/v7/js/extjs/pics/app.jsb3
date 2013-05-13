@@ -1609,7 +1609,7 @@
         {
             "name": "Application - Production",
             "target": "extjs/app-all.js",
-            "compress": false,
+            "compress": true,
             "files": [
                 {
                     "path": "",

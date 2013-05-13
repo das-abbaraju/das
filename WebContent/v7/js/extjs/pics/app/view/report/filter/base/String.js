@@ -35,9 +35,9 @@ Ext.define('PICS.view.report.filter.base.String', {
     },
     
     updateValueFieldFromOperatorValue: function (operator) {
-        var input = this.down('textfield');
+        var input = this.down('textfield[name="value"]');
         
-        if (operator == 'Empty') {
+        if (operator == 'Empty' || operator == 'NotEmpty') {
             input.setValue(null);
             input.hide();
         } else {
