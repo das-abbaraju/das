@@ -159,6 +159,7 @@ public class BillingCalculatorSingle {
 		boolean hasHseCompetency = false;
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
+        boolean hasSSIP = false;
 
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
@@ -186,6 +187,9 @@ public class BillingCalculatorSingle {
 			if (auditType.getId() == AuditType.COR || auditType.getId() == AuditType.IEC_AUDIT) {
 				hasCorOrIec = true;
 			}
+            if (auditType.getId() == AuditType.SSIP) {
+                hasSSIP = true;
+            }
 		}
 
 		for (ContractorAudit ca : contractor.getAudits()) {
@@ -202,6 +206,10 @@ public class BillingCalculatorSingle {
 			if (!hasAuditGUARD && hasCorOrIec && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR)) {
 				hasAuditGUARD = true;
 			}
+
+            if (!hasAuditGUARD && hasSSIP && co.getOperatorAccount().isOrIsDescendantOf(OperatorAccount.M_and_S)) {
+                hasAuditGUARD = true;
+            }
 		}
 
 		if (hasAuditGUARD) {

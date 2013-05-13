@@ -54,6 +54,7 @@ public class OperatorAccount extends Account {
 	public static final int SALES = 23325;
 	public static final int SUNOCO = 27406;
     public static final int TESORO = 1436;
+    public static final int M_and_S = 38003;
 
     private OperatorAccount parent;
 
