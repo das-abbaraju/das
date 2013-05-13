@@ -16,7 +16,7 @@
     </div>
     <div class="span5 offset1 apply-actions">
         <span><span id="selected_records">${totalRecords}</span> of ${totalRecords} Records Selected</span>
-        <button class="btn btn-primary btn-large" id="apply_selected_assignments">Apply Accepted</button>
+        <button class="btn btn-primary btn-large apply_selected_assignments">Apply Accepted</button>
     </div>
 </div>
 
@@ -47,4 +47,8 @@
 	        </s:iterator>
 	    </tbody>
 	</table>
+    <div class="pull-right">
+        <span><span id="selected_records">${totalRecords}</span> of ${totalRecords} Records Selected</span>
+        <button class="btn btn-primary btn-large apply_selected_assignments">Apply Accepted</button>
+    </div>
 </form>

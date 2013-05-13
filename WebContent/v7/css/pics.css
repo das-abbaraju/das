@@ -1544,26 +1544,30 @@ hr {
   margin-top: 0px;
 }
 /* line 20, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
+.ManageRecommendedCSRAssignment-page #main {
+  margin-bottom: 20px;
+}
+/* line 25, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
 .ManageRecommendedCSRAssignment-page .icon-external-link {
   color: #226396;
   margin-right: 5px;
 }
-/* line 26, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
+/* line 31, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
 .ManageRecommendedCSRAssignment-page .apply-actions {
   line-height: 60px;
   margin-bottom: 20px;
   margin-top: 20px;
   text-align: right;
 }
-/* line 34, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
-.ManageRecommendedCSRAssignment-page #apply_selected_assignments {
+/* line 39, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
+.ManageRecommendedCSRAssignment-page .apply_selected_assignments {
   margin-left: 15px;
 }
-/* line 39, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
+/* line 44, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
 .ManageRecommendedCSRAssignment-page #accept_all {
   margin-right: 5px;
 }
-/* line 46, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
+/* line 51, ../sass/pics/templates/recommend-csr/_recommend-csr.scss */
 .ManageRecommendedCSRAssignment-page .table-striped tbody > tr:nth-child(odd) > td,
 .ManageRecommendedCSRAssignment-page .table-striped tbody > tr:nth-child(odd) > th {
   background-color: #f1f1f2;

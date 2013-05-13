@@ -16,6 +16,11 @@
         margin-top: 0px;
     }
 
+    #main
+    {
+        margin-bottom: 20px;
+    }
+
     .icon-external-link
     {
         color: $pics_link_blue;
@@ -30,7 +35,7 @@
         text-align:right;  
     }
     
-    #apply_selected_assignments
+    .apply_selected_assignments
     {
         margin-left:15px;
     }
