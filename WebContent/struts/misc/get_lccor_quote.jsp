@@ -20,7 +20,6 @@
 		<td style="vertical-align:top; width: 48%">
 		<div><h2><s:text name="GetLcCorQuote.header" /></h2><br /></div>
 		<div><s:text name="GetLcCorQuote.info" /></div>
-		<div><br/><a href="resources/LcCorFactSheet.pdf" target="_BLANK" ><s:text name="GetLcCorQuote.document" /></a></div>
 		</td>
 		<td width="15px"></td>
 		<td style="vertical-align:top; width: 48%">
