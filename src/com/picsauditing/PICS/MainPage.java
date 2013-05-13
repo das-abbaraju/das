@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 public class MainPage {
 	public static final String DEBUG_COOKIE_NAME = "debugging";
 	public static final String PICS_PHONE_NUMBER = "+1-949-936-4500";
+	public static final String PICS_SALES_NUMBER = "800-506-PICS (7427)";
+	public static final String PICS_FAX_NUMBER = "949-269-9177";
 
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
 
@@ -106,6 +108,46 @@ public class MainPage {
 		}
 
 		return PICS_PHONE_NUMBER;
+	}
+
+	public String getSalesPhoneNumber() {
+		return getSalesPhoneNumber(getPermissions().getCountry());
+	}
+
+	public String getSalesPhoneNumber(String country) {
+		if (Strings.isNotEmpty(country)) {
+			try {
+				String salesPhoneNumber = getCountryDAO().find(country).getSalesPhone();
+
+				if (Strings.isNotEmpty(salesPhoneNumber)) {
+					return salesPhoneNumber;
+				}
+			} catch (Exception e) {
+				logger.error("Error finding sales phone for country {}\n{}", country, e);
+			}
+		}
+
+		return PICS_SALES_NUMBER;
+	}
+
+	public String getFaxNumber() {
+		return getFaxNumber(getPermissions().getCountry());
+	}
+
+	public String getFaxNumber(String country) {
+		if (Strings.isNotEmpty(country)) {
+			try {
+				String faxNumber = getCountryDAO().find(country).getFax();
+
+				if (Strings.isNotEmpty(faxNumber)) {
+					return faxNumber;
+				}
+			} catch (Exception e) {
+				logger.error("Error finding fax number for country {}\n{}", country, e);
+			}
+		}
+
+		return PICS_FAX_NUMBER;
 	}
 
 	public String getCountryI18nKey() {

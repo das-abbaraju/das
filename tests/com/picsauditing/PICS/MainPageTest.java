@@ -233,7 +233,7 @@ public class MainPageTest {
 
 	@Test
 	public void testIsDebugMode_CookieNotDebugging() {
-		when(request.getCookies()).thenReturn(new Cookie[]{ new Cookie("Test", "cookie") });
+		when(request.getCookies()).thenReturn(new Cookie[]{new Cookie("Test", "cookie")});
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -303,6 +303,64 @@ public class MainPageTest {
 		when(countryDAO.find("US")).thenReturn(country);
 
 		String phoneNumber = mainPage.getPhoneNumber("US");
+
+		assertEquals(permissionsCountryPhoneNumber, phoneNumber);
+	}
+
+	@Test
+	public void testGetSalesPhoneNumber_WithoutCountryAndWithoutPermissions() {
+		assertEquals(MainPage.PICS_SALES_NUMBER, mainPage.getSalesPhoneNumber());
+	}
+
+	@Test
+	public void testGetSalesPhoneNumber_PassedInCountry() {
+		String countryPhoneNumber = "Phone Number";
+		when(country.getSalesPhone()).thenReturn(countryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getSalesPhoneNumber("US");
+
+		assertEquals(countryPhoneNumber, phoneNumber);
+	}
+
+	@Test
+	public void testGetSalesPhoneNumber_CountryFromPermissions() {
+		when(permissions.getCountry()).thenReturn("US");
+
+		String permissionsCountryPhoneNumber = "Phone Number";
+		when(country.getSalesPhone()).thenReturn(permissionsCountryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getSalesPhoneNumber("US");
+
+		assertEquals(permissionsCountryPhoneNumber, phoneNumber);
+	}
+
+	@Test
+	public void testGetFaxNumber_WithoutCountryAndWithoutPermissions() {
+		assertEquals(MainPage.PICS_FAX_NUMBER, mainPage.getFaxNumber());
+	}
+
+	@Test
+	public void testGetFaxNumber_PassedInCountry() {
+		String countryPhoneNumber = "Phone Number";
+		when(country.getFax()).thenReturn(countryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getFaxNumber("US");
+
+		assertEquals(countryPhoneNumber, phoneNumber);
+	}
+
+	@Test
+	public void testGetFaxNumber_CountryFromPermissions() {
+		when(permissions.getCountry()).thenReturn("US");
+
+		String permissionsCountryPhoneNumber = "Phone Number";
+		when(country.getFax()).thenReturn(permissionsCountryPhoneNumber);
+		when(countryDAO.find("US")).thenReturn(country);
+
+		String phoneNumber = mainPage.getFaxNumber("US");
 
 		assertEquals(permissionsCountryPhoneNumber, phoneNumber);
 	}

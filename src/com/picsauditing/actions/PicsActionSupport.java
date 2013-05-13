@@ -1,31 +1,25 @@
 package com.picsauditing.actions;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.inject.Inject;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.MainPage;
+import com.picsauditing.access.*;
+import com.picsauditing.actions.users.ChangePassword;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.*;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
@@ -37,46 +31,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.inject.Inject;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.MainPage;
-import com.picsauditing.access.AjaxNotLoggedInException;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.SecurityAware;
-import com.picsauditing.actions.users.ChangePassword;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectUser;
-import com.picsauditing.security.CookieSupport;
-import com.picsauditing.security.SessionCookie;
-import com.picsauditing.security.SessionSecurity;
-import com.picsauditing.strutsutil.AdvancedValidationAware;
-import com.picsauditing.strutsutil.FileDownloadContainer;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.AppVersion;
-import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
+import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
-AdvancedValidationAware {
+		AdvancedValidationAware {
 
-    protected static final int DELETE_COOKIE_AGE = 0;
+	protected static final int DELETE_COOKIE_AGE = 0;
 	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
@@ -93,7 +68,7 @@ AdvancedValidationAware {
 	public static final String CHART_XML = "chartXML";
 	public static final String REDIRECT = "redirect";
 	public static final String INPUT_ERROR = "inputError";
-	public static final String[] DATAFEED_FORMATS = {JSON,XML};
+	public static final String[] DATAFEED_FORMATS = {JSON, XML};
 
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
@@ -187,21 +162,21 @@ AdvancedValidationAware {
 
 	private PicsEnvironment picsEnvironment;
 
-    private PicsEnvironment getEnvironmentDeterminer() {
-        /*
+	private PicsEnvironment getEnvironmentDeterminer() {
+	    /*
 		 * Note: Lazy-loading like this is often overused in action code
 		 * (because the class only stays instantiated for as long as it takes to
 		 * render the page, and get-accessors normally only get called once in
 		 * that time); however, in this case, the PICS enviromnent is queried
 		 * numerous times during every page load.
 		 */
-        if (picsEnvironment == null) {
-            picsEnvironment = new PicsEnvironment(propertyDAO.getProperty(AppProperty.VERSION_MAJOR),
-                    propertyDAO.getProperty(AppProperty.VERSION_MINOR));
-        }
+		if (picsEnvironment == null) {
+			picsEnvironment = new PicsEnvironment(propertyDAO.getProperty(AppProperty.VERSION_MAJOR),
+					propertyDAO.getProperty(AppProperty.VERSION_MINOR));
+		}
 
-        return picsEnvironment;
-    }
+		return picsEnvironment;
+	}
 
 	public String getPicsEnvironment() {
 		return getEnvironmentDeterminer().getEnvironment();
@@ -1171,14 +1146,53 @@ AdvancedValidationAware {
 	}
 
 	public String getPicsPhoneNumber() {
-		return getPicsPhoneNumber(null);
+		return getPicsPhoneNumber(permissions.getCountry());
 	}
 
 	public String getPicsPhoneNumber(String country) {
 		// Rolled up phone number logic into MainPage
+		return getPhoneNumberFor(PhoneNumberType.MAIN, country);
+	}
+
+	public String getSalesPhoneNumber() {
+		return getSalesPhoneNumber(permissions.getCountry());
+	}
+
+	public String getSalesPhoneNumber(String country) {
+		return getPhoneNumberFor(PhoneNumberType.SALES, country);
+	}
+
+	public String getFaxNumber() {
+		return getFaxNumber(permissions.getCountry());
+	}
+
+	public String getFaxNumber(String country) {
+		// Rolled up phone number logic into MainPage
+		return getPhoneNumberFor(PhoneNumberType.FAX, country);
+	}
+
+	private String getPhoneNumberFor(PhoneNumberType type, String country) {
 		MainPage mainPage = new MainPage();
 		mainPage.setCountryDAO(countryDAO);
 		mainPage.setPermissions(permissions);
-		return mainPage.getPhoneNumber(country);
+
+		String number = null;
+		switch (type) {
+			case FAX:
+				number = mainPage.getFaxNumber(country);
+				break;
+			case MAIN:
+				number = mainPage.getPhoneNumber(country);
+				break;
+			case SALES:
+				number = mainPage.getSalesPhoneNumber(country);
+				break;
+		}
+
+		return number;
+	}
+
+	private enum PhoneNumberType {
+		FAX, MAIN, SALES;
 	}
 }

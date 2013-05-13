@@ -1,27 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.*;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Entity
 @Table(name = "ref_country")
@@ -65,6 +57,8 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected TranslatableString name;
 	protected String english;
 	protected String phone;
+	protected String salesPhone;
+	protected String fax;
 	protected Double corruptionPerceptionIndex;
 
 	protected Currency currency = Currency.USD;
@@ -111,13 +105,31 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 		this.english = english;
 	}
 
-	@Column(name = "phone", length = 25)
+	@Column(name = "phone", length = 30)
 	public String getPhone() {
 		return phone;
 	}
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	@Column(name = "salesPhone", length = 30)
+	public String getSalesPhone() {
+		return salesPhone;
+	}
+
+	public void setSalesPhone(String salesPhone) {
+		this.salesPhone = salesPhone;
+	}
+
+	@Column(name = "fax", length = 30)
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
 	}
 
 	public static String convertToCode(String tempCountry) {
