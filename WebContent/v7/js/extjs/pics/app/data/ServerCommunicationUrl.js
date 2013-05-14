@@ -130,6 +130,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
 
             return path + Ext.Object.toQueryString(params);
         },
+        
+        getReportAccessUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!access.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
 
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),

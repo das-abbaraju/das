@@ -4,6 +4,10 @@
 <%-- Url --%>
 <s:url action="ManageReports" method="share" var="manage_report_access_search_url" />
 
+<s:url action="Report" var="report_url">
+    <s:param name="report">${report.id}</s:param>
+</s:url>
+
 <%-- Text --%>
 <s:set var="access_search_term_placeholder" value="%{getText('ManageReports.access.search.placeholder')}" />
 
@@ -15,7 +19,7 @@
 <s:include value="/struts/report/manage-report/_menu.jsp" />
 
 <div id="report_access_info">
-    <h2>${report.name}</h2>
+    <h2><a href="${report_url}" target="_blank">${report.name}</a></h2>
     <p>${report.description}</p>
 </div>
 

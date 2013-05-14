@@ -48,6 +48,11 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             },
             dock: 'bottom',
             items: [{
+                xtype: 'component',
+                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank">' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
+            }, {
+                xtype: 'tbfill'
+            }, {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,

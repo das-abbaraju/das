@@ -312,12 +312,15 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 return modal; 
             },
             
-            text: function (key) {
-                var args = arguments;
-                
-                return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
+            text: function (key, escape) {
+                var args = arguments,
+                    translation;
+                    
+                translation = PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
                     return args[parseInt(p1) + 1];
-                }).replace(/'/g, "\\'") : key;
+                }) : key;
+                
+                return typeof escape == 'boolean' && escape ? translation.replace(/'/g, "\\'") : translation;
             },
             
             throttle: function (func, delay) {

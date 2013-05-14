@@ -26,12 +26,15 @@
         <%-- hella balls hacky, placing text method on the global PICS namespace, Ext.create.Application will add this to the scope it creates --%>
         <%-- this is emulated in index.html, the file that is used to compile the application --%>
         <script>
-        PICS.text = function (key) {
-            var args = arguments;
-            
-            return PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
+        PICS.text = function (key, escape) {
+            var args = arguments,
+                translation;
+                
+            translation = PICS.i18n[key] ? PICS.i18n[key].replace(/{([0-9]+)}/g, function (match, p1) {
                 return args[parseInt(p1) + 1];
-            }).replace(/'/g, "\\'") : key;
+            }) : key;
+            
+            return typeof escape == 'boolean' && escape ? translation.replace(/'/g, "\\'") : translation;
         };
         </script>
 		

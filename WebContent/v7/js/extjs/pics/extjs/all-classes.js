@@ -66699,6 +66699,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
 
             return path + Ext.Object.toQueryString(params);
         },
+        
+        getReportAccessUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ManageReports!access.action?';
+            
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
 
         getSaveReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
@@ -92768,6 +92780,11 @@ Ext.define('PICS.view.report.settings.share.ShareSetting', {
             },
             dock: 'bottom',
             items: [{
+                xtype: 'component',
+                html: '<a href="' + PICS.data.ServerCommunicationUrl.getReportAccessUrl() + '" target="_blank">' + PICS.text('Report.execute.shareSetting.shareLink') + '</a>'
+            }, {
+                xtype: 'tbfill'
+            }, {
                 action: 'cancel',
                 cls: 'cancel default',
                 height: 28,
