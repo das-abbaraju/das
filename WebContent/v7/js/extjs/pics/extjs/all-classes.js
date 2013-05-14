@@ -82683,7 +82683,8 @@ Ext.define('PICS.view.report.filter.base.Date', {
     operator_store: [
         ['LessThan', PICS.text('Report.execute.dateFilter.lessThan')],
         ['GreaterThanOrEquals', PICS.text('Report.execute.dateFilter.greaterThanEquals')],
-        ['Empty', PICS.text('Report.execute.dateFilter.empty')]
+        ['Empty', PICS.text('Report.execute.dateFilter.empty')],
+        ['NotEmpty', PICS.text('Report.execute.dateFilter.notEmpty')]
     ],
     
     createOperatorField: function () {
@@ -82710,7 +82711,7 @@ Ext.define('PICS.view.report.filter.base.Date', {
     updateValueFieldFromOperatorValue: function (operator) {
         var input = this.down('datefield');
         
-        if (operator == 'Empty') {
+        if (operator == 'Empty' || operator == 'NotEmpty') {
             input.setValue(null);
             input.hide();
         } else {
