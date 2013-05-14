@@ -511,7 +511,7 @@
 							<pics:permission perm="UserZipcodeAssignment">
 								<li>
 									<label>Assignment Capacity</label>
-									<s:textfield name="user.assignmentCapacity" size="3" />%
+									<s:textfield name="user.assignmentCapacity" /> (# of contractors)
 								</li>
 							</pics:permission>
 						</s:if>
