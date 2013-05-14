@@ -229,14 +229,17 @@
 							</th>
 						</tr>
 						</thead>
-						<s:iterator value="activeEmployees" var="employee" status="stat">
-							<tr>
-								<td>
-									<s:property value="#employee.lastName"/>
-								</td>
-								<td>
-									<s:property value="#employee.firstName"/>
-								</td>
+                        <s:iterator value="activeEmployees" var="employee" status="stat">
+                            <s:url action="ManageEmployees" method="edit" var="edit_employee">
+                                <s:param name="employee" value="#employee.id" />
+                            </s:url>
+                            <tr>
+                                <td>
+                                    <a href="${edit_employee}">${employee.lastName}</a>
+                                </td>
+                                <td>
+                                    <a href="${edit_employee}">${employee.firstName}</a>
+                                </td>
 								<td>
 									<s:property value="#employee.title"/>
 								</td>
