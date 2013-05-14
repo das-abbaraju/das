@@ -1,10 +1,5 @@
 package com.picsauditing.access;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -16,6 +11,11 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class PicsMenu {
 
@@ -161,7 +161,7 @@ public class PicsMenu {
 					getTitle("ContractorList"),
 					"ContractorList.action"
 							+ (permissions.isOperatorCorporate() && permissions.has(OpPerms.ViewUnApproved) ? "?filter.workStatus=Y"
-									: ""), "ContractorList");
+							: ""), "ContractorList");
 		}
 
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
@@ -291,13 +291,13 @@ public class PicsMenu {
 					"PQF Verification",
 					"PqfVerification.action?filter.status=Active"
 							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""), "PQFVerification");
+							+ permissions.getShadowedUserID() : ""), "PQFVerification");
 		}
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment)) {
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action", "CSRAssignment");
 			subMenu.addChild("CSR Assignment Stats", "ReportCsrAssignmentStats.action", "CSRAssignmentStats");
 		}
-		if (permissions.hasPermission(OpPerms.ManageCsrAssignment)){
+		if (permissions.hasPermission(OpPerms.ManageCsrAssignment)) {
 			subMenu.addChild("Recommended CSR Assignment", "ManageRecommendedCSRAssignment.action", "RecommendedCsrAssignment");
 		}
 
@@ -325,7 +325,7 @@ public class PicsMenu {
 					getTitle("PolicyVerification"),
 					"PolicyVerification.action"
 							+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""), "PolicyVerification");
+							+ permissions.getShadowedUserID() : ""), "PolicyVerification");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
@@ -412,60 +412,60 @@ public class PicsMenu {
 		HashMap<String, String[]> menuItems = new HashMap<String, String[]>();
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
-			menuItems.put("Manage Translations", new String[] { "ManageTranslations.action", "ManageTranslations" });
+			menuItems.put("Manage Translations", new String[]{"ManageTranslations.action", "ManageTranslations"});
 
 			if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
-				menuItems.put("Import/Export Translations", new String[] { "TranslationETL.action", "ImExTrans" });
+				menuItems.put("Import/Export Translations", new String[]{"TranslationETL.action", "ImExTrans"});
 
-                try {
-                    String databaseName = Database.getDatabaseName();
+				try {
+					String databaseName = Database.getDatabaseName();
 
-                    if (databaseName.contains("alpha")) {
-                        menuItems.put("Unsynced Translations", new String[] { "UnsyncedTranslations.action", "UnsyncdTrans" });
-                    }
-                } catch (Exception e) {
-                    // Don't show menu item
-                }
+					if (databaseName.contains("alpha")) {
+						menuItems.put("Unsynced Translations", new String[]{"UnsyncedTranslations.action", "UnsyncdTrans"});
+					}
+				} catch (Exception e) {
+					// Don't show menu item
+				}
 			}
 		}
 		if (permissions.hasPermission(OpPerms.ManageTrades)) {
-			menuItems.put(getTitle("TradeTaxonomy"), new String[] { "TradeTaxonomy.action", "TradeTaxonomy" });
+			menuItems.put(getTitle("TradeTaxonomy"), new String[]{"TradeTaxonomy.action", "TradeTaxonomy"});
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
-			menuItems.put("Audit Definition", new String[] { "ManageAuditType.action", "AuditDefinition" });
-			menuItems.put("Manage Audit Options", new String[] { "ManageOptionGroup.action", "ManageAuditOptions" });
-			menuItems.put("Flag Criteria", new String[] { "ManageFlagCriteria.action", "FlagCriteria" });
+			menuItems.put("Audit Definition", new String[]{"ManageAuditType.action", "AuditDefinition"});
+			menuItems.put("Manage Audit Options", new String[]{"ManageOptionGroup.action", "ManageAuditOptions"});
+			menuItems.put("Flag Criteria", new String[]{"ManageFlagCriteria.action", "FlagCriteria"});
 		}
 		if (permissions.hasPermission(OpPerms.ContractorSimulator)) {
-			menuItems.put("Contractor Simulator", new String[] { "ContractorSimulator.action", "ContractorSimulator" });
+			menuItems.put("Contractor Simulator", new String[]{"ContractorSimulator.action", "ContractorSimulator"});
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
-			menuItems.put("Audit Type Rules", new String[] { "AuditTypeRuleSearch.action", "AuditTypeRules" });
+			menuItems.put("Audit Type Rules", new String[]{"AuditTypeRuleSearch.action", "AuditTypeRules"});
 		}
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules, OpType.Edit)) {
-			menuItems.put("Category Rules", new String[] { "CategoryRuleSearch.action", "CatRules" });
+			menuItems.put("Category Rules", new String[]{"CategoryRuleSearch.action", "CatRules"});
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
-			menuItems.put(getTitle("AuditCategoryMatrix"), new String[] { "AuditCategoryMatrix.action",
-					"AuditCatMatrix" });
+			menuItems.put(getTitle("AuditCategoryMatrix"), new String[]{"AuditCategoryMatrix.action",
+					"AuditCatMatrix"});
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow)) {
-			menuItems.put("Manage Workflow", new String[] { "ManageAuditWorkFlow.action", "ManageWorkflow" });
+			menuItems.put("Manage Workflow", new String[]{"ManageAuditWorkFlow.action", "ManageWorkflow"});
 		}
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			menuItems.put(getTitle("ManageFlagCriteriaOperator"), new String[] { "ManageFlagCriteriaOperator.action",
-					"ManageFlagCriteriaOperator" });
+			menuItems.put(getTitle("ManageFlagCriteriaOperator"), new String[]{"ManageFlagCriteriaOperator.action",
+					"ManageFlagCriteriaOperator"});
 			if (permissions.isCanSeeInsurance()) {
-				menuItems.put(getTitle("ManageInsuranceCriteriaOperator"), new String[] {
-						"ManageInsuranceCriteriaOperator.action", "ManageInsuranceCriteriaOperator" });
+				menuItems.put(getTitle("ManageInsuranceCriteriaOperator"), new String[]{
+						"ManageInsuranceCriteriaOperator.action", "ManageInsuranceCriteriaOperator"});
 			}
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			menuItems.put(getTitle("EditEmailTemplate"),
-					new String[] { "EditEmailTemplate.action", "EditEmailTemplate" });
+					new String[]{"EditEmailTemplate.action", "EditEmailTemplate"});
 			if (permissions.isPicsEmployee()) {
 				menuItems
-						.put("Email Exclusions List", new String[] { "EditEmailExclusions.action", "EmailExclusions" });
+						.put("Email Exclusions List", new String[]{"EditEmailExclusions.action", "EmailExclusions"});
 			}
 		}
 
@@ -491,7 +491,7 @@ public class PicsMenu {
 			subMenu.addChild("Clear Cache", "ClearCache.action", "ClearCache");
 			subMenu.addChild("Cache Statistics", "CacheStatistics.action", "ClearStats");
 			subMenu.addChild("Contractor Cron", "ContractorCron.action", "ContractorCron");
-            subMenu.addChild("Cron Dashboard", "CronDashboard.action", "CronDashbaord");
+			subMenu.addChild("Cron Dashboard", "CronDashboard.action", "CronDashbaord");
 			subMenu.addChild("Con/Op Flag Differences", "ContractorFlagDifference.action", "FlagDifferences");
 			subMenu.addChild("Mail Cron", "MailCron.action", "MailCron");
 			subMenu.addChild("Subscription Cron", "SubscriptionCron.action", "SubscriptionCron");
@@ -582,7 +582,7 @@ public class PicsMenu {
 		if (permissions.getAccountId() == 1813
 				|| permissions.hasPermission(OpPerms.DevelopmentEnvironment)
 				|| (permissions.isAuditor() && !permissions
-						.isOperatorCorporate())) {
+				.isOperatorCorporate())) {
 			subMenu.addChild("Washington Audit",
 					"ReportWashingtonStateAudit.action?filter.riskLevel=3&filter.waAuditTypes=176", "WashingtonAudit");
 		}
@@ -590,7 +590,8 @@ public class PicsMenu {
 			addChildAction(subMenu, "EmployeeList");
 		}
 
-		if (permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
+		if ((permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview())
+				|| permissions.isPicsEmployee()) {
 			boolean showReportEmployeeDocumentation = false;
 
 			if (permissions.isPicsEmployee()) {
@@ -679,10 +680,9 @@ public class PicsMenu {
 				iterator.remove();
 			}
 		}
-		if (menu.getChildren().size() == 1)
-		 {
+		if (menu.getChildren().size() == 1) {
 			return menu.getChildren().get(0);
-		// End of conversion
+			// End of conversion
 		}
 
 		return menu;
