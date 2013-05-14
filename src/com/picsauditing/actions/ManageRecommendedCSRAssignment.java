@@ -16,6 +16,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportJson;
 import com.picsauditing.report.ReportValidationException;
@@ -41,6 +42,7 @@ public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 
 	private Report report;
 	private List<BasicDynaBean> queryResults;
+	private List<Column> columns;
 
 	private String acceptRecommendations;
 	private String rejectRecommendations;
@@ -61,6 +63,7 @@ public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 		json.put(ReportJson.RESULTS_TOTAL, reportSearchResults.getTotalResultSize());
 
 		queryResults = reportSearchResults.getResults();
+		columns = report.getColumns();
 
 		return queryResults;
 	}
@@ -105,6 +108,10 @@ public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 
 	public void setRejectRecommendations(String rejectRecommendations) {
 		this.rejectRecommendations = rejectRecommendations;
+	}
+
+	public List<Column> getColumns() {
+		return columns;
 	}
 
 }

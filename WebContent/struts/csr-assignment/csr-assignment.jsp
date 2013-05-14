@@ -26,20 +26,18 @@
 	<table class="table table-striped" id="csr_assignments">
 	    <thead>
 	        <tr>
-	            <th class="name">Contractor ID</th>
-	            <th class="value">Contractor Name</th>
-	            <th class="actions">Current CSR</th>
-	            <th class="actions">Recommended CSR</th>
+                <s:iterator value="columns" var="column">
+                    <th><s:text name="Report.%{#column.name}" /></th>
+                </s:iterator>
 	            <th class="actions"><input id="accept_all" type="checkbox" checked="checked" />Accept</th>
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <s:iterator value="queryResults" var="row">
                 <tr>
-	                <td class="account_id">${row.get("AccountID")}</td>
-	                <td>${row.get("AccountName")}</td>
-	                <td>${row.get("ContractorCustomerServiceUserName")}</td>
-	                <td>${row.get("ContractorRecommendedCSRName")}</td>
+                    <s:iterator value="columns" var="column">
+                        <td>${row.get(column)}</td>
+                    </s:iterator>
 	                <td>
                         <input type="checkbox" class="accept-recommended" checked="checked" value="${row.get("AccountID")}" />
 	                </td>
