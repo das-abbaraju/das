@@ -274,13 +274,17 @@
 
 				<s:if test="canEditEmployees">
 					<s:url action="ManageEmployees" var="manage_employees">
-						<s:param name="id">
-							${id}
-						</s:param>
+						<s:param name="id">${id}</s:param>
 					</s:url>
+					<s:url action="ManageEmployees" method="add" var="add_employee">
+                        <s:param name="account">${id}</s:param>
+                    </s:url>
 					<a href="${manage_employees}" class="edit">
 						<s:text name="EmployeeDashboard.EditEmployees"/>
 					</a>
+                    <a href="${add_employee}" class="add">
+                    	<s:text name="ManageEmployees.link.Add"/>
+                    </a>
 				</s:if>
 			</div>
 		</div>
