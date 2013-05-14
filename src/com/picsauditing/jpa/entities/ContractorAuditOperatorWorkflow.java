@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Locale;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,16 +9,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import net.sf.cglib.core.Local;
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.util.JSONUtilities;
 
 @SuppressWarnings("serial")
