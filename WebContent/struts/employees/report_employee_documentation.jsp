@@ -7,81 +7,19 @@
 <body>
 	<h1><s:text name="ReportEmployeeDocumentation.title"/></h1>
 
-	<s:include value="../reports/filters.jsp"/>
+	<s:include value="../reports/filters_employee.jsp"/>
 
 	<div id="report_data">
-		<div>
-			<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-		</div>
-		<table class="report">
-			<thead>
-			<tr>
-				<th>
-
-				</th>
-				<th>
-					<s:text name="global.Contractor"/>
-				</th>
-				<th>
-					<s:text name="Employee.name"/>
-				</th>
-				<th>
-					<s:text name="OperatorCompetency.label"/>
-				</th>
-				<th>
-					<s:text name="global.ExpirationDate"/>
-				</th>
-			</tr>
-			</thead>
-			<tbody>
-			<s:if test="data.size() > 0">
-				<s:iterator value="data" var="competency_file" status="status">
-					<tr>
-						<td>
-							${status.index + report.firstRowNumber}
-						</td>
-						<td>
-							<s:url var="contractor_view" action="ContractorView">
-								<s:param name="id">
-									${competency_file.get('id')}
-								</s:param>
-							</s:url>
-							<a href="${contractor_view}">
-								${competency_file.get('name')}
-							</a>
-						</td>
-						<td>
-							<s:url var="employee_profile" action="EmployeeDetail">
-								<s:param name="employee">
-									${competency_file.get('employeeID')}
-								</s:param>
-							</s:url>
-							<a href="${employee_profile}">
-								${competency_file.get('firstName')} ${competency_file.get('lastName')}
-							</a>
-						</td>
-						<td>
-							${competency_file.get('label')}
-						</td>
-						<td>
-							<s:url var="skills_training" action="EmployeeSkillsTraining">
-								<s:param name="employee">
-									${competency_file.get('employeeID')}
-								</s:param>
-							</s:url>
-							<a href="${skills_training}">
-								${competency_file.get('expiration')}
-							</a>
-						</td>
-					</tr>
-				</s:iterator>
-			</s:if>
-			<s:else>
-			</s:else>
-			</tbody>
-		</table>
-		<div>
-			<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-		</div>
+		<s:include value="report_employee_documentation_data.jsp" />
 	</div>
+	<script type="text/javascript">
+		$(function() {
+			$('#report_data').delegate('thead a', 'click', function (event) {
+				var orderBy = $(this).attr('data-orderby');
+				if (orderBy) {
+					changeOrderBy('form1', orderBy);
+				}
+			});
+		});
+	</script>
 </body>

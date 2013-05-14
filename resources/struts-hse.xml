@@ -79,8 +79,19 @@
 
 		<action name="ReportEmployeeDocumentation"
 		        class="com.picsauditing.actions.employees.ReportEmployeeDocumentation">
-			<param name="filter.ajax">false</param>
+			<param name="filter.ajax">true</param>
 			<result>struts/employees/report_employee_documentation.jsp</result>
+		</action>
+
+		<action name="ReportEmployeeDocumentationAjax"
+		        class="com.picsauditing.actions.employees.ReportEmployeeDocumentation">
+			<result>struts/employees/report_employee_documentation_data.jsp</result>
+		</action>
+
+		<action name="ReportEmployeeDocumentationCSV"
+		        class="com.picsauditing.actions.employees.ReportEmployeeDocumentation">
+			<param name="download">true</param>
+			<result>struts/employees/report_employee_documentation_data.jsp</result>
 		</action>
 	</package>
 </struts>

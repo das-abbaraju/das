@@ -8,6 +8,8 @@ import java.util.Iterator;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
@@ -586,6 +588,26 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmployeeList)) {
 			addChildAction(subMenu, "EmployeeList");
+		}
+
+		if (permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
+			boolean showReportEmployeeDocumentation = false;
+
+			if (permissions.isPicsEmployee()) {
+				showReportEmployeeDocumentation = true;
+			} else {
+				OperatorAccount operatorAccount = operatorAccountDAO.find(permissions.getAccountId());
+				for (OperatorCompetency operatorCompetency : operatorAccount.getCompetencies()) {
+					if (operatorCompetency.isRequiresDocumentation()) {
+						showReportEmployeeDocumentation = true;
+						break;
+					}
+				}
+			}
+
+			if (showReportEmployeeDocumentation) {
+				addChildAction(subMenu, "ReportEmployeeDocumentation");
+			}
 		}
 
 		if (permissions.isAdmin()) {
