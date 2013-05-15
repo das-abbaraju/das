@@ -69,4 +69,22 @@ public class OperatorTagDAO extends PicsDAO {
 		Query query = em.createQuery("FROM OperatorTag o");
 		return query.getResultList();
 	}
+
+    public List<OperatorTag> findByTag(String tag) {
+        Query query = em.createQuery("FROM OperatorTag o where o.tag = ?");
+        query.setParameter(1, tag);
+        return query.getResultList();
+    }
+
+    public OperatorTag findByTagAndOperator(String tag, int opID) {
+        Query query = em.createQuery("FROM OperatorTag o where o.tag = ? and o.operator.id = ?");
+        query.setParameter(1, tag);
+        query.setParameter(2, opID);
+        List<OperatorTag> results = query.getResultList();
+        if (results != null && !results.isEmpty()) {
+            return results.get(0);
+        }
+        return null;
+    }
+
 }
