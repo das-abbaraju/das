@@ -28,7 +28,7 @@
 		<h1>
 			<s:text name="EmployeeSkillsTraining.title"/>
 					<span class="sub">
-						${employee.name}
+						${employee.name} (${employee.account.name})
 					</span>
 		</h1>
 
