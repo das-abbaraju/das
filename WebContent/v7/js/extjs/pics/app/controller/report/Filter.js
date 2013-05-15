@@ -396,8 +396,17 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     renderFilter: function (cmp, eOpts) {
+        var filter_input_view = cmp.down('reportfilterbasefilter'),
+            combobox = filter_input_view.down('[name="operator"]'),
+            operator = combobox && combobox.value;
+        
         // attach tooltip on the name of each filter
         cmp.createTooltip();
+        
+        // hide value field depending on operator selected
+        if (filter_input_view && typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
+            filter_input_view.updateValueFieldFromOperatorValue(operator);
+        }
     },
     
     selectOperator: function (cmp, records, eOpts) {
@@ -410,7 +419,7 @@ Ext.define('PICS.controller.report.Filter', {
             is_empty = value_field.isHidden();
 
         // hide value field depending on operator selected
-        if (typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
+        if (filter_input_view && typeof filter_input_view.updateValueFieldFromOperatorValue == 'function') {
             filter_input_view.updateValueFieldFromOperatorValue(operator);
         }
         
