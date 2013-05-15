@@ -27,7 +27,7 @@
                         Welcome to the new menu
                     </h1>
                     <p>
-                        Every time you enter PICS Organizer you land on your Dashboard. This is your hub for information and helps to make sure that everything is on-track. If you ever need to return, just click on Dashboard or the PICS logo.
+                        Every time you enter PICS Organizer you land on your Dashboard. This is your hub for information and helps to make sure that everything is on-track. If you ever need to return, just click on the PICS logo or select Dashboard from the Company menu.
                     </p>
                 </section>
             </div>
@@ -61,6 +61,9 @@
                     </h1>
                     <p>
                         PICS has always prided itself on its personal and reliable Customer Support. To view help topics, chat or talk to your CSR, or email us; simply select Support in your menu.
+                    </p>
+                    <p>
+                        You can also this and any other reference material in the Reference section of the Support menu.
                     </p>
                 </section>
             </div>
