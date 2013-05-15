@@ -452,8 +452,9 @@ public class ContractorCron extends PicsActionSupport {
 		Date completeDate = null;
 		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getStatus().equals(AuditStatus.Complete)) {
-				if (completeDate == null || completeDate.before(cao.getStatusChangedDate())) {
-					completeDate = cao.getStatusChangedDate();
+				Date checkDate = (cao.getStatusChangedDate() != null) ? cao.getStatusChangedDate():cao.getUpdateDate();
+				if (completeDate == null || (checkDate != null && completeDate.before(checkDate))) {
+					completeDate = checkDate;
 				}
 			}
 		}
