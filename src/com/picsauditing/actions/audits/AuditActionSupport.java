@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.models.audits.AuditEditModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -50,6 +51,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private ContractorAuditDAO conAuditDAO;
+	@Autowired
+	private AuditEditModel auditEditModel;
+
 
 	protected int auditID = 0;
 	protected int categoryID = 0;
@@ -72,6 +76,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		this.findConAudit();
+
 		return SUCCESS;
 	}
 
@@ -406,81 +411,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanEditAudit() {
-		AuditType type = conAudit.getAuditType();
-
-		if (type.getClassType().isPolicy() && permissions.isAdmin()) {
-			return true;
-		}
-		if (conAudit.isExpired()) {
-			return false;
-		}
-
-		if (permissions.isContractor() && type.isWCB() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-			return false;
-		}
-
-		if (type.getClassType().isPolicy()) {
-			// we don't want the contractors to edit the effective dates on the
-			// old policy
-			if (conAudit.willExpireSoon()) {
-				if (conAudit.hasCaoStatusAfter(AuditStatus.Submitted)) {
-					return false;
-				}
-			}
-		}
-
-		// Auditors can edit their assigned audits
-		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
-				&& permissions.getUserId() == conAudit.getAuditor().getId()) {
-			return true;
-		}
-
-		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPicsPqf()) {
-			return true;
-		}
-
-		if (permissions.seesAllContractors()) {
-			return true;
-		}
-
-		if (permissions.isContractor()) {
-			boolean canEdit = type.isCanContractorEdit();
-			if (conAudit.getAuditType().getWorkFlow().getId() == 5
-					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
-				if (canEdit) {
-					canEdit = false;
-					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-						if (cao.getStatus().before(AuditStatus.Submitted)) {
-							canEdit = true;
-							break;
-						}
-					}
-				}
-			}
-
-			return canEdit;
-		}
-
-		if (type.getClassType().equals(AuditTypeClass.Audit)
-				&& permissions.isOperatorCorporate()) {
-			if (type.isAnnualAddendum())
-				return false;
-			if (type.getEditAudit() == null)
-				return true;
-			if (permissions.hasGroup(type.getEditAudit().getId())) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		if (type.getEditPermission() != null) {
-			if (permissions.hasPermission(type.getEditPermission())) {
-				return true;
-			}
-		}
-
-		return false;
+		return auditEditModel.canEdit(conAudit, permissions);
 	}
 
 	public boolean isShowCaoTable() {

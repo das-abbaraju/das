@@ -17,6 +17,8 @@ public class WorkflowState extends BaseTable {
 	private AuditStatus status;
 	private boolean hasRequirements;
 	private TranslatableString name;
+	private boolean contractorCanEdit;
+	private boolean operatorCanEdit;
 
 	@ManyToOne
 	@JoinColumn(name = "workflowID", nullable = false)
@@ -56,4 +58,19 @@ public class WorkflowState extends BaseTable {
 		this.hasRequirements = hasRequirements;
 	}
 
+	public boolean isContractorCanEdit() {
+		return contractorCanEdit;
+	}
+
+	public void setContractorCanEdit(boolean contractorCanEdit) {
+		this.contractorCanEdit = contractorCanEdit;
+	}
+
+	public boolean isOperatorCanEdit() {
+		return operatorCanEdit;
+	}
+
+	public void setOperatorCanEdit(boolean operatorCanEdit) {
+		this.operatorCanEdit = operatorCanEdit;
+	}
 }
