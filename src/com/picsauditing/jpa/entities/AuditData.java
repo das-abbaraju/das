@@ -137,7 +137,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 * Is the answer filled in with data or not?
 	 */
 	public boolean isAnswered() {
-		if (answer != null && answer.length() > 0 && !answer.equals(DateBean.NULL_DATE_DB)) {
+		if (getAnswer() != null && getAnswer().length() > 0 && !getAnswer().equals(DateBean.NULL_DATE_DB)) {
 			return true;
 		}
 		return false;

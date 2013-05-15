@@ -1037,3 +1037,51 @@ a.gray {color: #A4A3A4;} /*** N/A or Expired ***/
 {
    float: none;
 }
+
+
+/* audit insurance criteria */
+.Audit-page .insurance-criteria
+{
+    width: 600px;
+}
+
+.Audit-page .insurance-criteria p
+{
+    font-weight: bold;
+    margin:20px 0px 10px 0px;
+}
+
+.Audit-page .insurance-criteria li
+{
+    clear:both;
+    list-style: none;
+    margin-bottom: 15px;
+    overflow:hidden;
+}
+
+.Audit-page .insurance-criteria .criteria-list .icon
+{
+    float:left;
+    margin-right: 10px;
+}
+
+.Audit-page .insurance-criteria .icon-warning-sign
+{
+    color: #E67E1C;
+}
+
+.Audit-page .insurance-criteria .icon-ok
+{
+    color: #229322;
+}
+
+.Audit-page .insurance-criteria .criteria-list .operators
+{
+    float:left;
+    width: 300px;
+}
+
+.Audit-page .insurance-criteria .criteria-list .limit
+{
+    float: right:
+}

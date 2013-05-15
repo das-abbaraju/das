@@ -12,8 +12,8 @@ public class RulesTest {
     @Test
     public void testInsuranceBasedOnFloors() {
         ContractorAccount contractor = ContractorAccount.builder()
-                .audit(ContractorAudit.builder().data(AuditData.builder().answer("15").question(AuditQuestion.builder().id(16961).build()).build()).build())
-                .operator(OperatorAccount.builder().id(34887).flagCriteria(FlagCriteria.builder().id(523).build()).build())
+                .audit(ContractorAudit.builder().data(AuditData.builder().answer("15").question(AuditQuestion.builder().id(17080).build()).build()).build())
+                .operator(OperatorAccount.builder().id(34887).flagCriteria(FlagCriteria.builder().id(522).build()).build())
                 .build();
         ContractorModel contractorModel = ContractorModel.builder().contractor(contractor).build();
 

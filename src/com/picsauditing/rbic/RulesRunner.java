@@ -24,8 +24,6 @@ public class RulesRunner {
     private ContractorAccount contractor;
 
     @Autowired
-    private ContractorModel contractorModel;
-    @Autowired
     private FeatureToggle featureToggle;
 
     public void runInsuranceCriteriaRulesForOperator(OperatorAccount operator) {
@@ -48,6 +46,7 @@ public class RulesRunner {
         kbase.addKnowledgePackages(pkgs);
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
         ksession.insert(contractorModel);
 

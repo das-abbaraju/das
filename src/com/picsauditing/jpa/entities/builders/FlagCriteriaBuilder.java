@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities.builders;
 
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagCriteria;
 
 public class FlagCriteriaBuilder {
@@ -13,5 +14,10 @@ public class FlagCriteriaBuilder {
 
     public FlagCriteria build() {
         return flag;
+    }
+
+    public FlagCriteriaBuilder question(AuditQuestion question) {
+        flag.setQuestion(question);
+        return this;
     }
 }

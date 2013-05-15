@@ -1,10 +1,12 @@
 package com.picsauditing.util;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.picsauditing.access.Permissions;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -607,6 +609,11 @@ public class Strings {
             }
         }
         return idsList;
+    }
+
+    public static String formatInternationalNumber(int number, Locale locale) {
+        NumberFormat format = NumberFormat.getInstance(locale);
+        return format.format(number);
     }
 
 	public static int compareToIgnoreCase(String s1, String s2) {

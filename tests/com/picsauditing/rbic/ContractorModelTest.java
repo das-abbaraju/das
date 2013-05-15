@@ -1,6 +1,5 @@
 package com.picsauditing.rbic;
 
-import com.picsauditing.EntityFactory;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -21,17 +20,15 @@ public class ContractorModelTest {
     @Mock
     private InsuranceCriteriaContractorOperatorDAO insuranceCriteriaContractorOperatorDAO;
 
-    private ContractorModel contractorModel;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        contractorModel = new ContractorModel();
     }
 
     @Test
     public void testHasTag() throws Exception {
         addContractorTagsToContractor(1, 2, 3);
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertTrue(contractorModel.hasTag(2));
@@ -40,6 +37,7 @@ public class ContractorModelTest {
     @Test
     public void testHasTag_TagMissing() throws Exception {
         addContractorTagsToContractor(1, 2, 3);
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertFalse(contractorModel.hasTag(4));
@@ -60,6 +58,7 @@ public class ContractorModelTest {
     @Test
     public void testWorksFor() throws Exception {
         addOperatorsToContractor(1, 2, 3);
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertTrue(contractorModel.worksFor(2));
@@ -68,6 +67,7 @@ public class ContractorModelTest {
     @Test
     public void testWorksFor_OperatorMissing() throws Exception {
         addOperatorsToContractor(1, 2, 3);
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertFalse(contractorModel.worksFor(4));
@@ -135,6 +135,7 @@ public class ContractorModelTest {
 
         addAuditDataToContractorAudit(pqf, 1, 2, 3);
 
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertEquals("Yes", contractorModel.findPqfQuestionAnswer(2));
@@ -153,6 +154,7 @@ public class ContractorModelTest {
         contractorAudits.add(audit);
         when(contractor.getAudits()).thenReturn(contractorAudits);
 
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertTrue(contractorModel.findPqfQuestionAnswer(questionId) == null);
@@ -173,6 +175,7 @@ public class ContractorModelTest {
 
         addAuditDataToContractorAudit(pqf, 1, 2, 3);
 
+        ContractorModel contractorModel = new ContractorModel();
         contractorModel.setContractor(contractor);
 
         assertTrue(contractorModel.findPqfQuestionAnswer(4) == null);

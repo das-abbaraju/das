@@ -11,5 +11,5 @@ rule "numberOfSeatsInAircraft"
     when
         $con : ContractorModel($numberOfSeats : findQuestionAnswerAsInt(16965), $numberOfSeats > 0)
     then
-        $con.updateCriteriaLimitForContractor(976 , 34878,$numberOfSeats * 3000000);
+        $con.updateCriteriaLimitForContractor(981 , 34878,$numberOfSeats * 3000000);
     end

@@ -198,7 +198,6 @@
     <bean id="AccountStatusChanges" class="com.picsauditing.model.account.AccountStatusChanges"/>
     <bean id="PermissionService" class="com.picsauditing.service.PermissionService"/>
     <bean id="RulesRunner" class="com.picsauditing.rbic.RulesRunner" scope="prototype"/>
-    <bean id="ContractorModel" class="com.picsauditing.rbic.ContractorModel" scope="prototype"/>
     <bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator"
           scope="singleton"/>
     <bean id="RecommendedCsrService" class="com.picsauditing.service.csr.RecommendedCsrService"/>

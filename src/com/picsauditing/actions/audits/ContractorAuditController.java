@@ -1,17 +1,10 @@
 package com.picsauditing.actions.audits;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,23 +15,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -625,5 +601,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setOperatorIds(Set<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
 	}
-
+    public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
+        return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
+    }
 }

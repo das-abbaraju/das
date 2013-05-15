@@ -1,9 +1,8 @@
 package com.picsauditing.jpa.entities.builders;
 
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
+
+import java.util.ArrayList;
 
 public class ContractorAccountBuilder {
     private ContractorAccount contractor = new ContractorAccount();
@@ -29,6 +28,18 @@ public class ContractorAccountBuilder {
 
     public ContractorAccountBuilder id(int i) {
         contractor.setId(i);
+        return this;
+    }
+
+    public ContractorAccountBuilder insuranceCriteriaOperator(FlagCriteria flagCriteria, OperatorAccount operatorAccount, int limit) {
+        if (contractor.getInsuranceCriteriaContractorOperators() == null) {
+            contractor.setInsuranceCriteriaContractorOperators(new ArrayList<InsuranceCriteriaContractorOperator>());
+        }
+        InsuranceCriteriaContractorOperator criteria = new InsuranceCriteriaContractorOperator();
+        criteria.setFlagCriteria(flagCriteria);
+        criteria.setOperatorAccount(operatorAccount);
+        criteria.setInsuranceLimit(limit);
+        contractor.getInsuranceCriteriaContractorOperators().add(criteria);
         return this;
     }
 }

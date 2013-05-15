@@ -1,13 +1,11 @@
 package com.picsauditing.rbic;
 
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.InsuranceCriteriaContractorOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -45,5 +43,32 @@ public class RBIC extends PicsActionSupport {
 
     public void setContractor(ContractorAccount contractor) {
         this.contractor = contractor;
+    }
+
+    public String thing() {
+        JSONArray results = new JSONArray();
+
+        for (InsuranceCriteriaContractorOperator insurance: contractor.getInsuranceCriteriaContractorOperators()) {
+            if (insurance.getFlagCriteria().getQuestion().equals(question)) {
+                JSONObject criteria = new JSONObject();
+                criteria.put("criteria", insurance.getFlagCriteria().getLabel());
+                criteria.put("limit", insurance.getInsuranceLimit());
+                results.add(criteria);
+            }
+        }
+
+        jsonArray = results;
+
+        return JSON_ARRAY;
+    }
+
+    public AuditQuestion question;
+
+    public AuditQuestion getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(AuditQuestion question) {
+        this.question = question;
     }
 }

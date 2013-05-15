@@ -1,12 +1,8 @@
 package com.picsauditing.rbic;
 
-import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.dao.InsuranceCriteriaContractorOperatorDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.builders.ContractorModelBuilder;
 import com.picsauditing.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,16 +10,8 @@ import java.util.List;
 
 public class ContractorModel implements Serializable {
 
-    @Autowired
-    private OperatorAccountDAO operatorAccountDAO;
-    @Autowired
-    private FlagCriteriaDAO flagCriteriaDAO;
-    @Autowired
-    private InsuranceCriteriaContractorOperatorDAO insuranceCriteriaContractorOperatorDAO;
-
     private ContractorAccount contractor;
 
-    public List<InsuranceCriteriaContractorOperator> insuranceCriteriaOperators = new ArrayList<>();
     public boolean hasTag(int tagID) {
         for (ContractorTag tag : contractor.getOperatorTags()) {
             if (tag.getTag().getId() == tagID) {

@@ -6,14 +6,14 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 
 rule "workingOnHighFloor"
     when
-        $con : ContractorModel( findQuestionAnswerAsNumber(16961) > 9)
+        $con : ContractorModel( findQuestionAnswerAsNumber(17080) > 9)
     then
-        $con.updateCriteriaLimitForContractor(523, 34887, 3000123);
+        $con.updateCriteriaLimitForContractor(522, 34887, 3000123);
     end
 rule "workingOnLowFloor"
     when
-        $con : ContractorModel(findQuestionAnswerAsNumber(16961) <= 9)
+        $con : ContractorModel(findQuestionAnswerAsNumber(17080) <= 9)
     then
-        $con.updateCriteriaLimitForContractor(523, 34887, 1000123);
+        $con.updateCriteriaLimitForContractor(522, 34887, 1000123);
     end
 

@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.beans.Transient;
+import java.util.Comparator;
 
 @SuppressWarnings("serial")
 @Entity
@@ -51,5 +53,12 @@ public class InsuranceCriteriaContractorOperator extends BaseTable {
 
     public void setInsuranceLimit(int insuranceLimit) {
         this.insuranceLimit = insuranceLimit;
+    }
+
+    public boolean meetsCriteria(AuditData contractorsLimit) {
+        return meetsCriteria(Integer.parseInt(contractorsLimit.getAnswer().replace(",", "")));
+    }
+   public boolean meetsCriteria(int contractorsLimit) {
+        return contractorsLimit >= this.getInsuranceLimit();
     }
 }
