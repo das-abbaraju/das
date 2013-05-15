@@ -381,7 +381,14 @@ public class ManageTranslations extends ReportActionSupport {
 
 				if (to.getId() > 0) {
 					to.setKey(from.getKey());
-					to.setValue(row.get("toValue").toString());
+
+					Object toValue = row.get("toValue");
+					if (toValue != null) {
+						to.setValue(toValue.toString());
+					} else {
+						to.setValue("");
+					}
+
 					to.setLocale(localeTo.getLanguage());
 					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 							"toQualityRating").toString())));
