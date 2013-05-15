@@ -66,9 +66,7 @@ public class ReportRow {
 
 		for (ReportCell cell : cells.values()) {
 			Object value = cell.getValue();
-			if (value != null) {
-				jsonRow.put(cell.getColumn().getName(), value);
-			}
+			jsonRow.put(cell.getColumn().getName(), value);
 		}
 
 		return jsonRow;

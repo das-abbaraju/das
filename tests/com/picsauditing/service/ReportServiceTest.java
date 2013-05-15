@@ -187,6 +187,7 @@ public class ReportServiceTest {
 		assertEquals(expectedResultsDataRow.get("AccountCountryName"), actualResultsDataRow.get("AccountCountryName"));
 		assertEquals(expectedResultsDataRow.get("AccountCity"), actualResultsDataRow.get("AccountCity"));
 		assertEquals(expectedResultsDataRow.get("ContractorMembershipDate"), actualResultsDataRow.get("ContractorMembershipDate"));
+		assertEquals(expectedResultsDataRow.get("ContractorPayingFacilities"), actualResultsDataRow.get("ContractorPayingFacilities"));
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -453,6 +454,7 @@ public class ReportServiceTest {
 		row.put("AccountName", "007 Pest Control Inc.");
 		row.put("AccountCity", "Pasadena");
 		row.put("ContractorMembershipDate", "2012-11-28");
+		row.put("ContractorPayingFacilities", null);
 		rows.add(row);
 
 		row = new HashMap<String, String>();
@@ -463,6 +465,7 @@ public class ReportServiceTest {
 		row.put("AccountName", "0798909 BC Ltd");
 		row.put("AccountCity", "Kamloops");
 		row.put("ContractorMembershipDate", "2012-06-18");
+		row.put("ContractorPayingFacilities", null);
 		rows.add(row);
 
 		row = new HashMap<String, String>();
@@ -473,6 +476,7 @@ public class ReportServiceTest {
 		row.put("AccountName", "0841332 B.C. LTD.");
 		row.put("AccountCity", "ABBOTSFORD");
 		row.put("ContractorMembershipDate", "2012-03-29");
+		row.put("ContractorPayingFacilities", null);
 		rows.add(row);
 
 		return rows;

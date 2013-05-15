@@ -64,7 +64,8 @@ public class ReportDataConverterTest {
 
 		assertEquals(1, json.size());
 		String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:01 [PM]ST\","
-				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
+				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\","
+				+ "\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
 
 		assertTrue(json.toString().matches(expected));
 	}
