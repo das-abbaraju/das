@@ -22,6 +22,7 @@ public class Workflow extends BaseTable {
 
 	private String name;
 	private boolean hasRequirements;
+	private boolean useStateForEdit;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
 	private List<WorkflowState> states = new ArrayList<WorkflowState>();
 
@@ -105,4 +106,13 @@ public class Workflow extends BaseTable {
 	public void setHasRequirements(boolean hasRequirements) {
 		this.hasRequirements = hasRequirements;
 	}
+
+	public boolean isUseStateForEdit() {
+		return useStateForEdit;
+	}
+
+	public void setUseStateForEdit(boolean useStateForEdit) {
+		this.useStateForEdit = useStateForEdit;
+	}
+
 }

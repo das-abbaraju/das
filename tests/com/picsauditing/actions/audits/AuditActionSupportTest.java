@@ -9,6 +9,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.models.audits.AuditEditModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,6 +54,8 @@ public class AuditActionSupportTest extends PicsTest {
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
 
+		PicsTestUtil.forceSetPrivateField(test, "auditEditModel", new AuditEditModel());
+
 	}
 
 	@Test
@@ -83,63 +86,6 @@ public class AuditActionSupportTest extends PicsTest {
 		cao.changeStatus(AuditStatus.Submitted, null);
 		assertTrue(test.isCanViewRequirements());
 
-	}
-
-	@Test
-	public void testIsCanEditAudit() {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(200, contractor);
-		audit.getAuditType().setClassType(AuditTypeClass.Audit);
-		audit.getAuditType().setHasAuditor(true);
-		audit.getAuditType().setCanContractorEdit(false);
-		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-
-		User group = new User();
-		group.setIsGroup(YesNo.Yes);
-
-		when(permissions.isAdmin()).thenReturn(true);
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-		assertTrue(test.isCanEditAudit());
-
-		audit.getAuditType().setEditAudit(group);
-		assertFalse(test.isCanEditAudit());
-
-		group.setId(OPERATOR_GROUP_ID);
-		when(permissions.hasGroup(OPERATOR_GROUP_ID)).thenReturn(true);
-		audit.getAuditType().setEditAudit(group);
-		assertTrue(test.isCanEditAudit());
-	}
-
-	@Test
-	public void testIsCanEditAudit_AnnualUpdate() {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
-		audit.getAuditType().setClassType(AuditTypeClass.Audit);
-		audit.getAuditType().setHasAuditor(true);
-		audit.getAuditType().setCanContractorEdit(true);
-		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-
-		User group = new User();
-		group.setIsGroup(YesNo.Yes);
-
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-		assertFalse(test.isCanEditAudit());
-	}
-
-	@Test
-	public void testIsCanEditAudit_AWCB() {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(145, contractor);
-		audit.getAuditType().setClassType(AuditTypeClass.Policy);
-		audit.getAuditType().setCanContractorEdit(true);
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
-
-		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-
-		when(permissions.isContractor()).thenReturn(true);
-
-		cao.changeStatus(AuditStatus.Pending, null);
-		assertTrue(test.isCanEditAudit());
-
-		cao.changeStatus(AuditStatus.Submitted, null);
-		assertFalse(test.isCanEditAudit());
 	}
 
 	@Test
@@ -304,6 +250,7 @@ public class AuditActionSupportTest extends PicsTest {
 		ContractorAuditOperator cao = audit.getOperators().get(0);
 		cao.setPercentComplete(100);
 		when(permissions.seesAllContractors()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(operator.getId());
 
 		WorkflowStep step = createWorkflowStep(AuditStatus.Submitted, AuditStatus.Approved);
 		Boolean value = Whitebox.invokeMethod(test, "canPerformAction", audit.getOperators().get(0), step);
