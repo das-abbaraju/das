@@ -1,19 +1,5 @@
 package com.picsauditing.actions.i18n;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONObject;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
@@ -26,7 +12,20 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
-//import com.picsauditing.util.ReportFilter;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
@@ -38,7 +37,6 @@ public class ManageTranslations extends ReportActionSupport {
 	private Locale localeTo = null;
 	private List<Translation> list;
 	private AppTranslation translation;
-//	private ReportFilter filter;
 	private boolean showDoneButton;
 	private boolean updateOtherLocales = true;
 
@@ -49,7 +47,7 @@ public class ManageTranslations extends ReportActionSupport {
 	private int[] toQualityRatings = null;
 	private Boolean toShowApplicable = null;
 	private String[] toSourceLanguages = null;
-	
+
 	private HttpServletRequest request;
 	private AppTranslation newTranslation;
 
@@ -146,7 +144,7 @@ public class ManageTranslations extends ReportActionSupport {
 		String transKey = xlatn.getKey();
 		return (null == transKey
 				|| transKey.isEmpty()
-				|| transKey.indexOf(" ") != -1
+				|| transKey.contains(" ")
 				|| transKey.startsWith(".")
 				|| transKey.endsWith("."));
 	}
@@ -465,14 +463,6 @@ public class ManageTranslations extends ReportActionSupport {
 		this.search = search;
 	}
 
-//	public ReportFilter getFilter() {
-//		return filter;
-//	}
-//
-//	public void setFilter(ReportFilter filter) {
-//		this.filter = filter;
-//	}
-
 	public String getSearchType() {
 		return searchType;
 	}
@@ -565,5 +555,13 @@ public class ManageTranslations extends ReportActionSupport {
 
 	public void setList(List<Translation> list) {
 		this.list = list;
+	}
+
+	public boolean hasHtml(String msgValue) {
+		String expression = "<.*/.*>";
+		Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(msgValue);
+
+		return matcher.find() || msgValue.toLowerCase().contains("<s") || msgValue.matches(".*[0-9][<>].*");
 	}
 }

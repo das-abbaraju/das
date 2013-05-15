@@ -1515,6 +1515,11 @@ div.blockDialog {
 	font-weight: bold;
 }
 
+.translation-list .preview-translation
+{
+    float: left;
+}
+
 /* translation list summary */
 
 .translation-list-summary

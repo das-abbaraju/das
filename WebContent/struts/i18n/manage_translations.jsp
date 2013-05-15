@@ -20,12 +20,12 @@
 <s:if test="tracingOn">
 	<div class="alert">
 		Text Tracing for Internationalization is turned ON.
-		
+
         <s:form id="formTracingOff">
 			<s:hidden name="button" value="tracingOff" />
 			<s:submit value="Turn Tracing Off" />
 		</s:form>
-		
+
         <s:form id="formTracingClear">
 			<s:hidden name="button" value="tracingClear" />
 			<s:submit value="Clear Tracing Cache" />
@@ -43,7 +43,7 @@
     <s:form id="form1">
     	<s:hidden name="filter.ajax" value="false" />
     	<s:hidden name="showPage" value="1" />
-        
+
     	From:
     	<s:select
     		list="supportedLanguages.unifiedLanguageList"
@@ -55,15 +55,15 @@
     		list="supportedLanguages.unifiedLanguageList"
     		name="localeTo"
     		listValue="displayName" />
-            
+
     	Key:
     	<s:textfield name="key" />
-        
+
     	Search:
     	<s:textfield name="search" />
-        
+
     	<br />
-        
+
     	<div class="filterOption">
     		Custom:
     		<s:select headerKey="" headerValue=""
@@ -93,7 +93,7 @@
     	</div>
 
     	<div class="clear"></div>
-        
+
     	<div class="filterOption">
     		<a href="#" class="filterBox">From Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
@@ -148,14 +148,14 @@
     		/>
     	</div>
     	<div class="clear"></div>
-        
+
     	<s:submit name="button" id="searchfilter" value="Search" cssClass="picsbutton positive" />
     	<div class="clear"></div>
     </s:form>
 </div>
 <div class="right">
 	<a
-		class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+		class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if>
 		href="javascript: download('ManageTranslations');"
 	 	title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
 	 	<s:text name="global.Download" />
@@ -174,7 +174,7 @@
 			<th class="translation-from">
 				From (<s:property value="localeFrom.displayName"/>)
 			</th>
-			
+
 			<s:if test="localeTo == localeFrom"><% // I tried != but it didn't work. :( %></s:if>
 			<s:else>
 				<th class="translation-to">
@@ -183,13 +183,13 @@
 			</s:else>
 		</tr>
 	</thead>
-    
+
 	<s:iterator value="list" status="rowstatus">
 		<tr id="row<s:property value="from.id"/>" class="translate <s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
 			<td class="translation-key">
 				<span class="key"><s:property value="from.key" /></span>
 			</td>
-            
+
 			<s:iterator value="items" status="status">
                 <s:if test="#status.index == 0">
                     <s:set var="translation_class" value="'translation-from'" />
@@ -203,36 +203,46 @@
                     <s:set var="checkbox_id" value="%{'applicable_to_' + id + '_'}" />
                     <s:set var="translation" value="to" />
                 </s:else>
-                
+
 				<td class="${translation_class}">
                     <s:form cssClass="translationValue" onsubmit="return false;" theme="pics">
                         <s:hidden name="translation" value="%{id}" />
                         <s:hidden name="localeTo" />
                         <s:hidden name="localeFrom" />
                         <s:hidden name="button" value="save" />
-                        
+
                         <s:if test="!(id > 0)">
                             <s:hidden name="translation.locale" value="%{localeTo}" />
                             <s:hidden name="translation.key" value="%{from.key}" />
                         </s:if>
-                        
+
                         <div class="content view-mode">
                             <div class="view">
                                 <div class="text">
-                                	<s:if test="value.toLowerCase().contains('html>') || value.matches('.*[0-9][<>].*')">
+                                	<s:if test="hasHtml(value)">
 	                                    <s:property value="value" />
                                     </s:if>
                                     <s:else>
 	                                    <s:property value="value" escape="false" />
                                     </s:else>
                                 </div>
-                                
+
                                 <div class="actions">
+	                                <s:if test="hasHtml(value)">
+		                                <a href="javascript:;"
+		                                   class="preview-translation btn small"
+		                                   data-url="ManageTranslationsAjax!preview.action"
+		                                   data-key="${translation.key}"
+		                                   data-localeto="${translation.locale}">
+			                                Preview
+		                                </a>
+	                                </s:if>
+
                                     <div class="rate">
                                         <div class="applicable">
                                             <s:checkbox id="%{checkbox_id}" name="translation.applicable" value="%{applicable}" cssClass="is-applicable"/>
                                         </div>
-                                        
+
                                         <select class="quality-rating" name="translation.qualityRating" id="${radio_id}">
                                             <s:set var="selected_quality_rating" value="@com.picsauditing.jpa.entities.TranslationQualityRating@Questionable" />
 
@@ -250,26 +260,14 @@
                                             </s:iterator>
                                         </select>
                                     </div>
-                                    
-                                    <s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
-                                        <a
-                                            href="javascript:;"
-                                            class="preview-translation btn small"
-                                            data-url="ManageTranslationsAjax!preview.action"
-                                            data-key="${translation.key}"
-                                            data-localeto="${translation.locale}"
-                                        >
-                                            Preview
-                                        </a>
-                                    </s:if>
-                                    
+
                                     <a href="javascript:;" class="edit btn small primary">Edit</a>
                                 </div>
                             </div>
-                            
+
                             <div class="edit">
                                 <s:textarea name="translation.value" value="%{value}" />
-                                
+
                                 <ul class="actions">
                                     <li>
                                         <button name="button" class="save btn small success">Save</button>
@@ -277,7 +275,7 @@
                                     <li>
                                         <button class="cancel btn small">Cancel</button>
                                     </li>
-                                    
+
                                     <s:if test="locale == sourceLanguage">
                                         <li class="translation-changed">
                                             <s:checkbox
@@ -289,26 +287,26 @@
                                         </li>
                                     </s:if>
                                 </ul>
-                                
+
                                 <ul class="info">
                                     <s:if test="!sourceLanguage.empty">
                                         <li class="source">
                                             Src: <s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
                                         </li>
                                     </s:if>
-                                    
+
                                     <s:if test="#translation.lastUsed">
                                         <li>
                                             Last Used: <s:date name="#translation.lastUsed" nice="true" />
                                         </li>
                                     </s:if>
-                                    
+
                                     <s:if test="#translation.updateDate">
                                         <li>
                                             Last Updated: <s:date name="#translation.updateDate" nice="true" />
                                         </li>
                                     </s:if>
-                                    
+
                                     <s:if test="#translation.updatedBy.name != ''">
                                         <li>
                                             Last Updated By: ${translation.updatedBy.name}
@@ -332,9 +330,9 @@
 	<input type="hidden" name="translation.locale" value="<s:property value="localeFrom"/>">
 	Add New Key <s:textfield name="translation.key" /> for <s:property value="localeFrom.displayName"/>
 	<br />
-    
+
 	<s:textarea name="translation.value" cols="50" />
 	<br />
-    
+
 	<button name="button" class="save" value="save">Save</button>
 </s:form>
