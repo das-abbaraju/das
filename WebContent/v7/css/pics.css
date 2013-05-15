@@ -11,9 +11,15 @@ body {
   color: #454545;
 }
 
-/* line 17, ../sass/pics/_defaults.scss */
+/* line 16, ../sass/pics/_defaults.scss */
+a {
+  color: #226396;
+}
+
+/* line 22, ../sass/pics/_defaults.scss */
 a:hover,
 a:focus {
+  color: #73bbe8;
   text-decoration: none;
 }
 
@@ -377,11 +383,6 @@ body {
 .alert-info {
   background: #c3e0f9;
   border: 1px solid #226396;
-  color: #226396;
-}
-
-/* line 2, ../sass/pics/widgets/twitter-bootstrap/_anchors.scss */
-a {
   color: #226396;
 }
 

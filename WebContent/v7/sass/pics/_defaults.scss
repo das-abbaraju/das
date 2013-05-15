@@ -12,8 +12,14 @@ body
 	color: #454545;
 }
 
+a
+{
+	color: $pics_link_blue;
+}
+
 a:hover,
 a:focus
 {
+	color: $pics_light_blue;
 	text-decoration: none;
 }
