@@ -212,17 +212,18 @@
 									<s:if test="displayButton(#currentCao, #step)">
                                         <s:if test="#step.newStatus.toString() == 'Incomplete'">
                                             <s:set var="button_class">
-                                                policy-reject
+                                                policy-reject ${step.newStatus.color}
                                             </s:set>
                                         </s:if>
                                         <s:else>
                                             <s:set var="button_class">
-                                                singleButton
+                                                singleButton ${step.newStatus.color}
                                             </s:set>
                                         </s:else>
                                         
-										<div class="${button_class} button <s:property value="#step.newStatus.color"/>" 
-											title="<s:property value="#step.buttonHelpText" />">
+										<div class="${button_class} button"
+											title="<s:property value="#step.buttonHelpText" />"
+                                            data-attr-audit-reload="true">
 											<s:property value="#step.name" />
 											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 											<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />

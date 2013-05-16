@@ -23,6 +23,17 @@
                             modal.hide();
                         }]);
                     });
+
+                   $('#caoTable .buttonAction .button').on('click', $.proxy(this, 'refreshAudit'));
+                }
+            },
+
+            refreshAudit: function (event) {
+                var $element = $(event.target),
+                    reload = $element.attr('data-attr-audit-reload');
+
+                if (reload == 'true') {
+                   window.location.reload(true);
                 }
             },
 
