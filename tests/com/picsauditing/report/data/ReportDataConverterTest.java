@@ -63,7 +63,7 @@ public class ReportDataConverterTest {
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:01 [PM]ST\","
+		String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:56\","
 				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\","
 				+ "\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
 
@@ -155,7 +155,7 @@ public class ReportDataConverterTest {
 
 		ReportDataConverter converter = new ReportDataConverter(columns, queryResults);
 		converter.setLocale(Locale.FRENCH);
-		converter.convertForExtJS();
+		converter.convertForExtJS(null);
 		JSONArray json = converter.getReportResults().toJson();
 
 		return json;

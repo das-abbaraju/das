@@ -4,9 +4,9 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Geo;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.TimeZoneUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
-import org.joda.time.DateTimeZone;
 import org.json.simple.JSONObject;
 
 import javax.persistence.Column;
@@ -18,7 +18,6 @@ import java.util.*;
 @SuppressWarnings("serial")
 @Table(name = "auditor_availability")
 public class AuditorAvailability extends BaseTable {
-	public static final String SERVER_TIME_ZONE = "CST";
 	public static final String START_TIME_FORMAT = "hh:mm a";
 	public static final String STOP_TIME_FORMAT = "hh:mm a z";
     public static final String CANCELLATION_TIME_FORMAT = "yyyy-MM-dd hh:mm a z";
@@ -53,18 +52,21 @@ public class AuditorAvailability extends BaseTable {
     }
 
 	@Transient
-	public String getTimeZoneStartDate(String timezone) throws ParseException {
-		return getFormattedTimeStringWithNewTimeZone(timezone, START_TIME_FORMAT, startDate);
+	public String getTimeZoneStartDate(String timezoneId) throws ParseException {
+		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
+		return TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, START_TIME_FORMAT, startDate);
 	}
 
 	@Transient
-	public String getTimeZoneEndDate(String timezone) throws ParseException {
-		return getFormattedTimeStringWithNewTimeZone(timezone, STOP_TIME_FORMAT, getEndDate());
+	public String getTimeZoneEndDate(String timezoneId) throws ParseException {
+		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
+		return TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, STOP_TIME_FORMAT, getEndDate());
 	}
 
     @Transient
-    public String getTimeZoneLastCancellationDate(String timezone) throws ParseException {
-        return getFormattedTimeStringWithNewTimeZone(timezone, CANCELLATION_TIME_FORMAT, getLastCancellationDate());
+    public String getTimeZoneLastCancellationDate(String timezoneId) throws ParseException {
+		TimeZone timezone = TimeZone.getTimeZone(timezoneId);
+        return TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, CANCELLATION_TIME_FORMAT, getLastCancellationDate());
     }
 
 	@ManyToOne
@@ -251,14 +253,4 @@ public class AuditorAvailability extends BaseTable {
 		return rank;
 	}
 
-	@Transient
-	private String getFormattedTimeStringWithNewTimeZone(String timezone, String format, Date date) {
-		DateTimeZone serverTimeZone = DateTimeZone.forTimeZone(TimeZone.getTimeZone(SERVER_TIME_ZONE));
-		DateTimeZone selectedTimeZone = DateTimeZone.forTimeZone(TimeZone.getTimeZone(timezone));
-
-		DateTime dateTime = new DateTime(date);
-		DateTime serverDateTime = dateTime.withZoneRetainFields(serverTimeZone);
-
-		return serverDateTime.withZone(selectedTimeZone).toString(format);
-	}
 }

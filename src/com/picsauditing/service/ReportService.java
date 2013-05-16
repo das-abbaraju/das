@@ -285,7 +285,7 @@ public class ReportService {
 		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 
 		converter.setLocale(reportContext.permissions.getLocale());
-		converter.convertForExtJS();
+		converter.convertForExtJS(reportContext.user.getTimezone());
 		ReportResults reportResults = converter.getReportResults();
 
 		return reportResults;

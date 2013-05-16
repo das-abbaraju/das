@@ -26,7 +26,8 @@ public abstract class PicsDateFormat {
 	public static final String Time12Hour = "hh:mm a z";
 	public static final String ScheduleAudit = "yyyyMMddHHmm";
 	public static final String Braintree = "yyyyMMddHHmmss";
-	public static final String DateAndTime = "yyyy-MM-dd @ HH:MM z";
+	public static final String DateAndTime = "yyyy-MM-dd @ HH:mm z";
+	public static final String DateAndTimeNoTimezone = "yyyy-MM-dd @ HH:mm";
 
 	// These exist for backwards compatability for input forms and the parsing thereof
 	@Deprecated

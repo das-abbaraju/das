@@ -5,7 +5,9 @@ import java.text.DateFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
+import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +31,9 @@ public class ReportDataConverter {
 		reportResults = new ReportResults(columns, results);
 	}
 
-	public void convertForExtJS() {
+	public void convertForExtJS(TimeZone timezone) {
 		for (ReportCell cell : reportResults.getCells()) {
-			Object value = convertValueForJson(cell);
+			Object value = convertValueForJson(cell, timezone);
 			cell.setValue(value);
 		}
 	}
@@ -43,7 +45,7 @@ public class ReportDataConverter {
 		}
 	}
 
-	private Object convertValueForJson(ReportCell cell) {
+	private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
 		Object value = cell.getValue();
 		if (value == null) {
 			return null;
@@ -51,7 +53,7 @@ public class ReportDataConverter {
 
 		Object result = convertValueBasedOnCellColumn(cell, false);
 		if (result == null) {
-			result = convertValueBasedOnType(value);
+			result = convertValueBasedOnType(value, timezone);
 			if (result == null) {
 				result = value.toString();
 			}
@@ -157,7 +159,7 @@ public class ReportDataConverter {
 		return valueTranslated;
 	}
 
-	private String convertValueBasedOnType(Object value) {
+	private String convertValueBasedOnType(Object value, TimeZone timezone) {
 		String result = null;
 
 		if (value instanceof java.sql.Date) {
@@ -167,8 +169,10 @@ public class ReportDataConverter {
 
 		if (value instanceof java.sql.Timestamp) {
 			Timestamp valueAsTimestamp = (Timestamp) value;
-			result = PicsDateFormat.formatDateOrBlank(valueAsTimestamp, PicsDateFormat.DateAndTime);
+
+			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, valueAsTimestamp);
 		}
+
 		return result;
 	}
 

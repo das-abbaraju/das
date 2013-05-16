@@ -1,10 +1,11 @@
 package com.picsauditing.util;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 import com.picsauditing.toggle.FeatureToggle;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 public class TimeZoneUtil {
 	public static Map<String, String> TIME_ZONES_CANONICAL;
@@ -12,6 +13,8 @@ public class TimeZoneUtil {
 	public static Map<String, String> TIME_ZONES_SHORT;
 	public static Map<String, String> COUNTRY_TO_TIME_ZONE;
 	public static Map<String, String> COUNTRY_SUB_TO_TIME_ZONE;
+
+	public static final TimeZone SERVER_TIME_ZONE = TimeZone.getTimeZone("CST");
 
 	static {
 		Map<String, String> timeZones = new LinkedHashMap<String, String>();
@@ -21,7 +24,7 @@ public class TimeZoneUtil {
 		timeZones.put("Africa/Nairobi", "TimeZone.Africa.East"); // needs translation
 		timeZones.put("Africa/Tripoli", "TimeZone.Africa.Tripoli");
 		timeZones.put("Africa/Windhoek", "TimeZone.Africa.Windhoek");
-		
+
 		timeZones.put("America/Adak", "TimeZone.US.Aleutian");
 		timeZones.put("America/Anchorage", "TimeZone.US.Alaska");
 		timeZones.put("America/Argentina/Buenos_Aires", "TimeZone.America.Argentina.Buenos_Aires");
@@ -40,7 +43,7 @@ public class TimeZoneUtil {
 		timeZones.put("America/Santiago", "TimeZone.America.Santiago");
 		timeZones.put("America/Sao_Paulo", "TimeZone.America.Sao_Paulo");
 		timeZones.put("America/St_Johns", "TimeZone.Canada.Newfoundland");
-		
+
 		timeZones.put("Etc/GMT", "TimeZone.Greenwich");
 		timeZones.put("Etc/UTC", "TimeZone.Etc.UTC");
 		timeZones.put("Etc/GMT-4", "TimeZone.Atlantic.Mid"); // needs translation
@@ -69,7 +72,7 @@ public class TimeZoneUtil {
 		timeZones.put("Asia/Tbilisi", "TimeZone.Asia.Tbilisi");
 		timeZones.put("Asia/Tehran", "TimeZone.Asia.Tehran");
 		timeZones.put("Asia/Tokyo", "TimeZone.Asia.Tokyo");
-		
+
 		timeZones.put("Australia/Adelaide", "TimeZone.Australia.Adelaide");
 		timeZones.put("Australia/Brisbane", "TimeZone.Australia.Brisbane");
 		timeZones.put("Australia/Darwin", "TimeZone.Australia.Darwin");
@@ -85,7 +88,7 @@ public class TimeZoneUtil {
 
 		TIME_ZONES_CANONICAL = Collections.unmodifiableMap(timeZones);
 	}
-	
+
 	static {
 		Map<String, String> timeZones = new LinkedHashMap<String, String>();
 		timeZones.put("Etc/GMT+12", "TimeZone.Etc.GMT+12");
@@ -313,4 +316,26 @@ public class TimeZoneUtil {
 		countrySubToTz.put("CA-AB", "America/Edmonton");
 		COUNTRY_SUB_TO_TIME_ZONE = Collections.unmodifiableMap(countrySubToTz);
 	}
+
+	public static String getFormattedTimeStringWithNewTimeZone(TimeZone timezone, String format, Timestamp timestamp) {
+		return getFormattedTimeStringWithNewTimeZone(timezone, format, new DateTime(timestamp));
+	}
+
+	public static String getFormattedTimeStringWithNewTimeZone(TimeZone timezone, String format, Date date) {
+		return getFormattedTimeStringWithNewTimeZone(timezone, format, new DateTime(date));
+	}
+
+	public static String getFormattedTimeStringWithNewTimeZone(TimeZone timezone, String format, DateTime dateTime) {
+		if (timezone == null) {
+			timezone = SERVER_TIME_ZONE;
+		}
+
+		DateTimeZone serverTimeZone = DateTimeZone.forTimeZone(SERVER_TIME_ZONE);
+		DateTimeZone selectedTimeZone = DateTimeZone.forTimeZone(timezone);
+
+		DateTime serverDateTime = dateTime.withZoneRetainFields(serverTimeZone);
+
+		return serverDateTime.withZone(selectedTimeZone).toString(format);
+	}
+
 }
