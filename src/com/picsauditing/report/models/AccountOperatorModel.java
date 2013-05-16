@@ -36,23 +36,33 @@ public class AccountOperatorModel extends AbstractModel {
 		parentOperator.alias = "parentOperator";
         parentOperator.minimumImportance = FieldImportance.Required;
 
-        ModelSpec accountUser = spec.join(AccountTable.AccountUser);
-        accountUser.category = FieldCategory.CustomerService;
-        accountUser.minimumImportance = FieldImportance.Required;
-        accountUser.alias = "AccountUser";
+        ModelSpec accountManager = spec.join(AccountTable.AccountManager);
+        accountManager.category = FieldCategory.CustomerService;
+        accountManager.minimumImportance = FieldImportance.Required;
+        accountManager.alias = "AccountManager";
 
-        ModelSpec user = accountUser.join(AccountUserTable.User);
-        user.category = FieldCategory.CustomerService;
-        user.alias = "AccountManager";
-        user.minimumImportance = FieldImportance.Required;
+		ModelSpec accountManagerUser = accountManager.join(AccountUserTable.User);
+		accountManagerUser.category = FieldCategory.CustomerService;
+		accountManagerUser.alias = "AccountManagerUser";
+		accountManagerUser.minimumImportance = FieldImportance.Required;
 
-        return spec;
+		ModelSpec salesRep = spec.join(AccountTable.SalesRep);
+		salesRep.category = FieldCategory.CustomerService;
+		salesRep.minimumImportance = FieldImportance.Required;
+		salesRep.alias = "SalesRep";
+
+		ModelSpec salesRepUser = salesRep.join(AccountUserTable.User);
+		salesRepUser.category = FieldCategory.CustomerService;
+		salesRepUser.alias = "SalesRepUser";
+		salesRepUser.minimumImportance = FieldImportance.Required;
+
+		return spec;
 	}
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
 		super.getWhereClause(filters);
-		
+
 		return permissionQueryBuilder.buildWhereClause(ModelType.Operators);
 	}
 

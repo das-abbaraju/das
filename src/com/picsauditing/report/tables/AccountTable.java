@@ -13,7 +13,8 @@ public class AccountTable extends AbstractTable {
 	public static final String Naics = "Naics";
 	public static final String Country = "Country";
 	public static final String Invoice = "Invoice";
-    public static final String AccountUser = "AccountUser";
+	public static final String AccountManager = "AccountManager";
+	public static final String SalesRep = "SalesRep";
 
     public AccountTable() {
 		super("accounts");
@@ -52,9 +53,14 @@ public class AccountTable extends AbstractTable {
 		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID")))
 				.setMinimumImportance(FieldImportance.Low);
 
-        addOptionalKey(new ReportForeignKey(AccountUser, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
-                UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
-                ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
-                .setMinimumImportance(FieldImportance.Required);
+		addOptionalKey(new ReportForeignKey(AccountManager, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
+				UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
+				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
+				.setMinimumImportance(FieldImportance.Required);
+
+		addOptionalKey(new ReportForeignKey(SalesRep, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
+				UserAccountRole.PICSSalesRep + "' AND " + ReportOnClause.ToAlias +
+				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
+				.setMinimumImportance(FieldImportance.Required);
 	}
 }
