@@ -152,10 +152,18 @@ public class PermissionQueryBuilder {
 			return Strings.implode(permissions.getOperatorChildren());
 
 		if (permissions.isGeneralContractor())
-			return permissions.getAccountId() + "," + Strings.implode(permissions.getLinkedClients());
+			return permissions.getAccountId() + addLinkedClientsIfAny();
 
 		return permissions.getAccountIdString();
 	}
+
+    private String addLinkedClientsIfAny() {
+        if (permissions.getLinkedClients() != null && !permissions.getLinkedClients().isEmpty()) {
+            return "," + Strings.implode(permissions.getLinkedClients());
+        } else {
+            return "";
+        }
+    }
 
 	private boolean isHQL() {
 		return queryLanguage == HQL;

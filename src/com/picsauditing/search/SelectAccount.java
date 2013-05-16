@@ -149,7 +149,7 @@ public class SelectAccount extends SelectSQL {
 			String operatorVisibility = permissions.getAccountIdString();
 			operatorVisibility +="," +permissions.getPrimaryCorporateAccountID();
 
-			if (permissions.isGeneralContractor()) {
+			if (includeLinkedClientsInVisibility(permissions)) {
 				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
 			}
 
@@ -184,4 +184,8 @@ public class SelectAccount extends SelectSQL {
 
 		this.addWhere("1 " + permQuery.toString());
 	}
+
+    private boolean includeLinkedClientsInVisibility(Permissions permissions) {
+        return permissions.isGeneralContractor() && permissions.getLinkedClients() != null && !permissions.getLinkedClients().isEmpty();
+    }
 }
