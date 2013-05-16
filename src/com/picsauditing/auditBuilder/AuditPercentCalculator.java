@@ -411,8 +411,14 @@ public class AuditPercentCalculator {
 							applies = true;
 						else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
 							applies = true;
-						else
+						else {
 							applies = builder.isCategoryApplicable(data.getCategory(), cao);
+							AuditCategory parent = data.getCategory().getParent();
+							while (parent != null && applies) {
+								applies = builder.isCategoryApplicable(parent, cao);
+								parent = parent.getParent();
+							}
+						}
 					}
 				}
 
@@ -445,7 +451,6 @@ public class AuditPercentCalculator {
 				if (percentComplete >= 100) {
 					percentComplete = 100;
 				}
-
 				percentVerified = (int) Math.floor(100 * verified / required);
 				if (percentVerified >= 100) {
 					percentVerified = 100;
