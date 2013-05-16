@@ -997,11 +997,5 @@
             <artifactId>org.jacoco.core</artifactId>
             <version>${jacoco.version}</version>
         </dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>20041228.180559</version>
-        </dependency>
-
     </dependencies>
 </project>
