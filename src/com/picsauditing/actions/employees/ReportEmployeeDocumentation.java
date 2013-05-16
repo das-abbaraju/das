@@ -53,7 +53,7 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 
 	private void buildQuery() {
 		sql.addJoin("JOIN employee e ON e.id = ec.`employeeID`");
-		sql.addJoin("JOIN accounts a ON a.id = e.accountID");
+		sql.addJoin("JOIN accounts a ON a.id = e.accountID AND a.requiresCompetencyReview = 1");
 		sql.addJoin("JOIN operator_competency oc ON oc.id = ec.competencyID");
 		sql.addJoin("JOIN operator_competency_course occ ON occ.competencyID = oc.id AND occ.courseType = " +
 				"'REQUIRES_DOCUMENTATION'");
@@ -72,6 +72,7 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 		sql.addField("ocef.id fileID");
 		sql.addField("ocef.expiration");
 		sql.addField("ocef.fileName");
+		sql.addField("CASE WHEN ocef.id IS NULL THEN 'Missing' END fileStatus");
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere("o.id IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");
@@ -79,7 +80,17 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 			sql.addWhere("a.id = " + permissions.getAccountId());
 		}
 
-		sql.addWhere("a.status IN ('Active'" + (permissions.getAccountStatus().isDemo() ? ",'Demo'" : "") + ")");
+		String statusClause = "a.status IN ('Active'";
+		if (permissions.getAccountStatus().isDemo() || permissions.isPicsEmployee()) {
+			statusClause += ",'Demo'";
+		}
+		statusClause += ")";
+
+		sql.addWhere(statusClause);
+		sql.addWhere("ocef.expiration = (SELECT MAX(f.expiration) " +
+				"FROM operator_competency_employee_file f " +
+				"WHERE f.employeeID = e.id)" +
+				"OR ocef.expiration IS NULL");
 
 		addFilterToSQL();
 	}

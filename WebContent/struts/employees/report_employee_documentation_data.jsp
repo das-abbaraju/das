@@ -89,7 +89,12 @@
 							</s:param>
 						</s:url>
 						<a href="${skills_training}">
-							${competency_file.get('expiration')}
+							<s:if test="#competency_file.get('expiration') == null">
+								${competency_file.get('fileStatus')}
+							</s:if>
+							<s:else>
+								${competency_file.get('expiration')}
+							</s:else>
 						</a>
 					</td>
 				</tr>
