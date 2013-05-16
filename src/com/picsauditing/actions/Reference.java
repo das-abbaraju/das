@@ -42,7 +42,7 @@ public class Reference extends PicsActionSupport {
 			setReportsManagerTutorialDate();
 		}
 
-		return "reports-manager";
+		return "manage-reports";
 	}
 
 	/**

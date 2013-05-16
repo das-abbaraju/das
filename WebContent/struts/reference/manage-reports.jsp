@@ -18,7 +18,7 @@
     <div class="content">
         <div class="row menu">
             <div class="span6 image-container">
-                <img src="v7/img/reference/report-manager/menu.png" />
+                <img src="v7/img/reference/manage-report/menu.png" />
             </div>
 
             <div class="span6">
@@ -52,7 +52,7 @@
         
         <div class="row favorites">
             <div class="span7 image-container">
-                <img src="v7/img/reference/report-manager/favorites.png" />
+                <img src="v7/img/reference/manage-report/favorites.png" />
             </div>
             <div class="span5">
                 <section class="overview">
@@ -71,7 +71,7 @@
         
         <div class="row favorites-pinning">
             <div class="span3 image-container">
-                <img src="v7/img/reference/report-manager/pinned.png" />
+                <img src="v7/img/reference/manage-report/pinned.png" />
             </div>
             <div class="span9">
                 <section class="overview">
@@ -85,17 +85,13 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="span10 offset1">
-                <hr />
-            </div>
-        </div>
+        <hr />
         
         <h2>Owned by Me</h2>
         
         <div class="row owned-by">
             <div class="span7 image-container">
-                <img src="v7/img/reference/report-manager/owned-by.png" />
+                <img src="v7/img/reference/manage-report/owned-by.png" />
             </div>
 
             <div class="span5">
@@ -165,7 +161,7 @@
         
         <div class="row shared-with">
             <div class="span7 image-container">
-                <img src="v7/img/reference/report-manager/shared-with.png" />
+                <img src="v7/img/reference/manage-report/shared-with.png" />
             </div>
 
             <div class="span5">
@@ -205,7 +201,7 @@
         
         <div class="row search">
             <div class="span6 image-container">
-                <img src="v7/img/reference/report-manager/search.png" />
+                <img src="v7/img/reference/manage-report/search.png" />
             </div>
 
             <div class="span6">
@@ -215,6 +211,50 @@
                     </h1>
                     <p>
                         This is where you can look for any report that you have access to. As new reports are created or allowed to be searchable, they'll show here as well. By default you'll see some recommended reports. Once you satrt typing in the search area your results will be live-updated. Once you find what you're looking for then just open the report or instantly add it to your Favorites by selecting the star icon.
+                    </p>
+                </section>
+            </div>
+        </div>
+        
+        <hr />
+        
+        <h2>Report Access</h2>
+        
+        <div class="row access">
+            <div class="span12 image-container">
+                <img src="v7/img/reference/manage-report/access.png" />
+            </div>
+            
+            <div class="span8 offset2">
+                <section class="overview">
+                    <h1>
+                        Full control over who can see and touch
+                    </h1>
+                    <p>
+                        Here’s where you set the permissions and access to a report—either adding or removing individuals and groups. To add to your list, just start typing in the search area. All of your changes update automatically, so once you’re done you can just navigate away from this section.
+                    </p>
+                </section>
+            </div>
+        </div>
+        
+        <div class="row access">
+            <div class="span3 image-container">
+                <img src="v7/img/reference/manage-report/access-permissions.png" />
+            </div>
+            
+            <div class="span9">
+                <section class="overview">
+                    <h1>
+                        Editing Permissions
+                    </h1>
+                    <p>
+                        The drop down on the right side of the person or group’s box is where you can modify what their permission is. This is also where you would remove their permission to the report as well.
+                    </p>
+                    <p>
+                        Remember, only individuals can be a report’s owner.
+                    </p>
+                    <p>
+                        Groups and individuals with View permissions to a report cannot edit or view the Report Access section.
                     </p>
                 </section>
             </div>

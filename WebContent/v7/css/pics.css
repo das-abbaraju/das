@@ -2191,6 +2191,205 @@ hr {
     margin-bottom: 20px;
   }
 }
+/* line 2, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page {
+  background-color: #454545;
+  padding-top: 0;
+}
+/* line 7, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page p {
+  line-height: 24px;
+}
+/* line 12, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page hr {
+  border-bottom: 1px solid #dcdcdc;
+  border-top: 0;
+}
+/* line 20, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page header,
+#Reference_reportsManager_page .content,
+#Reference_reportsManager_page footer {
+  margin: 0 -20px;
+  padding: 20px;
+  overflow: hidden;
+}
+/* line 27, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page header {
+  background-color: #f1f1f2;
+}
+/* line 31, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page header h1 {
+  color: #808285;
+  font-size: 60px;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+}
+/* line 40, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page header h2 {
+  color: #a84d10;
+  font-size: 14px;
+  line-height: 1;
+}
+/* line 48, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content {
+  background-color: #f1f1f2;
+}
+/* line 52, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content h2 {
+  color: #808285;
+  font-size: 60px;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+  text-align: center;
+}
+/* line 62, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content dt {
+  color: #226396;
+}
+/* line 67, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content .row {
+  margin-bottom: 80px;
+  margin-top: 80px;
+}
+/* line 73, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content li {
+  margin-bottom: 50px;
+}
+/* line 78, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content [class^="icon-"] {
+  float: left;
+  font-size: 50px;
+}
+/* line 84, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content .icon-key {
+  color: #e67e1c;
+}
+/* line 89, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content .icon-search {
+  color: #73bbe8;
+}
+/* line 94, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content .icon-minus-sign {
+  color: #ac030c;
+}
+/* line 99, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content .icon-remove-sign {
+  color: #808285;
+}
+/* line 104, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .content [class^="icon-"] + section {
+  margin-left: 93px;
+}
+/* line 116, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .row.menu .image-container,
+#Reference_reportsManager_page .row.favorites .image-container,
+#Reference_reportsManager_page .row.owned-by .image-container,
+#Reference_reportsManager_page .row.shared-with .image-container,
+#Reference_reportsManager_page .row.search .image-container {
+  float: right;
+  text-align: right;
+}
+/* line 122, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .row.menu img,
+#Reference_reportsManager_page .row.favorites img,
+#Reference_reportsManager_page .row.owned-by img,
+#Reference_reportsManager_page .row.shared-with img,
+#Reference_reportsManager_page .row.search img {
+  margin-right: -20px;
+}
+/* line 130, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .row.favorites-pinning img {
+  margin-left: -20px;
+}
+/* line 138, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .row.access .span12.image-container {
+  margin-bottom: 40px;
+  text-align: center;
+}
+/* line 146, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .row.access .span3.image-container img {
+  margin-left: -20px;
+}
+/* line 155, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .overview h1 {
+  color: #73bbe8;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1;
+  margin-top: 0;
+}
+/* line 164, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page .overview p {
+  color: #666;
+}
+/* line 170, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page footer {
+  background-color: #ccc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
+  background-image: -moz-linear-gradient(#eaeaea, #cccccc);
+  background-image: -o-linear-gradient(#eaeaea, #cccccc);
+  background-image: linear-gradient(#eaeaea, #cccccc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
+  border-top: 1px solid #999;
+  text-align: center;
+}
+/* line 178, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page footer a {
+  margin-bottom: 10px;
+}
+/* line 183, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page footer .icon-circle-arrow-right {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+/* line 189, ../sass/pics/templates/reference/_manage-reports.scss */
+#Reference_reportsManager_page footer p {
+  color: #808285;
+}
+
+@media (min-width: 1200px) {
+  /* line 201, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page header,
+  #Reference_reportsManager_page .content,
+  #Reference_reportsManager_page footer {
+    margin: 0 -30px;
+    padding: 30px;
+  }
+  /* line 213, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .row.menu img,
+  #Reference_reportsManager_page .row.favorites img,
+  #Reference_reportsManager_page .row.owned-by img,
+  #Reference_reportsManager_page .row.shared-with img,
+  #Reference_reportsManager_page .row.search img {
+    margin-right: -30px;
+  }
+  /* line 221, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .row.favorites-pinning img {
+    margin-left: -30px;
+  }
+  /* line 229, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .row.access .span3.image-container img {
+    margin-left: -30px;
+  }
+}
+@media (max-width: 767px) {
+  /* line 242, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .content .row {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+  /* line 249, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .row.menu {
+    margin-top: 0;
+  }
+  /* line 254, ../sass/pics/templates/reference/_manage-reports.scss */
+  #Reference_reportsManager_page .image-container {
+    margin-bottom: 20px;
+  }
+}
 /* line 2, ../sass/pics/templates/reference/_navigation-menu.scss */
 #Reference_navigationMenu_page {
   background-color: #454545;
@@ -2478,192 +2677,6 @@ hr {
     position: static;
     top: 0;
     width: auto;
-  }
-}
-/* line 2, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page {
-  background-color: #454545;
-  padding-top: 0;
-}
-/* line 7, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page p {
-  line-height: 24px;
-}
-/* line 12, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page hr {
-  border-bottom: 1px solid #dcdcdc;
-  border-top: 0;
-}
-/* line 20, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page header,
-#Reference_reportsManager_page .content,
-#Reference_reportsManager_page footer {
-  margin: 0 -20px;
-  padding: 20px;
-  overflow: hidden;
-}
-/* line 27, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page header {
-  background-color: #f1f1f2;
-}
-/* line 31, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page header h1 {
-  color: #808285;
-  font-size: 60px;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0;
-}
-/* line 40, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page header h2 {
-  color: #a84d10;
-  font-size: 14px;
-  line-height: 1;
-}
-/* line 48, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content {
-  background-color: #f1f1f2;
-}
-/* line 52, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content h2 {
-  color: #808285;
-  font-size: 60px;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0;
-  text-align: center;
-}
-/* line 62, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content dt {
-  color: #226396;
-}
-/* line 67, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content .row {
-  margin-bottom: 80px;
-  margin-top: 80px;
-}
-/* line 73, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content li {
-  margin-bottom: 50px;
-}
-/* line 78, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content [class^="icon-"] {
-  float: left;
-  font-size: 50px;
-}
-/* line 84, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content .icon-key {
-  color: #e67e1c;
-}
-/* line 89, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content .icon-search {
-  color: #73bbe8;
-}
-/* line 94, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content .icon-minus-sign {
-  color: #ac030c;
-}
-/* line 99, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content .icon-remove-sign {
-  color: #808285;
-}
-/* line 104, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .content [class^="icon-"] + section {
-  margin-left: 93px;
-}
-/* line 116, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .row.menu .image-container,
-#Reference_reportsManager_page .row.favorites .image-container,
-#Reference_reportsManager_page .row.owned-by .image-container,
-#Reference_reportsManager_page .row.shared-with .image-container,
-#Reference_reportsManager_page .row.search .image-container {
-  float: right;
-  text-align: right;
-}
-/* line 122, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .row.menu img,
-#Reference_reportsManager_page .row.favorites img,
-#Reference_reportsManager_page .row.owned-by img,
-#Reference_reportsManager_page .row.shared-with img,
-#Reference_reportsManager_page .row.search img {
-  margin-right: -20px;
-}
-/* line 130, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .row.favorites-pinning img {
-  margin-left: -20px;
-}
-/* line 138, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .overview h1 {
-  color: #73bbe8;
-  font-size: 24px;
-  font-weight: normal;
-  line-height: 1;
-  margin-top: 0;
-}
-/* line 147, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page .overview p {
-  color: #666;
-}
-/* line 153, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page footer {
-  background-color: #ccc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
-  background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
-  background-image: -moz-linear-gradient(#eaeaea, #cccccc);
-  background-image: -o-linear-gradient(#eaeaea, #cccccc);
-  background-image: linear-gradient(#eaeaea, #cccccc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
-  border-top: 1px solid #999;
-  text-align: center;
-}
-/* line 161, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page footer a {
-  margin-bottom: 10px;
-}
-/* line 166, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page footer .icon-circle-arrow-right {
-  margin-left: 5px;
-  vertical-align: middle;
-}
-/* line 172, ../sass/pics/templates/reference/_reports-manager.scss */
-#Reference_reportsManager_page footer p {
-  color: #808285;
-}
-
-@media (min-width: 1200px) {
-  /* line 184, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page header,
-  #Reference_reportsManager_page .content,
-  #Reference_reportsManager_page footer {
-    margin: 0 -30px;
-    padding: 30px;
-  }
-  /* line 196, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page .row.menu img,
-  #Reference_reportsManager_page .row.favorites img,
-  #Reference_reportsManager_page .row.owned-by img,
-  #Reference_reportsManager_page .row.shared-with img,
-  #Reference_reportsManager_page .row.search img {
-    margin-right: -30px;
-  }
-  /* line 204, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page .row.favorites-pinning img {
-    margin-left: -30px;
-  }
-}
-@media (max-width: 767px) {
-  /* line 217, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page .content .row {
-    margin-top: 40px;
-    margin-bottom: 40px;
-  }
-  /* line 224, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page .row.menu {
-    margin-top: 0;
-  }
-  /* line 229, ../sass/pics/templates/reference/_reports-manager.scss */
-  #Reference_reportsManager_page .image-container {
-    margin-bottom: 20px;
   }
 }
 /***

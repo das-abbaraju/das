@@ -200,7 +200,7 @@
             <result name="dynamic-report">/struts/reference/dynamic-report.jsp</result>
             <result name="navigation-menu">/struts/reference/navigation-menu.jsp</result>
             <result name="navigation-restructure">/struts/reference/navigation-restructure.jsp</result>
-            <result name="reports-manager">/struts/reference/reports-manager.jsp</result>
+            <result name="manage-reports">/struts/reference/manage-reports.jsp</result>
 
             <interceptor-ref name="validation">
                 <param name="excludeMethods">execute,navigationMenu</param>
