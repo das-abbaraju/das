@@ -24,17 +24,30 @@
                         }]);
                     });
 
-                   $('#caoTable .buttonAction .button').on('click', $.proxy(this, 'refreshAudit'));
+                   $('.Audit-page').on('click', '#caoTable .buttonAction .button', $.proxy(this, 'refreshCaoTable'));
                 }
             },
 
-            refreshAudit: function (event) {
+            refreshCaoTable: function (event) {
                 var $element = $(event.target),
+                    data = {
+                        auditID: $('#auditID').val(),
+                        caoID: $element.find('.bCaoID').val(),
+                        status: $element.find('.bStatus').val()
+                    },
                     reload = $element.attr('data-attr-audit-reload');
+                    that = this;
 
-                if (reload == 'true') {
-                   window.location.reload(true);
-                }
+                $('#caoTable').block({
+                    message: 'Loading...'
+                });
+
+                //call loadResults defined in conHeader.jsp
+                loadResults(data, '', reload);
+            },
+
+            refreshAudit: function () {
+                window.location.reload(true);
             },
 
             toggleExcessCriteria: function (event) {

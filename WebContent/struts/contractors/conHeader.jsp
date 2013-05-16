@@ -46,7 +46,7 @@ $(function() {
 		});
 	});
 	
-	$('.singleButton').live('click', function() {
+	/*$('.singleButton').live('click', function() {
 		var data = {
 			auditID: $('#auditID').val(), 
 			caoID: $(this).children('.bCaoID').val(), 
@@ -58,7 +58,7 @@ $(function() {
 		});
 		
 		loadResults(data);
-	});
+	});*/
 
 	$('#multiStatusChange').live('change', function() {
 		var status = $(this).val();
@@ -104,7 +104,7 @@ $(function() {
 	</s:if>
 });
 
-function loadResults(data, noteText) {
+function loadResults(data, noteText, audit_reload) {
 	$.ajax({
 		url: 'CaoSaveAjax!loadStatus.action',
 		data: data,
@@ -139,10 +139,27 @@ function loadResults(data, noteText) {
 			        if($('#addToNotes').val()) {
 			        	data.note =  $('#addToNotes').val();
 			        }
-			        
-			        $('#caoTable').load('CaoSaveAjax!save.action', data, function(){
-			            $.unblockUI();
-			        });
+
+			        function saveCaoTable () {
+                        var audit_controller = PICS.getClass('audit.AuditController'),
+                            $element = $('#caoTable');
+
+                        PICS.ajax({
+                            url: 'CaoSaveAjax!save.action',
+                            data: data,
+                            success: function (data, textStatus, jqXHR) {
+                                $element.html(data);
+
+                                $.unblockUI();
+
+                                if (audit_reload == 'true') {
+                                    audit_controller.refreshAudit();
+                                }
+                            }
+                        });
+			        }
+
+			        saveCaoTable();
 			    });
 				
 			    $('#noButton').click(function(){
