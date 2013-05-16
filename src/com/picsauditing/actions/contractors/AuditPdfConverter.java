@@ -65,10 +65,12 @@ public class AuditPdfConverter extends AuditActionSupport {
 		limitedView = true;
 		if (auditID > 0) {
 			findConAudit();
-		} else
+		} else {
 			findContractor();
+        }
 
-		String filename = contractor.getName();
+        // commas in the filename in Content-Disposition will make it think there are multiple dispo headers
+		String filename = contractor.getName().replaceAll(",", "");
 		filename += ".pdf";
 
 		ServletActionContext.getResponse().setContentType("application/pdf");
