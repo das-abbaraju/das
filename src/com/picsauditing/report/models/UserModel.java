@@ -7,8 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.UserTable;
+import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
 public class UserModel extends AbstractModel {
@@ -22,7 +21,22 @@ public class UserModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "User");
 		spec.category = FieldCategory.AccountInformation;
-		spec.join(UserTable.Account).alias = "Account";
+
+		ModelSpec account = spec.join(UserTable.Account);
+		account.alias = "Account";
+
+		if (permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
+			ModelSpec operator = account.join(AccountTable.Operator);
+			operator.category = FieldCategory.AccountInformation;
+			operator.minimumImportance = FieldImportance.Required;
+			operator.alias = "Operator";
+
+			ModelSpec reporting = operator.join(OperatorTable.Reporting);
+			reporting.category = FieldCategory.ReportingClientSite;
+			reporting.minimumImportance = FieldImportance.Required;
+			reporting.alias = "ReportingClient";
+		}
+
 		return spec;
 	}
 
@@ -36,7 +50,7 @@ public class UserModel extends AbstractModel {
 		Field userName = fields.get("UserName".toUpperCase());
 		userName.setUrl("UsersManage.action?account={AccountID}&user={UserID}");
 
-		Field accountType = new Field(ACCOUNT_TYPE, "type", FieldType.AccountType);
+		Field accountType = new Field(ACCOUNT_TYPE, "Account.type", FieldType.AccountType);
 		accountType.setCategory(FieldCategory.AccountInformation);
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
