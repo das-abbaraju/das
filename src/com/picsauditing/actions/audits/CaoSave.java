@@ -66,6 +66,7 @@ public class CaoSave extends AuditActionSupport {
 	private AuditSubStatus auditSubStatus;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
 	private boolean addUserNote=false;
+	private boolean refreshAudit=false;
 
 	// Insurance Policies
 	private List<ContractorAuditOperator> caoList;
@@ -361,9 +362,18 @@ public class CaoSave extends AuditActionSupport {
 		autoExpireOldAudits(cao.getAudit(), newStatus);
 	}
 
+	public boolean isRefreshAudit() {
+		return refreshAudit;
+	}
+
+	public void setRefreshAudit(boolean refreshAudit) {
+		this.refreshAudit = refreshAudit;
+	}
+
 	private void setup() throws RecordNotFoundException, NoRightsException {
 		if (auditID > 0) {
 			findConAudit();
+			refreshAudit = conAudit.getAuditType().getWorkFlow().isUseStateForEdit();
 			caoList = conAudit.getOperators();
 		} else {
 			if (caoIDs.size() > 0)

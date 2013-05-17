@@ -47,6 +47,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected Map<ContractorAuditOperator, String> problems = new TreeMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
+	private boolean refreshAudit=false;
 
 	private int auditTypeId;
 	private AuditType auditType;
@@ -56,8 +57,10 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		if (auditID > 0)
+		if (auditID > 0) {
 			this.findConAudit();
+			refreshAudit = conAudit.getAuditType().getWorkFlow().isUseStateForEdit();
+		}
 
 		if ("ViewAll".equals(mode) && auditTypeId != 0) {
 			contractor.setName("Sample");
