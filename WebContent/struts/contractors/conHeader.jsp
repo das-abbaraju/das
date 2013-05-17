@@ -45,20 +45,6 @@ $(function() {
 			$('.dirty').hide();
 		});
 	});
-	
-	/*$('.singleButton').live('click', function() {
-		var data = {
-			auditID: $('#auditID').val(), 
-			caoID: $(this).children('.bCaoID').val(), 
-			status: $(this).children('.bStatus').val()
-		};
-		
-		$('#caoTable').block({
-			message: 'Loading...'
-		});
-		
-		loadResults(data);
-	});*/
 
 	$('#multiStatusChange').live('change', function() {
 		var status = $(this).val();
