@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+
 <head>
-	<title><s:text name="ReportEmployeeDocumentation.title"/></title>
-	<s:include value="../reports/reportHeader.jsp" />
+    <s:include value="../reports/reportHeader.jsp" />
 </head>
-<body>
+<title><s:text name="ReportEmployeeDocumentation.title"/></title>
+
+<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 	<h1><s:text name="ReportEmployeeDocumentation.title"/></h1>
 
 	<s:include value="../reports/filters_employee.jsp"/>
@@ -22,4 +24,4 @@
 			});
 		});
 	</script>
-</body>
+</div>
