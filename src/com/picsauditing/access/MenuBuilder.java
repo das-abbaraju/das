@@ -488,7 +488,15 @@ public final class MenuBuilder {
 		MenuComponent supportMenu = menubar.addChild(getText("menu.Support"));
 		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&os_username=admin&os_password=ad9870mins";
 		supportMenu.addChild(getText("Header.HelpCenter"), helpUrl, "help_center");
-		supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
+
+		String mibewUrl = "#";
+		try {
+			mibewUrl = getMibewURL(permissions.getLocale(), permissions);
+		} catch (UnsupportedEncodingException uee) {
+			logger.warn("Unsupported encoding trying to get mibew url.");
+		}
+
+		supportMenu.addChild(getText("Registration.Error.LiveChat"), mibewUrl, "live_chat").setTarget("_blank");
 		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
