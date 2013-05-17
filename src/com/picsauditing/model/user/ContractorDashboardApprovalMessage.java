@@ -2,20 +2,30 @@ package com.picsauditing.model.user;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
 public class ContractorDashboardApprovalMessage {
+    @Autowired
+    private ContractorOperatorDAO contractorOperatorDAO;
+    private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 
-    public static Result getMessage(ContractorOperator contractorOperator, Permissions permissions, List<User> usersWithPermissions, List<User> corporateUsersWithPermissions) {
+    public Result getMessage(ContractorOperator contractorOperator, Permissions permissions, List<User> usersWithPermissions, List<User> corporateUsersWithPermissions) {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
         if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId())) {
             return Result.ShowNothing;
         }
-        if (contractorOperator.isWorkingStatus(ApprovalStatus.NotApproved)) {
+        if (contractorOperator.isWorkingStatus(ApprovalStatus.Rejected)) {
             return permissions.isCorporate() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
         }
 
@@ -53,22 +63,31 @@ public class ContractorDashboardApprovalMessage {
         if (contractorOperator.isWorkingStatus(ApprovalStatus.Approved) && permissions.isCorporate()) {
             return getCorporateApprovedStatus(contractorOperator);
         }
-
+        stopwatch.stop();
+        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
         return Result.ShowNothing;
     }
 
-    private static Result getCorporateApprovedStatus(ContractorOperator corporate) {
-        List<ContractorOperator> existing = corporate.getChildOperatorAccountsWithStatus(corporate.getContractorAccount(), ApprovalStatus.NotApproved, ApprovalStatus.Pending);
+    private Result getCorporateApprovedStatus(ContractorOperator corporate) {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
+        List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Rejected, ApprovalStatus.Pending);
+        stopwatch.stop();
+        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
         return (existing.isEmpty()) ? Result.ShowNothing : Result.ShowEverySiteExceptApprovedOnes;
     }
 
-    private static Result getCorporateNotApprovedStatus(ContractorOperator corporate) {
-        List<ContractorOperator> existing = corporate.getChildOperatorAccountsWithStatus(corporate.getContractorAccount(), ApprovalStatus.Approved);
-
+    private Result getCorporateNotApprovedStatus(ContractorOperator corporate) {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
+        List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Approved);
+        stopwatch.stop();
+        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
         return (existing.isEmpty()) ? Result.ContractorNotApproved : Result.ContractorNotApprovedExpectSomeSites;
     }
 
-    private static boolean isUserAssociatedWithAccount(OperatorAccount operator, int permissionsAccountId) {
+    private boolean isUserAssociatedWithAccount(OperatorAccount operator, int permissionsAccountId) {
+
         if (operator.getId() == permissionsAccountId)
             return true;
 
@@ -80,11 +99,11 @@ public class ContractorDashboardApprovalMessage {
         return false;
     }
 
-    private static boolean canApproveContractors(boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
+    private boolean canApproveContractors(boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
         return permissionsApprovesRelationships && permissionsHasPermissionContractorApproval;
     }
 
-    private static boolean basicPermissions(int coOperatorAccountId, int permissionsAccountId, boolean permissionsHasPermissionViewUnApproved,
+    private boolean basicPermissions(int coOperatorAccountId, int permissionsAccountId, boolean permissionsHasPermissionViewUnApproved,
                                             boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
         return (permissionsHasPermissionViewUnApproved ||
                 canApproveContractors(permissionsApprovesRelationships, permissionsHasPermissionContractorApproval));

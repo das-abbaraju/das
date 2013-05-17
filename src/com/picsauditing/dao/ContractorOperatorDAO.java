@@ -1,14 +1,12 @@
 package com.picsauditing.dao;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.ApprovalStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,4 +192,20 @@ public class ContractorOperatorDAO extends PicsDAO {
 		return Collections.EMPTY_SET;
 	}
 
+    public List<ContractorOperator> findByContractorAndWorkStatus(ContractorAccount contractorAccount, ApprovalStatus ... statuses) {
+        try {
+            Query query = em.createQuery(
+                    "FROM ContractorOperator co " +
+                    "WHERE co.contractorAccount.id = :conId " +
+                    "AND co.workStatus IN (:statuses) "
+            );
+            query.setParameter("conId", contractorAccount.getId());
+            query.setParameter("statuses", Arrays.asList(statuses));
+            return query.getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return Collections.emptyList();
+    }
 }

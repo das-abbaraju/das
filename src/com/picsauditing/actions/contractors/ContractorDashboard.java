@@ -17,6 +17,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     @Autowired
     @Qualifier("CsrAssignmentSinglePublisher")
     private Publisher csrAssignmentSinglePublisher;
+    @Autowired
+    private ContractorDashboardApprovalMessage contractorDashboardApprovalMessage;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -88,8 +92,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	// Show extremely limited contractor view for operators
 	private boolean showBasicsOnly = false;
+    private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 
-	@Override
+
+    @Override
 	public String execute() throws Exception {
 		if (!forceLogin()) {
 			return LOGIN_AJAX;
@@ -262,7 +268,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(),
 				getActiveOperators(), contractor, naicsDao);
 		determineOshaTypesToDisplay();
-
 		return SUCCESS;
 	}
 
@@ -896,6 +901,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	public List<User> getOperatorUsersWithPermission(OpPerms operatorPermission) {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
 		List<User> visibleUsersWithPermissions = new ArrayList<>();
 
 		if (co != null) {
@@ -905,11 +912,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 				visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission, 10));
 			}
 		}
-
+        stopwatch.stop();
+        profiler.debug("ContractorDashboard.getOperatorUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
 		return visibleUsersWithPermissions;
 	}
 
     public List<User> getCorporateUsersWithPermission(OpPerms operatorPermission) {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
         List<User> visibleUsersWithPermissions = new ArrayList<>();
 
         if (co != null) {
@@ -919,7 +929,8 @@ public class ContractorDashboard extends ContractorActionSupport {
                 visibleUsersWithPermissions.addAll(getPermittedUsers(operator, operatorPermission, 10));
             }
         }
-
+        stopwatch.stop();
+        profiler.debug("ContractorDashboard.getCorporateUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
         return visibleUsersWithPermissions;
     }
 
@@ -928,6 +939,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     }
 
     private List<OperatorAccount> getApprovedNonCorporateOperators() {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
         List<OperatorAccount> operatorAccounts = new ArrayList<>();
         for (ContractorOperator co: contractor.getNonCorporateOperators()) {
             if (co.getWorkStatus() == ApprovalStatus.Approved &&
@@ -935,20 +948,17 @@ public class ContractorDashboard extends ContractorActionSupport {
                 operatorAccounts.add(co.getOperatorAccount());
             }
         }
-
+        stopwatch.stop();
+        profiler.debug("ContractorDashboard.getApprovedNonCorporateOperators took " + stopwatch.getElapsedTime() + "ms");
         return operatorAccounts;
     }
 
     private List<User> getPermittedUsers(OperatorAccount operator, OpPerms operatorPermission, int limit) {
 		List<User> permittedUsers = new ArrayList<>();
 
-		for (User user : operator.getUsers()) {
+		for (User user : userDAO.findByOperatorAccount(operator, 20)) {
 			try {
-                if (user.isGroup()) {
-                    continue;
-                }
-
-				Permissions permissions = permissionBuilder.login(user);
+                Permissions permissions = permissionBuilder.login(user);
 				if (permissions.hasPermission(operatorPermission)) {
 					permittedUsers.add(user);
 				}
@@ -964,20 +974,26 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	private List<OperatorAccount> getPendingNonCorporateOperators() {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
 		List<OperatorAccount> operators = new ArrayList<>();
 
 		for (ContractorOperator operator:co.getContractorAccount().getOperators()) {
-			if (operator.isWorkStatusPending()
+			if (operator.getWorkStatus() != ApprovalStatus.Approved
 					&& operator.getOperatorAccount().isOperator()
 					&& !operator.getOperatorAccount().isAutoApproveRelationships()
 					&& operator.getOperatorAccount().isOrIsDescendantOf(co.getOperatorAccount().getId())) {
 				operators.add(operator.getOperatorAccount());
 			}
 		}
+        stopwatch.stop();
+        profiler.debug("ContractorDashboard.getPendingNonCorporateOperators took " + stopwatch.getElapsedTime() + "ms");
 		return operators;
 	}
 
     private List<OperatorAccount> getPendingCorporateOperators() {
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        stopwatch.start();
         List<OperatorAccount> operators = new ArrayList<>();
 
         for (ContractorOperator operator:co.getContractorAccount().getOperators()) {
@@ -987,6 +1003,8 @@ public class ContractorDashboard extends ContractorActionSupport {
                 operators.add(operator.getOperatorAccount());
             }
         }
+        stopwatch.stop();
+        profiler.debug("ContractorDashboard.getPendingCorporateOperators took " + stopwatch.getElapsedTime() + "ms");
         return operators;
     }
 
@@ -1110,9 +1128,13 @@ public class ContractorDashboard extends ContractorActionSupport {
     }
 
     public ContractorDashboardApprovalMessage.Result getDashboardMessageResult() {
-        return ContractorDashboardApprovalMessage.getMessage(co, permissions,
+        StopWatch stopwatch = new Slf4JStopWatch(profiler);
+        ContractorDashboardApprovalMessage.Result result = contractorDashboardApprovalMessage.getMessage(co, permissions,
                 getOperatorUsersWithPermission(OpPerms.ContractorApproval),
                 getCorporateUsersWithPermission(OpPerms.ContractorApproval)
         );
+
+        profiler.debug("ContractorDashboard.getOperatorUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
+        return result;
     }
 }

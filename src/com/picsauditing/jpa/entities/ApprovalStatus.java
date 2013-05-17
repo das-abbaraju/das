@@ -6,7 +6,7 @@ public enum ApprovalStatus implements Translatable {
 
 	/** Pending - "Pending Approval" **/
 	P,
-	/** No - "Not Approved" **/
+	/** No - "Rejected" **/
 	N,
 	/** Yes - "Approved" **/
 	Y,
@@ -19,7 +19,7 @@ public enum ApprovalStatus implements Translatable {
 	/** Contractor Denied - "Contractor denied General Contractor Relationship" **/
 	D;
     public static ApprovalStatus Pending = P;
-    public static ApprovalStatus NotApproved = N;
+    public static ApprovalStatus Rejected = N;
     public static ApprovalStatus Approved = Y;
 
 	public boolean isPending() {

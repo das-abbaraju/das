@@ -1,6 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -8,8 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,6 +42,8 @@ public class ContractorDashboardTest {
 	private ContractorOperator conCorp;
 	private Permissions permissions;
 
+    @Mock
+    private UserDAO userDAO;
 	@Mock
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Mock
@@ -101,6 +107,7 @@ public class ContractorDashboardTest {
 
 	@Test
 	public void testGetUsersWithPermission() throws Exception {
+        PicsTestUtil.autowireDAOsFromDeclaredMocks(dashboard, this);
 		OperatorAccount site1 = EntityFactory.makeOperator();
 		OperatorAccount site2 = EntityFactory.makeOperator();
 		OperatorAccount corporate = EntityFactory.makeOperator();
@@ -141,6 +148,9 @@ public class ContractorDashboardTest {
 		when(operatorPermissions1.hasPermission(OpPerms.AddContractors)).thenReturn(true);
 		when(operatorPermissions2.hasPermission(OpPerms.AddContractors)).thenReturn(false);
 		when(corporatePermissions.hasPermission(OpPerms.AddContractors)).thenReturn(false);
+        when(userDAO.findByOperatorAccount(eq(corporate), anyInt())).thenReturn(corporate.getUsers());
+        when(userDAO.findByOperatorAccount(eq(site1), anyInt())).thenReturn(site1.getUsers());
+        when(userDAO.findByOperatorAccount(eq(site2), anyInt())).thenReturn(site2.getUsers());
 
 		Whitebox.setInternalState(dashboard, "permissionBuilder", permissionBuilder);
 

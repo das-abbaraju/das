@@ -90,7 +90,7 @@
         </p>
     </div>
     <ul class="users-with-permissions">
-        <s:iterator value="approvedNonCorporateOperators" status="loop_index">
+        <s:iterator value="#users_with_permissions" status="loop_index">
             <li>
                 <s:text name="ContractorView.ContractorDashboard.CorporateApprovedSites">
                     <s:param><s:property value="name"/></s:param>
@@ -98,7 +98,6 @@
             </li>
         </s:iterator>
     </ul>
-
 </s:elseif>
 
 <s:elseif test="#result.showEverySiteExceptApprovedOnes"> <!--Corporate Approved.  Child sites: Approved, Not Approved -->
@@ -110,7 +109,7 @@
         </p>
 
         <ul class="users-with-permissions">
-            <s:iterator value="usersWithPermissions" status="loop_index">
+            <s:iterator value="#users_with_permissions" status="loop_index">
                 <li>
                     <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
                         <s:param><s:property value="name"/></s:param>

@@ -1,12 +1,14 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.security.EncodedKey;
 import org.slf4j.Logger;
@@ -56,14 +58,14 @@ public class UserDAO extends PicsDAO {
 	public List<User> findAuditors() {
 		return findByGroup(User.GROUP_AUDITOR);
 	}
-	
+
 	public List<User> findAuditors(Set<Integer> assignerGroupIds) {
 		List<User> userList = new ArrayList<User>();
 
 		Query query = em.createNativeQuery("select * from users u "
 				+ "join usergroup grp on u.id=grp.userID "
-				+ "join audit_type atype on atype.assignAudit in (" 
-				+ Strings.implode(assignerGroupIds)+ ") " 
+				+ "join audit_type atype on atype.assignAudit in ("
+				+ Strings.implode(assignerGroupIds)+ ") "
 				+ "where grp.groupID = atype.editAudit", User.class);
 		userList.addAll(query.getResultList());
 
@@ -110,7 +112,7 @@ where grp.groupID = atype.editAudit;
 
 		return userList;
 	}
-	
+
 	public List<User> findByGroupAndUserName(int groupId, String name) {
 		Query query = em.createQuery("FROM User u " + "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' AND u.name LIKE '%" + name + "%'"
 				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + groupId + ") " + "ORDER BY u.name");
@@ -118,7 +120,7 @@ where grp.groupID = atype.editAudit;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param uName
 	 * @param uID
 	 * @return true if the username is already in use by another user
@@ -176,7 +178,7 @@ where grp.groupID = atype.editAudit;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param id
 	 * @param isActive
 	 *            Yes, No, or ""
@@ -236,4 +238,23 @@ where grp.groupID = atype.editAudit;
 			return null;
 		}
 	}
+
+    public List<User> findByOperatorAccount(OperatorAccount operator, int limit) {
+        try {
+            Query query = em.createQuery(
+                    "FROM User u " +
+                            "WHERE u.account.id = :opId " +
+                            "AND u.isGroup = 'No' " +
+                            "AND u.isActive = 'Yes' " +
+                            "ORDER BY u.lastLogin DESC "
+            );
+            query.setParameter("opId", operator.getId());
+            query.setMaxResults(limit);
+            return query.getResultList();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return Collections.EMPTY_LIST;
+    }
 }
