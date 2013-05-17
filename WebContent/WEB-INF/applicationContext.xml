@@ -257,7 +257,9 @@
 
     <bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
-	<bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
+    <bean id="ReportPermissionInfoConverter" class="com.picsauditing.service.ReportPermissionInfoConverter"/>
+    <bean id="ContractorSubmenuBuilder" class="com.picsauditing.access.ContractorSubmenuBuilder"/>
+    <bean id="ContractorActionSupport" class="com.picsauditing.actions.contractors.ContractorActionSupport" scope="prototype"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>

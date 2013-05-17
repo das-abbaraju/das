@@ -1,9 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -698,5 +695,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private boolean questionNeedsClearing(ContractorAudit pqf, AuditData pqfData) {
 		return pqfData.isAnswered() && pqfData.getQuestion().isVisibleInAudit(pqf)
 				&& pqfData.getQuestion().getExpirationDate().after(new Date());
+	}
+
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
 	}
 }

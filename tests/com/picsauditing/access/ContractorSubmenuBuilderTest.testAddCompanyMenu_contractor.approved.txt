@@ -1,0 +1,1 @@
+[{"text":"global.Company","menu":{"items":[{"text":"global.Notes","href":"ContractorNotes.action?id=5"},{"text":"global.Facilities","href":"ContractorFacilities.action?id=5"},{"text":"global.Resources","href":"Resources.action"}]}}]

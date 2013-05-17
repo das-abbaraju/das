@@ -1,0 +1,1 @@
+[{"text":"global.AuditGUARD","menu":{"items":[{"text":"ContractorSubmenu.MenuItem.Summary","href":"ContractorDocuments.action?id=5#auditguard"},{"text":"AuditType.2.name 2012","href":"Audit.action?auditID=20"},{"text":"AuditType.3.name 2012","href":"Audit.action?auditID=30"}]}}]

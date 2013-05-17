@@ -1,0 +1,1 @@
+[{"text":"global.EmployeeGUARD","menu":{"items":[{"text":"ContractorSubmenu.MenuItem.Summary","href":"EmployeeDashboard.action?id=5"},{"text":"global.Employees","href":"ManageEmployees.action?id=5"},{"text":"ContractorSubmenu.MenuItem.JobRoles","href":"ManageJobRoles.action?id=5"}]}}]
