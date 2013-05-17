@@ -4,6 +4,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -34,14 +35,20 @@ import static java.lang.String.format;
 @ContextConfiguration(locations={"ContractorCronSmallSetCodeCoverage-context.xml"})
 public class ContractorCronSmallSetCodeCoverage {
     private static Logger logger = LoggerFactory.getLogger(ContractorCronSmallSetCodeCoverage.class);
-    private static final String cronUrl = "http://localhost:8080/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
+    private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
     private static final int MAX_CONTRACTORS_WITH_NO_IMPROVEMENT = 200;
+    private static final String ENVIRONMENT_VAR_FOR_PROTOCOL = "protocol";
+    private static final String ENVIRONMENT_VAR_FOR_HOST = "host";
+    private static final String ENVIRONMENT_VAR_FOR_PORT = "port";
+    private static final String ENVIRONMENT_VAR_FOR_DUMP_PORT = "dumpPort";
 
     public static final String JACOCO_EXEC_PATH = "/tmp/jacoco.exec";
     public static final String JACOCO_EXEC_PATH_BACKUP = "/tmp/jacoco.exec.backup";
     public static final String OPERATOR_TAG = "SmokeTestContractor";
-    private String address = "localhost";
-    private int port = 9009;
+    private String protocol = "https";
+    private String host = "demo1.picsorganizer.com";
+    private String cronPort = "";
+    private int dumpPort = 9010;
     private boolean dump = true;
     private boolean reset = false;
     private boolean append = true;
@@ -63,6 +70,7 @@ public class ContractorCronSmallSetCodeCoverage {
 
     @Test
     public void run() throws Exception {
+        determineHostToRunAgainst();
         resetForNewRun();
         while (numberOfTriesWithNoCoverageIncrease < MAX_CONTRACTORS_WITH_NO_IMPROVEMENT) {
             logger.debug("Number of tries with no increase is {}", numberOfTriesWithNoCoverageIncrease);
@@ -80,8 +88,32 @@ public class ContractorCronSmallSetCodeCoverage {
         logger.info("Total lines of code covered: " + previousTotalLinesCovered);
     }
 
+    private void determineHostToRunAgainst() {
+        String hostToUse = System.getProperty(ENVIRONMENT_VAR_FOR_HOST);
+        if (!Strings.isEmpty(hostToUse)) {
+            host = hostToUse;
+        }
+        String portToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PORT);
+        if (!Strings.isEmpty(portToUse)) {
+            cronPort = portToUse;
+        }
+        String protocolToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PROTOCOL);
+        if (!Strings.isEmpty(protocolToUse)) {
+            protocol = protocolToUse;
+        }
+        String dumpPortToUse = System.getProperty(ENVIRONMENT_VAR_FOR_DUMP_PORT);
+        if (!Strings.isEmpty(protocolToUse)) {
+            dumpPort = Integer.parseInt(dumpPortToUse);
+        }
+
+        logger.info("Using host {} for coverage dump and contractor cron runs", host);
+        logger.info("Using port {} for coverage dump", dumpPort);
+        logger.info("Using protocol {} for contractor cron runs", protocol);
+        logger.info("Using port {} for contractor cron runs", cronPort);
+    }
+
     private Integer nextContractorIdAndRemoveFromNotYetRun() {
-        Integer id = contractorIdsNotYetRun.get((int)(Math.random()*(contractorIdsNotYetRun.size() - 1)));
+        Integer id = contractorIdsNotYetRun.get((int) (Math.random() * (contractorIdsNotYetRun.size() - 1)));
         contractorIdsNotYetRun.remove(id);
         return id;
     }
@@ -106,7 +138,12 @@ public class ContractorCronSmallSetCodeCoverage {
     }
 
     private boolean runContractorCron(Integer id) throws Exception {
-        String urlToRun = format(cronUrl, id);
+        String urlToRun;
+        if (Strings.isEmpty(cronPort)) {
+            urlToRun = format(cronUrl, protocol, host, "", id);
+        } else {
+            urlToRun = format(cronUrl, protocol, host, ":"+cronPort, id);
+        }
         logger.debug("Running ContractorCron with url: {}", urlToRun);
         InputStream inputStream = executeUrl(urlToRun);
         String response = stringFromInputStream(inputStream);
@@ -196,7 +233,7 @@ public class ContractorCronSmallSetCodeCoverage {
     private void dump() throws Exception {
         OutputStream output = null;
         try {
-            final Socket socket = new Socket(InetAddress.getByName(address), port);
+            final Socket socket = new Socket(InetAddress.getByName(host), dumpPort);
             logger.info("Connecting to {}", socket.getRemoteSocketAddress());
             final RemoteControlWriter remoteWriter = new RemoteControlWriter(socket.getOutputStream());
             final RemoteControlReader remoteReader = new RemoteControlReader(socket.getInputStream());
@@ -229,9 +266,9 @@ public class ContractorCronSmallSetCodeCoverage {
             }
             return method.getResponseBodyAsStream();
         } catch (HttpException e) {
-            logger.error("HttpException trying to get lat-long from address, using url {}: {}", url, e.getMessage());
+            logger.error("HttpException trying to execute url {}: {}", url, e.getMessage());
         } catch (IOException e) {
-            logger.error("IOException trying to get lat-long from address, using url {}: {}", url, e.getMessage());
+            logger.error("IOException trying execute url {}: {}", url, e.getMessage());
         }
         return null;
     }
