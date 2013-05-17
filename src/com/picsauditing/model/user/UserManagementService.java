@@ -43,9 +43,9 @@ public interface UserManagementService {
 
     UserGroupManagementStatus userIsMovable(User user);
 
-    void deactivate(User user) throws Exception;
+    void deactivate(User user, Permissions permissions) throws Exception;
 
-    void delete(User user) throws Exception;
+    void delete(User user, Permissions permissions) throws Exception;
 
     void unlock(User user) throws Exception;
 

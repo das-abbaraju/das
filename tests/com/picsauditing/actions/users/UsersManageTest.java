@@ -247,7 +247,7 @@ public class UsersManageTest extends PicsActionTest {
 
         String strutsResult = usersManage.deactivate();
 
-        verify(userManagementService).deactivate(user);
+        verify(userManagementService).deactivate(user, permissions);
         assertTrue(usersManage.getActionMessages().contains("UserInactivated"));
         assertEquals(Action.SUCCESS, strutsResult);
     }
@@ -269,7 +269,7 @@ public class UsersManageTest extends PicsActionTest {
 
         String strutsResult = usersManage.deactivate();
 
-        verify(userManagementService, never()).deactivate(user);
+        verify(userManagementService, never()).deactivate(user, permissions);
         assertTrue(usersManage.getActionErrors().contains("NotOkToDeactivate"));
         assertEquals(Action.SUCCESS, strutsResult);
     }
@@ -325,7 +325,7 @@ public class UsersManageTest extends PicsActionTest {
 
         String strutsResult = usersManage.delete();
 
-        verify(userManagementService, never()).delete(user);
+        verify(userManagementService, never()).delete(user, permissions);
         assertTrue(usersManage.getActionErrors().contains("NotOkToDelete"));
         assertEquals(Action.SUCCESS, strutsResult);
     }
@@ -342,7 +342,7 @@ public class UsersManageTest extends PicsActionTest {
 
         usersManage.delete();
 
-        verify(userManagementService).delete(user);
+        verify(userManagementService).delete(user, permissions);
     }
 
     @Test

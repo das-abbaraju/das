@@ -136,7 +136,7 @@ public class GroupManagerTest {
 
     @Test
     public void testDeactivate() throws Exception {
-        groupManager.deactivate(group);
+        groupManager.deactivate(group, permissions);
 
         InOrder inOrder = inOrder(userDAO, group);
 
@@ -147,7 +147,7 @@ public class GroupManagerTest {
 
     @Test
     public void testDelete_SoftDeletesWithUserNameChangeAndSave() throws Exception {
-        groupManager.delete(group);
+        groupManager.delete(group, permissions);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(group).setUsername(captor.capture());

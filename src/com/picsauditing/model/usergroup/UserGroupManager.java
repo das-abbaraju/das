@@ -27,15 +27,17 @@ public class UserGroupManager {
         return user;
     }
 
-    protected void deactivate(User user) throws Exception {
+    protected void deactivate(User user, Permissions permissions) throws Exception {
         userDAO.refresh(user);
+        user.setAuditColumns(permissions);
         user.setActive(false);
         userDAO.save(user);
     }
 
 
-    protected void delete(User user) throws Exception {
+    protected void delete(User user, Permissions permissions) throws Exception {
         user.setUsername("DELETE-" + user.getId() + "-" + Strings.hashUrlSafe(user.getUsername()));
+        user.setAuditColumns(permissions);
         userDAO.save(user);
     }
 

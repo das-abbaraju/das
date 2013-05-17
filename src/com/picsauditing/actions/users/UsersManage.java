@@ -382,9 +382,9 @@ public class UsersManage extends PicsActionSupport {
 
     private void deactivateUserOrGroup() throws Exception {
         if (!user.isGroup()) {
-            userManagementService.deactivate(user);
+            userManagementService.deactivate(user, permissions);
         } else {
-            groupManagementService.deactivate(user);
+            groupManagementService.deactivate(user, permissions);
         }
     }
 
@@ -432,9 +432,9 @@ public class UsersManage extends PicsActionSupport {
 
     private void deleteUserOrGroup() throws Exception {
         if (!user.isGroup()) {
-            userManagementService.delete(user);
+            userManagementService.delete(user, permissions);
         } else {
-            groupManagementService.delete(user);
+            groupManagementService.delete(user, permissions);
         }
     }
 

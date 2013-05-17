@@ -53,13 +53,13 @@ public class UserManager extends UserGroupManager implements UserManagementServi
     }
 
     @Override
-    public void deactivate(User user) throws Exception {
-        super.deactivate(user);
+    public void deactivate(User user, Permissions permissions) throws Exception {
+        super.deactivate(user, permissions);
     }
 
     @Override
-    public void delete(User user) throws Exception {
-        super.delete(user);
+    public void delete(User user, Permissions permissions) throws Exception {
+        super.delete(user, permissions);
     }
 
     @Override

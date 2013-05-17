@@ -22,9 +22,9 @@ public interface GroupManagementService {
 
     UserGroupManagementStatus groupIsMovable(User user);
 
-    void deactivate(User user) throws Exception;
+    void deactivate(User user, Permissions permissions) throws Exception;
 
-    void delete(User user) throws Exception;
+    void delete(User user, Permissions permissions) throws Exception;
 
     boolean isGroupnameAvailable(User user);
 }

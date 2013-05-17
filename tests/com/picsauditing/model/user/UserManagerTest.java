@@ -130,7 +130,7 @@ public class UserManagerTest {
     public void testDelete_PrefixesUsernameForSoftDelete() throws Exception {
         when(user.getUsername()).thenReturn("testusername");
 
-        userManager.delete(user);
+        userManager.delete(user, permissions);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(user).setUsername(captor.capture());
@@ -140,7 +140,7 @@ public class UserManagerTest {
 
     @Test
     public void testDeactivateUser_ResetsSetsActiveAndSavesInOrder() throws Exception {
-        userManager.deactivate(user);
+        userManager.deactivate(user, permissions);
 
         InOrder inOrder = inOrder(userDAO,  user);
 

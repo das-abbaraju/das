@@ -153,8 +153,9 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 			return;
 		}
 		int userID = permissions.getUserId();
-		if (permissions.getAdminID() > 0)
+		if (permissions.getAdminID() > 0) {
 			userID = permissions.getAdminID();
+        }
 		setAuditColumns(new User(userID));
 	}
 
