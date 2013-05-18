@@ -6,13 +6,12 @@
 
                 $('#accept_all').on('change', $.proxy(this, "toggleRecommendations"));
                 
-                $('#apply_selected_assignments').on('click', $.proxy(this, "applyRecommendedCSR"));
+                $('.apply_selected_assignments').on('click', $.proxy(this, "applyRecommendedCSR"));
 
                 $('.accept-recommended').on('change', this.updateSelectedRecords);
             },
             
             applyRecommendedCSR: function () {
-                log(this)
                 var $acceptedCSR = $('#acceptedCSR'),
                     accepted_values = this.getAcceptedValues();
 
