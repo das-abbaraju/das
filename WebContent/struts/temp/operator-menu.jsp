@@ -2,42 +2,26 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <style>
-#primary_navigation
-{
-    z-index: 9999;
-}
+            #primary_navigation
+            {
+                z-index: 9999;
+            }
 
 #primary_navigation .navbar-inner
 {
     border: 0;
 }
 
-#primary_navigation [data-toggle=collapse]
-{
-    border: 0;
-    background-color: transparent;
-    display: none;
-    float: right;
-    line-height: 50px;
-}
+            #primary_navigation [data-toggle=collapse]
+            {
+                border: 0;
+                background-color: transparent;
+                display: none;
+                float: right;
+                line-height: 50px;
+            }
 
-@media (max-width: 979px) {
-    #primary_navigation {
-        margin-bottom: 0;
-    }
-    
-    #primary_navigation .brand
-    {
-        margin-left: 5px;
-    }
-    
-    #primary_navigation [data-toggle=collapse]
-    {
-        display: block;
-    }
-}
-
-#primary_navigation .nav > li.account > a
+#primary_navigation .nav > .account > a
 {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -48,6 +32,7 @@
     background-image: -o-linear-gradient(top, #73bbe8, #3f93c0);
     background-image: linear-gradient(to bottom, #73bbe8, #3f93c0);
     background-repeat: repeat-x;
+    display: block;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73bbe8', endColorstr='#ff3f93c0', GradientType=0);
     border-color: #3f93c0 #3f93c0 #336699;
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -55,6 +40,7 @@
     /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+    padding: 8px 15px 9px;
 }
 
 #primary_navigation .nav > li.account > a:hover,
@@ -81,6 +67,42 @@
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
 }
 
+            #primary_navigation .navbar-search .icon-search
+            {
+                left: 24px;
+                position: absolute;
+                top: 17px;
+            }
+            
+            #primary_navigation .navbar-search .search-query
+            {
+                padding: 4px 14px 4px 32px;
+            }
+            
+            #primary_navigation .navbar-search .search-query:focus ~ .icon-search
+            {
+                color: #73bbe8;
+            }
+
+#primary_navigation .nav .account .switch-to
+{
+    display: inline-block;
+    display: inline \9;
+    line-height: 16px;
+    margin-right: 5px;
+    text-align: right;
+}
+
+#primary_navigation .nav .account .switch-to span
+{
+    font-size: 10px;
+}
+
+#primary_navigation .nav .account .icon-cog
+{
+    vertical-align: 5px;
+}
+
 #secondary_navigation
 {
     top: 53px;
@@ -96,7 +118,7 @@
     background-image: linear-gradient(#252525,#333);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525',endColorstr='#ff333333',GradientType=0);
     border-bottom: 0;
-    border-top: 1px solid #020303;
+    border-top: 1px solid #000;
     color: #f1f1f2;
     line-height: 29px;
     min-height: 29px;
@@ -114,13 +136,6 @@
     line-height: 28px;
 }
 
-@media (max-width: 979px) {
-    #secondary_navigation [data-toggle=collapse]
-    {
-        display: block;
-    }
-}
-
 #secondary_navigation .nav > li > a
 {
     border: 0;
@@ -132,14 +147,13 @@
 #secondary_navigation .nav > li > a:hover
 {
     color: #f1f1f2;
-    background-color: #3f93c0;
 }
 
 #secondary_navigation .nav li.dropdown.open > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.active > .dropdown-toggle,
 #secondary_navigation .nav li.dropdown.open.active > .dropdown-toggle
 {
-    color: #f1f1f2;
+    color: #73bbe8;
     background: #252525;
     background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#000),color-stop(100%,#252525));
     background-image: -webkit-linear-gradient(#000,#252525);
@@ -148,19 +162,158 @@
     background-image: linear-gradient(#000,#252525);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000',endColorstr='#ff252525',GradientType=0);
 }
+
+#secondary_navigation .nav .account span
+{
+    color: #73bbe8;
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 15px 5px;
+}
+
+@media (max-width: 979px) {
+                .navbar-fixed-top .navbar-inner,
+                .navbar-fixed-bottom .navbar-inner
+                {
+                    padding: 5px 10px;
+                }
+    
+                .nav-collapse .dropdown-menu
+                {
+                    margin: 0;
+                }
+    
+                #primary_navigation,
+                #secondary_navigation
+                {
+                    margin-bottom: 0;
+                }
+    
+                #primary_navigation .navbar-inner
+                {
+                    background: #f1f1f2;
+                }
+    
+                #primary_navigation .brand
+                {
+                    margin-left: 5px;
+                }
+    
+                #primary_navigation [data-toggle=collapse],
+                #secondary_navigation [data-toggle=collapse]
+                {
+                    display: block;
+                }
+    
+                #primary_navigation .nav > li > a,
+                #primary_navigation .nav > .account > a
+                {
+                    border-radius: 0;
+                    padding: 6px 5px;
+                }
+    
+                #primary_navigation .nav-collapse .nav > li > .dropdown-menu,
+                #secondary_navigation .nav-collapse .nav > li > .dropdown-menu
+                {
+                    background: #eaeaea;
+                    display: none;
+                }
+                
+                #primary_navigation .nav-collapse .nav > .open > .dropdown-menu,
+                #secondary_navigation .nav-collapse .nav > .open > .dropdown-menu
+                {
+                    display: block;
+                }
+    
+                #primary_navigation .nav-collapse .dropdown-menu a,
+                #secondary_navigation .nav-collapse .dropdown-menu a
+                {
+                    border-radius: 0;
+                    color: #454545;
+                    font-weight: normal;
+                }
+    
+                #primary_navigation .nav-collapse .dropdown-menu a:hover
+                {
+                    color: #226396;
+                    background: #dcdcdc;
+                }
+    
+                #primary_navigation .nav-collapse .open > a
+                {
+                    background: #f1f1f2;
+                    border: 1px solid transparent;
+                }
+    
+    
+                #primary_navigation .navbar-search
+                {
+                    border: 1px solid transparent;
+                }
+    
+                #primary_navigation .search-query
+                {
+                    box-sizing: border-box;
+                    display: block;
+                    min-height: 30px;
+                    width: 100%;
+                }
+    
+    #primary_navigation .nav > .account > a,
+    #primary_navigation .nav-collapse .nav > .account > a:hover
+    {
+        background: #3f93c0;
+    }
+    
+    #primary_navigation .nav .account span
+    {
+        display: none;
+    }
+    
+    #primary_navigation .nav .account .icon-cog
+    {
+        vertical-align: 0;
+    }
+    
+                #primary_navigation .dropdown-submenu:hover > a,
+                #primary_navigation .dropdown-submenu:focus > a
+                {
+                    background: #eaeaea;
+                }
+    
+    #secondary_navigation .navbar-inner
+    {
+        background: #252525;
+    }
+    
+    #secondary_navigation .nav-collapse .dropdown-menu a:hover
+    {
+        background: #252525;
+    }
+    
+                .dropdown-submenu .dropdown-menu
+                {
+                    margin-left: 10px;
+                }
+}
 </style>
 
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <button type="button" data-toggle="collapse" data-target="#primary_navigation_collapse">
+            <button type="button" data-toggle="collapse" data-target=".apple">
                 <i class="icon-reorder icon-large"></i>
+            </button>
+            
+            <button type="button" data-toggle="collapse" data-target="#primary_navigation_search">
+                <i class="icon-search icon-large"></i>
             </button>
             
             <a class="brand" href="/"></a>
             
-            <div id="primary_navigation_collapse" class="nav-collapse collapse">
-                <ul class="nav">
+            <div class="apple nav-collapse collapse">
+                <ul class="nav pull-left">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Company</a>
                         
@@ -224,26 +377,14 @@
                         </ul>
                     </li>
                 </ul>
+            </div>
+            <div class="apple nav-collapse collapse">
                 <ul class="nav pull-right">
                     <li class="dropdown account">
-                        <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown">Joe Cool <i class="icon-cog icon-large"></i></a> -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <div class="switch-to"><span>Switched to<br /></span>Dennis Truitt</div>
                         
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="
-                            padding: 8px 15px 9px;
-                            display: block;
-                        "><div style="
-                            text-align: right;
-                            line-height: 16px;
-                            margin-right: 5px; 
-                            display: inline-block;
-                            display: inline \9;
-                        "><span style="
-                            font-size: 10px;
-                        ">Logged in as</span><br>Ancon Marine</div>
-                        
-                        <i class="icon-cog icon-large" style="
-                            vertical-align: 5px;
-                        "></i></a>
+                        <i class="icon-cog icon-large"></i></a>
                         
                         <ul class="dropdown-menu">
                             <li><a href="#">Edit Profile</a></li>
@@ -252,13 +393,14 @@
                         </ul>
                     </li>
                 </ul>
-                <form action="/" class="navbar-search pull-right">
-                    <i class="icon-search icon-large"></i>
-                    
-                    <input type="hidden" name="button" value="search" />
-                    <input type="text" name="searchTerm" class="search-query span2" placeholder="Search" />
-                </form>
             </div>
+                <div id="primary_navigation_search" class="nav-collapse collapse">
+                    <form action="/" class="navbar-search pull-right">
+                        <input type="hidden" name="button" value="search" />
+                        <input type="text" name="searchTerm" class="search-query span2" placeholder="Search" />
+                        <i class="icon-search icon-large"></i>
+                    </form>
+                </div>
         </nav>
     </div>
 </div>
@@ -346,13 +488,8 @@
                     </li>
                 </ul>
                 <ul class="nav pull-right">
-                    <li class="dropdown account">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Joe Cool <i class="icon-cog icon-large"></i></a>
-                        
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Edit Profile</a></li>
-                            <li><a href="#">Logout</a></li>
-                        </ul>
+                    <li class="account">
+                        <span>Ancon Marine</span>
                     </li>
                 </ul>
             </div>

@@ -1,13 +1,28 @@
-.navbar-inner
-{
-    background: #eaeaea;
-    @include background-image(linear-gradient(#fff, #eaeaea));
-}
-
 .lt-ie9
  {
-	.navbar .collapse
-	{
-	  overflow: visible;
-	}
+    .navbar .collapse
+    {
+        overflow: visible;
+    }
+}
+
+@media (max-width: 979px) {
+    .navbar-fixed-top .navbar-inner,
+    .navbar-fixed-bottom .navbar-inner
+    {
+        padding: 5px 10px;
+    }
+    
+    .navbar
+    {
+        .nav-collapse .dropdown-menu
+        {
+            margin: 0;
+        }
+        
+        .dropdown-submenu .dropdown-menu
+        {
+            margin-left: 10px;
+        }
+    }
 }

@@ -1,0 +1,112 @@
+#user_searchbox
+{
+    width: 275px; //TODO find a way NOT to do this
+
+    li
+    {
+        a
+        {
+            font-size: 13px;
+            white-space: normal;
+        }
+        
+        .name
+        {
+            float: left;
+            font-weight: bold;
+            width: 175px;
+        }
+        
+        .id
+        {
+            float: right;
+            font-weight: bold;
+        }
+        
+        .location
+        {
+            float: left;
+            width: 175px;
+        }
+        
+        .type
+        {
+            float: right;
+            font-style: italic;
+        }
+    }
+
+    .account-deactivated a,
+    .account-inactive a
+    {
+       color: #aeaeae;
+    }
+
+    .account-deactivated a:hover,
+    .account-inactive a:hover
+    {
+       color: #cccccc;
+    }
+
+
+    .account-demo
+    {
+        font-style: italic;
+    }
+
+    .account-deleted
+    {
+        .name,
+        .id,
+        .location,
+        .type
+        {
+            text-decoration: line-through;
+        }
+    }
+
+    .no-results,
+    .total-results
+    {
+        padding: 5px 20px;
+    }
+
+    .more-results
+    {
+        a
+        {
+            font-weight: bold;
+        }
+    }
+
+    .total-results
+    {
+        background-color: #ffffff;
+
+        p
+        {
+            color: #999;
+            font-size: 13px;
+            margin: 0;
+        }
+    }
+}
+
+@media (max-width: 979px) {
+    #user_searchbox
+    {
+        background-color: #fff;
+        padding: 5px 0;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        @include border-radius(6px);
+        @include box-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+        margin-top: 10px;
+        width: 100%;
+        
+        .active a
+        {
+            color: #fff;
+        }
+    }
+}
