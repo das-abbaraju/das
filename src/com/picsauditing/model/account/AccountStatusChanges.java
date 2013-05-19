@@ -36,6 +36,9 @@ public class AccountStatusChanges {
 	public static final String ACCOUNT_EXPIRED_REASON = "Account expired";
 	public static final String ACCOUNT_ABOUT_TO_EXPIRE_REASON = "Account about to expire";
 
+    // The following is text to put in the notes explaining the status change
+    public static final String NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON = "This account has been set to declined because this account has been pending for over 90 days without completion of registration.";
+
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
@@ -45,8 +48,8 @@ public class AccountStatusChanges {
 			String notation) {
 		validate(clientSite, notation);
 
-		setDeactivationStatus(clientSite, permissions, deactivationReason);
-		noteDeactivation(clientSite, notation);
+		putAccountInDeactivatedStatus(clientSite, permissions, deactivationReason);
+		noteStatusChange(clientSite, notation);
 		accountDAO.save(clientSite);
 	}
 
@@ -54,13 +57,24 @@ public class AccountStatusChanges {
 			String notation) {
 		validate(contractor, notation);
 
-		setDeactivationStatus(contractor, permissions, deactivationReason);
+		putAccountInDeactivatedStatus(contractor, permissions, deactivationReason);
 		contractor.setRenew(false);
-		noteDeactivation(contractor, notation);
+		noteStatusChange(contractor, notation);
 		accountDAO.save(contractor);
 	}
 
-	private void validate(Account account, String notation) {
+    public void declineContractor(ContractorAccount contractor, Permissions permissions, String declinedReason,
+                                     String notation) {
+        validate(contractor, notation);
+
+        putAccountInDeclinedStatus(contractor, permissions, declinedReason);
+        contractor.setRenew(false);
+        noteStatusChange(contractor, notation);
+        accountDAO.save(contractor);
+    }
+
+
+    private void validate(Account account, String notation) {
 		if (account == null) {
 			throw new IllegalArgumentException("Account is null. You must provide a valid Account to deactivate.");
 		}
@@ -70,19 +84,35 @@ public class AccountStatusChanges {
 		}
 	}
 
-	private void setDeactivationStatus(Account account, Permissions permissions, String deactivationReason) {
+    private void putAccountInDeclinedStatus(Account account, Permissions permissions, String declinedReason) {
+        account.setReason(declinedReason);
+        account.setStatus(AccountStatus.Declined);
+
+        populateAuditColumnsOn(account, permissions);
+    }
+
+    private void populateAuditColumnsOn(Account account, Permissions permissions) {
+        if (permissions == null) {
+            account.setAuditColumns(new User(User.SYSTEM));
+        } else {
+            account.setAuditColumns(new User(permissions.getUserId()));
+        }
+    }
+
+    private void putAccountInDeactivatedStatus(Account account, Permissions permissions, String deactivationReason) {
 		account.setReason(deactivationReason);
 		account.setStatus(AccountStatus.Deactivated);
 
-		if (permissions == null)
+		if (permissions == null) {
 			account.setDeactivatedBy(new User(User.SYSTEM));
-		else
+        } else {
 			account.setDeactivatedBy(new User(permissions.getUserId()));
+        }
 
 		account.setDeactivationDate(new Date());
 	}
 
-	private void noteDeactivation(Account account, String notation) {
+	private void noteStatusChange(Account account, String notation) {
 		Note note = new Note(account, new User(User.SYSTEM), notation);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);

@@ -14,8 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.util.Strings;
+import com.picsauditing.PICS.DBBean;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailSender;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,23 +34,15 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.search.Database;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.sql.DataSource;
 
 @SuppressWarnings("deprecation")
-public class CronTest {
+public class CronTest extends PicsActionTest {
 	private Cron cron;
 
 	private ContractorAccount contractor;
@@ -54,33 +52,62 @@ public class CronTest {
 	// private List<Certificate> certList;
 	// private Map<Integer, List<Integer>> opIdsByCertIds;
 
-	@Mock
-	private EmailQueueDAO emailQueueDAO;
-	@Mock
-	private ContractorAccountDAO contractoAccountDAO;
+    @Mock
+    protected ContractorAccountDAO contractorAccountDAO;
+    @Mock
+    protected ContractorAuditDAO contractorAuditDAO;
+    @Mock
+    protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+    @Mock
+    private ContractorOperatorDAO contractorOperatorDAO;
+    @Mock
+    protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+    @Mock
+    private EmailQueueDAO emailQueueDAO;
+    @Mock
+    private FlagDataOverrideDAO flagDataOverrideDAO;
+    @Mock
+    protected InvoiceDAO invoiceDAO;
+    @Mock
+    private InvoiceFeeDAO invoiceFeeDAO;
+    @Mock
+    private InvoiceItemDAO invoiceItemDAO;
+    @Mock
+    protected OperatorAccountDAO operatorDAO;
+    @Mock
+    protected NoteDAO noteDAO;
+    @Mock
+    protected UserDAO userDAO;
+
 	@Mock
 	private EmailBuilder emailBuilder;
-	@Mock
-	protected NoteDAO noteDAO;
 	@Mock
 	private Database databaseForTesting;
 	@Mock
 	private AccountStatusChanges accountStatusChanges;
+    @Mock
+    private DataSource dataSource;
+    @Mock
+    private EmailSender emailSender;
 
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(DBBean.class, "staticDataSource", (DataSource) null);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+        Whitebox.setInternalState(DBBean.class, "staticDataSource", dataSource);
 
 		cron = new Cron();
+        super.setUp(cron);
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(cron, this);
 		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
+		Whitebox.setInternalState(cron, "emailSender", emailSender);
 		Whitebox.setInternalState(cron, "accountStatusChanges", accountStatusChanges);
 
 		operators = new ArrayList<ContractorOperator>();
@@ -91,7 +118,18 @@ public class CronTest {
 		anotherOperator = EntityFactory.makeOperator();
 		operators.add(EntityFactory.addContractorOperator(contractor, operator));
 		operators.add(EntityFactory.addContractorOperator(contractor, anotherOperator));
+
+        when(propertyDAO.find("admin_email_address")).thenReturn(new AppProperty("admin_email_address", "foo@example.com"));
 	}
+
+    @Test
+    public void testExcecute_VerifyExtractMethodOfDecliningPendingAccounts() throws Exception {
+        cron.setFlagsOnly(true);
+
+        cron.execute();
+
+        verify(contractorAccountDAO).findPendingAccountsToMoveToDeclinedStatus();
+    }
 
 	@Test
 	public void testSendEmailPendingAccounts_SqlHasCountryRestrictionWhenEmailExclusionsExist() throws Exception {
@@ -113,13 +151,13 @@ public class CronTest {
 
 	private void doTestSqlHasCountryRestriction() throws Exception {
 		List<ContractorAccount> emptyList = new ArrayList<ContractorAccount>();
-		when(contractoAccountDAO.findPendingAccounts(anyString())).thenReturn(emptyList);
+		when(contractorAccountDAO.findPendingAccounts(anyString())).thenReturn(emptyList);
 
 		Whitebox.invokeMethod(cron, "sendEmailPendingAccounts");
 
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 
-		verify(contractoAccountDAO, times(3)).findPendingAccounts(captor.capture());
+		verify(contractorAccountDAO, times(3)).findPendingAccounts(captor.capture());
 
 		List<String> allSql = captor.getAllValues();
 
@@ -244,35 +282,47 @@ public class CronTest {
 	}
 
 	@Test
-	public void testDeactivatePendingAccounts() {
+	public void testDeactivatePendingAccounts() throws Exception {
 		ContractorAccount cAccount = new ContractorAccount(1);
 		ContractorAccount cAccount2 = new ContractorAccount(2);
 		cAccount.setStatus(AccountStatus.Pending);
 		cAccount2.setStatus(AccountStatus.Pending);
-		List<ContractorAccount> cList = new ArrayList<ContractorAccount>();
+		List<ContractorAccount> cList = new ArrayList<>();
 		cList.add(cAccount);
 		cList.add(cAccount2);
 
-		when(contractoAccountDAO.findPendingAccountsToDeactivate()).thenReturn(cList);
-		// Not sure why the List is empty. Galen, please help.
-		// verify(contractoAccountDAO).save(any(ContractorAccount.class));
-		// verify(noteDAO).save(any(Note.class));
+		when(contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus()).thenReturn(cList);
+
+        cron.move90DayPendingAccountsToDeclinedStatus();
+
+        verify(accountStatusChanges).declineContractor(
+                cAccount,
+                permissions,
+                AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
+                AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
+        verify(accountStatusChanges).declineContractor(
+                cAccount2,
+                permissions,
+                AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
+                AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
 	}
 
 	@Test
-	public void TestDeactivatePendingAccounts_null() {
-		List<ContractorAccount> cList = new ArrayList<ContractorAccount>();
-		cList = null;
-		when(contractoAccountDAO.findPendingAccountsToDeactivate()).thenReturn(cList);
-		verify(contractoAccountDAO, never()).save(any(ContractorAccount.class));
-		verify(noteDAO, never()).save(any(Note.class));
+	public void testDeactivatePendingAccounts_emptyList() {
+		List<ContractorAccount> cList = new ArrayList<>();
+		when(contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus()).thenReturn(cList);
+        verify(accountStatusChanges, never()).deactivateContractor(
+                any(ContractorAccount.class),
+                any(Permissions.class),
+                anyString(),
+                anyString());
 	}
 
 	@Test
 	public void testDeactivateNonRenewalAccounts() throws Exception {
 		String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 		List<ContractorAccount> contractors = buildMockContractorList();
-		when(contractoAccountDAO.findWhere(where)).thenReturn(contractors);
+		when(contractorAccountDAO.findWhere(where)).thenReturn(contractors);
 
 		Whitebox.invokeMethod(cron, "deactivateNonRenewalAccounts");
 
@@ -307,7 +357,7 @@ public class CronTest {
 
         verify(contractor, times(1)).syncBalance();
         verify(contractor, times(1)).setAuditColumns(Cron.system);
-        verify(accountStatusChanges, times(1)).deactivateContractor(contractor, null, reason,
+        verify(accountStatusChanges, times(1)).deactivateContractor(contractor, permissions, reason,
                 "Automatically inactivating account based on expired membership");
     }
 }

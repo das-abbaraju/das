@@ -447,9 +447,9 @@ public class ContractorAccountDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<ContractorAccount> findPendingAccountsToDeactivate() {
+	public List<ContractorAccount> findPendingAccountsToMoveToDeclinedStatus() {
 		String sql = "select * from accounts a join contractor_info c on a.id = c.id join users u on a.contactid = u.id join invoice i on a.id = i.accountID "
-				+ "where a.status = 'PENDING' and i.status = 'Unpaid' and DATE(a.creationDate) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) order by a.creationDate desc";
+				+ "where a.status = 'PENDING' and i.status = 'Unpaid' and DATE(a.creationDate) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) order by a.creationDate desc limit 10";
 		Query query = em.createNativeQuery(sql, ContractorAccount.class);
 		return query.getResultList();
 	}

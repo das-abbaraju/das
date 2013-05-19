@@ -90,8 +90,6 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
 
-    @Autowired
-	protected AppPropertyDAO appPropDao;
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -142,15 +140,6 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	private List<String> emailExclusionList = new ArrayList<String>();
-
-//	private int possibleDuplciateEmailTemplate = 234;
-//	private int finalToOperatorsEmailTemplate = 240;
-//	private int regReqFinalEmailTemplate = 241;
-//	private int regReqLastChanceEmailTemplate = 242;
-//	private int regReqReminderEmailTemplate = 243;
-//	private int pendingFinalEmailTemplate = 244;
-//	private int pendingLastChanceEmailTemplate = 245;
-//	private int pendingReminderEmailTemplate = 246;
 
 	private final Logger logger = LoggerFactory.getLogger(Cron.class);
 
@@ -344,15 +333,9 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
-		try {
-			startTask("deactivating pending accounts pass 90 days");
-			deactivatePendingAccounts();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
+        move90DayPendingAccountsToDeclinedStatus();
 
-		report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
+        report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
 				.append("Completed Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -363,7 +346,19 @@ public class Cron extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void deactivateNonRenewalAccounts() {
+    @Anonymous
+    public String move90DayPendingAccountsToDeclinedStatus() throws Exception {
+        try {
+            startTask("Moving pending accounts past 90 days to declined");
+            movePendingAccountsToDeclinedStatus();
+            endTask();
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return SUCCESS;
+    }
+
+    private void deactivateNonRenewalAccounts() {
 		String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 		List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 		for (ContractorAccount contractor : conAcctList) {
@@ -400,6 +395,10 @@ public class Cron extends PicsActionSupport {
 	}
 
 	protected void startTask(String taskName) {
+        if (report == null) {
+            report = new StringBuffer();
+        }
+
 		startTime = System.currentTimeMillis();
 		report.append(taskName);
 	}
@@ -407,7 +406,7 @@ public class Cron extends PicsActionSupport {
 	protected void sendEmail() {
 		String toAddress = null;
 		try {
-			AppProperty prop = appPropDao.find("admin_email_address");
+			AppProperty prop = propertyDAO.find("admin_email_address");
 			toAddress = prop.getValue();
 		} catch (NoResultException notFound) {
 		}
@@ -1158,15 +1157,19 @@ public class Cron extends PicsActionSupport {
 		}
 	}
 
-	private void deactivatePendingAccounts() {
-		List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToDeactivate();
+	private void movePendingAccountsToDeclinedStatus() {
+		List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus();
 		if (CollectionUtils.isEmpty(deactivateList)) {
 			return;
 		}
 
 		for (ContractorAccount contractor : deactivateList) {
-			accountStatusChanges.deactivateContractor(contractor, permissions, AccountStatusChanges.DEACTIVATED_PENDING_ACCOUNT_REASON,
-					"Account has been deactivated, this account has been pending for 90 days without payment.");
+			accountStatusChanges.declineContractor(
+                    contractor,
+                    permissions,
+                    AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
+					AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
 		}
 	}
+
 }
