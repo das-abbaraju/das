@@ -121,7 +121,7 @@
                         // define modal element
                         var modal = $('<div id="' + config.modal_id + '" class="' + config.modal_class + '" style="display: none;">');
 
-                        var modal_header = $('<div class="modal-header"><a href="#" class="close">&#215;</a><h3></h3></div>');
+                        var modal_header = $('<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h3></h3></div>');
                         var modal_body = $('<div class="modal-body">');
                         var modal_footer = $('<div class="modal-footer">');
 
