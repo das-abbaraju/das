@@ -88,6 +88,7 @@ public class Permissions implements Serializable {
 	private transient LanguageModel languageModel;
     private int primaryCorporateAccountID;
 	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
+	private String switchedToUserName;
 
 	public Permissions() {
 	}
@@ -814,4 +815,12 @@ public class Permissions implements Serializable {
     public void setAccountId(int accountId) {
         this.accountID = accountId;
     }
+
+	public void setSwitchedToUserName(String switchedToUserName) {
+		this.switchedToUserName = switchedToUserName;
+	}
+
+	public String getSwitchedToUserName() {
+		return switchedToUserName;
+	}
 }
