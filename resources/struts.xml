@@ -186,6 +186,7 @@
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
 			<result>/struts/layout/menu/_menu.jsp</result>
+			<result name="contractor-menu">/struts/layout/menu/_contractor-menu.jsp</result>
 		</action>
 
 		<action name="Contact" class="com.picsauditing.access.Contact">
@@ -1176,6 +1177,7 @@
 		</action>
 
 		<action name="Temp" class="com.picsauditing.actions.Temp">
+			<result>/struts/temp/test.jsp</result>
 			<result name="contractor-menu">/struts/temp/contractor-menu.jsp</result>
 			<result name="operator-menu">/struts/temp/operator-menu.jsp</result>
 			<result name="pics-menu">/struts/temp/pics-menu.jsp</result>

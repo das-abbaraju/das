@@ -3,7 +3,6 @@ package com.picsauditing.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.report.RecordNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -11,6 +10,7 @@ import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.report.RecordNotFoundException;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
@@ -60,9 +60,8 @@ public class Menu extends PicsActionSupport {
 
 	public String contractorSubmenu() throws RecordNotFoundException {
 		menu = buildContractorSubmenu(true);
-		jsonArray = MenuWriter.convertMenuToJSON(menu);
 
-		return JSON_ARRAY;
+		return "contractor-menu";
 	}
 
 	public String operatorSubmenu() throws RecordNotFoundException {

@@ -10,12 +10,14 @@
         <pattern>/NewYearMailer*.action</pattern>
         <pattern>/ReportTester.action</pattern>
     </decorator>
+    <decorator name="contractor-layout" page="contractor-layout.jsp">
+    	<pattern>/Temp*.action</pattern>
+    </decorator>
     <decorator name="simple-layout" page="simple-layout.jsp">
         <pattern>/AccountRecovery*.action</pattern>
         <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
         <pattern>/Reference*.action</pattern>
-        <pattern>/Temp*.action</pattern>
     </decorator>
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>

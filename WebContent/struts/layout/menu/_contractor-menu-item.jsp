@@ -28,28 +28,13 @@
             <s:set var="a_data_toggle" value="%{''}" />
         </s:else>
 
-		<s:if test="#menu_item.hasTarget()">
-			<s:set var="a_target" value="#menu_item.target" />
-		</s:if>
-		<s:else>
-			<s:set var="a_target" value="%{''}" />
-		</s:else>
-
         <li class="${li_dropdown_class}">
             <a id="${menu_item.htmlId}"
                 href="${menu_item.url}"
                 class="${a_dropdown_class}"
                 data-toggle="${a_data_toggle}"
-				target="${a_target}"
-				<s:if test="#menu_item.htmlId == 'live_chat'">
-					onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('${menu_item.url}&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"
-				</s:if>
             >
                 ${menu_item.name}
-
-                <s:if test="#menu_item.level == 1 && #menu_item.htmlId == 'user_menu'">
-                    <i class="icon-cog"></i>
-                </s:if>
             </a>
 
             <s:if test="#menu_item.hasChildren()">
