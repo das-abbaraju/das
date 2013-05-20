@@ -67,6 +67,7 @@ public class OpenTasks extends TranslationActionSupport {
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
+			gatherTasksAboutEmployeeCompetencies();
 		}
 
 		gatherTasksAboutMarketing();
@@ -363,6 +364,28 @@ public class OpenTasks extends TranslationActionSupport {
 				}
 			}
 		}
+	}
+
+	private void gatherTasksAboutEmployeeCompetencies() {
+		if (contractor.isRequiresCompetencyReview() && contractor.getEmployees().isEmpty()) {
+			for (ContractorOperator contractorOperator : contractor.getOperators()) {
+				OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
+				if (atLeastOneCompetencyRequiresDocumentation(operatorAccount)) {
+					openTasks.add(getTextParameterized(contractor.getLocale(),
+							"ContractorWidget.message.EmployeesNeedToBeAdded", contractor.getId()));
+					break;
+				}
+			}
+		}
+	}
+
+	private boolean atLeastOneCompetencyRequiresDocumentation(OperatorAccount operatorAccount) {
+		for (OperatorCompetency operatorCompetency : operatorAccount.getCompetencies()) {
+			if (operatorCompetency.isRequiresDocumentation()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void vopakSpecificOperatorQualificationTag() {

@@ -5,15 +5,8 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -21,17 +14,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Currency;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -53,32 +39,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.LcCorPhase;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"OpenTasksTest-context.xml"})
+@ContextConfiguration(locations = {"classpath:OpenTasksTest-context.xml"})
 public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
@@ -865,5 +832,66 @@ public class OpenTasksTest extends PicsActionTest {
 		verify(languageModel).getClosestVisibleLocale(any(Locale.class));
 		// Finally
 		ActionContext.setContext(previousContext);
+	}
+
+	@Test
+	public void testGatherTasksAboutEmployeeCompetencies_OperatorsDoNotHaveRequiredCompetencies() throws Exception {
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		contractorOperators.add(contractorOperator);
+
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		when(operator.getCompetencies()).thenReturn(Collections.<OperatorCompetency>emptyList());
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
+
+		verify(i18nCache, never()).getText(anyString());
+	}
+
+	@Test
+	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndNoContractorEmployees() throws Exception {
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		contractorOperators.add(contractorOperator);
+
+		List<OperatorCompetency> competencies = new ArrayList<>();
+		OperatorCompetency competency = mock(OperatorCompetency.class);
+		competencies.add(competency);
+
+		when(competency.isRequiresDocumentation()).thenReturn(true);
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		when(operator.getCompetencies()).thenReturn(competencies);
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
+
+		verify(i18nCache).getText(eq("ContractorWidget.message.EmployeesNeedToBeAdded"), any(Locale.class),
+				anyObject());
+	}
+
+	@Test
+	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndContractorHasEmployees() throws Exception {
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		contractorOperators.add(contractorOperator);
+
+		List<OperatorCompetency> competencies = new ArrayList<>();
+		OperatorCompetency competency = mock(OperatorCompetency.class);
+		competencies.add(competency);
+
+		List<Employee> employees = new ArrayList<>();
+		Employee employee = mock(Employee.class);
+		employees.add(employee);
+
+		when(competency.isRequiresDocumentation()).thenReturn(true);
+		when(contractor.getEmployees()).thenReturn(employees);
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		when(operator.getCompetencies()).thenReturn(competencies);
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
+
+		verify(i18nCache, never()).getText(anyString());
 	}
 }
