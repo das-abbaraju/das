@@ -1,0 +1,72 @@
+.CronDashboard-page {
+    .page-header
+    {
+        margin: 0px;
+    }
+
+    .row
+    {
+        padding: 20px 0px 10px 0px;
+    }
+
+    .icon-off
+    {
+        margin-right: 20px;
+    }
+
+    .table
+    {
+        margin-bottom: 30px;
+    }
+    
+    caption
+    {
+        background-color: #73bbe8;
+        color: #FFFFFF;
+        font-size: 18px;
+        padding: 10px;
+        text-align: left;
+    }
+    
+    th
+    {
+        color: #ccc;
+        background-color: #454545;
+    }
+    
+    td
+    {
+        border: 1px solid #cccccc;
+    }
+    
+    #totalTime {
+        color: #808285;
+        font-size: 16px;    
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    
+    #totalTime div
+    {
+        float: left;
+    }
+    
+    .icon-time {
+        color: #cccccc;
+        float: left;
+        font-size: 23px;
+        line-height: 40px;
+        margin-right: 20px;
+    }
+    
+    #totalHours
+    {
+        color: #666666;
+        font-size: 22px;
+    }
+    
+    p {
+        margin: 0px;
+    
+    }
+}
