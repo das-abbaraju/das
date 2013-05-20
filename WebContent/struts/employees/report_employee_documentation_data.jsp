@@ -38,6 +38,11 @@
 					<s:text name="Employee.lastName"/>
 				</a>
 			</th>
+			<s:if test="permissions.picsEmployee || permissions.corporate">
+				<th>
+					<s:text name="global.Operator"/>
+				</th>
+			</s:if>
 			<th>
 				<s:text name="OperatorCompetency.label"/>
 			</th>
@@ -79,6 +84,11 @@
 							${competency_file.get('lastName')}
 						</a>
 					</td>
+					<s:if test="permissions.picsEmployee || permissions.corporate">
+						<td>
+							${competency_file.get('opName')}
+						</td>
+					</s:if>
 					<td>
 						${competency_file.get('label')}
 					</td>

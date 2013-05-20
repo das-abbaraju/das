@@ -89,7 +89,8 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 		sql.addWhere(statusClause);
 		sql.addWhere("ocef.expiration = (SELECT MAX(f.expiration) " +
 				"FROM operator_competency_employee_file f " +
-				"WHERE f.employeeID = e.id)" +
+				"WHERE f.employeeID = e.id " +
+				"AND f.competencyID = oc.id) " +
 				"OR ocef.expiration IS NULL");
 
 		addFilterToSQL();
