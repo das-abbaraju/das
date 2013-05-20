@@ -81,10 +81,10 @@ public class ContractorAppIndexSearch {
 		StringBuilder query = new StringBuilder();
 
 		if ("C".equalsIgnoreCase(searchType)) {
-			query.append("SELECT a.id, a.name FROM accounts a WHERE a.type = 'Contractor' AND a.id IN (");
+			query.append("SELECT a.id, a.name FROM accounts a WHERE a.type = 'Contractor' AND a.status NOT IN ('Demo', 'Deleted') AND a.id IN (");
 		} else if ("U".equalsIgnoreCase(searchType)) {
 			query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID "
-					+ "WHERE a.type = 'Contractor' AND a.id IN(");
+					+ "WHERE a.type = 'Contractor' AND a.status NOT IN ('Demo', 'Deleted') AND a.id IN(");
 		}
 
 		query.append(Strings.implode(ids, ",")).append(')');
