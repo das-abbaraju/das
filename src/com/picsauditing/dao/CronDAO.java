@@ -53,9 +53,12 @@ public class CronDAO extends PicsDAO {
         return map;
     }
 
-    public int timeToRunAllContractors() {
-        String sql = "";
+    public Integer timeToRunAllContractors() {
+        String sql = "SELECT TIME_TO_SEC(TIMEDIFF(NOW(),MIN(c.lastRecalculation))) " +
+					"FROM accounts a " +
+					"JOIN contractor_info c USING (id) " +
+					"WHERE a.type = 'Contractor' AND a.status = 'Active'";
         Query q = em.createNativeQuery(sql);
-        return (int) q.getSingleResult();
+        return Integer.parseInt(q.getSingleResult().toString());
     }
 }
