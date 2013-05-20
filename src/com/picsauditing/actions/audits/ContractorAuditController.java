@@ -371,6 +371,14 @@ public class ContractorAuditController extends AuditActionSupport {
 		return setUrlForRedirect("Audit.action?auditID=" + auditID);
 	}
 
+	public boolean isRefreshAudit() {
+		return refreshAudit;
+	}
+
+	public void setRefreshAudit(boolean refreshAudit) {
+		this.refreshAudit = refreshAudit;
+	}
+
 	public List<MenuComponent> getAuditMenu() {
 		List<MenuComponent> menu = super.getAuditMenu();
 

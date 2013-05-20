@@ -268,6 +268,8 @@ public class CaoSave extends AuditActionSupport {
 		if (conAudit != null)
 			getValidSteps();
 
+		refreshAudit = conAudit.getAuditType().getWorkFlow().isUseStateForEdit();
+
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
 

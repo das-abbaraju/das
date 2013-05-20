@@ -220,10 +220,10 @@
                                                 singleButton ${step.newStatus.color}
                                             </s:set>
                                         </s:else>
-                                        
+
 										<div class="${button_class} button"
 											title="<s:property value="#step.buttonHelpText" />"
-                                            data-attr-audit-reload="true">
+                                            data-attr-audit-reload="<s:property value='refreshAudit'/>">
 											<s:property value="#step.name" />
 											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 											<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
