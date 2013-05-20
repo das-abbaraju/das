@@ -48,6 +48,7 @@ public final class ContractorSubmenuBuilder {
 	public static final String EMPLOYEEGUARD_SUMMARY = "ContractorSubmenu.MenuItem.Summary";
 	public static final String EMPLOYEES = "global.Employees";
 	public static final String JOB_ROLES = "ContractorSubmenu.MenuItem.JobRoles";
+	public static final String DASHBOARD = "ContractorSubmenu.MenuItem.Dashboard";
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	@Autowired
@@ -104,6 +105,8 @@ public final class ContractorSubmenuBuilder {
 
 		MenuComponent companyMenu = menubar.addChild(getText(COMPANY));
 
+		companyMenu.addChild(getText(DASHBOARD), "ContractorView.action?id=" + permissions.getAccountId());
+
 		companyMenu.addChild(getText(NOTES), "ContractorNotes.action?id=" + permissions.getAccountId());
 
 		if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser()) {
@@ -125,7 +128,7 @@ public final class ContractorSubmenuBuilder {
 		if (permissions.isContractor()) {
 			companyMenu.addChild(getText(RESOURCES), "Resources.action");
 		}
-		// todo: Investigate. For some reason the conHeader.jsp is showing these erroneously?
+		//todo: Investigate. For some reason the conHeader.jsp is showing these erroneously?
 		if (permissions.isAdmin() && permissions.getAccountStatus() != AccountStatus.Demo) {
 			companyMenu.addChild(getText(BILLING_DETAIL), "BillingDetail.action?id=" + permissions.getAccountId(), "billing_detail");
 			companyMenu.addChild(getText(PAYMENT_OPTIONS), "ContractorPaymentOptions.action?id=" + permissions.getAccountId());

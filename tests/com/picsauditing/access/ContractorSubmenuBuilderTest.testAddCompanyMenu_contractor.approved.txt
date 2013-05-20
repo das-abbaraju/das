@@ -1,1 +1,1 @@
-[{"text":"global.Company","menu":{"items":[{"text":"global.Notes","href":"ContractorNotes.action?id=5"},{"text":"global.Facilities","href":"ContractorFacilities.action?id=5"},{"text":"global.Resources","href":"Resources.action"}]}}]
+[{"text":"global.Company","menu":{"items":[{"text":"ContractorSubmenu.MenuItem.Dashboard","href":"ContractorView.action?id=5"},{"text":"global.Notes","href":"ContractorNotes.action?id=5"},{"text":"global.Facilities","href":"ContractorFacilities.action?id=5"},{"text":"global.Resources","href":"Resources.action"}]}}]
