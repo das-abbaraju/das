@@ -4,16 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
-import javax.persistence.ColumnResult;
-import javax.persistence.Entity;
-import javax.persistence.EntityResult;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import javax.persistence.Column;
 
 import org.json.simple.JSONObject;
 
@@ -34,6 +26,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade")
+@SecondaryTable(name = "ref_trade_calc", pkJoinColumns = {@PrimaryKeyJoinColumn(name="tradeID")})
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 @IndexableOverride(ignores = { @IndexOverrideIgnore(methodName = "getId") })
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
@@ -307,6 +300,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.needsIndexing = needsIndexing;
 	}
 
+    @Column(table = "ref_trade_calc")
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getContractorCount() {
 		return contractorCount;

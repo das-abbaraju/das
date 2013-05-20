@@ -16,6 +16,8 @@ flag_criteria
 flag_criteria_operator
 invoice_fee
 naics
+ref_trade
+ref_trade_alt
 token
 widget
 widget_user
