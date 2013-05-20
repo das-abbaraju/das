@@ -45,7 +45,7 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:OpenTasksTest-context.xml"})
+@ContextConfiguration(locations = {"OpenTasksTest-context.xml"})
 public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
