@@ -1,22 +1,94 @@
 package com.picsauditing.auditBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 
+import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 
 
 public class AuditCategoriesBuilderTest {
+	ContractorAccount contractor;
+	OperatorAccount operator;
+	ContractorAudit audit;
+	AuditCategory cat1;
+	AuditCategory cat2;
+
+	@Mock
+	AuditCategoryRuleCache ruleCache;
+
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		contractor = EntityFactory.makeContractor();
+		operator = EntityFactory.makeOperator();
+		setupAudit();
+		setupCategoryRules();
+	}
+
+	private void setupAudit() {
+		audit = EntityFactory.makeContractorAudit(200, contractor);
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setOperator(operator);
+		caop.setCao(cao);
+		cao.getCaoPermissions().add(caop);
+		cat1 = EntityFactory.makeAuditCategory(1);
+		cat2 = EntityFactory.makeAuditCategory(2);
+		cat2.setParent(cat1);
+
+		audit.getAuditType().getCategories().add(cat1);
+		audit.getAuditType().getCategories().add(cat2);
+	}
+
+	private void setupCategoryRules() throws Exception {
+		AuditCategoryRule rule1 = new AuditCategoryRule();
+		rule1.setAuditType(audit.getAuditType());
+		rule1.setOperatorAccount(operator);
+		rule1.setAuditCategory(cat1);
+		rule1.setRootCategory(true);
+
+		AuditCategoryRule rule2 = new AuditCategoryRule();
+		rule2.setAuditType(audit.getAuditType());
+		rule2.setOperatorAccount(operator);
+		rule2.setAuditCategory(cat2);
+		rule2.setRootCategory(false);
+
+		List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+		catRules.add(rule1);
+		catRules.add(rule2);
+
+		when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
+	}
+
+	@Test
+	public void testExpiredCategories() throws Exception {
+		setUp();
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+
+		// none expired
+		assertEquals(2, categoryBuilder.calculate(audit).size());
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		Date expiredDate = cal.getTime();
+		cal.add(Calendar.DATE, -1);
+		Date effectiveDate = cal.getTime();
+
+		cat2.setEffectiveDate(effectiveDate);
+		cat2.setExpirationDate(expiredDate);
+		// one expired
+		assertEquals(1, categoryBuilder.calculate(audit).size());
+	}
 
 	@Test
 	public void testFindMostRecentAudit() throws Exception {

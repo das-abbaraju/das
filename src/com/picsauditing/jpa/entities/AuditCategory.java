@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -62,6 +64,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	private String uniqueCode;
 	private float scoreWeight = 0f;
 	private int columns = 1;
+	protected Date effectiveDate;
+	protected Date expirationDate;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
@@ -236,6 +240,39 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	public void setHelpText(TranslatableString helpText) {
 		this.helpText = helpText;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	@Transient
+	public boolean isCurrent() {
+		Date now = new Date();
+		return isCurrent(now);
+	}
+
+	@Transient
+	public boolean isCurrent(Date now) {
+		if (effectiveDate != null && effectiveDate.after(now))
+			return false;
+		if (expirationDate != null && expirationDate.before(now))
+			return false;
+		return true;
 	}
 
 	@OneToMany(mappedBy = "parent")

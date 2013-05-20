@@ -34,8 +34,22 @@
 					},
 					axis: 'y'
 				});
-			
-				showRules();		
+
+                $('.datepicker').datepicker({
+                    changeMonth : true,
+                    changeYear : true,
+                    yearRange : '1950:2049',
+                    showOn : 'button',
+                    buttonImage : 'images/icon_calendar.gif',
+                    buttonImageOnly : true,
+                    buttonText : translate('JS.ChooseADate'),
+                    constrainInput : true,
+                    showAnim : 'fadeIn',
+                    minDate: 1,
+                    dateFormat: 'yy-mm-dd'
+                });
+
+				showRules();
 			});
 			
 			function showRules() {
@@ -132,7 +146,21 @@
 						<label>Score Weight</label>
 						<s:textfield name="category.scoreWeight"/>
 					</li>
-					<li>
+                    <li>
+                        <label>Effective Date:</label>
+                        <s:date name="category.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" var="category_effective_date" />
+                        <s:textfield name="category.effectiveDate" value="%{#category_effective_date}" cssClass="datepicker" />
+                    </li>
+
+                    <s:if test="category.id > 0">
+                        <li>
+                            <label>Expiration Date:</label>
+                            <s:date name="category.expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" var="category_expiration_date"/>
+                            <s:textfield name="category.expirationDate" value="%{#category_expiration_date}" cssClass="datepicker" />
+                        </li>
+                    </s:if>
+
+                    <li>
 						<label># of Questions:</label>
 						<s:property value="category.numQuestions"/>
 					</li>
@@ -220,7 +248,7 @@
 				
 				<ul class="list" id="list" title="Drag and drop to change order">
 					<s:iterator value="category.subCategories">
-						<li id="item_<s:property value="id"/>" title="Drag and drop to change order">
+						<li id="item_<s:property value="id"/>" title="Drag and drop to change order" <s:if test="!current">style="font-style: italic"</s:if>>
 							<s:property value="number" />.
 					    	<a href="ManageCategory.action?id=<s:property value="id"/>"><s:property value="name.toString().trim().length() == 0 ? 'empty' : name"/></a>
 						</li>

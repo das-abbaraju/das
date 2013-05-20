@@ -103,6 +103,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		}
 
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
+			if (!category.isCurrent())
+				continue;
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
 					for (OperatorAccount operator : auditOperators) {
@@ -259,7 +261,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
 		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 			Set<AuditCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
-			if (operatorCategories != null && operatorCategories.contains(category))
+			if (operatorCategories != null && operatorCategories.contains(category) && category.isCurrent())
 				return true;
 		}
 		

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -51,6 +52,19 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 			if (category.getName() == null || category.getName().toString().length() == 0) {
 				this.addActionError("Category name is required");
+				return false;
+			}
+
+			if (id == 0) {
+				category.setExpirationDate(AuditQuestion.END_OF_TIME);
+			}
+
+			if (category.getEffectiveDate() == null) {
+				category.setEffectiveDate(new Date());
+			}
+
+			if (category.getExpirationDate() == null) {
+				this.addActionError("Expiration date is required");
 				return false;
 			}
 

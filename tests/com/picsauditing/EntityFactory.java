@@ -318,6 +318,8 @@ public class EntityFactory {
 		auditCategory.setName(makeTranslatableString("Audit Category " + categoryId));
 		auditCategory.setNumber(categoryId);
 		auditCategory.setAuditType(makeAuditType());
+		auditCategory.setEffectiveDate(new Date());
+		auditCategory.setExpirationDate(AuditQuestion.END_OF_TIME);
 		return auditCategory;
 	}
 
