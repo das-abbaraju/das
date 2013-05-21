@@ -6,23 +6,7 @@
 
                     $('#audit-layout').on('click', '.toggle-excess-criteria', $.proxy(this, 'toggleExcessCriteria'));
 
-                    var cao_table = $('#caoTable');
-                    
-                    cao_table.delegate('.policy-reject', 'click', function (event) {
-                        var element = $(this);
-                        
-                        var audit_id = $('#auditID').val();
-                        var cao_id = element.find('.bCaoID').val();
-                        var status = element.find('.bStatus').val();
-                        
-                        element.trigger('reject', [cao_id, function () {
-                            cao_table.trigger('refresh', [audit_id, cao_id, status]);
-                            
-                            // close modal window
-                            var modal = PICS.getClass('modal.Modal');
-                            modal.hide();
-                        }]);
-                    });
+                    $('#caoTable').on('click', '.policy-reject', $.proxy(this, 'rejectPolicy'));                    
 
                    $('.Audit-page').on('click', '#caoTable .buttonAction .button', $.proxy(this, 'refreshCaoTable'));
                 }
@@ -67,6 +51,22 @@
 
             refreshAudit: function () {
                 window.location.reload(true);
+            },
+
+            rejectPolicy: function () {
+                var $cao_table = $('#caoTable'),
+                    $element = $(event.target),
+                    $audit_id = $('#auditID').val();
+                    $cao_id = $element.find('.bCaoID').val();
+                    $status = $element.find('.bStatus').val();
+
+                $element.trigger('reject', [$cao_id, function () {
+                    $cao_table.trigger('refresh', [$audit_id, $cao_id, $status]);
+
+                    // close modal window
+                    var modal = PICS.getClass('modal.Modal');
+                    modal.hide();
+                }]);
             },
 
             toggleExcessCriteria: function (event) {
