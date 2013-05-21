@@ -8,7 +8,7 @@
 
                     $('#caoTable').on('click', '.policy-reject', $.proxy(this, 'rejectPolicy'));                    
 
-                   $('.Audit-page').on('click', '#caoTable .buttonAction .button', $.proxy(this, 'refreshCaoTable'));
+                   $('.Audit-page').on('click', '#caoTable .buttonAction .button:not(.policy-reject)', $.proxy(this, 'refreshCaoTable'));
                 }
             },
             
@@ -64,7 +64,7 @@
                     $cao_table.trigger('refresh', [$audit_id, $cao_id, $status]);
 
                     // close modal window
-                    var modal = PICS.getClass('modal.Modal');
+                    var modal = PICS.getClass('widget.Modal');
                     modal.hide();
                 }]);
             },
