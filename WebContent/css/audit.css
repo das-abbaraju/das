@@ -1021,6 +1021,13 @@ a.gray {color: #A4A3A4;} /*** N/A or Expired ***/
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
+/* select2 container */
+
+.Audit-page .select2-container
+{
+	width: 400px;
+}
+
 /* audit override */
 #AuditOverride .form .radio
 {

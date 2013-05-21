@@ -27,6 +27,25 @@
                    $('.Audit-page').on('click', '#caoTable .buttonAction .button', $.proxy(this, 'refreshCaoTable'));
                 }
             },
+            
+            createSelect2: function () {
+                $('input[data-toggle="select2"]').each(function (key, value) {
+                    var $element = $(this),
+                        option_group_id = $element.attr('data-option-group-id'),
+                        options_url = 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id;
+
+                    PICS.ajax({
+                        url: options_url,
+                        dataType: 'json',
+                        success: function(data, textStatus, jqXHR) {
+                            $element.select2({
+                                multiple: true,
+                                data: data
+                            });
+                        }
+                    });
+                });
+            },            
 
             refreshCaoTable: function (event) {
                 var $element = $(event.target),

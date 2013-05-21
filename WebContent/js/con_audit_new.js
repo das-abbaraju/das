@@ -339,9 +339,9 @@
 		},
 
 		initTagit: function () {
-		    var multiSelect = PICS.getClass('audit.AuditController');
+		    var audit_controller = PICS.getClass('audit.AuditController');
 
-		    multiSelect.createMultiSelect();
+		    audit_controller.createSelect2();
 		}
 	};
 
