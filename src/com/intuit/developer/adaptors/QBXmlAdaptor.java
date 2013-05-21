@@ -1,11 +1,13 @@
 package com.intuit.developer.adaptors;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +69,8 @@ public class QBXmlAdaptor {
 		Marshaller createMarshaller = jc.createMarshaller();
 		createMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 
-		// This is for the stupidity of QuickBooks, delete under penalty of death while
+		// This is for the stupidity of QuickBooks, delete under penalty of
+		// death while
 		// we are still using QuickBooks.
 		AppProperty property = getAppPropertyDao().find(AppProperty.QB_JAXB_ENCODING);
 		if ("Y".equals(property.getValue())) {
@@ -200,15 +203,21 @@ public class QBXmlAdaptor {
 	public static BillAddress updateBillAddress(ContractorAccount contractor, BillAddress billAddress) {
 		if (!Strings.isEmpty(contractor.getBillingAddress()) && !Strings.isEmpty(contractor.getBillingCity())) {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-			billAddress.setAddr2("c/o "
-					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 37));
+			List<User> users = contractor.getUsersByRole(OpPerms.ContractorBilling);
+			if (CollectionUtils.isNotEmpty(users)) {
+				billAddress.setAddr2("c/o "
+						+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0,
+								37));
+			}
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
-			billAddress.setCity(nullSafeSubString(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()), 0, 41));
+			billAddress.setCity(nullSafeSubString(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()),
+					0, 41));
 			if (contractor.getBillingCountrySubdivision() != null) {
 				String isoCode = contractor.getBillingCountrySubdivision().getIsoCode();
 				billAddress.setState(nullSafeSubString(StringUtils.substring(isoCode, -2), 0, 21));
 			}
-			billAddress.setPostalCode(nullSafeSubString(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()), 0, 13));
+			billAddress.setPostalCode(nullSafeSubString(
+					nullSafeZip(contractor.getBillingZip(), contractor.getCountry()), 0, 13));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			User primary = null;
@@ -225,7 +234,8 @@ public class QBXmlAdaptor {
 				String isoCode = contractor.getCountrySubdivision().getIsoCode();
 				billAddress.setState(nullSafeSubString(StringUtils.substring(isoCode, -2), 0, 21));
 			}
-			billAddress.setPostalCode(nullSafeSubString(nullSafeZip(contractor.getZip(), contractor.getCountry()), 0, 13));
+			billAddress.setPostalCode(nullSafeSubString(nullSafeZip(contractor.getZip(), contractor.getCountry()), 0,
+					13));
 		}
 		if (contractor.getCountry() != null) {
 			billAddress.setCountry(contractor.getCountry().getIsoCode());
