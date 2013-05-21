@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.toggle.FeatureToggle;
 
 import org.slf4j.Logger;
@@ -148,7 +149,7 @@ public class TaxService {
 	private void addNewTaxItemToInvoice(Invoice invoice, InvoiceFee taxInvoiceFee, BigDecimal taxAmount) {
 		InvoiceItem taxItem = createNewTaxInvoiceItem(invoice, taxInvoiceFee, taxAmount);
 		invoice.getItems().add(taxItem);
-		invoice.setQbSync(true);
+		AccountingSystemSynchronization.setToSynchronize(invoice);
 	}
 
 	private InvoiceItem createNewTaxInvoiceItem(Invoice invoice, InvoiceFee taxInvoiceFee, BigDecimal taxAmount) {
@@ -169,7 +170,7 @@ public class TaxService {
 
 	private void updateExistingTaxItemInInvoice(Invoice invoice, InvoiceItem taxItem, BigDecimal taxAmount) {
 		updateTaxItem(taxItem, taxAmount);
-		invoice.setQbSync(true);
+		AccountingSystemSynchronization.setToSynchronize(invoice);
 	}
 
 	private void updateTaxItem(InvoiceItem taxItem, BigDecimal taxAmount) {

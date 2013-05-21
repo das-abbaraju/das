@@ -18,6 +18,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.model.billing.CommissionDetail;
 import com.picsauditing.model.billing.InvoiceModel;
@@ -123,7 +124,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					message = getText("InvoiceDetail.message.SavedInvoice");
 				}
 				updateTotals();
-				invoice.setQbSync(true);
+				AccountingSystemSynchronization.setToSynchronize(invoice);
 			}
 			if (CHANGE_TO_BUTTON.equals(button)) {
 				List<String> removedItemNames = new ArrayList<String>();
@@ -163,7 +164,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					}
 				}
 
-				invoice.setQbSync(true);
+				AccountingSystemSynchronization.setToSynchronize(invoice);
 				invoice.updateAmount();
 				invoice.updateAmountApplied();
 				invoiceService.saveInvoice(invoice);
@@ -208,7 +209,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				invoice.setStatus(TransactionStatus.Void);
 				billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
 				invoice.setAuditColumns(permissions);
-				invoice.setQbSync(true);
+				AccountingSystemSynchronization.setToSynchronize(invoice);
 				invoice.setNotes("Cancelled Invoice");
 
 				// Automatically deactivating account based on expired
@@ -248,7 +249,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							// Only if the transaction succeeds
 							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions),
 									payment.getTotalAmount());
-							payment.setQbSync(true);
+							AccountingSystemSynchronization.setToSynchronize(payment);
 
 							paymentDAO.save(payment);
 							billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);

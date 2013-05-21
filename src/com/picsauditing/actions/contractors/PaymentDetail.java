@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
@@ -18,6 +19,7 @@ import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.braintree.CreditCard;
@@ -251,7 +253,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						}
 					}
 
-					refund.setQbSync(true);
+					AccountingSystemSynchronization.setToSynchronize(refund);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
 
@@ -343,7 +345,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			}
 
 			payment.updateAmountApplied();
-			payment.setQbSync(true);
+			AccountingSystemSynchronization.setToSynchronize(payment);
 			paymentDAO.save(payment);
 
 			notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));

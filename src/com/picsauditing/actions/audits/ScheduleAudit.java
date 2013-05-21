@@ -10,6 +10,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PicsDateFormat;
@@ -72,8 +73,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			findConAudit();
 		}
 		int auditorID = getParameter("auditor.id");
-		if (auditorID > 0)
+		if (auditorID > 0) {
 			auditor = getUser(auditorID);
+		}
 
 		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
 		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
@@ -94,9 +96,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		if (button == null) {
-			if (conAudit.getScheduledDate() == null)
+			if (conAudit.getScheduledDate() == null) {
 				// We need to schedule this audit
 				return "address";
+			}
 
 			if (conAudit.getScheduledDate().before(new Date())) {
 				// This audit has already passed (and we missed it?)
@@ -104,9 +107,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "edit";
 			}
 
-			if (permissions.isAdmin())
+			if (permissions.isAdmin()) {
 				// Let the admin reschedule the audit
 				return "edit";
+			}
 
 			// Contractors can't change upcoming scheduled audits
 			return "summary";
@@ -122,8 +126,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 		}
 
-		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
+		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date())) {
 			addActionMessage(getText("ScheduleAudit.message.AuditAppointmentPassed"));
+		}
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.getStatus().after(AuditStatus.Pending)) {
 				addActionMessage(getText("ScheduleAudit.message.AuditCompleted"));
@@ -135,8 +140,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String save() throws Exception {
-		if (!permissions.isAdmin())
+		if (!permissions.isAdmin()) {
 			throw new NoRightsException("ScheduleAudits");
+		}
 
 		if (auditor == null) {
 			addActionError(getText("ScheduleAudit.error.SelectAnAuditor"));
@@ -173,8 +179,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				createInvoice(rescheduling, notes);
 			}
 
-			if (isNeedsExpediteFee(scheduledDateInServerTime))
+			if (isNeedsExpediteFee(scheduledDateInServerTime)) {
 				createExpediteInvoiceAndEmail(scheduledDateInServerTime);
+			}
 
 			conAudit.setScheduledDate(scheduledDateInServerTime);
 			conAudit.setContractorConfirm(null);
@@ -182,12 +189,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		// When a new auditor gets selected, that auditor should get a
 		// confirmation email
-		if (permissions.getUserId() != conAudit.getAuditor().getId() || changedAuditor)
+		if (permissions.getUserId() != conAudit.getAuditor().getId() || changedAuditor) {
 			conAudit.setAuditorConfirm(null);
+		}
 
-		if (conAudit.getAuditorConfirm() == null || conAudit.getContractorConfirm() == null)
+		if (conAudit.getAuditorConfirm() == null || conAudit.getContractorConfirm() == null) {
 			sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Re-scheduled for "
 					+ DateBean.format(conAudit.getScheduledDate(), "MMMM d"));
+		}
 
 		addActionMessage("Audit Saved Successfully");
 		// check for a time overlap here
@@ -208,12 +217,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String address() throws Exception {
-		if (Strings.isEmpty(conAudit.getContractorContact()))
+		if (Strings.isEmpty(conAudit.getContractorContact())) {
 			addActionError(getText("ScheduleAudit.error.ContactNameRequired"));
-		if (Strings.isEmpty(conAudit.getPhone2()))
+		}
+		if (Strings.isEmpty(conAudit.getPhone2())) {
 			addActionError(getText("ScheduleAudit.error.EmailRequired"));
-		if (Strings.isEmpty(conAudit.getPhone()))
+		}
+		if (Strings.isEmpty(conAudit.getPhone())) {
 			addActionError(getText("ScheduleAudit.error.PhoneRequired"));
+		}
 		if (hasActionErrors()) {
 			return "address";
 		}
@@ -295,8 +307,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		conAudit.setAuditor(availabilitySelected.getUser());
 		conAudit.setAssignedDate(new Date());
 		conAudit.setClosingAuditor(new User(conAudit.getIndependentClosingAuditor(availabilitySelected.getUser())));
-		if (permissions.isContractor())
+		if (permissions.isContractor()) {
 			conAudit.setContractorConfirm(new Date());
+		}
 		conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
 		auditDao.save(conAudit);
 		auditorAvailabilityDAO.remove(availabilitySelected);
@@ -332,8 +345,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
 			List<String> emails = new ArrayList<String>();
 			for (UserAccess ua : webcamUsers) {
-				if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))
+				if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail())) {
 					emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
+				}
 			}
 
 			// TODO We should pull this out into an email template.
@@ -361,14 +375,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		void add(AuditorAvailability timeslot) {
 			final Date day = stripTimes(timeslot.getStartDate());
-			if (days.get(day) == null)
+			if (days.get(day) == null) {
 				days.put(day, new ArrayList<AuditorAvailability>());
+			}
 
 			for (AuditorAvailability existingTimeSlot : days.get(day)) {
-				if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
+				if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate())) {
 					// We don't need to add more than one time slot per
 					// starting time
 					return;
+				}
 			}
 			days.get(day).add(timeslot);
 			latest = DateBean.getLatestDate(latest, timeslot.getEndDate());
@@ -376,12 +392,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		@SuppressWarnings("deprecation")
 		private boolean isSameTime(Date time1, Date time2) {
-			if (time1.getHours() != time2.getHours())
+			if (time1.getHours() != time2.getHours()) {
 				return false;
-			if (time1.getMinutes() != time2.getMinutes())
+			}
+			if (time1.getMinutes() != time2.getMinutes()) {
 				return false;
-			if (time1.getSeconds() != time2.getSeconds())
+			}
+			if (time1.getSeconds() != time2.getSeconds()) {
 				return false;
+			}
 			return true;
 		}
 
@@ -401,16 +420,18 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		public Date getLatest() {
-			if (latest == null)
+			if (latest == null) {
 				return null;
+			}
 			return DateBean.getNextDayMidnight(latest);
 		}
 	}
 
 	public static Date changeTimeZone(TimeZone inputTimeZone, TimeZone outputTimeZone, String inputDateString,
 									  String inputFormat) throws Exception {
-		if (inputFormat == null)
+		if (inputFormat == null) {
 			inputFormat = "yyyy-MM-dd HH:mm:ss";
+		}
 
 		Date inputDate = null;
 
@@ -521,8 +542,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public boolean isNeedsExpediteFee(Date selectedDate) {
 		if (selectedDate != null) {
-			if (conAudit.getScheduledDate() != null && selectedDate.after(conAudit.getScheduledDate()))
+			if (conAudit.getScheduledDate() != null && selectedDate.after(conAudit.getScheduledDate())) {
 				return false;
+			}
 
 			LocalDate selectedDateJoda = new LocalDate(selectedDate);
 			Days days = Days.daysBetween(new LocalDate(), selectedDateJoda);
@@ -540,7 +562,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
 		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
-		invoice.setQbSync(true);
+		AccountingSystemSynchronization.setToSynchronize(invoice);
 		invoice = invoiceService.saveInvoice(invoice);
 
 		InvoiceItem item = new InvoiceItem();

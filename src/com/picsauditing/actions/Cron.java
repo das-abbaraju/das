@@ -78,6 +78,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.model.account.AccountStatusChanges;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.EmailAddressUtils;
@@ -922,7 +923,8 @@ public class Cron extends PicsActionSupport {
 				i.getItems().add(lateFeeItem);
 				i.updateAmount();
 				i.updateAmountApplied();
-				i.setQbSync(true);
+				AccountingSystemSynchronization.setToSynchronize(i);
+
 				i.setAuditColumns(new User(User.SYSTEM));
 				if (i.getAccount() instanceof ContractorAccount) {
 					((ContractorAccount) i.getAccount()).syncBalance();

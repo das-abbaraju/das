@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,12 +22,13 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.TransactionStatus;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 
 /**
  * Class used to edit a Invoice and Invoice Item record with virtually no restrictions
- * 
+ *
  * @author Keerthi
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class ConInvoiceMaintain extends ContractorActionSupport implements Preparable {
@@ -68,17 +70,19 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 			for (InvoiceItem item : invoice.getItems()) {
 				if (invoice.getStatus().isVoid() && item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
 					boolean removed = billingService.removeImportPQF(contractor);
-					if (removed)
+					if (removed) {
 						message += " and removed <strong>ImportPQF Audit</strong>";
+					}
 				}
 
 				int feeID = feeMap.get(item.getId());
-				if (item.getInvoiceFee().getId() != feeID)
+				if (item.getInvoiceFee().getId() != feeID) {
 					item.setInvoiceFee(invoiceFeeDAO.find(feeID));
+				}
 			}
 
 			invoice.updateAmount();
-			invoice.setQbSync(true);
+			AccountingSystemSynchronization.setToSynchronize(invoice);
 			invoiceService.saveInvoice(invoice);
 			addActionMessage(message);
 		}
@@ -93,8 +97,9 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 						if (item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
 							boolean removed = billingService.removeImportPQF(contractor);
-							if (removed)
+							if (removed) {
 								message += " and removed <strong>ImportPQF Audit</strong>";
+							}
 						}
 
 						items.remove();
@@ -104,7 +109,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 				}
 
 				invoice.updateAmount();
-				invoice.setQbSync(true);
+				AccountingSystemSynchronization.setToSynchronize(invoice);
 				invoiceService.saveInvoice(invoice);
 			}
 		}
@@ -130,8 +135,9 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 	}
 
 	public List<InvoiceFee> getFeeList() {
-		if (feeList == null)
+		if (feeList == null) {
 			feeList = invoiceFeeDAO.findAll();
+		}
 
 		return feeList;
 	}

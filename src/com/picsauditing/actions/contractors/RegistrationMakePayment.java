@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
@@ -186,7 +187,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 						// Only if the transaction succeeds
 						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
-						payment.setQbSync(true);
+						AccountingSystemSynchronization.setToSynchronize(payment);
 
 						paymentDAO.save(payment);
 						invoice.updateAmountApplied();

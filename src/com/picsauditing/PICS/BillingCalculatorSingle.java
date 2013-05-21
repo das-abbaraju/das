@@ -57,6 +57,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
@@ -363,7 +364,7 @@ public class BillingCalculatorSingle {
 		toUpdate.setPaidDate(updateWith.getPaidDate());
 		toUpdate.setPoNumber(updateWith.getPoNumber());
 		toUpdate.setTotalAmount(updateWith.getTotalAmount());
-		toUpdate.setQbSync(true);
+		AccountingSystemSynchronization.setToSynchronize(toUpdate);
 
 		invoiceService.saveInvoice(toUpdate);
 
@@ -401,7 +402,7 @@ public class BillingCalculatorSingle {
 		invoice.setAuditColumns(auditUser);
 
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-			invoice.setQbSync(true);
+			AccountingSystemSynchronization.setToSynchronize(invoice);
 		}
 
 		calculateAndSetDueDateOn(invoice, contractor);
