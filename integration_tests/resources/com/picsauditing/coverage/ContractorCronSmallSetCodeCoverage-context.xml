@@ -9,12 +9,13 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
        default-autowire="byName">
 
-    <context:property-placeholder location="classpath:connection.properties"/>
+    <context:property-placeholder location="classpath:test_connection.properties"/>
 
     <import resource="classpath:TestDatabaseEntityManager-context.xml"/>
 
     <bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
-    <bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
+    <bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO" scope="prototype"/>
+    <bean id="ContractorTagger" class="com.picsauditing.coverage.ContractorTagger" scope="prototype"/>
     <bean id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO"/>
     <bean id="DBBean" class="com.picsauditing.PICS.DBBean"/>
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>

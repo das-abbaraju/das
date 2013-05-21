@@ -18,7 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -33,7 +36,7 @@ import static java.lang.String.format;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"ContractorCronSmallSetCodeCoverage-context.xml"})
-public class ContractorCronSmallSetCodeCoverage {
+public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(ContractorCronSmallSetCodeCoverage.class);
     private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
     private static final int MAX_CONTRACTORS_WITH_NO_IMPROVEMENT = 200;
@@ -61,12 +64,12 @@ public class ContractorCronSmallSetCodeCoverage {
     private int numberOfTriesWithNoCoverageIncrease = 0;
     private int previousTotalLinesCovered = 0;
 
+    private static ApplicationContext applicationContext;
+
     @Autowired
     private ContractorAccountDAO contractorDAO;
     @Autowired
     private OperatorTagDAO operatorTagDAO;
-    @Autowired
-    private ContractorTagDAO contractorTagDAO;
 
     @Test
     public void run() throws Exception {
@@ -102,7 +105,7 @@ public class ContractorCronSmallSetCodeCoverage {
             protocol = protocolToUse;
         }
         String dumpPortToUse = System.getProperty(ENVIRONMENT_VAR_FOR_DUMP_PORT);
-        if (!Strings.isEmpty(protocolToUse)) {
+        if (!Strings.isEmpty(dumpPortToUse)) {
             dumpPort = Integer.parseInt(dumpPortToUse);
         }
 
@@ -171,19 +174,24 @@ public class ContractorCronSmallSetCodeCoverage {
     }
 
     private void resetContractorTags() throws Exception {
-        List<ContractorTag> contractorTags = contractorTagDAO.getTagsByTagID(operatorTag.getId());
+        List<ContractorTag> contractorTags = contractorTagger().getTagsByTagID(operatorTag.getId());
         for (ContractorTag contractorTag : contractorTags) {
-            contractorTagDAO.remove(contractorTag.getId());
+            contractorTagger().remove(contractorTag.getId());
         }
     }
 
 
     private void restoreBackupOfCoverageData() throws IOException {
+
         FileUtils.copyFile(new File(JACOCO_EXEC_PATH_BACKUP), new File(JACOCO_EXEC_PATH));
     }
 
     private void saveContractorTag(ContractorTag tag) {
-        contractorTagDAO.save(tag);
+        contractorTagger().save(tag);
+    }
+
+    private ContractorTagger contractorTagger() {
+        return (ContractorTagger) applicationContext.getBean("ContractorTagger");
     }
 
     private ContractorTag newContractorTag(ContractorAccount contractor) {
@@ -308,4 +316,8 @@ public class ContractorCronSmallSetCodeCoverage {
         return sb.toString();
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }
