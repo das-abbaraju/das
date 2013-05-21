@@ -3,9 +3,11 @@
         methods: {
             init: function () {
                 if ($('.Audit-page').length) {
-                    var that = this;
-                    
-                    that.rejectPolicy();
+                    var $cao_table = $('#caoTable');
+
+                    $cao_table.on('click', '.policy-reject', function (event) {
+                        this.rejectPolicy();
+                    });
                 }
             },
 
