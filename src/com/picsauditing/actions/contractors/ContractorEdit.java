@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -169,6 +170,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			addNoteWhenStatusChange();
 			// auditBuilder.buildAudits(contractor);
 			contractor.setQbSync(true);
+			if (contractor.getSapLastSync() != null) {
+				contractor.setSapLastSync(DateBean.getStartOfPicsTime());
+			}
+
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();
 

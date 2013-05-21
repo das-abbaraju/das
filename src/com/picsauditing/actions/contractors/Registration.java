@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.*;
@@ -343,6 +344,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
 		contractor.setQbSync(true);
+		if (contractor.getSapLastSync() != null) {
+			contractor.setSapLastSync(DateBean.getStartOfPicsTime());
+		}
+
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");
 		contractor.setNaicsValid(false);

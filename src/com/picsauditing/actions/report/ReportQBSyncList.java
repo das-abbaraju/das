@@ -2,6 +2,8 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.intuit.developer.adaptors.GetContractorsForUpdate;
 import com.intuit.developer.adaptors.GetInvoicesForUpdate;
 import com.intuit.developer.adaptors.GetPaymentsForUpdate;
@@ -10,9 +12,6 @@ import com.intuit.developer.adaptors.InsertInvoices;
 import com.intuit.developer.adaptors.InsertPayments;
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.InvoiceValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -54,8 +53,9 @@ public class ReportQBSyncList extends PicsActionSupport {
 	private EmailQueue lastError;
 
 	public String execute() throws Exception, InvoiceValidationException {
-		if (!forceLogin())
+		if (!forceLogin()) {
 			return LOGIN;
+		}
 
 		permissions.tryPermission(OpPerms.Billing);
 
@@ -69,16 +69,18 @@ public class ReportQBSyncList extends PicsActionSupport {
 			if (type.equals("I")) {
 				Invoice obj = invoiceDAO.find(id);
 				obj.setQbSync(false);
-				if (obj.getQbListID() == null)
+				if (obj.getQbListID() == null) {
 					obj.setQbListID("NOLOAD" + id);
+				}
 				invoiceService.saveInvoice(obj);
 			}
 
 			if (type.equals("P")) {
 				Payment obj = paymentDAO.find(id);
 				obj.setQbSync(false);
-				if (obj.getQbListID() == null)
+				if (obj.getQbListID() == null) {
 					obj.setQbListID("NOLOAD" + id);
+				}
 				paymentDAO.save(obj);
 			}
 		}
@@ -159,7 +161,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 	/**
 	 * TODO: Need to fix how we store qbListIDs and break them into another
 	 * table or store them more intelligently.
-	 * 
+	 *
 	 * @param currency
 	 * @return
 	 */
@@ -167,10 +169,13 @@ public class ReportQBSyncList extends PicsActionSupport {
 		switch (currency) {
 		case CAD:
 			return "qbListCAID";
+
 		case GBP:
 			return "qbListUKID";
+
 		case EUR:
 			return "qbListEUID";
+
 		default:
 			return "qbListID";
 		}
@@ -180,20 +185,27 @@ public class ReportQBSyncList extends PicsActionSupport {
 		contractor.setQbSync(false);
 		switch (currency) {
 		case CAD:
-			if (contractor.getQbListCAID() == null)
+			if (contractor.getQbListCAID() == null) {
 				contractor.setQbListCAID("NOLOAD" + id);
+			}
 			break;
+
 		case GBP:
-			if (contractor.getQbListUKID() == null)
+			if (contractor.getQbListUKID() == null) {
 				contractor.setQbListUKID("NOLOAD" + id);
+			}
 			break;
+
 		case EUR:
-			if (contractor.getQbListEUID() == null)
+			if (contractor.getQbListEUID() == null) {
 				contractor.setQbListEUID("NOLOAD" + id);
+			}
 			break;
+
 		default:
-			if (contractor.getQbListID() == null)
+			if (contractor.getQbListID() == null) {
 				contractor.setQbListID("NOLOAD" + id);
+			}
 			break;
 		}
 	}

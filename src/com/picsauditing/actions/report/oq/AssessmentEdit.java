@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report.oq;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,16 @@ public class AssessmentEdit extends AccountActionSupport {
 	public String execute() throws Exception {
 		loadCenterIfNull();
 		checkPermissions();
-		
+
 		subHeading = getText("AssessmentCenterEdit.title");
 
 		if (id == 0) {
 			subHeading = getText("AssessmentCenterEdit.AddAssessmentCenter");
 		}
 
-		if (center.getId() > 0 && center.getPrimaryContact() == null)
+		if (center.getId() > 0 && center.getPrimaryContact() == null) {
 			addActionError(getText("AssessmentCenterEdit.AddPrimaryContact"));
+		}
 
 		return SUCCESS;
 	}
@@ -45,8 +47,9 @@ public class AssessmentEdit extends AccountActionSupport {
 	public String save() throws Exception {
 		List<String> errors = validateAccount(center);
 		if (errors.size() > 0) {
-			for (String error : errors)
+			for (String error : errors) {
 				addActionError(error);
+			}
 
 			return REDIRECT;
 		}
@@ -151,6 +154,7 @@ public class AssessmentEdit extends AccountActionSupport {
 		}
 
 		center.setQbSync(false);
+		center.setSapLastSync(new Date());
 		center.setRequiresOQ(false);
 		center.setRequiresCompetencyReview(false);
 	}

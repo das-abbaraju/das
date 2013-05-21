@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -13,6 +14,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
@@ -31,6 +34,8 @@ public abstract class Transaction extends BaseTable {
 	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	protected BigDecimal amountApplied = BigDecimal.ZERO;
 	protected boolean qbSync;
+	protected Date sapLastSync;
+	protected String sapId;
 	protected String qbListID;
 	protected TransactionStatus status = TransactionStatus.Unpaid;
 	protected Currency currency = Currency.USD;
@@ -65,8 +70,9 @@ public abstract class Transaction extends BaseTable {
 
 	@Transient
 	public BigDecimal getBalance() {
-		if (TransactionStatus.Void.equals(status))
+		if (TransactionStatus.Void.equals(status)) {
 			return BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+		}
 		return totalAmount.subtract(amountApplied);
 	}
 
@@ -86,6 +92,20 @@ public abstract class Transaction extends BaseTable {
 
 	public void setQbSync(boolean qbSync) {
 		this.qbSync = qbSync;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getSapLastSync() {
+		return sapLastSync;
+	}
+
+	@Column(name = "sapID")
+	public String getSapId() {
+		return sapId;
+	}
+
+	public void setSapId(String sapId) {
+		this.sapId = sapId;
 	}
 
 	/**
@@ -123,13 +143,16 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	public void updateAmountApplied() {
-		if (status.isVoid())
+		if (status.isVoid()) {
 			return;
-		if (status.isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
+		}
+		if (status.isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0) {
 			return;
-		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) <= 0)
+		}
+		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) <= 0) {
 			status = TransactionStatus.Paid;
-		else
+		} else {
 			status = TransactionStatus.Unpaid;
+		}
 	}
 }

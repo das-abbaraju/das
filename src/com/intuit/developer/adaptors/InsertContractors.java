@@ -14,17 +14,17 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class InsertContractors extends CustomerAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(InsertContractors.class);
-	
+
 	public static String getWhereClause(String qbID, String currency) {
-		return "a.qbSync = true AND a." + qbID
-		+ " IS NULL AND a.status = 'Active' AND a.country.currency = '"
-		+ currency + "'";
+		return "a.qbSync = true AND a." + qbID + " IS NULL AND a.status = 'Active' AND a.country.currency = '"
+				+ currency + "'";
 	}
 
 	// FIXME This is practically identical to the same method in
@@ -67,8 +67,9 @@ public class InsertContractors extends CustomerAdaptor {
 				 * doesn't allow for multiple currencies per account. Have to
 				 * name each account differently.
 				 **/
-				if (currentSession.isEUR())
+				if (currentSession.isEUR()) {
 					requestID += "EU";
+				}
 				customerAddRequest.setRequestID(requestID);
 
 				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(customerAddRequest);
@@ -77,8 +78,9 @@ public class InsertContractors extends CustomerAdaptor {
 				customerAddRequest.setCustomerAdd(customer);
 
 				String customerName = contractor.getIdString();
-				if (currentSession.isEUR())
+				if (currentSession.isEUR()) {
 					customerName += "EU";
+				}
 
 				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
@@ -89,9 +91,9 @@ public class InsertContractors extends CustomerAdaptor {
 				List<User> billingUsersInContractorAccount = contractor.getUsersByRole(OpPerms.ContractorBilling);
 
 				User primary = null;
-				if (contractor.getPrimaryContact() != null)
+				if (contractor.getPrimaryContact() != null) {
 					primary = contractor.getPrimaryContact();
-				else {
+				} else {
 					if (CollectionUtils.isEmpty(billingUsersInContractorAccount)) {
 						logger.warn("Invalid data for contractor ID = {}", contractor.getId());
 						continue;
@@ -173,14 +175,15 @@ public class InsertContractors extends CustomerAdaptor {
 					int accountId = Integer.parseInt(accountNumber);
 
 					if (accountId != 0) {
-						if (currentSession.isUS())
+						if (currentSession.isUS()) {
 							connected.setQbListID(customer.getListID());
-						else if (currentSession.isCanada())
+						} else if (currentSession.isCanada()) {
 							connected.setQbListCAID(customer.getListID());
-						else if (currentSession.isGBP())
+						} else if (currentSession.isGBP()) {
 							connected.setQbListUKID(customer.getListID());
-						else if (currentSession.isEUR())
+						} else if (currentSession.isEUR()) {
 							connected.setQbListEUID(customer.getListID());
+						}
 						connected.setQbSync(false);
 					}
 				} catch (Exception e) {
@@ -200,10 +203,16 @@ public class InsertContractors extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				if (currentSession.isUS())
+				if (currentSession.isUS()) {
 					connected.setQbListID(null);
-				else
+				} else if (currentSession.isGBP()) {
+					connected.setQbListUKID(null);
+				} else if (currentSession.isEUR()) {
+					connected.setQbListEUID(null);
+				} else {
 					connected.setQbListCAID(null);
+				}
+
 				connected.setQbSync(true);
 			}
 

@@ -93,6 +93,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String qbListCAID;
 	protected String qbListUKID;
 	protected String qbListEUID;
+	protected Date sapLastSync;
+
     /**
      * This reason field is specifically for noting the reason that an account is deactivated
      */
@@ -457,6 +459,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setQbListEUID(String qbListEUID) {
 		this.qbListEUID = qbListEUID;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getSapLastSync() {
+		return sapLastSync;
+	}
+
+	public void setSapLastSync(Date sapLastSync) {
+		this.sapLastSync = sapLastSync;
 	}
 
 	@Transient
