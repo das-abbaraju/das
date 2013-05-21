@@ -85,8 +85,7 @@
     <div class="alert">
         <p>
             <s:property value="contractor.name"/> <s:text
-                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
-                value="%{co.operatorAccount.name}"/>.
+                name="ContractorView.ContractorDashboard.AwaitingApproval"/>
         </p>
     </div>
     <ul class="users-with-permissions">
@@ -104,8 +103,7 @@
     <div class="alert">
         <p>
             <s:property value="contractor.name"/> <s:text
-                name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
-                value="%{co.operatorAccount.name}"/>.
+                name="ContractorView.ContractorDashboard.AwaitingApproval"/>
         </p>
 
         <ul class="users-with-permissions">
