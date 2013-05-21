@@ -55,21 +55,37 @@
 		</thead>
 		<tbody>
 			<s:iterator value="data" var="competency_file" status="status">
+                <%-- Set highlight if urgent --%>
+                <s:set var="urgency_highlight" value="%{''}" />
+                <s:if test="#competency_file.get('fileStatus') == 'Needed'">
+                    <s:set var="urgency_highlight">needed</s:set>
+                </s:if>
+                <s:elseif test="#competency_file.get('otherExpiration') == 'Expired'">
+                    <s:set var="urgency_highlight">expired</s:set>
+                </s:elseif>
+
+                <%-- Get expiration date or 'needed' --%>
+                <s:if test="#competency_file.get('expiration')">
+                    <s:set var="document_status">${competency_file.get('expiration')}</s:set>
+                </s:if>
+                <s:else>
+                    <s:set var="document_status">${competency_file.get('fileStatus')}</s:set>
+                </s:else>
+
+                <s:url var="skills_training" action="EmployeeSkillsTraining">
+                    <s:param name="employee">${competency_file.get('employeeID')}</s:param>
+                </s:url>
 				<s:url var="employee_profile" action="EmployeeDetail">
-					<s:param name="employee">
-						${competency_file.get('employeeID')}
-					</s:param>
+					<s:param name="employee">${competency_file.get('employeeID')}</s:param>
 				</s:url>
+                <s:url var="contractor_view" action="ContractorView">
+                    <s:param name="id">${competency_file.get('id')}</s:param>
+                </s:url>
 				<tr>
 					<td>
 						${status.index + report.firstRowNumber}
 					</td>
 					<td>
-						<s:url var="contractor_view" action="ContractorView">
-							<s:param name="id">
-								${competency_file.get('id')}
-							</s:param>
-						</s:url>
 						<a href="${contractor_view}">
 							${competency_file.get('name')}
 						</a>
@@ -92,31 +108,6 @@
 					<td>
 						${competency_file.get('label')}
 					</td>
-
-                    <%-- Set highlight if urgent --%>
-                    <s:set var="urgency_highlight"></s:set>
-                    <s:if test="#competency_file.get('fileStatus') == 'Needed'">
-                        <s:set var="urgency_highlight">needed</s:set>
-                    </s:if>
-                    <s:elseif test="#competency_file.get('otherExpiration') == 'Expired'">
-                        <s:set var="urgency_highlight">expired</s:set>
-                    </s:elseif>
-
-                    <%-- Set url for link --%>
-                    <s:url var="skills_training" action="EmployeeSkillsTraining">
-                        <s:param name="employee">
-                            ${competency_file.get('employeeID')}
-                        </s:param>
-                    </s:url>
-
-                    <%-- Get expiration date or 'needed' --%>
-                    <s:if test="#competency_file.get('expiration')">
-                        <s:set var="document_status">${competency_file.get('expiration')}</s:set>
-                    </s:if>
-                    <s:else>
-                        <s:set var="document_status">${competency_file.get('fileStatus')}</s:set>
-                    </s:else>
-
 					<td class="${urgency_highlight}">
                         <a href="${skills_training}">${document_status}</a>
 					</td>
