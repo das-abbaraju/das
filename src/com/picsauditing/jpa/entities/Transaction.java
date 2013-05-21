@@ -99,6 +99,10 @@ public abstract class Transaction extends BaseTable {
 		return sapLastSync;
 	}
 
+	public void setSapLastSync(Date sapLastSync) {
+		this.sapLastSync = sapLastSync;
+	}
+
 	@Column(name = "sapID")
 	public String getSapId() {
 		return sapId;
