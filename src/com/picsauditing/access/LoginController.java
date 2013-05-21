@@ -178,6 +178,7 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
+			permissions.setSwitchedToUserName(null);
 			ActionContext.getContext().getSession().put("permissions", permissions);
 		}
 
@@ -220,6 +221,7 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
+			permissions.setSwitchedToUserName(user.getName());
 
 			if (adminIsTranslator) {
 				permissions.setTranslatorOn();

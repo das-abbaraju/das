@@ -294,7 +294,6 @@ public class PicsMenu {
 							+ permissions.getShadowedUserID() : ""), "PQFVerification");
 		}
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment)) {
-			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action", "CSRAssignment");
 			subMenu.addChild("CSR Assignment Stats", "ReportCsrAssignmentStats.action", "CSRAssignmentStats");
 		}
 		if (permissions.hasPermission(OpPerms.ManageCsrAssignment)) {

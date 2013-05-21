@@ -262,8 +262,6 @@ public final class MenuBuilder {
 		}
 
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
-			manageMenu
-					.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
 					"auditor_assignment_matrix");
 		}

@@ -63,12 +63,6 @@
 			<result>struts/users/user_assignment.jsp</result>
 		</action>
 
-		<action name="CSRAssignmentMatrixCSV"
-			class="com.picsauditing.actions.users.UserAssignmentMatrix">
-			<param name="download">true</param>
-			<result>struts/blank.jsp</result>
-		</action>
-
         <action name="QaUserCreator" class="com.picsauditing.actions.qa.QaUserCreator"/>
 	</package>
 
