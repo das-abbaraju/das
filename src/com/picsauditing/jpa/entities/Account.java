@@ -348,6 +348,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.locale = locale;
 	}
 
+    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
