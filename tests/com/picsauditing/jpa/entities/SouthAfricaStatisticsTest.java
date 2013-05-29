@@ -31,7 +31,7 @@ public class SouthAfricaStatisticsTest {
 	public void testGetStats() {
 		AuditQuestion afr = new AuditQuestion();
 		AuditQuestion fatalities = new AuditQuestion();
-		afr.setId(SouthAfricaStatistics.QUESTION_ID_AFR_FOR_THE_GIVEN_YEAR);
+		afr.setId(SouthAfricaStatistics.QUESTION_ID_DIIR_FOR_THE_GIVEN_YEAR);
 		fatalities.setId(SouthAfricaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR);
 
 		AuditData data;
@@ -42,25 +42,25 @@ public class SouthAfricaStatisticsTest {
 
 		stat = new SouthAfricaStatistics(2011, list, true);
 
-		assertEquals(stat.getStats(OshaRateType.IFR), "14000");
+		assertEquals(stat.getStats(OshaRateType.DIIR), "14000");
 		assertEquals(stat.getStats(OshaRateType.Fatalities), "14000");
 	}
 
 	@Test
 	public void testEmptyGetStats() {
 		AuditQuestion question = new AuditQuestion();
-		question.setId(SouthAfricaStatistics.QUESTION_ID_IR_FOR_THE_GIVEN_YEAR);
+		question.setId(SouthAfricaStatistics.QUESTION_ID_SR_FOR_THE_GIVEN_YEAR);
 
 		AuditData data;
 		data = EntityFactory.makeAuditData("", question);
 		list.add(data);
 
 		stat = new SouthAfricaStatistics(2011, list, true);
-		assertEquals(stat.getStats(OshaRateType.IR), "0");
+		assertEquals(stat.getStats(OshaRateType.SR), "0");
 
 		data.setAnswer(null);
 		stat = new SouthAfricaStatistics(2011, list, true);
-		assertEquals(stat.getStats(OshaRateType.IR), "0");
+		assertEquals(stat.getStats(OshaRateType.SR), "0");
 	}
 
 }
