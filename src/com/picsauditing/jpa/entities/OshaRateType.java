@@ -26,7 +26,9 @@ public enum OshaRateType implements Translatable {
 	LTIFR,
     IR,
     FR,
-    ATLR;
+    ATLR,
+	DIIR,
+	SR;
 
 	private boolean hasIndustryAverage;
 
