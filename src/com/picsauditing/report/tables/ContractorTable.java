@@ -12,6 +12,7 @@ public class ContractorTable extends AbstractTable {
     public static final String Account = "Account";
     public static final String AccountUser = "AccountUser";
     public static final String CustomerService = "CustomerService";
+    public static final String InsideSales = "InsideSales";
     public static final String RecommendedCSR = "RecommendedCSR";
     public static final String PQF = "PQF";
     public static final String Flag = "Flag";
@@ -56,18 +57,20 @@ public class ContractorTable extends AbstractTable {
 //		oldCsrKey.setMinimumImportance(FieldImportance.Average);
 //		oldCsrKey.setCategory(FieldCategory.CustomerService);
 
-        ReportForeignKey csrKey = addOptionalKey(
-                new ReportForeignKey(
-                        CustomerService,
-                        new AccountUserTable(),
-                        new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
-                                UserAccountRole.PICSCustomerServiceRep + "' AND " + ReportOnClause.ToAlias +
-                                ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")
-                )
-        );
+        ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
+                "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSCustomerServiceRep + "' AND " +
+                ReportOnClause.ToAlias + ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()"));
 
+        ReportForeignKey csrKey = addOptionalKey(csr);
         csrKey.setCategory(FieldCategory.CustomerService);
         csrKey.setMinimumImportance(FieldImportance.Average);
+
+        ReportForeignKey insideSales = new ReportForeignKey(InsideSales, new AccountUserTable(), new ReportOnClause("id",
+                "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSInsideSalesRep + "' AND " +
+                ReportOnClause.ToAlias + ".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()"));
+        ReportForeignKey insideSalesRep = addOptionalKey(insideSales);
+        insideSalesRep.setCategory(FieldCategory.CustomerService);
+        insideSalesRep.setMinimumImportance(FieldImportance.Average);
 
         ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
