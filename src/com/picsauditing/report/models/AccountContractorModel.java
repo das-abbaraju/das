@@ -38,13 +38,13 @@ public class AccountContractorModel extends AbstractModel {
         csr.minimumImportance = FieldImportance.Required;
         ModelSpec csrUser = csr.join(AccountUserTable.User);
         csrUser.category = FieldCategory.CustomerService;
-        csrUser.minimumImportance = FieldImportance.Average;
+        csrUser.minimumImportance = FieldImportance.Required;
 
         ModelSpec insideSales = contractor.join(ContractorTable.InsideSales);
         insideSales.minimumImportance = FieldImportance.Required;
         ModelSpec insideSalesUser = insideSales.join(AccountUserTable.User);
         insideSalesUser.category = FieldCategory.CustomerService;
-        insideSalesUser.minimumImportance = FieldImportance.Average;
+        insideSalesUser.minimumImportance = FieldImportance.Required;
 
         contractor.join(ContractorTable.RecommendedCSR);
 		contractor.join(ContractorTable.Watch).category = FieldCategory.AccountInformation;
