@@ -488,8 +488,27 @@ public class AuditBuilder {
 			}
 		}
 
+		removeDuplicateCaosFromLists();
 		adjustCaoStatus(conAudit);
 	}
+
+	private void removeDuplicateCaosFromLists() {
+		for (ContractorAuditOperator cao : caosToMoveToApprove){
+			caosToMoveToSubmit.remove(cao);
+			caosToMoveToResubmit.remove(cao);
+			caosToMoveToComplete.remove(cao);
+		}
+
+		for (ContractorAuditOperator cao : caosToMoveToComplete){
+			caosToMoveToSubmit.remove(cao);
+			caosToMoveToResubmit.remove(cao);
+		}
+
+		for (ContractorAuditOperator cao : caosToMoveToResubmit){
+			caosToMoveToSubmit.remove(cao);
+		}
+	}
+
 
 	private void adjustCaoStatus(ContractorAudit conAudit) {
 		if (isAuditThatCanAdjustStatus(conAudit)) {
