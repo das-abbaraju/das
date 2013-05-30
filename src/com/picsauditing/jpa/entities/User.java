@@ -543,6 +543,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.locale = locale;
 	}
 
+    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
