@@ -71,6 +71,7 @@ public class ContractorCronTest extends PicsActionTest {
 		contractor.getAudits().add(audit);
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 
+		// pending balance
 		audit.setSlaDate(null);
 		contractor.setBalance(new BigDecimal(2));
 		pqfCao.changeStatus(AuditStatus.Pending, null);
@@ -80,6 +81,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
+		// pqf pending
 		audit.setSlaDate(null);
 		contractor.setBalance(BigDecimal.ZERO);
 		pqfCao.changeStatus(AuditStatus.Pending, null);
@@ -91,15 +93,38 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
+		// safety manual not verified
 		audit.setSlaDate(null);
 		data.setAnswer("doc");
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
+		// verified safety manual
 		audit.setSlaDate(null);
 		data.setDateVerified(new Date());
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() != null);
+
+		Date targetSlaDate = audit.getSlaDate();
+		ContractorAudit previousAudit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+		contractor.getAudits().add(previousAudit);
+		ContractorAuditOperator previousCao = EntityFactory.addCao(previousAudit, EntityFactory.makeOperator());
+		previousCao.changeStatus(AuditStatus.Complete, null);
+
+		//expiring manual audit exist and is earlier
+		previousAudit.setExpiresDate(targetSlaDate);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null && audit.getSlaDate().equals(targetSlaDate));
+
+		// expiring manual audit exists and is later
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(targetSlaDate);
+		calendar.add(Calendar.DATE, 60);
+		previousAudit.setExpiresDate(calendar.getTime());
+		calendar.add(Calendar.DATE, -30);
+		targetSlaDate = calendar.getTime();
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null && audit.getSlaDate().equals(targetSlaDate));
 	}
 
 	/**
