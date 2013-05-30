@@ -14,7 +14,7 @@ public class AccountUserTable extends AbstractTable {
 	
 	@Override
 	protected void addJoins() {
-		addRequiredKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID")));
+		addOptionalKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID")));
 		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 	}
 
