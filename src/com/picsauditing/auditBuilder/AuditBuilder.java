@@ -616,7 +616,7 @@ public class AuditBuilder {
 		}
 
 		// do for audits updated with last minute for "new" audits
-		if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
+		if (conAudit.getCreationDate() == null || conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		}
 	}
