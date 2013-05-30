@@ -1105,7 +1105,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "deactivatedBy")
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
 	public User getDeactivatedBy() {
 		return deactivatedBy;
 	}
