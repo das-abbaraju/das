@@ -1,5 +1,6 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmrStatistics;
 import com.picsauditing.jpa.entities.OshaStatistics;
@@ -13,6 +14,7 @@ public class ContractorAuditTable extends AbstractTable {
 	public static final String Auditor = "Auditor";
 	public static final String ClosingAuditor = "ClosingAuditor";
 	public static final String Data = "Data";
+    public static final String SafetyManual = "SafetyManual";
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
     public static final String Trir = "Trir";
@@ -72,6 +74,11 @@ public class ContractorAuditTable extends AbstractTable {
 				new ReportOnClause("id", "auditID")));
 		data.setCategory(FieldCategory.DocumentsAndAudits);
 		data.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey safetyManual = addOptionalKey(new ReportForeignKey(SafetyManual, new AuditDataTable(),
+                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + AuditQuestion.MANUAL_PQF)));
+        safetyManual.setCategory(FieldCategory.DocumentsAndAudits);
+        safetyManual.setMinimumImportance(FieldImportance.Average);
 
         ReportForeignKey fatalities = addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));

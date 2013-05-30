@@ -46,6 +46,14 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		account.minimumImportance = FieldImportance.Average;
 		account.category = FieldCategory.AccountInformation;
 
+        ModelSpec pqf = contractor.join(ContractorTable.PQF);
+        pqf.alias = "PQF";
+        pqf.minimumImportance = FieldImportance.Required;
+        ModelSpec manual = pqf.join(ContractorAuditTable.SafetyManual);
+        manual.alias = "SafetyManual";
+        manual.minimumImportance = FieldImportance.Average;
+        manual.category = FieldCategory.DocumentsAndAudits;
+
 		if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.alias = CONTRACTOR_OPERATOR;
