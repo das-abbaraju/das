@@ -14,7 +14,7 @@
 		</div>
 		<div class="panel_content">
 			<s:iterator value="oshaDisplay.sortedKeySet" var="stat">
-				<s:if test="displayOsha.get(#stat)">
+				<s:if test="displayOsha.get(#stat) != null && displayOsha.get(#stat)">
 				<table class="table">
 					<thead>
 						<tr>

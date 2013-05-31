@@ -31,6 +31,8 @@ public class AustraliaStatistics extends SafetyStatistics {
 		        continue;
             if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
                 continue;
+	        if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+		        shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
             if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR && categoryApplies) {
                 answerMap.put(OshaRateType.Fatalities, answer);
             } else if (answer.getQuestion().getId() == QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR && categoryApplies) {

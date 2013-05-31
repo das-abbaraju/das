@@ -6,13 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: KChase
- * Date: 4/9/13
- * Time: 3:11 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SouthAfricaStatistics extends SafetyStatistics {
 
 	public static final int QUESTION_ID_DIIR_FOR_THE_GIVEN_YEAR = 16290;
@@ -34,6 +27,8 @@ public class SouthAfricaStatistics extends SafetyStatistics {
 				continue;
 			if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
 				continue;
+			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
 			if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.Fatalities, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR && categoryApplies) {

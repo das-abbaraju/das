@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,8 @@ public class EmrStatistics extends SafetyStatistics {
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		
 		for (AuditData answer : data) {
+			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
 			if (answer.getQuestion().getId() == QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR
 					&& answer.getQuestion().isVisibleInAudit(answer.getAudit())) {
 				answerMap.put(OshaRateType.EMR, answer);

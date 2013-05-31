@@ -273,42 +273,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private void determineOshaTypesToDisplay() {
 		displayOsha = new HashMap<OshaType, Boolean>();
-		displayOsha.put(OshaType.OSHA, false);
-		displayOsha.put(OshaType.COHS, false);
-		displayOsha.put(OshaType.UK_HSE, false);
-		displayOsha.put(OshaType.EMR, false);
-		displayOsha.put(OshaType.MEXICO, false);
-        displayOsha.put(OshaType.AUSTRALIA, false);
-		displayOsha.put(OshaType.IRELAND, false);
-		displayOsha.put(OshaType.SOUTH_AFRICA, false);
 
-        for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isAnnualAddendum()
-					&& audit.hasCaoStatus(AuditStatus.Complete)) {
-				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID,
-						"Yes"))
-					displayOsha.put(OshaType.OSHA, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.COHS_KEPT_ID,
-						"Yes"))
-					displayOsha.put(OshaType.COHS, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.UK_HSE_KEPT_ID,
-						"Yes"))
-					displayOsha.put(OshaType.UK_HSE, true);
-				if (audit
-						.isDataExpectedAnswer(AuditQuestion.EMR_KEPT_ID, "Yes"))
-					displayOsha.put(OshaType.EMR, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.MEXICO_KEPT_ID,
-				"Yes"))
-					displayOsha.put(OshaType.MEXICO, true);
-                if (audit.isDataExpectedAnswer(AuditQuestion.AUSTRALIA_KEPT_ID,
-                        "Yes"))
-                    displayOsha.put(OshaType.AUSTRALIA, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.IRELAND_KEPT_ID,
-						"Yes"))
-					displayOsha.put(OshaType.IRELAND, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.SOUTH_AFRICA_KEPT_ID,
-						"Yes"))
-					displayOsha.put(OshaType.SOUTH_AFRICA, true);
+		for (OshaType oshaType : OshaType.values()) {
+			if (oshaType.displayStats) {
+				for (OshaAudit osha : contractor.getOshaAudits()) {
+					if (osha.getContractorAudit().hasCaoStatus(AuditStatus.Complete)
+							&& osha.getSafetyStatistics(oshaType) != null
+							&& osha.getSafetyStatistics(oshaType).isShaKept()) {
+						displayOsha.put(oshaType, true);
+						break;
+					}
+				}
 			}
 		}
 	}
