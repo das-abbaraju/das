@@ -344,9 +344,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
 		contractor.setQbSync(true);
-		if (contractor.getSapLastSync() != null) {
-			contractor.setSapLastSync(DateBean.getStartOfPicsTime());
-		}
+        contractor.setSapSync(true);
 
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");

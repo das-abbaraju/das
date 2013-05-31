@@ -94,6 +94,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String qbListUKID;
 	protected String qbListEUID;
 	protected Date sapLastSync;
+    protected boolean sapSync;
 
     /**
      * This reason field is specifically for noting the reason that an account is deactivated
@@ -471,7 +472,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.sapLastSync = sapLastSync;
 	}
 
-	@Transient
+    public boolean getSapSync() {
+        return sapSync;
+    }
+
+    public void setSapSync(boolean sapSync) {
+        this.sapSync = sapSync;
+    }
+
+    @Transient
 	public String getQbListID(String currencyCode) {
 		if ("CAD".equals(currencyCode)) {
 			return getQbListCAID();
