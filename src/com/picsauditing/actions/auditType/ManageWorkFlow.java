@@ -32,6 +32,9 @@ public class ManageWorkFlow extends PicsActionSupport {
 	protected AuditStatus newStatus;
 	protected boolean noteRequired;
 	protected boolean hasRequirements;
+	protected boolean operatorCanEdit;
+	protected boolean contractorCanEdit;
+	protected boolean useWorkflowStateForEdit;
 
 	protected WorkFlowDAO workFlowDAO;
 	protected EmailTemplateDAO templateDAO;
@@ -63,6 +66,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				workFlow = new Workflow();
 				workFlow.setAuditColumns(permissions);
 				workFlow.setHasRequirements(hasRequirements);
+				workFlow.setUseStateForEdit(useWorkflowStateForEdit);
 				if (Strings.isEmpty(name)) {
 					addActionError("Invalid Name");
 					return SUCCESS;
@@ -129,6 +133,8 @@ public class ManageWorkFlow extends PicsActionSupport {
 				TranslatableString name = new TranslatableString();
 				name.putTranslation("en", label, true);
 				ws.setName(name);
+				ws.setContractorCanEdit(contractorCanEdit);
+				ws.setOperatorCanEdit(operatorCanEdit);
 				dao.save(ws);
 				workFlow.getStates().add(ws);
 				dao.save(workFlow);
@@ -142,6 +148,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				} else {
 					workFlow.setName(name);
 					workFlow.setHasRequirements(hasRequirements);
+					workFlow.setUseStateForEdit(useWorkflowStateForEdit);
 					workFlowDAO.save(workFlow);
 				}
 			}
@@ -190,6 +197,20 @@ public class ManageWorkFlow extends PicsActionSupport {
 				}
 				workFlowDAO.remove(ws);
 				
+				return "steps";
+			}
+			if ("editStatus".equalsIgnoreCase(button)) {
+				WorkflowState ws = dao.find(WorkflowState.class, statusID);
+				if (ws == null) {
+					addActionError("Could not save state, please try again.");
+					return "steps";
+				}
+
+				ws.setContractorCanEdit(contractorCanEdit);
+				ws.setOperatorCanEdit(operatorCanEdit);
+
+				workFlowDAO.save(ws);
+
 				return "steps";
 			}
 		}
@@ -318,6 +339,28 @@ public class ManageWorkFlow extends PicsActionSupport {
 	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
-	
-	
+
+	public boolean isOperatorCanEdit() {
+		return operatorCanEdit;
+	}
+
+	public void setOperatorCanEdit(boolean operatorCanEdit) {
+		this.operatorCanEdit = operatorCanEdit;
+	}
+
+	public boolean isContractorCanEdit() {
+		return contractorCanEdit;
+	}
+
+	public void setContractorCanEdit(boolean contractorCanEdit) {
+		this.contractorCanEdit = contractorCanEdit;
+	}
+
+	public boolean isUseWorkflowStateForEdit() {
+		return useWorkflowStateForEdit;
+	}
+
+	public void setUseWorkflowStateForEdit(boolean useWorkflowStateForEdit) {
+		this.useWorkflowStateForEdit = useWorkflowStateForEdit;
+	}
 }

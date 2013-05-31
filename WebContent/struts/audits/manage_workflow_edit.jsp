@@ -23,6 +23,10 @@
 						theme="pics"
 					/>
 				</li>
+                <li>
+                    <label>Use Workflow State For Who Can Edit</label>
+                    <s:checkbox name="useWorkflowStateForEdit" value="workFlow.useStateForEdit" />
+                </li>
 			</ol>
 		</fieldset>
 		
