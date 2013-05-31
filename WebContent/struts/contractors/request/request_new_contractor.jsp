@@ -525,9 +525,7 @@
 
 							<li id="duplicated_contractor_id" class="hide">
 								<s:text name="RequestNewContractor.placeholder.EnterContractorId" var="contractorIdPlaceholder" />
-								<form>
 									<input name="duplicateContractor" type="text" placeholder="${contractorIdPlaceholder}" />
-								</form>
 							</li>
 							<li>
 								<a
