@@ -12,7 +12,7 @@ public class AccountingSystemSynchronization {
         transaction.setSapSync(true);
 	}
 
-	public static void setNotToSyncrhonize(Transaction transaction) {
+	public static void setNotToSynchronize(Transaction transaction) {
 		transaction.setQbSync(false);
         transaction.setSapSync(false);
 	}
