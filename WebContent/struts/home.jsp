@@ -69,9 +69,11 @@
                 						<a href="<s:property value="url"/>" target="_BLANK" class = "debug">URL</a>
                 					</pics:permission>
                 				</div>
-                				<div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;">
-                					<s:property value="content" escape="false" />
-                				</div>
+                                <div id="panel<s:property value="widgetID"/>_content" class="panel_content" data-widget-type="${widgetType}" data-widget-id="${widgetID}">
+                                    <s:if test="widgetType!='Chart'">
+                                           <s:property value="content" escape="false" />
+                                    </s:if>
+                               </div>
             				</div>
         				</div>
         			</s:if>

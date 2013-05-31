@@ -134,15 +134,6 @@ public class Widget {
 		if (widgetType == null)
 			return "widgetType is null";
 
-		if (widgetType.equals("Chart")) {
-			if (chartType == null)
-				return "chartType is null";
-			// FusionChart.createChartHTML("charts/"+chartType.toString()+".swf",
-			// dataURL, dataXML,
-			// chartId, chartWidth, chartHeight, debug);
-			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString() + "_" + widgetID, 400, 400, debug, false);
-		}
-
 		if (widgetType.equals("Html") || widgetType.equals("Rss"))
 			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
 					+ "');</script>";

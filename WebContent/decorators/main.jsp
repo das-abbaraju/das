@@ -113,6 +113,11 @@
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
 
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script>
+			google.load('visualization', '1.0', {'packages':['corechart']});
+		</script>
+
 		<script type="text/javascript">
 			$(function() {
 				$(document).ajaxError(function(e, xhr, originalSettings, exception) {
