@@ -1,20 +1,14 @@
 {
+  "type": "flags",
   "data": {
     "cols": [
-          {"id":"","label":"Topping","pattern":"","type":"string"},
-          {"id":"","label":"Slices","pattern":"","type":"number"}
+          {"id":"","label":"Flag Color","pattern":"","type":"string"},
+          {"id":"","label":"Number of Contractors","pattern":"","type":"number"}
         ],
     "rows": [
-          {"c":[{"v":"測試","f":null},{"v":3,"f":null}]},
-          {"c":[{"v":"Onions","f":null},{"v":1,"f":null}]},
-          {"c":[{"v":"Olives","f":null},{"v":1,"f":null}]},
-          {"c":[{"v":"Zucchini","f":null},{"v":1,"f":null}]},
-          {"c":[{"v":"Pepperoni","f":null},{"v":2,"f":null}]}
+          {"c":[{"v":"\u7DA0\u8272","f":null},{"v":3,"f":null}]},
+          {"c":[{"v":"Amber","f":null},{"v":1,"f":null}]},
+          {"c":[{"v":"Red","f":null},{"v":1,"f":null}]}
         ]
-  },  
-  "options": {
-     "title":"How Much Pizza I Ate Last Night",
-      "width":400,
-      "height":300
   }
 }
