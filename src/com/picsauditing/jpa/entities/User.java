@@ -255,6 +255,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.name = name;
 	}
 
+	@ReportField(type = FieldType.String, width = 75, importance = FieldImportance.Average)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -263,6 +264,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.firstName = sanitizeField(firstName);
 	}
 
+	@ReportField(type = FieldType.String, width = 75, importance = FieldImportance.Average)
 	public String getLastName() {
 		return lastName;
 	}
