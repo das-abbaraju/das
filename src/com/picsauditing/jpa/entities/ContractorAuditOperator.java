@@ -186,7 +186,8 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.percentComplete = percentComplete;
 	}
 
-	public int getPercentVerified() {
+    @ReportField(type = FieldType.Integer, category = FieldCategory.MonitoringClientSite)
+    public int getPercentVerified() {
 		return percentVerified;
 	}
 

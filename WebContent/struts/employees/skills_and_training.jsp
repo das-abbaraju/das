@@ -42,7 +42,7 @@
 
 		<s:if test="competenciesMissingDocumentation.size() > 0">
 			<h3>
-				<s:text name="EmployeeSkillsTraining.Pending"/>
+				<s:text name="OperatorCompetencyEmployeeFileStatus.NEEDED"/>
 			</h3>
 			<table class="table">
 				<thead>

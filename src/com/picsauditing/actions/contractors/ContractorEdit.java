@@ -170,9 +170,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			addNoteWhenStatusChange();
 			// auditBuilder.buildAudits(contractor);
 			contractor.setQbSync(true);
-			if (contractor.getSapLastSync() != null) {
-				contractor.setSapLastSync(DateBean.getStartOfPicsTime());
-			}
+            contractor.setSapSync(true);
 
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();

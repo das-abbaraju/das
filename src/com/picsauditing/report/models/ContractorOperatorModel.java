@@ -28,6 +28,8 @@ public class ContractorOperatorModel extends AbstractModel {
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
 
+        contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
+
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
 		account.minimumImportance = FieldImportance.Average;

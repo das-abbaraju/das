@@ -94,6 +94,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String qbListUKID;
 	protected String qbListEUID;
 	protected Date sapLastSync;
+    protected boolean sapSync;
 
     /**
      * This reason field is specifically for noting the reason that an account is deactivated
@@ -348,6 +349,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.locale = locale;
 	}
 
+    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
@@ -470,7 +472,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.sapLastSync = sapLastSync;
 	}
 
-	@Transient
+    public boolean getSapSync() {
+        return sapSync;
+    }
+
+    public void setSapSync(boolean sapSync) {
+        this.sapSync = sapSync;
+    }
+
+    @Transient
 	public String getQbListID(String currencyCode) {
 		if ("CAD".equals(currencyCode)) {
 			return getQbListCAID();
@@ -1104,7 +1114,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "deactivatedBy")
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
 	public User getDeactivatedBy() {
 		return deactivatedBy;
 	}

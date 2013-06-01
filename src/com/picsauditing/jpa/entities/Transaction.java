@@ -33,6 +33,7 @@ public abstract class Transaction extends BaseTable {
 	protected Account account;
 	protected BigDecimal totalAmount = BigDecimal.ZERO;
 	protected BigDecimal amountApplied = BigDecimal.ZERO;
+    protected boolean sapSync;
 	protected boolean qbSync;
 	protected Date sapLastSync;
 	protected String sapId;
@@ -103,7 +104,15 @@ public abstract class Transaction extends BaseTable {
 		this.sapLastSync = sapLastSync;
 	}
 
-	@Column(name = "sapID")
+    public boolean isSapSync() {
+        return sapSync;
+    }
+
+    public void setSapSync(boolean sapSync) {
+        this.sapSync = sapSync;
+    }
+
+    @Column(name = "sapID")
 	public String getSapId() {
 		return sapId;
 	}

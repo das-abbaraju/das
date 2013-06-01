@@ -13,7 +13,10 @@
 		<thead>
 			<th>Status</th>
 			<th>Name</th>
-			<th>Action</th>
+            <th>Contractor Can Edit</th>
+            <th>Operator Can Edit</th>
+            <th>Action</th>
+            <th>Save</th>
 			<th>Delete</th>
 		</thead>
 		<tbody>
@@ -21,9 +24,12 @@
 				<tr id="state_<s:property value="#state.id" />" >
 					<td><s:property value="#state.status.name()" /></td>
 					<td><s:property value="#state.name.toString()" /></td>
+                    <td class="center"><s:checkbox name="contractorCanEdit" value="#state.contractorCanEdit" /></td>
+                    <td class="center"><s:checkbox name="operatorCanEdit" value="#state.operatorCanEdit" /></td>
 					<td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowState.<s:property value='#state.id' />." target="_BLANK">
                             Manage Translations
                         </a></td>
+                    <td><a href="javascript:;" class="save editStatus"></a></td>
 					<td><a href="javascript:;" class="remove deleteStatus"></a></td>
 				</tr>
 			</s:iterator>
@@ -111,6 +117,14 @@
 						<label>Name:</label> 
 						<s:textfield name="label" />
 					</li>
+                    <li>
+                        <label>Contractor Can Edit</label>
+                        <s:checkbox name="contractorCanEdit" />
+                    </li>
+                    <li>
+                        <label>Operator Can Edit</label>
+                        <s:checkbox name="operatorCanEdit" />
+                    </li>
 				</ol>
 			</fieldset>
 			<br clear="all" />

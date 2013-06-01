@@ -1,0 +1,1 @@
+alter table `accounts` add column `sapSync` boolean default false after `sapLastSync`;

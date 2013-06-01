@@ -72,7 +72,8 @@ public class ReportEmployeeDocumentation extends ReportActionSupport {
 		sql.addField("ocef.id fileID");
 		sql.addField("ocef.expiration");
 		sql.addField("ocef.fileName");
-		sql.addField("CASE WHEN ocef.id IS NULL THEN 'Missing' END fileStatus");
+		sql.addField("CASE WHEN ocef.id IS NULL THEN 'Needed' END fileStatus");
+		sql.addField("CASE WHEN ocef.expiration <= CURDATE() THEN 'Expired' ELSE ocef.expiration END otherExpiration");
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere("o.id IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");

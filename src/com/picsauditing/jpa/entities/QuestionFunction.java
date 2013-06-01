@@ -546,6 +546,66 @@ public enum QuestionFunction {
 			return calculateRate(lostTimeInjuries, employees, FRANCE_NORMALIZER);
 		}
 	},
+	DIIR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("majorInjuries"))
+					|| Strings.isEmpty(params.get("minorInjuries"))
+					|| Strings.isEmpty(params.get("fatalities"))) {
+				return MISSING_PARAMETER;
+			}
+
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
+			BigDecimal minorInjuries = new BigDecimal(params.get("minorInjuries").replace(",", "")).setScale(7);
+
+			BigDecimal totalIncidents = fatalities.add(majorInjuries).add(minorInjuries);
+
+
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(200_000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+
+	},
+	SR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("daysRestricted"))
+					|| Strings.isEmpty(params.get("daysAway"))) {
+				return MISSING_PARAMETER;
+			}
+
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			BigDecimal daysAway = new BigDecimal(params.get("daysAway").replace(",", "")).setScale(7);
+			BigDecimal daysRestricted = new BigDecimal(params.get("daysRestricted").replace(",", "")).setScale(7);
+
+			BigDecimal totalIncidents = daysAway.add(daysRestricted);
+
+
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(200_000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+
+	},
 	SCORE {
 		@Override
 		public Object calculate(FunctionInput input) {

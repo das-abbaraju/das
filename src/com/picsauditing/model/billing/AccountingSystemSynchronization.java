@@ -9,14 +9,12 @@ public class AccountingSystemSynchronization {
 
 	public static void setToSynchronize(Transaction transaction) {
 		transaction.setQbSync(true);
-		if (transaction.getSapLastSync() != null) {
-			transaction.setSapLastSync(DateBean.getStartOfPicsTime());
-		}
+        transaction.setSapSync(true);
 	}
 
-	public static void setNotToSyncrhonize(Transaction transaction) {
+	public static void setNotToSynchronize(Transaction transaction) {
 		transaction.setQbSync(false);
-		transaction.setSapLastSync(new Date());
+        transaction.setSapSync(false);
 	}
 
 }

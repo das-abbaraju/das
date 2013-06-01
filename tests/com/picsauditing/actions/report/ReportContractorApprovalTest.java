@@ -3,16 +3,21 @@ package com.picsauditing.actions.report;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.SelectAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ReportContractorApprovalTest extends PicsActionTest {
@@ -20,12 +25,15 @@ public class ReportContractorApprovalTest extends PicsActionTest {
 
     @Mock
     private ContractorOperatorDAO contractorOperatorDAO;
+    @Mock
+    private OperatorAccountDAO operatorAccountDAO;
 
     @Before
     public void setupTest() throws Exception {
         reportContractorApproval = new ReportContractorApproval();
         MockitoAnnotations.initMocks(this);
         Whitebox.setInternalState(reportContractorApproval, "contractorOperatorDAO", contractorOperatorDAO);
+        Whitebox.setInternalState(reportContractorApproval, "operatorAccountDAO", operatorAccountDAO);
         super.setUp(reportContractorApproval);
     }
 
@@ -135,5 +143,29 @@ public class ReportContractorApprovalTest extends PicsActionTest {
         assertEquals(ApprovalStatus.Y, childOperatorApproved.getWorkStatus());
         assertEquals(ApprovalStatus.Y, childOperatorPending.getWorkStatus());
         assertEquals(ApprovalStatus.YF, parentOperatorPending.getWorkStatus());
+    }
+    @Test
+         public void testAddContractorStatus_Active() throws Exception {
+        SelectAccount sql = Mockito.mock(SelectAccount.class);
+
+        reportContractorApproval.setSql(sql);
+
+        OperatorAccount operator = OperatorAccount.builder().id(5).status(AccountStatus.Active).build();
+        when(permissions.getAccountId()).thenReturn(operator.getId());
+        when(operatorAccountDAO.find(operator.getId())).thenReturn(operator);
+        Whitebox.invokeMethod(reportContractorApproval, "addContractorStatus");
+        verify(sql, times(1)).addWhere("a.status IN ('Active')");
+    }
+    @Test
+    public void testAddContractorStatus_Demo() throws Exception {
+        SelectAccount sql = Mockito.mock(SelectAccount.class);
+
+        reportContractorApproval.setSql(sql);
+
+        OperatorAccount operator = OperatorAccount.builder().id(5).status(AccountStatus.Demo).build();
+        when(permissions.getAccountId()).thenReturn(operator.getId());
+        when(operatorAccountDAO.find(operator.getId())).thenReturn(operator);
+        Whitebox.invokeMethod(reportContractorApproval, "addContractorStatus");
+        verify(sql, times(1)).addWhere("a.status IN ('Active','Demo')");
     }
 }

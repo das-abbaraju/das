@@ -2,6 +2,7 @@ package com.picsauditing.actions.chart;
 
 import java.util.List;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
@@ -28,7 +29,7 @@ public class ChartFlagCount extends ChartSSAction {
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addWhere("gc.genID = " + permissions.getAccountId());
-			if (permissions.isApprovesRelationships()) {
+			if (permissions.isGeneralContractor() || !permissions.hasPermission(OpPerms.ViewUnApproved)) {
 				sql.addWhere("gc.workStatus = 'Y'");
 			}
 

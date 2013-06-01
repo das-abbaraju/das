@@ -54,7 +54,7 @@ public class UserLoginLog {
 	}
 
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.DateTime)
 	public Date getLoginDate() {
 		return loginDate;
 	}

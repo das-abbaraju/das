@@ -63,4 +63,9 @@ public class OperatorAccountBuilder {
         operator.getUsers().add(user);
         return this;
     }
+
+    public OperatorAccountBuilder status(AccountStatus status) {
+        operator.setStatus(status);
+        return this;
+    }
 }

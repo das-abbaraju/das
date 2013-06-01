@@ -40,6 +40,8 @@ public class MexicoStatistics extends SafetyStatistics {
 				continue;
 			if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
 				continue;
+			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.TrirAbsolute, answer);
 				answerMap.put(OshaRateType.TrirNaics, answer);

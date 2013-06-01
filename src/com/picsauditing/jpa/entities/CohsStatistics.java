@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.util.Strings;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,8 @@ public class CohsStatistics extends SafetyStatistics {
 		answerMap.put(OshaRateType.OtherRecordables, makeZeroAnswerData(QUESTION_ID_OTHER_RECORDABLES_FOR_THE_GIVEN_YEAR));
 		
 		for (AuditData answer : data) {
+			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR && categoryApplies) {
 				answerMap.put(OshaRateType.TrirAbsolute, answer);
 				answerMap.put(OshaRateType.TrirNaics, answer);

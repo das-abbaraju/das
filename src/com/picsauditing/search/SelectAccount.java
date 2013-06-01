@@ -162,7 +162,7 @@ public class SelectAccount extends SelectSQL {
 						+ permissions.getAccountId() + ")");
 			}
 
-			this.addField("gc.workStatus");
+			this.addField("REPLACE(gc.workStatus,'F','') as workStatus");
 
 			String flag = "%s AS %s";
 

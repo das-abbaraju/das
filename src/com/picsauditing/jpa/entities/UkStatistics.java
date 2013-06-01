@@ -30,6 +30,8 @@ public class UkStatistics extends SafetyStatistics{
 				continue;
 			if (answer.getAnswer().equals(QuestionFunction.MISSING_PARAMETER))
 				continue;
+			if (answer.getQuestion().getId() == getOshaType().shaKeptQuestionId)
+				shaKept = Strings.isEqualNullSafe(answer.getAnswer(), "Yes");
 			if (answer.getQuestion().getId() == 9060 && categoryApplies) {
 				answerMap.put(OshaRateType.IFR, answer);
 			}

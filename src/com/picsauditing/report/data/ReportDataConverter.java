@@ -1,12 +1,11 @@
 package com.picsauditing.report.data;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.DateFormatSymbols;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.Date;
 
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
@@ -51,9 +50,12 @@ public class ReportDataConverter {
 			return null;
 		}
 
+        FieldType type = cell.getColumn().getField().getType();
+
+
 		Object result = convertValueBasedOnCellColumn(cell, false);
 		if (result == null) {
-			result = convertValueBasedOnType(value, timezone);
+			result = convertValueBasedOnType(value, type, timezone);
 			if (result == null) {
 				result = value.toString();
 			}
@@ -159,18 +161,25 @@ public class ReportDataConverter {
 		return valueTranslated;
 	}
 
-	private String convertValueBasedOnType(Object value, TimeZone timezone) {
+	private String convertValueBasedOnType(Object value, FieldType type, TimeZone timezone) {
 		String result = null;
 
-		if (value instanceof java.sql.Date) {
-			java.sql.Date valueAsDate = (java.sql.Date) value;
-			result = PicsDateFormat.formatDateIsoOrBlank(valueAsDate);
+        Date date = null;
+
+        if (value instanceof Timestamp) {
+            date = new Date(((Timestamp)value).getTime());
+        } else if (value instanceof java.sql.Date) {
+            date = new Date(((java.sql.Date)value).getTime());
+        } else {
+            return null;
+        }
+
+		if (type == FieldType.Date) {
+			result = PicsDateFormat.formatDateIsoOrBlank(date);
 		}
 
-		if (value instanceof java.sql.Timestamp) {
-			Timestamp valueAsTimestamp = (Timestamp) value;
-
-			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, valueAsTimestamp);
+		if (type == FieldType.DateTime) {
+			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, date);
 		}
 
 		return result;

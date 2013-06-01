@@ -53,8 +53,10 @@ public class ReportContractorApproval extends ReportAccount {
 		}
 
 		sql.addWhere("c.accountLevel != 'BidOnly'");
-		sql.addWhere("a.status IN ('Active','Demo')");
-		orderByDefault = "a.creationDate";
+
+        addContractorStatus();
+
+        orderByDefault = "a.creationDate";
 
 		filteredDefault = true;
 		getFilter().setShowConWithPendingAudits(false);
@@ -67,7 +69,16 @@ public class ReportContractorApproval extends ReportAccount {
 		getFilter().setWorkStatus(ApprovalStatus.P);
 	}
 
-	@RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
+    private void addContractorStatus() {
+        OperatorAccount usersAccount = operatorAccountDAO.find(permissions.getAccountId());
+        if (usersAccount != null && usersAccount.isDemo()) {
+		    sql.addWhere("a.status IN ('Active','Demo')");
+        } else {
+            sql.addWhere("a.status IN ('Active')");
+        }
+    }
+
+    @RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
 	public String save() {
 		if (conids != null && conids.size() > 0) {
 			List<ContractorAccount> cAccounts = contractorAccountDAO.findWhere("a.id IN (" + Strings.implode(conids)

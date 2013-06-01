@@ -1,7 +1,6 @@
 package com.picsauditing.coverage;
 
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Strings;
@@ -28,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -58,8 +58,8 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     private ExecutionDataStore executionDataStore;
     private OperatorTag operatorTag;
     private List<Integer> contractorIdsNotYetRun;
+    private List<Integer> smokeTestContractorIds;
 
-    private int totalContractorsInSet = 0;
     private int totalContractorsRun = 0;
     private int numberOfTriesWithNoCoverageIncrease = 0;
     private int previousTotalLinesCovered = 0;
@@ -73,22 +73,68 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
 
     @Test
     public void run() throws Exception {
-        determineHostToRunAgainst();
+        configureRunningEnvironment();
         resetForNewRun();
         while (numberOfTriesWithNoCoverageIncrease < MAX_CONTRACTORS_WITH_NO_IMPROVEMENT) {
-            logger.debug("Number of tries with no increase is {}", numberOfTriesWithNoCoverageIncrease);
-            logger.debug("Current lines covered is {}", previousTotalLinesCovered);
-            Integer id = nextContractorIdAndRemoveFromNotYetRun();
-            logger.debug("Running contractor {}", id);
-            backupCoverageDataForNextContractor();
-            if (runContractorCron(id)) {
-                manageCoveragePostCronRun(id);
-            }
-            totalContractorsRun++;
+            runNextContractor();
         }
-        logger.info("Total contractors in coverage set: " + totalContractorsInSet);
-        logger.info("Total contractors run: " + totalContractorsRun);
-        logger.info("Total lines of code covered: " + previousTotalLinesCovered);
+        logFinalState();
+    }
+
+    private void runNextContractor() throws Exception {
+        logger.debug("Number of tries with no increase is {}", numberOfTriesWithNoCoverageIncrease);
+        logger.debug("Current lines covered is {}", previousTotalLinesCovered);
+        Integer id = nextContractorIdAndRemoveFromNotYetRun();
+        logger.debug("Running contractor {}", id);
+        backupCoverageDataForNextContractor();
+        if (runContractorCron(id)) {
+            manageCoveragePostCronRun(id);
+        }
+        totalContractorsRun++;
+    }
+
+    private void logFinalState() {
+        logger.info("Total contractors in coverage set: {}", smokeTestContractorIds.size());
+        logger.info("Total contractors run: {}", totalContractorsRun);
+        logger.info("Total lines of code covered: {}", previousTotalLinesCovered);
+        logger.info("Smoke Test Contractor IDs: {}", smokeTestContractorIds);
+    }
+
+    private void configureRunningEnvironment() {
+        determineHostToRunAgainst();
+        determineCronHostPort();
+        determineHttpOrHttps();
+        determineJacocoDumpPort();
+
+        logRunningEnvironment();
+    }
+
+    private void logRunningEnvironment() {
+        logger.info("Using host {} for coverage dump and contractor cron runs", host);
+        logger.info("Using port {} for coverage dump", dumpPort);
+        logger.info("Using protocol {} for contractor cron runs", protocol);
+        logger.info("Using port {} for contractor cron runs", cronPort);
+    }
+
+    private void determineJacocoDumpPort() {
+        String dumpPortToUse = System.getProperty(ENVIRONMENT_VAR_FOR_DUMP_PORT);
+        if (!Strings.isEmpty(dumpPortToUse)) {
+            dumpPort = Integer.parseInt(dumpPortToUse);
+        }
+    }
+
+    private void determineHttpOrHttps() {
+        String protocolToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PROTOCOL);
+        if (!Strings.isEmpty(protocolToUse)) {
+            protocol = protocolToUse;
+        }
+    }
+
+    private void determineCronHostPort() {
+        String portToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PORT);
+        if (!Strings.isEmpty(portToUse)) {
+            cronPort = portToUse;
+        }
     }
 
     private void determineHostToRunAgainst() {
@@ -96,23 +142,6 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         if (!Strings.isEmpty(hostToUse)) {
             host = hostToUse;
         }
-        String portToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PORT);
-        if (!Strings.isEmpty(portToUse)) {
-            cronPort = portToUse;
-        }
-        String protocolToUse = System.getProperty(ENVIRONMENT_VAR_FOR_PROTOCOL);
-        if (!Strings.isEmpty(protocolToUse)) {
-            protocol = protocolToUse;
-        }
-        String dumpPortToUse = System.getProperty(ENVIRONMENT_VAR_FOR_DUMP_PORT);
-        if (!Strings.isEmpty(dumpPortToUse)) {
-            dumpPort = Integer.parseInt(dumpPortToUse);
-        }
-
-        logger.info("Using host {} for coverage dump and contractor cron runs", host);
-        logger.info("Using port {} for coverage dump", dumpPort);
-        logger.info("Using protocol {} for contractor cron runs", protocol);
-        logger.info("Using port {} for contractor cron runs", cronPort);
     }
 
     private Integer nextContractorIdAndRemoveFromNotYetRun() {
@@ -130,25 +159,28 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         dump();
         int newLinesCovered = analyze();
         if (newLinesCovered > previousTotalLinesCovered) {
-            logger.debug("Contractor {} increased coverage from {} to {}", new Object[] {id, previousTotalLinesCovered, newLinesCovered});
-            saveContractorTag(newContractorTag(contractorDAO.find(id)));
-            totalContractorsInSet++;
-            previousTotalLinesCovered = newLinesCovered;
-            numberOfTriesWithNoCoverageIncrease = 0;
+            addContractorToCoverageSet(id, newLinesCovered);
         } else {
             numberOfTriesWithNoCoverageIncrease++;
         }
     }
 
+    private void addContractorToCoverageSet(Integer id, int newLinesCovered) {
+        logger.debug("Contractor {} increased coverage from {} to {}", new Object[] {id, previousTotalLinesCovered, newLinesCovered});
+        saveContractorTag(newContractorTag(contractorDAO.find(id)));
+        smokeTestContractorIds.add(id);
+        previousTotalLinesCovered = newLinesCovered;
+        numberOfTriesWithNoCoverageIncrease = 0;
+    }
+
     private boolean runContractorCron(Integer id) throws Exception {
-        String urlToRun;
-        if (Strings.isEmpty(cronPort)) {
-            urlToRun = format(cronUrl, protocol, host, "", id);
-        } else {
-            urlToRun = format(cronUrl, protocol, host, ":"+cronPort, id);
-        }
+        String urlToRun = cronUrl(id);
         logger.debug("Running ContractorCron with url: {}", urlToRun);
         InputStream inputStream = executeUrl(urlToRun);
+        return handleResponse(id, inputStream);
+    }
+
+    private boolean handleResponse(Integer id, InputStream inputStream) throws IOException {
         String response = stringFromInputStream(inputStream);
         logger.debug("Cron responded with {}", response);
         if (!response.startsWith("INFO: Completed")) {
@@ -159,6 +191,16 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         return true;
     }
 
+    private String cronUrl(Integer id) {
+        String urlToRun;
+        if (Strings.isEmpty(cronPort)) {
+            urlToRun = format(cronUrl, protocol, host, "", id);
+        } else {
+            urlToRun = format(cronUrl, protocol, host, ":"+cronPort, id);
+        }
+        return urlToRun;
+    }
+
     private void backupCoverageDataForNextContractor() throws IOException {
         File sourceFile = new File(JACOCO_EXEC_PATH);
         if (sourceFile.exists()) {
@@ -167,9 +209,11 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     }
 
     private void resetForNewRun() throws Exception {
+        smokeTestContractorIds = new ArrayList<>();
         findSmokeTestOperatorTag();
         resetContractorTags();
         new File(JACOCO_EXEC_PATH).delete();
+        new File(JACOCO_EXEC_PATH_BACKUP).delete();
         contractorIdsNotYetRun = contractorDAO.findContractorsNeedingRecalculation(Integer.MAX_VALUE, new HashSet<Integer>());
     }
 
@@ -182,7 +226,6 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
 
 
     private void restoreBackupOfCoverageData() throws IOException {
-
         FileUtils.copyFile(new File(JACOCO_EXEC_PATH_BACKUP), new File(JACOCO_EXEC_PATH));
     }
 
@@ -265,20 +308,36 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     }
 
     private InputStream executeUrl(String url) {
-        try {
-            HttpMethod method = new GetMethod(url);
-            HttpClient client = new HttpClient();
-            int responseCode = client.executeMethod(method);
-            if (responseCode != 200) {
-                return null;
+        int sleepSeconds = 30;
+        boolean loop = true;
+        do {
+            try {
+                HttpMethod method = new GetMethod(url);
+                HttpClient client = new HttpClient();
+                int responseCode = client.executeMethod(method);
+                if (responseCode != 200) {
+                    return null;
+                }
+                return method.getResponseBodyAsStream();
+            } catch (HttpException e) {
+                logger.error("HttpException trying to execute url {}: {}", url, e.getMessage());
+                sleepSeconds = waitAndDoubleWaitTimeForPossibleNextException(sleepSeconds);
+            } catch (IOException e) {
+                logger.error("IOException trying execute url {}: {}", url, e.getMessage());
+                sleepSeconds = waitAndDoubleWaitTimeForPossibleNextException(sleepSeconds);
             }
-            return method.getResponseBodyAsStream();
-        } catch (HttpException e) {
-            logger.error("HttpException trying to execute url {}: {}", url, e.getMessage());
-        } catch (IOException e) {
-            logger.error("IOException trying execute url {}: {}", url, e.getMessage());
-        }
+        } while (loop);
         return null;
+    }
+
+    private int waitAndDoubleWaitTimeForPossibleNextException(int sleepSeconds) {
+        try {
+            Thread.sleep(sleepSeconds * 1000);
+            sleepSeconds *= 2;
+        } catch (InterruptedException e1) {
+            logger.error("Can't sleep, clowns will eat me {}", e1.getMessage());
+        }
+        return sleepSeconds;
     }
 
 

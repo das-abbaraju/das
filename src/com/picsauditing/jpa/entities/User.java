@@ -543,6 +543,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.locale = locale;
 	}
 
+    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
@@ -977,6 +978,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.usingDynamicReportsDate = usingDynamicReportsDate;
 	}
 
+    @ReportField(type = FieldType.Boolean)
 	public boolean isUsingVersion7Menus() {
 		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			return isUsingDynamicReports();

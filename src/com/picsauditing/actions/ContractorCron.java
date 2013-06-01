@@ -391,18 +391,38 @@ public class ContractorCron extends PicsActionSupport {
 		Date beginDate = pqfAndSafetyManualSlaStartDate(contractor);
 		if (beginDate == null)
 			return;
+		Calendar date = Calendar.getInstance();
+		date.setTime(beginDate);
+		date.add(Calendar.DATE, 14);
+		beginDate = DateBean.setToEndOfDay(date.getTime());
+
+		Date previousManualExpirationDate = previousManualAudit(contractor);
+		if (previousManualExpirationDate != null) {
+			date.setTime(previousManualExpirationDate);
+			date.add(Calendar.DATE, -30);
+			previousManualExpirationDate = DateBean.setToEndOfDay(date.getTime());
+		}
+
+		if (previousManualExpirationDate != null && previousManualExpirationDate.after(beginDate)) {
+			beginDate = previousManualExpirationDate;
+		}
 
 		for (ContractorAudit audit:contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() &&
-					audit.hasCaoStatus(AuditStatus.Pending) &&
-					audit.getSlaDate() == null) {
-				Calendar date = Calendar.getInstance();
-				date.setTime(beginDate);
-				date.add(Calendar.DATE, 14);
-				audit.setSlaDate(DateBean.setToEndOfDay(date.getTime()));
+					audit.hasCaoStatus(AuditStatus.Pending)) {
+				audit.setSlaDate(beginDate);
 				dao.save(audit);
 			}
 		}
+	}
+
+	private Date previousManualAudit(ContractorAccount contractor) {
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isDesktop() && audit.getExpiresDate() != null) {
+				return audit.getExpiresDate();
+			}
+		}
+		return null;
 	}
 
 	private Date pqfAndSafetyManualSlaStartDate(ContractorAccount contractor) {

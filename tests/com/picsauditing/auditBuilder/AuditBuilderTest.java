@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,28 +36,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.QuestionComparator;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
 public class AuditBuilderTest extends PicsTest {
@@ -518,6 +497,44 @@ public class AuditBuilderTest extends PicsTest {
 			assertTrue(catData.isApplies());
 		}
 
+	}
+
+	@Test
+	public void testMultipleCaoToOneCaoStatusMerge() throws Exception {
+		ContractorAudit conAudit = setupTestAudit();
+		conAudit.getAuditType().setCanOperatorView(true);
+		conAudit.getAuditType().setId(200);
+		conAudit.getAuditType().setClassType(AuditTypeClass.Policy);
+
+		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorAuditOperator cao2 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		cao1.setId(1);
+		cao2.setId(2);
+
+		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
+		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+
+		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
+		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
+
+		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
+		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
+		caops.add(cao1.getOperator());
+		caops.add(cao2.getOperator());
+		caoMap.put(EntityFactory.makeOperator(), caops);
+
+		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
+		assertEquals(3, conAudit.getOperators().size());
+		for (ContractorAuditOperator cao:conAudit.getOperators()) {
+			if (cao.equals(cao1)) {
+				assertFalse(cao.isVisible());
+			} else if (cao.equals(cao2)) {
+				assertFalse(cao.isVisible());
+			} else {
+				assertTrue(cao.isVisible());
+				assertEquals(AuditStatus.Complete, cao.getStatus());
+			}
+		}
 	}
 
 	private ContractorAudit setupTestAudit() {

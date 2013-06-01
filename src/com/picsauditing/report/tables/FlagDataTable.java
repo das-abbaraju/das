@@ -1,6 +1,8 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
 public class FlagDataTable extends AbstractTable {
 
@@ -15,6 +17,11 @@ public class FlagDataTable extends AbstractTable {
 	public FlagDataTable() {
 		super("flag_data");
 		addFields(FlagData.class);
+
+        Field lastModified = new Field("LastModified","updateDate", FieldType.Date);
+        lastModified.setImportance(FieldImportance.Required);
+        lastModified.setCategory(FieldCategory.CompanyStatistics);
+        addField(lastModified);
 	}
 
 	public void addJoins() {

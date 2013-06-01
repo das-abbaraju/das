@@ -10,31 +10,35 @@ package com.picsauditing.jpa.entities;
  */
 public enum OshaType implements Translatable {
 
-	OSHA(OshaAudit.CAT_ID_OSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate, 
+	OSHA(OshaAudit.CAT_ID_OSHA, AuditQuestion.OSHA_KEPT_ID, true, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
-	MSHA(OshaAudit.CAT_ID_MSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
+	MSHA(OshaAudit.CAT_ID_MSHA, 0, false, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	COHS(OshaAudit.CAT_ID_COHS, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
+	COHS(OshaAudit.CAT_ID_COHS, AuditQuestion.COHS_KEPT_ID, true, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	UK_HSE(OshaAudit.CAT_ID_UK_HSE, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
-	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null),
-	MEXICO(OshaAudit.CAT_ID_MEXICO, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, 
+	UK_HSE(OshaAudit.CAT_ID_UK_HSE, AuditQuestion.UK_HSE_KEPT_ID, true, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
+	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, 0, false, null),
+	MEXICO(OshaAudit.CAT_ID_MEXICO, AuditQuestion.MEXICO_KEPT_ID, true, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
-    AUSTRALIA(OshaAudit.CAT_ID_AUSTRALIA, new OshaRateType[] { OshaRateType.LTIFR, OshaRateType.IR, OshaRateType.FR, OshaRateType.ATLR,
+    AUSTRALIA(OshaAudit.CAT_ID_AUSTRALIA, AuditQuestion.AUSTRALIA_KEPT_ID, true, new OshaRateType[] { OshaRateType.LTIFR, OshaRateType.IR, OshaRateType.FR, OshaRateType.ATLR,
             OshaRateType.Fatalities, OshaRateType.Hours }),
-	IRELAND(OshaAudit.CAT_ID_IRElAND, new OshaRateType[] { OshaRateType.IFR, OshaRateType.IR,
+	IRELAND(OshaAudit.CAT_ID_IRElAND, AuditQuestion.IRELAND_KEPT_ID, true, new OshaRateType[] { OshaRateType.IFR, OshaRateType.IR,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
-	SOUTH_AFRICA(OshaAudit.CAT_ID_SOUTH_AFRICA, new OshaRateType[] { OshaRateType.IFR, OshaRateType.IR,
+	SOUTH_AFRICA(OshaAudit.CAT_ID_SOUTH_AFRICA, AuditQuestion.SOUTH_AFRICA_KEPT_ID, true, new OshaRateType[] { OshaRateType.DIIR, OshaRateType.SR,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
-	EMR(OshaAudit.CAT_ID_EMR, new OshaRateType[] { OshaRateType.EMR });
+	EMR(OshaAudit.CAT_ID_EMR, AuditQuestion.EMR_KEPT_ID, true, new OshaRateType[] { OshaRateType.EMR });
 	
 
 	public final OshaRateType[] rates;
 	public final int categoryId;
+	public final int shaKeptQuestionId;
+	public final boolean displayStats;
 
-	private OshaType(int categoryId, OshaRateType[] rates) {
+	private OshaType(int categoryId, int shaKeptQuestionId, boolean displayStats, OshaRateType[] rates) {
 		this.categoryId = categoryId;
 		this.rates = rates;
+		this.displayStats = displayStats;
+		this.shaKeptQuestionId = shaKeptQuestionId;
 	}
 
 	@Override

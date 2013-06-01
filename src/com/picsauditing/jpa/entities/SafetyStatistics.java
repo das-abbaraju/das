@@ -15,6 +15,9 @@ public abstract class SafetyStatistics {
 	protected int year;
 	protected AuditData fileUpload = null;
 	protected boolean verified;
+	protected boolean applicable;
+	protected boolean display;
+	protected boolean shaKept;
 	
 	public SafetyStatistics(int year, OshaType oshaType, List<AuditData> data) {
 		this.oshaType = oshaType;
@@ -74,6 +77,30 @@ public abstract class SafetyStatistics {
 		data.setVerified(true);
 		data.setDateVerified(new Date());
 		return data;
+	}
+
+	public boolean isApplicable() {
+		return applicable;
+	}
+
+	public void setApplicable(boolean applicable) {
+		this.applicable = applicable;
+	}
+
+	public boolean isDisplay() {
+		return display;
+	}
+
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}
+
+	public boolean isShaKept() {
+		return shaKept;
+	}
+
+	public void setShaKept(boolean shaKept) {
+		this.shaKept = shaKept;
 	}
 
 	abstract public List<AuditData> getQuestionsToVerify();

@@ -102,7 +102,11 @@
                         $('#ManageAuditWorkFlow-page .deleteStatus').click(function (event) {
                             var id = $(this).closest('tr').attr('id');
                             PICS.getClass('workflow.Manage').loadStatusData('deleteStatus', id);
-                        });                        
+                        });
+                        $('#ManageAuditWorkFlow-page .editStatus').click(function () {
+                            var id = $(this).closest('tr').attr('id');
+                            that.loadStatusData('editStatus', id);
+                        });
                         $('#ManageAuditWorkFlow-page .deleteStep').click(function (event) {
                             var id = $(this).closest('tr').attr('id');
                             PICS.getClass('workflow.Manage').loadData('deleteStep', id);
@@ -127,6 +131,10 @@
                     data: data,
                     success: function(data, textStatus, XMLHttpRequest) {
                         $('#ManageAuditWorkFlow-page #workflowSteps').html(data);
+                        $('#ManageAuditWorkFlow-page .editStatus').click(function (event) {
+                            var id = $(this).closest('tr').attr('id');
+                            PICS.getClass('workflow.Manage').loadStatusData('editStatus', id);
+                        });
                         $('#ManageAuditWorkFlow-page .deleteStatus').click(function (event) {
                             var id = $(this).closest('tr').attr('id');
                             PICS.getClass('workflow.Manage').loadStatusData('deleteStatus', id);
