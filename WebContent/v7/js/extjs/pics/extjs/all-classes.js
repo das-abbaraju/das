@@ -82725,6 +82725,7 @@ Ext.define('PICS.view.report.filter.base.Number', {
 
     operator_store: [
         ['Equals', '='],
+        ['NotEquals', '!='],
         ['GreaterThan', '>'],
         ['LessThan', '<'],
         ['GreaterThanOrEquals', '>='],
