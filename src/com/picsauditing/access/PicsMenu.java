@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -506,6 +507,10 @@ public class PicsMenu {
 		}
 
 		subMenu = menu.addChild(getText("menu.Reports"));
+
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_DR_REPORTS)) {
+			subMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+		}
 
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp", "SiteOrientationReport");
