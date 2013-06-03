@@ -96,8 +96,8 @@
         <link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2-override.css?v=${version}" />
 
-        <link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.css?v=${version}" />
-        <!--[if lt IE 8]><link rel="stylesheet" href="v7/css/vendor/font-awesome-ie7.css"><![endif]-->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.min.css?v=${version}" />
+        <!--[if lt IE 8]><link rel="stylesheet" href="css/bootstrap/css/font-awesome-ie7.css"><![endif]-->
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
@@ -188,10 +188,10 @@
         <%
         if (useVersion7Menus) {
         %>
-            <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
-            <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
             <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap-menu.css?v=${version}" />
             <link rel="stylesheet" type="text/css" href="v7/css/vendor/bootstrap-responsive.css?v=${version}" />
+            <script type="text/javascript" src="v7/js/vendor/bootstrap.js?v=${version}"></script>
+            <script type="text/javascript" src="v7/js/pics/layout/menu/menu.js?v=${version}"></script>
 
             <header>
                 <s:action name="Menu!menu" executeResult="true" />
