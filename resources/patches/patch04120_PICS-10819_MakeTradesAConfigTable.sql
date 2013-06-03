@@ -24,3 +24,7 @@ SELECT
 FROM
 	ref_trade
 ;
+ALTER TABLE ref_trade_calc
+ADD PRIMARY KEY (`tradeID`)
+;
+
