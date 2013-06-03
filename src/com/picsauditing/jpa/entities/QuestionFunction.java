@@ -606,6 +606,91 @@ public enum QuestionFunction {
 		}
 
 	},
+	WIR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("medicalOver"))
+					|| Strings.isEmpty(params.get("medicalUnder"))) {
+				return MISSING_PARAMETER;
+			}
+
+			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal medicalOver = new BigDecimal(params.get("medicalOver").replace(",", "")).setScale(7);
+			BigDecimal medicalUnder = new BigDecimal(params.get("medicalUnder").replace(",", "")).setScale(7);
+
+			BigDecimal totalIncidents = fatalities.add(medicalOver).add(medicalUnder);
+
+
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100_000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+
+	},
+	SINGAPORE_AFR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("medicalOver"))
+					|| Strings.isEmpty(params.get("medicalUnder"))) {
+				return MISSING_PARAMETER;
+			}
+
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal medicalOver = new BigDecimal(params.get("medicalOver").replace(",", "")).setScale(7);
+			BigDecimal medicalUnder = new BigDecimal(params.get("medicalUnder").replace(",", "")).setScale(7);
+
+			BigDecimal totalIncidents = fatalities.add(medicalOver).add(medicalUnder);
+
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(1_000_000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+
+	},
+	ODI {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("diseases"))) {
+				return MISSING_PARAMETER;
+			}
+
+			BigDecimal employees = new BigDecimal(params.get("employees").replace(",", "")).setScale(7);
+			BigDecimal diseases = new BigDecimal(params.get("diseases").replace(",", "")).setScale(7);
+
+			BigDecimal result;
+			try {
+				result = diseases.divide(employees, 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100_000)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return MISSING_PARAMETER;
+			}
+
+			return result;
+		}
+
+	},
 	SCORE {
 		@Override
 		public Object calculate(FunctionInput input) {

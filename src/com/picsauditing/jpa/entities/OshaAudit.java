@@ -169,6 +169,8 @@ public class OshaAudit implements OshaVisitable {
 	            safetyStatistics = new IrelandStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.SOUTH_AFRICA) {
 		        safetyStatistics = new SouthAfricaStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.SINGAPORE_MOM) {
+	            safetyStatistics = new SingaporeStatistics(year, contractorAudit.getData(), category.isApplies());
 	        }
 
             if (safetyStatistics != null) {
