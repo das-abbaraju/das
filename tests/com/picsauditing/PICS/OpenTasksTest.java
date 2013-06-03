@@ -1,23 +1,18 @@
 package com.picsauditing.PICS;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.*;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,17 +27,18 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyVararg;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"OpenTasksTest-context.xml"})
@@ -836,14 +832,9 @@ public class OpenTasksTest extends PicsActionTest {
 
 	@Test
 	public void testGatherTasksAboutEmployeeCompetencies_OperatorsDoNotHaveRequiredCompetencies() throws Exception {
-		List<ContractorOperator> contractorOperators = new ArrayList<>();
-		ContractorOperator contractorOperator = mock(ContractorOperator.class);
-		contractorOperators.add(contractorOperator);
-
-		when(contractor.getOperators()).thenReturn(contractorOperators);
 		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
-		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
-		when(operator.getCompetencies()).thenReturn(Collections.<OperatorCompetency>emptyList());
+		when(contractor.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(false);
+
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
 		verify(i18nCache, never()).getText(anyString());
@@ -851,19 +842,9 @@ public class OpenTasksTest extends PicsActionTest {
 
 	@Test
 	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndNoContractorEmployees() throws Exception {
-		List<ContractorOperator> contractorOperators = new ArrayList<>();
-		ContractorOperator contractorOperator = mock(ContractorOperator.class);
-		contractorOperators.add(contractorOperator);
-
-		List<OperatorCompetency> competencies = new ArrayList<>();
-		OperatorCompetency competency = mock(OperatorCompetency.class);
-		competencies.add(competency);
-
-		when(competency.isRequiresDocumentation()).thenReturn(true);
-		when(contractor.getOperators()).thenReturn(contractorOperators);
 		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
-		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
-		when(operator.getCompetencies()).thenReturn(competencies);
+		when(contractor.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
 		verify(i18nCache).getText(eq("ContractorWidget.message.EmployeesNeedToBeAdded"), any(Locale.class),
@@ -872,24 +853,13 @@ public class OpenTasksTest extends PicsActionTest {
 
 	@Test
 	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndContractorHasEmployees() throws Exception {
-		List<ContractorOperator> contractorOperators = new ArrayList<>();
-		ContractorOperator contractorOperator = mock(ContractorOperator.class);
-		contractorOperators.add(contractorOperator);
-
-		List<OperatorCompetency> competencies = new ArrayList<>();
-		OperatorCompetency competency = mock(OperatorCompetency.class);
-		competencies.add(competency);
-
 		List<Employee> employees = new ArrayList<>();
 		Employee employee = mock(Employee.class);
 		employees.add(employee);
 
-		when(competency.isRequiresDocumentation()).thenReturn(true);
 		when(contractor.getEmployees()).thenReturn(employees);
-		when(contractor.getOperators()).thenReturn(contractorOperators);
-		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
-		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
-		when(operator.getCompetencies()).thenReturn(competencies);
+		when(contractor.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
 		verify(i18nCache, never()).getText(anyString());

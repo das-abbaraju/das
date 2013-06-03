@@ -1,39 +1,24 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
+import com.google.common.base.Strings;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.builders.OperatorAccountBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.util.SpringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
-import com.google.common.base.Strings;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.util.SpringUtils;
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("serial")
 @Entity
@@ -53,10 +38,10 @@ public class OperatorAccount extends Account {
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
 	public static final int SUNOCO = 27406;
-    public static final int TESORO = 1436;
-    public static final int M_and_S = 38003;
+	public static final int TESORO = 1436;
+	public static final int M_and_S = 38003;
 
-    private OperatorAccount parent;
+	private OperatorAccount parent;
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
@@ -131,7 +116,7 @@ public class OperatorAccount extends Account {
 		this.doContractorsPay = doContractorsPay;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	@Column(name = "canSeeInsurance", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ReportField(category = FieldCategory.ClientSitePreferences)
@@ -160,7 +145,7 @@ public class OperatorAccount extends Account {
 		this.insuranceAuditor = user;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	@Column(name = "isUserManualUploaded", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ReportField(category = FieldCategory.ClientSitePreferences)
@@ -172,7 +157,7 @@ public class OperatorAccount extends Account {
 		this.isUserManualUploaded = isUserManualUploaded;
 	}
 
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
 	@Enumerated(EnumType.STRING)
 	public YesNo getApprovesRelationships() {
 		return approvesRelationships;
@@ -414,7 +399,7 @@ public class OperatorAccount extends Account {
 
 	@OneToMany(mappedBy = "operator")
 	@Where(clause = "type IS NULL")
-	@Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	@Cascade({org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
@@ -424,10 +409,10 @@ public class OperatorAccount extends Account {
 	}
 
 	/**
-	 * @see getOperatorAccounts()
 	 * @return a list of all "associated" operator accounts associated via the
 	 *         facilities intersection table for example, BASF would contain
 	 *         BASF Port Arthur but not BASF Freeport Hub
+	 * @see getOperatorAccounts()
 	 */
 	@OneToMany(mappedBy = "corporate")
 	@Where(clause = "type IS NULL")
@@ -440,10 +425,10 @@ public class OperatorAccount extends Account {
 	}
 
 	/**
-	 * @see getOperatorFacilities()
 	 * @return a list of all the "direct" child operators/corporates mapped
 	 *         through operator.parentID for example, BASF would contain BASF
 	 *         Freeport Hub, but not BASF Port Arthur
+	 * @see getOperatorFacilities()
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorChildren() {
@@ -496,7 +481,7 @@ public class OperatorAccount extends Account {
 		this.contractorOperators = contractorOperators;
 	}
 
-	@OneToMany(mappedBy = "operator", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "operator", cascade = {CascadeType.ALL})
 	public List<OperatorTag> getTags() {
 		return tags;
 	}
@@ -505,7 +490,7 @@ public class OperatorAccount extends Account {
 		this.tags = value;
 	}
 
-	@OneToMany(mappedBy = "operator", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "operator", cascade = {CascadeType.ALL})
 	public List<FlagCriteriaOperator> getFlagCriteria() {
 		return flagCriteria;
 	}
@@ -514,7 +499,7 @@ public class OperatorAccount extends Account {
 		this.flagCriteria = flagCriteria;
 	}
 
-	@OneToMany(mappedBy = "operator", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "operator", cascade = {CascadeType.REMOVE})
 	public List<JobSite> getJobSites() {
 		return jobSites;
 	}
@@ -596,7 +581,7 @@ public class OperatorAccount extends Account {
 		}
 	}
 
-	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
+	@ManyToMany(targetEntity = OperatorAccount.class, cascade = {CascadeType.ALL})
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "corporateID"), inverseJoinColumns = @JoinColumn(name = "opID"))
 	public List<OperatorAccount> getChildOperators() {
 		return childOperators;
@@ -606,7 +591,7 @@ public class OperatorAccount extends Account {
 		this.childOperators = childOperators;
 	}
 
-	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
+	@ManyToMany(targetEntity = OperatorAccount.class, cascade = {CascadeType.ALL})
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "opID"), inverseJoinColumns = @JoinColumn(name = "corporateID"))
 	public List<OperatorAccount> getParentOperators() {
 		return parentOperators;
@@ -702,18 +687,18 @@ public class OperatorAccount extends Account {
 	@Transient
 	public int getRulePriorityLevel() {
 		switch (id) {
-		case 4:
-			// PICS Global
-			return 1;
-		case 5:
-			// PICS US
-		case 6:
-			// PICS Canada
-		case 7:
-			// PICS UAE
-		case 8:
-			// PICS PSM
-			return 2;
+			case 4:
+				// PICS Global
+				return 1;
+			case 5:
+				// PICS US
+			case 6:
+				// PICS Canada
+			case 7:
+				// PICS UAE
+			case 8:
+				// PICS PSM
+				return 2;
 		}
 
 		if (isPrimaryCorporate()) {
@@ -781,38 +766,50 @@ public class OperatorAccount extends Account {
 		return true;
 	}
 
-    public FlagCriteria getFlagCriteria(int flagCriteriaId) {
-        for (FlagCriteriaOperator flag: getFlagCriteria()) {
-            if (flag.getCriteria().getId() == flagCriteriaId) {
-                return flag.getCriteria();
-            }
-        }
-       return null;
-    }
+	public FlagCriteria getFlagCriteria(int flagCriteriaId) {
+		for (FlagCriteriaOperator flag : getFlagCriteria()) {
+			if (flag.getCriteria().getId() == flagCriteriaId) {
+				return flag.getCriteria();
+			}
+		}
+		return null;
+	}
 
-    public static OperatorAccountBuilder builder() {
-        return new OperatorAccountBuilder();
-    }
+	public static OperatorAccountBuilder builder() {
+		return new OperatorAccountBuilder();
+	}
 
-    // named get/set for convenient ognl reference from JSPs
-    @Transient
-    public User getCurrentAccountRepresentative() {
-        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
-        if (accountUser != null) {
-            return accountUser.getUser();
-        }
-        return null;
-    }
+	// named get/set for convenient ognl reference from JSPs
+	@Transient
+	public User getCurrentAccountRepresentative() {
+		AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+		if (accountUser != null) {
+			return accountUser.getUser();
+		}
+		return null;
+	}
 
-    @Transient
-    public void setCurrentAccountRepresentative(User newAccountRep, int createdById) {
-        expireCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
-        addNewCurrentAccountUserOfRole(newAccountRep, UserAccountRole.PICSAccountRep, createdById);
-    }
+	@Transient
+	public void setCurrentAccountRepresentative(User newAccountRep, int createdById) {
+		expireCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+		addNewCurrentAccountUserOfRole(newAccountRep, UserAccountRole.PICSAccountRep, createdById);
+	}
 
-    @Transient
-    public AccountUser getCurrentAccountRepresentativeAccountUser() {
-        return getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
-    }
+	@Transient
+	public AccountUser getCurrentAccountRepresentativeAccountUser() {
+		return getCurrentAccountUserOfRole(UserAccountRole.PICSAccountRep);
+	}
 
+	@Transient
+	public boolean hasCompetencyRequiringDocumentation() {
+		if (getCompetencies() != null && !getCompetencies().isEmpty()) {
+			for (OperatorCompetency operatorCompetency : getCompetencies()) {
+				if (operatorCompetency.isRequiresDocumentation()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }

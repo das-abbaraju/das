@@ -11,12 +11,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -231,6 +228,24 @@ public class AuditMenuBuilderTest {
 	}
 
 	@Test
+	public void testBuildAuditMenuFrom_SafetyContractorUserHasOperatorWithCompetencyRequiringDocumentation()
+			throws Exception {
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
+
+		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
+
+		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
+		assertNotNull(menuComponents);
+		assertFalse(menuComponents.isEmpty());
+
+		verify(urlUtils, atLeastOnce()).getActionUrl(actionCaptor.capture(), anyString(), any());
+
+		assertTrue(actionCaptor.getAllValues().contains("EmployeeDashboard"));
+	}
+
+	@Test
 	public void testBuildAuditMenuFrom_SafetyContractorUserHasInsureGUARD() throws
 			Exception {
 		when(permissions.isContractor()).thenReturn(true);
@@ -263,6 +278,85 @@ public class AuditMenuBuilderTest {
 		verify(i18nCache, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
 		assertTrue(translationKeyCaptor.getAllValues().contains("global.ClientReviews"));
+	}
+
+	@Test
+	public void testCompetencyRequiresDocumentation_NoTagsNoOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(false);
+
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
+
+		assertFalse("Contractor has no tags and no operators requiring competencies", competencyRequiresDocumentation);
+	}
+
+	@Test
+	public void testCompetencyRequiresDocumentation_TagRemovingEGNoOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		List<ContractorTag> contractorTags = new ArrayList<>();
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		contractorTags.add(contractorTag);
+		OperatorTag operatorTag = mock(OperatorTag.class);
+
+		when(contractorAccount.getOperatorTags()).thenReturn(contractorTags);
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(false);
+		when(contractorTag.getTag()).thenReturn(operatorTag);
+		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.RemoveEmployeeGUARD);
+
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
+
+		assertFalse("Contractor has no tags and no operators requiring competencies", competencyRequiresDocumentation);
+	}
+
+	@Test
+	public void testCompetencyRequiresDocumentation_NoTagsHasOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
+
+		assertTrue("Contractor has at least one operator requiring competencies and no tags",
+				competencyRequiresDocumentation);
+	}
+
+	@Test
+	public void testCompetencyRequiresDocumentation_TagRemovingEGAndOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		List<ContractorTag> contractorTags = new ArrayList<>();
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		contractorTags.add(contractorTag);
+		OperatorTag operatorTag = mock(OperatorTag.class);
+
+		when(contractorAccount.getOperatorTags()).thenReturn(contractorTags);
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+		when(contractorTag.getTag()).thenReturn(operatorTag);
+		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.RemoveEmployeeGUARD);
+
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
+
+		assertFalse("Contractor has at least one operator requiring competencies and a tag removing EG",
+				competencyRequiresDocumentation);
+	}
+
+	@Test
+	public void testCompetencyRequiresDocumentation_NoTagRemovingEGAndOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		List<ContractorTag> contractorTags = new ArrayList<>();
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		contractorTags.add(contractorTag);
+		OperatorTag operatorTag = mock(OperatorTag.class);
+
+		when(contractorAccount.getOperatorTags()).thenReturn(contractorTags);
+		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
+		when(contractorTag.getTag()).thenReturn(operatorTag);
+		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.OtherEmployeeGUARD);
+
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
+
+		assertTrue("Contractor has at least one operator requiring competencies and a tag that does not remove EG",
+				competencyRequiresDocumentation);
 	}
 
 	private List<ContractorAudit> audits() {
@@ -357,6 +451,7 @@ public class AuditMenuBuilderTest {
 
 		return audit;
 	}
+
 	private ContractorAudit clientReviews(boolean hasOperators) {
 		AuditType clientReviewType = mock(AuditType.class);
 		ContractorAudit clientReviews = mock(ContractorAudit.class);

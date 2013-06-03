@@ -778,6 +778,27 @@ public class ContractorAccountTest {
 		verifyMethodDoesNotResultInNPE("setNewFee", null, BigDecimal.TEN);
 	}
 
+	@Test
+	public void testHasOperatorWithCompetencyRequiringDocumentation() throws Exception {
+		assertFalse("contractorUnderTest has no operators",
+				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
+
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		contractorOperators.add(contractorOperator);
+		OperatorAccount operatorAccount = mock(OperatorAccount.class);
+
+		when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
+		contractorUnderTest.setOperators(contractorOperators);
+
+		assertFalse("contractorUnderTest has no operator with a competency requiring documentation",
+				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
+
+		when(operatorAccount.hasCompetencyRequiringDocumentation()).thenReturn(true);
+		assertTrue("contractorUnderTest has at least one operator with a competency requiring documentation",
+				contractorUnderTest.hasOperatorWithCompetencyRequiringDocumentation());
+	}
+
 	private Map<FeeClass, ContractorFee> buildFakeFeeMap() {
 		Map<FeeClass, ContractorFee> contractorFees = new TreeMap<FeeClass, ContractorFee>();
 		contractorFees.put(FeeClass.InsureGUARD, new ContractorFee());
@@ -799,5 +820,4 @@ public class ContractorAccountTest {
 			fail("threw unexpected null pointer exception");
 		}
 	}
-
 }

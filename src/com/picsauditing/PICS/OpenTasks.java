@@ -278,7 +278,7 @@ public class OpenTasks extends TranslationActionSupport {
 	private String getAuditKey(ContractorAudit conAudit) {
 		String key = conAudit.getAuditType().getId()
 				+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
-				+ ((conAudit.getAuditType().getClassType().isPolicy()) ? conAudit.getId():"")
+				+ ((conAudit.getAuditType().getClassType().isPolicy()) ? conAudit.getId() : "")
 				+ ((conAudit.getEmployee() != null) ? conAudit.getEmployee().getId() : "");
 		return key;
 	}
@@ -367,25 +367,11 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutEmployeeCompetencies() {
-		if (contractor.isRequiresCompetencyReview() && contractor.getEmployees().isEmpty()) {
-			for (ContractorOperator contractorOperator : contractor.getOperators()) {
-				OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
-				if (atLeastOneCompetencyRequiresDocumentation(operatorAccount)) {
-					openTasks.add(getTextParameterized(contractor.getLocale(),
-							"ContractorWidget.message.EmployeesNeedToBeAdded", contractor.getId()));
-					break;
-				}
-			}
+		if (contractor.isRequiresCompetencyReview() && contractor.getEmployees().isEmpty()
+				&& contractor.hasOperatorWithCompetencyRequiringDocumentation()) {
+			openTasks.add(getTextParameterized(contractor.getLocale(),
+					"ContractorWidget.message.EmployeesNeedToBeAdded", contractor.getId()));
 		}
-	}
-
-	private boolean atLeastOneCompetencyRequiresDocumentation(OperatorAccount operatorAccount) {
-		for (OperatorCompetency operatorCompetency : operatorAccount.getCompetencies()) {
-			if (operatorCompetency.isRequiresDocumentation()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void vopakSpecificOperatorQualificationTag() {
@@ -556,10 +542,10 @@ public class OpenTasks extends TranslationActionSupport {
 			} else if (conAudit.getAuditType().getId() == AuditType.SSIP && conAudit.hasCaoStatus(AuditStatus.Resubmitted)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				String i18nKey = "ContractorWidget.message." + AuditStatus.Resubmitted + "." + conAudit.getAuditType().getId();
-				openTasks.add(getTextParameterized(locale, i18nKey,
-						conAudit.getId(), auditName, showAuditFor, auditFor));
-				addedOpenTask = true;
+					String i18nKey = "ContractorWidget.message." + AuditStatus.Resubmitted + "." + conAudit.getAuditType().getId();
+					openTasks.add(getTextParameterized(locale, i18nKey,
+							conAudit.getId(), auditName, showAuditFor, auditFor));
+					addedOpenTask = true;
 				}
 			}
 		} else if (conAudit.getAuditType().isCanContractorEdit()
@@ -657,7 +643,7 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 						if (conAudit.getAuditType().getId() == AuditType.SSIP) {
 							if (conAudit.hasCaoStatus(AuditStatus.Pending) || conAudit.hasCaoStatus(AuditStatus.Resubmitted)) {
-							needed++;
+								needed++;
 							}
 						} else if (cao.getStatus().before(AuditStatus.Complete)) {
 							needed++;

@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum OperatorTagCategory implements Translatable {
-	None, CompetencyReview, OperatorQualification, OtherEmployeeGUARD;
+	None, CompetencyReview, OperatorQualification, OtherEmployeeGUARD, RemoveEmployeeGUARD;
 
 	public boolean isCompetencyReview() {
 		return this == CompetencyReview;
@@ -21,6 +21,10 @@ public enum OperatorTagCategory implements Translatable {
 
 	public boolean isEmployeeGUARD() {
 		return this == CompetencyReview || this == OperatorQualification || this == OtherEmployeeGUARD;
+	}
+
+	public boolean isRemoveEmployeeGUARD() {
+		return this == RemoveEmployeeGUARD;
 	}
 
 	@Override

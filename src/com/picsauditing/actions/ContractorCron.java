@@ -1,21 +1,21 @@
 package com.picsauditing.actions;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
+import com.picsauditing.PICS.*;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.*;
+import com.picsauditing.flags.ContractorScore;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.*;
+import com.picsauditing.messaging.FlagChange;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
@@ -25,65 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.ContractorFlagETL;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.ExceptionService;
-import com.picsauditing.PICS.FlagDataCalculator;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
-import com.picsauditing.flags.ContractorScore;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.LcCorPhase;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAssignment;
-import com.picsauditing.jpa.entities.UserAssignmentType;
-import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.mail.NoUsersDefinedException;
-import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.messaging.FlagChange;
-import com.picsauditing.messaging.Publisher;
-import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -112,9 +56,9 @@ public class ContractorCron extends PicsActionSupport {
 	private ExceptionService exceptionService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-    @Autowired
-    @Qualifier("CsrAssignmentSinglePublisher")
-    private Publisher csrAssignmentSinglePublisher;
+	@Autowired
+	@Qualifier("CsrAssignmentSinglePublisher")
+	private Publisher csrAssignmentSinglePublisher;
 
 	// this is @Autowired at the setter because we need @Qualifier which does
 	// NOT work
@@ -208,7 +152,7 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-            runCSRAssignment(contractor);
+			runCSRAssignment(contractor);
 
 
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
@@ -246,20 +190,20 @@ public class ContractorCron extends PicsActionSupport {
 				runCorporateRollup(contractor, corporateSet);
 			}
 
-            // must be done before the save, or the calculation will be lost
-            runContractorScore(contractor);
+			// must be done before the save, or the calculation will be lost
+			runContractorScore(contractor);
 
-            if (steps != null && steps.length > 0) {
-                if (opID == 0 && steps[0] == ContractorCronStep.All) {
-                    contractor.setNeedsRecalculation(0);
-                    contractor.setLastRecalculation(new Date());
-                }
-                contractorDAO.save(contractor);
-                addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
+			if (steps != null && steps.length > 0) {
+				if (opID == 0 && steps[0] == ContractorCronStep.All) {
+					contractor.setNeedsRecalculation(0);
+					contractor.setLastRecalculation(new Date());
+				}
+				contractorDAO.save(contractor);
+				addActionMessage("Completed " + steps.length + " step(s) for " + contractor.toString()
 						+ " successfully");
-            }
+			}
 
-            runPolicies(contractor);
+			runPolicies(contractor);
 
 		} catch (Exception continueUpTheStack) {
 			setRecalculationToTomorrow(contractor);
@@ -304,7 +248,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,
-			Map<Integer, List<Integer>> resultMap) {
+														Map<Integer, List<Integer>> resultMap) {
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
 			for (BasicDynaBean row : resultBDB) {
@@ -407,7 +351,7 @@ public class ContractorCron extends PicsActionSupport {
 			beginDate = previousManualExpirationDate;
 		}
 
-		for (ContractorAudit audit:contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() &&
 					audit.hasCaoStatus(AuditStatus.Pending)) {
 				audit.setSlaDate(beginDate);
@@ -417,7 +361,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private Date previousManualAudit(ContractorAccount contractor) {
-		for (ContractorAudit audit:contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() && audit.getExpiresDate() != null) {
 				return audit.getExpiresDate();
 			}
@@ -431,7 +375,7 @@ public class ContractorCron extends PicsActionSupport {
 		Date caoDate = null;
 		Date safetyManualDate = null;
 
-		for (ContractorAudit audit:contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isPicsPqf()) {
 				caoDate = findMaxCompleteDate(audit);
 				if (caoDate != null) {
@@ -456,7 +400,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private Date findSafetyManualVerificationDate(ContractorAudit audit) {
-		for (AuditData data:audit.getData()) {
+		for (AuditData data : audit.getData()) {
 			if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 				if (data.isAnswered() && data.isVerified()) {
 					return data.getDateVerified();
@@ -472,7 +416,7 @@ public class ContractorCron extends PicsActionSupport {
 		Date completeDate = null;
 		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getStatus().equals(AuditStatus.Complete)) {
-				Date checkDate = (cao.getStatusChangedDate() != null) ? cao.getStatusChangedDate():cao.getUpdateDate();
+				Date checkDate = (cao.getStatusChangedDate() != null) ? cao.getStatusChangedDate() : cao.getUpdateDate();
 				if (completeDate == null || (checkDate != null && completeDate.before(checkDate))) {
 					completeDate = checkDate;
 				}
@@ -642,7 +586,23 @@ public class ContractorCron extends PicsActionSupport {
 					contractor.setRequiresCompetencyReview(true);
 				}
 			}
+
+			if (contractor.hasOperatorWithCompetencyRequiringDocumentation() &&
+					!hasContractorTagRemovingEmployeeGUARD(contractor)) {
+				contractor.setRequiresCompetencyReview(true);
+			}
 		}
+	}
+
+	private boolean hasContractorTagRemovingEmployeeGUARD(ContractorAccount contractor) {
+		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+			OperatorTagCategory operatorTagCategory = contractorTag.getTag().getCategory();
+			if (operatorTagCategory != null && operatorTagCategory.isRemoveEmployeeGUARD()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private void runContractorETL(ContractorAccount contractor) {
@@ -893,7 +853,7 @@ public class ContractorCron extends PicsActionSupport {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 				if (!contractorInsuranceSubscription.getTimePeriod().equals(SubscriptionTimePeriod.None)
 						&& (contractorInsuranceSubscription.getLastSent() == null || contractorInsuranceSubscription
-								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate()))) {
+						.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate()))) {
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
 				}
 			}
@@ -1010,7 +970,7 @@ public class ContractorCron extends PicsActionSupport {
 		Set<ContractorOperator> removalSet = new HashSet<ContractorOperator>();
 
 		if (!shouldRunContractorCron(contractor.getStatus())) {
-			for (ContractorOperator co: contractor.getOperators()) {
+			for (ContractorOperator co : contractor.getOperators()) {
 				co.setFlagColor(FlagColor.Clear);
 				co.setBaselineFlag(FlagColor.Clear);
 			}
@@ -1121,7 +1081,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void rollupParentFlag(Map<OperatorAccount, FlagColor> corporateRollupFlag,
-	                              OperatorAccount parent, FlagColor operatorFlag) {
+								  OperatorAccount parent, FlagColor operatorFlag) {
 		FlagColor parentFacilityColor = (corporateRollupFlag.get(parent) != null) ? corporateRollupFlag
 				.get(parent) : FlagColor.Green;
 		FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFlag);
@@ -1131,7 +1091,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void rollupParentWaitingOn(Map<OperatorAccount, WaitingOn> corporateRollupWaitingOn,
-	                              OperatorAccount parent, WaitingOn waitingOn) {
+									   OperatorAccount parent, WaitingOn waitingOn) {
 		WaitingOn parentWaitingOn = (corporateRollupWaitingOn.get(parent) != null) ? corporateRollupWaitingOn
 				.get(parent) : WaitingOn.None;
 		WaitingOn worstWaitingOn = WaitingOn.getWorseWaitingOn(parentWaitingOn, waitingOn);
@@ -1141,44 +1101,43 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void rollUpCorporateFlags(Map<OperatorAccount, FlagColor> corporateRollupData,
-                                      Queue<OperatorAccount> corporateUpdateQueue,
-                                      ContractorOperator coOperator, OperatorAccount operator) {
-        if (operator.getStatus() != AccountStatus.Active && operator.getStatus() != AccountStatus.Demo) {
-            return;
-        }
+									  Queue<OperatorAccount> corporateUpdateQueue,
+									  ContractorOperator coOperator, OperatorAccount operator) {
+		if (operator.getStatus() != AccountStatus.Active && operator.getStatus() != AccountStatus.Demo) {
+			return;
+		}
 
-        for (Facility facility : operator.getCorporateFacilities()) {
-            OperatorAccount parent = facility.getCorporate();
+		for (Facility facility : operator.getCorporateFacilities()) {
+			OperatorAccount parent = facility.getCorporate();
 
-            corporateUpdateQueue.add(parent);
+			corporateUpdateQueue.add(parent);
 
-            // if CO data does not already exist, assume green flag
-            // then if CO data is found later, will be updated to
-            // proper flag color
-            FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
-                    .get(parent) : FlagColor.Green;
-            FlagColor operatorFacilityColor = coOperator.getFlagColor();
-            FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
-	        if (worstColor == null)
-		        worstColor = FlagColor.Green;
-            corporateRollupData.put(parent, worstColor);
-        }
-    }
+			// if CO data does not already exist, assume green flag
+			// then if CO data is found later, will be updated to
+			// proper flag color
+			FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+					.get(parent) : FlagColor.Green;
+			FlagColor operatorFacilityColor = coOperator.getFlagColor();
+			FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
+			if (worstColor == null)
+				worstColor = FlagColor.Green;
+			corporateRollupData.put(parent, worstColor);
+		}
+	}
 
-    private void runCSRAssignment(ContractorAccount contractor) {
+	private void runCSRAssignment(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.CSRAssignment)) {
 			return;
 		}
 
-        if (contractor.getStatus().isActive() && contractor.getCurrentCsr() == null) {
-		    logger.trace("ContractorCron starting CsrAssignment");
-            csrAssignmentSinglePublisher.publish(contractor.getId());
-        }
+		if (contractor.getStatus().isActive() && contractor.getCurrentCsr() == null) {
+			logger.trace("ContractorCron starting CsrAssignment");
+			csrAssignmentSinglePublisher.publish(contractor.getId());
+		}
 
 	}
 
 	/**
-	 *
 	 * This is so audits like the HSE Competency Submittal can have an auditor
 	 * automatically assigned
 	 *
@@ -1211,41 +1170,41 @@ public class ContractorCron extends PicsActionSupport {
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {
 				switch (audit.getAuditType().getId()) {
-				case (AuditType.WA_STATE_VERIFICATION):
-					ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-					if (ua != null) {
-						// Assign both auditor and closing auditor
-						audit.setAuditor(ua.getUser());
-						audit.setClosingAuditor(ua.getUser());
-						audit.setAssignedDate(new Date());
-					}
-					break;
-				case (AuditType.DESKTOP):
-					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
-							&& contractor.isFinanciallyReadyForAudits()) {
+					case (AuditType.WA_STATE_VERIFICATION):
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
-						if (ua == null) {
-							List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
-							if (uaList != null && uaList.size() > 0) {
-								ua = uaList.get(0);
-							}
-						}
 						if (ua != null) {
+							// Assign both auditor and closing auditor
 							audit.setAuditor(ua.getUser());
+							audit.setClosingAuditor(ua.getUser());
 							audit.setAssignedDate(new Date());
 						}
-					}
-					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
-							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
-						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
-					}
-					break;
-				case (AuditType.BPIISNCASEMGMT):
-					audit.setAuditor(userDAO.find(55603));
-					break;
-				case (AuditType.WELCOME):
-					audit.setAuditor(contractor.getCurrentCsr());
-					break;
+						break;
+					case (AuditType.DESKTOP):
+						if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
+								&& contractor.isFinanciallyReadyForAudits()) {
+							ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+							if (ua == null) {
+								List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
+								if (uaList != null && uaList.size() > 0) {
+									ua = uaList.get(0);
+								}
+							}
+							if (ua != null) {
+								audit.setAuditor(ua.getUser());
+								audit.setAssignedDate(new Date());
+							}
+						}
+						if (audit.getClosingAuditor() == null && audit.getAuditor() != null
+								&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+							audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
+						}
+						break;
+					case (AuditType.BPIISNCASEMGMT):
+						audit.setAuditor(userDAO.find(55603));
+						break;
+					case (AuditType.WELCOME):
+						audit.setAuditor(contractor.getCurrentCsr());
+						break;
 				}
 			}
 		}

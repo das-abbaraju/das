@@ -74,7 +74,7 @@ public class AuditMenuBuilder {
 
 	private void buildPQFSection() {
 		try {
-			if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+			if (contractorSafetyOrNonContractorUser()) {
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id", contractor.getId());
 
 				// Add the PQF
@@ -125,7 +125,7 @@ public class AuditMenuBuilder {
 
 	private void buildAnnualUpdatesSection() {
 		try {
-			if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+			if (contractorSafetyOrNonContractorUser()) {
 				// Add the Annual Updates
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id", contractor.getId());
 				MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"),
@@ -204,7 +204,7 @@ public class AuditMenuBuilder {
 
 	private void buildEmployeeGUARDSection() {
 		try {
-			if (employeeGUARDApplicable()) {
+			if (contractorSafetyOrNonContractorUser() && employeeGUARDApplicable()) {
 				// Add EmployeeGUARD
 				String employeeDashboardPage = urlUtils().getActionUrl("EmployeeDashboard", "id", contractor.getId());
 				MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), employeeDashboardPage);
@@ -247,8 +247,18 @@ public class AuditMenuBuilder {
 	}
 
 	private boolean employeeGUARDApplicable() {
-		return contractor.isHasEmployeeGUARDTag() && (!permissions.isContractor() || permissions
-				.hasPermission(OpPerms.ContractorSafety));
+		return (contractor.isHasEmployeeGUARDTag() || competencyRequiresDocumentation());
+	}
+
+	private boolean competencyRequiresDocumentation() {
+		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+			OperatorTagCategory operatorTagCategory = contractorTag.getTag().getCategory();
+			if (operatorTagCategory != null && operatorTagCategory.isRemoveEmployeeGUARD()) {
+				return false;
+			}
+		}
+
+		return contractor.hasOperatorWithCompetencyRequiringDocumentation();
 	}
 
 	private boolean canManuallyAddAudits() {
@@ -258,7 +268,7 @@ public class AuditMenuBuilder {
 
 	private void buildAuditGUARDSection() {
 		try {
-			if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+			if (contractorSafetyOrNonContractorUser()) {
 				// Add All AuditGUARD Audits
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
 						contractor.getId()) + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD"));
@@ -327,7 +337,7 @@ public class AuditMenuBuilder {
 
 	private void buildClientReviewsSection() {
 		try {
-			if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
+			if (contractorSafetyOrNonContractorUser()) { // Add
 				// All Reviews Audits
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
 						contractor.getId()) + "#" + ContractorDocuments.getSafeName(getText("global.ClientReviews"));
@@ -360,6 +370,10 @@ public class AuditMenuBuilder {
 		} catch (Exception exception) {
 			logger.error("Error building Client Reviews section in AuditMenuBuilder", exception);
 		}
+	}
+
+	private boolean contractorSafetyOrNonContractorUser() {
+		return permissions.hasPermission(OpPerms.ContractorSafety) || !permissions.isContractor();
 	}
 
 	private MenuComponent createMenuItem(MenuComponent subMenu, ContractorAudit audit) {

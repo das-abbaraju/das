@@ -1,47 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-import org.hibernate.annotations.Where;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
@@ -51,6 +9,7 @@ import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -62,6 +21,21 @@ import com.picsauditing.util.YearList;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Sort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.*;
+import javax.persistence.Table;
+import java.math.BigDecimal;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -137,7 +111,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
-    private List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators = new ArrayList<>();
+	private List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators = new ArrayList<>();
 	private Date lastContactedByAutomatedEmailDate;
 	private User lastContactedByInsideSales;
 	// Transient helper methods
@@ -163,7 +137,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	private static Logger logger = LoggerFactory.getLogger(ContractorAccount.class);
 
-    public ContractorAccount() {
+	public ContractorAccount() {
 		this.type = "Contractor";
 	}
 
@@ -171,7 +145,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.id = id;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	@Where(clause = "expiresDate > NOW() OR expiresDate IS NULL")
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
@@ -181,7 +155,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.audits = audits;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.REMOVE, CascadeType.REFRESH })
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
 	public List<ContractorOperator> getOperators() {
 		return this.operators;
 	}
@@ -191,14 +165,14 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 
-    @OneToMany(mappedBy = "contractorAccount",  cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
-    public List<InsuranceCriteriaContractorOperator> getInsuranceCriteriaContractorOperators() {
-        return insuranceCriteriaContractorOperators;
-    }
+	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	public List<InsuranceCriteriaContractorOperator> getInsuranceCriteriaContractorOperators() {
+		return insuranceCriteriaContractorOperators;
+	}
 
-    public void setInsuranceCriteriaContractorOperators(List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators) {
-        this.insuranceCriteriaContractorOperators = insuranceCriteriaContractorOperators;
-    }
+	public void setInsuranceCriteriaContractorOperators(List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators) {
+		this.insuranceCriteriaContractorOperators = insuranceCriteriaContractorOperators;
+	}
 
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate
@@ -231,7 +205,7 @@ public class ContractorAccount extends Account implements JSONable {
 		}.grep(this.operators);
 	}
 
-	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.REMOVE, CascadeType.MERGE })
+	@OneToMany(mappedBy = "contractor", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
 	public List<ContractorTag> getOperatorTags() {
 		return operatorTags;
 	}
@@ -240,7 +214,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.operatorTags = operatorTags;
 	}
 
-	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.REMOVE })
+	@OneToMany(mappedBy = "contractor", cascade = {CascadeType.REMOVE})
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}
@@ -871,50 +845,50 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
-    // named get/set for convenient ognl reference from JSPs
-    @Transient
-    public User getCurrentCsr() {
-        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSCustomerServiceRep);
-        if (accountUser != null) {
-            return accountUser.getUser();
-        }
-        return null;
-    }
+	// named get/set for convenient ognl reference from JSPs
+	@Transient
+	public User getCurrentCsr() {
+		AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSCustomerServiceRep);
+		if (accountUser != null) {
+			return accountUser.getUser();
+		}
+		return null;
+	}
 
-    @Transient
-    public void setCurrentCsr(User newCsr, int createdById) {
-        setAuditor(newCsr);
-        makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
-    }
+	@Transient
+	public void setCurrentCsr(User newCsr, int createdById) {
+		setAuditor(newCsr);
+		makeUserCurrentCsrExpireExistingCsr(newCsr, createdById);
+	}
 
-    @Transient
-    public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
-        expireCurrentAccountUserOfRole(UserAccountRole.PICSCustomerServiceRep);
-        addNewCurrentAccountUserOfRole(newCsr, UserAccountRole.PICSCustomerServiceRep, createdById);
-    }
+	@Transient
+	public void makeUserCurrentCsrExpireExistingCsr(User newCsr, int createdById) {
+		expireCurrentAccountUserOfRole(UserAccountRole.PICSCustomerServiceRep);
+		addNewCurrentAccountUserOfRole(newCsr, UserAccountRole.PICSCustomerServiceRep, createdById);
+	}
 
-    // named get/set for convenient ognl reference from JSPs
-    @Transient
-    public User getCurrentInsideSalesRepresentative() {
-        AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
-        if (accountUser != null) {
-            return accountUser.getUser();
-        }
-        return null;
-    }
+	// named get/set for convenient ognl reference from JSPs
+	@Transient
+	public User getCurrentInsideSalesRepresentative() {
+		AccountUser accountUser = getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+		if (accountUser != null) {
+			return accountUser.getUser();
+		}
+		return null;
+	}
 
-    @Transient
-    public void setCurrentInsideSalesRepresentative(User newRep, int createdById) {
-        makeUserCurrentInsideSalesRepExpireExistingRep(newRep, createdById);
-    }
+	@Transient
+	public void setCurrentInsideSalesRepresentative(User newRep, int createdById) {
+		makeUserCurrentInsideSalesRepExpireExistingRep(newRep, createdById);
+	}
 
-    @Transient
-    public void makeUserCurrentInsideSalesRepExpireExistingRep(User newRep, int createdById) {
-        expireCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
-        addNewCurrentAccountUserOfRole(newRep, UserAccountRole.PICSInsideSalesRep, createdById);
-    }
+	@Transient
+	public void makeUserCurrentInsideSalesRepExpireExistingRep(User newRep, int createdById) {
+		expireCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep);
+		addNewCurrentAccountUserOfRole(newRep, UserAccountRole.PICSInsideSalesRep, createdById);
+	}
 
-    @Transient
+	@Transient
 	public boolean isPaymentOverdue() {
 		for (Invoice invoice : getInvoices()) {
 			if (invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0 && invoice.getStatus().isUnpaid()
@@ -1232,7 +1206,7 @@ public class ContractorAccount extends Account implements JSONable {
 					}
 					if (!foundMembershipDate
 							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
-									.isReactivation())) {
+							.isReactivation())) {
 						if (invoice.getPayments().size() > 0) {
 							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(
 									invoice.getPayments());
@@ -1426,7 +1400,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 *
 	 * @return
 	 */
-	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@OneToMany(mappedBy = "contractor", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@MapKey(name = "feeClass")
 	@Sort(type = SortType.NATURAL)
 	public Map<FeeClass, ContractorFee> getFees() {
@@ -1467,7 +1441,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.refunds = refunds;
 	}
 
-	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
 	public Set<FlagCriteriaContractor> getFlagCriteria() {
 		return flagCriteria;
 	}
@@ -1476,7 +1450,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.flagCriteria = flagCriteria;
 	}
 
-	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
 	public Set<FlagDataOverride> getFlagDataOverrides() {
 		return flagDataOverrides;
 	}
@@ -1746,8 +1720,8 @@ public class ContractorAccount extends Account implements JSONable {
 		// Low Risk Material Supplier Only
 		// or is Material Supplier who only works for CEDA
 		if (isMaterialSupplierOnly()
-				&& (getProductRisk().equals(LowMedHigh.Low) || onlyWorksFor(new int[] { OperatorAccount.CEDA_CANADA,
-						OperatorAccount.CEDA_USA }))) {
+				&& (getProductRisk().equals(LowMedHigh.Low) || onlyWorksFor(new int[]{OperatorAccount.CEDA_CANADA,
+				OperatorAccount.CEDA_USA}))) {
 			return true;
 		} else if (isOffsiteServices() && !isOnsiteServices() && getSafetyRisk().equals(LowMedHigh.Low)) {
 			return true;
@@ -1774,7 +1748,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean onlyWorksFor(int operatorId) {
-		return onlyWorksFor(new int[] { operatorId });
+		return onlyWorksFor(new int[]{operatorId});
 	}
 
 	@Transient
@@ -2252,25 +2226,36 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 	}
 
-    public InsuranceCriteriaContractorOperator getInsuranceCriteriaContractorOperators(int flagCriteriaId, int opId) {
-        for (InsuranceCriteriaContractorOperator insurance: getInsuranceCriteriaContractorOperators()) {
-            if (insurance.getFlagCriteria().getId() == flagCriteriaId && insurance.getOperatorAccount().getId() == opId) {
-                return insurance;
-            }
-        }
-        return null;
-    }
+	public InsuranceCriteriaContractorOperator getInsuranceCriteriaContractorOperators(int flagCriteriaId, int opId) {
+		for (InsuranceCriteriaContractorOperator insurance : getInsuranceCriteriaContractorOperators()) {
+			if (insurance.getFlagCriteria().getId() == flagCriteriaId && insurance.getOperatorAccount().getId() == opId) {
+				return insurance;
+			}
+		}
+		return null;
+	}
 
-    public OperatorAccount getOperator(int opId) {
-        for (OperatorAccount operator: getOperatorAccounts()) {
-            if (operator.getId() == opId) {
-                return operator;
-            }
-        }
-        return  null;
-    }
+	public OperatorAccount getOperator(int opId) {
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			if (operator.getId() == opId) {
+				return operator;
+			}
+		}
+		return null;
+	}
 
-    public static ContractorAccountBuilder builder() {
-        return new ContractorAccountBuilder();
-    }
+	public static ContractorAccountBuilder builder() {
+		return new ContractorAccountBuilder();
+	}
+
+	@Transient
+	public boolean hasOperatorWithCompetencyRequiringDocumentation() {
+		for (ContractorOperator contractorOperator : getOperators()) {
+			if (contractorOperator.getOperatorAccount().hasCompetencyRequiringDocumentation()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

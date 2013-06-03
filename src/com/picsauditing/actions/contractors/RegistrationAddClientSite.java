@@ -1,29 +1,29 @@
 package com.picsauditing.actions.contractors;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class RegistrationAddClientSite extends RegistrationAction {
 	@Autowired
-	ContractorOperatorDAO contractorOperatorDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private FacilityChanger facilityChanger;
 
@@ -70,6 +70,8 @@ public class RegistrationAddClientSite extends RegistrationAction {
 	@Override
 	public String nextStep() throws Exception {
 		if (ContractorRegistrationStep.containsAtLeastOneClientSiteForGCFree(contractor)) {
+			addEmployeeGUARDIfOperatorCompetencyRequiresDocumentation();
+
 			return setUrlForRedirect(getNextRegistrationStep().getUrl());
 		} else {
 			List<OperatorAccount> missingGCFreeClientSites = getMissingGCFreeClientSites();
@@ -138,7 +140,7 @@ public class RegistrationAddClientSite extends RegistrationAction {
 		}
 		return searchEngineForTesting;
 	}
-	
+
 	public String search() throws Exception {
 		findContractor();
 
@@ -271,5 +273,16 @@ public class RegistrationAddClientSite extends RegistrationAction {
 		}
 
 		return results;
+	}
+
+	private void addEmployeeGUARDIfOperatorCompetencyRequiresDocumentation() {
+		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+			OperatorAccount operatorAccount = contractorOperator.getOperatorAccount();
+			if (operatorAccount.hasCompetencyRequiringDocumentation()) {
+				contractor.setRequiresCompetencyReview(true);
+				contractorAccountDao.save(contractor);
+				break;
+			}
+		}
 	}
 }

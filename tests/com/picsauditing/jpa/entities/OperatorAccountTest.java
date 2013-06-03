@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -10,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OperatorAccountTest {
 
@@ -114,5 +118,22 @@ public class OperatorAccountTest {
 		assertTrue(operator.isApplicableFlagOperator(parent));
 		assertTrue(operator.isApplicableFlagOperator(facilityop));
 		assertFalse(operator.isApplicableFlagOperator(notapplicable));
+	}
+
+	@Test
+	public void testHasCompetencyRequiringDocumentation() {
+		assertFalse("Operator has no competencies", classUnderTest.hasCompetencyRequiringDocumentation());
+
+		List<OperatorCompetency> competencyList = new ArrayList<>();
+		OperatorCompetency operatorCompetency = mock(OperatorCompetency.class);
+		competencyList.add(operatorCompetency);
+		classUnderTest.setCompetencies(competencyList);
+
+		assertFalse("Operator has no competencies requiring documentation",
+				classUnderTest.hasCompetencyRequiringDocumentation());
+
+		when(operatorCompetency.isRequiresDocumentation()).thenReturn(true);
+		assertTrue("Operator has competency requiring documentation",
+				classUnderTest.hasCompetencyRequiringDocumentation());
 	}
 }

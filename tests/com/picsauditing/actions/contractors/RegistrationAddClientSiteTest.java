@@ -1,12 +1,15 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.SmartFacilitySuggest;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SearchEngine;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,21 +17,20 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SearchEngine;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.startsWith;
+import static org.mockito.Mockito.*;
 
 public class RegistrationAddClientSiteTest extends PicsActionTest {
+	public static final int CONTRACTOR_ID = 11233;
+
 	private RegistrationAddClientSite registrationAddClientSite;
 	private List<OperatorAccount> results;
 
@@ -50,24 +52,24 @@ public class RegistrationAddClientSiteTest extends PicsActionTest {
 		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", (Database) null);
 		PicsActionTest.classTearDown();
 	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		registrationAddClientSite = new RegistrationAddClientSite();
 		super.setUp(registrationAddClientSite);
-		
+
 		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", smartFacilityDatabase);
 		Whitebox.setInternalState(registrationAddClientSite, "searchEngineForTesting", searchEngine);
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(registrationAddClientSite, this);
 
-		when(contractor.getId()).thenReturn(11233);
+		when(contractor.getId()).thenReturn(CONTRACTOR_ID);
 		when(contractor.getZip()).thenReturn("12345");
 		when(permissions.isContractor()).thenReturn(true);
-		when(permissions.getAccountId()).thenReturn(11233);
+		when(permissions.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
-		when(contractorAccountDao.find(11233)).thenReturn(contractor);
+		when(contractorAccountDao.find(CONTRACTOR_ID)).thenReturn(contractor);
 		when(contractor.getCountry()).thenReturn(country);
 		when(country.getIsoCode()).thenReturn("US");
 
@@ -127,5 +129,45 @@ public class RegistrationAddClientSiteTest extends PicsActionTest {
 		List<OperatorAccount> results = Whitebox.getInternalState(registrationAddClientSite, "searchResults");
 
 		assertTrue(results.isEmpty());
+	}
+
+	@Test
+	public void testAddEmployeeGUARDIfOperatorCompetencyRequiresDocumentation_OperatorDoesNotHaveCompetencyRequiringDocumentation()
+			throws Exception {
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		OperatorAccount operatorAccount = mock(OperatorAccount.class);
+
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		contractorOperators.add(contractorOperator);
+
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
+		when(operatorAccount.hasCompetencyRequiringDocumentation()).thenReturn(false);
+
+		registrationAddClientSite.setContractor(contractor);
+		Whitebox.invokeMethod(registrationAddClientSite, "addEmployeeGUARDIfOperatorCompetencyRequiresDocumentation");
+
+		verify(contractor, never()).setRequiresCompetencyReview(anyBoolean());
+		verify(contractorAccountDao, never()).save(any(BaseTable.class));
+	}
+
+	@Test
+	public void testAddEmployeeGUARDIfOperatorCompetencyRequiresDocumentation_OperatorDoesHaveCompetencyRequiringDocumentation()
+			throws Exception {
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		OperatorAccount operatorAccount = mock(OperatorAccount.class);
+
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+		contractorOperators.add(contractorOperator);
+
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operatorAccount);
+		when(operatorAccount.hasCompetencyRequiringDocumentation()).thenReturn(true);
+
+		registrationAddClientSite.setContractor(contractor);
+		Whitebox.invokeMethod(registrationAddClientSite, "addEmployeeGUARDIfOperatorCompetencyRequiresDocumentation");
+
+		verify(contractor).setRequiresCompetencyReview(true);
+		verify(contractorAccountDao).save(contractor);
 	}
 }
