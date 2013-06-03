@@ -276,7 +276,11 @@ public class Permissions implements Serializable {
 		return userID;
 	}
 
-	public String getUserIdString() {
+    public void setUserId(int userID) {
+        this.userID = userID;
+    }
+
+    public String getUserIdString() {
 		return Integer.toString(userID);
 	}
 

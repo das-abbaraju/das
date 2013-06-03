@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.picsauditing.models.audits.AuditorAssignor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -71,32 +72,16 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 		if (audit != null) {
 			Note note = new Note();
 
-			if (closingAuditor != null) {
-				note.setSummary("Assigned " + closingAuditor.getName() + " as Closing Auditor for "
-						+ audit.getAuditType().getName().toString());
-			} else {
-				note.setSummary("Unassigned closing auditor for " + audit.getAuditType().getName().toString());
-			}
-
-			audit.setClosingAuditor(closingAuditor);
-			audit.setAuditColumns(permissions);
+            AuditorAssignor.assignClosingAuditor(closingAuditor, audit, note, permissions);
 			contractorAuditDAO.save(audit);
 
-			note.setAccount(audit.getContractorAccount());
-			note.setAuditColumns(permissions);
-			note.setBody(notes);
-			note.setNoteCategory(NoteCategory.Audits);
-			if (audit.getAuditType().getAccount() != null)
-				note.setViewableBy(audit.getAuditType().getAccount());
-			else
-				note.setViewableById(Account.EVERYONE);
 
 			noteDAO.save(note);
 		}
 
 		return BLANK;
 	}
-	
+
 	public String saveAll() throws Exception {
 		if (auditIDs != null && auditIDs.length > 0) {
 			for (Integer auditID : auditIDs) {

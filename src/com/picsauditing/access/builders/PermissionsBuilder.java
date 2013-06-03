@@ -25,4 +25,9 @@ public class PermissionsBuilder {
         permissions.getPermissions().add(access);
         return this;
     }
+
+    public PermissionsBuilder userId(int userId) {
+        permissions.setUserId(userId);
+        return this;
+    }
 }

@@ -14,6 +14,16 @@ function saveAuditor(auditorId) {
             }
     );
 }
+
+function saveClosingAuditor(auditorId) {
+    var data = {
+        'contractorAudit': $('#auditID').val(),
+        'closingAuditor.id': auditorId
+    };
+    $('#auditorAssignmentDate').load('AuditAssignmentUpdateAjax!saveClosingAuditor.action', data, function(text, status) {
+            }
+    );
+}
 $(function() {
 	$('.sysEditDate').datepicker({
 		changeMonth: true,
@@ -423,13 +433,36 @@ function loadStatus(caoID, addUserNote){
 								<s:date name="conAudit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 						</s:if>
+                        <s:if test="conAudit.auditType.hasAuditor && !conAudit.auditType.annualAddendum && hasClosingAuditor">
+                        <li>
+                            <label>
+                                    <s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy')">
+                                        <s:text name="global.CSR" />:
+                                    </s:if>
+                                    <s:else>
+                                        <s:property value='professionalLabel' />:
+                                    </s:else>
+                                </label>
 
-						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && hasClosingAuditor">
-							<li>
-								<label><s:text name="global.Closing" /> <s:property value='professionalLabel' />:</label>
-								<s:property value="conAudit.closingAuditor.name" />
-							</li>
-						</s:if>
+                                <s:if test="userPermittedToAssignAudit && !(conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy'))" >
+                                    <div id="auditorAssignmentDate" style="display:none"></div>
+                                    <s:select  onchange="saveClosingAuditor(this.value)"  cssClass="blueMain" list="safetyList"
+                                               listValue="name" value="conAudit.closingAuditor" headerKey="-1" headerValue="- Not Assigned -" />
+                                </s:if>
+                                <s:else>
+                                    <s:if test="conAudit.auditor.id > 0">
+                                        <s:property value="conAudit.closingAuditor.name" />
+                                    </s:if>
+                                    <s:else>
+                                        <a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
+                                            <s:text name="Audit.message.NotAssigned" />
+                                        </a>
+                                    </s:else>
+                                </s:else>
+
+
+                            </li>
+                        </s:if>
 					</ul>
 				</fieldset>
 				

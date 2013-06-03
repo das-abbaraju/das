@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.picsauditing.models.audits.AuditorAssignor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -33,6 +34,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	protected ContractorAudit contractorAudit = null;
 	protected User auditor = null;
 	protected User origAuditor = null;
+    protected User closingAuditor = null;
 
 	@Autowired
 	protected ContractorAuditDAO dao = null;
@@ -42,11 +44,15 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	protected EmailBuilder emailBuilder;
 	@Autowired
 	private EmailSender emailSender;
+    @Autowired
+    private ContractorAuditDAO contractorAuditDAO;
+    @Autowired
+    private NoteDAO noteDAO;
 
 	protected Date origScheduledDate = null;
 	protected String origLocation = null;
 
-	@Override
+    @Override
 	public void prepare() throws Exception {
 
 		String[] ids = (String[]) ActionContext.getContext().getParameters().get("contractorAudit.id");
@@ -167,6 +173,18 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		return SUCCESS;
 	}
 
+    public String saveClosingAuditor() {
+        if (contractorAudit != null) {
+            Note note = new Note();
+
+            AuditorAssignor.assignClosingAuditor(closingAuditor, contractorAudit, note, permissions);
+            contractorAuditDAO.save(contractorAudit);
+
+            noteDAO.save(note);
+        }
+        return SUCCESS;
+    }
+
 	public ContractorAudit getContractorAudit() {
 		return contractorAudit;
 	}
@@ -178,9 +196,15 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	public User getAuditor() {
 		return auditor;
 	}
-
 	public void setAuditor(User auditor) {
 		this.auditor = auditor;
 	}
 
+    public User getClosingAuditor() {
+        return closingAuditor;
+    }
+
+    public void setClosingAuditor(User closingAuditor) {
+        this.closingAuditor = closingAuditor;
+    }
 }

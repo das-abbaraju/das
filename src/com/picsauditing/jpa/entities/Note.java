@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.NoteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -326,4 +327,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	}
 
+    public static NoteBuilder builder() {
+        return new NoteBuilder();
+    }
 }

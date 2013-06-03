@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities.builders;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.builders.PermissionsBuilder;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
@@ -49,6 +50,11 @@ public class UserBuilder {
 
     public UserBuilder group() {
         user.setIsGroup(YesNo.Yes);
+        return this;
+    }
+
+    public UserBuilder name(String name) {
+        user.setName(name);
         return this;
     }
 }
