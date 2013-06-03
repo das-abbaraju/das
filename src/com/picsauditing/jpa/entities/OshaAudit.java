@@ -24,6 +24,15 @@ public class OshaAudit implements OshaVisitable {
     public static final int CAT_ID_AUSTRALIA = 3325; // Australia
 	public static final int CAT_ID_IRElAND = 3428; // Ireland
 	public static final int CAT_ID_SOUTH_AFRICA = 2810; // South Africa
+	public static final int CAT_ID_SINGAPORE_MOM = 3655;
+	public static final int CAT_ID_AUSTRIA = 3752;
+	public static final int CAT_ID_ITALY = 3749;
+	public static final int CAT_ID_PORTUGAL = 3754;
+	public static final int CAT_ID_TURKEY = 3757;
+	public static final int CAT_ID_SPAIN = 3748;
+	public static final int CAT_ID_SWITZERLAND = 3704;
+	public static final int CAT_ID_POLAND = 3756;
+	public static final int CAT_ID_DENMARK = 3762;
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
@@ -37,7 +46,8 @@ public class OshaAudit implements OshaVisitable {
     public static final Set<Integer> DISPLAY_SAFETY_STATISTICS_CATEGORY_IDS =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
                     CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND,
-		            CAT_ID_SOUTH_AFRICA)));
+		            CAT_ID_SOUTH_AFRICA, CAT_ID_SWITZERLAND, CAT_ID_SINGAPORE_MOM, CAT_ID_TURKEY,
+		            CAT_ID_SPAIN, CAT_ID_POLAND, CAT_ID_AUSTRIA, CAT_ID_ITALY, CAT_ID_PORTUGAL, CAT_ID_DENMARK)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -53,39 +63,15 @@ public class OshaAudit implements OshaVisitable {
     public static OshaType convertCategoryToOshaType(int catId) {
         OshaType type = null;
 
-        switch (catId) {
-            case CAT_ID_OSHA:
-            case CAT_ID_OSHA_ADDITIONAL:
-                type = OshaType.OSHA;
-                break;
-            case CAT_ID_EMR:
-                type = OshaType.EMR;
-                break;
-            case CAT_ID_MSHA:
-                type = OshaType.MSHA;
-                break;
-            case CAT_ID_COHS:
-                type = OshaType.COHS;
-                break;
-            case CAT_ID_UK_HSE:
-                type = OshaType.UK_HSE;
-                break;
-            case CAT_ID_FRANCE_NRIS:
-                type = OshaType.FRANCE_NRIS;
-                break;
-            case CAT_ID_MEXICO:
-                type = OshaType.MEXICO;
-                break;
-            case CAT_ID_AUSTRALIA:
-                type = OshaType.AUSTRALIA;
-                break;
-	        case CAT_ID_IRElAND:
-		        type = OshaType.IRELAND;
-		        break;
-	        case CAT_ID_SOUTH_AFRICA:
-		        type = OshaType.SOUTH_AFRICA;
-		        break;
-        }
+	    for (OshaType oType:OshaType.values()) {
+		    if (catId == oType.categoryId) {
+			    type = oType;
+		    }
+	    }
+
+	    if (catId == CAT_ID_OSHA_ADDITIONAL) {
+		    type = OshaType.OSHA;
+	    }
 
         return type;
     }
@@ -110,15 +96,14 @@ public class OshaAudit implements OshaVisitable {
     }
 
     private void initializeDisplaySafetyStatistics() {
-        displaySafetyStatisticsMap.put(OshaType.OSHA, false);
-        displaySafetyStatisticsMap.put(OshaType.COHS, false);
-        displaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
-        displaySafetyStatisticsMap.put(OshaType.EMR, false);
-        displaySafetyStatisticsMap.put(OshaType.MEXICO, false);
-        displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, false);
-	    displaySafetyStatisticsMap.put(OshaType.IRELAND, false);
-	    displaySafetyStatisticsMap.put(OshaType.SOUTH_AFRICA, false);
+	    for (OshaType type:OshaType.values()) {
+		    displaySafetyStatisticsMap.put(type, false);
+	    }
         for (AuditCatData category : getCategories()) {
+	        for (OshaType type:OshaType.values()) {
+		        if (category.getCategory().getId() == type.categoryId && type.displayStats)
+		            displaySafetyStatisticsMap.put(type, category.isApplies());
+	        }
             if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
                 displaySafetyStatisticsMap.put(OshaType.EMR, category.isApplies());
@@ -129,19 +114,7 @@ public class OshaAudit implements OshaVisitable {
             if (category.getCategory().getId() == CAT_ID_UK_HSE_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.UK_HSE, category.isApplies());
             }
-            if (category.getCategory().getId() == CAT_ID_MEXICO) {
-                displaySafetyStatisticsMap.put(OshaType.MEXICO, category.isApplies());
-            }
-            if (category.getCategory().getId() == CAT_ID_AUSTRALIA) {
-                displaySafetyStatisticsMap.put(OshaType.AUSTRALIA, category.isApplies());
-            }
-	        if (category.getCategory().getId() == CAT_ID_IRElAND) {
-		        displaySafetyStatisticsMap.put(OshaType.IRELAND, category.isApplies());
-	        }
-	        if (category.getCategory().getId() == CAT_ID_SOUTH_AFRICA) {
-		        displaySafetyStatisticsMap.put(OshaType.SOUTH_AFRICA, category.isApplies());
-	        }
-        }
+         }
     }
 
     public String getAuditFor() {

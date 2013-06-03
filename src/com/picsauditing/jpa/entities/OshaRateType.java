@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import org.jbpm.process.workitem.WorkItemRepository;
+
 public enum OshaRateType implements Translatable {
 	LwcrAbsolute(true),
 	LwcrNaics,
@@ -28,7 +30,9 @@ public enum OshaRateType implements Translatable {
     FR,
     ATLR,
 	DIIR,
-	SR;
+	SR,
+	WIR,
+	ODI;
 
 	private boolean hasIndustryAverage;
 

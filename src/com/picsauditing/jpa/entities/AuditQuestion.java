@@ -60,6 +60,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
     static public final int AUSTRALIA_KEPT_ID = 15214;
 	static public final int IRELAND_KEPT_ID = 15660;
 	static public final int SOUTH_AFRICA_KEPT_ID = 16282;
+	static public final int SINGAPORE_MOM_KEPT_ID = 16590;
+	static public final int TURKEY_KEPT_ID = 17168;
+	static public final int SWITZERLAND_KEPT_ID = 16894;
+	static public final int SPAIN_KEPT_ID = 17097;
+	static public final int POLAND_KEPT_ID = 17141;
+	static public final int AUSTRIA_KEPT_ID = 17126;
+	static public final int ITALY_KEPT_ID = 17111;
+	static public final int PORTUGAL_KEPT_ID = 17129;
+	static public final int DENMARK_KEPT_ID = 17172;
 
     public static final String TYPE_NUMBER = "Number";
     public static final String TYPE_DATE = "Date";
