@@ -173,6 +173,8 @@ public class OshaAudit implements OshaVisitable {
 	            safetyStatistics = new SingaporeStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.SWITZERLAND) {
 	            safetyStatistics = new SwitzerlandStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.TURKEY) {
+	            safetyStatistics = new TurkeyStatistics(year, contractorAudit.getData(), category.isApplies());
 	        }
 
             if (safetyStatistics != null) {
