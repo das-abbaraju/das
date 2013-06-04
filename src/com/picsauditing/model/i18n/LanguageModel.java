@@ -118,12 +118,21 @@ public class LanguageModel {
 	 * The dialects always follow the language itself af far as being stable is concerned.
 	 */
 	public Set<Language> getVisibleLanguages() {
+		return getVisibleLanguages(picsEnvironment().isShowAlphaLanguages());
+	}
+
+	public Set<Language> getVisibleLanguages(boolean includeAlphaLanguages) {
 		if (visibleLanguages == null) {
 			visibleLanguages = new TreeSet<>();
+
 			// Always add stable and beta languages
-			List<Language> stableAndBetaLanguages = languageProvider.findByStatuses(new LanguageStatus[]{
-					LanguageStatus.Stable, LanguageStatus.Beta
-			});
+			LanguageStatus[] statuses = {LanguageStatus.Stable, LanguageStatus.Beta};
+
+			if (includeAlphaLanguages) {
+				statuses = new LanguageStatus[] {LanguageStatus.Stable, LanguageStatus.Beta, LanguageStatus.Alpha};
+			}
+
+			List<Language> stableAndBetaLanguages = languageProvider.findByStatuses(statuses);
 
 			if (stableAndBetaLanguages != null) {
 				visibleLanguages.addAll(stableAndBetaLanguages);
@@ -132,13 +141,6 @@ public class LanguageModel {
 
 		if (visibleLanguages.isEmpty()) {
 			addEnglishAsVisibleLanguage();
-		}
-
-		if (picsEnvironment().isShowAlphaLanguages()) {
-			List<Language> alphaLanguages = languageProvider.findByStatus(LanguageStatus.Alpha);
-			if (alphaLanguages != null) {
-				visibleLanguages.addAll(alphaLanguages);
-			}
 		}
 
 		return Collections.unmodifiableSet(visibleLanguages);
