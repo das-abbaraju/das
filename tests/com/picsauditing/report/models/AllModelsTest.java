@@ -5,6 +5,8 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@UseReporter(DiffReporter.class)
 public class AllModelsTest {
 
     private AbstractModel model;
