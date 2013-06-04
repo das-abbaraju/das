@@ -519,6 +519,10 @@ public final class MenuBuilder {
 			userMenu.addChild(getText("Account"), "ProfileEdit.action", "profile_edit");
 		}
 
+		if (permissions.hasPermission(OpPerms.MyCalendar)) {
+			userMenu.addChild("My Schedule", "MySchedule.action", "my_schedule");
+		}
+
 		if (permissions.getAdminID() > 0) {
 			userMenu.addChild("Switch Back", "Login.action?button=switchBack", "switch_back");
 		}
