@@ -177,7 +177,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
         if (contractorAudit != null) {
             Note note = new Note();
 
-            AuditorAssignor.assignClosingAuditor(closingAuditor, contractorAudit, note, permissions);
+            User localClosingAuditor = closingAuditor.getId() > 0 ? closingAuditor : null;
+            AuditorAssignor.assignClosingAuditor(localClosingAuditor, contractorAudit, note, permissions);
             contractorAuditDAO.save(contractorAudit);
 
             noteDAO.save(note);
