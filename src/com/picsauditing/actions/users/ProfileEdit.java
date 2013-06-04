@@ -1,39 +1,21 @@
 package com.picsauditing.actions.users;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.interceptors.SecurityInterceptor;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.InputValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport {
@@ -58,6 +40,9 @@ public class ProfileEdit extends PicsActionSupport {
 	private boolean goEmailSub = false;
 	private boolean usingVersion7Menus = false;
 
+	private String language;
+	private String dialect;
+
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
 	 * login if the {@link User}'s forcePasswordReset is true.
@@ -70,7 +55,15 @@ public class ProfileEdit extends PicsActionSupport {
 			return loginResult;
 		}
 
+		language = u.getLocale().getLanguage();
+		dialect = u.getLocale().getCountry();
+
 		return SUCCESS;
+	}
+
+	@Anonymous
+	public String dialect() {
+		return "dialect";
 	}
 
 	@Anonymous
@@ -81,6 +74,14 @@ public class ProfileEdit extends PicsActionSupport {
 		String loginResult = checkProfileEditLogin();
 		if (loginResult != null) {
 			return loginResult;
+		}
+
+		if (Strings.isNotEmpty(language)) {
+			if (Strings.isNotEmpty(dialect)) {
+				u.setLocale(new Locale(language, dialect));
+			} else {
+				u.setLocale(new Locale(language));
+			}
 		}
 
 		validateInput();
@@ -119,7 +120,7 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	private boolean isUserSetForNewMenu() {
-		if(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			return isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null;
 		}
 
@@ -319,4 +320,19 @@ public class ProfileEdit extends PicsActionSupport {
 		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getDialect() {
+		return dialect;
+	}
+
+	public void setDialect(String dialect) {
+		this.dialect = dialect;
+	}
 }

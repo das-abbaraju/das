@@ -2,13 +2,18 @@
     PICS.define('PICS.ProfileEdit', {
         methods: {
             init: function () {
-                var user_api_div = $('#UserApiKey__div'),
-                    that = this;
+                var element = $('.ProfileEdit-page');
 
-                if (user_api_div.length) {
-                    $('#UserApiKey__div').delegate('button.positive', 'click', function (event) {
-                        that.checkForApiKey.apply(that, [event]);
-                    });
+                if (element.length) {
+                    var user_api_div = $('#UserApiKey__div'), that = this;
+
+                    if (user_api_div.length) {
+                        $('#UserApiKey__div').delegate('button.positive', 'click', function (event) {
+                            that.checkForApiKey.apply(that, [event]);
+                        });
+                    }
+
+                    element.delegate('#profile_language', 'change', that.loadDialect);
                 }
             },
 
@@ -48,6 +53,20 @@
                         }
                     }
                 });
+            },
+
+            loadDialect: function (event) {
+                var language = $(this).val();
+
+                PICS.ajax({
+                    url: 'ProfileEdit!dialect.action',
+                    data: {
+                        language: language
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        $('#profile_dialect').html(data);
+                    }
+                })
             }
         }
     });
