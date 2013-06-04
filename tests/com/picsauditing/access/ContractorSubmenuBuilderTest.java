@@ -35,6 +35,7 @@ import com.picsauditing.search.Database;
 public class ContractorSubmenuBuilderTest {
 
 	public static final int ACCOUNT_ID = 5;
+	public static final int CONTRACTOR_ID = 5;
 
 	private ContractorSubmenuBuilder contractorSubmenuBuilder;
 	@Mock
@@ -57,6 +58,7 @@ public class ContractorSubmenuBuilderTest {
 		MockitoAnnotations.initMocks(this);
 
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
+		when(contractorAccount.getId()).thenReturn(CONTRACTOR_ID);
 		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
 		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
 	}

@@ -18,7 +18,6 @@ public class Menu extends PicsActionSupport {
 	@Autowired
 	private ReportUserDAO reportUserDao;
 
-	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
 
 	private MenuComponent menu;
