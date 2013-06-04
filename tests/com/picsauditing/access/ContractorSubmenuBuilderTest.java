@@ -1,31 +1,35 @@
 package com.picsauditing.access;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.report.ReportUtil;
-import com.picsauditing.search.Database;
-import org.approvaltests.Approvals;
-import org.approvaltests.reporters.DiffReporter;
-import org.approvaltests.reporters.UseReporter;
-import org.json.simple.JSONArray;
-import org.junit.*;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.reflect.Whitebox;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
+import org.json.simple.JSONArray;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
+
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.search.Database;
 
 @UseReporter(DiffReporter.class)
 public class ContractorSubmenuBuilderTest {
@@ -67,7 +71,8 @@ public class ContractorSubmenuBuilderTest {
 	public void testAddCompanyMenu_defaultCase() throws Exception {
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -78,7 +83,8 @@ public class ContractorSubmenuBuilderTest {
 		when(permissions.isAdmin()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -90,7 +96,8 @@ public class ContractorSubmenuBuilderTest {
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -101,7 +108,8 @@ public class ContractorSubmenuBuilderTest {
 		when(permissions.isContractor()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -112,7 +120,8 @@ public class ContractorSubmenuBuilderTest {
 		when(permissions.isGeneralContractor()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -123,7 +132,8 @@ public class ContractorSubmenuBuilderTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addDocuguardMenu(menubar, permissions, auditMenu);
+		menubar = contractorSubmenuBuilder.addDocuguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -134,7 +144,8 @@ public class ContractorSubmenuBuilderTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addAuditguardMenu(menubar, permissions, auditMenu);
+		menubar = contractorSubmenuBuilder.addAuditguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -145,7 +156,8 @@ public class ContractorSubmenuBuilderTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addInsureguardMenu(menubar, permissions, auditMenu);
+		menubar = contractorSubmenuBuilder.addInsureguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -155,7 +167,8 @@ public class ContractorSubmenuBuilderTest {
 	public void testAddSupportMenu_defaultCase() throws Exception {
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addSupportMenu(menubar, permissions, true);
+		menubar = contractorSubmenuBuilder.addSupportMenu(menubar, permissions,
+				contractorAccount, true);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
