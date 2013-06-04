@@ -1,5 +1,11 @@
 package com.picsauditing.access;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -8,11 +14,6 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.report.RecordNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public final class ContractorSubmenuBuilder {
 
@@ -60,34 +61,21 @@ public final class ContractorSubmenuBuilder {
 	public ContractorSubmenuBuilder() {
 	}
 
-	public MenuComponent buildMenubar(Permissions permissions, boolean includeSupportMenu) throws RecordNotFoundException {
-
-		ContractorAccount contractorAccount = findContractorAccount(permissions);
+	public MenuComponent buildMenubar(ContractorAccount contractorAccount,
+			Permissions permissions, boolean includeSupportMenu)
+					throws RecordNotFoundException {
 		List<MenuComponent> auditMenu = buildAuditMenu(permissions, contractorAccount);
 
 		MenuComponent menubar = new MenuComponent();
-		addCompanyMenu(menubar, permissions);
-		addDocuguardMenu(menubar, permissions, auditMenu);
-		addAuditguardMenu(menubar, permissions, auditMenu);
-		addInsureguardMenu(menubar, permissions, auditMenu);
+		addCompanyMenu(menubar, permissions, contractorAccount);
+		addDocuguardMenu(menubar, permissions, contractorAccount, auditMenu);
+		addAuditguardMenu(menubar, permissions, contractorAccount, auditMenu);
+		addInsureguardMenu(menubar, permissions, contractorAccount, auditMenu);
 		addEmployeeguardMenu(menubar, permissions, contractorAccount);
-		addSupportMenu(menubar, permissions, includeSupportMenu);
+		addSupportMenu(menubar, permissions, contractorAccount,
+				includeSupportMenu);
 
 		return menubar;
-	}
-
-	private ContractorAccount findContractorAccount(Permissions permissions) throws RecordNotFoundException {
-		ContractorAccount contractorAccount = new ContractorAccount();
-
-		if (permissions.isContractor()) {
-			int id = permissions.getAccountId();
-			contractorAccount = contractorAccountDao.find(id);
-
-			if (contractorAccount == null) {
-				throw new RecordNotFoundException("Contractor " + id);
-			}
-		}
-		return contractorAccount;
 	}
 
 	// todo: Not good that we're injecting and calling methods on a controller here. This is a interim approach that does not change the existing code.
@@ -101,28 +89,39 @@ public final class ContractorSubmenuBuilder {
 		return auditMenu;
 	}
 
-	protected MenuComponent addCompanyMenu(MenuComponent menubar, Permissions permissions) {
+	protected MenuComponent addCompanyMenu(MenuComponent menubar,
+			Permissions permissions, ContractorAccount contractorAccount) {
 
 		MenuComponent companyMenu = menubar.addChild(getText(COMPANY));
 
-		companyMenu.addChild(getText(DASHBOARD), "ContractorView.action?id=" + permissions.getAccountId());
+		companyMenu.addChild(getText(DASHBOARD), "ContractorView.action?id="
+				+ contractorAccount.getId());
 
-		companyMenu.addChild(getText(NOTES), "ContractorNotes.action?id=" + permissions.getAccountId());
+		companyMenu.addChild(getText(NOTES), "ContractorNotes.action?id="
+				+ contractorAccount.getId());
 
 		if (!permissions.isOperator() && !permissions.isInsuranceOnlyContractorUser()) {
-			companyMenu.addChild(getText(CLIENT_SITES), "ContractorFacilities.action?id=" + permissions.getAccountId());
+			companyMenu.addChild(
+					getText(CLIENT_SITES),
+					"ContractorFacilities.action?id="
+							+ contractorAccount.getId());
 		}
 
 		if (permissions.isGeneralContractor()) {
-			companyMenu.addChild(getText(SUBCONTRACTOR_CLIENT_SITES), "SubcontractorFacilities.action?id=" + permissions.getAccountId());
+			companyMenu.addChild(
+					getText(SUBCONTRACTOR_CLIENT_SITES),
+					"SubcontractorFacilities.action?id="
+							+ contractorAccount.getId());
 		}
 
 		if (permissions.isAdmin() || (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorAdmin))) {
-			companyMenu.addChild(getText(USERS), "UsersManage.action?account=" + permissions.getAccountId());
+			companyMenu.addChild(getText(USERS), "UsersManage.action?account="
+					+ contractorAccount.getId());
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			companyMenu.addChild(getText(TRADES), "ContractorTrades.action?id=" + permissions.getAccountId());
+			companyMenu.addChild(getText(TRADES), "ContractorTrades.action?id="
+					+ contractorAccount.getId());
 		}
 
 		if (permissions.isContractor()) {
@@ -130,23 +129,35 @@ public final class ContractorSubmenuBuilder {
 		}
 		//todo: Investigate. For some reason the conHeader.jsp is showing these erroneously?
 		if (permissions.isAdmin() && permissions.getAccountStatus() != AccountStatus.Demo) {
-			companyMenu.addChild(getText(BILLING_DETAIL), "BillingDetail.action?id=" + permissions.getAccountId(), "billing_detail");
-			companyMenu.addChild(getText(PAYMENT_OPTIONS), "ContractorPaymentOptions.action?id=" + permissions.getAccountId());
+			companyMenu.addChild(getText(BILLING_DETAIL),
+					"BillingDetail.action?id=" + contractorAccount.getId(),
+					"billing_detail");
+			companyMenu.addChild(
+					getText(PAYMENT_OPTIONS),
+					"ContractorPaymentOptions.action?id="
+							+ contractorAccount.getId());
 		}
 
 		if (permissions.isAdmin()) {
-			companyMenu.addChild(getText(COMPANY_PROFILE), "ContractorEdit.action?id=" + permissions.getAccountId(), "edit_contractor");
+			companyMenu.addChild(getText(COMPANY_PROFILE),
+					"ContractorEdit.action?id=" + contractorAccount.getId(),
+					"edit_contractor");
 		}
 
 		return menubar;
 	}
 
-	protected MenuComponent addAuditguardMenu(MenuComponent menubar, Permissions permissions, List<MenuComponent> auditMenu) {
+	protected MenuComponent addAuditguardMenu(MenuComponent menubar,
+			Permissions permissions, ContractorAccount contractorAccount,
+			List<MenuComponent> auditMenu) {
 
 		MenuComponent auditguard = menubar.addChild(getText(AUDITGUARD));
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			auditguard.addChild(getText(AUDITGUARD_SUMMARY), "ContractorDocuments.action?id=" + permissions.getAccountId() + "#auditguard");
+			auditguard.addChild(
+					getText(AUDITGUARD_SUMMARY),
+					"ContractorDocuments.action?id="
+							+ contractorAccount.getId() + "#auditguard");
 
 			MenuComponent menuComponent = findComponent(AUDITGUARD, MANUAL_AUDIT, auditMenu);
 			if (menuComponent != null) {
@@ -162,12 +173,17 @@ public final class ContractorSubmenuBuilder {
 		return menubar;
 	}
 
-	protected MenuComponent addDocuguardMenu(MenuComponent menubar, Permissions permissions, List<MenuComponent> auditMenu) {
+	protected MenuComponent addDocuguardMenu(MenuComponent menubar,
+			Permissions permissions, ContractorAccount contractorAccount,
+			List<MenuComponent> auditMenu) {
 
 		MenuComponent docuguard = menubar.addChild(getText(DOCUGUARD));
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			docuguard.addChild(getText(DOCUGUARD_SUMMARY), "ContractorDocuments.action?id=" + permissions.getAccountId());
+			docuguard.addChild(
+					getText(DOCUGUARD_SUMMARY),
+					"ContractorDocuments.action?id="
+							+ contractorAccount.getId());
 
 			MenuComponent menuComponent = findComponent(PQF, PQF, auditMenu);
 			if (menuComponent != null) {
@@ -175,23 +191,45 @@ public final class ContractorSubmenuBuilder {
 				docuguard.addChild(getText(PQF_CURRENT_YEAR), "Audit.action?auditID=" + menuComponent.getAuditId());
 			}
 			// todo: See if there is any way to find and append the yyyy string to the name
-			docuguard.addChild(getText(ANNUAL_UPDATE_CURRENT_YEAR), "ContractorDocuments.action?id=" + permissions.getAccountId() + "#" + ContractorDocuments.getSafeName(getText("AuditType.11.name")));
+			docuguard.addChild(
+					getText(ANNUAL_UPDATE_CURRENT_YEAR),
+					"ContractorDocuments.action?id="
+							+ contractorAccount.getId()
+							+ "#"
+							+ ContractorDocuments
+									.getSafeName(getText("AuditType.11.name")));
 		}
 
 		return menubar;
 	}
 
-	protected MenuComponent addInsureguardMenu(MenuComponent menubar, Permissions permissions, List<MenuComponent> auditMenu) {
+	protected MenuComponent addInsureguardMenu(MenuComponent menubar,
+			Permissions permissions, ContractorAccount contractorAccount,
+			List<MenuComponent> auditMenu) {
 
 		MenuComponent insureguard = menubar.addChild(getText(INSUREGUARD));
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorInsurance)) {
 
-			insureguard.addChild(getText(INSUREGUARD_SUMMARY), "ConInsureGUARD.action?id=" + permissions.getAccountId());   // todo: Verify. The Summary and Certificates Manager links are dupes?
+			insureguard.addChild(getText(INSUREGUARD_SUMMARY),
+					"ConInsureGUARD.action?id=" + contractorAccount.getId()); // todo:
+																				// Verify.
+																				// The
+																				// Summary
+																				// and
+																				// Certificates
+																				// Manager
+																				// links
+																				// are
+																				// dupes?
 
 			MenuComponent menuComponent = findComponent(INSUREGUARD, MANAGE_CERTIFICATES, auditMenu);
 			if (menuComponent != null) {
-				insureguard.addChild(getText(CERTIFICATES_MANAGER), "ConInsureGUARD.action?id=" + permissions.getAccountId());
+				insureguard
+						.addChild(
+								getText(CERTIFICATES_MANAGER),
+								"ConInsureGUARD.action?id="
+										+ contractorAccount.getId());
 			}
 
 			menuComponent = findComponent(INSUREGUARD, AUTOMOBILE_LIABILITY, auditMenu);
@@ -223,20 +261,29 @@ public final class ContractorSubmenuBuilder {
 		MenuComponent employeeguard = menubar.addChild(getText(EMPLOYEEGUARD));
 
 		if (contractorAccount.isHasEmployeeGUARDTag() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
-			employeeguard.addChild(getText(EMPLOYEEGUARD_SUMMARY), "EmployeeDashboard.action?id=" + permissions.getAccountId());
+			employeeguard.addChild(getText(EMPLOYEEGUARD_SUMMARY),
+					"EmployeeDashboard.action?id=" + contractorAccount.getId());
 
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
-				employeeguard.addChild(getText(EMPLOYEES), "ManageEmployees.action?id=" + permissions.getAccountId());
+				employeeguard.addChild(
+						getText(EMPLOYEES),
+						"ManageEmployees.action?id="
+								+ contractorAccount.getId());
 			}
 
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.DefineRoles)) {
-				employeeguard.addChild(getText(JOB_ROLES), "ManageJobRoles.action?id=" + permissions.getAccountId());
+				employeeguard
+						.addChild(
+								getText(JOB_ROLES),
+								"ManageJobRoles.action?id="
+										+ contractorAccount.getId());
 			}
 
 			// Competencies coming soon...
-//			if (permissions.isAdmin() || permissions.hasPermission(???)) {
-//				employeeguard.addChild(getText(COMPETENCIES), "ManageCompetencies.action?id=" + permissions.getAccountId());
-//			}
+			//			if (permissions.isAdmin() || permissions.hasPermission(???)) {
+			// employeeguard.addChild(getText(COMPETENCIES),
+			// "ManageCompetencies.action?id=" + contractorAccount.getId());
+			//			}
 
 		}
 
@@ -245,7 +292,9 @@ public final class ContractorSubmenuBuilder {
 
 	// todo: Revisit. For now, this is basically the same as the Support item on main menu. We'll see if the two menus
 	// end up diverging or not.
-	protected MenuComponent addSupportMenu(MenuComponent menubar, Permissions permissions, boolean includeSupportMenu) {
+	protected MenuComponent addSupportMenu(MenuComponent menubar,
+			Permissions permissions, ContractorAccount contractorAccount,
+			boolean includeSupportMenu) {
 		if (includeSupportMenu) {
 
 			MenuComponent supportMenu = menubar.addChild(getText("menu.Support"));
@@ -264,10 +313,10 @@ public final class ContractorSubmenuBuilder {
 			referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
 			referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
 			referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
-		/*
-		 * referenceMenu.addChild("Navigation Restructure",
-		 * "Reference!navigationRestructure.action", "navigation_restructure");
-		 */
+			/*
+			 * referenceMenu.addChild("Navigation Restructure",
+			 * "Reference!navigationRestructure.action", "navigation_restructure");
+			 */
 		}
 
 		return menubar;

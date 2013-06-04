@@ -10,7 +10,7 @@
             
             <ul class="nav pull-right account">
                 <li>
-                    <span>Ancon Marine</span>
+                    <span>${contractor.name}</span>
                 </li>
             </ul>
             

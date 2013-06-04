@@ -74,7 +74,8 @@ public class Menu extends PicsActionSupport {
 	private MenuComponent buildContractorSubmenu(boolean includeSupportMenu) throws RecordNotFoundException {
 		loadPermissions();
 
-		return contractorSubmenuBuilder.buildMenubar(permissions, includeSupportMenu);
+		return contractorSubmenuBuilder.buildMenubar(contractor, permissions,
+				includeSupportMenu);
 	}
 
 	public ContractorAccount getContractor() {
