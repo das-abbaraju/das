@@ -54,7 +54,7 @@
                 
                     <div class="row">
                         <div class="span4">
-                            <h4>Old location</h4>
+                            <h4>Contractors</h4>
                             
                             <ul class="unstyled">
                                 <li>Contractor List</li>
@@ -66,15 +66,15 @@
                             </ul>
                         </div>
                         <div class="span4">
-                            <h4>New location</h4>
+                            <h4>Reports</h4>
                             
                             <ul class="unstyled">
                                 <li>Reports</li>
-                                <li>Reports</li>
-                                <li>Somewhere</li>
-                                <li>Over the Rainbow</li>
-                                <li>Way Up High</li>
-                                <li>Theres a Land</li>
+                                <li>Reports > Legacy Reports</li>
+                                <li>~</li>
+                                <li>~</li>
+                                <li>~</li>
+                                <li>Reports > Legacy Reports</li>
                             </ul>
                         </div>
                     </div>
