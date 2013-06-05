@@ -208,7 +208,7 @@ public class BillingCalculatorSingle {
 				hasAuditGUARD = true;
 			}
 
-            if (!hasAuditGUARD && hasSSIP && co.getOperatorAccount().isOrIsDescendantOf(OperatorAccount.M_and_S)) {
+            if (!hasAuditGUARD && hasSSIP) {
                 hasAuditGUARD = true;
             }
 		}
