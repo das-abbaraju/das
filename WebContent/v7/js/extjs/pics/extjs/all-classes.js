@@ -66018,7 +66018,7 @@ Ext.define('PICS.data.Exception', {
         function getErrorFromUnknownStatusCode(code) {
             var error = unknown_error;
 
-            error.message += ' (SRC: ' + code + ')';
+            error.message += ' (code: ' + code + ')';
 
             return error;
         }
