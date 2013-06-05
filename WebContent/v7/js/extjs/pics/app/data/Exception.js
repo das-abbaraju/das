@@ -22,7 +22,15 @@ Ext.define('PICS.data.Exception', {
         };
 
         function getErrorFromStatusCode(code) {
-            return error_codes[code] || unknown_error;
+            return error_codes[code] || getErrorFromUnknownStatusCode(code);
+        }
+
+        function getErrorFromUnknownStatusCode(code) {
+            var error = unknown_error;
+
+            error.message += ' (SRC: ' + code + ')';
+
+            return error;
         }
 
         function handleKnown2xxException(response, callback) {
