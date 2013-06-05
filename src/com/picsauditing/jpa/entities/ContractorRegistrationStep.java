@@ -22,7 +22,7 @@ public enum ContractorRegistrationStep {
 			return Risk;
 		} else if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None)) {
 			return Risk;
-		} else if (!contractor.isHasFreeMembership() && contractor.getStatus().isPendingOrDeactivated()) {
+		} else if (!contractor.isHasFreeMembership() && contractor.getStatus().isPendingRequestedOrDeactivated()) {
 			return Payment;
 		} else {
 			return Done;

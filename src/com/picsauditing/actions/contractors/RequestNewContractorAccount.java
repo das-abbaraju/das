@@ -418,6 +418,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 			contractor.getNaics().setCode("0");
 			contractor.setRequestedBy(requestRelationship.getOperatorAccount());
 			contractor.generateRegistrationHash();
+			if (requestRelationship.getOperatorAccount() != null) {
+				if (requestRelationship.getOperatorAccount().getStatus().isActive()
+						&& !"No".equals(requestRelationship.getOperatorAccount().getDoContractorsPay())) {
+					contractor.setPayingFacilities(1);
+				}
+			}
 		}
 
 		contractor.setAuditColumns(permissions);
@@ -434,6 +440,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 			} else {
 				primaryContact.setUsername(primaryContact.getEmail());
 			}
+			primaryContact.setName(primaryContact.getFirstName() + " " + primaryContact.getLastName());
 
 			primaryContact.setAuditColumns(permissions);
 
