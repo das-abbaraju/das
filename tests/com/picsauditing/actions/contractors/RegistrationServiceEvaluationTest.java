@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.jpa.entities.*;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -24,14 +28,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.util.PermissionToViewContractor;
 
 public class RegistrationServiceEvaluationTest extends PicsTest {
@@ -47,8 +43,11 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 	protected ContractorAuditDAO auditDao;
 	@Mock
 	protected BasicDAO dao;
+    @Mock
+    protected AuditTypeRuleCache auditTypeRuleCache;
 
-	private ContractorAccount contractor;
+
+    private ContractorAccount contractor;
 
 	@Before
 	public void setUp() throws Exception {
@@ -71,6 +70,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissions", permissions);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractorAccountDao", contractorAccountDao);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
 	}
 
 	@Test
@@ -122,7 +122,42 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		assertTrue(valid);
 	}
 
-	private AuditQuestion createQuestion(int id) {
+    @Test
+    public void testShouldShowSsip() {
+        AuditTypeRule excludeAll = AuditTypeRule.builder().exclude().build();
+
+        setupShouldShowSsip(excludeAll);
+
+        assertFalse(serviceEvaluation.shouldShowSsip());
+    }
+
+    @Test
+    public void testShouldShowSsip_IncludeSsip() {
+        AuditTypeRule excludeAll = AuditTypeRule.builder().exclude().build();
+        AuditTypeRule includeSsip = AuditTypeRule.builder().include().auditType(AuditType.builder().id(AuditType.SSIP).build()).build();
+
+        setupShouldShowSsip(excludeAll, includeSsip);
+
+        assertTrue(serviceEvaluation.shouldShowSsip());
+    }
+
+    @Test
+    public void testShouldShowSsip_ExcludeSssip() {
+        AuditTypeRule excludeAll = AuditTypeRule.builder().exclude().build();
+        AuditTypeRule excludeSsip = AuditTypeRule.builder().exclude().auditType(AuditType.builder().id(AuditType.SSIP).build()).build();
+
+        setupShouldShowSsip(excludeAll, excludeSsip);
+
+        assertFalse(serviceEvaluation.shouldShowSsip());
+    }
+
+    private void setupShouldShowSsip(AuditTypeRule... rules) {
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
+        List<AuditTypeRule> listOfRules = Arrays.asList(rules);
+        when(auditTypeRuleCache.getRules(contractor)).thenReturn(listOfRules);
+    }
+
+    private AuditQuestion createQuestion(int id) {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(id);
 		Calendar effective = Calendar.getInstance();

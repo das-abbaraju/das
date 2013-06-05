@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
+import com.picsauditing.jpa.entities.builders.AuditTypeRuleBuilder;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -86,4 +89,7 @@ public class AuditTypeRule extends AuditRule {
 		return out;
 	}
 
+    public static AuditTypeRuleBuilder builder() {
+        return new AuditTypeRuleBuilder();
+    }
 }
