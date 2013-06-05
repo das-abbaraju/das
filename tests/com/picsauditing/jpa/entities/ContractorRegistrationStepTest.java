@@ -211,7 +211,7 @@ public class ContractorRegistrationStepTest {
 		when(contractor.isMaterialSupplier()).thenReturn(false);
 		when(contractor.isHasFreeMembership()).thenReturn(false);
 
-		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
 	}
 
 	@Test

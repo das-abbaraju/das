@@ -268,6 +268,10 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		closeRelatedRegistrationRequests();
+		if (contractor.getStatus().equals(AccountStatus.Requested)) {
+			contractor.setStatus(AccountStatus.Active);
+			contractorAccountDao.save(contractor);
+		}
 
 		// Reload permissions for this user so they view just their country
 		// specific questions.
@@ -434,7 +438,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 	@Override
 	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (permissions.isContractor() && contractor.getStatus().isPendingOrDeactivated()
+		if (permissions.isContractor() && contractor.getStatus().isPendingRequestedOrDeactivated()
 				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB())) {
 			return ContractorRegistrationStep.Done;
 		}

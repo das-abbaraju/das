@@ -519,6 +519,7 @@ public class RequestNewContractorAccountTest {
 	private void setPermissionsAsOperator() {
 		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
 		when(operator.getId()).thenReturn(1);
+		when(operator.getStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.getAccountId()).thenReturn(1);
 		when(permissions.isOperator()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);

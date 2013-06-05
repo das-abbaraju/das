@@ -55,6 +55,10 @@ public enum AccountStatus implements Translatable, PermissionAware {
         return this == Pending || this == Deactivated;
     }
 
+	public boolean isPendingRequestedOrDeactivated() {
+		return this == Pending || this == Deactivated || this == Requested;
+	}
+
     @Deprecated
     // TODO find any usages within JSPs and rename them
     public boolean isActiveDemo() {

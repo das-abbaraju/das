@@ -4,9 +4,14 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.auditBuilder.AuditRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.lang3.StringUtils;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -24,8 +29,6 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private BillingCalculatorSingle billingService;
-	@Autowired
-	private AppPropertyDAO appPropertyDAO;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
@@ -63,7 +66,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	public static final int QUESTION_ID_SSIP_EXPIRATION_DATE = 16916;
 	public static final int QUESTION_ID_SSIP_SCHEME = 16948;
 
-	public RegistrationServiceEvaluation() {
+    private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
+
+    public RegistrationServiceEvaluation() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
 		this.currentStep = ContractorRegistrationStep.Risk;
 	}
@@ -95,6 +100,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		buildAndLoadSsipDatesIntoAnswerMap();
 
 		loadPqfAnswers();
+
 		loadSsipAnswers();
 
 		return SUCCESS;
@@ -180,7 +186,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		contractorAccountDao.save(contractor);
 
 		// Free accounts should just be activated
-		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingOrDeactivated()) {
+		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingRequestedOrDeactivated()) {
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
 			contractor.setMembershipDate(new Date());
@@ -917,27 +923,14 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		audit.getCategories().add(catData);
 	}
 
-	public boolean shouldShowSsip() {
-		AppProperty ssipClientSiteIdsProperty = appPropertyDAO.find(AppProperty.SSIP_CLIENT_SITE_ID_LIST_KEY);
-		if (ssipClientSiteIdsProperty == null) {
-			return false;
-		}
-
-		String value = ssipClientSiteIdsProperty.getValue();
-		String[] ssipClientSiteIds = (value != null) ? value.split(",") : new String[]{};
-
-		ContractorAccount account = (ContractorAccount) getAccount();
-
-		for (OperatorAccount operator : account.getOperatorAccounts()) {
-			for (String ssipClientSiteId : ssipClientSiteIds) {
-				if (ssipClientSiteId.trim().equals("" + operator.getId())) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+    public boolean shouldShowSsip() {
+        for (AuditTypeRule rule : auditTypeRuleCache.getRules(contractor)) {
+            if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
+                return true;
+            }
+        }
+       return false;
+    }
 
 	public List<AuditOptionValue> getSsipMemberSchemes() {
 		AuditQuestion question = questionDao.find(QUESTION_ID_SSIP_SCHEME);

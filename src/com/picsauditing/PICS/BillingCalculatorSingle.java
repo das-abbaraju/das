@@ -208,7 +208,7 @@ public class BillingCalculatorSingle {
 				hasAuditGUARD = true;
 			}
 
-            if (!hasAuditGUARD && hasSSIP && co.getOperatorAccount().isOrIsDescendantOf(OperatorAccount.M_and_S)) {
+            if (!hasAuditGUARD && hasSSIP) {
                 hasAuditGUARD = true;
             }
 		}
@@ -466,8 +466,8 @@ public class BillingCalculatorSingle {
 	}
 
 	private void setContractorRenewToTrueIfNeeded(ContractorAccount contractor) {
-		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
+		if (!(contractor.getFees().get(FeeClass.BidOnly) != null && contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree())
+				|| !(contractor.getFees().get(FeeClass.ListOnly) != null && contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree())) {
 			contractor.setRenew(true);
 		}
 	}
