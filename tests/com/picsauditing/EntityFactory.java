@@ -1,24 +1,62 @@
 package com.picsauditing;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.model.i18n.LanguageModel;
-import org.powermock.reflect.Whitebox;
-
-import java.util.*;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.powermock.reflect.Whitebox;
+
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.model.i18n.LanguageModel;
+
 /**
  * This generates jpa objects that we can then use in our unit testing
- *
+ * 
  * @author Trevor
  */
 public class EntityFactory {
@@ -27,11 +65,11 @@ public class EntityFactory {
 	static private HashMap<String, Country> countries;
 	static private Map<String, CountrySubdivision> countrySubdivisions;
 
-	static public TranslatableString makeTranslatableString(String value) {
-		TranslatableString string = new TranslatableString();
-		string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
-		return string;
-	}
+	// static public TranslatableString makeTranslatableString(String value) {
+	// TranslatableString string = new TranslatableString();
+	// string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
+	// return string;
+	// }
 
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
@@ -43,7 +81,7 @@ public class EntityFactory {
 		operator.setInheritFlagCriteria(operator);
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
 		operator.getVisibleAuditTypes().add(1);
-        operator.setCountry(mostCommonCountries().get("US"));
+		operator.setCountry(mostCommonCountries().get("US"));
 
 		return operator;
 	}
@@ -62,7 +100,7 @@ public class EntityFactory {
 	/**
 	 * Create an active, Medium Risk Level ContractorAccount named Contractor
 	 * Unit Test
-	 *
+	 * 
 	 * @return
 	 */
 	static public ContractorAccount makeContractor() {
@@ -131,23 +169,24 @@ public class EntityFactory {
 		CountrySubdivision countrySubdivision = new CountrySubdivision(isoCode);
 		countrySubdivision.setCountry(country);
 		countrySubdivision.setEnglish(englishName);
-		countrySubdivision.setName(makeEnglishString(isoCode, englishName));
+		countrySubdivision.setName(englishName);
 		return countrySubdivision;
 	}
 
 	public static Country makeCountry(String isoCode, String englishName) {
 		Country country = new Country(isoCode);
 		country.setEnglish(englishName);
-		country.setName(makeEnglishString(isoCode, englishName));
+		country.setName(englishName);
 		return country;
 	}
 
-	public static TranslatableString makeEnglishString(String keyCode, String englishText) {
-		TranslatableString translatableString = new TranslatableString();
-		translatableString.setKey(keyCode);
-		translatableString.putTranslation("en", englishText, true);
-		return translatableString;
-	}
+	// public static TranslatableString makeEnglishString(String keyCode, String
+	// englishText) {
+	// TranslatableString translatableString = new TranslatableString();
+	// translatableString.setKey(keyCode);
+	// translatableString.putTranslation("en", englishText, true);
+	// return translatableString;
+	// }
 
 	static public ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
 		ContractorOperator co = new ContractorOperator();
@@ -159,7 +198,7 @@ public class EntityFactory {
 
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
-	 *
+	 * 
 	 * @param auditTypeID
 	 * @return
 	 */
@@ -167,13 +206,13 @@ public class EntityFactory {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
-        contractor.getAudits().add(conAudit);
+		contractor.getAudits().add(conAudit);
 		return conAudit;
 	}
 
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
-	 *
+	 * 
 	 * @param auditType
 	 * @return
 	 */
@@ -214,7 +253,7 @@ public class EntityFactory {
 		auditCategory.setAuditType(auditType);
 		auditType.getCategories().add(auditCategory);
 		auditCategory.setNumber(auditType.getCategories().get(auditType.getCategories().size() - 1).getNumber() + 1);
-		auditCategory.setName(makeTranslatableString(name));
+		auditCategory.setName(name);
 		return auditCategory;
 	}
 
@@ -237,7 +276,7 @@ public class EntityFactory {
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
-		auditType.setName(makeTranslatableString("Unit Test " + auditTypeID));
+		auditType.setName("Unit Test " + auditTypeID);
 		auditType.setClassType(AuditTypeClass.Audit);
 		auditType.setMonthsToExpire(12);
 		Workflow workFlow = makeWorkflowNoSubmitted();
@@ -282,7 +321,7 @@ public class EntityFactory {
 
 	/**
 	 * Add an Approved CAO to the passed in ConAudit
-	 *
+	 * 
 	 * @param conAudit
 	 */
 	static public ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
@@ -298,7 +337,7 @@ public class EntityFactory {
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(counter++);
-		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
+		question.setName("jUnit Question " + question.getId());
 		question.setDependentRequired(new ArrayList<AuditQuestion>());
 		question.setDependentVisible(new ArrayList<AuditQuestion>());
 		long time = (new Date()).getTime();
@@ -315,7 +354,7 @@ public class EntityFactory {
 	public static AuditCategory makeAuditCategory(int categoryId) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryId);
-		auditCategory.setName(makeTranslatableString("Audit Category " + categoryId));
+		auditCategory.setName("Audit Category " + categoryId);
 		auditCategory.setNumber(categoryId);
 		auditCategory.setAuditType(makeAuditType());
 		auditCategory.setEffectiveDate(new Date());
@@ -349,9 +388,9 @@ public class EntityFactory {
 	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
-            LanguageModel languageModel = mock(LanguageModel.class);
-            when(languageModel.getClosestVisibleLocale(any(Locale.class), anyString())).thenReturn(Locale.US);
-            Whitebox.setInternalState(permission, "languageModel", languageModel);
+			LanguageModel languageModel = mock(LanguageModel.class);
+			when(languageModel.getClosestVisibleLocale(any(Locale.class), anyString())).thenReturn(Locale.US);
+			Whitebox.setInternalState(permission, "languageModel", languageModel);
 			permission.login(user);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -364,7 +403,7 @@ public class EntityFactory {
 		User user = new User(counter++);
 		user.setAccount(new Account());
 		user.getAccount().setId(Account.PicsID);
-        user.getAccount().setCountry(mostCommonCountries().get("US"));
+		user.getAccount().setCountry(mostCommonCountries().get("US"));
 		return user;
 	}
 
@@ -381,7 +420,7 @@ public class EntityFactory {
 	}
 
 	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
-														  SubscriptionTimePeriod timePeriod) {
+			SubscriptionTimePeriod timePeriod) {
 		EmailSubscription sub = new EmailSubscription();
 
 		sub.setUser(user);
@@ -471,7 +510,6 @@ public class EntityFactory {
 		flagCriterisOperator.setFlag(FlagColor.Red);
 		flagCriterisOperator.setOperator(makeOperator());
 		flagCriterisOperator.setHurdle(hurdle);
-
 
 		return flagCriterisOperator;
 	}

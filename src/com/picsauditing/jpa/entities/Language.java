@@ -12,7 +12,7 @@ import java.util.Locale;
 @Entity
 @Table(name = "app_language")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Language extends BaseTranslatable implements Comparable<Language> {
+public class Language /* extends BaseTranslatable */ implements Comparable<Language>, Translatable {
 	private Locale locale;
 	private String language;
 	private String country;

@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.jpa.entities.*;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,8 +34,33 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.QuestionComparator;
+import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class AuditBuilderTest extends PicsTest {
 	AuditBuilder auditBuilder;
@@ -55,30 +79,34 @@ public class AuditBuilderTest extends PicsTest {
 	AuditDataDAO auditDataDao;
 	@Mock
 	ContractorAuditDAO auditDao;
-    @Mock
-    private AuditDecisionTableDAO auditDecisionTableDAO;
+	@Mock
+	private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
+
+	@AfterClass
+	public static void classTearDown() {
+		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
+	}
 
 	/**
 	 * Setup Contractors and Audit Types and Categories
 	 */
 	@Before
 	public void setUp() throws Exception {
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
+
 		MockitoAnnotations.initMocks(this);
 
-        auditBuilder = new AuditBuilder();
+		auditBuilder = new AuditBuilder();
 		autowireEMInjectedDAOs(auditBuilder);
-		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
-				typeRuleCache);
-		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache",
-				catRuleCache);
-		PicsTestUtil.forceSetPrivateField(auditBuilder,
-				"auditPercentCalculator", auditPercentCalculator);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", typeRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", auditPercentCalculator);
 
-        Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
-        Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(auditBuilder, "conAuditDao", auditDao);
 
 		typeRules.clear();
@@ -91,7 +119,7 @@ public class AuditBuilderTest extends PicsTest {
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
 	}
-	
+
 	@Ignore
 	public void testBuildAudits_WCB() throws Exception {
 		addTypeRules((new RuleParameters()).setAuditTypeId(145));
@@ -108,41 +136,39 @@ public class AuditBuilderTest extends PicsTest {
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
 	}
-	
+
 	@Test
 	public void testAdjustCaoStatus() throws Exception {
 		ContractorAudit annualAudit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, "2011");
 		EntityFactory.addCategories(annualAudit.getAuditType(), 101, "Annual Category 1");
-		
-	    OperatorAccount nueOperator = EntityFactory.makeOperator();
-	    OperatorAccount oldOperator = EntityFactory.makeOperator();
-	    OperatorAccount childOperator = EntityFactory.makeOperator();
-	    
-	    EntityFactory.addCao(annualAudit, oldOperator);
-	    ContractorAuditOperator cao =annualAudit.getOperators().get(0);
-	    cao.setStatus(AuditStatus.Complete);
-	    ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-	    caop.setCao(cao);
-	    caop.setOperator(childOperator);
-	    cao.getCaoPermissions().add(caop);
-	    
-	    contractor.getAudits().add(annualAudit);
-	    
-		addTypeRules((new RuleParameters())
-				.setAuditTypeId(AuditType.ANNUALADDENDUM));
+
+		OperatorAccount nueOperator = EntityFactory.makeOperator();
+		OperatorAccount oldOperator = EntityFactory.makeOperator();
+		OperatorAccount childOperator = EntityFactory.makeOperator();
+
+		EntityFactory.addCao(annualAudit, oldOperator);
+		ContractorAuditOperator cao = annualAudit.getOperators().get(0);
+		cao.setStatus(AuditStatus.Complete);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setCao(cao);
+		caop.setOperator(childOperator);
+		cao.getCaoPermissions().add(caop);
+
+		contractor.getAudits().add(annualAudit);
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.ANNUALADDENDUM));
 		for (AuditCategory category : annualAudit.getAuditType().getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(annualAudit.getAuditType())
-					.setAuditCategory(category).setOperatorAccount(nueOperator));
+			addCategoryRules((new RuleParameters()).setAuditType(annualAudit.getAuditType()).setAuditCategory(category)
+					.setOperatorAccount(nueOperator));
 		}
 
-		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(
-						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(3, contractor.getAudits().size());
 	}
-	
+
 	@Test
 	public void testWelcomCalls() throws Exception {
 		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
@@ -150,19 +176,16 @@ public class AuditBuilderTest extends PicsTest {
 		// set up rules
 		addTypeRules((new RuleParameters()).setAuditType(auditType));
 		for (AuditCategory category : auditType.getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(auditType)
-					.setAuditCategory(category));
+			addCategoryRules((new RuleParameters()).setAuditType(auditType).setAuditCategory(category));
 		}
 
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache,
-				contractor);
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(
-				catRuleCache, contractor);
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
 
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
-		assertEquals(1, auditTypes.size());		
+		assertEquals(1, auditTypes.size());
 	}
-	
+
 	@Test
 	public void testAuditTypeBuilderCategoryBuildere() throws Exception {
 		// set up audit type
@@ -173,22 +196,17 @@ public class AuditBuilderTest extends PicsTest {
 		// set up rules
 		addTypeRules((new RuleParameters()).setAuditType(pqfType));
 		for (AuditCategory category : pqfType.getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(pqfType)
-					.setAuditCategory(category));
+			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setAuditCategory(category));
 		}
 
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache,
-				contractor);
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(
-				catRuleCache, contractor);
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
 
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
 		assertEquals(1, auditTypes.size());
 
-		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType,
-				contractor);
-		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit,
-				contractor.getOperatorAccounts());
+		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
+		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit, contractor.getOperatorAccounts());
 		assertEquals(2, categories.size());
 	}
 
@@ -197,35 +215,30 @@ public class AuditBuilderTest extends PicsTest {
 		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
 		WorkflowStep pendingStep = new WorkflowStep();
 		pendingStep.setNewStatus(AuditStatus.Pending);
-		
+
 		Workflow workflow = new Workflow();
 		workflow.getSteps().add(pendingStep);
 		auditType.setWorkFlow(workflow);
-		
-		addTypeRules((new RuleParameters())
-				.setAuditTypeId(auditType.getId()));
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(auditType.getId()));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(auditType);
-		PicsTestUtil.forceSetPrivateField(auditBuilder,
-				"conAuditDao", auditDao);
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(auditType);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "conAuditDao", auditDao);
 		when(auditDao.isNeedsWelcomeCall(anyInt())).thenReturn(true);
 		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(auditType);
-		
+
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
 	}
 
 	@Test
 	public void testBuildAudits_AnnualUpdates() throws Exception {
-		addTypeRules((new RuleParameters())
-				.setAuditTypeId(AuditType.ANNUALADDENDUM));
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.ANNUALADDENDUM));
 		addCategoryRules(null);
 
-		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(
-						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(3, contractor.getAudits().size());
@@ -233,17 +246,14 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_ReviewCompetency() throws Exception {
-		addTypeRules((new RuleParameters())
-				.setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
 		addCategoryRules(null);
 
-		AuditType implementationType = EntityFactory
-				.makeAuditType(AuditType.INTEGRITYMANAGEMENT);
+		AuditType implementationType = EntityFactory.makeAuditType(AuditType.INTEGRITYMANAGEMENT);
 		implementationType.setRenewable(false);
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(implementationType);
-		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(implementationType);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(implementationType);
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(implementationType);
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
@@ -251,8 +261,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_NullData() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
-				AuditType.COR, contractor);
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
@@ -270,11 +279,10 @@ public class AuditBuilderTest extends PicsTest {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
 
-		PicsTestUtil.forceSetPrivateField(auditBuilder,
-				"auditDataDAO", auditDataDao);
-		
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditDataDAO", auditDataDao);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.PQF));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, corAudit.getOperatorsVisible().size());
@@ -282,8 +290,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Cor_Yes() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
-				AuditType.COR, contractor);
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
@@ -292,11 +299,11 @@ public class AuditBuilderTest extends PicsTest {
 
 		AuditData auditData = EntityFactory.makeAuditData("Yes");
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		
+
 		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
 		auditCatData.setCategory(question.getCategory());
 		auditCatData.setApplies(false);
-		
+
 		question.setId(AuditQuestion.COR);
 		auditData.setQuestion(question);
 		pqfAudit.getCategories().add(auditCatData);
@@ -306,8 +313,8 @@ public class AuditBuilderTest extends PicsTest {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.PQF));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, corAudit.getOperatorsVisible().size());
@@ -315,8 +322,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Cor_No() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
-				AuditType.COR, contractor);
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
@@ -338,8 +344,8 @@ public class AuditBuilderTest extends PicsTest {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.PQF));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, corAudit.getOperatorsVisible().size());
@@ -347,8 +353,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Iec_Yes() throws Exception {
-		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
-				AuditType.IEC_AUDIT, contractor);
+		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
@@ -370,29 +375,29 @@ public class AuditBuilderTest extends PicsTest {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.PQF));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
 	}
-	
+
 	@Test
 	public void testWelcomeCallValidity() throws Exception {
 		ContractorAudit audit;
 		Calendar creationDate;
 		Boolean result;
-		
+
 		ContractorAccount con = EntityFactory.makeContractor();
 		audit = EntityFactory.makeContractorAudit(AuditType.WELCOME, con);
-		
+
 		creationDate = Calendar.getInstance();
 		audit.setCreationDate(creationDate.getTime());
 		audit.setExpiresDate(null);
 		result = Whitebox.invokeMethod(auditBuilder, "isValidAudit", audit);
 		assertTrue(result);
 		assertNull(audit.getExpiresDate());
-		
+
 		creationDate = Calendar.getInstance();
 		creationDate.add(Calendar.MONTH, -2);
 		audit.setCreationDate(creationDate.getTime());
@@ -400,13 +405,12 @@ public class AuditBuilderTest extends PicsTest {
 		result = Whitebox.invokeMethod(auditBuilder, "isValidAudit", audit);
 		assertTrue(result);
 		assertNotNull(audit.getExpiresDate());
-		
+
 	}
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Iec__No() throws Exception {
-		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
-				AuditType.IEC_AUDIT, contractor);
+		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
 		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
@@ -428,31 +432,33 @@ public class AuditBuilderTest extends PicsTest {
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
+				EntityFactory.makeAuditType(AuditType.PQF));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
 	}
-	
-	@Test 
+
+	@Test
 	public void testCaoSplit() throws Exception {
 		ContractorAudit conAudit = setupTestAudit();
 		conAudit.getAuditType().setCanOperatorView(true);
 
 		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
-//		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, AuditStatus.Pending);
-//		cao2.setOperator(EntityFactory.makeOperator());
+		// ContractorAuditOperator cao2 =
+		// EntityFactory.makeContractorAuditOperator(conAudit,
+		// AuditStatus.Pending);
+		// cao2.setOperator(EntityFactory.makeOperator());
 		cao1.setId(52);
-		
+
 		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
 		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
-		
+
 		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
 		setupCaoCaop(cao1, caop2, AuditStatus.Complete);
 		caop2.setOperator(EntityFactory.makeOperator());
 		cao1.setStatus(AuditStatus.Approved);
-		
+
 		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
 		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
 		caops.add(cao1.getOperator());
@@ -460,14 +466,14 @@ public class AuditBuilderTest extends PicsTest {
 		caops = new HashSet<OperatorAccount>();
 		caops.add(caop2.getOperator());
 		caoMap.put(caop2.getOperator(), caops);
-		
+
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(2, conAudit.getOperators().size());
-		for (ContractorAuditOperator cao:conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			assertEquals(AuditStatus.Approved, cao.getStatus());
 		}
 	}
-	
+
 	@Test
 	public void testNewOperatorPrevAllComplete() throws Exception {
 		ContractorAudit conAudit = setupTestAudit();
@@ -475,13 +481,13 @@ public class AuditBuilderTest extends PicsTest {
 		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
 		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, AuditStatus.Pending);
 		cao2.setOperator(EntityFactory.makeOperator());
-		
+
 		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
 		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
-		
+
 		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
 		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
-		
+
 		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
 		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
 		caops.add(cao1.getOperator());
@@ -489,14 +495,14 @@ public class AuditBuilderTest extends PicsTest {
 		caops = new HashSet<OperatorAccount>();
 		caops.add(cao2.getOperator());
 		caoMap.put(cao2.getOperator(), caops);
-		
+
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(2, conAudit.getOperators().size());
-		
+
 		Set<AuditCategory> categoriesNeeded = new HashSet<AuditCategory>();
 		categoriesNeeded.addAll(conAudit.getAuditType().getCategories());
 		Whitebox.invokeMethod(auditBuilder, "fillAuditCategories", conAudit, categoriesNeeded);
-		for (AuditCatData catData:conAudit.getCategories()) {
+		for (AuditCatData catData : conAudit.getCategories()) {
 			assertTrue(catData.isApplies());
 		}
 
@@ -528,7 +534,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(3, conAudit.getOperators().size());
-		for (ContractorAuditOperator cao:conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.equals(cao1)) {
 				assertFalse(cao.isVisible());
 			} else if (cao.equals(cao2)) {
@@ -544,37 +550,35 @@ public class AuditBuilderTest extends PicsTest {
 		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
 		WorkflowStep pendingStep = new WorkflowStep();
 		pendingStep.setNewStatus(AuditStatus.Pending);
-		
+
 		Workflow workflow = new Workflow();
 		workflow.getSteps().add(pendingStep);
 		audit.getAuditType().setWorkFlow(workflow);
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -1);
 		audit.setCreationDate(cal.getTime());
-		
+
 		AuditCategory cat1 = EntityFactory.makeAuditCategory(1);
 		AuditCategory cat2 = EntityFactory.makeAuditCategory(2);
-		
+
 		audit.getAuditType().getCategories().add(cat1);
 		audit.getAuditType().getCategories().add(cat2);
-		
+
 		AuditCatData catData1 = EntityFactory.addCategories(audit, 1);
 		AuditCatData catData2 = EntityFactory.addCategories(audit, 2);
-		
+
 		catData1.setNumAnswered(catData1.getNumRequired());
 		catData1.setApplies(true);
 		catData2.setApplies(false);
-		
+
 		audit.getCategories().add(catData1);
 		audit.getCategories().add(catData2);
-		
+
 		return audit;
 	}
 
-	private void setupCaoCaop(ContractorAuditOperator cao,
-			ContractorAuditOperatorPermission caop,
-			AuditStatus status) {
+	private void setupCaoCaop(ContractorAuditOperator cao, ContractorAuditOperatorPermission caop, AuditStatus status) {
 		caop.setCao(cao);
 		caop.setOperator(cao.getOperator());
 		cao.getCaoPermissions().add(caop);
@@ -584,91 +588,90 @@ public class AuditBuilderTest extends PicsTest {
 			cao.setPercentVerified(100);
 		}
 	}
-	
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_NullAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getAuditFor()).thenReturn(null);
-		
+
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_BlankAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getAuditFor()).thenReturn(" ");
-		
+
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
 		assertTrue(result);
 	}
-	
+
 	@Ignore
 	public void testFoundCurrentYearWCB_CurrentYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
-		
+
 		List<ContractorAudit> audits = buildMockAudits();
 		when(contractor.getAudits()).thenReturn(audits);
 		when(audit.getContractorAccount()).thenReturn(contractor);
 		when(audit.getAuditFor()).thenReturn(DateBean.getWCBYear());
 		when(audit.getAuditType()).thenReturn(new AuditType(145));
-		
+
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
 		assertTrue(result);
 	}
-	
+
 	@Ignore
 	public void testFoundCurrentYearWCB_PreviousYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
-		
+
 		when(contractor.getAudits()).thenReturn(null);
 		when(audit.getContractorAccount()).thenReturn(contractor);
 		when(audit.getAuditFor()).thenReturn(DateBean.getWCBYear());
-		
+
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
 		assertFalse(result);
 	}
-	
+
 	@Ignore
 	public void testFindAllWCBAuditYears_NoAudits() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
 		when(contractor.getAudits()).thenReturn(null);
-		
+
 		List<String> result = Whitebox.invokeMethod(auditBuilder, "findAllWCBAuditYears", contractor, audit);
 		assertNotNull(result);
 		assertTrue(result.isEmpty());
 	}
-	
+
 	@Ignore
 	public void testFindAllWCBAuditYears() throws Exception {
 		ContractorAudit wcbAudit = Mockito.mock(ContractorAudit.class);
-		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);		
+		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
 		List<ContractorAudit> audits = buildMockAudits();
 		when(contractor.getAudits()).thenReturn(audits);
 		when(wcbAudit.getAuditType()).thenReturn(new AuditType(145));
-		
+
 		List<String> result = Whitebox.invokeMethod(auditBuilder, "findAllWCBAuditYears", contractor, wcbAudit);
 		assertNotNull(result);
 		assertTrue(result.contains("2011"));
 		assertTrue(result.contains(DateBean.getWCBYear()));
 	}
-	
+
 	private List<ContractorAudit> buildMockAudits() {
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();		
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(buildMockWCBAudit(145, "2011"));
 		audits.add(buildMockWCBAudit(145, DateBean.getWCBYear()));
-		
+
 		return audits;
 	}
-	
+
 	private ContractorAudit buildMockWCBAudit(int auditTypeId, String auditFor) {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getAuditType()).thenReturn(new AuditType(auditTypeId));
 		when(audit.getAuditFor()).thenReturn(auditFor);
-		
+
 		return audit;
 	}
 
@@ -682,7 +685,7 @@ public class AuditBuilderTest extends PicsTest {
 		}
 
 		typeRules.add(rule);
-        Whitebox.invokeMethod(typeRuleCache, "initialize", typeRules);
+		Whitebox.invokeMethod(typeRuleCache, "initialize", typeRules);
 	}
 
 	private void addCategoryRules(RuleParameters params) throws Exception {
@@ -694,7 +697,7 @@ public class AuditBuilderTest extends PicsTest {
 		}
 
 		catRules.add(rule);
-        Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
+		Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
 	}
 
 	private void fillAuditRule(RuleParameters params, AuditRule rule) {
@@ -794,8 +797,7 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setQuestionComparator(
-				QuestionComparator questionComparator) {
+		public RuleParameters setQuestionComparator(QuestionComparator questionComparator) {
 			this.questionComparator = questionComparator;
 			return this;
 		}
@@ -830,8 +832,7 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setDependentAuditStatus(
-				AuditStatus dependentAuditStatus) {
+		public RuleParameters setDependentAuditStatus(AuditStatus dependentAuditStatus) {
 			this.dependentAuditStatus = dependentAuditStatus;
 			return this;
 		}

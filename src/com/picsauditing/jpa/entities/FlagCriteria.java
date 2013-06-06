@@ -13,13 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.jpa.entities.builders.FlagCriteriaBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.jpa.entities.builders.FlagCriteriaBuilder;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -37,8 +38,12 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	private AuditType auditType;
 	private OshaType oshaType;
 	private OshaRateType oshaRateType;
-	private TranslatableString label;
-	private TranslatableString description;
+
+	// private TranslatableString label;
+	// private TranslatableString description;
+	private String label;
+	private String description;
+
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
 	protected AuditStatus requiredStatus = AuditStatus.Complete;
@@ -57,7 +62,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	public static final int EMR_AVERAGE_ID = 506;
 	public static final int ANNUAL_UPDATE_ID = 142;
-	
+
 	public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 
 	@ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
@@ -112,38 +117,39 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	}
 
 	@Transient
-	public TranslatableString getLabel() {
-		return label;
+	public String getLabel() {
+		return new LlewellynTranslatableString(getI18nKey("label")).toTranslatedString();
 	}
 
-	public void setLabel(TranslatableString label) {
+	public void setLabel(String label) {
 		this.label = label;
 	}
 
 	@Transient
-	public TranslatableString getDescription() {
-		return description;
+	public String getDescription() {
+		return new LlewellynTranslatableString(getI18nKey("description")).toTranslatedString();
 	}
 
-	public void setDescription(TranslatableString description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Transient
 	public String getDescriptionBeforeHurdle() {
 		try {
-			return description.toString().substring(0, description.toString().indexOf("{HURDLE}"));
+			return description.substring(0, description.indexOf("{HURDLE}"));
 		} catch (Exception e) {
-			return description.toString();
+			return description;
 		}
 	}
 
 	@Transient
 	public String getDescriptionAfterHurdle() {
 		try {
-			if (description.toString().indexOf("{HURDLE}") < 0)
+			if (description.indexOf("{HURDLE}") < 0) {
 				return null;
-			return description.toString().substring(description.toString().indexOf("{HURDLE}") + 8);
+			}
+			return description.substring(description.indexOf("{HURDLE}") + 8);
 		} catch (Exception e) {
 			return null;
 		}
@@ -257,15 +263,18 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	 * @return the question ID if this criteria should include
 	 */
 	public Integer includeExcess() {
-		if (!insurance || optionCode == null)
+		if (!insurance || optionCode == null) {
 			return null;
+		}
 
 		// We should consider putting this into the DB eventually
-		if (optionCode == FlagCriteriaOptionCode.ExcessAggregate)
+		if (optionCode == FlagCriteriaOptionCode.ExcessAggregate) {
 			return AuditQuestion.EXCESS_AGGREGATE;
+		}
 
-		if (optionCode == FlagCriteriaOptionCode.ExcessEachOccurrence)
+		if (optionCode == FlagCriteriaOptionCode.ExcessEachOccurrence) {
 			return AuditQuestion.EXCESS_EACH;
+		}
 
 		return null;
 	}
@@ -312,7 +321,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		return getLanguages().isEmpty();
 	}
 
-    public static FlagCriteriaBuilder builder() {
-        return new FlagCriteriaBuilder();
-    }
+	public static FlagCriteriaBuilder builder() {
+		return new FlagCriteriaBuilder();
+	}
 }

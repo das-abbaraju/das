@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
+
 @Entity
 @Table(name = "workflow_step")
 @SuppressWarnings("serial")
@@ -18,8 +20,10 @@ public class WorkflowStep extends BaseTable {
 	private AuditStatus newStatus;
 	private EmailTemplate emailTemplate;
 	private boolean noteRequired = false;
-	private TranslatableString name;
-	private TranslatableString helpText;
+	// private TranslatableString name;
+	// private TranslatableString helpText;
+	private String name;
+	private String helpText;
 
 	@ManyToOne
 	@JoinColumn(name = "workflowID", nullable = false)
@@ -59,11 +63,11 @@ public class WorkflowStep extends BaseTable {
 	public void setEmailTemplate(EmailTemplate emailTemplate) {
 		this.emailTemplate = emailTemplate;
 	}
-	
+
 	public boolean isNoteRequired() {
 		return noteRequired;
 	}
-	
+
 	public void setNoteRequired(boolean noteRequired) {
 		this.noteRequired = noteRequired;
 	}
@@ -76,26 +80,27 @@ public class WorkflowStep extends BaseTable {
 	@Transient
 	public String getButtonHelpText() {
 		String text = helpText.toString();
-		if (text == null || text.startsWith(getClass().getSimpleName()))
+		if (text == null || text.startsWith(getClass().getSimpleName())) {
 			text = "";
+		}
 		return text;
 	}
 
 	@Transient
-	public TranslatableString getName() {
-		return name;
+	public String getName() {
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Transient
-	public TranslatableString getHelpText() {
+	public String getHelpText() {
 		return helpText;
 	}
 
-	public void setHelpText(TranslatableString helpText) {
+	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
 }

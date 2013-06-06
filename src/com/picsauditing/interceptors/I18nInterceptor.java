@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.model.i18n.ThreadLocalLocale;
 
 @SuppressWarnings("serial")
 public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInterceptor {
@@ -29,16 +30,23 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 			Locale locale = permissions.getLocale();
 			saveLocale(invocation, locale);
 			result = invocation.invoke();
-			if (!locale.equals(cookieLocale))
+			if (!locale.equals(cookieLocale)) {
 				setLocaleToCookie(locale);
+			}
+
+			setThreadLocalLocale(locale);
 		} else if (paramLocale != null) {
 			saveLocale(invocation, paramLocale);
 			result = invocation.invoke();
-			if (!paramLocale.equals(cookieLocale))
+			if (!paramLocale.equals(cookieLocale)) {
 				setLocaleToCookie(paramLocale);
+			}
+
+			setThreadLocalLocale(paramLocale);
 		} else if (cookieLocale != null) {
 			saveLocale(invocation, cookieLocale);
 			result = invocation.invoke();
+			setThreadLocalLocale(cookieLocale);
 		} else {
 			result = super.intercept(invocation);
 		}
@@ -49,8 +57,9 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 	private Locale getLocaleFromParams(ActionInvocation invocation) {
 		Map<String, Object> params = invocation.getInvocationContext().getParameters();
 		Object requested_locale = params.remove(parameterName);
-		if (requested_locale == null)
+		if (requested_locale == null) {
 			return null;
+		}
 		if (requested_locale.getClass().isArray()) {
 			requested_locale = ((Object[]) requested_locale)[0];
 		}
@@ -60,12 +69,14 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 
 	private Locale getLocaleFromCookie() {
 		Cookie[] cookies = ServletActionContext.getRequest().getCookies();
-		if (cookies == null)
+		if (cookies == null) {
 			return null;
+		}
 
 		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals(COOKIE_NAME))
+			if (cookie.getName().equals(COOKIE_NAME)) {
 				return LocalizedTextUtil.localeFromString(cookie.getValue(), null);
+			}
 		}
 		return null;
 	}
@@ -74,5 +85,9 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 		Cookie cookie = new Cookie(COOKIE_NAME, locale.toString());
 		cookie.setMaxAge(3600 * 24 * 365); // One Year
 		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private void setThreadLocalLocale(Locale locale) {
+		ThreadLocalLocale.INSTANCE.set(locale);
 	}
 }

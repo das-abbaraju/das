@@ -1,9 +1,16 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeCountryDAO;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.RecordNotFoundException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
@@ -13,21 +20,28 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeCountryDAO;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceFeeCountry;
+import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class InvoiceServiceTest {
 
 	private InvoiceService invoiceService = new InvoiceService();
-	@Mock private TaxService taxService = new TaxService();
-	@Mock private InvoiceDAO invoiceDAO = new InvoiceDAO();
-	@Mock private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
-	@Mock private Invoice invoice;
+	@Mock
+	private TaxService taxService = new TaxService();
+	@Mock
+	private InvoiceDAO invoiceDAO = new InvoiceDAO();
+	@Mock
+	private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
+	@Mock
+	private Invoice invoice;
 
 	@Before
 	public void setUp() throws Exception {
@@ -36,11 +50,13 @@ public class InvoiceServiceTest {
 		Whitebox.setInternalState(invoiceService, "invoiceDAO", invoiceDAO);
 		Whitebox.setInternalState(invoiceService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
 		setupInvoiceFeeCountries();
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		resetNowTime();
+		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
 	@Test
@@ -93,7 +109,7 @@ public class InvoiceServiceTest {
 
 		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
 
-		assertEquals("Foo", taxInvoiceFee.getFee().getKey());
+		assertEquals("Translate[InvoiceFee.0.fee=>null]", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
@@ -108,14 +124,13 @@ public class InvoiceServiceTest {
 
 		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
 
-		assertEquals("Foo", taxInvoiceFee.getFee().getKey());
+		assertEquals("Translate[InvoiceFee.0.fee=>null]", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
 		assertEquals(new BigDecimal(7.5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
 		assertEquals("qbFoo", taxInvoiceFee.getQbFullName());
 		assertEquals(DateBean.parseDate("2013-04-01"), taxInvoiceFee.getSubdivisionFee().getEffectiveDate());
 	}
-
 
 	@Test(expected = RecordNotFoundException.class)
 	public void testGetCanadianTaxInvoiceFeeForProvince() throws Exception {
@@ -141,11 +156,13 @@ public class InvoiceServiceTest {
 		invoiceFee.setInvoiceFeeCountries(invoiceFeeCountries);
 
 		CountrySubdivision alberta = new CountrySubdivision("CA-AB");
-		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(invoiceFeeCountriesForAlberta);
+		when(invoiceFeeCountryDAO.findAllInvoiceFeeCountry(eq(FeeClass.CanadianTax), eq(alberta))).thenReturn(
+				invoiceFeeCountriesForAlberta);
 
 	}
 
-	private InvoiceFeeCountry createInvoiceFeeCountry(String isoCode, double subdivisionRate, String effectiveDate, InvoiceFee invoiceFee) {
+	private InvoiceFeeCountry createInvoiceFeeCountry(String isoCode, double subdivisionRate, String effectiveDate,
+			InvoiceFee invoiceFee) {
 		InvoiceFeeCountry invoiceFeeCountry = new InvoiceFeeCountry();
 		invoiceFeeCountry.setSubdivision(new CountrySubdivision(isoCode));
 		invoiceFeeCountry.setRatePercent(new BigDecimal(subdivisionRate));
@@ -156,9 +173,9 @@ public class InvoiceServiceTest {
 
 	private InvoiceFee createTaxInvoiceFee(String feeName, double invoiceFeeRate, FeeClass feeClass) {
 		InvoiceFee invoiceFee = new InvoiceFee();
-		TranslatableString fee = new TranslatableString();
-		fee.setKey(feeName);
-		invoiceFee.setFee(fee);
+		// TranslatableString fee = new TranslatableString();
+		// fee.setKey(feeName);
+		invoiceFee.setFee(feeName);
 		invoiceFee.setRatePercent(new BigDecimal(invoiceFeeRate));
 		invoiceFee.setFeeClass(feeClass);
 		invoiceFee.setQbFullName("qb" + feeName);
