@@ -38,6 +38,15 @@ Ext.application({
     },
 
     launch: function () {
+
+        // IE8's console does not display properties of a returned object (e.g., getters)
+        PICS = Ext.merge(PICS, {
+            _stack_trace: [],
+            createStackTrace: function () {
+                PICS._stack_trace = arguments.callee.caller.trace();
+            }
+        });
+
         Ext.apply(PICS, {
             updateDocumentTitle: this.updateDocumentTitle
         });

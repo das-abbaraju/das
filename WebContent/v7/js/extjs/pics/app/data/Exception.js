@@ -8,7 +8,7 @@ Ext.define('PICS.data.Exception', {
             },
             404: {
                 title: PICS.text('Report.execute.404.title'),
-                message: PICS.text('Report.execute.404.message') 
+                message: PICS.text('Report.execute.404.message')
             },
             500: {
                 title: PICS.text('Report.execute.500.title'),
@@ -20,8 +20,6 @@ Ext.define('PICS.data.Exception', {
             title: PICS.text('Report.execute.unknownError.title'),
             message: PICS.text('Report.execute.unknownError.message')
         };
-
-        var stack_trace = [];
 
         function getErrorFromStatusCode(code) {
             return error_codes[code] || getErrorFromUnknownStatusCode(code);
@@ -43,10 +41,10 @@ Ext.define('PICS.data.Exception', {
                     title = json.title,
                     message = json.message;
                 
-                createStackTrace();
+                PICS.createStackTrace();
                 showException(title, message, callback);
             } catch (e) {
-                createStackTrace();
+                PICS.createStackTrace();
                 showException('Exception', e.msg, callback);
             }
         }
@@ -57,12 +55,12 @@ Ext.define('PICS.data.Exception', {
                 title = error.title,
                 message = error.message;
 
-            createStackTrace();
+            PICS.createStackTrace();
             showException(title, message, callback);
         }
 
         function handleUnknown2xxException(response, callback) {
-            createStackTrace();
+            PICS.createStackTrace();
             showException(unknown_error.title, unknown_error.message);
         }
 
@@ -104,10 +102,6 @@ Ext.define('PICS.data.Exception', {
             return false;
         }
 
-        function createStackTrace() {
-            stack_trace = arguments.callee.caller.trace();
-        }
-
         function showException(title, message, callback) {
             var exception = Ext.create('PICS.view.report.alert.Error', {
                 title: title,
@@ -120,9 +114,6 @@ Ext.define('PICS.data.Exception', {
         }
         
         return {
-            getStackTrace: function() {
-                return stack_trace;
-            },
             getUnknownError: function () {
                 return unknown_error;
             },
