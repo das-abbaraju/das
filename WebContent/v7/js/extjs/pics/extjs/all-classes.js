@@ -66056,7 +66056,7 @@ Ext.define('PICS.data.Exception', {
 
         function isSuccessWithEmptyResponse(response) {
             if (typeof response.status != 'undefined' && typeof response.responseText != 'undefined') {
-                return response.status.toString()[0] == '2' && response.responseText == '';
+                return response.status.toString().charAt(0) == '2' && response.responseText == '';
             } else {
                 return false;
             }
@@ -66076,7 +66076,7 @@ Ext.define('PICS.data.Exception', {
         }
 
         function hasNon2xxException(response) {
-            return response && response.status.toString()[0] != '2';
+            return response && response.status.toString().charAt(0) != '2';
         }
 
         function hasUnknown2xxException(response) {
@@ -66086,7 +66086,7 @@ Ext.define('PICS.data.Exception', {
             try {
                 json = Ext.JSON.decode(response_text);
             } catch (e) {
-                return response.status && response.status.toString()[0] == '2';
+                return response.status && response.status.toString().charAt(0) == '2';
             }
             
             return false;
