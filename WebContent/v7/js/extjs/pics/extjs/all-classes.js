@@ -66025,16 +66025,16 @@ Ext.define('PICS.data.Exception', {
 
         function handleKnown2xxException(response, callback) {
             var response_text = response.responseText;
-            
+
+            PICS.createStackTrace();
+
             try {
                 var json = Ext.JSON.decode(response_text),
                     title = json.title,
                     message = json.message;
                 
-                PICS.createStackTrace();
                 showException(title, message, callback);
             } catch (e) {
-                PICS.createStackTrace();
                 showException('Exception', e.msg, callback);
             }
         }
@@ -66056,7 +66056,7 @@ Ext.define('PICS.data.Exception', {
 
         function isSuccessWithEmptyResponse(response) {
             if (typeof response.status != 'undefined' && typeof response.responseText != 'undefined') {
-                return response.status.toString()[0] == '2' && response.responseText == '';                
+                return response.status.toString()[0] == '2' && response.responseText == '';
             } else {
                 return false;
             }

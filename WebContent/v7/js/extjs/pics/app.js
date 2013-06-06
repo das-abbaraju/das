@@ -39,11 +39,16 @@ Ext.application({
 
     launch: function () {
 
-        // IE8's console does not display properties of a returned object (e.g., getters)
+        // Attached to PICS global b/c IE8's console does not display properties of a returned object (e.g., from ExtJS's class getters)
         PICS = Ext.merge(PICS, {
-            _stack_trace: [],
+            _stack_trace: [], // Cannot make it truly private for same reason as above
+
             createStackTrace: function () {
-                PICS._stack_trace = arguments.callee.caller.trace();
+                this._stack_trace = arguments.callee.caller.trace();
+            },
+
+            getStackTrace: function () {
+                return this._stack_trace;
             }
         });
 
