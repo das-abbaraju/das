@@ -66011,6 +66011,8 @@ Ext.define('PICS.data.Exception', {
             message: PICS.text('Report.execute.unknownError.message')
         };
 
+        var stack_trace = [];
+
         function getErrorFromStatusCode(code) {
             return error_codes[code] || getErrorFromUnknownStatusCode(code);
         }
@@ -66031,8 +66033,10 @@ Ext.define('PICS.data.Exception', {
                     title = json.title,
                     message = json.message;
                 
+                createStackTrace();
                 showException(title, message, callback);
             } catch (e) {
+                createStackTrace();
                 showException('Exception', e.msg, callback);
             }
         }
@@ -66042,11 +66046,13 @@ Ext.define('PICS.data.Exception', {
                 error = getErrorFromStatusCode(status_code),
                 title = error.title,
                 message = error.message;
-            
+
+            createStackTrace();
             showException(title, message, callback);
         }
 
         function handleUnknown2xxException(response, callback) {
+            createStackTrace();
             showException(unknown_error.title, unknown_error.message);
         }
 
@@ -66087,7 +66093,11 @@ Ext.define('PICS.data.Exception', {
             
             return false;
         }
-        
+
+        function createStackTrace() {
+            stack_trace = arguments.callee.caller.trace();
+        }
+
         function showException(title, message, callback) {
             var exception = Ext.create('PICS.view.report.alert.Error', {
                 title: title,
@@ -66100,6 +66110,9 @@ Ext.define('PICS.data.Exception', {
         }
         
         return {
+            getStackTrace: function() {
+                return stack_trace;
+            },
             getUnknownError: function () {
                 return unknown_error;
             },
