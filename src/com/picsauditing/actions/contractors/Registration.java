@@ -343,8 +343,10 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
-		contractor.setQbSync(true);
-        contractor.setSapSync(true);
+        if (!contractor.isDemo()) {
+            contractor.setQbSync(true);
+            contractor.setSapSync(true);
+        }
 
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");

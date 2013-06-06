@@ -169,8 +169,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			addNoteWhenStatusChange();
 			// auditBuilder.buildAudits(contractor);
-			contractor.setQbSync(true);
-            contractor.setSapSync(true);
+            if (!contractor.isDemo()) {
+                contractor.setQbSync(true);
+                contractor.setSapSync(true);
+            }
 
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();
