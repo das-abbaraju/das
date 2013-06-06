@@ -463,7 +463,7 @@ public final class MenuBuilder {
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
-						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+				.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 
@@ -504,12 +504,9 @@ public final class MenuBuilder {
 		}
 
 		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
+		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action", "navigation_restructure");
 		referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
 		referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
-		/*
-		 * referenceMenu.addChild("Navigation Restructure",
-		 * "Reference!navigationRestructure.action", "navigation_restructure");
-		 */
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
