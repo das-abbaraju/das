@@ -32,7 +32,7 @@ public class ContractorFlagDataModel extends AbstractModel {
 
 		ModelSpec coOperator = contractorOperator.join(ContractorOperatorTable.Operator);
 		coOperator.alias = "ContractorOperatorOperator";
-		coOperator.minimumImportance = FieldImportance.Required;
+		coOperator.minimumImportance = FieldImportance.Average;
 
 		ModelSpec operator = coOperator.join(AccountTable.Operator);
 		operator.alias = "Operator";
@@ -47,7 +47,7 @@ public class ContractorFlagDataModel extends AbstractModel {
 
 		ModelSpec contractor = spec.join(FlagDataTable.Contractor);
 		contractor.alias = "Account";
-		contractor.minimumImportance = FieldImportance.Required;
+		contractor.minimumImportance = FieldImportance.Average;
 
 		ModelSpec override = spec.join(FlagDataTable.Override);
 		override.minimumImportance = FieldImportance.Required;
