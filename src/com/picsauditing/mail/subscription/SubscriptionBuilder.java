@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.jpa.entities.UserAccountRole;
@@ -30,22 +32,33 @@ public abstract class SubscriptionBuilder {
 	@Autowired
 	private FeatureToggle featureToggleChecker;
 
-	public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException {
-		Map<String, Object> tokens = process(subscription);
-		EmailQueue queue = buildEmail(subscription, tokens);
+    final static Logger logger = LoggerFactory.getLogger(SubscriptionBuilder.class);
 
-		if (queue != null) {
-			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
-				sender.publishSubscription(queue);
-			} else {
-				sender.sendNow(queue);
-			}
-		}
 
-		subscription.setLastSent(new Date());
-		subscriptionDAO.save(subscription);
-		tokens.clear();
-	}
+    public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException {
+        Map<String, Object> tokens = process(subscription);
+        EmailQueue queue = buildEmail(subscription, tokens);
+
+        if (queue != null) {
+            if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
+                sender.publishSubscription(queue);
+            } else {
+                sender.sendNow(queue);
+            }
+
+            subscription.setLastSent(new Date());
+        } else {
+            logger.error("SubscriptionBuilder.buildEmail returned null: " +
+                    subscription.getSubscription().toString() +
+                    " Subscription for " +
+                    subscription.getUser().getName() + "(" + subscription.getUser().getId() + ")" +
+                    " at " + subscription.getUser().getAccount().getName() + "(" + subscription.getUser().getAccount().getId() + ")"
+            );
+        }
+
+        subscriptionDAO.save(subscription);
+        tokens.clear();
+    }
 
 	protected abstract Map<String, Object> process(EmailSubscription subscription) throws IOException;
 
