@@ -134,7 +134,11 @@ public class BillingCalculatorSingle {
 	}
 
 	public void calculateContractorInvoiceFees(ContractorAccount contractor) {
-		if (contractor.getStatus().isRequested()) {
+		calculateContractorInvoiceFees(contractor, true);
+	}
+
+	public void calculateContractorInvoiceFees(ContractorAccount contractor, boolean skipRequested) {
+		if (skipRequested && contractor.getStatus().isRequested()) {
 			return;
 		}
 
@@ -667,7 +671,7 @@ public class BillingCalculatorSingle {
 	}
 
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
-		if (contractor.getStatus().isPendingOrDeactivated() && invoice.getStatus().isPaid()) {
+		if (contractor.getStatus().isPendingRequestedOrDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
