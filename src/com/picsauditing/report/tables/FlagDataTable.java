@@ -18,7 +18,7 @@ public class FlagDataTable extends AbstractTable {
 		super("flag_data");
 		addFields(FlagData.class);
 
-        Field lastModified = new Field("LastModified","updateDate", FieldType.Date);
+        Field lastModified = new Field("UpdateDate","updateDate", FieldType.Date);
         lastModified.setImportance(FieldImportance.Required);
         lastModified.setCategory(FieldCategory.CompanyStatistics);
         addField(lastModified);
