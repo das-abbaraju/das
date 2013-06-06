@@ -329,9 +329,6 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void setSlaManualAudit(ContractorAccount contractor) {
-		if (contractor.getBalance().compareTo(BigDecimal.ZERO) != 0)
-			return;
-
 		Date beginDate = pqfAndSafetyManualSlaStartDate(contractor);
 		if (beginDate == null)
 			return;
@@ -412,7 +409,6 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private Date findMaxCompleteDate(ContractorAudit audit) {
-		audit.hasCaoStatus(AuditStatus.Complete);
 		Date completeDate = null;
 		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getStatus().equals(AuditStatus.Complete)) {

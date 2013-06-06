@@ -71,20 +71,13 @@ public class ContractorCronTest extends PicsActionTest {
 		contractor.getAudits().add(audit);
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
 
-		// pending balance
-		audit.setSlaDate(null);
-		contractor.setBalance(new BigDecimal(2));
-		pqfCao.changeStatus(AuditStatus.Pending, null);
-		cao.changeStatus(AuditStatus.Pending, null);
-		data.setAnswer("");
-		data.setDateVerified(null);
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() == null);
-
 		// pqf pending
 		audit.setSlaDate(null);
 		contractor.setBalance(BigDecimal.ZERO);
 		pqfCao.changeStatus(AuditStatus.Pending, null);
+		cao.changeStatus(AuditStatus.Pending, null);
+		data.setAnswer("");
+		data.setDateVerified(null);
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
