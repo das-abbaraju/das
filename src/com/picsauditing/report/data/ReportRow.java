@@ -1,9 +1,6 @@
 package com.picsauditing.report.data;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
@@ -14,7 +11,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 
 public class ReportRow {
-	private Map<Column, ReportCell> cells = new HashMap<Column, ReportCell>();
+	private Map<Column, ReportCell> cells = new LinkedHashMap<Column, ReportCell>();
 
 	public ReportRow(Collection<Column> columns, BasicDynaBean dynaBean) {
 		for (Column column : columns) {

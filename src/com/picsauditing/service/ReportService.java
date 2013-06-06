@@ -301,7 +301,48 @@ public class ReportService {
 		return converter.getReportResults();
 	}
 
-	private boolean shouldIncludeSql(Permissions permissions) {
+    public JSONObject buildReportResultsForChart(ReportContext reportContext, Report report)
+            throws ReportValidationException, PicsSqlException {
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
+
+        JSONObject responseJson = new JSONObject();
+
+        responseJson.put("chartType","Flags");
+
+        JSONObject dataJson = new JSONObject();
+
+
+        // get columns for chart
+        dataJson.put("cols", createChartColumns(report.getColumns()));
+
+        // get rows for chart
+        ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+        converter.setLocale(reportContext.permissions.getLocale());
+        dataJson.put("rows", converter.convertForChart());
+
+        responseJson.put("data",dataJson);
+
+        return responseJson;
+    }
+
+    private JSONArray createChartColumns(List<Column> columns) {
+        JSONArray columnCollection = new JSONArray();
+
+        for (Column col : columns) {
+            JSONObject columnJson = new JSONObject();
+            columnJson.put("id",col.getId());
+            columnJson.put("label",col.getField().getText());
+            columnJson.put("pattern","");
+            columnJson.put("type",col.getField().getType().toString());
+
+            columnCollection.add(columnJson);
+        }
+
+        return columnCollection;
+    }
+
+    private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 

@@ -8,6 +8,8 @@ import java.util.Date;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,26 @@ public class ReportDataConverter {
 		}
 	}
 
-	private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
+    public JSONArray convertForChart() {
+        JSONArray dataJson = new JSONArray();
+        for (ReportRow row : reportResults.getRows()) {
+            JSONObject rowColumnJson = new JSONObject();
+            JSONArray rowJson = new JSONArray();
+            for (ReportCell cell : row.getCells()) {
+                JSONObject cellJson = new JSONObject();
+                cellJson.put("v",cell.getValue().toString());
+                cellJson.put("f",null);
+
+                rowJson.add(cellJson);
+            }
+            rowColumnJson.put("c",rowJson);
+            dataJson.add(rowColumnJson);
+        }
+
+        return dataJson;
+    }
+
+    private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
 		Object value = cell.getValue();
 		if (value == null) {
 			return null;
