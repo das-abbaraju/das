@@ -331,10 +331,15 @@ public class ReportService {
 
         for (Column col : columns) {
             JSONObject columnJson = new JSONObject();
+            String type = col.getField().getType().toString();
+            if (type.equals("FlagColor")) {
+                type = "string";
+            }
+
             columnJson.put("id",col.getId());
             columnJson.put("label",col.getField().getText());
             columnJson.put("pattern","");
-            columnJson.put("type",col.getField().getType().toString());
+            columnJson.put("type",type);
 
             columnCollection.add(columnJson);
         }

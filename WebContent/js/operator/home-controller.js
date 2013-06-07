@@ -11,10 +11,11 @@
                             widget_id = $chart_container.data('widget-id');
 
                         PICS.ajax({
-                            url: 'js/operator/charts.json',
+                            url: 'ReportApi!chart.action',
                             data: {
-                                widgetID: widget_id
+                                widgetId: widget_id
                             },
+                            type: 'GET',
                             dataType: 'json',
                             success: function(data, textStatus, jqXHR) {
                                 var chart_data = data.data,
@@ -36,7 +37,7 @@
 
             getChartOptions: function (type) {
                 switch (type) {
-                    case 'flags':
+                    case 'Flags':
                         return {
                             width: 400,
                             height: 300,
