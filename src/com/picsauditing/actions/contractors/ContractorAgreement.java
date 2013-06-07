@@ -9,14 +9,21 @@ import com.picsauditing.model.i18n.LanguageModel;
 
 @SuppressWarnings("serial")
 public class ContractorAgreement extends ContractorActionSupport {
-	Locale request_locale = LanguageModel.ENGLISH;
+
+	private Locale request_locale;
 
 	@Anonymous
 	public String execute() throws Exception {
-		if (permissions == null)
+		if (permissions == null) {
 			loadPermissions();
-		if (request_locale != null)
+		}
+
+		if (request_locale != null) {
 			permissions.setLocale(request_locale);
+		} else if (request_locale == null && permissions.getLocale() == null) {
+			// this case should never happen, but leaving it just in case
+			permissions.setLocale(LanguageModel.ENGLISH);
+		}
 
 		return SUCCESS;
 	}
@@ -25,7 +32,7 @@ public class ContractorAgreement extends ContractorActionSupport {
 		if (!permissions.isAdmin()
 				&& (permissions.hasPermission(OpPerms.ContractorAdmin)
 						|| permissions.hasPermission(OpPerms.ContractorBilling) || permissions
-						.hasPermission(OpPerms.ContractorSafety))) {
+							.hasPermission(OpPerms.ContractorSafety))) {
 			contractor.setAgreementDate(new Date());
 			contractor.setAgreedBy(getUser());
 			contractorAccountDao.save(contractor);
@@ -35,11 +42,10 @@ public class ContractorAgreement extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	@Anonymous
-	public String print()
-	{
-	    return "print";
+	public String print() {
+		return "print";
 	}
 
 	public Locale getRequest_locale() {
