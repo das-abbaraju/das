@@ -75,7 +75,8 @@
                     colors: colors,
                     is3D: true,
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        alignment: 'center'
                     }
                 };
             }
