@@ -17,11 +17,14 @@
                             },
                             type: 'GET',
                             dataType: 'json',
-                            success: function(data, textStatus, jqXHR) {
-                                var chart_data = data.data,
-                                    chart_options = that.getChartOptions(data.type);
+                            success: function(response, textStatus, jqXHR) {
+                                var chart_data = response.data,
+                                    chart_options;
 
-                                that.createChart(chart_container, chart_data, chart_options);
+                                if (chart_data) {
+                                    chart_options = that.getChartOptions(response);
+                                    that.createChart(chart_container, chart_data, chart_options);
+                                }
                             }
                         });
                     });
@@ -35,23 +38,46 @@
                 chart.draw(data_table, options);
             },
 
-            getChartOptions: function (type) {
-                switch (type) {
+            getChartOptions: function (response) {
+                var chart_type = response.type,
+                    chart_data = response.data;
+
+                switch (chart_type) {
                     case 'Flags':
-                        return {
-                            width: 400,
-                            height: 300,
-                            colors: [
-                                '#3F9F0F',
-                                '#FFCF3F',
-                                '#CF0F0F'
-                            ],
-                            is3D: true,
-                            legend: {
-                                position: 'top'
-                            }
-                        };
+                        return this.getFlagsOptions(chart_data);
                 }
+            },
+
+            getFlagsOptions: function(chart_data) {
+                var column_names = [],
+                    colors = [],
+                    rows = chart_data.rows,
+                    cell;
+
+                // Extract the column names out of the data
+                $.each(rows, function(index, row) {
+                    cell = row.c,
+                    cell_column = cell[0],
+                    column_name = cell_column.v;
+
+                    column_names.push(column_name);
+                });
+
+                // Assign colors to their corresponding column names
+                colors[column_names.indexOf('Clear')] = '#FFF';
+                colors[column_names.indexOf('Red')] = '#CF0F0F';
+                colors[column_names.indexOf('Amber')] = '#FFCF3F';
+                colors[column_names.indexOf('Green')] = '#3F9F0F';
+
+                return {
+                    width: 400,
+                    height: 300,
+                    colors: colors,
+                    is3D: true,
+                    legend: {
+                        position: 'top'
+                    }
+                };
             }
         }
     });

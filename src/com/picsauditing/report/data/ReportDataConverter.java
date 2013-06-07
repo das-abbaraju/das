@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -49,6 +50,7 @@ public class ReportDataConverter {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public JSONArray convertForChart() {
 		JSONArray dataJson = new JSONArray();
 		for (ReportRow row : reportResults.getRows()) {
@@ -56,12 +58,31 @@ public class ReportDataConverter {
 			JSONArray rowJson = new JSONArray();
 			for (ReportCell cell : row.getCells()) {
 				JSONObject cellJson = new JSONObject();
+				String formattedValueForDisplay = null;
 				if (cell.getColumn().getField().getType() == FieldType.AccountID) {
 					cellJson.put("v", cell.getValue());
+
+					// FIXME: There is a very big problem here because we are
+					// not properly translating!!!
+				} else if (cell.getColumn().getField().getFieldClass().equals(FlagColor.class)) {
+					String value = null;
+					try {
+						FlagColor flagColor = FlagColor.valueOf(cell.getValue().toString());
+						if (flagColor == null) {
+							flagColor = FlagColor.Clear;
+						}
+						value = getText(flagColor.getI18nKey(), locale);
+					} catch (Exception e) {
+						logger.error("Error translating flag color.");
+					}
+
+					cellJson.put("v", cell.getValue().toString());
+					formattedValueForDisplay = value;
 				} else {
 					cellJson.put("v", cell.getValue().toString());
 				}
-				cellJson.put("f", null);
+
+				cellJson.put("f", formattedValueForDisplay);
 
 				rowJson.add(cellJson);
 			}
