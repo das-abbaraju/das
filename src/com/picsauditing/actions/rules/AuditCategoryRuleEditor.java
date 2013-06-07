@@ -1,8 +1,12 @@
 package com.picsauditing.actions.rules;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -15,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {
 
 	protected Integer ruleAuditCategoryId;
+	protected Integer ruleDependentAuditTypeId;
 
 	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
@@ -43,6 +48,24 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	@Override
 	public boolean isAuditTypeRule() {
 		return false;
+	}
+
+	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {
+		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
+
+		AuditType auditType;
+
+		if (getParameter("audit_id") > 0)
+			auditType = auditTypeDAO.find(getParameter("audit_id"));
+		else {
+			auditType = rule.getDependentAuditType();
+		}
+		if (auditType == null)
+			return set;
+		for (WorkflowStep step : auditType.getWorkFlow().getSteps())
+			set.add(step.getNewStatus());
+
+		return set;
 	}
 
 	@Override
@@ -119,6 +142,16 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			rule.setAuditCategory(auditCategoryDAO.find(ruleAuditCategoryId));
 		} else
 			rule.setAuditCategory(null);
+		if (ruleDependentAuditTypeId != null) {
+			rule.setDependentAuditType(auditTypeDAO.find(ruleDependentAuditTypeId));
+		} else {
+			rule.setDependentAuditType(null);
+			rule.setDependentAuditStatus(null);
+		}
+	}
+
+	public String dependentAuditStatusSelect() {
+		return "dependentAuditStatusSelect";
 	}
 
 	public AuditCategoryRule getRule() {
@@ -145,5 +178,13 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	public void setRuleAuditCategoryId(Integer ruleAuditCategoryId) {
 		this.ruleAuditCategoryId = ruleAuditCategoryId;
+	}
+
+	public Integer getRuleDependentAuditTypeId() {
+		return ruleDependentAuditTypeId;
+	}
+
+	public void setRuleDependentAuditTypeId(Integer ruleDependentAuditTypeId) {
+		this.ruleDependentAuditTypeId = ruleDependentAuditTypeId;
 	}
 }

@@ -49,13 +49,11 @@
 				<td>
 					Trade
 				</td>
-				<s:if test="!categoryRule">
-					<td colspan="2">
-						Dependency
-					</td>
-				</s:if>
-				
-				<td style="max-width: 200px">
+                <td colspan="2">
+                    Dependency
+                </td>
+
+                <td style="max-width: 200px">
 					Question
 				</td>
 			</tr>
@@ -119,16 +117,14 @@
 							*
 						</s:else>
 					</td>
-					<s:if test="!categoryRule">
-						<td>
-							<s:property value="get('dependentAuditType')"/>
-						</td>
-						<td>
-							<s:property value="get('dependentAuditStatus')"/>
-						</td>
-					</s:if>
-					
-					<td>
+                    <td>
+                        <s:property value="get('dependentAuditType')"/>
+                    </td>
+                    <td>
+                        <s:property value="get('dependentAuditStatus')"/>
+                    </td>
+
+                    <td>
 						<s:property value="get('question')"/>
 					</td>
 				</tr>

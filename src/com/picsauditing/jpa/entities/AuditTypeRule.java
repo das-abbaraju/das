@@ -16,38 +16,7 @@ import javax.persistence.Transient;
 @Table(name = "audit_type_rule")
 public class AuditTypeRule extends AuditRule {
 
-	private AuditType dependentAuditType;
-	private AuditStatus dependentAuditStatus;
 	private boolean manuallyAdded = false;
-
-	@ManyToOne
-	@JoinColumn(name = "dependentAuditTypeID")
-	public AuditType getDependentAuditType() {
-		return dependentAuditType;
-	}
-
-	@Transient
-	public String getDependentAuditTypeLabel() {
-		return dependentAuditType == null ? "*" : dependentAuditType.toString();
-	}
-
-	public void setDependentAuditType(AuditType dependentAuditType) {
-		this.dependentAuditType = dependentAuditType;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public AuditStatus getDependentAuditStatus() {
-		return dependentAuditStatus;
-	}
-
-	@Transient
-	public String getDependentAuditStatusLabel() {
-		return dependentAuditStatus == null ? "*" : dependentAuditStatus.toString();
-	}
-
-	public void setDependentAuditStatus(AuditStatus dependentAuditStatus) {
-		this.dependentAuditStatus = dependentAuditStatus;
-	}
 
 	public boolean isManuallyAdded() {
 		return manuallyAdded;
@@ -59,8 +28,6 @@ public class AuditTypeRule extends AuditRule {
 
 	public void update(AuditRule source) {
 		super.update(source);
-		dependentAuditType = ((AuditTypeRule) source).dependentAuditType;
-		dependentAuditStatus = ((AuditTypeRule) source).dependentAuditStatus;
 		manuallyAdded = ((AuditTypeRule) source).manuallyAdded;
 	}
 

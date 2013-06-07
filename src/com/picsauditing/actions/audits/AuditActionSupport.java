@@ -299,6 +299,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// operator and corporate can also perform any action if they have
 		// permission
 		if (permissions.isOperatorCorporate()) {
+			if (type.getWorkFlow().isUseStateForEdit()) {
+				AuditEditModel model = new AuditEditModel();
+				return model.canEdit(conAudit, permissions);
+			}
 			if (type.getEditPermission() != null) {
 				return permissions.hasPermission(type.getEditPermission());
 			} else if (type.getEditAudit() != null) {
