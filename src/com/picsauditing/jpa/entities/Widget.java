@@ -28,6 +28,7 @@ public class Widget {
 	protected String widgetType;
 	protected boolean synchronous = false;
 	protected String url;
+    protected Integer reportID;
 
 	protected boolean expanded = true;
 	protected String customConfig;
@@ -159,4 +160,13 @@ public class Widget {
 
 		return "";
 	}
+
+    @Column(name = "reportID", nullable = true, updatable = false)
+    public Integer getReportID() {
+        return reportID;
+    }
+
+    public void setReportID(Integer reportID) {
+        this.reportID = reportID;
+    }
 }

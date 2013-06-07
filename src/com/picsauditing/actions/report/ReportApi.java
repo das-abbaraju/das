@@ -4,6 +4,8 @@ import static com.picsauditing.report.ReportJson.REPORT_ID;
 import static com.picsauditing.report.ReportJson.writeJsonException;
 import static com.picsauditing.report.ReportJson.writeJsonSuccess;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
 import org.json.simple.JSONObject;
@@ -15,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsApiSupport;
+import com.picsauditing.dao.WidgetUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.WidgetUser;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportValidationException;
@@ -32,8 +36,11 @@ public class ReportApi extends PicsApiSupport {
 	protected ReportService reportService;
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
+	@Autowired
+	private WidgetUserDAO widgetUserDAO;
 
 	protected int reportId;
+	protected int widgetId;
 	protected String debugSQL = "";
 	protected int limit = 50;
 	protected int pageNumber = 1;
@@ -188,9 +195,20 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(null);
 
 		try {
-			report = reportService.loadReportFromDatabase(reportId);
+			List<WidgetUser> widgetUsers = widgetUserDAO.findByUser(permissions);
+			for (WidgetUser user : widgetUsers) {
 
-			json = reportService.buildReportResultsForChart(reportContext, report);
+				if (user.getWidget() != null && user.getWidget().getWidgetID() == widgetId) {
+					reportId = user.getWidget().getReportID().intValue();
+					break;
+				}
+			}
+
+			if (reportId != 0) {
+				report = reportService.loadReportFromDatabase(reportId);
+
+				json = reportService.buildReportResultsForChart(reportContext, report);
+			}
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}
@@ -256,6 +274,10 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
+	}
+
+	public void setWidgetId(int widgetId) {
+		this.widgetId = widgetId;
 	}
 
 	public ReportResults getReportResults() {
