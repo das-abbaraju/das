@@ -1,12 +1,13 @@
 package com.picsauditing.report.data;
 
-import java.sql.*;
+import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
-import java.util.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,8 +18,10 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.TimeZoneUtil;
 
 public class ReportDataConverter {
 
@@ -46,33 +49,36 @@ public class ReportDataConverter {
 		}
 	}
 
-    public JSONArray convertForChart() {
-        JSONArray dataJson = new JSONArray();
-        for (ReportRow row : reportResults.getRows()) {
-            JSONObject rowColumnJson = new JSONObject();
-            JSONArray rowJson = new JSONArray();
-            for (ReportCell cell : row.getCells()) {
-                JSONObject cellJson = new JSONObject();
-                cellJson.put("v",cell.getValue().toString());
-                cellJson.put("f",null);
+	public JSONArray convertForChart() {
+		JSONArray dataJson = new JSONArray();
+		for (ReportRow row : reportResults.getRows()) {
+			JSONObject rowColumnJson = new JSONObject();
+			JSONArray rowJson = new JSONArray();
+			for (ReportCell cell : row.getCells()) {
+				JSONObject cellJson = new JSONObject();
+				if (cell.getColumn().getField().getType() == FieldType.AccountID) {
+					cellJson.put("v", cell.getValue());
+				} else {
+					cellJson.put("v", cell.getValue().toString());
+				}
+				cellJson.put("f", null);
 
-                rowJson.add(cellJson);
-            }
-            rowColumnJson.put("c",rowJson);
-            dataJson.add(rowColumnJson);
-        }
+				rowJson.add(cellJson);
+			}
+			rowColumnJson.put("c", rowJson);
+			dataJson.add(rowColumnJson);
+		}
 
-        return dataJson;
-    }
+		return dataJson;
+	}
 
-    private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
+	private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
 		Object value = cell.getValue();
 		if (value == null) {
 			return null;
 		}
 
-        FieldType type = cell.getColumn().getField().getType();
-
+		FieldType type = cell.getColumn().getField().getType();
 
 		Object result = convertValueBasedOnCellColumn(cell, false);
 		if (result == null) {
@@ -136,17 +142,17 @@ public class ReportDataConverter {
 		}
 
 		if (displayType == DisplayType.Boolean) {
-            if (forPrint) {
-            	long numericValue = safeConversionToLong(value);
-                if (numericValue == 1) {
+			if (forPrint) {
+				long numericValue = safeConversionToLong(value);
+				if (numericValue == 1) {
 					result = "Y";
 				} else {
 					result = "N";
 				}
-            } else {
+			} else {
 				result = value;
 			}
-        }
+		}
 
 		return result;
 	}
@@ -185,22 +191,23 @@ public class ReportDataConverter {
 	private String convertValueBasedOnType(Object value, FieldType type, TimeZone timezone) {
 		String result = null;
 
-        Date date = null;
+		Date date = null;
 
-        if (value instanceof Timestamp) {
-            date = new Date(((Timestamp)value).getTime());
-        } else if (value instanceof java.sql.Date) {
-            date = new Date(((java.sql.Date)value).getTime());
-        } else {
-            return null;
-        }
+		if (value instanceof Timestamp) {
+			date = new Date(((Timestamp) value).getTime());
+		} else if (value instanceof java.sql.Date) {
+			date = new Date(((java.sql.Date) value).getTime());
+		} else {
+			return null;
+		}
 
 		if (type == FieldType.Date) {
 			result = PicsDateFormat.formatDateIsoOrBlank(date);
 		}
 
 		if (type == FieldType.DateTime) {
-			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, date);
+			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone,
+					date);
 		}
 
 		return result;

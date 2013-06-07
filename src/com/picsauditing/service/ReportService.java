@@ -15,9 +15,6 @@ import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.models.ReportModelFactory;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -30,6 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.jpa.entities.Column;
+import com.picsauditing.jpa.entities.Filter;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
@@ -43,9 +47,11 @@ import com.picsauditing.report.converter.ReportBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
@@ -65,7 +71,8 @@ public class ReportService {
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
-	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException, RecordNotFoundException, SQLException {
+	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException,
+			RecordNotFoundException, SQLException {
 		Report report = createOrLoadReport(reportContext);
 		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
 
@@ -97,7 +104,8 @@ public class ReportService {
 		return responseJson;
 	}
 
-	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report) throws ReportValidationException {
+	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report)
+			throws ReportValidationException {
 		SelectSQL sql = sqlBuilder.initializeReportAndBuildSql(report, reportContext.permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
@@ -105,7 +113,8 @@ public class ReportService {
 		return sql;
 	}
 
-	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException, ReportValidationException {
+	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException,
+			ReportValidationException {
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 
 		Report report;
@@ -132,7 +141,8 @@ public class ReportService {
 
 	public Report save(ReportContext reportContext) throws Exception {
 		if (!permissionService.canUserEditReport(reportContext.permissions, reportContext.reportId)) {
-			throw new Exception("User " + reportContext.permissions.getUserId() + " cannot edit report " + reportContext.reportId);
+			throw new Exception("User " + reportContext.permissions.getUserId() + " cannot edit report "
+					+ reportContext.reportId);
 		}
 
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
@@ -142,7 +152,7 @@ public class ReportService {
 
 		validate(report);
 
-        report.setAuditColumns(reportContext.permissions);
+		report.setAuditColumns(reportContext.permissions);
 		reportDao.save(report);
 
 		return report;
@@ -150,8 +160,10 @@ public class ReportService {
 
 	@Deprecated
 	private void setReportOwnerIfNecessary(Report report, User user) {
-		// FIXME: This is a temporary workaround to set the required ownerId of a report for saving. Please delete
-		// this method when we can verify that the ownerId is passed to the frontend and is returned back to the backend
+		// FIXME: This is a temporary workaround to set the required ownerId of
+		// a report for saving. Please delete
+		// this method when we can verify that the ownerId is passed to the
+		// frontend and is returned back to the backend
 		// in the reportContext.payloadJson.
 		if (report.getOwner() == null) {
 			ReportUser reportUser = reportPreferencesService.loadReportUser(user.getId(), report.getId());
@@ -164,8 +176,7 @@ public class ReportService {
 		Report oldReport = reportDao.findById(reportContext.reportId);
 
 		if (!permissionService.canUserViewReport(reportContext.user, oldReport, reportContext.permissions)) {
-			throw new Exception("User " + userId + " does not have permission to copy report "
-					+ reportContext.reportId);
+			throw new Exception("User " + userId + " does not have permission to copy report " + reportContext.reportId);
 		}
 
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
@@ -176,7 +187,7 @@ public class ReportService {
 
 		prepareNewReportForDatabaseCopy(newReport, reportContext.permissions);
 
-        newReport.setAuditColumns(reportContext.permissions);
+		newReport.setAuditColumns(reportContext.permissions);
 		reportDao.save(newReport);
 
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
@@ -185,7 +196,8 @@ public class ReportService {
 			reportPreferencesService.favoriteReport(reportUser);
 		}
 
-		// This is a new report owned by the user, unconditionally give them edit permission
+		// This is a new report owned by the user, unconditionally give them
+		// edit permission
 		permissionService.grantUserEditPermission(userId, userId, newReport.getId());
 
 		return newReport;
@@ -214,7 +226,8 @@ public class ReportService {
 		}
 	}
 
-	protected Report createReportFromPayload(int reportId, JSONObject reportJson) throws IllegalArgumentException, ReportValidationException {
+	protected Report createReportFromPayload(int reportId, JSONObject reportJson) throws IllegalArgumentException,
+			ReportValidationException {
 		Report report = buildReportFromJson(reportJson, reportId);
 
 		report.sortColumns();
@@ -265,7 +278,8 @@ public class ReportService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql) throws ReportValidationException, PicsSqlException {
+	private JSONObject buildDataJson(Report report, ReportContext reportContext, SelectSQL sql)
+			throws ReportValidationException, PicsSqlException {
 		JSONObject dataJson = new JSONObject();
 
 		if (shouldIncludeSql(reportContext.permissions)) {
@@ -283,7 +297,8 @@ public class ReportService {
 		return dataJson;
 	}
 
-	protected ReportResults buildReportResults(Report report, ReportContext reportContext, List<BasicDynaBean> queryResults) {
+	protected ReportResults buildReportResults(Report report, ReportContext reportContext,
+			List<BasicDynaBean> queryResults) {
 		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 
 		converter.setLocale(reportContext.permissions.getLocale());
@@ -301,53 +316,53 @@ public class ReportService {
 		return converter.getReportResults();
 	}
 
-    public JSONObject buildReportResultsForChart(ReportContext reportContext, Report report)
-            throws ReportValidationException, PicsSqlException {
-        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
-        List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
+	public JSONObject buildReportResultsForChart(ReportContext reportContext, Report report)
+			throws ReportValidationException, PicsSqlException {
+		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+		List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 
-        JSONObject responseJson = new JSONObject();
+		JSONObject responseJson = new JSONObject();
 
-        responseJson.put("chartType","Flags");
+		responseJson.put("type", "Flags");
 
-        JSONObject dataJson = new JSONObject();
+		JSONObject dataJson = new JSONObject();
 
+		// get columns for chart
+		dataJson.put("cols", createChartColumns(report.getColumns()));
 
-        // get columns for chart
-        dataJson.put("cols", createChartColumns(report.getColumns()));
+		// get rows for chart
+		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+		converter.setLocale(reportContext.permissions.getLocale());
+		dataJson.put("rows", converter.convertForChart());
 
-        // get rows for chart
-        ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
-        converter.setLocale(reportContext.permissions.getLocale());
-        dataJson.put("rows", converter.convertForChart());
+		responseJson.put("data", dataJson);
 
-        responseJson.put("data",dataJson);
+		return responseJson;
+	}
 
-        return responseJson;
-    }
+	private JSONArray createChartColumns(List<Column> columns) {
+		JSONArray columnCollection = new JSONArray();
 
-    private JSONArray createChartColumns(List<Column> columns) {
-        JSONArray columnCollection = new JSONArray();
+		for (Column col : columns) {
+			JSONObject columnJson = new JSONObject();
+			FieldType type = col.getField().getType();
+			if (type == FieldType.FlagColor) {
+				columnJson.put("type", "string");
+			} else {
+				columnJson.put("type", "number");
+			}
 
-        for (Column col : columns) {
-            JSONObject columnJson = new JSONObject();
-            String type = col.getField().getType().toString();
-            if (type.equals("FlagColor")) {
-                type = "string";
-            }
+			columnJson.put("id", col.getId());
+			columnJson.put("label", col.getField().getText());
+			columnJson.put("pattern", "");
 
-            columnJson.put("id",col.getId());
-            columnJson.put("label",col.getField().getText());
-            columnJson.put("pattern","");
-            columnJson.put("type",type);
+			columnCollection.add(columnJson);
+		}
 
-            columnCollection.add(columnJson);
-        }
+		return columnCollection;
+	}
 
-        return columnCollection;
-    }
-
-    private boolean shouldIncludeSql(Permissions permissions) {
+	private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
@@ -399,7 +414,8 @@ public class ReportService {
 		ServletActionContext.getResponse().flushBuffer();
 	}
 
-	public JSONObject buildSqlFunctionsJson(ModelType modelType, String fieldId, Permissions permissions) throws Exception {
+	public JSONObject buildSqlFunctionsJson(ModelType modelType, String fieldId, Permissions permissions)
+			throws Exception {
 		AbstractModel model = ReportModelFactory.build(modelType, permissions);
 		Field field = model.getAvailableFields().get(fieldId.toUpperCase());
 
@@ -446,11 +462,12 @@ public class ReportService {
 		if (!permissionService.canUserPublicizeReport(user, report)) {
 			int userId = (user != null) ? user.getId() : -1;
 			int reportId = (report != null) ? report.getId() : -1;
-			throw new ReportPermissionException("User " + userId + " does not have permission to publicize report " + reportId);
+			throw new ReportPermissionException("User " + userId + " does not have permission to publicize report "
+					+ reportId);
 		}
 
 		report.setPublic(true);
-        report.setAuditColumns(user);
+		report.setAuditColumns(user);
 
 		reportDao.save(report);
 	}
@@ -459,35 +476,36 @@ public class ReportService {
 		if (!permissionService.canUserPublicizeReport(user, report)) {
 			int userId = (user != null) ? user.getId() : -1;
 			int reportId = (report != null) ? report.getId() : -1;
-			throw new ReportPermissionException("User " + userId + " does not have permission to unpublicize report " + reportId);
+			throw new ReportPermissionException("User " + userId + " does not have permission to unpublicize report "
+					+ reportId);
 		}
 
 		report.setPublic(false);
-        report.setAuditColumns(user);
+		report.setAuditColumns(user);
 
 		reportDao.save(report);
 	}
 
-    public JSONObject buildJsonReportInfo(int reportId) throws Exception {
-        Report report = reportDao.findById(reportId);
+	public JSONObject buildJsonReportInfo(int reportId) throws Exception {
+		Report report = reportDao.findById(reportId);
 
-        JSONObject infoJson = new JSONObject();
-        infoJson.put("model",report.getModelType().toString());
+		JSONObject infoJson = new JSONObject();
+		infoJson.put("model", report.getModelType().toString());
 
-        int shares = report.getReportPermissionUsers().size() + report.getReportPermissionAccounts().size();
-        infoJson.put("shares",Integer.toString(shares));
+		int shares = report.getReportPermissionUsers().size() + report.getReportPermissionAccounts().size();
+		infoJson.put("shares", Integer.toString(shares));
 
-        int favorites = 0;
-        for (ReportUser user : report.getReportUsers()) {
-            if (user.isFavorite())
-                favorites++;
-        }
-        infoJson.put("favorites",Integer.toString(favorites));
-        infoJson.put("updated",report.getUpdateDate().toString());
-        infoJson.put("updated_by",report.getUpdatedBy().getName());
-        infoJson.put("owner",report.getOwner().getName());
+		int favorites = 0;
+		for (ReportUser user : report.getReportUsers()) {
+			if (user.isFavorite())
+				favorites++;
+		}
+		infoJson.put("favorites", Integer.toString(favorites));
+		infoJson.put("updated", report.getUpdateDate().toString());
+		infoJson.put("updated_by", report.getUpdatedBy().getName());
+		infoJson.put("owner", report.getOwner().getName());
 
-        return infoJson;
-    }
+		return infoJson;
+	}
 
 }
