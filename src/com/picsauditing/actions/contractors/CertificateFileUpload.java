@@ -2,8 +2,13 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.jpa.entities.*;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.PICSFileType;
@@ -12,15 +17,16 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CertificateFileUpload extends ContractorActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;
+
+	@Autowired
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	private File file;
 	protected String fileContentType = null;
@@ -187,7 +193,42 @@ public class CertificateFileUpload extends ContractorActionSupport {
 			}
 		}
 
+		if (changed) {
+			if (questionID > 0 && auditID > 0) {
+				AuditData d = dataDAO.findAnswerByAuditQuestion(auditID, questionID);
+				certificateUploadStatusAdjustments(d);
+			}
+		}
+
 		return SUCCESS;
+	}
+
+	private void certificateUploadStatusAdjustments(AuditData auditData) {
+		ContractorAudit audit = auditData.getAudit();
+
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+
+		for (ContractorAuditOperator cao : audit.getOperators()) {
+			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				operators.add(caop.getOperator());
+			}
+			builder.calculate(auditData.getAudit(), operators);
+
+			boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
+
+			if (isApplicable) {
+				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
+						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+					ContractorAuditOperatorWorkflow caow = cao
+							.changeStatus(AuditStatus.Incomplete, permissions);
+					caow.setNotes("Due to certificate change");
+					dao.save(caow);
+					break;
+				}
+			}
+		}
+		auditDao.save(audit);
 	}
 
 	private String getFileName(int certID) {

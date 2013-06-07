@@ -200,7 +200,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
-				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify && !commentChanged) {
+				if ((tempAudit.getAuditType().isAnnualAddendum() || tempAudit.getAuditType().getClassType().isPolicy()) && !toggleVerify && !commentChanged) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
 						Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
@@ -208,7 +208,7 @@ public class AuditDataSave extends AuditActionSupport {
 							operators.add(caop.getOperator());
 						builder.calculate(auditData.getAudit(), operators);
 
-						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
+						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 							ContractorAuditOperatorWorkflow caow = cao
 									.changeStatus(AuditStatus.Incomplete, permissions);
