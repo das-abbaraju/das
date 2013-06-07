@@ -410,20 +410,21 @@
 								<label>Tag</label>
 								<s:select list="operatorTagList" name="ruleOperatorTagId" listKey="id" listValue="tag" id="tag" headerKey="0" headerValue="Any" value="rule.tag.id" />
 							</li>
-							<s:if test="auditTypeRule">
-								<li><label>Dependent Audit</label>
-									<s:select id="dependentAudit" name="ruleDependentAuditTypeId" value="rule.dependentAuditType.id" list="{}" headerKey="" headerValue="Any Audit Type">
-										<s:iterator value="auditTypeMap" var="aType">
-											<s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id" listValue="name"/>
-										</s:iterator>
-									</s:select>
-									<div id="dependentAudit_display"></div>
-								</li>
-								<li class="requiresDependentAudit">
-									<s:include value="/struts/rules/_dependent_audit_status_select.jsp" />
-								</li>					
-							</s:if>
-							<li>
+                            <li><label>Dependent Audit</label>
+                                <s:select id="dependentAudit" name="ruleDependentAuditTypeId"
+                                          value="rule.dependentAuditType.id" list="{}" headerKey=""
+                                          headerValue="Any Audit Type">
+                                    <s:iterator value="auditTypeMap" var="aType">
+                                        <s:optgroup label="%{#aType.key}" list="#aType.value" listKey="id"
+                                                    listValue="name"/>
+                                    </s:iterator>
+                                </s:select>
+                                <div id="dependentAudit_display"></div>
+                            </li>
+                            <li class="requiresDependentAudit">
+                                <s:include value="/struts/rules/_dependent_audit_status_select.jsp"/>
+                            </li>
+                            <li>
 								<label>Trade</label>
 								<pics:autocomplete action="TradeAutocomplete" name="rule.trade" />
 							</li>

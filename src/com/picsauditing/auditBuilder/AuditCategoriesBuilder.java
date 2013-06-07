@@ -8,20 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.*;
 
 /**
  * Determine which audits and categories are needed for a contractor.
@@ -149,6 +136,28 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		}
 		return null;
 	}
+
+	protected boolean isValid(AuditCategoryRule rule, Map<Integer, AuditData> contractorAnswers,
+	                          Map<Integer, OperatorTag> opTags) {
+		AuditCategoryRule auditCategoryRule = (AuditCategoryRule) rule;
+		if (auditCategoryRule.getDependentAuditType() != null && auditCategoryRule.getDependentAuditStatus() != null) {
+			boolean found = false;
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (!audit.isExpired()
+						&& audit.getAuditType().equals(auditCategoryRule.getDependentAuditType())
+						&& (audit.hasCaoStatus(auditCategoryRule.getDependentAuditStatus()) ||
+						audit.hasCaoStatusAfter(auditCategoryRule.getDependentAuditStatus()))) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+		return super.isValid(rule, contractorAnswers, opTags);
+	}
+
 
 	/**
 	 * Based on the set of operators for this audit and the category rules needed for each of those operators, generate

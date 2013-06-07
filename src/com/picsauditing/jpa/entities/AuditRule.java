@@ -30,6 +30,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 	protected String questionAnswer;
 	protected Boolean soleProprietor;
 	protected AccountLevel accountLevel;
+	protected AuditType dependentAuditType;
+	protected AuditStatus dependentAuditStatus;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -133,7 +135,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	/**
 	 * Does this rule apply to the given category?
 	 * 
-	 * @param operator
+	 * @param candidate
 	 * @return
 	 */
 	@Transient
@@ -188,7 +190,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 	/**
 	 * Does this rule apply to the given category?
 	 * 
-	 * @param operator
+	 * @param candidate
 	 * @return
 	 */
 	@Transient
@@ -442,6 +444,10 @@ public class AuditRule extends BaseDecisionTreeRule {
 			trade = source.trade;
 		if (soleProprietor == null)
 			soleProprietor = source.soleProprietor;
+		if (dependentAuditType == null)
+			dependentAuditType = source.dependentAuditType;
+		if (dependentAuditStatus == null)
+			dependentAuditStatus = source.dependentAuditStatus;
 	}
 
 	// TODO check to see if we still use this??
@@ -459,6 +465,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 		levelAdjustment = source.levelAdjustment;
 		trade = source.trade;
 		soleProprietor = source.soleProprietor;
+		dependentAuditStatus = source.dependentAuditStatus;
+		dependentAuditType = source.dependentAuditType;
 	}
 
 	/**
@@ -535,5 +543,35 @@ public class AuditRule extends BaseDecisionTreeRule {
 		}
 
 		return sb.toString();
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "dependentAuditTypeID")
+	public AuditType getDependentAuditType() {
+		return dependentAuditType;
+	}
+
+	@Transient
+	public String getDependentAuditTypeLabel() {
+		return dependentAuditType == null ? "*" : dependentAuditType.toString();
+	}
+
+	public void setDependentAuditType(AuditType dependentAuditType) {
+		this.dependentAuditType = dependentAuditType;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public AuditStatus getDependentAuditStatus() {
+		return dependentAuditStatus;
+	}
+
+
+	@Transient
+	public String getDependentAuditStatusLabel() {
+		return dependentAuditStatus == null ? "*" : dependentAuditStatus.toString();
+	}
+
+	public void setDependentAuditStatus(AuditStatus dependentAuditStatus) {
+		this.dependentAuditStatus = dependentAuditStatus;
 	}
 }

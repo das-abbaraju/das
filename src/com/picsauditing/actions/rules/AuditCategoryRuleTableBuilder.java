@@ -40,6 +40,8 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			columnMap.put("auditCategory", true);
 		if (rule.getRootCategory() != null)
 			columnMap.put("rootCategory", true);
+		if (rule.getDependentAuditType() != null)
+			columnMap.put("dependentAuditType", true);
 	}
 
 	@SuppressWarnings("unchecked")

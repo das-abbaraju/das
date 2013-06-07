@@ -108,6 +108,14 @@ public class AuditCategoryRule extends AuditRule {
 	@Override
 	public String toString() {
 		String out = super.toString();
+		if (dependentAuditType != null) {
+			if (!out.contains("when"))
+				out += " when";
+			else
+				out += " and";
+			out += " Dependent Audit Type is " + dependentAuditType
+					+ (dependentAuditStatus == null ? "" : " is " + dependentAuditStatus);
+		}
 		if (rootCategory != null) {
 			if (out.contains("when"))
 				out += " and";
