@@ -28,7 +28,7 @@ public class Widget {
 	protected String widgetType;
 	protected boolean synchronous = false;
 	protected String url;
-    protected Integer reportID;
+	protected Integer reportID;
 
 	protected boolean expanded = true;
 	protected String customConfig;
@@ -135,6 +135,17 @@ public class Widget {
 		if (widgetType == null)
 			return "widgetType is null";
 
+		// TODO: Remove this once all charts have been changed to Google Visualization.
+		if (widgetType.equals("Chart")) {
+			if (chartType == null)
+				return "chartType is null";
+			// FusionChart.createChartHTML("charts/"+chartType.toString()+".swf",
+			// dataURL, dataXML,
+			// chartId, chartWidth, chartHeight, debug);
+			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString()
+					+ "_" + widgetID, 400, 400, debug, false);
+		}
+
 		if (widgetType.equals("Html") || widgetType.equals("Rss"))
 			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
 					+ "');</script>";
@@ -161,12 +172,12 @@ public class Widget {
 		return "";
 	}
 
-    @Column(name = "reportID", nullable = true, updatable = false)
-    public Integer getReportID() {
-        return reportID;
-    }
+	@Column(name = "reportID", nullable = true, updatable = false)
+	public Integer getReportID() {
+		return reportID;
+	}
 
-    public void setReportID(Integer reportID) {
-        this.reportID = reportID;
-    }
+	public void setReportID(Integer reportID) {
+		this.reportID = reportID;
+	}
 }

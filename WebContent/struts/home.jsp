@@ -70,9 +70,9 @@
                 					</pics:permission>
                 				</div>
                                 <div id="panel<s:property value="widgetID"/>_content" class="panel_content" data-widget-type="${widgetType}" data-widget-id="${widgetID}">
-                                    <s:if test="widgetType!='Chart'">
-                                           <s:property value="content" escape="false" />
-                                    </s:if>
+                                    <s:if test="widgetType!='Chart' || widgetID!=23">
+                                       <s:property value="content" escape="false" />
+                                   </s:if>
                                </div>
             				</div>
         				</div>
