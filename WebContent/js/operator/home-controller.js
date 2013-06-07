@@ -48,13 +48,21 @@
                 }
             },
 
-            getFlagsOptions: function(chart_data) {
-                var column_names = [],
-                    colors = [],
-                    rows = chart_data.rows,
-                    cell;
+            getColorsFromColumns: function (column_names) {
+                var colors = [];
 
-                // Extract the column names out of the data
+                colors[column_names.indexOf('Clear')] = '#FFF';
+                colors[column_names.indexOf('Red')] = '#CF0F0F';
+                colors[column_names.indexOf('Amber')] = '#FFCF3F';
+                colors[column_names.indexOf('Green')] = '#3F9F0F';
+
+                return colors;
+            },
+
+            getColumnNames: function (chart_data) {
+                var column_names = [],
+                    rows = chart_data.rows;
+
                 $.each(rows, function(index, row) {
                     cell = row.c,
                     cell_column = cell[0],
@@ -63,11 +71,13 @@
                     column_names.push(column_name);
                 });
 
-                // Assign colors to their corresponding column names
-                colors[column_names.indexOf('Clear')] = '#FFF';
-                colors[column_names.indexOf('Red')] = '#CF0F0F';
-                colors[column_names.indexOf('Amber')] = '#FFCF3F';
-                colors[column_names.indexOf('Green')] = '#3F9F0F';
+                return column_names;
+            },
+
+            getFlagsOptions: function(chart_data) {
+                var column_names = this.getColumnNames(chart_data),
+                    colors = this.getColorsFromColumns(column_names),
+                    rows = chart_data.rows;
 
                 return {
                     width: 400,
