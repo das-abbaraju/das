@@ -5,9 +5,8 @@ PICS.Charts.Chart = function (config) {
         return;
     }
 
-    this.style_type = config.type,
-    this.chart_type = config.chart_type, // FIXME: Should not be hard-coded
     this.data = config.data,
+    this.chart_type = config.chart_type,
     this.container = config.container;
 };
 PICS.Charts.Chart.prototype.draw = function () {
@@ -29,25 +28,25 @@ PICS.Charts.Chart.prototype.getGoogleChart = function () {
             return new google.visualization.PieChart(this.container);
     }
 };
-PICS.Charts.Chart.prototype.getColumnNames = function () {
-    var column_names = [],
+PICS.Charts.Chart.prototype.getLabels = function () {
+    var labels = [],
         rows = this.data.rows;
 
     $.each(rows, function(index, row) {
-        cell = row.c,
-        cell_column = cell[0],
-        column_name = cell_column.v;
+        row_cells = row.c,
+        label_cell = row_cells[0],
+        label = label_cell.v;
 
-        column_names.push(column_name);
+        labels.push(label);
     });
 
-    return column_names;
+    return labels;
 };
-PICS.Charts.Chart.prototype.getColorsOrderedLikeColumnNames = function (column_names) {
+PICS.Charts.Chart.prototype.getColorsInOrderOfLabels = function (labels) {
     var colors = [];
 
-    $.each(this.colors, function (column_name, color) {
-        colors[column_names.indexOf(column_name)] = color;
+    $.each(this.colors, function (label, color) {
+        colors[labels.indexOf(label)] = color;
     });
 
     return colors;
@@ -66,8 +65,8 @@ PICS.Charts.FlagsChart = function (config) {
 PICS.Charts.FlagsChart.prototype = new PICS.Charts.Chart();
 PICS.Charts.FlagsChart.constructor = PICS.Charts.FlagsChart;
 PICS.Charts.FlagsChart.prototype.getOptions = function () {
-    var column_names = this.getColumnNames(this.data),
-        colors = this.getColorsOrderedLikeColumnNames(column_names);
+    var labels = this.getLabels(this.data),
+        colors = this.getColorsInOrderOfLabels(labels);
 
     return {
         width: 400,
