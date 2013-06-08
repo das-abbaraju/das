@@ -1,5 +1,7 @@
 PICS.Charts = {};
 
+// Chart //
+
 PICS.Charts.Chart = function (config) {
     if (!config) {
         return;
@@ -21,14 +23,36 @@ PICS.Charts.Chart.prototype.getOptions = function () {
 };
 PICS.Charts.Chart.prototype.getGoogleChart = function () {
     switch (this.chart_type) {
-        case 'Bar':
-            return new google.visualization.BarChart(this.container);        
         case 'Pie':
         default:
             return new google.visualization.PieChart(this.container);
     }
 };
-PICS.Charts.Chart.prototype.getLabels = function () {
+PICS.Charts.Chart.prototype.getColorsInOrderOfLabels = function (labels) {
+    var colors = [];
+
+    $.each(this.colors, function (label, color) {
+        colors[labels.indexOf(label)] = color;
+    });
+
+    return colors;
+};
+
+// LabelsAlongSideChart //
+
+PICS.Charts.LabelsAlongSideChart = function (config) {
+    PICS.Charts.Chart.call(this, config);
+
+    this.colors = {
+        'Clear': '#FFF',
+        'Red': '#CF0F0F',
+        'Amber': '#FFCF3F',
+        'Green': '#3F9F0F'
+    };
+};
+PICS.Charts.LabelsAlongSideChart.prototype = new PICS.Charts.Chart();
+PICS.Charts.LabelsAlongSideChart.constructor = PICS.Charts.LabelsAlongSideChart;
+PICS.Charts.LabelsAlongSideChart.prototype.getLabels = function () {
     var labels = [],
         rows = this.data.rows;
 
@@ -42,29 +66,16 @@ PICS.Charts.Chart.prototype.getLabels = function () {
 
     return labels;
 };
-PICS.Charts.Chart.prototype.getColorsInOrderOfLabels = function (labels) {
-    var colors = [];
 
-    $.each(this.colors, function (label, color) {
-        colors[labels.indexOf(label)] = color;
-    });
+// PieChart //
 
-    return colors;
+PICS.Charts.PieChart = function (config) {
+    PICS.Charts.LabelsAlongSideChart.call(this, config);
 };
+PICS.Charts.PieChart.prototype = new PICS.Charts.LabelsAlongSideChart();
+PICS.Charts.PieChart.constructor = PICS.Charts.PieChart;
 
-PICS.Charts.FlagsChart = function (config) {
-    PICS.Charts.Chart.call(this, config);
-
-    this.colors = {
-        'Clear': '#FFF',
-        'Red': '#CF0F0F',
-        'Amber': '#FFCF3F',
-        'Green': '#3F9F0F'
-    };
-};
-PICS.Charts.FlagsChart.prototype = new PICS.Charts.Chart();
-PICS.Charts.FlagsChart.constructor = PICS.Charts.FlagsChart;
-PICS.Charts.FlagsChart.prototype.getOptions = function () {
+PICS.Charts.PieChart.prototype.getOptions = function () {
     var labels = this.getLabels(this.data),
         colors = this.getColorsInOrderOfLabels(labels);
 
@@ -106,9 +117,9 @@ PICS.Charts.FlagsChart.prototype.getOptions = function () {
                                 config.chart_type = 'Pie';
                                 config.container = chart_container;
 
-                                switch (config.type) {
+                                switch (config.type) {                                    
                                     case 'Flags':
-                                        chart = new PICS.Charts.FlagsChart(config);
+                                        chart = new PICS.Charts.PieChart(config);
                                 }
 
                                 chart.draw();
