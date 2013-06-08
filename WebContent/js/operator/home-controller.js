@@ -8,8 +8,31 @@ PICS.Charts.Chart = function (config) {
     }
 
     this.data = config.data,
+    this.style_type = config.type, // Should be "= config.style_type"
     this.chart_type = config.chart_type,
     this.container = config.container;
+};
+
+PICS.Charts.Chart.prototype.getColors = function () {
+    switch (this.style_type) {
+        case 'Flags':
+        default:
+            return {
+                'Clear': '#FFF',
+                'Red': '#CF0F0F',
+                'Amber': '#FFCF3F',
+                'Green': '#3F9F0F'
+            };
+    }
+};
+PICS.Charts.Chart.prototype.sortColorsInOrderOfLabels = function (colors, labels) {
+    var colors_sorted = [];
+
+    $.each(colors, function (label, color) {
+        colors_sorted[labels.indexOf(label)] = color;
+    });
+
+    return colors_sorted;
 };
 PICS.Charts.Chart.prototype.draw = function () {
     var data_table = new google.visualization.DataTable(this.data),
@@ -18,40 +41,21 @@ PICS.Charts.Chart.prototype.draw = function () {
 
     google_chart.draw(data_table, options);
 };
+PICS.Charts.Chart.prototype.getGoogleChart = function () {
+    // return generic, default chart
+};
 PICS.Charts.Chart.prototype.getOptions = function () {
     // Return generic, default options
-};
-PICS.Charts.Chart.prototype.getGoogleChart = function () {
-    switch (this.chart_type) {
-        case 'Pie':
-        default:
-            return new google.visualization.PieChart(this.container);
-    }
-};
-PICS.Charts.Chart.prototype.getColorsInOrderOfLabels = function (labels) {
-    var colors = [];
-
-    $.each(this.colors, function (label, color) {
-        colors[labels.indexOf(label)] = color;
-    });
-
-    return colors;
 };
 
 // LabelsAlongSideChart //
 
 PICS.Charts.LabelsAlongSideChart = function (config) {
     PICS.Charts.Chart.call(this, config);
-
-    this.colors = {
-        'Clear': '#FFF',
-        'Red': '#CF0F0F',
-        'Amber': '#FFCF3F',
-        'Green': '#3F9F0F'
-    };
 };
 PICS.Charts.LabelsAlongSideChart.prototype = new PICS.Charts.Chart();
 PICS.Charts.LabelsAlongSideChart.constructor = PICS.Charts.LabelsAlongSideChart;
+
 PICS.Charts.LabelsAlongSideChart.prototype.getLabels = function () {
     var labels = [],
         rows = this.data.rows;
@@ -77,18 +81,22 @@ PICS.Charts.PieChart.constructor = PICS.Charts.PieChart;
 
 PICS.Charts.PieChart.prototype.getOptions = function () {
     var labels = this.getLabels(this.data),
-        colors = this.getColorsInOrderOfLabels(labels);
+        colors = this.getColors();
+        colors_sorted = this.sortColorsInOrderOfLabels(colors, labels);
 
     return {
         width: 400,
         height: 300,
-        colors: colors,
+        colors: colors_sorted,
         is3D: true,
         legend: {
             position: 'top',
             alignment: 'center'
         }
     };
+};
+PICS.Charts.PieChart.prototype.getGoogleChart = function () {
+    return new google.visualization.PieChart(this.container);
 };
 
 (function ($) {
