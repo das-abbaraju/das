@@ -511,6 +511,7 @@
     									</p>
     								</div>
     							</li>
+                                <pics:permission perm="EditContractorSafeHarbor">
                                 <li>
                                     <label><s:text name="ContractorEdit.AutoAdd" /></label>
                                     <s:radio
@@ -519,7 +520,7 @@
                                             theme="pics"
                                             labelposition="left"/>
                                 </li>
-
+                                </pics:permission>
 
     						</ol>
     					</fieldset>
