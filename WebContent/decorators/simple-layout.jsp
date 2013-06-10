@@ -16,7 +16,7 @@
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <link rel="stylesheet" href="v7/css/style.css">
+        <link rel="stylesheet" href="v7/css/style.css?v=${version}">
         <!--[if lt IE 8]><link rel="stylesheet" href="v7/css/vendor/font-awesome-ie7.css"><![endif]-->
         
         <script src="v7/js/vendor/modernizr-2.6.1.min.js"></script>
@@ -26,7 +26,7 @@
         
         <decorator:body />
 
-        <script src="v7/js/script.js"></script>
+        <script src="v7/js/script.js?v=${version}"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
