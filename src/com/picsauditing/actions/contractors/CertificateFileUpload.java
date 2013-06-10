@@ -221,7 +221,7 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
 						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 					ContractorAuditOperatorWorkflow caow = cao
-							.changeStatus(AuditStatus.Incomplete, permissions);
+							.changeStatus(AuditStatus.Resubmitted, permissions);
 					caow.setNotes("Due to certificate change");
 					dao.save(caow);
 					break;

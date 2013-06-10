@@ -210,11 +210,17 @@ public class AuditDataSave extends AuditActionSupport {
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+							AuditStatus newStatus = AuditStatus.Incomplete;
+							if (tempAudit.getAuditType().getClassType().isPolicy())
+								newStatus = AuditStatus.Resubmitted;
+
 							ContractorAuditOperatorWorkflow caow = cao
-									.changeStatus(AuditStatus.Incomplete, permissions);
-							caow.setNotes("Due to data change");
-							caowDAO.save(caow);
-							updateAudit = true;
+									.changeStatus(newStatus, permissions);
+							if (caow != null) {
+								caow.setNotes("Due to data change");
+								caowDAO.save(caow);
+								updateAudit = true;
+							}
 							break;
 						}
 					}
