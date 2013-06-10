@@ -1,9 +1,17 @@
 AccountInformation: AccountID
 AccountInformation: AccountName
 DocumentsAndAudits: AuditAuditFor
+Auditors: AuditAuditorID
+Auditors: AuditAuditorName
+Auditors: AuditClosingAuditorID
+Auditors: AuditClosingAuditorName
 DocumentsAndAudits: AuditEffectiveDate
 DocumentsAndAudits: AuditExpiresDate
 DocumentsAndAudits: AuditID
+MonitoringClientSite: AuditOperatorAccountID
+MonitoringClientSite: AuditOperatorAccountName
+DocumentsAndAudits: AuditOperatorID
+DocumentsAndAudits: AuditOperatorStatus
 DocumentsAndAudits: AuditTypeName
 DocumentsAndAudits: ContractorAuditFileDescription
 DocumentsAndAudits: ContractorAuditFileFileType
