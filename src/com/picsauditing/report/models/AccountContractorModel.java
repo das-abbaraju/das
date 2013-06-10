@@ -23,6 +23,7 @@ public class AccountContractorModel extends AbstractModel {
 			account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
 			account.join(AccountTable.Naics);
 			account.join(AccountTable.Country);
+            account.join(AccountTable.LastLogin);
 		}
 		contractor.join(ContractorTable.PQF);
 		if (permissions.isAdmin()) {

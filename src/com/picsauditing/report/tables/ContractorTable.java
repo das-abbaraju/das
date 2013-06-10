@@ -40,6 +40,7 @@ public class ContractorTable extends AbstractTable {
                 + ReportOnClause.ToAlias + ".id AND cf.currentAmount > 0 AND cf.feeClass = '" + feeClass.toString()
                 + "')", FieldType.Boolean);
         field.setCategory(FieldCategory.Billing);
+        field.setImportance(FieldImportance.Average);
         field.setWidth(100);
         addField(field);
     }

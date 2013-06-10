@@ -1,50 +1,41 @@
-ContactInformation: AccountCity
-General: AccountContactDepartment
-General: AccountContactEmail
-General: AccountContactFax
-General: AccountContactFirstName
-General: AccountContactID
-General: AccountContactLastName
-General: AccountContactLocale
-General: AccountContactName
-General: AccountContactPhone
-General: AccountContactTimezone
-ContactInformation: AccountCountry
-ContactInformation: AccountCountrySubdivision
-AccountInformation: AccountCreationDate
-AccountInformation: AccountID
-AccountInformation: AccountLegalName
-AccountInformation: AccountName
-AccountInformation: AccountStatus
-General: AccountTimezone
-Billing: ContractorAccountLevel
-Billing: ContractorAuditGUARD
-Billing: ContractorBalance
-Billing: ContractorDocuGUARD
-CustomerService: ContractorDontReassign
-Billing: ContractorEmployeeGUARD
-Billing: ContractorInsureGUARD
-AccountInformation: ContractorMembershipDate
-Billing: ContractorPayingFacilities
-Classification: ContractorProductRisk
-Classification: ContractorProductRiskVerified
-Billing: ContractorRenew
-Classification: ContractorSafetyRisk
-Classification: ContractorSafetyRiskVerified
-CompanyStatistics: ContractorScore
-Classification: ContractorSoleProprietor
-Billing: ContractorTaxId
-Classification: ContractorTradesSelf
-Classification: ContractorTradesSub
-Classification: ContractorTransportationRisk
-Classification: ContractorTransportationRiskVerified
-Invoicing: InvoiceAmountApplied
-Invoicing: InvoiceCurrency
-Invoicing: InvoiceDaysLeft
-Invoicing: InvoiceDueDate
-Invoicing: InvoiceInvoiceID
-Invoicing: InvoiceNotes
-Invoicing: InvoicePaidDate
-Invoicing: InvoicePoNumber
-Invoicing: InvoiceStatus
-Invoicing: InvoiceTotalAmount
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorBalance
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorPayingFacilities
+ContractorProductRisk
+ContractorRenew
+ContractorSafetyRisk
+ContractorTransportationRisk
+InvoiceAmountApplied
+InvoiceCurrency
+InvoiceDaysLeft
+InvoiceDueDate
+InvoiceInvoiceID
+InvoiceNotes
+InvoicePaidDate
+InvoicePoNumber
+InvoiceStatus
+InvoiceTotalAmount

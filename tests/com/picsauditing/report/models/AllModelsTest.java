@@ -37,6 +37,14 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testAccountContractorModel_Billing() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+        permissions.setAccountType("Admin");
+        model = new AccountContractorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testAccountContractorModel_Corporate() throws Exception {
         permissions.setAccountType("Corporate");
         model = new AccountContractorModel(permissions);
@@ -118,13 +126,12 @@ public class AllModelsTest {
     }
 
     private String getJoin() {
-        List<Field> fieldValues = new ArrayList<Field>();
-        fieldValues.addAll(model.getAvailableFields().values());
-        Collections.sort(fieldValues, new Comparator<Field>() {
-            public int compare(Field o1, Field o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        List<String> fieldValues = new ArrayList<String>();
+
+        for (Field field : model.getAvailableFields().values()) {
+            fieldValues.add(field.getName());
+        }
+        Collections.sort(fieldValues);
         return Joiner.on("\n").join(fieldValues);
     }
 

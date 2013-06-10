@@ -1,33 +1,33 @@
-AccountInformation: AccountAddress
-AccountInformation: AccountAddress2
-AccountInformation: AccountAddress3
-AccountInformation: AccountCity
-AccountInformation: AccountCountry
-AccountInformation: AccountCountrySubdivision
-AccountInformation: AccountCreationDate
-AccountInformation: AccountDeactivationDate
-AccountInformation: AccountFax
-AccountInformation: AccountFullAddress
-AccountInformation: AccountID
-AccountInformation: AccountLegalName
-AccountInformation: AccountMaterialSupplier
-AccountInformation: AccountName
-AccountInformation: AccountOffsiteServices
-AccountInformation: AccountOnsiteServices
-AccountInformation: AccountPhone
-AccountInformation: AccountReason
-AccountInformation: AccountRequiresCompetencyReview
-AccountInformation: AccountRequiresOQ
-AccountInformation: AccountStatus
-AccountInformation: AccountTimezone
-AccountInformation: AccountTransportationServices
-AccountInformation: AccountType
-AccountInformation: AccountUserEndDate
-AccountInformation: AccountUserOwnerPercent
-AccountInformation: AccountUserRole
-AccountInformation: AccountUserServiceLevel
-AccountInformation: AccountUserStartDate
-AccountInformation: AccountWebUrl
-AccountInformation: AccountZip
-ContactInformation: UserID
-ContactInformation: UserName
+AccountAddress
+AccountAddress2
+AccountAddress3
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountDeactivationDate
+AccountFax
+AccountFullAddress
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountPhone
+AccountReason
+AccountRequiresCompetencyReview
+AccountRequiresOQ
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountType
+AccountUserEndDate
+AccountUserOwnerPercent
+AccountUserRole
+AccountUserServiceLevel
+AccountUserStartDate
+AccountWebUrl
+AccountZip
+UserID
+UserName

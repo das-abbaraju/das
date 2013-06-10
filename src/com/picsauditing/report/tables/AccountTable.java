@@ -15,6 +15,7 @@ public class AccountTable extends AbstractTable {
 	public static final String Invoice = "Invoice";
 	public static final String AccountManager = "AccountManager";
 	public static final String SalesRep = "SalesRep";
+    public static final String LastLogin = "LastLogin";
 
     public AccountTable() {
 		super("accounts");
@@ -50,8 +51,7 @@ public class AccountTable extends AbstractTable {
 
 		addOptionalKey(new ReportForeignKey(Country, new CountryTable(), new ReportOnClause("country", "isoCode")));
 
-		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID")))
-				.setMinimumImportance(FieldImportance.Low);
+		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID")));
 
 		addOptionalKey(new ReportForeignKey(AccountManager, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
 				UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
@@ -62,5 +62,7 @@ public class AccountTable extends AbstractTable {
 				UserAccountRole.PICSSalesRep + "' AND " + ReportOnClause.ToAlias +
 				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
 				.setMinimumImportance(FieldImportance.Required);
-	}
+
+        addRequiredKey(new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID")));
+    }
 }

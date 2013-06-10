@@ -20,7 +20,7 @@ public class AccountOperatorModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "Account");
 		ModelSpec operator = spec.join(AccountTable.Operator);
-		operator.alias = "Operator";
+        operator.alias = "Operator";
 		ModelSpec reporting = operator.join(OperatorTable.Reporting);
 		reporting.category = FieldCategory.ReportingClientSite;
         reporting.minimumImportance = FieldImportance.Required;
@@ -56,7 +56,9 @@ public class AccountOperatorModel extends AbstractModel {
 		salesRepUser.alias = "SalesRepUser";
 		salesRepUser.minimumImportance = FieldImportance.Required;
 
-		return spec;
+        spec.join(AccountTable.LastLogin);
+
+        return spec;
 	}
 
 	@Override
