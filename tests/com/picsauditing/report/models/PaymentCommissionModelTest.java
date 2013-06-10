@@ -1,86 +1,63 @@
 package com.picsauditing.report.models;
 
-import static com.picsauditing.util.Assert.assertContains;
-import static com.picsauditing.util.Assert.assertEqualsToTheSecond;
-import static com.picsauditing.util.Assert.assertNotContains;
-import static junit.framework.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.UserAccess;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.picsauditing.jpa.entities.Filter;
+import java.util.*;
 
-public class PaymentCommissionModelTest extends ModelTest {
-	private PaymentCommissionModel model;
+import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertNotContains;
+import static junit.framework.Assert.assertEquals;
 
-	@Before
-	public void setUp() {
-		super.setUp();
-		model = new PaymentCommissionModel(permissions);
-	}
+public class PaymentCommissionModelTest {
+    private PaymentCommissionModel model;
+    private Permissions permissions;
 
-	@Ignore
-	public void testAvailableFields() throws Exception {
-		availableFields = model.getAvailableFields();
+    @Before
+    public void setUp() {
+        permissions = EntityFactory.makePermission();
+        model = new PaymentCommissionModel(permissions);
+    }
 
-		excludedFields.add("AccountFax");
-		includedFields.add("InvoiceCommissionRecipientUserName");
-		includedFields.add("InvoiceDueDate");
-		includedFields.add("AccountContactEmail");
-		includedFields.add("PaymentCommissionPaymentCheckNumber");
-		
-		checkFields();
-	}
+    @Test
+    public void testAvailableFields_activationPointsShouldBeRounded() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.SalesCommission);
 
-	@Test
-	public void testAvailableFields_activationPointsShouldBeRounded() throws Exception {
-		setupSalesCommissionPermission();
+        Field activationPointsField = model.getAvailableFields().get("PaymentCommissionActivationPoints".toUpperCase());
+        String activationPointsDatabaseColumnName = activationPointsField.getDatabaseColumnName();
+        assertEquals("ROUND(PaymentCommission.activationpoints, 2)", activationPointsDatabaseColumnName);
+    }
 
-		availableFields = model.getAvailableFields();
+    @Test
+    public void testWhereClause_otherThanSalesRepsShouldNotBeRestricted() throws Exception {
+        List<Filter> filters = new ArrayList<>();
+        String whereClause = model.getWhereClause(filters);
 
-		Field activationPointsField = availableFields.get("PaymentCommissionActivationPoints".toUpperCase());
-		String activationPointsDatabaseColumnName = activationPointsField.getDatabaseColumnName();
-		assertEquals("ROUND(PaymentCommission.activationpoints, 2)", activationPointsDatabaseColumnName);
-	}
+        assertNotContains("AccountUser.userID = ", whereClause);
+    }
 
-	@Test
-	public void testWhereClause_otherThanSalesRepsShouldNotBeRestricted() throws Exception {
-		List<Filter> filters = new ArrayList<>();
-		String whereClause = model.getWhereClause(filters);
+    @Test
+    public void testWhereClause_salesRepsShouldBeRestricted() throws Exception {
+        permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
+        List<Filter> filters = new ArrayList<>();
+        String whereClause = model.getWhereClause(filters);
 
-		assertNotContains("AccountUser.userID = ", whereClause);
-	}
+        assertContains("AccountUser.userID = ", whereClause);
+    }
 
-	@Test
-	public void testWhereClause_salesRepsShouldBeRestricted() throws Exception {
-		model.permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
-		List<Filter> filters = new ArrayList<>();
-		String whereClause = model.getWhereClause(filters);
+    @Test
+    public void testWhereClause_salesRepsShouldBeRestrictedUnlessTheyreAlsoAManager() throws Exception {
+        permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
+        permissions.getAllInheritedGroupIds().add(User.GROUP_MANAGER);
+        List<Filter> filters = new ArrayList<>();
+        String whereClause = model.getWhereClause(filters);
 
-		assertContains("AccountUser.userID = ", whereClause);
-	}
-
-	@Test
-	public void testWhereClause_salesRepsShouldBeRestrictedUnlessTheyreAlsoAManager() throws Exception {
-		model.permissions.getAllInheritedGroupIds().add(User.GROUP_SALES_REPS);
-		model.permissions.getAllInheritedGroupIds().add(User.GROUP_MANAGER);
-		List<Filter> filters = new ArrayList<>();
-		String whereClause = model.getWhereClause(filters);
-
-		assertNotContains("AccountUser.userID = ", whereClause);
-	}
-
-	private void setupSalesCommissionPermission() {
-		UserAccess userAccess = new UserAccess();
-		userAccess.setOpPerm(OpPerms.SalesCommission);
-		model.permissions.getPermissions().add(userAccess);
-	}
+        assertNotContains("AccountUser.userID = ", whereClause);
+    }
 }

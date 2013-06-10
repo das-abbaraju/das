@@ -50,7 +50,10 @@ public class PaymentCommission extends BaseTable {
 	public void setPaymentAmount(BigDecimal paymentAmount) {
 		this.paymentAmount = paymentAmount;
 	}
-	
+
+    // Does this field really require OpPerms.SalesCommission?
+    // The entire table probably requires it but these two fields don't seem special
+    // Trevor 6/9/2013
 	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getActivationPoints() {
 		return activationPoints;
