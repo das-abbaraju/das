@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.text.Collator;
 import java.util.*;
 
 import com.picsauditing.util.Strings;
@@ -202,12 +203,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public List<Country> getCountryList() {
 		List<Country> countryList = countryDAO.findAll();
-		Collections.sort(countryList, new Comparator<Country>() {
-			public int compare(Country o1, Country o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
+        Collections.sort(countryList, Country.NAME_COMPARATOR);
 		countryList.add(0, countryDAO.find("GB"));
 		countryList.add(0, countryDAO.find("CA"));
 		countryList.add(0, countryDAO.find("US"));
@@ -245,11 +241,7 @@ public class AccountActionSupport extends PicsActionSupport {
 			result = countrySubdivisionDAO.findByCountries(validCountriesWithSubdivisions, negative);
 		}
 
-		Collections.sort(result, new Comparator<CountrySubdivision>() {
-			public int compare(CountrySubdivision o1, CountrySubdivision o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
+		Collections.sort(result, CountrySubdivision.NAME_COMPARATOR);
 
 		return result;
 	}

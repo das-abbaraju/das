@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.Collator;
 import java.util.*;
 
 @Entity
@@ -31,6 +32,13 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(US_ISO_CODE, CANADA_ISO_CODE)));
 
+    public static final Comparator<Country> NAME_COMPARATOR =  new Comparator<Country>() {
+        Collator collator = Collator.getInstance();
+
+        public int compare(Country o1, Country o2) {
+            return collator.compare(o1.getName(), o2.getName());
+        }
+    };
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	/*

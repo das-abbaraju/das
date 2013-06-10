@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
+import java.text.Collator;
+import java.util.Comparator;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -20,6 +22,14 @@ import org.json.simple.JSONObject;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class CountrySubdivision extends BaseTranslatable implements Comparable<CountrySubdivision>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = -7010252482295453919L;
+
+    public static final Comparator<CountrySubdivision> NAME_COMPARATOR =  new Comparator<CountrySubdivision>() {
+        Collator collator = Collator.getInstance();
+
+        public int compare(CountrySubdivision o1, CountrySubdivision o2) {
+            return collator.compare(o1.getName(), o2.getName());
+        }
+    };
 
 	protected String isoCode;
 	protected TranslatableString name;
