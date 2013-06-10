@@ -72,12 +72,12 @@ public class CertificateFileUploadTest extends PicsTest {
 		// Complete
 		cao.changeStatus(AuditStatus.Complete, null);
 		Whitebox.invokeMethod(test, "certificateUploadStatusAdjustments", data);
-		assertEquals(AuditStatus.Incomplete, cao.getStatus());
+		assertEquals(AuditStatus.Resubmitted, cao.getStatus());
 
 		// Approved
 		cao.changeStatus(AuditStatus.Approved, null);
 		Whitebox.invokeMethod(test, "certificateUploadStatusAdjustments", data);
-		assertEquals(AuditStatus.Incomplete, cao.getStatus());
+		assertEquals(AuditStatus.Resubmitted, cao.getStatus());
 	}
 
 	private ContractorAudit setUpInsurancePolicy() {
