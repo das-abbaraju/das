@@ -11,7 +11,7 @@ import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -271,7 +271,7 @@ public final class ReportUtil {
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
 												   SqlFunction[] methods, Locale locale) {
 		for (Report report : reports) {
-			Map<String, Field> availableFields = ModelFactory
+			Map<String, Field> availableFields = ReportModelFactory
 					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
 
 			for (Field field : availableFields.values()) {

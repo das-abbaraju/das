@@ -9,9 +9,9 @@ import com.picsauditing.report.tables.*;
 import java.util.List;
 import java.util.Map;
 
-public class ContractorFeeModel extends AbstractModel {
+public class ContractorFeesModel extends AbstractModel {
 
-	public ContractorFeeModel(Permissions permissions) {
+	public ContractorFeesModel(Permissions permissions) {
 		super(permissions, new ContractorFeeTable());
 	}
 

@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
@@ -22,7 +22,7 @@ public class SqlBuilder {
 
 	public SelectSQL initializeReportAndBuildSql(Report report, Permissions permissions) throws ReportValidationException {
 		// todo: Consider making the model, including it's available fields, a transient property of the report.
-		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
+		AbstractModel model = ReportModelFactory.build(report.getModelType(), permissions);
 		Map<String, Field> availableFields = model.getAvailableFields();
 		report = initializeReport(report, availableFields, permissions);
 		SelectSQL selectSQL = buildSelectSql(report, availableFields, model);

@@ -14,7 +14,7 @@ import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -92,7 +92,7 @@ public class Autocompleter extends PicsActionSupport {
 				throw new RecordNotFoundException("Report " + reportId + " was not found in the database");
 			}
 
-			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions)
+			Map<String, Field> availableFields = ReportModelFactory.build(report.getModelType(), permissions)
 					.getAvailableFields();
 			Field field = availableFields.get(fieldId.toUpperCase());
 

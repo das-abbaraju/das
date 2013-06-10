@@ -9,14 +9,14 @@ import com.picsauditing.util.Strings;
 import java.util.List;
 import java.util.Map;
 
-public class ContractorAuditFileModel extends AbstractModel {
+public class ContractorAuditFilesModel extends AbstractModel {
 
     private static final String AUDIT_OPERATOR = "AuditOperator";
     private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
 	public static final String ContractorAuditFile = "ContractorAuditFile";
 
-	public ContractorAuditFileModel(Permissions permissions) {
+	public ContractorAuditFilesModel(Permissions permissions) {
 		super(permissions, new ContractorAuditFileTable());
 	}
 

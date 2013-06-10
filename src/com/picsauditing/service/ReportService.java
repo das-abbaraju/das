@@ -17,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.models.ReportModelFactory;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -44,7 +45,6 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
@@ -76,7 +76,7 @@ public class ReportService {
 			responseJson.put(LEVEL_REPORT, reportJson);
 		}
 
-		AbstractModel reportModel = ModelFactory.build(report.getModelType(), reportContext.permissions);
+		AbstractModel reportModel = ReportModelFactory.build(report.getModelType(), reportContext.permissions);
 		if (reportContext.includeColumns) {
 			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
 			responseJson.put(LEVEL_COLUMNS, columnsJson);
@@ -352,7 +352,7 @@ public class ReportService {
 	}
 
 	public JSONObject buildSqlFunctionsJson(ModelType modelType, String fieldId, Permissions permissions) throws Exception {
-		AbstractModel model = ModelFactory.build(modelType, permissions);
+		AbstractModel model = ReportModelFactory.build(modelType, permissions);
 		Field field = model.getAvailableFields().get(fieldId.toUpperCase());
 
 		if (field == null) {

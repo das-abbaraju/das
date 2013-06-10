@@ -12,7 +12,7 @@ import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
 
 @SuppressWarnings("serial")
@@ -47,7 +47,7 @@ public class ReportTester extends PicsActionSupport {
 
 			ModelType modelType = report.getModelType();
 
-			AbstractModel model = ModelFactory.build(modelType, permissions);
+			AbstractModel model = ReportModelFactory.build(modelType, permissions);
 
 			availableFields = model.getAvailableFields();
 

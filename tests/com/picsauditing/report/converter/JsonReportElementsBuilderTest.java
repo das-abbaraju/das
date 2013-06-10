@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
+import com.picsauditing.report.models.ReportsModel;
 import org.json.simple.JSONArray;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,10 +23,8 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.ReportUtil;
-import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.models.ReportModel;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 
@@ -36,7 +35,7 @@ public class JsonReportElementsBuilderTest {
 	@Mock
 	protected I18nCache i18nCache;
 	@Mock
-	private ReportModel reportModel;
+	private ReportsModel reportsModel;
 
 	private final int USER_ID = 123;
 	private final int ACCOUNT_ID = Account.PicsID;
@@ -93,14 +92,14 @@ public class JsonReportElementsBuilderTest {
 
 		Map<String, Field> fieldsMap = new HashMap<String, Field>();
 		fieldsMap.put("DONT_CARE", field);
-		when(reportModel.getAvailableFields()).thenReturn(fieldsMap);
+		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
 		when(i18nCache.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + fieldName);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
-		JSONArray jsonArray = JsonReportElementsBuilder.buildColumns(reportModel, permissions);
+		JSONArray jsonArray = JsonReportElementsBuilder.buildColumns(reportsModel, permissions);
 		String jsonString = jsonArray.toString();
 
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);
@@ -137,14 +136,14 @@ public class JsonReportElementsBuilderTest {
 
 		Map<String, Field> fieldsMap = new HashMap<String, Field>();
 		fieldsMap.put("DONT_CARE", field);
-		when(reportModel.getAvailableFields()).thenReturn(fieldsMap);
+		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
 		when(i18nCache.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + fieldName);
 		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
-		JSONArray jsonArray = JsonReportElementsBuilder.buildFilters(reportModel, permissions);
+		JSONArray jsonArray = JsonReportElementsBuilder.buildFilters(reportsModel, permissions);
 		String jsonString = jsonArray.toString();
 
 		assertJson(REPORT_ELEMENT_FIELD_ID, fieldName, jsonString);

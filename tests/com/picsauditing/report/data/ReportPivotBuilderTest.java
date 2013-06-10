@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.models.ReportModelFactory;
 import junit.framework.Assert;
 
 import org.json.simple.JSONArray;
@@ -21,7 +22,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 
 // Until we start to support and use Pivot Tables, ignore these tests
@@ -44,7 +44,7 @@ public class ReportPivotBuilderTest {
 
 		columns = new ArrayList<Column>();
 		Permissions permissions = EntityFactory.makePermission();
-		AbstractModel table = ModelFactory.build(ModelType.Contractors, permissions);
+		AbstractModel table = ReportModelFactory.build(ModelType.Contractors, permissions);
 		availableFields = table.getAvailableFields();
 	}
 

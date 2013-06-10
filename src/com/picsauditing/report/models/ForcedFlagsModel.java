@@ -9,11 +9,11 @@ import com.picsauditing.util.Strings;
 import java.util.List;
 import java.util.Map;
 
-public class ForcedFlagModel extends AbstractModel {
+public class ForcedFlagsModel extends AbstractModel {
 
 	public static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
-	public ForcedFlagModel(Permissions permissions) {
+	public ForcedFlagsModel(Permissions permissions) {
 		super(permissions, new ForcedFlagView());
 	}
 

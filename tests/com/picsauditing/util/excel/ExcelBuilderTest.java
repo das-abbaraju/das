@@ -22,7 +22,7 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
 
 public class ExcelBuilderTest {
@@ -36,7 +36,7 @@ public class ExcelBuilderTest {
 	public void testBuild() throws Exception {
 		{
 			Permissions permissions = EntityFactory.makePermission();
-			AbstractModel table = ModelFactory.build(ModelType.Contractors, permissions);
+			AbstractModel table = ReportModelFactory.build(ModelType.Contractors, permissions);
 			EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
 			availableFields = table.getAvailableFields();
 		}

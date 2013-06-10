@@ -10,11 +10,11 @@ import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
 
-public class ForcedFlagPercentModel extends AbstractModel {
+public class ForcedFlagPercentsModel extends AbstractModel {
 
     public static final String FORCED_FLAG = "ForcedFlag";
 
-    public ForcedFlagPercentModel(Permissions permissions) {
+    public ForcedFlagPercentsModel(Permissions permissions) {
         super(permissions, new ForcedFlagPercentageView());
     }
 

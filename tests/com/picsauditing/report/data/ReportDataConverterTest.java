@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.picsauditing.report.models.ContractorsModel;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.junit.AfterClass;
@@ -26,7 +27,6 @@ import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
-import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;
 
 public class ReportDataConverterTest {
@@ -93,7 +93,7 @@ public class ReportDataConverterTest {
 	}
 
 	public List<Column> makeColumns(Permissions permissions) {
-		AccountContractorModel model = new AccountContractorModel(permissions);
+		ContractorsModel model = new ContractorsModel(permissions);
 		Map<String, Field> availableFields = model.getAvailableFields();
 
 		List<Column> columns = new ArrayList<Column>();
