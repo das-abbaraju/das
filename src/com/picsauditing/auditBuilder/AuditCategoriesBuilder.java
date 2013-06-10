@@ -80,14 +80,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		// Prune Rules
 		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAuditAnswers(rules, conAudit);
-		if (tags.size() > 0 || answers.size() > 0) {
 			Iterator<AuditCategoryRule> iterator = rules.iterator();
 			while (iterator.hasNext()) {
 				AuditCategoryRule rule = iterator.next();
 				if (!isValid(rule, answers, tags))
 					iterator.remove();
 			}
-		}
 
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 			if (!category.isCurrent())

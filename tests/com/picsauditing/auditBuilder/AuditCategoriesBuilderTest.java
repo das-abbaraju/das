@@ -157,4 +157,68 @@ public class AuditCategoriesBuilderTest {
 	private AuditData wrapPrivateMethodCall(AuditCategoriesBuilder categoryBuilder, ContractorAudit audit, int currentQuestionId) throws Exception { 
 		return Whitebox.invokeMethod(categoryBuilder, "findAnswer", audit,currentQuestionId);
 	}
+
+	@Test
+	public void testDependentAudit() throws Exception {
+		setUp();
+
+		ContractorAudit audit = makeAudit(300);
+		ContractorAudit dependentAudit = makeAudit(301);
+		contractor.getAudits().add(audit);
+		contractor.getAudits().add(dependentAudit);
+
+		AuditCategory cat1 = EntityFactory.makeAuditCategory(1);
+		AuditCategory cat2 = EntityFactory.makeAuditCategory(2);
+		audit.getAuditType().getCategories().add(cat1);
+		audit.getAuditType().getCategories().add(cat2);
+
+		AuditCategoryRule rule1 = makeRule(audit.getAuditType(), cat1);
+		AuditCategoryRule rule2 = makeRule(audit.getAuditType(), cat2);
+		rule2.setDependentAuditType(dependentAudit.getAuditType());
+		rule2.setDependentAuditStatus(AuditStatus.Submitted);
+		List<AuditCategoryRule> catRules = new ArrayList<>();
+		catRules.add(rule1);
+		catRules.add(rule2);
+		when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
+
+		AuditCategoriesBuilder test = new AuditCategoriesBuilder(ruleCache, contractor);
+		Set<AuditCategory> categories;
+
+		// dependent no there
+		categories = test.calculate(audit);
+		assertEquals(1, categories.size());
+
+		// dependent there
+		catRules.clear();
+		catRules.add(rule1);
+		catRules.add(rule2);
+		dependentAudit.getOperators().get(0).changeStatus(AuditStatus.Submitted, null);
+		categories = test.calculate(audit);
+		assertEquals(2, categories.size());
+	}
+
+	private AuditCategoryRule makeRule(AuditType auditType, AuditCategory category) {
+		AuditCategoryRule rule = new AuditCategoryRule();
+		rule.setAuditCategory(category);
+		rule.setAuditType(auditType);
+
+		return rule;
+	}
+
+	private ContractorAudit makeAudit(int auditTypeId) {
+		AuditType auditType = EntityFactory.makeAuditType(auditTypeId);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(auditTypeId, contractor);
+		audit.setAuditType(auditType);
+
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setOperator(operator);
+		caop.setCao(cao);
+		cao.getCaoPermissions().add(caop);
+
+		cao.changeStatus(AuditStatus.Pending, null);
+
+		return audit;
+	}
 }
