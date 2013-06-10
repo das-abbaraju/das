@@ -46,7 +46,6 @@ public abstract class SubscriptionBuilder {
                 sender.sendNow(queue);
             }
 
-            subscription.setLastSent(new Date());
         } else {
             logger.error("SubscriptionBuilder.buildEmail returned null: " +
                     subscription.getSubscription().toString() +
@@ -56,6 +55,7 @@ public abstract class SubscriptionBuilder {
             );
         }
 
+        subscription.setLastSent(new Date());
         subscriptionDAO.save(subscription);
         tokens.clear();
     }
