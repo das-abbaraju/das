@@ -1,5 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -60,6 +65,7 @@ public class InvoiceItem extends BaseTable {
 		this.invoiceFee = invoiceFee;
 	}
 
+    @ReportField(type = FieldType.Float, category = FieldCategory.Invoicing, importance = FieldImportance.Required)
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -69,6 +75,7 @@ public class InvoiceItem extends BaseTable {
 	}
 
 	@Column(length = 100)
+    @ReportField(category = FieldCategory.Invoicing, importance = FieldImportance.Average)
 	public String getDescription() {
 		return description;
 	}
