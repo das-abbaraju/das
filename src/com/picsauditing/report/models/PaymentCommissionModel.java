@@ -100,7 +100,11 @@ public class PaymentCommissionModel extends AbstractModel {
 	}
 
 	private void formatActivationPoints(Map<String, Field> fields) {
+        // TODO Adding SQL should be done on the ReportField, not here
 		Field activationPointsField = fields.get("PaymentCommissionActivationPoints".toUpperCase());
+        if (activationPointsField == null) {
+            return;
+        }
 		String activationPointsDatabaseColumnName = activationPointsField.getDatabaseColumnName();
 		String formattedColumnName = "ROUND(" + activationPointsDatabaseColumnName + ", 2)";
 		activationPointsField.setDatabaseColumnName(formattedColumnName);

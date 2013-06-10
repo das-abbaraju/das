@@ -1,0 +1,12 @@
+AccountInformation: AccountID
+AccountInformation: AccountName
+DocumentsAndAudits: AuditAuditFor
+DocumentsAndAudits: AuditEffectiveDate
+DocumentsAndAudits: AuditExpiresDate
+DocumentsAndAudits: AuditID
+DocumentsAndAudits: AuditTypeName
+DocumentsAndAudits: ContractorAuditFileDescription
+DocumentsAndAudits: ContractorAuditFileFileType
+DocumentsAndAudits: ContractorAuditFileID
+DocumentsAndAudits: ContractorAuditFileReviewed
+DocumentsAndAudits: ContractorAuditFileUploadDate

@@ -2,6 +2,7 @@ package com.picsauditing.report.models;
 
 import com.google.common.base.Joiner;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import org.approvaltests.Approvals;
@@ -27,14 +28,92 @@ public class AllModelsTest {
     }
 
     @Test
-    public void testUserModel() throws Exception {
-        model = new UserModel(permissions);
+    public void testAccountContractorModel_Admin() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        permissions.setAccountType("Admin");
+        model = new AccountContractorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testAccountContractorModel_Corporate() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new AccountContractorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testAccountContractorAuditModel() throws Exception {
+        model = new AccountContractorAuditModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testAccountContractorAuditOperatorModel() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        model = new AccountContractorAuditOperatorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testAccountOperatorModel() throws Exception {
+        model = new AccountOperatorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testContractorFlagDataModel() throws Exception {
+        model = new ContractorFlagDataModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testContractorOperatorModel() throws Exception {
+        model = new ContractorOperatorModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testContractorAuditFileModel() throws Exception {
+        model = new ContractorAuditFileModel(permissions);
         Approvals.verify(getJoin());
     }
 
     @Test
     public void testEmployeeCompetencyModel() throws Exception {
         model = new EmployeeCompetencyModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testInvoiceModel() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+        model = new InvoiceModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testOperatorAccountUserModel() throws Exception {
+        model = new OperatorAccountUserModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testOperatorUserModel() throws Exception {
+        model = new OperatorUserModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testPaymentCommissionModel() throws Exception {
+        model = new PaymentCommissionModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testUserModel() throws Exception {
+        model = new UserModel(permissions);
         Approvals.verify(getJoin());
     }
 

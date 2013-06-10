@@ -3,10 +3,7 @@ package com.picsauditing.report.models;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.ContractorAuditFileTable;
-import com.picsauditing.report.tables.ContractorAuditTable;
-import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,16 +24,19 @@ public class ContractorAuditFileModel extends AbstractModel {
 		// join from ContractorAuditFileTable to ContractorAuditTable
 		ModelSpec contractorAudit = contractorAuditFile.join(ContractorAuditFileTable.ContractorAudit);
 		contractorAudit.alias = "Audit";    // Needs to agree with "AuditExpiresDate" in order by
+        contractorAudit.minimumImportance = FieldImportance.Average;
 
 		// We need to join from ContractorAuditTable to ContractorAccountTable, but since that join is not available in
 		// ContractorAuditTable, we'll join to ContractorTable instead (which is actually the contractor_info db table)
 		// as an intermediate step.
 		ModelSpec contractorInfo = contractorAudit.join(ContractorAuditTable.Contractor);
 		contractorInfo.alias = "ContractorInfo";
+        contractorInfo.minimumImportance = FieldImportance.Required;
 
 		// Now, join from ContractorTable to ContractorAccountTable
 		ModelSpec contractorAccount = contractorInfo.join(ContractorTable.Account);
 		contractorAccount.alias = "Account"; // Needs to agree to the param in the setUrl method below
+        contractorAccount.minimumImportance = FieldImportance.Required;
 
 		return contractorAuditFile;
 	}

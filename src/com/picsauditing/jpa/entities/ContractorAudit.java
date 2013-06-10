@@ -468,7 +468,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits)
+	@ReportField(type = FieldType.String, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public String getAuditFor() {
 		return auditFor;
 	}
