@@ -664,6 +664,8 @@ InvoiceCurrency
 InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
+InvoiceItemAmount
+InvoiceItemDescription
 InvoiceItemFeeFeeClass
 InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
@@ -956,6 +958,8 @@ InvoiceCurrency
 InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
+InvoiceItemAmount
+InvoiceItemDescription
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber

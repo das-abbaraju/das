@@ -25,7 +25,7 @@ public class ReportModelFactory {
 
     private static AbstractModel getModelObjectFromClassName(String className, Permissions permissions) throws Exception {
         Class myClass = Class.forName(className);
-        Class[] types = {permissions.getClass()};
+        Class[] types = {Permissions.class};
         Constructor constructor = myClass.getConstructor(types);
         Object[] parameters = {permissions};
         return (AbstractModel) constructor.newInstance(parameters);
