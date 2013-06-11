@@ -461,7 +461,7 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 			// legacyMenu.addChild(getText("GraphEmrRates.title"),
 			// "GraphEmrRates.action?years=2010", "GraphEmrRates");
-			legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
+			legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2012",
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
@@ -479,7 +479,7 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
 			legacyMenu.addChild(getText("ReportFatalities.title"),
-					"ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate",
+					"ReportFatalities.action?filter.auditFor=2012&filter.shaType=OSHA&filter.shaLocation=Corporate",
 					"ReportFatalities");
 		}
 	}

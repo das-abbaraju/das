@@ -543,13 +543,13 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 //			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
-			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010", "ReportEmrRates");
+			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2012", "ReportEmrRates");
 			if (permissions.isAuditor()) {
 				subMenu.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
-			final String url = "ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			final String url = "ReportFatalities.action?filter.auditFor=2012&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild(getTitle("ReportFatalities"), url, "ReportFatalities");
 		}
 		if (permissions.hasPermission(OpPerms.ForcedFlagsReport)) {
