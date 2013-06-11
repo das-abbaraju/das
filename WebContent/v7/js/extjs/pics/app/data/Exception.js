@@ -21,6 +21,11 @@ Ext.define('PICS.data.Exception', {
             message: PICS.text('Report.execute.unknownError.message')
         };
 
+        var timeout_error = {
+            title: PICS.text('Report.execute.timeoutError.title'),
+            message: PICS.text('Report.execute.timeoutError.message', location.href)
+        }
+
         function getErrorFromStatusCode(code) {
             return error_codes[code] || getErrorFromUnknownStatusCode(code);
         }
@@ -57,6 +62,11 @@ Ext.define('PICS.data.Exception', {
 
             PICS.createStackTrace();
             showException(title, message, callback);
+        }
+
+        function handleTimeoutException(response, callback) {
+            PICS.createStackTrace();
+            showException(timeout_error.title, timeout_error.message, callback);
         }
 
         function handleUnknown2xxException(response, callback) {
@@ -121,8 +131,10 @@ Ext.define('PICS.data.Exception', {
             handleException: function (options) {
                 var response = options.response,
                     callback = typeof options.callback == 'function' ? options.callback : function () {};
-                
-                if (hasKnown2xxException(response)) {
+
+                if (response.timedout) {
+                    handleTimeoutException(response, callback);
+                } else if (hasKnown2xxException(response)) {
                     handleKnown2xxException(response, callback);
                 } else if (hasUnknown2xxException(response)) {
                     handleUnknown2xxException(response, callback);
@@ -140,7 +152,7 @@ Ext.define('PICS.data.Exception', {
                     return false;
                 }
 
-                return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
+                return response.timedout || hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };
     }())

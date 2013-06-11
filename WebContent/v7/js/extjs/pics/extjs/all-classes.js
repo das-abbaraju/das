@@ -66011,6 +66011,11 @@ Ext.define('PICS.data.Exception', {
             message: PICS.text('Report.execute.unknownError.message')
         };
 
+        var timeout_error = {
+            title: PICS.text('Report.execute.timeoutError.title'),
+            message: PICS.text('Report.execute.timeoutError.message', location.href)
+        }
+
         function getErrorFromStatusCode(code) {
             return error_codes[code] || getErrorFromUnknownStatusCode(code);
         }
@@ -66047,6 +66052,11 @@ Ext.define('PICS.data.Exception', {
 
             PICS.createStackTrace();
             showException(title, message, callback);
+        }
+
+        function handleTimeoutException(response) {
+            PICS.createStackTrace();
+            showException(timeout_error.title, timeout_error.message);
         }
 
         function handleUnknown2xxException(response, callback) {
@@ -66108,11 +66118,17 @@ Ext.define('PICS.data.Exception', {
                 return unknown_error;
             },
 
+            getTimeoutError: function () {
+                return timeout_error;
+            },
+
             handleException: function (options) {
                 var response = options.response,
                     callback = typeof options.callback == 'function' ? options.callback : function () {};
                 
-                if (hasKnown2xxException(response)) {
+                if (response.timedout) {
+                    handleTimeoutException(response);
+                } else if (hasKnown2xxException(response)) {
                     handleKnown2xxException(response, callback);
                 } else if (hasUnknown2xxException(response)) {
                     handleUnknown2xxException(response, callback);
@@ -66130,7 +66146,7 @@ Ext.define('PICS.data.Exception', {
                     return false;
                 }
 
-                return hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
+                return response.timedout || hasKnown2xxException(response) || hasUnknown2xxException(response) || hasNon2xxException(response);
             }
         };
     }())
@@ -66312,7 +66328,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         } else {
                             var data = response.responseText,
                                 json = Ext.JSON.decode(data);
-    
+
                             loadReportStore(json);
     
                             loadColumnStore(json);
@@ -66353,7 +66369,7 @@ Ext.define('PICS.data.ServerCommunication', {
                         if (!response) {
                             response = createResponse(operation, jsonData);
                         }
-    
+
                         if (PICS.data.Exception.hasException(response)) {
                             PICS.data.Exception.handleException({
                                 response: response
@@ -66653,6 +66669,19 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 includeColumns: true,
                 includeFilters: true,
                 includeData: true
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getLoadReportUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi.action?';
+
+            var params = {
+                reportId: report_id,
+                includeReport: true
             };
 
             return path + Ext.Object.toQueryString(params);

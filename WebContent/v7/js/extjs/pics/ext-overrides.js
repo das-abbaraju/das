@@ -1,13 +1,21 @@
 Ext.define('PICS.Overrides', {
     requires: [
         'Ext.data.writer.Json',
-        'Ext.menu.Menu'
+        'Ext.menu.Menu',
+        'Ext.Ajax'
     ]
 }, function () {
     Ext.log = function (message) {
         console.log(message);
     };
-    
+
+    /*
+     * Set AJAX requests to timeout after one minute.
+     */
+    Ext.override(Ext.Ajax, {
+        timeout: 60000
+    });
+
     /*
      * This function overrides the default implementation of
      * json writer. Any hasMany relationships will be submitted

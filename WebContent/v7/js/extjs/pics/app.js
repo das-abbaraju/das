@@ -52,6 +52,19 @@ Ext.application({
             }
         });
 
+        // Attached to PICS global b/c IE8's console does not display properties of a returned object (e.g., from ExtJS's class getters)
+        Ext.apply(PICS, {
+            _stack_trace: [], // Cannot make it truly private for same reason as above
+
+            createStackTrace: function () {
+                this._stack_trace = arguments.callee.caller.trace();
+            },
+
+            getStackTrace: function () {
+                return this._stack_trace;
+            }
+        });
+
         Ext.apply(PICS, {
             updateDocumentTitle: this.updateDocumentTitle
         });
