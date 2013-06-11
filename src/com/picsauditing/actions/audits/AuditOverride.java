@@ -138,7 +138,7 @@ public class AuditOverride extends ContractorDocuments {
 		conAudit.setManuallyAdded(true);
 		conAudit.setAuditColumns(permissions);
 		conAudit.setContractorAccount(contractor);
-
+		conAudit.setPreviousAudit(auditDao.findPreviousAudit(conAudit));
 		contractor.getAudits().add(conAudit);
 
 		auditDao.save(conAudit);

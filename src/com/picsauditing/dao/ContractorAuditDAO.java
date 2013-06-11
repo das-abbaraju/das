@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditDataHistory;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
@@ -511,5 +500,30 @@ public class ContractorAuditDAO extends PicsDAO {
 		}
 
 		return Collections.emptyList();
+	}
+
+	public ContractorAudit findPreviousAudit(ContractorAudit audit) {
+		ContractorAudit previousAudit = null;
+
+		if (audit.getAuditType().isRenewable()) {
+			return null;
+		}
+
+		if (audit.getAuditType().isHasMultiple() && audit.getAuditType().getId() != AuditType.ANNUALADDENDUM) {
+			return null;
+		}
+
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = :conId "
+				+ " AND t.auditType.id = :auditTypeId AND t.creationDate < :creationDate "
+				+ " ORDER BY t.creationDate DESC");
+		query.setParameter("conId", audit.getContractorAccount().getId());
+		query.setParameter("auditTypeId", audit.getAuditType().getId());
+		query.setParameter("creationDate", audit.getCreationDate());
+		List<ContractorAudit> list = query.getResultList();
+
+		if (list.size() > 0)
+			previousAudit = list.get(0);
+
+		return previousAudit;
 	}
 }

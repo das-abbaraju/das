@@ -91,6 +91,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private List<AuditData> data = new ArrayList<AuditData>();
 	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 	private Map<AuditStatus, Integer> caoStats = null;
+	private ContractorAudit previousAudit;
 
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
@@ -197,6 +198,16 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setClosingAuditor(User closingAuditor) {
 		this.closingAuditor = closingAuditor;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "previousAuditID")
+	public ContractorAudit getPreviousAudit() {
+		return previousAudit;
+	}
+
+	public void setPreviousAudit(ContractorAudit previousAudit) {
+		this.previousAudit = previousAudit;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

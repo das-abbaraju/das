@@ -526,6 +526,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			conAudit.setManuallyAdded(true);
 			audit.setAuditColumns(new User(User.SYSTEM));
 			contractor.getAudits().add(audit);
+			conAudit.setPreviousAudit(auditDao.findPreviousAudit(conAudit));
 			auditDao.save(conAudit);
 			contractorAccountDao.save(contractor);
 		}

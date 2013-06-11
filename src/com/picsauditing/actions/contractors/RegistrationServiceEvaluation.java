@@ -881,7 +881,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 			ssip = new ContractorAudit();
 			ssip.setContractorAccount(contractor);
 			ssip.setAuditType(new AuditType(AuditType.SSIP));
+			ssip.setPreviousAudit(auditDao.findPreviousAudit(ssip));
 			ssip.setAuditColumns(new User(User.SYSTEM));
+			auditDao.save(ssip);
 		}
 
 		// Add the categories that are required for this contractor

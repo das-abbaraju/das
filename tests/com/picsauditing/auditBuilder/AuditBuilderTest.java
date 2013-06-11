@@ -79,6 +79,7 @@ public class AuditBuilderTest extends PicsTest {
 
         Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
         Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+		Whitebox.setInternalState(auditBuilder, "conAuditDao", auditDao);
 
 		typeRules.clear();
 		typeRuleCache.clear();
@@ -134,7 +135,7 @@ public class AuditBuilderTest extends PicsTest {
 					.setAuditCategory(category).setOperatorAccount(nueOperator));
 		}
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
 				.thenReturn(
 						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 
@@ -222,7 +223,7 @@ public class AuditBuilderTest extends PicsTest {
 				.setAuditTypeId(AuditType.ANNUALADDENDUM));
 		addCategoryRules(null);
 
-		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
 				.thenReturn(
 						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 
@@ -240,6 +241,8 @@ public class AuditBuilderTest extends PicsTest {
 				.makeAuditType(AuditType.INTEGRITYMANAGEMENT);
 		implementationType.setRenewable(false);
 		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(implementationType);
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
 				.thenReturn(implementationType);
 
 		auditBuilder.buildAudits(contractor);

@@ -85,6 +85,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 			ca.getAuditType().setId(5); // Field Audit
 			ca.setManuallyAdded(true);
 			ca.setAuditColumns(permissions);
+			ca.setPreviousAudit(conAuditDAO.findPreviousAudit(ca));
 			ca = conAuditDAO.save(ca);
 
 			// TODO do we need to create caos?

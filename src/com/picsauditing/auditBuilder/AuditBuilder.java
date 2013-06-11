@@ -89,9 +89,10 @@ public class AuditBuilder {
 				requiredAuditTypes.add(auditType);
 				if (auditType.isAnnualAddendum()) {
 					auditType = reconnectAuditType(auditType);
-					addAnnualUpdate(contractor, year - 1, auditType);
-					addAnnualUpdate(contractor, year - 2, auditType);
+					// not the annual updates must be done in this order to find their previous audit
 					addAnnualUpdate(contractor, year - 3, auditType);
+					addAnnualUpdate(contractor, year - 2, auditType);
+					addAnnualUpdate(contractor, year - 1, auditType);
 				} else {
 					boolean found = false;
 					for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -141,6 +142,13 @@ public class AuditBuilder {
 			}
 		}
 
+		for (ContractorAudit audit: contractor.getAudits()) {
+			ContractorAudit previous = conAuditDao.findPreviousAudit(audit);
+			if (previous != null)
+				System.out.println(audit.getAuditType().getName() + " (" + audit.getId() + ") prev: " + previous.getAuditType().getName() + " (" + previous.getId() + ")");
+			else
+				System.out.println(audit.getAuditType().getName() + " (" + audit.getId() + ") prev: none");
+		}
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
 		/** Generate Categories and CAOs **/
@@ -269,6 +277,7 @@ public class AuditBuilder {
 			ContractorAudit audit = createNewAudit(contractor, auditType);
 			audit.setAuditFor(year);
 			audit.setExpiresDate(DateBean.getWCBExpirationDate(year));
+			audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
 			conAuditDao.save(audit);
 		}
 	}
@@ -294,6 +303,7 @@ public class AuditBuilder {
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
 		audit.setAuditColumns(systemUser);
+		audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
 		contractor.getAudits().add(audit);
 
 		return audit;
@@ -758,6 +768,7 @@ public class AuditBuilder {
 		audit.setCreationDate(startDate.getTime());
 		Date dateToExpire = DateBean.setToEndOfDay(DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire()));
 		audit.setExpiresDate(dateToExpire);
+		audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
 		conAuditDao.save(audit);
 		contractor.getAudits().add(audit);
 	}
