@@ -14,140 +14,144 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+
 public class ContractorDashboardApprovalMessage {
-    @Autowired
-    private ContractorOperatorDAO contractorOperatorDAO;
-    private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
+	@Autowired
+	private ContractorOperatorDAO contractorOperatorDAO;
+	private final Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 
-    public Result getMessage(ContractorOperator contractorOperator, Permissions permissions, List<User> usersWithPermissions, List<User> corporateUsersWithPermissions) {
-        StopWatch stopwatch = new Slf4JStopWatch(profiler);
-        stopwatch.start();
-        if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId())) {
-            return Result.ShowNothing;
-        }
-        if (contractorOperator.isWorkingStatus(ApprovalStatus.Rejected)) {
-            return permissions.isCorporate() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
-        }
+	public Result getMessage(ContractorOperator contractorOperator, Permissions permissions, List<User> usersWithPermissions, List<User> corporateUsersWithPermissions) {
+		StopWatch stopwatch = new Slf4JStopWatch(profiler);
+		stopwatch.start();
+		if (contractorOperator.getOperatorAccount().isAutoApproveRelationships()) {
+			return Result.ShowNothing;
+		}
 
-        if (!basicPermissions(contractorOperator.getOperatorAccount().getId(),
-                permissions.getAccountId(), permissions.has(OpPerms.ViewUnApproved),
-                permissions.isApprovesRelationships(), permissions.hasPermission(OpPerms.ContractorApproval))) {
+		if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId())) {
+			return Result.ShowNothing;
+		}
+		if (contractorOperator.isWorkingStatus(ApprovalStatus.Rejected)) {
+			return permissions.isCorporate() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
+		}
 
-            if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending)) {
-                if (!usersWithPermissions.isEmpty()) {
-                    return Result.ShowListOperator;
-                } else if (!corporateUsersWithPermissions.isEmpty()) {
-                    return Result.ShowListCorporate;
-                } else {
-                    return Result.ShowListAccountManager;
-                }
-            }  else {
-                return Result.ShowNothing;
-            }
-        }
-        if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending) && permissions.isOperatorCorporate()) {
+		if (!basicPermissions(permissions.has(OpPerms.ViewUnApproved), permissions.isApprovesRelationships(),
+				permissions.hasPermission(OpPerms.ContractorApproval))) {
 
-            if (canApproveContractors(permissions.isApprovesRelationships(), permissions.hasPermission(OpPerms.ContractorApproval))) {
-                return Result.ShowButtons;
-            } else {
-                if (!usersWithPermissions.isEmpty()) {
-                    return Result.ShowListOperator;
-                } else if (!corporateUsersWithPermissions.isEmpty()) {
-                    return Result.ShowListCorporate;
-                } else {
-                    return Result.ShowListAccountManager;
-                }
-            }
-        }
+			if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending)) {
+				if (!usersWithPermissions.isEmpty()) {
+					return Result.ShowListOperator;
+				} else if (!corporateUsersWithPermissions.isEmpty()) {
+					return Result.ShowListCorporate;
+				} else {
+					return Result.ShowListAccountManager;
+				}
+			} else {
+				return Result.ShowNothing;
+			}
+		}
+		if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending) && permissions.isOperatorCorporate()) {
 
-        if (contractorOperator.isWorkingStatus(ApprovalStatus.Approved) && permissions.isCorporate()) {
-            return getCorporateApprovedStatus(contractorOperator);
-        }
-        stopwatch.stop();
-        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
-        return Result.ShowNothing;
-    }
+			if (canApproveContractors(permissions.isApprovesRelationships(), permissions.hasPermission(OpPerms.ContractorApproval))) {
+				return Result.ShowButtons;
+			} else {
+				if (!usersWithPermissions.isEmpty()) {
+					return Result.ShowListOperator;
+				} else if (!corporateUsersWithPermissions.isEmpty()) {
+					return Result.ShowListCorporate;
+				} else {
+					return Result.ShowListAccountManager;
+				}
+			}
+		}
 
-    private Result getCorporateApprovedStatus(ContractorOperator corporate) {
-        StopWatch stopwatch = new Slf4JStopWatch(profiler);
-        stopwatch.start();
-        List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Rejected, ApprovalStatus.Pending);
-        stopwatch.stop();
-        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
-        return (existing.isEmpty()) ? Result.ShowNothing : Result.ShowEverySiteExceptApprovedOnes;
-    }
+		if (contractorOperator.isWorkingStatus(ApprovalStatus.Approved) && permissions.isCorporate()) {
+			return getCorporateApprovedStatus(contractorOperator);
+		}
+		stopwatch.stop();
+		profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
+		return Result.ShowNothing;
+	}
 
-    private Result getCorporateNotApprovedStatus(ContractorOperator corporate) {
-        StopWatch stopwatch = new Slf4JStopWatch(profiler);
-        stopwatch.start();
-        List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Approved);
-        stopwatch.stop();
-        profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
-        return (existing.isEmpty()) ? Result.ContractorNotApproved : Result.ContractorNotApprovedExpectSomeSites;
-    }
+	private Result getCorporateApprovedStatus(ContractorOperator corporate) {
+		StopWatch stopwatch = new Slf4JStopWatch(profiler);
+		stopwatch.start();
+		List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Rejected, ApprovalStatus.Pending);
+		stopwatch.stop();
+		profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
+		return (existing.isEmpty()) ? Result.ShowNothing : Result.ShowEverySiteExceptApprovedOnes;
+	}
 
-    private boolean isUserAssociatedWithAccount(OperatorAccount operator, int permissionsAccountId) {
+	private Result getCorporateNotApprovedStatus(ContractorOperator corporate) {
+		StopWatch stopwatch = new Slf4JStopWatch(profiler);
+		stopwatch.start();
+		List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Approved);
+		stopwatch.stop();
+		profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
+		return (existing.isEmpty()) ? Result.ContractorNotApproved : Result.ContractorNotApprovedExpectSomeSites;
+	}
 
-        if (operator.getId() == permissionsAccountId)
-            return true;
+	private boolean isUserAssociatedWithAccount(OperatorAccount operator, int permissionsAccountId) {
 
-        for (OperatorAccount parent : operator.getParentOperators()) {
-            if (parent.getId() == permissionsAccountId) ;
-            return true;
-        }
+		if (operator.getId() == permissionsAccountId)
+			return true;
 
-        return false;
-    }
+		for (OperatorAccount parent : operator.getParentOperators()) {
+			if (parent.getId() == permissionsAccountId) ;
+			return true;
+		}
 
-    private boolean canApproveContractors(boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
-        return permissionsApprovesRelationships && permissionsHasPermissionContractorApproval;
-    }
+		return false;
+	}
 
-    private boolean basicPermissions(int coOperatorAccountId, int permissionsAccountId, boolean permissionsHasPermissionViewUnApproved,
-                                            boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
-        return (permissionsHasPermissionViewUnApproved ||
-                canApproveContractors(permissionsApprovesRelationships, permissionsHasPermissionContractorApproval));
-    }
+	private boolean canApproveContractors(boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
+		return permissionsApprovesRelationships && permissionsHasPermissionContractorApproval;
+	}
+
+	private boolean basicPermissions(boolean permissionsHasPermissionViewUnApproved,
+									 boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
+		return (permissionsHasPermissionViewUnApproved ||
+				canApproveContractors(permissionsApprovesRelationships, permissionsHasPermissionContractorApproval));
+	}
 
 
-    public enum Result {
-        ShowButtons, ShowNothing, ContractorNotApprovedWithAccountManager, ContractorNotApproved, ShowListOperator,
-        ShowListCorporate, ContractorNotApprovedExpectSomeSites, ShowEverySiteExceptApprovedOnes, ShowListAccountManager;
+	public enum Result {
+		ShowButtons, ShowNothing, ContractorNotApprovedWithAccountManager, ContractorNotApproved, ShowListOperator,
+		ShowListCorporate, ContractorNotApprovedExpectSomeSites, ShowEverySiteExceptApprovedOnes, ShowListAccountManager;
 
-        public boolean isShowButtons() {
-            return this == ShowButtons;
-        }
+		public boolean isShowButtons() {
+			return this == ShowButtons;
+		}
 
-        public boolean isShowNothing() {
-            return this == ShowNothing;
-        }
+		public boolean isShowNothing() {
+			return this == ShowNothing;
+		}
 
-        public boolean isContractorNotApprovedWithAccountManager() {
-            return this == ContractorNotApprovedWithAccountManager;
-        }
+		public boolean isContractorNotApprovedWithAccountManager() {
+			return this == ContractorNotApprovedWithAccountManager;
+		}
 
-        public boolean isContractorNotApproved() {
-            return this == ContractorNotApproved;
-        }
+		public boolean isContractorNotApproved() {
+			return this == ContractorNotApproved;
+		}
 
-        public boolean isShowListOperator() {
-            return this == ShowListOperator;
-        }
+		public boolean isShowListOperator() {
+			return this == ShowListOperator;
+		}
 
-        public boolean isShowListCorporate() {
-            return this == ShowListCorporate;
-        }
+		public boolean isShowListCorporate() {
+			return this == ShowListCorporate;
+		}
 
-        public boolean isContractorNotApprovedExpectSomeSites() {
-            return this == ContractorNotApprovedExpectSomeSites;
-        }
+		public boolean isContractorNotApprovedExpectSomeSites() {
+			return this == ContractorNotApprovedExpectSomeSites;
+		}
 
-        public boolean isShowEverySiteExceptApprovedOnes() {
-            return this == ShowEverySiteExceptApprovedOnes;
-        }
+		public boolean isShowEverySiteExceptApprovedOnes() {
+			return this == ShowEverySiteExceptApprovedOnes;
+		}
 
-        public boolean isShowListAccountManager() {
-            return this == ShowListAccountManager;
-        }
-    }
+		public boolean isShowListAccountManager() {
+			return this == ShowListAccountManager;
+		}
+	}
 }

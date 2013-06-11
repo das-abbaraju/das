@@ -46,6 +46,15 @@ public class ContractorDashboardApprovalMessageTest {
         assertDisplayResult(Result.ShowButtons, user, contractorOperator, APPROVERS);
     }
 
+	@Test
+	public void testOperatorAutoApprovesRelationships() throws Exception {
+		OperatorAccountBuilder account = OperatorAccount.builder().autoApproveRelationships(true);
+
+		UserBuilder user = standardUser(account);
+		ContractorOperatorBuilder contractorOperator = standardOperator(account).workStatus(ApprovalStatus.Pending);
+		assertDisplayResult(Result.ShowNothing, user, contractorOperator, APPROVERS);
+	}
+
     @Test
     public void testPendingWithoutApprovalPermission() throws Exception {
         OperatorAccountBuilder account = OperatorAccount.builder();

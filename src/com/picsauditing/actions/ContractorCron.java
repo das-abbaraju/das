@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -980,37 +979,39 @@ public class ContractorCron extends PicsActionSupport {
 		Iterator<ContractorOperator> coIter = dblinkedCOs.iterator();
 
 		while (coIter.hasNext()) {
-			ContractorOperator coOperator = coIter.next();
-			OperatorAccount operator = coOperator.getOperatorAccount();
+			ContractorOperator contractorOperator = coIter.next();
+			OperatorAccount operator = contractorOperator.getOperatorAccount();
 
 			if (operator.isCorporate()) {
 				if (!corporateSet.contains(operator)) {
 					// if we have a corporate account in my operator list that
 					// is not in the corporate rollup data map
 					// it shouldn't be in my operator list and should be deleted
-					removalSet.add(coOperator);
+					removalSet.add(contractorOperator);
 					coIter.remove();
 				} else {
 					// will remove existing from Primary CorporateSet to
 					// determine inserts
-					existingCorpCOchanges.put(operator, coOperator);
+					existingCorpCOchanges.put(operator, contractorOperator);
 				}
-			} else { // determining first level of corporate data, and setting
+			} else {
+				// determining first level of corporate data, and setting
 				// up queue to iterate over rest of corporate levels
 
 				// CO stuff
 				// roll up first-level Operator CO data
-				if (operator.getStatus() != AccountStatus.Active && operator.getStatus() != AccountStatus.Demo) {
-					continue;
-				}
+				if (operator.getStatus().isActiveOrDemo() && operator.getCorporateFacilities() != null) {
+					FlagColor operatorFlag = contractorOperator.getFlagColor();
+					WaitingOn operatorWaitingOn = contractorOperator.getWaitingOn();
 
-				if (operator.getCorporateFacilities() != null) {
 					for (Facility facility : operator.getCorporateFacilities()) {
 						OperatorAccount parent = facility.getCorporate();
+						FlagColor parentFlag = findFlagOrDefaultToGreen(corporateRollupFlag, parent);
+						WaitingOn parentWaitingOn = findWaitingOnOrDefaultToNone(corporateRollupWaitingOn, parent);
 
 						corporateUpdateQueue.add(parent);
-						rollupParentFlag(corporateRollupFlag, parent, coOperator.getFlagColor());
-						rollupParentWaitingOn(corporateRollupWaitingOn, parent, coOperator.getWaitingOn());
+						corporateRollupFlag.put(parent, worstFlag(parentFlag, operatorFlag));
+						corporateRollupWaitingOn.put(parent, worstWaitingOn(parentWaitingOn, operatorWaitingOn));
 					}
 				} // otherwise operator has no one to roll up to
 			}
@@ -1023,8 +1024,14 @@ public class ContractorCron extends PicsActionSupport {
 			OperatorAccount parent = corporate.getParent();
 
 			if (parent != null) {
-				rollupParentFlag(corporateRollupFlag, parent, corporateRollupFlag.get(corporate));
-				rollupParentWaitingOn(corporateRollupWaitingOn, parent, corporateRollupWaitingOn.get(corporate));
+				FlagColor corporateFlag = findFlagOrDefaultToGreen(corporateRollupFlag, corporate);
+				WaitingOn corporateWaitingOn = findWaitingOnOrDefaultToNone(corporateRollupWaitingOn, corporate);
+
+				FlagColor parentFlag = findFlagOrDefaultToGreen(corporateRollupFlag, parent);
+				WaitingOn parentWaitingOn = findWaitingOnOrDefaultToNone(corporateRollupWaitingOn, parent);
+
+				corporateRollupFlag.put(parent, worstFlag(parentFlag, corporateFlag));
+				corporateRollupWaitingOn.put(parent, worstWaitingOn(parentWaitingOn, corporateWaitingOn));
 
 				// putting parent at the end of the queue for later calculation
 				corporateUpdateQueue.add(parent);
@@ -1035,27 +1042,20 @@ public class ContractorCron extends PicsActionSupport {
 		// for all entries that exist in my existingCorpCOchanges (linked).
 		// Update entries based off of corporateRollupData.
 		for (OperatorAccount corporate : existingCorpCOchanges.keySet()) {
-			FlagColor flag = corporateRollupFlag.get(corporate);
-			if (flag == null)
-				flag = FlagColor.Green;
-			existingCorpCOchanges.get(corporate).setFlagColor(flag);
+			FlagColor corporateFlag = findFlagOrDefaultToGreen(corporateRollupFlag, corporate);
+			WaitingOn corporateWaitingOn = findWaitingOnOrDefaultToNone(corporateRollupWaitingOn, corporate);
 
-			WaitingOn waitingOn = corporateRollupWaitingOn.get(corporate);
-			if (waitingOn == null)
-				waitingOn = WaitingOn.None;
-			existingCorpCOchanges.get(corporate).setWaitingOn(waitingOn);
+			existingCorpCOchanges.get(corporate).setFlagColor(corporateFlag);
+			existingCorpCOchanges.get(corporate).setWaitingOn(corporateWaitingOn);
 
 			corporateSet.remove(corporate);
 		}
 
 		// whats left in corporateSet is inserts
 		for (OperatorAccount corporate : corporateSet) {
+			FlagColor flag = findFlagOrDefaultToGreen(corporateRollupFlag, corporate);
+
 			ContractorOperator newCo = new ContractorOperator();
-			newCo.setCreationDate(new Date());
-			newCo.setUpdateDate(new Date());
-			FlagColor flag = corporateRollupFlag.get(corporate);
-			if (flag == null)
-				flag = FlagColor.Green;
 			newCo.setFlagColor(flag);
 			WaitingOn waitingOn = corporateRollupWaitingOn.get(corporate);
 			if (waitingOn == null)
@@ -1063,9 +1063,14 @@ public class ContractorCron extends PicsActionSupport {
 			newCo.setWaitingOn(waitingOn);
 			newCo.setOperatorAccount(corporate);
 			newCo.setContractorAccount(contractor);
-			newCo.setCreatedBy(new User(User.SYSTEM));
-			newCo.setUpdatedBy(new User(User.SYSTEM));
+
+			newCo.setAuditColumns(new User(User.SYSTEM));
+
+			if (corporate.isAutoApproveRelationships()) {
+				newCo.setWorkStatus(ApprovalStatus.Approved);
+			}
 			newCo.setDefaultWorkStatus();
+
 			contractorOperatorDAO.save(newCo);
 		}
 
@@ -1076,24 +1081,39 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private void rollupParentFlag(Map<OperatorAccount, FlagColor> corporateRollupFlag,
-								  OperatorAccount parent, FlagColor operatorFlag) {
-		FlagColor parentFacilityColor = (corporateRollupFlag.get(parent) != null) ? corporateRollupFlag
-				.get(parent) : FlagColor.Green;
-		FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFlag);
-		if (worstColor == null)
-			worstColor = FlagColor.Green;
-		corporateRollupFlag.put(parent, worstColor);
+	private FlagColor worstFlag(FlagColor parentFlag, FlagColor operatorFlag) {
+		FlagColor worstColor = FlagColor.getWorseColor(parentFlag, operatorFlag);
+		if (worstColor != null) {
+			return worstColor;
+		}
+
+		return FlagColor.Green;
 	}
 
-	private void rollupParentWaitingOn(Map<OperatorAccount, WaitingOn> corporateRollupWaitingOn,
-									   OperatorAccount parent, WaitingOn waitingOn) {
-		WaitingOn parentWaitingOn = (corporateRollupWaitingOn.get(parent) != null) ? corporateRollupWaitingOn
-				.get(parent) : WaitingOn.None;
-		WaitingOn worstWaitingOn = WaitingOn.getWorseWaitingOn(parentWaitingOn, waitingOn);
-		if (worstWaitingOn == null)
-			worstWaitingOn = WaitingOn.None;
-		corporateRollupWaitingOn.put(parent, worstWaitingOn);
+	private FlagColor findFlagOrDefaultToGreen(Map<OperatorAccount, FlagColor> corporateRollupFlag, OperatorAccount parent) {
+		if (corporateRollupFlag.get(parent) != null) {
+			return corporateRollupFlag.get(parent);
+		}
+
+		return FlagColor.Green;
+	}
+
+	private WaitingOn worstWaitingOn(WaitingOn parentOperatorWaitingOn, WaitingOn operatorWaitingOn) {
+		WaitingOn worstWaitingOn = WaitingOn.getWorseWaitingOn(parentOperatorWaitingOn, operatorWaitingOn);
+		if (worstWaitingOn != null) {
+			return worstWaitingOn;
+		}
+
+		return WaitingOn.None;
+	}
+
+	private WaitingOn findWaitingOnOrDefaultToNone(Map<OperatorAccount, WaitingOn> corporateRollupWaitingOn,
+												   OperatorAccount parent) {
+		if (corporateRollupWaitingOn.get(parent) != null) {
+			return corporateRollupWaitingOn.get(parent);
+		}
+
+		return WaitingOn.None;
 	}
 
 	private void rollUpCorporateFlags(Map<OperatorAccount, FlagColor> corporateRollupData,

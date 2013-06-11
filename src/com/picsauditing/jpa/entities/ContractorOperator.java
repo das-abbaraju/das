@@ -1,28 +1,7 @@
 package com.picsauditing.jpa.entities;
 
-import java.sql.SQLException;
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.util.CollectionUtils;
-
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -30,6 +9,15 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.*;
+import javax.persistence.Column;
+import java.sql.SQLException;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -84,7 +72,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	/**
 	 * Default to P and then be status or rejected
-	 * 
+	 *
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	@Enumerated(EnumType.STRING)
@@ -124,14 +112,13 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Transient
 	public boolean isWorkStatusPending() {
-        boolean result = false;
+		boolean result = false;
 		if (!getOperatorAccount().isCorporate()) {
-            result = workStatus.isPending();
-        }
-		else {
-            result = isChildrenWorkStatusEqual(ApprovalStatus.P);
-        }
-        return result;
+			result = workStatus.isPending();
+		} else {
+			result = isChildrenWorkStatusEqual(ApprovalStatus.P);
+		}
+		return result;
 	}
 
 	@Transient
@@ -346,7 +333,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.baselineFlagDetail = baselineFlagDetail;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "contractorOperator")
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "contractorOperator")
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
 	}
@@ -355,7 +342,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "contractorOperator")
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "contractorOperator")
 	public Set<FlagDataOverride> getOverrides() {
 		return overrides;
 	}
@@ -442,7 +429,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 			if (contractorCorporate != null) {
 				if (contractorCorporate.getWorkStatus().isForced() || workStatus == contractorCorporate.getWorkStatus())
 					return;
-				
+
 				else if (workStatus.ordinal() > contractorCorporate.getWorkStatus().ordinal() || contractorCorporate.getOperatorAccount().areAllContractorRelationshipsUniform()) {
 					contractorCorporate.setWorkStatus(workStatus);
 				}
@@ -463,25 +450,25 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		}
 	}
 
-    public static ContractorOperatorBuilder builder() {
-        return new ContractorOperatorBuilder();
-    }
+	public static ContractorOperatorBuilder builder() {
+		return new ContractorOperatorBuilder();
+	}
 
-    public List<ContractorOperator> getChildOperatorAccountsWithStatus(ContractorAccount contractorAccount, ApprovalStatus ... status) {
-        List<ContractorOperator> found = new ArrayList<>();
-        List<ApprovalStatus> statuses = Arrays.asList(status);
-        for (OperatorAccount o : this.getOperatorAccount().getChildOperators()) {
-            for (ContractorOperator co : o.getContractorOperators()) {
-                if (co.getContractorAccount().equals(contractorAccount) && statuses.contains(co.getWorkStatus()))   {
-                    found.add(co);
-                }
-            }
-        }
+	public List<ContractorOperator> getChildOperatorAccountsWithStatus(ContractorAccount contractorAccount, ApprovalStatus... status) {
+		List<ContractorOperator> found = new ArrayList<>();
+		List<ApprovalStatus> statuses = Arrays.asList(status);
+		for (OperatorAccount o : this.getOperatorAccount().getChildOperators()) {
+			for (ContractorOperator co : o.getContractorOperators()) {
+				if (co.getContractorAccount().equals(contractorAccount) && statuses.contains(co.getWorkStatus())) {
+					found.add(co);
+				}
+			}
+		}
 
-        return found;
-    }
+		return found;
+	}
 
-    public boolean isWorkingStatus(ApprovalStatus status) {
-        return getWorkStatus() == status;
-    }
+	public boolean isWorkingStatus(ApprovalStatus status) {
+		return getWorkStatus() == status;
+	}
 }
