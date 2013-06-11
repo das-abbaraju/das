@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -333,7 +334,8 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-		addLegacyReports(permissions, reportsMenu);
+        if (permissions.getAccountStatus() != AccountStatus.Demo)
+		    addLegacyReports(permissions, reportsMenu);
 
 		if (permissions.has(OpPerms.Report)) {
 			MenuComponent adminMenu = reportsMenu.addChild("Administration");
