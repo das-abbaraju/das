@@ -21,7 +21,6 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
-	boolean visibleOnMyReports; // todo: Not used anywhere. Remove.
 	private boolean hidden;
 	private int pinnedIndex = UNPINNED_INDEX;
 
@@ -91,14 +90,6 @@ public class ReportUser extends BaseTable {
 
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
-	}
-
-	public boolean isVisibleOnMyReports() {
-		return visibleOnMyReports;
-	}
-
-	public void setVisibleOnMyReports(boolean visibleOnMyReports) {
-		this.visibleOnMyReports = visibleOnMyReports;
 	}
 
 	public boolean isHidden() {
