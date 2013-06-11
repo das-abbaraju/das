@@ -58,6 +58,9 @@ public class ContractorOperatorsModel extends AbstractModel {
             Field operatorName = fields.get("ContractorOperatorOperatorName".toUpperCase());
             operatorName.setUrl("FacilitiesEdit.action?operator={ContractorOperatorOperatorID}");
         }
+        if (!permissions.isPicsEmployee()) {
+            fields.remove("ContractorOperatorBaselineFlag".toUpperCase());
+        }
 
         return fields;
 	}
