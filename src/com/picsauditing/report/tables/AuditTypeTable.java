@@ -29,11 +29,9 @@ public class AuditTypeTable extends AbstractTable {
 		createdBy.setCategory(FieldCategory.DocumentsAndAudits);
 		addField(createdBy);
 
-		Field creationDate;
-		creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		creationDate.setImportance(FieldImportance.Low);
-		creationDate.setCategory(FieldCategory.DocumentsAndAudits);
-		addField(creationDate);
+        Field creationDate = addCreationDate();
+        creationDate.setCategory(FieldCategory.DocumentsAndAudits);
+        creationDate.setImportance(FieldImportance.Low);
 	}
 
 	public void addJoins() {

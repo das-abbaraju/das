@@ -20,9 +20,7 @@ public class FlagDataOverrideTable extends AbstractTable {
 		createdBy.setImportance(FieldImportance.Required);
 		addField(createdBy).setCategory(FieldCategory.CompanyStatistics);
 
-		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		creationDate.setImportance(FieldImportance.Required);
-		addField(creationDate).setCategory(FieldCategory.CompanyStatistics);
+        addCreationDate().setCategory(FieldCategory.CompanyStatistics);
 	}
 
 	public void addJoins() {

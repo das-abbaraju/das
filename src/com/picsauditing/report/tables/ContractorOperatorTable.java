@@ -17,9 +17,10 @@ public class ContractorOperatorTable extends AbstractTable {
 		super("generalcontractors");
 		addFields(ContractorOperator.class);
 
-		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		addField(creationDate).setCategory(FieldCategory.AccountInformation);
-		
+        Field creationDate = addCreationDate();
+        creationDate.setCategory(FieldCategory.AccountInformation);
+        creationDate.setImportance(FieldImportance.Low);
+
 		String networkLevelDatabaseColumn = "";
 		{
 			String relationshipExist = ReportOnClause.ToAlias + ".id IS NOT NULL";

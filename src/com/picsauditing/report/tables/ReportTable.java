@@ -12,6 +12,9 @@ public class ReportTable extends AbstractTable {
 		super("report");
 		addPrimaryKey();
 		addFields(Report.class);
+
+        addCreationDate();
+        addUpdateDate();
 	}
 
 	protected void addJoins() {

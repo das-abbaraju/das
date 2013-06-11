@@ -67,7 +67,21 @@ public abstract class AbstractTable {
 		return addField(field);
 	}
 
-	public Field getField(String fieldName) {
+    protected Field addCreationDate() {
+        Field creationDate = new Field("CreationDate", "creationDate", FieldType.DateTime);
+        creationDate.setImportance(FieldImportance.Required);
+
+        return addField(creationDate);
+    }
+
+    protected Field addUpdateDate() {
+        Field creationDate = new Field("UpdateDate", "updateDate", FieldType.DateTime);
+        creationDate.setImportance(FieldImportance.Required);
+
+        return addField(creationDate);
+    }
+
+    public Field getField(String fieldName) {
 		for (Field field : fields) {
 			if (field.getName().equalsIgnoreCase(fieldName)) {
 				return field;
