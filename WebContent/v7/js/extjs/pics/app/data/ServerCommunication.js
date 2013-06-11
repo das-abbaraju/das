@@ -344,24 +344,31 @@ Ext.define('PICS.data.ServerCommunication', {
 
             sendReportViaForm: function (url, target) {
                 var form = document.createElement('form'),
-                    ext_form = Ext.Element(form),
+                    ext_form = new Ext.Element(form),
                     input = document.createElement('input'),
+                    ext_input = new Ext.Element(input),
                     report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     json = report.getRecordDataAsJson(report);
 
-                ext_form.setAttribute('action', url);
-                ext_form.setAttribute('method', 'post');
-                ext_form.setAttribute('target', target);
+                ext_form.set({
+                    action: url,
+                    method: 'post',
+                    target: target
+                });
+
+                ext_form.addCls('send-report-form');
+
+                ext_input.set({
+                    name: 'reportJson',
+                    value: json,
+                    type: 'hidden'
+                });
+
                 ext_form.appendChild(input);
-
-                input.setAttribute('name', 'reportJson');
-                input.setAttribute('value', json);
-                input.setAttribute('type', 'hidden');
-
                 Ext.getBody().appendChild(ext_form);
 
-                ext_form.submit();
+                ext_form.dom.submit();
             },
 
             shareReport: function (options) {
