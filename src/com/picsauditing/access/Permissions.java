@@ -212,18 +212,18 @@ public class Permissions implements Serializable {
 				}
 			}
 
-			if (isOperator()) {
+            for (Facility facility : operator.getCorporateFacilities()) {
+                corporateParent.add(facility.getCorporate().getId());
+                if (facility.getCorporate().isPrimaryCorporate()) {
+                    topAccountID = facility.getCorporate().getId();
+                    primaryCorporateAccountID = topAccountID;
+                }
+            }
+
+            if (isOperator()) {
 				if (operator.getParent() != null) {
 					topAccountID = operator.getParent().getId();
                 }
-
-				for (Facility facility : operator.getCorporateFacilities()) {
-					corporateParent.add(facility.getCorporate().getId());
-					if (facility.getCorporate().isPrimaryCorporate()) {
-						topAccountID = facility.getCorporate().getId();
-                        primaryCorporateAccountID = topAccountID;
-					}
-				}
 
                 // operator account without a corporate parent (e.g. "U.S. Oil & Refining")
                 if (primaryCorporateAccountID == 0) {

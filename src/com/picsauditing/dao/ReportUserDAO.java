@@ -2,7 +2,9 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -116,11 +118,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
-		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = "
-				+ permissions.getUserId() + " UNION SELECT reportID FROM report_permission_user WHERE userID IN ("
-				+ Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
-				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = "
-				+ permissions.getAccountId();
+		String permissionsUnion = getPermissionsUnion(permissions);
 
 		String ownerClause = "r.ownerID = " + permissions.getUserId();
 		String publicClause = "r.public = true";
@@ -138,7 +136,20 @@ public class ReportUserDAO extends PicsDAO {
 		return sql;
 	}
 
-	@Transactional(propagation = Propagation.NESTED)
+    private static String getPermissionsUnion(Permissions permissions) {
+        Set<Integer> users = new HashSet<Integer>();
+        users.addAll(permissions.getAllInheritedGroupIds());
+        users.add(permissions.getUserId());
+
+        Set<Integer> accounts = new HashSet<Integer>();
+        accounts.addAll(permissions.getCorporateParent());
+        accounts.add(permissions.getAccountId());
+
+        return "SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(users) + ") UNION "
+                + " SELECT reportID FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
 	public void resetSortOrder(int userId) throws SQLException {
 		String sql = "UPDATE report_user ru " + "JOIN (SELECT t.id FROM report_user t "
 				+ "		JOIN (SELECT @row := 0) r " + "		WHERE favorite = 1 " + "		AND userID = " + userId
@@ -149,9 +160,9 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findUnpinnedWithNextHighestSortOrder(ReportUser reportUser) {
-		String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
-				+ " AND ru.favorite = 1" + " AND ru.sortOrder > " + reportUser.getSortOrder()
-				+ " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder ASC";
+        String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
+                + " AND ru.favorite = 1" + " AND ru.sortOrder > " + reportUser.getSortOrder()
+                + " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder ASC";
 
 		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
 		query.setMaxResults(1);
@@ -160,9 +171,9 @@ public class ReportUserDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findUnpinnedWithNextLowestSortOrder(ReportUser reportUser) {
-		String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
-				+ " AND ru.favorite = 1" + " AND ru.sortOrder < " + reportUser.getSortOrder()
-				+ " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder DESC";
+        String queryString = "SELECT ru FROM ReportUser ru" + " WHERE ru.user.id = " + reportUser.getUser().getId()
+                + " AND ru.favorite = 1" + " AND ru.sortOrder < " + reportUser.getSortOrder()
+                + " AND ru.pinnedIndex = " + ReportUser.UNPINNED_INDEX + " ORDER BY ru.sortOrder DESC";
 
 		TypedQuery<ReportUser> query = em.createQuery(queryString, ReportUser.class);
 		query.setMaxResults(1);

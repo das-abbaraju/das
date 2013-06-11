@@ -2,7 +2,9 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
@@ -146,17 +148,12 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
 		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
-		sql.addJoin("JOIN users u ON u.id = ru.userID");
-		sql.addJoin("JOIN (SELECT reportID, editable FROM report_permission_user WHERE userID = "
-				+ permissions.getUserId()
-				+ " UNION SELECT reportID, editable FROM report_permission_user WHERE userID IN ("
-				+ Strings.implode(permissions.getAllInheritedGroupIds()) + ") "
-				+ " UNION SELECT reportID, 0 FROM report_permission_account WHERE accountID = "
-				+ permissions.getAccountId() + ") rp ON rp.reportID = r.id");
+		sql.addJoin("LEFT JOIN users u ON u.id = ru.userID");
+		sql.addJoin("JOIN (" + getPermissionsJoin(permissions) + ") rp ON rp.reportID = r.id");
 
 		// do not return reports this user owns
-		String notOwnerClause = "(r.ownerID != u.id)";
-		String notHiddenClause = "(ru.hidden = 0)";
+		String notOwnerClause = "(r.ownerID != " + permissions.getUserId() + ")";
+		String notHiddenClause = "(ru.hidden = 0 OR ru.hidden IS NULL)";
 
 		sql.addWhere(notOwnerClause + "AND " + notHiddenClause);
 
@@ -166,7 +163,20 @@ public class ReportDAO extends PicsDAO {
 		return sql;
 	}
 
-	private void addOrderBy(SelectSQL sql, ReportSearch reportSearch) {
+    public static String getPermissionsJoin(Permissions permissions) {
+        Set<Integer> users = new HashSet<Integer>();
+        users.addAll(permissions.getAllInheritedGroupIds());
+        users.add(permissions.getUserId());
+
+        Set<Integer> accounts = new HashSet<Integer>();
+        accounts.addAll(permissions.getCorporateParent());
+        accounts.add(permissions.getAccountId());
+
+        return "SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(users) + ") UNION "
+                + " SELECT reportID, 0 FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
+    }
+
+    private void addOrderBy(SelectSQL sql, ReportSearch reportSearch) {
 		if (Strings.isEmpty(reportSearch.getSortType()) || Strings.isEmpty(reportSearch.getSortDirection())) {
 			return;
 		}

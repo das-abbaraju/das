@@ -192,7 +192,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (!permissions.isOperator())
 			getFilter().setShowFlagStatus(false);
 
-		if (permissions.getCorporateParent().size() > 0)
+		if (permissions.isOperator() && permissions.getCorporateParent().size() > 0)
 			getFilter().setShowInParentCorporation(true);
 
 		if (button == null) {

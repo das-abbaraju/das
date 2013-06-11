@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PermissionService {
 
     private static final int REPORT_DEVELOPER_GROUP = 77375;
@@ -45,6 +48,7 @@ public class PermissionService {
 		return canUserViewReport(user, report, permissions);
 	}
 
+    // TODO: Refactor the queries at the bottom with reportUserDAO.getPermissionsUnion or something that will get you the viewClause.
 	public boolean canUserViewReport(User user, Report report, Permissions permissions) {
 		if (user == null) {
 			return false;
@@ -89,6 +93,15 @@ public class PermissionService {
 			// Don't care
 		}
 
+        for (Integer parent : permissions.getCorporateParent()) {
+            try {
+                reportPermissionAccountDao.findOne(parent.intValue(), report.getId());
+                return true;
+            } catch (NoResultException nre) {
+                // Don't care
+            }
+        }
+
 		return false;
 	}
 
@@ -111,6 +124,7 @@ public class PermissionService {
 		return canUserEditReport(user, report, permissions);
     }
 
+    // TODO: Refactor the queries at the bottom with reportUserDAO.getPermissionsUnion or something that will get you the editClause.
 	public boolean canUserEditReport(User user, Report report, Permissions permissions) {
 		if (user == null) {
 			return false;
@@ -160,7 +174,19 @@ public class PermissionService {
 			// Don't care
 		}
 
-		return false;
+        for (Integer parent : permissions.getCorporateParent()) {
+            try {
+                ReportPermissionAccount reportPermissionAccount = reportPermissionAccountDao.findOne(parent.intValue(), report.getId());
+
+                if (reportPermissionAccount != null && reportPermissionAccount.isEditable()) {
+                    return true;
+                }
+            } catch (NoResultException nre) {
+                // Don't care
+            }
+        }
+
+        return false;
 	}
 
     public boolean canTransferOwnership(User fromOwner, Report report, Permissions permissions) {
