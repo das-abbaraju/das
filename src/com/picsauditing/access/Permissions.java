@@ -827,4 +827,16 @@ public class Permissions implements Serializable {
 	public String getSwitchedToUserName() {
 		return switchedToUserName;
 	}
+
+    @Override
+    public String toString() {
+        return "Permissions{" +
+                "name='" + name + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", accountStatus=" + accountStatus +
+                ", shadowedUserName='" + shadowedUserName + '\'' +
+                ", switchedToUserName='" + switchedToUserName + '\'' +
+                ", permissions=" + permissions +
+                '}';
+    }
 }

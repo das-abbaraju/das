@@ -25,7 +25,7 @@ public class AllModelsTest {
         StringBuilder actual = new StringBuilder();
 
         for (ModelType type : ModelType.values()) {
-            actual.append("Model: " + type + "\n----------------------------------------\n");
+            actual.append(String.format("Model: %s for permission: %s\n----------------------------------------\n", type,permissions));
             model = ReportModelFactory.build(type, permissions);
             if (model != null) {
                 actual.append(getJoin());
@@ -51,7 +51,8 @@ public class AllModelsTest {
         EntityFactory.addUserPermission(permissions, OpPerms.Billing);
         permissions.setAccountType("Admin");
         model = new ContractorsModel(permissions);
-        Approvals.verify(getJoin());
+        String output = "Permissions: " + permissions + "\n" + getJoin();
+        Approvals.verify(output);
     }
 
     @Test

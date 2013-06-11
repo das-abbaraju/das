@@ -40,7 +40,7 @@ public class UserAccess implements Serializable {
 		return viewFlag;
 	}
 
-	public void setViewFlag(boolean viewFlag) {
+    public void setViewFlag(boolean viewFlag) {
 		this.viewFlag = viewFlag;
 	}
 
@@ -68,4 +68,10 @@ public class UserAccess implements Serializable {
 		this.grantFlag = grantFlag;
 	}
 
+    @Override
+    public String toString() {
+        return "UserAccess{" +
+                "opPerm=" + opPerm +
+                '}';
+    }
 }
