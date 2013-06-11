@@ -12,6 +12,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.SelectSQL;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +21,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.FileUtils;
@@ -200,22 +196,30 @@ public class ContractorAccountDAO extends PicsDAO {
 			return new ArrayList<ContractorAccount>();
 		}
 
-		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
-		String where = "1=1 ";
+        SelectSQL sql = new SelectSQL("accounts a");
+        sql.addField("a.*");
+        sql.addField("c.*");
+        sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 
-		if (permissions.hasGroup(User.GROUP_CSR)) {
-			where = " auditor.id = " + permissions.getShadowedUserID();
+		if (permissions.hasDirectlyRelatedGroup(User.GROUP_CSR)) {
+            sql.addJoin("JOIN account_user au ON a.id = au.accountID");
+            sql.addWhere(" au.role = '" + UserAccountRole.PICSCustomerServiceRep + "'");
+            sql.addWhere(" au.startDate < NOW()");
+            sql.addWhere(" au.endDate > NOW()");
+            sql.addWhere(" au.userID = " + permissions.getShadowedUserID());
 		}
 
-		where += " AND status IN ('Active', 'Pending', 'Demo')";
+        sql.addWhere("a.status IN ('Active', 'Pending', 'Demo')");
 
-		String hql = "FROM ContractorAccount contractorAccount WHERE " + where + " " + qb.toString()
-				+ " ORDER BY creationDate DESC";
+        PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions);
+        sql.addWhere(qb.buildWhereClause());
 
-		Query query = em.createQuery(hql);
-		query.setMaxResults(limit);
+        sql.addOrderBy("creationDate DESC");
+        sql.setLimit(limit);
 
-		return query.getResultList();
+        Query query = em.createNativeQuery(sql.toString(), ContractorAccount.class);
+        List<ContractorAccount> ca = query.getResultList();
+		return ca;
 	}
 
 	public ContractorAccount findTaxID(String taxId, String country) {
