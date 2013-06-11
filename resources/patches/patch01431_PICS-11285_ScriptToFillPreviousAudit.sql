@@ -1,4 +1,4 @@
-DROP TABLE temp_previous_audit;
+DROP TABLE IF EXISTS temp_previous_audit;
 
 CREATE TEMPORARY TABLE temp_previous_audit AS
 SELECT a.`name` accountName, ca.id AS audit1, ca2.id AS audit2, ca.`auditTypeID`, ca.`expiresDate` AS expires1, ca2.`expiresDate` AS expires2 FROM 
