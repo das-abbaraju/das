@@ -49,7 +49,7 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
         String query = "\'%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\'";
 
         SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getPermissions());
-        selectSQL.addWhere("r.name LIKE " + query + " OR r.description LIKE " + query + " OR u.name LIKE " + query);
+        selectSQL.addWhere("r.name LIKE " + query + " OR r.description LIKE " + query + " OR r.modelType LIKE " + query + " OR u.name LIKE " + query);
 
         return selectSQL;
     }
