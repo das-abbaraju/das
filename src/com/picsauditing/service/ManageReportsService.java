@@ -207,7 +207,8 @@ public class ManageReportsService {
 		permissionService.grantUserEditPermission(fromOwner.getId(), fromOwner.getId(), report.getId());
 
 		report.setOwner(toOwner);
-		reportDAO.save(report);
+        report.setAuditColumns(fromOwner);
+        reportDAO.save(report);
 
 		return report;
 	}

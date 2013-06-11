@@ -13,10 +13,8 @@ public class UserTable extends AbstractTable {
 		super("users");
 		addPrimaryKey(FieldType.UserID);
 		addFields(User.class);
-		
-		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		addField(creationDate);
 
+        addCreationDate();
 	}
 
 	protected void addJoins() {

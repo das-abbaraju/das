@@ -8,10 +8,8 @@ public class PaymentTable extends AbstractTable {
 	public PaymentTable() {
 		super("invoice");
 		addFields(Payment.class);
-		
-		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
-		creationDate.setImportance(FieldImportance.Required);
-		addField(creationDate);
+
+        addCreationDate();
 	}
 
 	protected void addJoins() {

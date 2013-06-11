@@ -142,6 +142,7 @@ public class ReportService {
 
 		validate(report);
 
+        report.setAuditColumns(reportContext.permissions);
 		reportDao.save(report);
 
 		return report;
@@ -175,6 +176,7 @@ public class ReportService {
 
 		prepareNewReportForDatabaseCopy(newReport, reportContext.permissions);
 
+        newReport.setAuditColumns(reportContext.permissions);
 		reportDao.save(newReport);
 
 		ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(userId, newReport.getId());
@@ -402,6 +404,7 @@ public class ReportService {
 		}
 
 		report.setPublic(true);
+        report.setAuditColumns(user);
 
 		reportDao.save(report);
 	}
@@ -414,6 +417,7 @@ public class ReportService {
 		}
 
 		report.setPublic(false);
+        report.setAuditColumns(user);
 
 		reportDao.save(report);
 	}
