@@ -17,7 +17,9 @@ public class ContractorOperatorTable extends AbstractTable {
 		super("generalcontractors");
 		addFields(ContractorOperator.class);
 
-        addCreationDate().setCategory(FieldCategory.AccountInformation);
+        Field creationDate = addCreationDate();
+        creationDate.setCategory(FieldCategory.AccountInformation);
+        creationDate.setImportance(FieldImportance.Low);
 
 		String networkLevelDatabaseColumn = "";
 		{

@@ -910,9 +910,11 @@ Permission: Permissions{permissions=[]}
 AccountID
 AccountName
 PermissionEditable
+ReportCreationDate
 ReportID
 ReportModelType
 ReportName
+ReportUpdateDate
 ReportUserFavorite
 ReportUserLastViewedDate
 ReportUserViewCount
@@ -922,9 +924,11 @@ UserName
 Model: Reports
 Permission: Permissions{permissions=[]}
 ----------------------------------------
+ReportCreationDate
 ReportID
 ReportModelType
 ReportName
+ReportUpdateDate
 ReportUserFavorite
 ReportUserLastViewedDate
 ReportUserViewCount

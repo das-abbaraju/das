@@ -14,7 +14,7 @@ public class UserTable extends AbstractTable {
 		addPrimaryKey(FieldType.UserID);
 		addFields(User.class);
 
-        addCreationDate();
+        addCreationDate().setImportance(FieldImportance.Low);
 	}
 
 	protected void addJoins() {

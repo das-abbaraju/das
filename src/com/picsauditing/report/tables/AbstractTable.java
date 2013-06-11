@@ -68,14 +68,14 @@ public abstract class AbstractTable {
 	}
 
     protected Field addCreationDate() {
-        Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+        Field creationDate = new Field("CreationDate", "creationDate", FieldType.DateTime);
         creationDate.setImportance(FieldImportance.Required);
 
         return addField(creationDate);
     }
 
     protected Field addUpdateDate() {
-        Field creationDate = new Field("UpdateDate", "updateDate", FieldType.Date);
+        Field creationDate = new Field("UpdateDate", "updateDate", FieldType.DateTime);
         creationDate.setImportance(FieldImportance.Required);
 
         return addField(creationDate);
