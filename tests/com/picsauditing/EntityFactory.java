@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
  */
 public class EntityFactory {
 
-	static private int counter = 1;
+	static private int counter = 100;
 	static private HashMap<String, Country> countries;
 	static private Map<String, CountrySubdivision> countrySubdivisions;
 

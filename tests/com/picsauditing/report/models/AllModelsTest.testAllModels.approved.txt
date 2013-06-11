@@ -1,4 +1,5 @@
-Model: Accounts for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Accounts
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -40,7 +41,8 @@ AccountTransportationServices
 AccountWebUrl
 AccountZip
 
-Model: AuditTypes for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: AuditTypes
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AuditTypeClassType
 AuditTypeCreatedBy
@@ -60,7 +62,8 @@ AuditTypeRenewable
 AuditTypeScheduled
 AuditTypeScoreable
 
-Model: ContractorAudits for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorAudits
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -102,7 +105,8 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
 
-Model: ContractorAuditDatas for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorAuditDatas
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -156,7 +160,8 @@ QuestionNumber
 QuestionQuestionType
 QuestionRequired
 
-Model: ContractorAuditFiles for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorAuditFiles
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
@@ -179,7 +184,8 @@ ContractorAuditFileID
 ContractorAuditFileReviewed
 ContractorAuditFileUploadDate
 
-Model: ContractorAuditOperators for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorAuditOperators
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -239,7 +245,8 @@ SafetyManualComment
 SafetyManualDateVerified
 TrirAnswer
 
-Model: ContractorFees for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorFees
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -273,7 +280,8 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 FeeMaxFacilities
 
-Model: ContractorFlagDatas for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorFlagDatas
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -322,7 +330,8 @@ OperatorPrimaryCorporate
 OperatorRequiredTags
 OperatorSalesForceID
 
-Model: ContractorNumbers for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorNumbers
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -389,7 +398,8 @@ ContractorTransportationRiskVerified
 OperatorContractorNumberType
 OperatorContractorNumberValue
 
-Model: ContractorOperators for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorOperators
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountContactDepartment
@@ -445,7 +455,8 @@ OperatorPrimaryCorporate
 OperatorRequiredTags
 OperatorSalesForceID
 
-Model: Contractors for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Contractors
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -516,7 +527,8 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
 
-Model: ContractorSearch for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorSearch
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
@@ -541,7 +553,8 @@ ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
-Model: ContractorStatistics for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ContractorStatistics
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -605,7 +618,8 @@ ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
-Model: EmployeeCompetencies for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: EmployeeCompetencies
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 EmployeeCompetencyCompetencyLabel
 EmployeeCompetencyEmployeeAccountID
@@ -614,7 +628,8 @@ EmployeeCompetencyEmployeeFirstName
 EmployeeCompetencyEmployeeLastName
 EmployeeCompetencySkilled
 
-Model: ForcedFlags for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ForcedFlags
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
@@ -625,7 +640,8 @@ ContractorFlagLabel
 ContractorOperatorForcedByUserID
 ContractorOperatorForcedByUserName
 
-Model: ForcedFlagPercents for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ForcedFlagPercents
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 ContractorOperatorOperatorCity
 ContractorOperatorOperatorCountry
@@ -638,7 +654,8 @@ ContractorOperatorOperatorStatus
 ContractorOperatorOperatorTimezone
 ForcedFlagPercent
 
-Model: InvoiceItems for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: InvoiceItems
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -675,7 +692,8 @@ InvoicePoNumber
 InvoiceStatus
 InvoiceTotalAmount
 
-Model: Invoices for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Invoices
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountContactDepartment
@@ -717,7 +735,8 @@ InvoicePoNumber
 InvoiceStatus
 InvoiceTotalAmount
 
-Model: Operators for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Operators
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -763,7 +782,8 @@ ReportingClientName
 SalesRepUserID
 SalesRepUserName
 
-Model: OperatorAccountUsers for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: OperatorAccountUsers
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -799,7 +819,8 @@ AccountZip
 UserID
 UserName
 
-Model: OperatorUsers for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: OperatorUsers
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -846,7 +867,8 @@ UserTimezone
 UserUsername
 UserUsingVersion7Menus
 
-Model: PaymentCommissions for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: PaymentCommissions
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
@@ -882,7 +904,8 @@ UserLocale
 UserTimezone
 UserUsingVersion7Menus
 
-Model: ReportPermissions for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: ReportPermissions
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
@@ -896,7 +919,8 @@ ReportUserViewCount
 UserID
 UserName
 
-Model: Reports for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Reports
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 ReportID
 ReportModelType
@@ -905,7 +929,8 @@ ReportUserFavorite
 ReportUserLastViewedDate
 ReportUserViewCount
 
-Model: UserAssignments for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: UserAssignments
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountAddress
 AccountAddress2
@@ -976,7 +1001,8 @@ UserAssignmentUserName
 UserAssignmentUserPhone
 UserAssignmentUserTimezone
 
-Model: Users for permission: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[]}
+Model: Users
+Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry

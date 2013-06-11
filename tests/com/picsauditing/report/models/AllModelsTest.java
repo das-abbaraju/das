@@ -8,6 +8,7 @@ import com.picsauditing.report.fields.Field;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,14 +19,20 @@ import java.util.List;
 public class AllModelsTest {
 
     private AbstractModel model;
-    private Permissions permissions = EntityFactory.makePermission();
+    private Permissions permissions;
+
+    @Before
+    public void setUp() {
+        permissions = EntityFactory.makePermission();
+    }
 
     @Test
     public void testAllModels() throws Exception {
         StringBuilder actual = new StringBuilder();
 
         for (ModelType type : ModelType.values()) {
-            actual.append(String.format("Model: %s for permission: %s\n----------------------------------------\n", type,permissions));
+            actual.append(String.format("Model: %s\nPermission: %s\n----------------------------------------\n", type,permissions));
+            permissions = EntityFactory.makePermission();
             model = ReportModelFactory.build(type, permissions);
             if (model != null) {
                 actual.append(getJoin());

@@ -1,4 +1,4 @@
-Permissions: Permissions{name='null', accountName='null', accountStatus=Pending, shadowedUserName='null', switchedToUserName='null', permissions=[UserAccess{opPerm=Billing}]}
+Permissions: Permissions{permissions=[UserAccess{opPerm=Billing}]}
 AccountAddress
 AccountAddress2
 AccountAddress3
