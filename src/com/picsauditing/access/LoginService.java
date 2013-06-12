@@ -53,7 +53,9 @@ public class LoginService {
 		if (account.isContractor()) {
 			if (account.getStatus().isDeactivated()) {
 				homePageType = HomePageType.Deactivated;
-			} else {
+			} else if (account.getStatus().isDeclined()) {
+                homePageType = HomePageType.Declined;
+            } else {
 				ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
 				if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
 					homePageType = HomePageType.PreLogin;

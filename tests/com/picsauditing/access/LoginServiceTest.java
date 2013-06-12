@@ -70,16 +70,26 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
+	public void testPostLoginHomePageTypeForRedirect_DeclinedContractor() throws Exception {
 		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
+		when(account.getStatus()).thenReturn(AccountStatus.Declined);
 
 		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-		assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
+		assertThat(HomePageType.Declined, is(equalTo(homePageType)));
 	}
 
-	@Test
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
+
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+
+        assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
+    }
+
+    @Test
 	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithPreLoginUrl() throws Exception {
 		when(account.isContractor()).thenReturn(true);
 		when(account.getStatus()).thenReturn(AccountStatus.Active);

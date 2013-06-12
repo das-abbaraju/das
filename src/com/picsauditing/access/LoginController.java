@@ -398,6 +398,11 @@ public class LoginController extends PicsActionSupport {
 			case Deactivated:
 				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
 				break;
+            case Declined:
+                // per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
+                // just show them deactivated
+                redirectURL = DEACTIVATED_ACCOUNT_PAGE;
+                break;
 		}
 
 		return redirectURL;

@@ -191,7 +191,22 @@ public class LoginControllerTest extends PicsActionTest {
 		assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
 	}
 
-	// As a non-admin user
+    @Test
+    public void testSetRedirectUrlPostLogin_DeclinedAlsoRedirectsToDeactivatedPage() throws Exception {
+        Whitebox.setInternalState(loginController, "user", user);
+
+        LoginService loginService = mock(LoginService.class);
+        when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
+                HomePageType.Declined);
+        Whitebox.setInternalState(loginController, "loginService", loginService);
+
+        String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+
+        assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
+        assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
+    }
+
+    // As a non-admin user
 	// Given user wishes to logout
 	// When user clicks on logout button
 	// Then the system clears permissions and session
