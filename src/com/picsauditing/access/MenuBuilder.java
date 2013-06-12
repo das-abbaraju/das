@@ -344,20 +344,18 @@ public final class MenuBuilder {
 		}
 
 		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_SHOW_DR_REPORTS)) {
-			if (CollectionUtils.isNotEmpty(favoriteReports)) {
-				reportsMenu.addChild("separator", null);
-				MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+        if (CollectionUtils.isNotEmpty(favoriteReports)) {
+            reportsMenu.addChild("separator", null);
+            MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
 
-				reportsMenu.addChild(favoriteLabel);
-			}
+            reportsMenu.addChild(favoriteLabel);
+        }
 
-			for (ReportUser reportUser : favoriteReports) {
-				Report report = reportUser.getReport();
-				reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-						"report_" + report.getId());
-			}
-		}
+        for (ReportUser reportUser : favoriteReports) {
+            Report report = reportUser.getReport();
+            reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+                    "report_" + report.getId());
+        }
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {

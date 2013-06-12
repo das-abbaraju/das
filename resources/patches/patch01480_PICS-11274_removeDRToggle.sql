@@ -1,0 +1,1 @@
+DELETE FROM app_properties WHERE property = 'Toggle.ShowUserDR';
