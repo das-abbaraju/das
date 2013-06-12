@@ -68,6 +68,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String salesPhone;
 	protected String fax;
 	protected Double corruptionPerceptionIndex;
+    protected boolean proforma;
 
 	protected Currency currency = Currency.USD;
 
@@ -178,7 +179,15 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 		this.currency = curreny;
 	}
 
-	@OneToMany(mappedBy = "country")
+    public boolean isProforma() {
+        return proforma;
+    }
+
+    public void setProforma(boolean proforma) {
+        this.proforma = proforma;
+    }
+
+    @OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
 		return this.amountOverrides;
 	}

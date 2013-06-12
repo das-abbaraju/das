@@ -266,7 +266,7 @@
 			</s:form>
 		</div>
 
-		<s:if test="contractor.inEuroZone">
+		<s:if test="contractor.country.proforma">
 
 			<!-- -OR- -->
 	

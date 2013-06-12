@@ -1976,14 +1976,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isInEuroZone() {
-		if (country != null) {
-			return country.getCurrency().isGBP() || country.getCurrency().isEUR();
-		}
-		return false;
-	}
-
-	@Transient
 	@Deprecated
 	public boolean isOnlyAssociatedWith(int operatorID) {
 		if (getOperators().size() == 0) {
