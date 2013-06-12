@@ -310,9 +310,7 @@
 										</td>
 										<td class="right">
 											<s:property value="amount" />
-											<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
-												<s:property value="invoice.currency"/>
-											</s:if>
+                                            <s:property value="invoice.currency"/>
 										</td>
 									</s:else>
 								</tr>
@@ -333,9 +331,7 @@
 								</th>
 								<td class="big right">
 									<s:property value="invoice.totalAmount" />
-									<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
-										<s:property value="invoice.currency"/>
-									</s:if>
+                                    <s:property value="invoice.currency"/>
 								</td>
 							</tr>
 							<s:if test="invoice.payments.size() > 0">
@@ -372,9 +368,7 @@
 											</span>
 											<span class="big">
 												(<s:property value="amount" />
-												<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
-													<s:property value="invoice.currency"/>
-												</s:if>)
+                                                <s:property value="invoice.currency"/>)
 											</span>
 											<br />
 										</s:iterator>
@@ -386,9 +380,7 @@
 									</th>
 									<td class="big right">
 										<s:property value="invoice.balance" />
-										<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
-											<s:property value="invoice.currency"/>
-										</s:if>
+                                        <s:property value="invoice.currency"/>
 									</td>
 								</tr>
 							</s:if>
