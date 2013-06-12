@@ -25,27 +25,27 @@
 	{
 		display: none;
 	}
-	
+
 	#AuditPrintAjax #auditviewarea
 	{
-		background: transparent;	
+		background: transparent;
 	}
-	
+
 	#AuditPrintAjax h1
 	{
 		color: #A64D00 !important;
-		text-align: center;	
+		text-align: center;
 	}
-	
+
 	#AuditPrintAjax .audit_category .audit_category {
 	    padding: 10px 0 10px 10px;
 	}
-	
+
 	#AuditPrintAjax .audit_category h2
 	{
-		padding: 10px 0 5px 10px;	
+		padding: 10px 0 5px 10px;
 	}
-	
+
 	#AuditPrintAjax .categoryNumber,
 	#AuditPrintAjax .questionNumber
 	{
@@ -55,31 +55,31 @@
 	    font-size: 14px;
 	    font-weight: normal;
 	}
-	
+
 	#AuditPrintAjax a.print
 	{
 		float: right;
 		font-size: 18px;
 		line-height: 45px;
 	}
-	
+
 	#AuditPrintAjax a.print img
 	{
 		margin-right: 5px;
 		position: relative;
 		top: 2px;
 	}
-	
+
 	#AuditPrintAjax .column
 	{
-		list-style-type: none;	
+		list-style-type: none;
 	}
-	
+
 	#AuditPrintAjax .column1
 	{
-		padding: 0px;	
+		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .categorynumber,
 	#AuditPrintAjax .questionnumber,
 	#AuditPrintAjax .audit_category .audit_category .categorynumber
@@ -87,25 +87,25 @@
 		margin: 0px 0px 0px 15px;
 		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .audit_category h2
 	{
 		background: transparent !important;
 		color: #5D9BCE !important;
 		margin: 0px;
 	}
-	
+
 	#AuditPrintAjax .audit_category .audit_category h2
 	{
 		color: #990000 !important;
 		text-decoration: none;
 	}
-	
+
 	#AuditPrintAjax .question
 	{
 		margin-left: 20px !important;
 	}
-	
+
 	#AuditPrintAjax .question h3
 	{
 		color: #111111;
@@ -115,13 +115,15 @@
 	    margin-bottom: 5px;
 		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .question .info
 	{
 		background: transparent;
 		font-style: italic;
-		margin: 20px 0px 0px;	
+		margin: 20px 0px 0px;
 	}
+
+
 }
 
 /* print */
@@ -133,27 +135,27 @@
 	{
 		display: none;
 	}
-	
+
 	#AuditPrintAjax #auditviewarea
 	{
-		background: transparent;	
+		background: transparent;
 	}
-	
+
 	#AuditPrintAjax h1
 	{
 		color: #A64D00 !important;
-		text-align: center;	
+		text-align: center;
 	}
-	
+
 	#AuditPrintAjax .audit_category .audit_category {
 	    padding: 10px 0 10px 10px;
 	}
-	
+
 	#AuditPrintAjax .audit_category h2
 	{
-		padding: 10px 0 5px 10px;	
+		padding: 10px 0 5px 10px;
 	}
-	
+
 	#AuditPrintAjax .categoryNumber,
 	#AuditPrintAjax .questionNumber
 	{
@@ -163,31 +165,31 @@
 	    font-size: 14px;
 	    font-weight: normal;
 	}
-	
+
 	#AuditPrintAjax a.print
 	{
 		float: right;
 		font-size: 18px;
 		line-height: 45px;
 	}
-	
+
 	#AuditPrintAjax a.print img
 	{
 		margin-right: 5px;
 		position: relative;
 		top: 2px;
 	}
-	
+
 	#AuditPrintAjax .column
 	{
-		list-style-type: none;	
+		list-style-type: none;
 	}
-	
+
 	#AuditPrintAjax .column1
 	{
-		padding: 0px;	
+		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .categorynumber,
 	#AuditPrintAjax .questionnumber,
 	#AuditPrintAjax .audit_category .audit_category .categorynumber
@@ -195,25 +197,25 @@
 		margin: 0px 0px 0px 15px;
 		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .audit_category h2
 	{
 		background: transparent !important;
 		color: #5D9BCE !important;
 		margin: 0px;
 	}
-	
+
 	#AuditPrintAjax .audit_category .audit_category h2
 	{
 		color: #990000 !important;
 		text-decoration: none;
 	}
-	
+
 	#AuditPrintAjax .question
 	{
 		margin-left: 20px !important;
 	}
-	
+
 	#AuditPrintAjax .question h3
 	{
 		color: #111111;
@@ -223,12 +225,12 @@
 	    margin-bottom: 5px;
 		padding: 0px;
 	}
-	
+
 	#AuditPrintAjax .question .info
 	{
 		background: transparent;
 		font-style: italic;
-		margin: 20px 0px 0px;	
+		margin: 20px 0px 0px;
 	}
 
     #AuditPrintAjax a:link:after, #AuditPrintAjax a:visited:after {
@@ -244,60 +246,60 @@
 	a.print {
 		display: none;
 	}
-	
+
 	.noprint {
 		display: none;
 	}
-	
+
 	body {
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		font-size: small;
 	}
-	
+
 	a {
 		color: black;
 		text-decoration: none;
 	}
-	
+
 	#header {
 		display: none;
 	}
-	
+
 	#MainMenu {
 		display: none;
 	}
-	
+
 	#navlist {
 		display: none;
 	}
-	
+
 	table td.right {
 		text-align: right;
 	}
-	
+
 	table.footerNav {
 		display: none;
 	}
-	
+
 	div.dropmenudiv,div.auditSubMenu {
 		display: none;
 	}
-	
+
 	#auditToolbar {
 		display: none;
 	}
-	
+
 	div.footer {
 		display: none;
 	}
-	
+
 	.sub { /* used as a sub-header title */
 		font-size: 18px;
 		display: block;
 		padding-left: 10px;
 		color: #555;
 	}
-	
+
 	#content div.clear {
 		float: none;
 		clear: both;
@@ -305,80 +307,80 @@
 		margin: 0px;
 		padding: 0px;
 	}
-	
+
 	/** Audit Header ***/
 	#content div.auditHeader {
 		border-top: 2px solid #BBB;
 		border-bottom: 2px solid #BBB;
 		margin-bottom: 10px;
 	}
-	
+
 	div.auditHeader fieldset{
 		line-height: 20px;
 		border: 0;
 		width: 30%;
 		float: left;
 	}
-	
+
 	div.auditHeader ul {
 		padding: 0;
 		margin: 0;
 		list-style-type: none;
 	}
-	
+
 	label{
 		font-weight: bold;
 		color: #555;
 		padding-right: 5px;
 	}
-	
+
 	thead td, thead th {
 		font-weight: bold;
 		font-size: 110%;
 		background-color: #EEE;
 		color: #444;
 	}
-	
+
 	/** Audits **/
-	
+
 	table.audit {
 		width: 100%;
 		border-collapse: collapse;
 	}
-	
+
 	table.audit td {
 		padding: 2px;
 		margin: 0px;
 		vertical-align: top;
 		border: 1px solid #BBB;
 	}
-	
+
 	td.question {
 		color: #999;
 	}
-	
+
 	span.answer, div.answer {
 		color: black;
 		font-weight: bold;
 		padding: 10px;
 	}
-	
-	div.answer span.verified { 
+
+	div.answer span.verified {
 		display: none;
 	}
-	
+
 	span.checked {
 		display: inline;
 	}
-	
+
 	input.hidden {
 		display: none;
 	}
-	
+
 	table td.right {
 		text-align: right;
 	}
-	
+
 	/**
 	* For reports table
 	**/
@@ -386,40 +388,40 @@
 		width: 100%;
 		border-collapse: collapse;
 	}
-	
+
 	table.report td {
 		padding: 2px;
 		margin: 0px;
 		vertical-align: top;
 		border: 1px solid #BBB;
 	}
-	
+
 	.buttons {
 		display: none;
 	}
-	
+
 	/**
 	* For Search Filters
 	**/
 	ul.paging {
 		display: none;
 	}
-	
+
 	#search {
 		display: none;
 	}
-	
+
 	/**
 	* For Help and Chat Icon
 	**/
 	#helpbox {
 		display: none;
 	}
-	
+
 	#chatIcon {
 		display: none;
 	}
-	
+
 	/**
 	* For the Home Page
 	**/
@@ -428,7 +430,7 @@
 		margin: 0px;
 		padding: 5px;
 	}
-	
+
 	div.panel_header {
 		height: 22px;
 		font-size: 10pt;
@@ -436,27 +438,92 @@
 		font-weight: bold;
 		border-bottom: 1px solid #B3B3B3;
 	}
-	
+
 	div.panel_placeholder {
 		padding: 20px;
 		width: 500px;
 	}
-	
+
 	span.required {
 		font-weight: bold;
 	}
-	
+
 	span.printrequired {
 		display: inline;
 	}
-	
+
 	/** Forms **/
 	fieldset.form ol {
 		padding-left: 10px;
 		list-style: none;
 	}
-	
+
 	fieldset.form li {
 		padding-bottom: 5px;
-	}	
+	}
+}
+
+
+/* IOL custom print layout*/
+@media print {
+	.iol-print-template #print {
+		display: none;
+	}
+}
+
+.iol-print-template {
+	font-size: 12px;
+	padding: 20px;
+}
+
+.iol-print-template hr {
+	border-color: #999999;
+	border-bottom: 0px;
+}
+
+.iol-print-template p {
+	margin-bottom: 0px;
+}
+
+.iol-print-template label {
+	cursor: default;
+	display: inline;
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+.iol-print-template h1 {
+	font-size: 18px;
+	margin-bottom: 0px;
+}
+
+.iol-print-template .executive-summary {
+	border: 1px solid #999999;
+}
+
+.iol-print-template .executive-summary div {
+	border-bottom: 1px solid #999999;
+	padding: 0px 5px;
+}
+
+.iol-print-template .executive-summary .rmp-info,
+.iol-print-template .executive-summary .rmp-info div {
+	border-bottom: 0px;
+}
+
+.iol-print-template .table {
+	font-size: 12px;
+	page-break-inside: avoid;
+}
+
+.iol-print-template section {
+	page-break-inside: avoid;
+}
+
+.iol-print-template ol {
+	margin-top: 20px;
+}
+
+.iol-print-template #signatures li {
+	margin-bottom: 20px;
 }
