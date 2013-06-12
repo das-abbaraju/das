@@ -29,7 +29,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class InvoiceServiceTest {
 
@@ -50,13 +49,11 @@ public class InvoiceServiceTest {
 		Whitebox.setInternalState(invoiceService, "invoiceDAO", invoiceDAO);
 		Whitebox.setInternalState(invoiceService, "invoiceFeeCountryDAO", invoiceFeeCountryDAO);
 		setupInvoiceFeeCountries();
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		resetNowTime();
-		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
 	@Test
@@ -109,7 +106,7 @@ public class InvoiceServiceTest {
 
 		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
 
-		assertEquals("Translate[InvoiceFee.0.fee=>null]", taxInvoiceFee.getFee());
+		assertEquals("Foo", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
@@ -124,7 +121,7 @@ public class InvoiceServiceTest {
 
 		InvoiceFee taxInvoiceFee = invoiceService.getCanadianTaxInvoiceFeeForProvince(countrySubdivision);
 
-		assertEquals("Translate[InvoiceFee.0.fee=>null]", taxInvoiceFee.getFee());
+		assertEquals("Foo", taxInvoiceFee.getFee());
 		assertEquals(new BigDecimal(5), taxInvoiceFee.getRatePercent());
 		assertEquals(new BigDecimal(7.5), taxInvoiceFee.getSubdivisionFee().getRatePercent());
 		assertEquals(FeeClass.CanadianTax, taxInvoiceFee.getFeeClass());
@@ -173,8 +170,6 @@ public class InvoiceServiceTest {
 
 	private InvoiceFee createTaxInvoiceFee(String feeName, double invoiceFeeRate, FeeClass feeClass) {
 		InvoiceFee invoiceFee = new InvoiceFee();
-		// TranslatableString fee = new TranslatableString();
-		// fee.setKey(feeName);
 		invoiceFee.setFee(feeName);
 		invoiceFee.setRatePercent(new BigDecimal(invoiceFeeRate));
 		invoiceFee.setFeeClass(feeClass);

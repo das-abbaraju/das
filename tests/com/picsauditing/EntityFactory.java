@@ -61,17 +61,11 @@ import com.picsauditing.model.i18n.LanguageModel;
  */
 public class EntityFactory {
 
-	static private int counter = 100;
-	static private HashMap<String, Country> countries;
-	static private Map<String, CountrySubdivision> countrySubdivisions;
+	private static int counter = 100;
+	private static HashMap<String, Country> countries;
+	private static Map<String, CountrySubdivision> countrySubdivisions;
 
-	// static public TranslatableString makeTranslatableString(String value) {
-	// TranslatableString string = new TranslatableString();
-	// string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
-	// return string;
-	// }
-
-	static public OperatorAccount makeOperator() {
+	public static OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
 		operator.setId(counter++);
 		operator.setStatus(AccountStatus.Active);
@@ -179,14 +173,6 @@ public class EntityFactory {
 		country.setName(englishName);
 		return country;
 	}
-
-	// public static TranslatableString makeEnglishString(String keyCode, String
-	// englishText) {
-	// TranslatableString translatableString = new TranslatableString();
-	// translatableString.setKey(keyCode);
-	// translatableString.putTranslation("en", englishText, true);
-	// return translatableString;
-	// }
 
 	static public ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
 		ContractorOperator co = new ContractorOperator();

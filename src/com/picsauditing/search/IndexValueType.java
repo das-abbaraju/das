@@ -167,20 +167,9 @@ public enum IndexValueType {
 
 	static List<String> getString(Object o) {
 		List<String> stringList = new ArrayList<String>();
-		// if (o instanceof TranslatableString) {
-		// TranslatableString translatable = (TranslatableString) o;
-		// ArrayList<Translation> translations = new ArrayList<Translation>();
-		// translations.addAll(translatable.getTranslations());
-		//
-		// for (Translation translation : translations) {
-		// stringList.add(translation.getValue().toUpperCase());
-		// }
-		//
-		// } else {
 		if (o != null) {
 			stringList.add(String.valueOf(o).toUpperCase());
 		}
-		// }
 		return stringList;
 	}
 

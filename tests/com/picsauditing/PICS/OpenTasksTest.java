@@ -34,12 +34,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -75,12 +75,11 @@ import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"OpenTasksTest-context.xml"})
+@ContextConfiguration(locations = { "OpenTasksTest-context.xml" })
 public class OpenTasksTest extends PicsActionTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
 	private final String RequiresTwoUsers = "PICS now requires contractors to have two or more users to help maintain their account.";
@@ -125,13 +124,9 @@ public class OpenTasksTest extends PicsActionTest {
 	@Mock
 	private Workflow workFlow;
 	@Mock
-	private I18nCache i18nCache;
-	@Mock
 	private UserAccess userAccess;
 	@Mock
 	private Invoice invoice;
-	@Mock
-	private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
 	@Mock
@@ -146,25 +141,19 @@ public class OpenTasksTest extends PicsActionTest {
 	private List<Invoice> invoices;
 	private List<ContractorAuditOperator> caos;
 
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		Mockito.reset(translationService);
 
 		openTasks = new OpenTasks(); // class under test
 
 		setUpCollections(); // MUST be before mocks
 		setUpMocks();
 		super.setupMocks();
-		setUpI18nCacheText();
+		setUpTranslationServiceText();
 
 		Whitebox.setInternalState(openTasks, "supportedLanguages", languageModel);
-		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
@@ -710,45 +699,54 @@ public class OpenTasksTest extends PicsActionTest {
 		};
 	}
 
-	private void setUpI18nCacheText() {
-		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+	@SuppressWarnings("deprecation")
+	private void setUpTranslationServiceText() {
+		when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 
-		when(i18nCache.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.ENGLISH), any())).thenReturn(
-				NoTradesSelected);
-		when(i18nCache.getText(eq("ContractorWidget.message.NeedsTradesUpdated"), eq(Locale.ENGLISH), any()))
+		when(translationService.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.ENGLISH), any()))
+				.thenReturn(NoTradesSelected);
+		when(translationService.getText(eq("ContractorWidget.message.NeedsTradesUpdated"), eq(Locale.ENGLISH), any()))
 				.thenReturn(NeedsTradesUpdated);
-		when(i18nCache.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.ENGLISH), any())).thenReturn(
-				UpdatedAgreement);
-		when(i18nCache.getText(eq("ContractorWidget.message.RequiresTwoUsers"), eq(Locale.ENGLISH), any())).thenReturn(
-				RequiresTwoUsers);
-		when(i18nCache.getText(eq("ContractorWidget.message.ImportAndSubmitPQF"), eq(Locale.ENGLISH), any()))
+		when(translationService.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.ENGLISH), any()))
+				.thenReturn(UpdatedAgreement);
+		when(translationService.getText(eq("ContractorWidget.message.RequiresTwoUsers"), eq(Locale.ENGLISH), any()))
+				.thenReturn(RequiresTwoUsers);
+		when(translationService.getText(eq("ContractorWidget.message.ImportAndSubmitPQF"), eq(Locale.ENGLISH), any()))
 				.thenReturn(ImportAndSubmitPQF);
-		when(i18nCache.getText(eq("ContractorWidget.message.BidOnlyUpdgrade"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(BidOnlyUpdgrade);
-		when(i18nCache.getText(eq("ContractorWidget.message.GenerateInvoice"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(GenerateInvoice);
-		when(i18nCache.getText(eq("ContractorWidget.message.OpenInvoiceReminder"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(OpenInvoiceReminder);
-		when(i18nCache.getText(eq("ContractorWidget.message.UpdatePaymentMethod"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(UpdatePaymentMethod);
-		when(i18nCache.getText(eq("ContractorWidget.message.FixPolicyIssues"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(FixPolicyIssues);
-		when(i18nCache.getText(eq("ContractorWidget.message.UploadAndSubmitPolicy"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(UploadAndSubmitPolicy);
-		when(i18nCache.getText(eq("ContractorWidget.message.ResubmitPolicy"), eq(Locale.ENGLISH), anyVararg()))
+		when(
+				translationService.getText(eq("ContractorWidget.message.BidOnlyUpdgrade"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(BidOnlyUpdgrade);
+		when(
+				translationService.getText(eq("ContractorWidget.message.GenerateInvoice"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(GenerateInvoice);
+		when(
+				translationService.getText(eq("ContractorWidget.message.OpenInvoiceReminder"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(OpenInvoiceReminder);
+		when(
+				translationService.getText(eq("ContractorWidget.message.UpdatePaymentMethod"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(UpdatePaymentMethod);
+		when(
+				translationService.getText(eq("ContractorWidget.message.FixPolicyIssues"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(FixPolicyIssues);
+		when(
+				translationService.getText(eq("ContractorWidget.message.UploadAndSubmitPolicy"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(UploadAndSubmitPolicy);
+		when(translationService.getText(eq("ContractorWidget.message.ResubmitPolicy"), eq(Locale.ENGLISH), anyVararg()))
 				.thenReturn(ResubmitPolicy);
 		when(
-				i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard"), eq(Locale.ENGLISH),
-						anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
+				translationService.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard"),
+						eq(Locale.ENGLISH), anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
 		when(
-				i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard2"), eq(Locale.ENGLISH),
-						anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
-		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirements"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(OpenRequirements);
-		when(i18nCache.getText(eq("ContractorWidget.message.UploadAndSubmitWCB"), eq(Locale.ENGLISH), anyVararg()))
-				.thenReturn(FixWcbIssues);
+				translationService.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard2"),
+						eq(Locale.ENGLISH), anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
+		when(
+				translationService.getText(eq("ContractorWidget.message.OpenRequirements"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(OpenRequirements);
+		when(
+				translationService.getText(eq("ContractorWidget.message.UploadAndSubmitWCB"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(FixWcbIssues);
 
-		when(i18nCache.getText(eq("AuditName"), eq(Locale.ENGLISH), anyVararg())).thenReturn("Audit Name");
+		when(translationService.getText(eq("AuditName"), eq(Locale.ENGLISH), anyVararg())).thenReturn("Audit Name");
 
 	}
 
@@ -819,7 +817,7 @@ public class OpenTasksTest extends PicsActionTest {
 		contractor.getAudits().add(audit);
 		audit.getAuditType().setCanContractorEdit(true);
 		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-//		audit.getOperators().add(cao);
+		// audit.getOperators().add(cao);
 
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
@@ -876,22 +874,24 @@ public class OpenTasksTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
-		verify(i18nCache, never()).getText(anyString());
+		verify(translationService, never()).getText(anyString());
 	}
 
 	@Test
-	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndNoContractorEmployees() throws Exception {
+	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndNoContractorEmployees()
+			throws Exception {
 		when(contractor.isRequiresCompetencyReview()).thenReturn(true);
 		when(contractor.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
 
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
-		verify(i18nCache).getText(eq("ContractorWidget.message.EmployeesNeedToBeAdded"), any(Locale.class),
+		verify(translationService).getText(eq("ContractorWidget.message.EmployeesNeedToBeAdded"), any(Locale.class),
 				anyObject());
 	}
 
 	@Test
-	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndContractorHasEmployees() throws Exception {
+	public void testGatherTasksAboutEmployeeCompetencies_OperatorHasRequiredCompetenciesAndContractorHasEmployees()
+			throws Exception {
 		List<Employee> employees = new ArrayList<>();
 		Employee employee = mock(Employee.class);
 		employees.add(employee);
@@ -901,6 +901,6 @@ public class OpenTasksTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutEmployeeCompetencies");
 
-		verify(i18nCache, never()).getText(anyString());
+		verify(translationService, never()).getText(anyString());
 	}
 }

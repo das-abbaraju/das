@@ -104,15 +104,9 @@ public class ManageWorkFlow extends PicsActionSupport {
 				if (Strings.isEmpty(label)) {
 					label = newStatus.name();
 				}
-				// TranslatableString buttonLabel = new TranslatableString();
-				// buttonLabel.putTranslation("en", label, true);
-				// ws.setName(buttonLabel.toString());
 				ws.setName(label);
 
 				if (!Strings.isEmpty(helpText)) {
-					// TranslatableString text = new TranslatableString();
-					// text.putTranslation("en", helpText, true);
-					// ws.setHelpText(text.toString());
 					ws.setHelpText(helpText);
 				}
 
@@ -136,8 +130,6 @@ public class ManageWorkFlow extends PicsActionSupport {
 				if (Strings.isEmpty(label)) {
 					label = status.name();
 				}
-				// TranslatableString name = new TranslatableString();
-				// name.putTranslation("en", label, true);
 				ws.setName(label);
 				ws.setContractorCanEdit(contractorCanEdit);
 				ws.setOperatorCanEdit(operatorCanEdit);

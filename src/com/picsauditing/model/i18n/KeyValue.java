@@ -1,27 +1,28 @@
 package com.picsauditing.model.i18n;
 
-public class KeyValue {
-	private String key;
-	private String value;
+public class KeyValue<K, V> {
 
-	public KeyValue(String key, String value) {
+	private K key;
+	private V value;
+
+	public KeyValue(K key, V value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public String getKey() {
+	public K getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(K key) {
 		this.key = key;
 	}
 
-	public String getValue() {
+	public V getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(V value) {
 		this.value = value;
 	}
 }

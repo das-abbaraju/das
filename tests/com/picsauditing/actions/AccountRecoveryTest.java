@@ -1,6 +1,27 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.PICS.I18nCache;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -8,35 +29,16 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.search.Database;
 import com.picsauditing.util.URLUtils;
 import com.picsauditing.validator.InputValidator;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+public class AccountRecoveryTest extends PicsTranslationTest {
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-public class AccountRecoveryTest {
 	private static final String PASSWORD = "password";
-
 	private static final String USERNAME = "username";
 
 	private AccountRecovery accountRecovery;
 
-	@Mock
-	private Database databaseForTesting;
 	@Mock
 	private EmailBuilder emailBuilder;
 	@Mock
@@ -57,7 +59,7 @@ public class AccountRecoveryTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		super.resetTranslationService();
 
 		accountRecovery = new AccountRecovery();
 
@@ -67,11 +69,6 @@ public class AccountRecoveryTest {
 		Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
 		Whitebox.setInternalState(accountRecovery, "urlUtils", urlUtils);
 		Whitebox.setInternalState(accountRecovery, "userDAO", userDAO);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test
@@ -111,7 +108,7 @@ public class AccountRecoveryTest {
 	public void testFindName_EmailMatchesNoUsers() throws Exception {
 		String url = "/AccountRecovery!recoverUsername";
 		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
-		when(userDAO.findByEmail(anyString())).thenReturn(Collections.<User>emptyList());
+		when(userDAO.findByEmail(anyString())).thenReturn(Collections.<User> emptyList());
 
 		accountRecovery.setEmail("tester@picsauditing.com");
 
@@ -155,7 +152,6 @@ public class AccountRecoveryTest {
 		verify(user).getEmail();
 		verify(userDAO).findByEmail(anyString());
 	}
-
 
 	@Test
 	public void testFindName_EmailMatchesAtLeastOneUserButThrowsExceptionSending() throws Exception {

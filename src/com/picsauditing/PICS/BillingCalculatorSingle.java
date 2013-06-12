@@ -8,17 +8,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
@@ -61,6 +59,8 @@ import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
 import com.picsauditing.salecommission.PaymentObserver;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 
 public class BillingCalculatorSingle {
@@ -106,7 +106,7 @@ public class BillingCalculatorSingle {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 
-	private final I18nCache i18nCache = I18nCache.getInstance();
+	private final TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	public void initService() {
 		salesCommissionDataObservable.addObserver(invoiceObserver);
@@ -164,7 +164,7 @@ public class BillingCalculatorSingle {
 		boolean hasHseCompetency = false;
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
-        boolean hasSSIP = false;
+		boolean hasSSIP = false;
 
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
@@ -192,9 +192,9 @@ public class BillingCalculatorSingle {
 			if (auditType.getId() == AuditType.COR || auditType.getId() == AuditType.IEC_AUDIT) {
 				hasCorOrIec = true;
 			}
-            if (auditType.getId() == AuditType.SSIP) {
-                hasSSIP = true;
-            }
+			if (auditType.getId() == AuditType.SSIP) {
+				hasSSIP = true;
+			}
 		}
 
 		for (ContractorAudit ca : contractor.getAudits()) {
@@ -212,9 +212,9 @@ public class BillingCalculatorSingle {
 				hasAuditGUARD = true;
 			}
 
-            if (!hasAuditGUARD && hasSSIP) {
-                hasAuditGUARD = true;
-            }
+			if (!hasAuditGUARD && hasSSIP) {
+				hasAuditGUARD = true;
+			}
 		}
 
 		if (hasAuditGUARD) {
@@ -329,7 +329,7 @@ public class BillingCalculatorSingle {
 	/**
 	 * This can only be used on invoices which are in Unpaid status to prevent
 	 * Syncing errors w/ Quickbooks.
-	 *
+	 * 
 	 * @param toUpdate
 	 * @param updateWith
 	 * @param permissions
@@ -470,8 +470,10 @@ public class BillingCalculatorSingle {
 	}
 
 	private void setContractorRenewToTrueIfNeeded(ContractorAccount contractor) {
-		if (!(contractor.getFees().get(FeeClass.BidOnly) != null && contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree())
-				|| !(contractor.getFees().get(FeeClass.ListOnly) != null && contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree())) {
+		if (!(contractor.getFees().get(FeeClass.BidOnly) != null && contractor.getFees().get(FeeClass.BidOnly)
+				.getCurrentLevel().isFree())
+				|| !(contractor.getFees().get(FeeClass.ListOnly) != null && contractor.getFees().get(FeeClass.ListOnly)
+						.getCurrentLevel().isFree())) {
 			contractor.setRenew(true);
 		}
 	}
@@ -485,7 +487,7 @@ public class BillingCalculatorSingle {
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
 	 * </ul>
-	 *
+	 * 
 	 * @param contractor
 	 * @return
 	 */
@@ -521,11 +523,12 @@ public class BillingCalculatorSingle {
 	/**
 	 * Calculate a prorated amount depending on when the upgrade happens and
 	 * when the membership expires.
-	 *
+	 * 
 	 * @param contractor
 	 * @param items
 	 * @param upgrades
 	 */
+	@SuppressWarnings("deprecation")
 	private void addProratedUpgradeItems(ContractorAccount contractor, List<InvoiceItem> items,
 			List<ContractorFee> upgrades, User user) {
 		BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
@@ -553,11 +556,12 @@ public class BillingCalculatorSingle {
 				if (upgradeAmount.floatValue() > 0.0f) {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 					if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
-						description = i18nCache.getText("Invoice.UpgradingFrom", user != null ? user.getLocale()
-								: Locale.ENGLISH, upgrade.getCurrentAmount(), contractor.getCountry().getCurrency()
-								.getDisplay(), upgradeAmount, contractor.getCountry().getCurrency().getDisplay());
+						description = translationService.getText("Invoice.UpgradingFrom",
+								user != null ? user.getLocale() : Locale.ENGLISH, upgrade.getCurrentAmount(),
+								contractor.getCountry().getCurrency().getDisplay(), upgradeAmount, contractor
+										.getCountry().getCurrency().getDisplay());
 					} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
-						description = i18nCache.getText("Invoice.UpgradingTo", user != null ? user.getLocale()
+						description = translationService.getText("Invoice.UpgradingTo", user != null ? user.getLocale()
 								: Locale.ENGLISH, upgrade.getFeeClass(), upgradeAmount, contractor.getCountry()
 								.getCurrency().getDisplay());
 					}

@@ -26,12 +26,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.picsauditing.PICS.DateBean;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.NoUsersDefinedException;
@@ -59,7 +59,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public static int PICS_CORPORATE_ID = 14;
 	public static List<Integer> PICS_CORPORATE = Collections.unmodifiableList(Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));
 
-	// These should really be enums
+	// FIXME These should really be enums
 	public static final String ADMIN_ACCOUNT_TYPE = "Admin";
 	public static final String ASSESSMENT_ACCOUNT_TYPE = "Assessment";
 	public static final String CONTRACTOR_ACCOUNT_TYPE = "Contractor";
@@ -94,11 +94,12 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String qbListUKID;
 	protected String qbListEUID;
 	protected Date sapLastSync;
-    protected boolean sapSync;
+	protected boolean sapSync;
 
-    /**
-     * This reason field is specifically for noting the reason that an account is deactivated
-     */
+	/**
+	 * This reason field is specifically for noting the reason that an account
+	 * is deactivated
+	 */
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
@@ -349,7 +350,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.locale = locale;
 	}
 
-    @ReportField(type = FieldType.String, importance = FieldImportance.Average, category = FieldCategory.AccountInformation)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average, category = FieldCategory.AccountInformation)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
@@ -379,7 +380,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * North American Industry Classification System
 	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-	 *
+	 * 
 	 * @return
 	 */
 	@ManyToOne(optional = false)
@@ -415,7 +416,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
 	 * QuickBooks
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -428,7 +429,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 *
+	 * 
 	 * @return
 	 */
 	public String getQbListID() {
@@ -472,15 +473,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.sapLastSync = sapLastSync;
 	}
 
-    public boolean getSapSync() {
-        return sapSync;
-    }
+	public boolean getSapSync() {
+		return sapSync;
+	}
 
-    public void setSapSync(boolean sapSync) {
-        this.sapSync = sapSync;
-    }
+	public void setSapSync(boolean sapSync) {
+		this.sapSync = sapSync;
+	}
 
-    @Transient
+	@Transient
 	public String getQbListID(String currencyCode) {
 		if ("CAD".equals(currencyCode)) {
 			return getQbListCAID();
@@ -498,7 +499,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
@@ -534,7 +535,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Operator Qualification regulation, and if Contractor,
 	 * do they work for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
@@ -593,7 +594,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work
 	 * for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
@@ -623,7 +624,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * The date HSAN accredited the Training Provider to provide training
 	 * services. If HSAN training providers use a lot more custom fields then
 	 * we'll create a new table for this and other fields.
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -654,13 +655,13 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.accountUsers = accountUsers;
 	}
 
-    @Transient
-    public boolean addAccountUser(AccountUser newAccountUser) {
-        if (this.accountUsers == null) {
-            this.accountUsers = new ArrayList<AccountUser>();
-        }
-        return this.accountUsers.add(newAccountUser);
-    }
+	@Transient
+	public boolean addAccountUser(AccountUser newAccountUser) {
+		if (this.accountUsers == null) {
+			this.accountUsers = new ArrayList<AccountUser>();
+		}
+		return this.accountUsers.add(newAccountUser);
+	}
 
 	@Transient
 	public List<Employee> getActiveEmployees() {
@@ -723,7 +724,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Is Operator or Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -1122,56 +1123,56 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.deactivatedBy = deactivatedBy;
 	}
 
-    @Transient
-    protected void expireCurrentAccountUserOfRole(UserAccountRole role) {
-        Date now = new Date();
-        List<AccountUser> accountReps = getAccountUsers();
-        if (accountReps != null) {
-            for (AccountUser representative : accountReps) {
-                if (representative.isCurrent() && representative.getRole() == role) {
-                    representative.setEndDate(now);
-                }
-            }
-        }
-    }
+	@Transient
+	protected void expireCurrentAccountUserOfRole(UserAccountRole role) {
+		Date now = new Date();
+		List<AccountUser> accountReps = getAccountUsers();
+		if (accountReps != null) {
+			for (AccountUser representative : accountReps) {
+				if (representative.isCurrent() && representative.getRole() == role) {
+					representative.setEndDate(now);
+				}
+			}
+		}
+	}
 
-    @Transient
-    protected void addNewCurrentAccountUserOfRole(User newAccountUser, UserAccountRole role, int createdById) {
-        if (newAccountUser != null) {
-            Date now = new Date();
-            AccountUser accountUser = new AccountUser();
-            accountUser.setAccount(this);
-            accountUser.setUser(newAccountUser);
-            accountUser.setStartDate(now);
-            accountUser.setEndDate(DateBean.getEndOfTime());
-            accountUser.setRole(role);
-            accountUser.setOwnerPercent(100);
-            accountUser.setCreatedBy(new User(createdById));
-            accountUser.setCreationDate(now);
-            addAccountUser(accountUser);
-        }
-    }
+	@Transient
+	protected void addNewCurrentAccountUserOfRole(User newAccountUser, UserAccountRole role, int createdById) {
+		if (newAccountUser != null) {
+			Date now = new Date();
+			AccountUser accountUser = new AccountUser();
+			accountUser.setAccount(this);
+			accountUser.setUser(newAccountUser);
+			accountUser.setStartDate(now);
+			accountUser.setEndDate(DateBean.getEndOfTime());
+			accountUser.setRole(role);
+			accountUser.setOwnerPercent(100);
+			accountUser.setCreatedBy(new User(createdById));
+			accountUser.setCreationDate(now);
+			addAccountUser(accountUser);
+		}
+	}
 
-    @Transient
-    protected AccountUser getCurrentAccountUserOfRole(UserAccountRole role) {
-        if (accountUsers != null) {
-            for (AccountUser representative : accountUsers) {
-                if (representative.isCurrent() && representative.getRole() == role) {
-                    return representative;
-                }
-            }
-        }
-        return null;
-    }
+	@Transient
+	protected AccountUser getCurrentAccountUserOfRole(UserAccountRole role) {
+		if (accountUsers != null) {
+			for (AccountUser representative : accountUsers) {
+				if (representative.isCurrent() && representative.getRole() == role) {
+					return representative;
+				}
+			}
+		}
+		return null;
+	}
 
-    @Transient
-    public boolean isActive() {
-        return (status != null && status.isActive());
-    }
+	@Transient
+	public boolean isActive() {
+		return (status != null && status.isActive());
+	}
 
-    @Transient
-    public boolean isActiveOrDemo() {
-        return (status != null && status.isActiveOrDemo());
-    }
+	@Transient
+	public boolean isActiveOrDemo() {
+		return (status != null && status.isActiveOrDemo());
+	}
 
 }

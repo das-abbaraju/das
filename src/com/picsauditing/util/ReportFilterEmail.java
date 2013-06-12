@@ -151,6 +151,6 @@ public class ReportFilterEmail extends ReportFilter {
 	}
 	
 	public static String getDefaultToAddress() {
-		return cache.getText("Filters.label.ToAddress", getLocaleStatic());
+		return translationService.getText("Filters.label.ToAddress", getLocaleStatic());
 	}
 }

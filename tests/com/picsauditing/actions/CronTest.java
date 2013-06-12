@@ -14,16 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.EmailSender;
+import javax.sql.DataSource;
+
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -32,14 +28,36 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.DBBean;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.search.Database;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.sql.DataSource;
 
 @SuppressWarnings("deprecation")
 public class CronTest extends PicsActionTest {
@@ -49,61 +67,59 @@ public class CronTest extends PicsActionTest {
 	private OperatorAccount operator;
 	private OperatorAccount anotherOperator;
 	private List<ContractorOperator> operators;
-	// private List<Certificate> certList;
-	// private Map<Integer, List<Integer>> opIdsByCertIds;
 
-    @Mock
-    protected ContractorAccountDAO contractorAccountDAO;
-    @Mock
-    protected ContractorAuditDAO contractorAuditDAO;
-    @Mock
-    protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
-    @Mock
-    private ContractorOperatorDAO contractorOperatorDAO;
-    @Mock
-    protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
-    @Mock
-    private EmailQueueDAO emailQueueDAO;
-    @Mock
-    private FlagDataOverrideDAO flagDataOverrideDAO;
-    @Mock
-    protected InvoiceDAO invoiceDAO;
-    @Mock
-    private InvoiceFeeDAO invoiceFeeDAO;
-    @Mock
-    private InvoiceItemDAO invoiceItemDAO;
-    @Mock
-    protected OperatorAccountDAO operatorDAO;
-    @Mock
-    protected NoteDAO noteDAO;
-    @Mock
-    protected UserDAO userDAO;
-
+	@Mock
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Mock
+	protected ContractorAuditDAO contractorAuditDAO;
+	@Mock
+	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+	@Mock
+	private ContractorOperatorDAO contractorOperatorDAO;
+	@Mock
+	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+	@Mock
+	private EmailQueueDAO emailQueueDAO;
+	@Mock
+	private FlagDataOverrideDAO flagDataOverrideDAO;
+	@Mock
+	protected InvoiceDAO invoiceDAO;
+	@Mock
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Mock
+	private InvoiceItemDAO invoiceItemDAO;
+	@Mock
+	protected OperatorAccountDAO operatorDAO;
+	@Mock
+	protected NoteDAO noteDAO;
+	@Mock
+	protected UserDAO userDAO;
 	@Mock
 	private EmailBuilder emailBuilder;
 	@Mock
-	private Database databaseForTesting;
-	@Mock
 	private AccountStatusChanges accountStatusChanges;
-    @Mock
-    private DataSource dataSource;
-    @Mock
-    private EmailSender emailSender;
+	@Mock
+	private EmailSender emailSender;
+
+	@BeforeClass
+	public static void classSetUp() {
+		PicsTranslationTest.setupTranslationServiceForTest();
+		Whitebox.setInternalState(DBBean.class, "staticDataSource", Mockito.mock(DataSource.class));
+	}
 
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		PicsTranslationTest.tearDownTranslationService();
 		Whitebox.setInternalState(DBBean.class, "staticDataSource", (DataSource) null);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-        Whitebox.setInternalState(DBBean.class, "staticDataSource", dataSource);
+		super.resetTranslationService();
 
 		cron = new Cron();
-        super.setUp(cron);
+		super.setUp(cron);
 
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(cron, this);
 		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
@@ -119,17 +135,18 @@ public class CronTest extends PicsActionTest {
 		operators.add(EntityFactory.addContractorOperator(contractor, operator));
 		operators.add(EntityFactory.addContractorOperator(contractor, anotherOperator));
 
-        when(propertyDAO.find("admin_email_address")).thenReturn(new AppProperty("admin_email_address", "foo@example.com"));
+		when(propertyDAO.find("admin_email_address")).thenReturn(
+				new AppProperty("admin_email_address", "foo@example.com"));
 	}
 
-    @Test
-    public void testExcecute_VerifyExtractMethodOfDecliningPendingAccounts() throws Exception {
-        cron.setFlagsOnly(true);
+	@Test
+	public void testExcecute_VerifyExtractMethodOfDecliningPendingAccounts() throws Exception {
+		cron.setFlagsOnly(true);
 
-        cron.execute();
+		cron.execute();
 
-        verify(contractorAccountDAO).findPendingAccountsToMoveToDeclinedStatus();
-    }
+		verify(contractorAccountDAO).findPendingAccountsToMoveToDeclinedStatus();
+	}
 
 	@Test
 	public void testSendEmailPendingAccounts_SqlHasCountryRestrictionWhenEmailExclusionsExist() throws Exception {
@@ -293,29 +310,22 @@ public class CronTest extends PicsActionTest {
 
 		when(contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus()).thenReturn(cList);
 
-        cron.move90DayPendingAccountsToDeclinedStatus();
+		cron.move90DayPendingAccountsToDeclinedStatus();
 
-        verify(accountStatusChanges).declineContractor(
-                cAccount,
-                permissions,
-                AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
-                AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
-        verify(accountStatusChanges).declineContractor(
-                cAccount2,
-                permissions,
-                AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
-                AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
+		verify(accountStatusChanges).declineContractor(cAccount, permissions,
+				AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
+				AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
+		verify(accountStatusChanges).declineContractor(cAccount2, permissions,
+				AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
+				AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
 	}
 
 	@Test
 	public void testDeactivatePendingAccounts_emptyList() {
 		List<ContractorAccount> cList = new ArrayList<>();
 		when(contractorAccountDAO.findPendingAccountsToMoveToDeclinedStatus()).thenReturn(cList);
-        verify(accountStatusChanges, never()).deactivateContractor(
-                any(ContractorAccount.class),
-                any(Permissions.class),
-                anyString(),
-                anyString());
+		verify(accountStatusChanges, never()).deactivateContractor(any(ContractorAccount.class),
+				any(Permissions.class), anyString(), anyString());
 	}
 
 	@Test
@@ -352,12 +362,13 @@ public class CronTest extends PicsActionTest {
 		return contractor;
 	}
 
-    private void verifyContractor(ContractorAccount contractor, boolean isBidOnly) {
-        String reason = isBidOnly ? AccountStatusChanges.BID_ONLY_ACCOUNT_REASON : AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
+	private void verifyContractor(ContractorAccount contractor, boolean isBidOnly) {
+		String reason = isBidOnly ? AccountStatusChanges.BID_ONLY_ACCOUNT_REASON
+				: AccountStatusChanges.DEACTIVATED_NON_RENEWAL_ACCOUNT_REASON;
 
-        verify(contractor, times(1)).syncBalance();
-        verify(contractor, times(1)).setAuditColumns(Cron.system);
-        verify(accountStatusChanges, times(1)).deactivateContractor(contractor, permissions, reason,
-                "Automatically inactivating account based on expired membership");
-    }
+		verify(contractor, times(1)).syncBalance();
+		verify(contractor, times(1)).setAuditColumns(Cron.system);
+		verify(accountStatusChanges, times(1)).deactivateContractor(contractor, permissions, reason,
+				"Automatically inactivating account based on expired membership");
+	}
 }

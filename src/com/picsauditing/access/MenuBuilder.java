@@ -11,13 +11,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -26,7 +27,7 @@ public final class MenuBuilder {
 
 	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
-	private static I18nCache i18nCache = I18nCache.getInstance();
+	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	private MenuBuilder() {
 	}
@@ -463,7 +464,7 @@ public final class MenuBuilder {
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
-				.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 
@@ -504,7 +505,8 @@ public final class MenuBuilder {
 		}
 
 		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
-		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action", "navigation_restructure");
+		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
+				"navigation_restructure");
 		referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
 		referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
 	}
@@ -637,7 +639,7 @@ public final class MenuBuilder {
 	}
 
 	private static String getText(String key) {
-		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
+		return translationService.getText(key, TranslationActionSupport.getLocaleStatic());
 	}
 
 	private static MenuComponent buildUniqueFavoritesMenuComponent() {
@@ -666,7 +668,7 @@ public final class MenuBuilder {
 	}
 
 	public static String getMibewURL(Locale locale, Permissions permissions) throws UnsupportedEncodingException {
-		String mibew_language_code = i18nCache.getText("Mibew.LanguageCode", locale);
+		String mibew_language_code = translationService.getText("Mibew.LanguageCode", locale);
 
 		StringBuilder mibewURL = new StringBuilder();
 		mibewURL.append("https://chat.picsorganizer.com/client.php?");

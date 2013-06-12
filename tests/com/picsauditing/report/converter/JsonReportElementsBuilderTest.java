@@ -1,39 +1,48 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.report.ReportJson.*;
-import static com.picsauditing.util.Assert.*;
-import static org.mockito.Mockito.*;
+import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
+import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
+import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
+import static com.picsauditing.report.ReportJson.COLUMN_URL;
+import static com.picsauditing.report.ReportJson.COLUMN_WIDTH;
+import static com.picsauditing.report.ReportJson.FILTER_COLUMN_COMPARE;
+import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
+import static com.picsauditing.report.ReportJson.FILTER_TYPE;
+import static com.picsauditing.report.ReportJson.FILTER_VALUE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_CATEGORY;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_DESCRIPTION;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
+import static com.picsauditing.util.Assert.assertJson;
+import static com.picsauditing.util.Assert.assertJsonNoQuotes;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-import com.picsauditing.report.models.ReportsModel;
 import org.json.simple.JSONArray;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.models.ReportsModel;
 import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.search.Database;
 
-public class JsonReportElementsBuilderTest {
+public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 
 	@Mock
 	private Permissions permissions;
-	@Mock
-	protected I18nCache i18nCache;
 	@Mock
 	private ReportsModel reportsModel;
 
@@ -41,27 +50,16 @@ public class JsonReportElementsBuilderTest {
 	private final int ACCOUNT_ID = Account.PicsID;
 	private static final String TRANSLATION_PREFIX = "translation:";
 
-	@BeforeClass
-	public static void setUpClass() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
+		super.resetTranslationService();
 
 		when(permissions.getAccountIdString()).thenReturn("" + ACCOUNT_ID);
 		when(permissions.getVisibleAccounts()).thenReturn(new HashSet<Integer>());
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-		Whitebox.setInternalState(ReportUtil.class, "i18nCache", (I18nCache) null);
 	}
 
 	@Test
@@ -76,7 +74,8 @@ public class JsonReportElementsBuilderTest {
 		field.setName(fieldName);
 		FieldCategory fieldCategory = FieldCategory.AccountInformation;
 		field.setCategory(fieldCategory);
-		// We're not calling field.setCategoryTranslation() because that's set by ReportUtil
+		// We're not calling field.setCategoryTranslation() because that's set
+		// by ReportUtil
 		// We're not calling field.setHelp() because that's set by ReportUtil
 
 		// Column specific properties that live in the field
@@ -95,9 +94,14 @@ public class JsonReportElementsBuilderTest {
 		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
-		when(i18nCache.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
-		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + fieldName);
-		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
+		when(
+				translationService.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()),
+						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
+		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(
+				TRANSLATION_PREFIX + fieldName);
+		when(
+				translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
+						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
 		JSONArray jsonArray = JsonReportElementsBuilder.buildColumns(reportsModel, permissions);
 		String jsonString = jsonArray.toString();
@@ -126,7 +130,8 @@ public class JsonReportElementsBuilderTest {
 		field.setName(fieldName);
 		FieldCategory fieldCategory = FieldCategory.AccountInformation;
 		field.setCategory(fieldCategory);
-		// We're not calling field.setCategoryTranslation() because that's set by ReportUtil
+		// We're not calling field.setCategoryTranslation() because that's set
+		// by ReportUtil
 		// We're not calling field.setHelp() because that's set by ReportUtil
 
 		// Column specific properties that live in the field
@@ -139,9 +144,14 @@ public class JsonReportElementsBuilderTest {
 		when(reportsModel.getAvailableFields()).thenReturn(fieldsMap);
 
 		// This is super brittle, but testing exactly what's actually happening
-		when(i18nCache.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
-		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + fieldName);
-		when(i18nCache.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX), any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
+		when(
+				translationService.getText(eq(ReportUtil.REPORT_CATEGORY_KEY_PREFIX + fieldCategory.toString()),
+						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + categoryTranslation);
+		when(translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName), any(Locale.class))).thenReturn(
+				TRANSLATION_PREFIX + fieldName);
+		when(
+				translationService.getText(eq(ReportUtil.REPORT_KEY_PREFIX + fieldName + ReportUtil.HELP_KEY_SUFFIX),
+						any(Locale.class))).thenReturn(TRANSLATION_PREFIX + description);
 
 		JSONArray jsonArray = JsonReportElementsBuilder.buildFilters(reportsModel, permissions);
 		String jsonString = jsonArray.toString();

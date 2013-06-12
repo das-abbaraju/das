@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import javax.persistence.Transient;
 
 import com.google.common.base.Strings;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public enum FlagColor implements Translatable {
 
-	Green("#339900", "Approve"),
-	Amber("#FFCC33", "Review"),
-	Red("#CC0000", "Reject"),
-	Clear("#FFFFFF", "Not Applicable");
+	Green("#339900", "Approve"), Amber("#FFCC33", "Review"), Red("#CC0000", "Reject"), Clear("#FFFFFF",
+			"Not Applicable");
 
 	private String hex;
 	private String insuranceStatus;
@@ -25,8 +24,9 @@ public enum FlagColor implements Translatable {
 
 	public static ArrayList<String> getValuesWithDefault() {
 		ArrayList<String> values = new ArrayList<String>();
-		for (FlagColor value : FlagColor.values())
+		for (FlagColor value : FlagColor.values()) {
 			values.add(value.name());
+		}
 		return values;
 	}
 
@@ -39,32 +39,39 @@ public enum FlagColor implements Translatable {
 	}
 
 	public String getBigIcon() {
-		I18nCache cache = I18nCache.getInstance();
-		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
-		if (this == FlagColor.Clear)
-			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
+		TranslationService translationService = TranslationServiceFactory.getTranslationService();
+		String title = translationService.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
+		if (this == FlagColor.Clear) {
+			title = translationService.getText(getI18nKey("insuranceStatus"),
+					TranslationActionSupport.getLocaleStatic());
+		}
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
 	}
 
 	public String getSmallIcon() {
-		I18nCache cache = I18nCache.getInstance();
-		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
+		TranslationService translationService = TranslationServiceFactory.getTranslationService();
+		String title = translationService.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
 
-		if (this == FlagColor.Clear)
-			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
+		if (this == FlagColor.Clear) {
+			title = translationService.getText(getI18nKey("insuranceStatus"),
+					TranslationActionSupport.getLocaleStatic());
+		}
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
 	}
 
 	public String getSmallIcon(String columnName) {
-		I18nCache cache = I18nCache.getInstance();
-		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
+		TranslationService translationService = TranslationServiceFactory.getTranslationService();
+		String title = translationService.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
 
-		if (!Strings.isNullOrEmpty(columnName))
-			title = columnName+": "+title;
-		if (this == FlagColor.Clear)
-			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
+		if (!Strings.isNullOrEmpty(columnName)) {
+			title = columnName + ": " + title;
+		}
+		if (this == FlagColor.Clear) {
+			title = translationService.getText(getI18nKey("insuranceStatus"),
+					TranslationActionSupport.getLocaleStatic());
+		}
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
 	}
@@ -74,15 +81,17 @@ public enum FlagColor implements Translatable {
 	}
 
 	public static FlagColor getWorseColor(FlagColor color1, FlagColor color2) {
-		if (color2 == null)
+		if (color2 == null) {
 			return color1;
+		}
 
 		if (color1 == null) {
 			return color2;
 		}
 
-		if (color2.ordinal() > color1.ordinal())
+		if (color2.ordinal() > color1.ordinal()) {
 			color1 = color2;
+		}
 		return color1;
 	}
 
@@ -107,11 +116,13 @@ public enum FlagColor implements Translatable {
 	}
 
 	public boolean isWorseThan(FlagColor flagColor2) {
-		if (flagColor2 == null)
+		if (flagColor2 == null) {
 			return true;
+		}
 
-		if (this.compareTo(flagColor2) < 0)
+		if (this.compareTo(flagColor2) < 0) {
 			return true;
+		}
 
 		return false;
 	}

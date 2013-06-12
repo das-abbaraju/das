@@ -8,10 +8,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteService<CountrySubdivision> {
@@ -39,7 +39,8 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 					+ Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
 
 			result.addAll(countrySubdivisionList);
-		} else { // any more or less characters, then search only through translations
+		} else { // any more or less characters, then search only through
+					// translations
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(
 					CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
 
@@ -56,7 +57,8 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 
 	@Override
 	protected Object getValue(CountrySubdivision subdivision, Permissions permissions) {
-		return I18nCache.getInstance().getText(subdivision.getI18nKey(), permissions.getLocale());
+		return TranslationServiceFactory.getTranslationService().getText(subdivision.getI18nKey(),
+				permissions.getLocale());
 	}
 
 	@Override

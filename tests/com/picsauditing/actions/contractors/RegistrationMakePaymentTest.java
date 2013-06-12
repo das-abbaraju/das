@@ -58,7 +58,7 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
 
 		assertThat(url, startsWith("RegistrationServiceEvaluation"));
-		verify(i18nCache).hasKey("ContractorRegistrationFinish.message.SelectService", Locale.ENGLISH);
+		verify(translationService).hasKey("ContractorRegistrationFinish.message.SelectService", Locale.ENGLISH);
 
 		when(contractor.isTransportationServices()).thenReturn(true);
 		when(contractor.getProductRisk()).thenReturn(LowMedHigh.None);
@@ -80,7 +80,7 @@ public class RegistrationMakePaymentTest extends PicsActionTest {
 		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
 
 		assertThat(url, startsWith("AddClientSite"));
-		verify(i18nCache).hasKey("ContractorRegistrationFinish.message.AddFacility", Locale.ENGLISH);
+		verify(translationService).hasKey("ContractorRegistrationFinish.message.AddFacility", Locale.ENGLISH);
 	}
 
 	@Test

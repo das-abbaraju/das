@@ -1,39 +1,37 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.URLUtils;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 public class TranslateJS2 extends PicsActionSupport {
-
-	@Autowired
-	private FeatureToggle featureToggle;
 
 	private JSONObject translations = new JSONObject();
 
 	private static final long serialVersionUID = 688114963286561699L;
 
-	// this is for testing
-	private static I18nCache i18nCache;
-
 	@Anonymous
 	public String execute() throws Exception {
-	    buildTranslationJsonResponse();
+		buildTranslationJsonResponse();
 		return SUCCESS;
 	}
 
 	@SuppressWarnings("unchecked")
 	private void buildTranslationJsonResponse() {
-		List<Map<String, String>> translationsForJS = getI18nCache().getTranslationsForJS(
-				URLUtils.getActionNameFromRequest(getRequest()),
-				URLUtils.getActionMethodNameFromRequest(getRequest()), buildLocales());
+		List<Map<String, String>> translationsForJS = getTranslationService().getTranslationsForJS(
+				URLUtils.getActionNameFromRequest(getRequest()), URLUtils.getActionMethodNameFromRequest(getRequest()),
+				buildLocales());
 
 		if (CollectionUtils.isEmpty(translationsForJS)) {
 			return;
@@ -66,11 +64,7 @@ public class TranslateJS2 extends PicsActionSupport {
 		return translations;
 	}
 
-	private static I18nCache getI18nCache() {
-		if (i18nCache == null) {
-			return I18nCache.getInstance();
-		}
-
-		return i18nCache;
+	private static TranslationService getTranslationService() {
+		return TranslationServiceFactory.getTranslationService();
 	}
 }

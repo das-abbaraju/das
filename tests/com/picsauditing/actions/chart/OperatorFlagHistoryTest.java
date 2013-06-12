@@ -34,12 +34,12 @@ public class OperatorFlagHistoryTest extends PicsTest {
 		MockitoAnnotations.initMocks(this);
 		super.setUp();
 
-		when(i18nCache.hasKey("FlagColor.Amber", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
-		when(i18nCache.getText("FlagColor.Amber", Locale.ENGLISH, (Object[])null)).thenReturn("Yellow");
-		when(i18nCache.hasKey("FlagColor.Green", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
-		when(i18nCache.getText("FlagColor.Green", Locale.ENGLISH, (Object[])null)).thenReturn("Green");
-		when(i18nCache.hasKey("FlagColor.Red", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
-		when(i18nCache.getText("FlagColor.Red", Locale.ENGLISH, (Object[])null)).thenReturn("Red");
+		when(translationService.hasKey("FlagColor.Amber", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(translationService.getText("FlagColor.Amber", Locale.ENGLISH, (Object[])null)).thenReturn("Yellow");
+		when(translationService.hasKey("FlagColor.Green", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(translationService.getText("FlagColor.Green", Locale.ENGLISH, (Object[])null)).thenReturn("Green");
+		when(translationService.hasKey("FlagColor.Red", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(translationService.getText("FlagColor.Red", Locale.ENGLISH, (Object[])null)).thenReturn("Red");
 		when(permissions.getAccountId()).thenReturn(OPERATOR_ACCOUNT_ID);
 		
 		List<DataRow> data = data();

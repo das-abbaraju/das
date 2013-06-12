@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 
 import javax.persistence.EntityManager;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,20 +19,18 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.search.Database;
 
-public class ManageEmployeeRoleTest {
+public class ManageEmployeeRoleTest extends PicsTranslationTest {
+
 	private ManageEmployeeRole manageEmployeeRole;
 
-	@Mock
-	private Database database;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -42,7 +39,7 @@ public class ManageEmployeeRoleTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		manageEmployeeRole = new ManageEmployeeRole();
 
@@ -50,11 +47,6 @@ public class ManageEmployeeRoleTest {
 		picsTestUtil.autowireEMInjectedDAOs(manageEmployeeRole, entityManager);
 
 		Whitebox.setInternalState(manageEmployeeRole, "permissions", permissions);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

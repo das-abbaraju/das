@@ -29,24 +29,22 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 		if (permissions != null && permissions.isLoggedIn()) {
 			Locale locale = permissions.getLocale();
 			saveLocale(invocation, locale);
+			setThreadLocalLocale(locale);
 			result = invocation.invoke();
 			if (!locale.equals(cookieLocale)) {
 				setLocaleToCookie(locale);
 			}
-
-			setThreadLocalLocale(locale);
 		} else if (paramLocale != null) {
 			saveLocale(invocation, paramLocale);
+			setThreadLocalLocale(paramLocale);
 			result = invocation.invoke();
 			if (!paramLocale.equals(cookieLocale)) {
 				setLocaleToCookie(paramLocale);
 			}
-
-			setThreadLocalLocale(paramLocale);
 		} else if (cookieLocale != null) {
 			saveLocale(invocation, cookieLocale);
+			setThreadLocalLocale(paramLocale);
 			result = invocation.invoke();
-			setThreadLocalLocale(cookieLocale);
 		} else {
 			result = super.intercept(invocation);
 		}

@@ -54,8 +54,9 @@
 				<interceptor-ref name="servletConfig"/>
 				<interceptor-ref name="cachecontrol"/>
 				<interceptor-ref name="security"/>
-				<interceptor-ref name="prepare"/>
+				<!-- <interceptor-ref name="prepare"/> -->
 				<interceptor-ref name="i18n"/>
+				<interceptor-ref name="prepare"/>
 				<interceptor-ref name="chain"/>
 				<interceptor-ref name="debugging"/>
 				<interceptor-ref name="profiling"/>

@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.Strings;
@@ -17,8 +18,12 @@ import com.picsauditing.util.test.TranslatorFactorySetup;
 public class ManageFlagCriteriaTest extends PicsTest {
 	ManageFlagCriteria manageFlagCriteria;
 
+	private static final String TEST_TRANSLATION = "Test translations";
+	private static final String EMPTY_TRANSLATION = Strings.EMPTY_STRING;
+
 	@AfterClass
 	public static void classTearDown() {
+		PicsTranslationTest.tearDownTranslationService();
 		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
@@ -37,8 +42,8 @@ public class ManageFlagCriteriaTest extends PicsTest {
 	public void testSave_InputValidation() throws Exception {
 		FlagCriteria flagCriteria = new FlagCriteria();
 
-		flagCriteria.setLabel("Test translation");
-		flagCriteria.setDescription("Test translation");
+		flagCriteria.setLabel(TEST_TRANSLATION);
+		flagCriteria.setDescription(TEST_TRANSLATION);
 		flagCriteria.setCategory("Audits");
 		flagCriteria.setRequiredLanguages("[\"en\"]");
 		flagCriteria.setDefaultValue("test");
@@ -49,7 +54,7 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(!manageFlagCriteria.hasActionErrors());
 
 		// no category
-		flagCriteria.setCategory("");
+		flagCriteria.setCategory(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
 		flagCriteria.setCategory("Audits");
@@ -61,16 +66,16 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		flagCriteria.setDisplayOrder(999);
 
 		// bad label
-		flagCriteria.setLabel(Strings.EMPTY_STRING);
+		flagCriteria.setLabel(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setLabel("Test translation");
+		flagCriteria.setLabel(TEST_TRANSLATION);
 
 		// bad description
-		flagCriteria.setDescription(Strings.EMPTY_STRING);
+		flagCriteria.setDescription(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setDescription("Test translation");
+		flagCriteria.setDescription(TEST_TRANSLATION);
 
 		// bad data type
 		flagCriteria.setDataType("boolean");
@@ -99,5 +104,4 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(manageFlagCriteria.hasActionErrors());
 		flagCriteria.setRequiredStatus(null);
 	}
-
 }

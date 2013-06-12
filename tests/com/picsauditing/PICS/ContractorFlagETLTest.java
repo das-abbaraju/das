@@ -118,9 +118,6 @@ public class ContractorFlagETLTest {
 	}
 
 	private Set<FlagCriteria> mockFlagCriteriaQuestionsNotAnnualAddendumNoExcess(int numberToCreate) {
-		// TranslatableString translatableString =
-		// mock(TranslatableString.class);
-		// when(translatableString.toString()).thenReturn("test description");
 		Set<FlagCriteria> flagCriteriaSet = new HashSet<FlagCriteria>();
 		int questionId = 1;
 		for (int i = 0; i < numberToCreate; i++, questionId++) {

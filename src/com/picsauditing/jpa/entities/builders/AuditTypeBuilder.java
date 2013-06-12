@@ -22,9 +22,6 @@ public class AuditTypeBuilder {
 	}
 
 	public AuditTypeBuilder name(String name) {
-		// TranslatableString translatedName = new TranslatableString();
-		// translatedName.putTranslation("en", name, true);
-		// type.setName(translatedName.toString());
 		type.setName(name);
 		return this;
 	}

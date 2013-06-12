@@ -70,9 +70,9 @@ public class ManageJobSitesTest extends PicsTest {
 		// test success
 		PicsTestUtil.forceSetPrivateField(permissions, "accountType", "Operator");
 
-		when(i18nCache.hasKey(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))))).thenReturn(
+		when(translationService.hasKey(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))))).thenReturn(
 				Boolean.TRUE);
-		when(i18nCache.getText(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))), anyVararg()))
+		when(translationService.getText(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))), anyVararg()))
 				.thenReturn("Projects");
 
 		assertEquals(ActionSupport.SUCCESS, manageJobSites.execute());

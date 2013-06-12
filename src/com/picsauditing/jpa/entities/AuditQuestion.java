@@ -28,7 +28,7 @@ import org.json.simple.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
@@ -188,7 +188,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getName() {
-		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
+		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {
@@ -291,7 +291,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeader() {
-		return new LlewellynTranslatableString(getI18nKey("columnHeader")).toTranslatedString();
+		return new TranslatableString(getI18nKey("columnHeader")).toTranslatedString();
 	}
 
 	public void setColumnHeader(String columnHeader) {
@@ -309,7 +309,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getTitle() {
-		return new LlewellynTranslatableString(getI18nKey("title")).toTranslatedString();
+		return new TranslatableString(getI18nKey("title")).toTranslatedString();
 	}
 
 	public void setTitle(String title) {
@@ -356,7 +356,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getHelpText() {
-		return new LlewellynTranslatableString(getI18nKey("helpText")).toTranslatedString();
+		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
 	}
 
 	public void setHelpText(String helpText) {
@@ -365,7 +365,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getRequirement() {
-		return new LlewellynTranslatableString(getI18nKey("requirement")).toTranslatedString();
+		return new TranslatableString(getI18nKey("requirement")).toTranslatedString();
 	}
 
 	public void setRequirement(String requirement) {

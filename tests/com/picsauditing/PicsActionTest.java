@@ -1,33 +1,35 @@
 package com.picsauditing;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.search.Database;
-import org.apache.struts2.StrutsStatics;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import org.apache.struts2.StrutsStatics;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.mockito.Mock;
+import org.powermock.reflect.Whitebox;
 
-public class PicsActionTest {
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.model.i18n.LanguageModel;
+
+public class PicsActionTest extends PicsTranslationTest {
+
 	protected ActionContext actionContext;
 	protected Cookie[] cookies;
 	protected Map<String, Object> session;
@@ -46,8 +48,6 @@ public class PicsActionTest {
 	@Mock
 	protected Permissions permissions;
 	@Mock
-	protected I18nCache i18nCache;
-	@Mock
 	protected AppPropertyDAO propertyDAO;
 	@Mock
 	protected LanguageModel languageModel;
@@ -58,25 +58,25 @@ public class PicsActionTest {
 
 	@BeforeClass
 	public static void classSetUp() throws Exception {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
+		PicsTranslationTest.setupTranslationServiceForTest();
 	}
 
 	@AfterClass
 	public static void classTearDown() throws Exception {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 		ActionContext.setContext(null);
+		PicsTranslationTest.tearDownTranslationService();
 	}
 
 	protected void setUp(PicsActionSupport controller) throws Exception {
 		setupMocks();
 		setObjectUnderTestState(controller);
+		super.resetTranslationService();
 	}
 
 	protected void setObjectUnderTestState(PicsActionSupport controller) {
 		Whitebox.setInternalState(controller, "supportedLanguages", languageModel);
 		Whitebox.setInternalState(controller, "permissions", permissions);
-		Whitebox.setInternalState(controller, "i18nCache", i18nCache);
+		Whitebox.setInternalState(controller, "translationService", translationService);
 		Whitebox.setInternalState(controller, "propertyDAO", propertyDAO);
 	}
 
@@ -105,7 +105,7 @@ public class PicsActionTest {
 		when(request.getHeader("User-Agent")).thenReturn(userAgent);
 		when(request.getSession()).thenReturn(httpSession);
 		when(request.getHeaderNames()).thenReturn(enumeration);
-		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+		when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 		when(servletContext.getInitParameter("FTP_DIR")).thenReturn("/tmp/ftp_dir");
 		session.put("permissions", permissions);

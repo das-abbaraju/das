@@ -217,13 +217,8 @@ public enum Subscription implements Translatable {
 	};
 
 	private int templateID;
-
-	// private TranslatableString description;
-	// private TranslatableString longDescription;
-
 	private String description;
 	private String longDescription;
-
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
 			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
 	private boolean requiredForOperator = false;
@@ -250,22 +245,6 @@ public enum Subscription implements Translatable {
 	public void setTemplateID(int templateID) {
 		this.templateID = templateID;
 	}
-
-	// public TranslatableString getDescription() {
-	// return description;
-	// }
-	//
-	// public void setDescription(TranslatableString description) {
-	// this.description = description;
-	// }
-	//
-	// public TranslatableString getLongDescription() {
-	// return longDescription;
-	// }
-	//
-	// public void setLongDescription(TranslatableString longDescription) {
-	// this.longDescription = longDescription;
-	// }
 
 	public String getDescription() {
 		return description;

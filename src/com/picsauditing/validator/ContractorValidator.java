@@ -10,7 +10,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -23,6 +22,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public class ContractorValidator {
@@ -40,7 +41,7 @@ public class ContractorValidator {
 	@Autowired
 	protected VATValidator vatValidator;
 
-	private I18nCache i18nCache = I18nCache.getInstance();
+	private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	public static Locale getLocaleStatic() {
 		try {
@@ -51,11 +52,11 @@ public class ContractorValidator {
 	}
 
 	private String getText(String aTextName) {
-		return i18nCache.getText(aTextName, getLocaleStatic());
+		return translationService.getText(aTextName, getLocaleStatic());
 	}
 
 	public String getTextParameterized(String aTextName, Object... args) {
-		return i18nCache.getText(aTextName, getLocaleStatic(), Arrays.asList(args));
+		return translationService.getText(aTextName, getLocaleStatic(), Arrays.asList(args));
 	}
 
 	public Vector<String> validateContractor(ContractorAccount contractor) {

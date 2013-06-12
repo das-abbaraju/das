@@ -1,20 +1,22 @@
 package com.picsauditing.validator;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.jpa.entities.User;
-
 import java.util.Locale;
+
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public class BasicTranslationSupport {
 
-	private I18nCache i18nCache = I18nCache.getInstance();
+	private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	protected String getText(String key, User user) {
-		return i18nCache.getText(key, getLocale(user));
+		return translationService.getText(key, getLocale(user));
 	}
 
+	@SuppressWarnings("deprecation")
 	protected String getText(String key, User user, Object... args) {
-		return i18nCache.getText(key, getLocale(user), args);
+		return translationService.getText(key, getLocale(user), args);
 	}
 
 	private Locale getLocale(User user) {
