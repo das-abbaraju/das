@@ -4,8 +4,6 @@ import static com.picsauditing.report.ReportJson.REPORT_ID;
 import static com.picsauditing.report.ReportJson.writeJsonException;
 import static com.picsauditing.report.ReportJson.writeJsonSuccess;
 
-import java.util.List;
-
 import javax.persistence.NoResultException;
 
 import org.json.simple.JSONObject;
@@ -17,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsApiSupport;
-import com.picsauditing.dao.WidgetUserDAO;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportChart;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.WidgetUser;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportValidationException;
@@ -37,7 +35,7 @@ public class ReportApi extends PicsApiSupport {
 	@Autowired
 	private ReportPreferencesService reportPreferencesService;
 	@Autowired
-	private WidgetUserDAO widgetUserDAO;
+	private ReportDAO reportDao;
 
 	protected int reportId;
 	protected int widgetId;
@@ -195,19 +193,10 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(null);
 
 		try {
-			List<WidgetUser> widgetUsers = widgetUserDAO.findByUser(permissions);
-			for (WidgetUser user : widgetUsers) {
+			ReportChart chart = reportDao.findByWidgetID(widgetId);
 
-				if (user.getWidget() != null && user.getWidget().getWidgetID() == widgetId) {
-					reportId = user.getWidget().getReportID().intValue();
-					break;
-				}
-			}
-
-			if (reportId != 0) {
-				report = reportService.loadReportFromDatabase(reportId);
-
-				json = reportService.buildReportResultsForChart(reportContext, report);
+			if (chart != null) {
+				json = reportService.buildReportResultsForChart(reportContext, chart);
 			}
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);

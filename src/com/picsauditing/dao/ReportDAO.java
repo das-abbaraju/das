@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.ReportChart;
+import com.picsauditing.jpa.entities.ReportUser;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,9 @@ import com.picsauditing.service.ReportSearch;
 import com.picsauditing.service.ReportSearchResults;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
+
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 @SuppressWarnings("unchecked")
 public class ReportDAO extends PicsDAO {
@@ -184,4 +189,9 @@ public class ReportDAO extends PicsDAO {
 		sql.addOrderBy(getOrderBySort(reportSearch.getSortType()) + Strings.SINGLE_SPACE
 				+ reportSearch.getSortDirection());
 	}
+
+    public ReportChart findByWidgetID(int widgetID) {
+        String query = "t.widget.id = " + widgetID;
+        return findOne(ReportChart.class, query);
+    }
 }

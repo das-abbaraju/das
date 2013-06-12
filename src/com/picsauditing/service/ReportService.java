@@ -15,6 +15,7 @@ import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -28,12 +29,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
@@ -316,53 +311,25 @@ public class ReportService {
 		return converter.getReportResults();
 	}
 
-	public JSONObject buildReportResultsForChart(ReportContext reportContext, Report report)
+	public JSONObject buildReportResultsForChart(ReportContext reportContext, ReportChart chart)
 			throws ReportValidationException, PicsSqlException {
-		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
-		List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, chart.getReport());
+        List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 
-		JSONObject responseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
 
-		responseJson.put("type", "Flags");
+        responseJson.put("type", chart.getChartType());
+        responseJson.put("format", chart.getChartFormat());
+        responseJson.put("series", chart.getChartSeries());
 
-		JSONObject dataJson = new JSONObject();
-
-		// get columns for chart
-		dataJson.put("cols", createChartColumns(report.getColumns()));
-
-		// get rows for chart
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+		ReportDataConverter converter = new ReportDataConverter(chart.getReport().getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-		dataJson.put("rows", converter.convertForChart());
-
-		responseJson.put("data", dataJson);
+        responseJson.put("data", converter.convertForChart(chart));
 
 		return responseJson;
 	}
 
-	private JSONArray createChartColumns(List<Column> columns) {
-		JSONArray columnCollection = new JSONArray();
-
-		for (Column col : columns) {
-			JSONObject columnJson = new JSONObject();
-			FieldType type = col.getField().getType();
-			if (type == FieldType.FlagColor) {
-				columnJson.put("type", "string");
-			} else {
-				columnJson.put("type", "number");
-			}
-
-			columnJson.put("id", col.getId());
-			columnJson.put("label", col.getField().getText());
-			columnJson.put("pattern", "");
-
-			columnCollection.add(columnJson);
-		}
-
-		return columnCollection;
-	}
-
-	private boolean shouldIncludeSql(Permissions permissions) {
+    private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
