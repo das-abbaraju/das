@@ -37,17 +37,10 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     // custom config
     modal_title: PICS.text('Report.execute.reportInfoSetting.title'),
 
-    update: function (target_el) {
+    update: function (container_el, values) {
         report_info_list_html = this.down('#report_info_list').html;
 
         report_info_list_html.compile();
-        report_info_list_html.append(target_el, {
-            model: 'Contractors',
-            shares: '136',
-            favorites: '1,242',
-            updated: '2012-12-07 @ 08:22 PST',
-            updated_by: 'Matt DeSio',
-            owner: 'Trevor Allred',
-        });
+        report_info_list_html.append(container_el, values);
     }
 });

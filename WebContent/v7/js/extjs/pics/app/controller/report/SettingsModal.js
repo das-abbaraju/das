@@ -34,7 +34,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal button[action=report-info]': {
-                click: this.showReportInfo
+                click: this.getReportInfo
             },
 
             'reportsettingsmodal button[action=cancel]':  {
@@ -231,18 +231,20 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
 
         // TODO: Don't pass in the button element
-        PICS.data.ServerCommunication.getReportInfo(function () {
-            that.showReportInfo(cmp);
+        PICS.data.ServerCommunication.getReportInfo({
+            success_callback: function (values) {
+                that.showReportInfo(cmp, values);
+            }
         });
     },
 
-    showReportInfo: function (cmp) {
+    showReportInfo: function (cmp, values) {
         var button_el = cmp.getEl(),
             settings_modal_tabs_view = this.getSettingsModalTabs(),
             active_tab_body = cmp.up('window').body,
             active_tab = active_tab_body.down('.x-tab-active'),
             settings_modal_view = this.getSettingsModal(),
-            target_el = active_tab_body.down('#report_copy');
+            container_el = active_tab_body.down('#report_copy');
 
         // Show the report info view as active
         button_el.addCls('active');
@@ -256,10 +258,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
         settings_modal_view.setTitle(report_info_setting_view.modal_title);
 
         // Clear the body of the current tab-window
-        target_el.update('');
+        container_el.update('');
 
         // Replace its body contents with the report info panel
-        report_info_setting_view.update(target_el);
+        report_info_setting_view.update(container_el, values);
     },
 
     unfavoriteReport: function (cmp, eOpts) {

@@ -454,10 +454,15 @@ Ext.define('PICS.data.ServerCommunication', {
                 Ext.Ajax.request({
                     url: url,
                     callback: function (options, success, response) {
+                        var data, json;
+
                         if (PICS.data.Exception.hasException(response)) {
                             response: response
                         } else {
-                            success_callback(response);
+                            data = response.responseText;
+                            json = Ext.JSON.decode(data);
+
+                            success_callback(json);
                         }
                     }
                 });
