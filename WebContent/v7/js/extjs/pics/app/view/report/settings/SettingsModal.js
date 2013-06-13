@@ -9,6 +9,22 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     closeAction: 'hide',
     draggable: false,
     height: 324,
+    header: {
+        tools:[{
+            xtype: 'button',
+            height: 25,
+            id: 'settings_modal_model_info_button',
+            text: '<i class="icon-exclamation-sign"></i>',
+            tooltip: PICS.text('Report.execute.settingsmodal.tooltipmodelinfobutton'),
+            width: 20,
+            action: 'model-info'
+        }, {
+            type: 'close',
+            handler: function () {
+                this.up('window').close();
+            }
+        }]
+    },
     id: 'report_settings_modal',
     items: [{
         xtype: 'reportsettingsmodaltabs'

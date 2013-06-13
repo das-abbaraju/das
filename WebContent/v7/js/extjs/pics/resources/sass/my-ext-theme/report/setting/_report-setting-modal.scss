@@ -13,6 +13,33 @@
 	@include box-shadow(none);
 	height: 45px;
 	padding: 13px;
+
+	.icon-exclamation-sign
+	{
+	  color: #CCC;
+	  font-size: 17px;
+	}
+
+	#settings_modal_model_info_button
+	{
+	  background-color: #454545;
+	  border-color: #454545;
+	}
+
+	.x-btn-over .icon-exclamation-sign
+	{
+	  color: #999;
+	}
+
+	.x-btn.active .icon-exclamation-sign
+	{
+		color: #73BBE8;
+	}
+
+	#settings_modal_model_info_button-btnEl
+	{
+	  background-color: #454545;
+	}
 }
 
 #report_settings_modal_header span

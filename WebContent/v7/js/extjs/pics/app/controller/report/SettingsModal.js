@@ -33,6 +33,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 close: this.closeSettingsModal
             },
 
+            'reportsettingsmodal button[action=model-info]': {
+                click: this.showModelInfo
+            },
+
             'reportsettingsmodal button[action=cancel]':  {
                 click: this.cancelSettingsModal
             },
@@ -216,6 +220,27 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     printReport: function (cmp, e, eOpts) {
         PICS.data.ServerCommunication.printReport();
+    },
+
+    showModelInfo: function (cmp, e, eOpts) {
+        var button = cmp.getEl(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            target_el = cmp.up('window').body.down('#report_copy');
+
+        if (button.hasCls('active')) {
+            return;
+        }
+
+        button.addCls('active');
+
+        // Create the model info panel
+        model_info_setting_view = Ext.create('PICS.view.report.settings.ModelInfoSetting');
+
+        // Clear the body of the current tab-window
+        target_el.update('');
+
+        // Replace its body contents with the model info panel
+        model_info_setting_view.update(target_el);
     },
 
     unfavoriteReport: function (cmp, eOpts) {
