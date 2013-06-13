@@ -180,7 +180,7 @@ public class RegistrationValidator implements Validator {
 			InputValidator inputValidator) {
 		if (vatValidator.shouldValidate(country)) {
 			try {
-				vatValidator.validated(vat);
+				vatValidator.validated(country, vat);
 			} catch (Exception e) {
 				return false;
 			}

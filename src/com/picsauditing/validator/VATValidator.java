@@ -3,11 +3,10 @@ package com.picsauditing.validator;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Country;
 
-import java.util.regex.Pattern;
-
 public class VATValidator {
 
     private final static String GREECE = "GR";
+    private VATWebValidator webValidator = new VATWebValidator();
 
     public String validatedVATfromAudit(AuditData data) throws ValidationException {
         Country contractorCountry = data.getAudit().getContractorAccount().getCountry();
@@ -19,25 +18,10 @@ public class VATValidator {
     public String validated(Country country, String vatCode) throws ValidationException {
         String prefix = vatPrefixFor(country);
         String finalCode = (vatCode.startsWith(prefix)) ? vatCode : prefix + vatCode;
-        return validated(finalCode);
-    }
 
-    public String validated(String vatCode) throws ValidationException {
-        locallyValidate(vatCode);
-        webValidate(vatCode);
-        return vatCode;
-    }
+        webValidator.webValidate(finalCode);
 
-    private void locallyValidate(String vatCode) throws ValidationException {
-        getValidator(vatCode).validate();
-    }
-
-    private Validator getValidator(String vatCode) {
-        return new Validator(vatCode);
-    }
-
-    private void webValidate(String vatCode) throws ValidationException {
-        //TODO: A potential API for implementing this can be found at: http://isvat.appspot.com/
+        return finalCode;
     }
 
     private String vatPrefixFor(Country country) {
@@ -58,42 +42,5 @@ public class VATValidator {
         return false;
     }
 
-    public class ValidationException extends Exception {
-		public ValidationException() {
-			super();
-		}
-
-		public ValidationException(String message) {
-			super(message);
-		}
-    }
-
-    class Validator {
-        private final Pattern GENERIC_VAT_REGEX = Pattern.compile("[A-Z]{2}[- ]?[\\d\\w -]{2,15}\\z", Pattern.CASE_INSENSITIVE);
-        private final Pattern CHECK_FOR_DUPLICATES = Pattern.compile("[A-Z]{2}(\\d)\\1+\\z");
-        private final Pattern CHECK_FOR_POSSIBLE_FRAUD = Pattern.compile("[A-Z]{2}(\\w)\\1{3,}\\w+\\z");
-        private final Pattern CHECK_FOR_YESNO = Pattern.compile("[A-Z]{2}((yes)|(no)|(n/?a))\\z", Pattern.CASE_INSENSITIVE);
-
-        String vatNumber;
-
-        Validator(String vatNumber) {
-            this.vatNumber = vatNumber;
-        }
-
-        void validate() throws ValidationException {
-            if (!GENERIC_VAT_REGEX.matcher(vatNumber).matches()) {
-				throw new ValidationException();
-			}
-            if (CHECK_FOR_DUPLICATES.matcher(vatNumber).matches()) {
-				throw new ValidationException();
-			}
-            if (CHECK_FOR_POSSIBLE_FRAUD.matcher(vatNumber).matches()) {
-				throw new ValidationException("VAT # received: "+vatNumber+" is possibly fraudulent");
-			}
-            if (CHECK_FOR_YESNO.matcher(vatNumber).matches()) {
-				throw new ValidationException();
-			}
-        }
-    }
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.model.i18n.LanguageModel;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.approvaltests.Approvals;
@@ -58,9 +59,12 @@ public class RegistrationValidatorTest {
 		LanguageModel languageModel = Mockito.mock(LanguageModel.class);
 		when(languageModel.getDialectCountriesBasedOn(anyString())).thenReturn(dialects);
 
+        VATValidator vatValidator = new VATValidator();
+        PicsTestUtil.forceSetPrivateField(vatValidator, "webValidator", Mockito.mock(VATWebValidator.class));
+
 		Map<String, String> errors = RegistrationValidator.validateContractor(language, dialect, contractor,
 				countrySubdivision, languageModel, new InputValidator().setContractorAccountDao(contractorAccountDao),
-				new VATValidator());
+				vatValidator);
 		Approvals.verify(errors);
 	}
 }

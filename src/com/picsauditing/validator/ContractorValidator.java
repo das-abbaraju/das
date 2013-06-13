@@ -103,7 +103,7 @@ public class ContractorValidator {
 
 		if (!Strings.isEmpty(contractor.getVatId())) {
 			try {
-				vatValidator.validated(contractor.getVatId());
+				vatValidator.validated(contractor.getCountry(), contractor.getVatId());
 			} catch (Exception e) {
 				errorMessages.addElement(getText("ContractorValidator.error.InvalidVAT"));
 			}

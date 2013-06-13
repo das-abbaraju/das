@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.validator.VATValidator;
 
+import com.picsauditing.validator.ValidationException;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +43,13 @@ private static final Integer[] VAT_AUDITQUESTION_IDS = {11111, 10459, 11072, 126
                 ContractorAccount contractor = data.getAudit().getContractorAccount();
                 contractor.setVatId(vat);
                 accountDAO.save(contractor);
-            } catch (VATValidator.ValidationException not_valid_vat) {
+            } catch (ValidationException not_valid_vat) {
                 // Do nothing.
             }
         }
     }
 
-    private String vatFrom(AuditData data) throws VATValidator.ValidationException {
-        try {
-            return validator.validated(data.getAnswer());
-            // They may have supplied a valid VAT.
-        } catch (VATValidator.ValidationException e) {
-            return validator.validatedVATfromAudit(data);
-            //Try extrapolating the correct VAT.
-        }
+    private String vatFrom(AuditData data) throws ValidationException {
+        return validator.validatedVATfromAudit(data);
     }
 }

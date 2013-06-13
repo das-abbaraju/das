@@ -2074,7 +2074,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		if (getVatValidator().shouldValidate(registrationCountry)) {
 			try {
-				getVatValidator().validated(vat);
+				getVatValidator().validated(registrationCountry, vat);
 			} catch (Exception e) {
 				return false;
 			}
