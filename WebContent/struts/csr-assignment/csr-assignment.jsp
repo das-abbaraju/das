@@ -11,7 +11,7 @@
     <div class="span6">
         <s:include value="/struts/layout/_page-header.jsp">
             <s:param name="title">Recommended CSR Assignment</s:param>
-            <s:param name="subtitle"><i class="icon-external-link"></i><a href="${report}">Open Report</a></s:param>    
+            <s:param name="subtitle"><i class="icon-external-link"></i><a href="${report}">Open Report</a></s:param>
         </s:include>
     </div>
     <div class="span5 offset1 apply-actions">
@@ -22,6 +22,7 @@
 
 <form action="${save_approved}" name="save_approved_csr" id="save_approved_csr" method="post">
     <input type="hidden" value="" name="acceptRecommendations" id="acceptedCSR" />
+    <input type="hidden" value="" name="rejectRecommendations" id="rejectedCSR" />
 
 	<table class="table table-striped" id="csr_assignments">
 	    <thead>

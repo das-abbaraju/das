@@ -5,18 +5,22 @@
                 var that = this;
 
                 $('#accept_all').on('change', $.proxy(this, "toggleRecommendations"));
-                
+
                 $('.apply_selected_assignments').on('click', $.proxy(this, "applyRecommendedCSR"));
 
                 $('.accept-recommended').on('change', this.updateSelectedRecords);
             },
-            
+
             applyRecommendedCSR: function () {
                 var $acceptedCSR = $('#acceptedCSR'),
-                    accepted_values = this.getAcceptedValues();
+                    $rejectedCSR = $('#rejectedCSR'),
+                    accepted_values = this.getAcceptedValues(),
+                    rejected_values = this.getRejectedValues();
 
                 //update form value and submit form
                 $acceptedCSR.val(accepted_values.join());
+                $rejectedCSR.val(rejected_values.join());
+
                 $('#save_approved_csr').submit();
             },
 
@@ -31,6 +35,19 @@
                 });
 
                 return accepted_values;
+            },
+
+            getRejectedValues: function () {
+                var $recommended = $('.accept-recommended'),
+                    rejected_values = [];
+
+                $recommended.each(function () {
+                    if (!$(this).is(":checked")) {
+                        rejected_values.push(this.value);
+                    }
+                });
+
+                return rejected_values;
             },
 
             toggleRecommendations: function (event) {
