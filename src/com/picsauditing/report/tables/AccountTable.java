@@ -65,6 +65,6 @@ public class AccountTable extends AbstractTable {
 
         ReportForeignKey lastLogin = new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID"));
         lastLogin.setMinimumImportance(FieldImportance.Average);
-        addRequiredKey(lastLogin);
+        addOptionalKey(lastLogin);
     }
 }

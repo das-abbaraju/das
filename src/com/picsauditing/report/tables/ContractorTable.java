@@ -93,8 +93,7 @@ public class ContractorTable extends AbstractTable {
         watch.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(watch);
 
-        ReportForeignKey tag = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
-                ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")"));
+        ReportForeignKey tag = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID"));
         tag.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(tag);
 
