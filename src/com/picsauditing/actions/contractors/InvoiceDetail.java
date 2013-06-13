@@ -197,6 +197,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					message = getText("InvoiceDetail.message.SentEmail");
 
 				} catch (Exception e) {
+                    logger.error("Unable to send InvoiceDetail email due to exception: {}", e.getMessage());
 					addActionError(getText("InvoiceDetail.message.EmailFail"));
 				}
 			}
