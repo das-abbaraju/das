@@ -16,6 +16,7 @@ public class ContractorTable extends AbstractTable {
     public static final String RecommendedCSR = "RecommendedCSR";
     public static final String PQF = "PQF";
     public static final String Flag = "Flag";
+    // TODO Michael, Why does this table have so many one to many joins? This is wrong. -- Trevor
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
     public static final String Watch = "Watch";

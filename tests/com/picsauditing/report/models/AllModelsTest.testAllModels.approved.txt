@@ -177,6 +177,7 @@ AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorID
 AuditOperatorStatus
+AuditScore
 AuditTypeName
 ContractorAuditFileDescription
 ContractorAuditFileFileType
