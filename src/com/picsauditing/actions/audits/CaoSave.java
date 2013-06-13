@@ -42,6 +42,7 @@ import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
+// TODO TECHNICAL DEBT: PICS-11385 CaoSave violates the Single Responsibility Principle
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
 	@Autowired
@@ -238,8 +239,8 @@ public class CaoSave extends AuditActionSupport {
 		
 		note = concatenatedNote.append(note).append("\n").toString(); 
 		
-		auditSubStatus = determineAuditSubStatus(rejectionReasons);		
-        
+		auditSubStatus = determineAuditSubStatus(rejectionReasons);
+
         return save();
 	}
 	
@@ -373,16 +374,21 @@ public class CaoSave extends AuditActionSupport {
 	}
 
 	private void setup() throws RecordNotFoundException, NoRightsException {
+        if (caoID > 0) {
+            caoIDs.add(caoID);
+        }
 		if (auditID > 0) {
 			findConAudit();
 			refreshAudit = conAudit.getAuditType().getWorkFlow().isUseStateForEdit();
 			caoList = conAudit.getOperators();
 		} else {
-			if (caoIDs.size() > 0)
+			if (caoIDs.size() > 0) {
 				caoList = caoDAO.find(caoIDs);
-		}
-		if (caoID > 0) {
-			caoIDs.add(caoID);
+            }
+
+            if (conAudit == null) {
+                conAudit = caoList.get(0).getAudit();
+            }
 		}
 	}
 
