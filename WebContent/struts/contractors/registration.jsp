@@ -194,7 +194,7 @@
                                 id="timezone"
                                 name="contractor.timezone"
                                 headerKey=""
-                                headerValue=" - Select your timezone - "
+                                headerValue="%{getText('Timezone.list.select.header')}"
                                 list="timezones"
                                 value="contractor.timezone.iD" />
                     </li>
