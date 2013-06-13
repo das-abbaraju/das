@@ -4,16 +4,15 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -21,7 +20,6 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
 public class RecommendedCsrServiceTest {
-    private static final String CONTRACTOR_IDS = "1,2,3,4,5";
     private static final List<Integer> CONTRACTOR_IDS_LIST = new ArrayList<Integer>() {{
         add(1); add(2); add(3); add(4); add(5);
     }};
@@ -42,41 +40,49 @@ public class RecommendedCsrServiceTest {
 
         recommendedCsrService = new RecommendedCsrService();
 
-        contractorList = new ArrayList<ContractorAccount>();
-        for (int i = 1; i <= 5; i++) {
+        contractorList = new ArrayList<>();
+        for (Integer id : CONTRACTOR_IDS_LIST) {
             ContractorAccount contractor = mock(ContractorAccount.class);
+            when(contractor.getId()).thenReturn(id);
             when(contractor.getRecommendedCsr()).thenReturn(recommendedCsr);
             when(contractor.getCurrentCsr()).thenReturn(currentCsr);
             contractorList.add(contractor);
+            when(contractorAccountDAO.find(id)).thenReturn(contractor);
         }
-        when(contractorAccountDAO.findByIDs(ContractorAccount.class, CONTRACTOR_IDS_LIST)).thenReturn(contractorList);
+        when(contractorAccountDAO.rejectRecommendedAssignmentForList(Strings.implode(CONTRACTOR_IDS_LIST, ","))).thenReturn(CONTRACTOR_IDS_LIST.size());
 
         PicsTestUtil.autowireDAOsFromDeclaredMocks(recommendedCsrService, this);
     }
 
     @Test
-    public void testAcceptRecommendedCsrs() throws Exception {
-        int numAccepted = recommendedCsrService.acceptRecommendedCsrs(CONTRACTOR_IDS, User.SYSTEM);
+    public void testAcceptRecommendedCsrs_ProxiesLogicToDao() throws Exception {
+        recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
 
         for (ContractorAccount contractor : contractorList) {
-            verify(contractor).setCurrentCsr(recommendedCsr, User.SYSTEM);
+            verify(contractorAccountDAO).expireCurrentCSRAssignment(contractor.getId());
+            verify(contractorAccountDAO).assignNewCSR(contractor.getId(), contractor.getRecommendedCsr().getId());
         }
-        commonVerifyForAcceptReject(numAccepted);
     }
 
     @Test
-    public void testRejectRecommendedCsrs() throws Exception {
-        int numAccepted = recommendedCsrService.rejectRecommendedCsrs(CONTRACTOR_IDS);
+    public void testAcceptRecommendedCsrs_ReturnsNumberAccepted() throws Exception {
+        int numAccepted = recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
 
-        for (ContractorAccount contractor : contractorList) {
-            verify(contractor).setRecommendedCsr(null);
-        }
-        commonVerifyForAcceptReject(numAccepted);
-
-    }
-
-    private void commonVerifyForAcceptReject(int numAccepted) {
-        verify(contractorAccountDAO, times(5)).save(Mockito.any(ContractorAccount.class));
         assertThat(numAccepted, is(equalTo(contractorList.size())));
     }
+
+    @Test
+    public void testRejectRecommendedCsrs_ProxiesLogicToDao() throws Exception {
+        recommendedCsrService.rejectRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","));
+
+        verify(contractorAccountDAO).rejectRecommendedAssignmentForList(Strings.implode(CONTRACTOR_IDS_LIST, ","));
+    }
+
+    @Test
+    public void testRejectRecommendedCsrs_ReturnsNumberRejected() throws Exception {
+        int numRejected = recommendedCsrService.rejectRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","));
+
+        assertThat(numRejected, is(equalTo(contractorList.size())));
+    }
+
 }
