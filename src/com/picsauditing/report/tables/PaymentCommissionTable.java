@@ -18,6 +18,7 @@ public class PaymentCommissionTable extends AbstractTable {
 		
 		ReportForeignKey paymentKey = new ReportForeignKey(Payment, new PaymentTable(), new ReportOnClause("paymentID"));
 		paymentKey.setCategory(FieldCategory.Commission);
+        paymentKey.setMinimumImportance(FieldImportance.Average);
 		addOptionalKey(paymentKey);
 	}
 }

@@ -18,6 +18,6 @@ public class UserAssignmentTable extends AbstractTable {
 		csrKey.setMinimumImportance(FieldImportance.Average);
 		csrKey.setCategory(FieldCategory.CustomerService);
 
-		addOptionalKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("conID")));
+		addOptionalKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("conID"))).setMinimumImportance(FieldImportance.Average);
 	}
 }

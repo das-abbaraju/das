@@ -14,6 +14,7 @@ public class InvoiceFeeTable extends AbstractTable {
 		feeName = new Field("Name", "id", FieldType.String);
 		feeName.setTranslationPrefixAndSuffix("InvoiceFee", "fee");
 		feeName.setCategory(FieldCategory.Invoicing);
+        feeName.setImportance(FieldImportance.Required);
 		feeName.setWidth(200);
 		addField(feeName);
 

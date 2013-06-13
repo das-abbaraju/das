@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.tables.FieldImportance;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
@@ -61,7 +62,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -71,7 +72,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getPaidDate() {
 		return paidDate;
 	}

@@ -14,8 +14,8 @@ public class InvoiceItemTable extends AbstractTable {
 
 	protected void addJoins() {
         addRequiredKey(new ReportForeignKey(Invoice, new InvoiceTable(),
-                new ReportOnClause("invoiceID","id")));
+                new ReportOnClause("invoiceID","id"))).setMinimumImportance(FieldImportance.Average);
 		addRequiredKey(new ReportForeignKey(Fee, new InvoiceFeeTable(),
-				new ReportOnClause("feeID","id")));
+				new ReportOnClause("feeID","id"))).setMinimumImportance(FieldImportance.Average);
 	}
 }

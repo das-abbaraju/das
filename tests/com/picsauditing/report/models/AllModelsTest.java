@@ -45,7 +45,7 @@ public class AllModelsTest {
     }
 
     @Test
-    public void testAccountContractorModel_Admin() throws Exception {
+    public void testContractorsModel_Admin() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         permissions.setAccountType("Admin");
@@ -54,7 +54,7 @@ public class AllModelsTest {
     }
 
     @Test
-    public void testAccountContractorModel_Billing() throws Exception {
+    public void testContractorsModel_Billing() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.Billing);
         permissions.setAccountType("Admin");
         model = new ContractorsModel(permissions);
@@ -63,14 +63,14 @@ public class AllModelsTest {
     }
 
     @Test
-    public void testAccountContractorModel_Corporate() throws Exception {
+    public void testContractorsModel_Corporate() throws Exception {
         permissions.setAccountType("Corporate");
         model = new ContractorsModel(permissions);
         Approvals.verify(getJoin());
     }
 
     @Test
-    public void testAccountContractorAuditOperatorModel() throws Exception {
+    public void testContractorAuditOperatorsModel() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new ContractorAuditOperatorsModel(permissions);
         Approvals.verify(getJoin());

@@ -173,7 +173,7 @@ public class ReportDAO extends PicsDAO {
         accounts.add(permissions.getAccountId());
 
         return "SELECT reportID, editable FROM report_permission_user WHERE userID IN (" + Strings.implode(users) + ") UNION "
-                + " SELECT reportID, 0 FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
+                + " SELECT reportID, editable FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
     }
 
     private void addOrderBy(SelectSQL sql, ReportSearch reportSearch) {

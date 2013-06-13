@@ -17,10 +17,13 @@ public class ContractorStatisticsView extends AbstractTable {
 				+ OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR + "))");
 		
 		Field statisticFor = new Field("StatisticFor", "auditFor", FieldType.String);
+        statisticFor.setImportance(FieldImportance.Average);
 		addField(statisticFor);
 		Field rateType = new Field("RateType", "rateType", FieldType.String);
+        rateType.setImportance(FieldImportance.Average);
 		addField(rateType);
 		Field rate = new Field("Rate", "answer", FieldType.String);
+        rate.setImportance(FieldImportance.Average);
 		addField(rate);
 	}
 

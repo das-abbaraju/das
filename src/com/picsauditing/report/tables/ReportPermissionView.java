@@ -1,19 +1,23 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.jpa.entities.ReportPermissionUser;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
 public class ReportPermissionView extends AbstractTable {
 	public static final String User = "User";
 	public static final String Account = "Account";
 
 	public ReportPermissionView() {
-		super("(SELECT CASE WHEN u.isGroup = 'No' THEN 'User' ELSE 'Group' END AS TYPE, rpu.reportID, rpu.userID AS entityID, rpu.editable" +
+		super("(SELECT CASE WHEN u.isGroup = 'No' THEN 'User' ELSE 'Group' END AS type, rpu.reportID, rpu.userID AS entityID, rpu.editable" +
 				" FROM report_permission_user rpu" +
 				" JOIN users u ON rpu.userID = u.id" +
 				" UNION " +
-				" SELECT 'Account' AS TYPE, reportID, accountID, 0 AS editable" +
+				" SELECT 'Account' AS type, reportID, accountID AS entityID, editable" +
 				" FROM report_permission_account)");
-		addFields(ReportPermissionUser.class);
+        Field type = new Field("Type","type", FieldType.String);
+        addField(type).setImportance(FieldImportance.Average);
+        Field editable = new Field("Editable","editable", FieldType.Boolean);
+        addField(editable).setImportance(FieldImportance.Required);
 	}
 
 	protected void addJoins() {

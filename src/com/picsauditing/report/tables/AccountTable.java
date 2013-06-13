@@ -36,7 +36,7 @@ public class AccountTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id")));
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id"))).setMinimumImportance(FieldImportance.Average);
 		addOptionalKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
 
 		ReportForeignKey contractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator,
@@ -49,9 +49,9 @@ public class AccountTable extends AbstractTable {
 		addOptionalKey(new ReportForeignKey(Naics, new NaicsTable(), new ReportOnClause("naics", "code")))
 				.setMinimumImportance(FieldImportance.Average);
 
-		addOptionalKey(new ReportForeignKey(Country, new CountryTable(), new ReportOnClause("country", "isoCode")));
+		addOptionalKey(new ReportForeignKey(Country, new CountryTable(), new ReportOnClause("country", "isoCode"))).setMinimumImportance(FieldImportance.Average);
 
-		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID")));
+		addOptionalKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("id", "accountID"))).setMinimumImportance(FieldImportance.Average);
 
 		addOptionalKey(new ReportForeignKey(AccountManager, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
 				UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
@@ -63,6 +63,8 @@ public class AccountTable extends AbstractTable {
 				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
 				.setMinimumImportance(FieldImportance.Required);
 
-        addRequiredKey(new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID")));
+        ReportForeignKey lastLogin = new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID"));
+        lastLogin.setMinimumImportance(FieldImportance.Average);
+        addRequiredKey(lastLogin);
     }
 }

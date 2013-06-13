@@ -11,6 +11,7 @@ public class AccountLastLoginView extends AbstractTable {
 
         Field lastLogin = new Field("LastLogin","lastLogin", FieldType.DateTime);
         lastLogin.setCategory(FieldCategory.AccountInformation);
+        lastLogin.setImportance(FieldImportance.Average);
         addField(lastLogin);
 	}
 	

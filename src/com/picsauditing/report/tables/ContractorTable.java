@@ -46,8 +46,10 @@ public class ContractorTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id", "id",
-                ReportOnClause.ToAlias + ".type = 'Contractor'")));
+        ReportForeignKey account = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id", "id",
+                ReportOnClause.ToAlias + ".type = 'Contractor'"));
+        account.setMinimumImportance(FieldImportance.Low);
+        addRequiredKey(account);
 
         ReportForeignKey flagKey = addRequiredKey(new ReportForeignKey(Flag, new ContractorOperatorTable(),
                 new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
@@ -86,14 +88,18 @@ public class ContractorTable extends AbstractTable {
         requestedBy.setMinimumImportance(FieldImportance.Required);
         requestedBy.setCategory(FieldCategory.RequestingClientSite);
 
-        addOptionalKey(new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
-                ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
+        ReportForeignKey watch = new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
+                ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID));
+        watch.setMinimumImportance(FieldImportance.Average);
+        addOptionalKey(watch);
 
-        addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
-                ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
+        ReportForeignKey tag = new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
+                ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")"));
+        tag.setMinimumImportance(FieldImportance.Average);
+        addOptionalKey(tag);
 
         addRequiredKey(new ReportForeignKey(ContractorStatistics, new ContractorStatisticsView(), new ReportOnClause(
-                "id", "conID")));
+                "id", "conID"))).setMinimumImportance(FieldImportance.Average);
 
         addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
                 "conID")));
@@ -103,8 +109,10 @@ public class ContractorTable extends AbstractTable {
         recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
         recommendedCsrKey.setCategory(FieldCategory.CustomerService);
 
-        addOptionalKey(new ReportForeignKey(FlagCriteriaContractor, new FlagCriteriaContractorTable(),
-                new ReportOnClause("id", "conID")));
+        ReportForeignKey flagCriteriaCon = new ReportForeignKey(FlagCriteriaContractor, new FlagCriteriaContractorTable(),
+                new ReportOnClause("id", "conID"));
+        flagCriteriaCon.setMinimumImportance(FieldImportance.Low);
+        addOptionalKey(flagCriteriaCon);
 
         addRequiredKey(new ReportForeignKey(ContractorFee, new ContractorFeeTable(), new ReportOnClause("id", "conID")));
     }

@@ -4,10 +4,7 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.InvoiceItemTable;
-import com.picsauditing.report.tables.InvoiceTable;
-import com.picsauditing.report.tables.UserAssignmentTable;
+import com.picsauditing.report.tables.*;
 
 public class UserAssignmentsModel extends AbstractModel {
 
@@ -24,6 +21,7 @@ public class UserAssignmentsModel extends AbstractModel {
 
 		ModelSpec contractor = account.join(AccountTable.Contractor);
 		contractor.alias = "Contractor";
+        contractor.minimumImportance = FieldImportance.Low;
 
 		ModelSpec invoice = account.join(AccountTable.Invoice);
 		invoice.alias = "Invoice";

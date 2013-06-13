@@ -15,7 +15,11 @@ public class AuditDataTable extends AbstractTable {
 	}
 
 	public void addJoins() {
-		addOptionalKey(new ReportForeignKey(Audit, new ContractorAuditTable(), new ReportOnClause("auditID")));
-		addOptionalKey(new ReportForeignKey(Question, new AuditQuestionTable(), new ReportOnClause("questionID")));
+        ReportForeignKey audit = new ReportForeignKey(Audit, new ContractorAuditTable(), new ReportOnClause("auditID"));
+        audit.setMinimumImportance(FieldImportance.Low);
+        addOptionalKey(audit);
+        ReportForeignKey question = new ReportForeignKey(Question, new AuditQuestionTable(), new ReportOnClause("questionID"));
+        question.setMinimumImportance(FieldImportance.Low);
+        addOptionalKey(question);
 	}
 }

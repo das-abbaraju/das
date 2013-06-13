@@ -73,6 +73,7 @@ public class ContractorOperatorTable extends AbstractTable {
 		addOptionalKey(forcedByUser);
 
         ReportForeignKey forcedFlagPercent = new ReportForeignKey(ForcedFlagPercent, new ForcedFlagPercentageView(), new ReportOnClause("genID","opID"));
+        forcedFlagPercent.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(forcedFlagPercent);
 	}
 }

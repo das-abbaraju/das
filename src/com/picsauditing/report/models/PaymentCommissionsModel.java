@@ -72,6 +72,7 @@ public class PaymentCommissionsModel extends AbstractModel {
 	private ModelSpec joinToUser(ModelSpec accountUser) {
 		ModelSpec user = accountUser.join(AccountUserTable.User);
 		user.alias = "User";
+        user.minimumImportance = FieldImportance.Average;
 		return user;
 	}
 

@@ -11,6 +11,7 @@ public class ContractorTagView extends AbstractTable {
 //		addField(new Field("Tag", "GROUP_CONCAT(" + ReportOnClause.ToAlias + ".tag SEPARATOR ', ')", FieldType.String))
 //				.setFilterable(false);
 		Field tagID = addField(new Field("TagID", "tagID", FieldType.OperatorTag));
+        tagID.setImportance(FieldImportance.Average);
 		tagID.setVisible(false);
 	}
 

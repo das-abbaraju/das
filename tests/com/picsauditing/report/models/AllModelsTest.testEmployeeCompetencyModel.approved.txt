@@ -1,6 +1,0 @@
-EmployeeCompetencyCompetencyLabel
-EmployeeCompetencyEmployeeAccountID
-EmployeeCompetencyEmployeeAccountName
-EmployeeCompetencyEmployeeFirstName
-EmployeeCompetencyEmployeeLastName
-EmployeeCompetencySkilled

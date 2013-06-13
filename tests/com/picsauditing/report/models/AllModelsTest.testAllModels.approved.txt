@@ -260,7 +260,6 @@ AccountTimezone
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
-ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorFeeCurrentAmount
 ContractorFeeFeeClass
@@ -269,16 +268,11 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorPayingFacilities
 ContractorProductRisk
-ContractorProductRiskVerified
 ContractorSafetyRisk
-ContractorSafetyRiskVerified
-ContractorScore
-ContractorSoleProprietor
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
-ContractorTransportationRiskVerified
+FeeFeeClass
 FeeMaxFacilities
+FeeName
 
 Model: ContractorFlagDatas
 Permission: Permissions{permissions=[]}
@@ -319,16 +313,8 @@ FlagDataOverrideCreationDate
 FlagDataOverrideForceEnd
 FlagDataOverrideForceflag
 FlagDataUpdateDate
-OperatorAutoApproveInsurance
-OperatorCanSeeInsurance
 OperatorCriteriaFlag
 OperatorCriteriaHurdle
-OperatorDiscountExpiration
-OperatorDoContractorsPay
-OperatorIsUserManualUploaded
-OperatorPrimaryCorporate
-OperatorRequiredTags
-OperatorSalesForceID
 
 Model: ContractorNumbers
 Permission: Permissions{permissions=[]}
@@ -446,14 +432,6 @@ ContractorSafetyRisk
 ContractorTagTagID
 ContractorTransportationRisk
 ForcedFlagPercent
-OperatorAutoApproveInsurance
-OperatorCanSeeInsurance
-OperatorDiscountExpiration
-OperatorDoContractorsPay
-OperatorIsUserManualUploaded
-OperatorPrimaryCorporate
-OperatorRequiredTags
-OperatorSalesForceID
 
 Model: Contractors
 Permission: Permissions{permissions=[]}
@@ -686,9 +664,7 @@ InvoiceItemDescription
 InvoiceItemFeeFeeClass
 InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
-InvoiceNotes
 InvoicePaidDate
-InvoicePoNumber
 InvoiceStatus
 InvoiceTotalAmount
 
@@ -785,37 +761,21 @@ SalesRepUserName
 Model: OperatorAccountUsers
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-AccountAddress
-AccountAddress2
-AccountAddress3
 AccountCity
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
-AccountFax
-AccountFullAddress
 AccountID
 AccountLegalName
-AccountMaterialSupplier
 AccountName
-AccountOffsiteServices
-AccountOnsiteServices
-AccountPhone
-AccountReason
-AccountRequiresCompetencyReview
-AccountRequiresOQ
 AccountStatus
 AccountTimezone
-AccountTransportationServices
 AccountType
 AccountUserEndDate
 AccountUserOwnerPercent
 AccountUserRole
 AccountUserServiceLevel
 AccountUserStartDate
-AccountWebUrl
-AccountZip
 UserID
 UserName
 
@@ -842,14 +802,6 @@ GroupsLocale
 GroupsName
 GroupsPhone
 GroupsTimezone
-OperatorAutoApproveInsurance
-OperatorCanSeeInsurance
-OperatorDiscountExpiration
-OperatorDoContractorsPay
-OperatorIsUserManualUploaded
-OperatorPrimaryCorporate
-OperatorRequiredTags
-OperatorSalesForceID
 UserCreationDate
 UserDepartment
 UserEmail
@@ -891,18 +843,14 @@ InvoiceDaysLeft
 InvoiceInvoiceID
 InvoiceStatus
 InvoiceTotalAmount
-PaymentCcNumber
-PaymentCheckNumber
 PaymentCreationDate
 PaymentPaymentMethod
-PaymentTransactionID
 UserDepartment
 UserFirstName
 UserID
 UserLastName
 UserLocale
 UserTimezone
-UserUsingVersion7Menus
 
 Model: Reports
 Permission: Permissions{permissions=[]}
@@ -944,6 +892,18 @@ ReportModelType
 ReportName
 ReportUpdateDate
 
+Model: ReportPermissions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ReportCreationDate
+ReportDescription
+ReportFilterExpression
+ReportID
+ReportModelType
+ReportName
+ReportPublic
+ReportUpdateDate
+
 Model: ReportUsers
 Permission: Permissions{permissions=[]}
 ----------------------------------------
@@ -964,31 +924,15 @@ ReportUserViewCount
 Model: UserAssignments
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-AccountAddress
-AccountAddress2
-AccountAddress3
 AccountCity
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
-AccountFax
-AccountFullAddress
 AccountID
 AccountLegalName
-AccountMaterialSupplier
 AccountName
-AccountOffsiteServices
-AccountOnsiteServices
-AccountPhone
-AccountReason
-AccountRequiresCompetencyReview
-AccountRequiresOQ
 AccountStatus
 AccountTimezone
-AccountTransportationServices
-AccountWebUrl
-AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -1016,10 +960,7 @@ InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceItemAmount
-InvoiceItemDescription
-InvoiceNotes
 InvoicePaidDate
-InvoicePoNumber
 InvoiceStatus
 InvoiceTotalAmount
 UserAssignmentUserDepartment

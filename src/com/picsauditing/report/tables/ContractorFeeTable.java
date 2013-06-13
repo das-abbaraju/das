@@ -17,7 +17,7 @@ public class ContractorFeeTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
+        addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID"))).setMinimumImportance(FieldImportance.Average);
         addRequiredKey(new ReportForeignKey(NewFee, new InvoiceFeeTable(), new ReportOnClause("newLevel")));
         addRequiredKey(new ReportForeignKey(CurrentFee, new InvoiceFeeTable(), new ReportOnClause("currentLevel")));
     }

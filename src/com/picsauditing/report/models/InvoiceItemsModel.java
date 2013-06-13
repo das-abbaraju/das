@@ -29,7 +29,6 @@ public class InvoiceItemsModel extends AbstractModel {
 
 		ModelSpec contractor = account.join(AccountTable.Contractor);
 		contractor.alias = "Contractor";
-		contractor.minimumImportance = FieldImportance.Average;
 
 		return spec;
 	}

@@ -4,6 +4,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -170,7 +171,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Currency, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Currency, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public Currency getCurrency() {
 		return currency;
 	}

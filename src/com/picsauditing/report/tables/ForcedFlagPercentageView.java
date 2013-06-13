@@ -15,7 +15,9 @@ public class ForcedFlagPercentageView extends AbstractTable {
                 "LEFT JOIN flag_data_override fdo ON fdo.`conID` = gc.`subID` AND fdo.`opID` = gc.`genID` \n" +
                 "GROUP BY gc.genID)");
 
-		addField(new Field("Percent", "percentForced", FieldType.Number));
+        Field percent = new Field("Percent", "percentForced", FieldType.Number);
+        percent.setImportance(FieldImportance.Average);
+        addField(percent);
 	}
 
 	public void addJoins() {

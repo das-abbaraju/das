@@ -14,7 +14,7 @@ public class ContractorNumberTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID","id")));
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID","id"))).setMinimumImportance(FieldImportance.Low);
 		addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("opID","id")));
 	}
 }

@@ -6,8 +6,7 @@ public class ReportForeignKey {
 	private ReportOnClause onClause;
 	private FieldCategory category;
 	private JoinType joinType = JoinType.LeftJoin;
-    // TODO Michael, Now we have Approval Tests for all models, can we now change this to Required? -Trevor
-	private FieldImportance minimumImportance = FieldImportance.Low;
+	private FieldImportance minimumImportance = FieldImportance.Required;
 
 	public ReportForeignKey(String name, AbstractTable toTable, ReportOnClause onClause) {
 		this.name = name;

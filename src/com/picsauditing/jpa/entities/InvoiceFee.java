@@ -105,7 +105,7 @@ public class InvoiceFee extends BaseTable {
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Invoicing, type = FieldType.FeeClass)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.FeeClass, importance = FieldImportance.Average)
 	public FeeClass getFeeClass() {
 		return feeClass;
 	}
