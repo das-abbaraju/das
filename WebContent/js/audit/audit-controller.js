@@ -4,14 +4,14 @@
             init: function () {
                 if ($('#Audit__page').length) {
 
-                    $('#audit-layout').on('click', '.toggle-excess-criteria', $.proxy(this, 'toggleExcessCriteria'));
+                    $('#audit-layout').on('click', '.toggle-excess-criteria', $.proxy(this.toggleExcessCriteria, this));
 
-                    $('#caoTable').on('click', '.policy-reject', $.proxy(this, 'rejectPolicy'));                    
+                    $('#caoTable').on('click', '.policy-reject', $.proxy(this.rejectPolicy, this));
 
-                   $('.Audit-page').on('click', '#caoTable .buttonAction .button:not(.policy-reject)', $.proxy(this, 'refreshCaoTable'));
+                   $('.Audit-page').on('click', '#caoTable .buttonAction .button:not(.policy-reject)', $.proxy(this.refreshCaoTable, this));
                 }
             },
-            
+
             createSelect2: function () {
                 $('input[data-toggle="select2"]').each(function (key, value) {
                     var $element = $(this),
@@ -29,7 +29,7 @@
                         }
                     });
                 });
-            },            
+            },
 
             refreshCaoTable: function (event) {
                 var $element = $(event.target),
@@ -53,15 +53,16 @@
                 window.location.reload(true);
             },
 
-            rejectPolicy: function () {
+            rejectPolicy: function (event) {
                 var $cao_table = $('#caoTable'),
                     $element = $(event.target),
-                    $audit_id = $('#auditID').val();
-                    $cao_id = $element.find('.bCaoID').val();
-                    $status = $element.find('.bStatus').val();
+                    audit_id = $('#auditID').val();
+                    cao_id = $element.find('.bCaoID').val();
+                    status = $element.find('.bStatus').val();
 
-                $element.trigger('reject', [$cao_id, function () {
-                    $cao_table.trigger('refresh', [$audit_id, $cao_id, $status]);
+                $element.trigger('reject', [cao_id, function () {
+
+                    $cao_table.trigger('refresh', [audit_id, cao_id, status]);
 
                     // close modal window
                     var modal = PICS.getClass('widget.Modal');
