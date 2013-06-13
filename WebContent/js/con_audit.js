@@ -160,7 +160,7 @@ function updateModes(mode) {
 
 function printPreview(auditID, auditTypeId) {
 	if (auditTypeId == '420') {
-		window.open('PrintIolRmpAudit.action?audit='+auditID, 'preview', 'menubar=1,scrollbars=1,resizable=1,height=768,width=1024')
+		window.open('PrintIolRmpAudit.action?audit='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=768,width=1024')
 	} else {
 		window.open('AuditPrintAjax.action?button=load&mode=ViewAll&auditID='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640')
 	}
