@@ -14,7 +14,7 @@ public class ReportChart extends BaseTable {
 	private Report report;
     private ChartType chartType;
 	private ChartFormat chartFormat;
-    private ChartSeries chartSeries;
+    private ChartSeries series;
 
 	public ReportChart() {
 	}
@@ -60,12 +60,12 @@ public class ReportChart extends BaseTable {
         this.chartFormat = chartFormat;
     }
 
-    public ChartSeries getChartSeries() {
-        return chartSeries;
+    public ChartSeries getSeries() {
+        return series;
     }
 
-    public void setChartSeries(ChartSeries chartSeries) {
-        this.chartSeries = chartSeries;
+    public void setSeries(ChartSeries series) {
+        this.series = series;
     }
 
     @Override

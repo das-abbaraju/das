@@ -42,7 +42,6 @@ import com.picsauditing.report.converter.ReportBuilder;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelType;
@@ -318,9 +317,9 @@ public class ReportService {
 
         JSONObject responseJson = new JSONObject();
 
-        responseJson.put("type", chart.getChartType());
-        responseJson.put("format", chart.getChartFormat());
-        responseJson.put("series", chart.getChartSeries());
+        responseJson.put("type", chart.getChartType().toString());
+        responseJson.put("format", chart.getChartFormat().toString());
+        responseJson.put("series", chart.getSeries().toString());
 
 		ReportDataConverter converter = new ReportDataConverter(chart.getReport().getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());

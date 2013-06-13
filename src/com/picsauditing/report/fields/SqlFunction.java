@@ -24,7 +24,7 @@ public enum SqlFunction {
 	LowerCase(null, null, false),
 	UpperCase(null, null, false);
 
-	private DisplayType displayType;
+    private DisplayType displayType;
 	private FilterType filterType;
 	private boolean aggregate;
 
@@ -41,7 +41,15 @@ public enum SqlFunction {
 		return displayType;
 	}
 
-	public FilterType getFilterType(Field field) {
+    public DisplayType getDisplayType() {
+        return displayType;
+    }
+
+    public FilterType getFilterType() {
+        return filterType;
+    }
+
+    public FilterType getFilterType(Field field) {
 		if (filterType == null) {
 			return field.getType().getFilterType();
 		}

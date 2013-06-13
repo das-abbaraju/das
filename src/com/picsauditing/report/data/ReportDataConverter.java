@@ -54,11 +54,14 @@ public class ReportDataConverter {
 
         List<Column> stringColumns = new ArrayList<Column>();
         List<Column> numericColumns = new ArrayList<Column>();
-
+;
         for (Column col : chart.getReport().getColumns()) {
-            FieldType type = col.getField().getType();
+            DisplayType type = col.getField().getType().getDisplayType();
+            if (col.getSqlFunction() != null) {
+                type = col.getSqlFunction().getDisplayType();
+            }
 
-            if (type.getDisplayType().isNumber()) {
+            if (type.isNumber()) {
                 numericColumns.add(col);
             } else {
                 stringColumns.add(col);
@@ -68,10 +71,10 @@ public class ReportDataConverter {
         if (stringColumns.size() < 0 || numericColumns.size() < 0) {
             throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
         }
-        if (numericColumns.size() > 1 && chart.getChartSeries() == ChartSeries.Single) {
+        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
             throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
         }
-        if (numericColumns.size() == 1 && chart.getChartSeries() == ChartSeries.Multi) {
+        if (numericColumns.size() == 1 && chart.getSeries() == ChartSeries.Multi) {
             throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a single-series, not a multi-series", chart.getReport());
         }
 
@@ -95,8 +98,8 @@ public class ReportDataConverter {
         }
 
         labelJson.put("type", "string");
-        labelJson.put("id", labelID);
-        labelJson.put("label", labelText);
+        labelJson.put("id", labelID.trim());
+        labelJson.put("label", labelText.trim());
         labelJson.put("pattern", "");
         columnCollection.add(labelJson);
 
@@ -145,8 +148,8 @@ public class ReportDataConverter {
                 labelValue += cellValue + " ";
             }
 
-            labelCellJson.put("v", labelValue);
-            labelCellJson.put("f", labelFormattedValue);
+            labelCellJson.put("v", labelValue.trim());
+            labelCellJson.put("f", labelFormattedValue.trim());
             rowColumnJson.add(labelCellJson);
 
             for (Column col : numericColumns) {
