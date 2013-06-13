@@ -13,11 +13,11 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
         tools:[{
             xtype: 'button',
             height: 25,
-            id: 'settings_modal_model_info_button',
+            id: 'settings_modal_report_info_button',
             text: '<i class="icon-exclamation-sign"></i>',
-            tooltip: PICS.text('Report.execute.settingsmodal.tooltipmodelinfobutton'),
+            tooltip: PICS.text('Report.execute.settingsmodal.tooltipreportinfobutton'),
             width: 20,
-            action: 'model-info'
+            action: 'report-info'
         }, {
             type: 'close',
             handler: function () {

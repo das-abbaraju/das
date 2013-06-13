@@ -16,19 +16,21 @@
 
 	.icon-exclamation-sign
 	{
-	  color: #CCC;
-	  font-size: 17px;
+		color: #CCC;
+		font-size: 20px;
+		position: relative;
+		left: -3px;
 	}
 
-	#settings_modal_model_info_button
+	#settings_modal_report_info_button
 	{
-	  background-color: #454545;
-	  border-color: #454545;
+		background-color: #454545;
+		border-color: #454545;
 	}
 
 	.x-btn-over .icon-exclamation-sign
 	{
-	  color: #999;
+		color: #999;
 	}
 
 	.x-btn.active .icon-exclamation-sign
@@ -36,7 +38,7 @@
 		color: #73BBE8;
 	}
 
-	#settings_modal_model_info_button-btnEl
+	#settings_modal_report_info_button-btnEl
 	{
 	  background-color: #454545;
 	}
@@ -430,4 +432,39 @@
 #report_print .x-btn-inner span
 {
 	margin-left: 10px;
+}
+
+#report_info_list
+{
+	padding: 15px;
+
+	li
+	{
+		margin-bottom: 10px;
+	}
+
+	label
+	{
+		color: #999;
+		font-weight: bold;
+		margin-right: 5px;
+	}
+
+	a
+	{
+		color: #73BBE8;
+		text-decoration: none;
+	}
+
+	.update-info 
+	{
+		label
+		{
+			float: left;
+		}
+		span
+		{
+			display: inline-block;
+		}
+	}
 }

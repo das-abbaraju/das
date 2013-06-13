@@ -33,8 +33,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 close: this.closeSettingsModal
             },
 
-            'reportsettingsmodal button[action=model-info]': {
-                click: this.showModelInfo
+            'reportsettingsmodal button[action=report-info]': {
+                click: this.showReportInfo
             },
 
             'reportsettingsmodal button[action=cancel]':  {
@@ -222,10 +222,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.printReport();
     },
 
-    showModelInfo: function (cmp, e, eOpts) {
+    showReportInfo: function (cmp, e, eOpts) {
         var button = cmp.getEl(),
             settings_modal_tabs_view = this.getSettingsModalTabs(),
-            target_el = cmp.up('window').body.down('#report_copy');
+            active_tab_body = cmp.up('window').body,
+            active_tab = active_tab_body.down('.x-tab-active')
+            target_el = active_tab_body.down('#report_copy');
 
         if (button.hasCls('active')) {
             return;
@@ -233,14 +235,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         button.addCls('active');
 
-        // Create the model info panel
-        model_info_setting_view = Ext.create('PICS.view.report.settings.ModelInfoSetting');
+        active_tab.removeCls('x-active');
+
+        // Create the report info panel
+        report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting');
 
         // Clear the body of the current tab-window
         target_el.update('');
 
-        // Replace its body contents with the model info panel
-        model_info_setting_view.update(target_el);
+        // Replace its body contents with the report info panel
+        report_info_setting_view.update(target_el);
     },
 
     unfavoriteReport: function (cmp, eOpts) {
