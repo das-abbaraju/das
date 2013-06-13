@@ -174,7 +174,17 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
-	public String buildSqlFunctions() {
+    public String info() {
+        try {
+           json = reportService.buildJsonReportInfo(reportId);
+        } catch (Exception e) {
+            logger.error("Error while downloading report", e);
+        }
+
+        return JSON;
+    }
+
+    public String buildSqlFunctions() {
 		try {
 			json = reportService.buildSqlFunctionsJson(type, fieldId, permissions);
 

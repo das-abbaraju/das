@@ -422,4 +422,26 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
+    public JSONObject buildJsonReportInfo(int reportId) throws Exception {
+        Report report = reportDao.findById(reportId);
+
+        JSONObject infoJson = new JSONObject();
+        infoJson.put("model",report.getModelType().toString());
+
+        int shares = report.getReportPermissionUsers().size() + report.getReportPermissionAccounts().size();
+        infoJson.put("shares",Integer.toString(shares));
+
+        int favorites = 0;
+        for (ReportUser user : report.getReportUsers()) {
+            if (user.isFavorite())
+                favorites++;
+        }
+        infoJson.put("favorites",Integer.toString(favorites));
+        infoJson.put("updated",report.getUpdateDate().toString());
+        infoJson.put("updated_by",report.getUpdatedBy().getName());
+        infoJson.put("owner",report.getOwner().getName());
+
+        return infoJson;
+    }
+
 }

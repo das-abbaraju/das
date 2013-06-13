@@ -264,7 +264,6 @@ public class ReportServiceTest {
 		assertEquals(report.getId(), resultReport.getId());
 		assertEquals(report.getModelType(), resultReport.getModelType());
 		assertEquals(report.getName(), resultReport.getName());
-		assertEquals(report.getNumTimesFavorited(), resultReport.getNumTimesFavorited());
 		assertEquals(report.getDescription(), resultReport.getDescription());
 		assertEquals(report.getSql(), resultReport.getSql());
 		assertEquals(report.getFilterExpression(), resultReport.getFilterExpression());
@@ -343,7 +342,7 @@ public class ReportServiceTest {
 		assertFalse(report.isPublic());
 	}
 
-	private void verifyColumn(String columnName, Map<String, Column> columnMap) {
+    private void verifyColumn(String columnName, Map<String, Column> columnMap) {
 		Column column = columnMap.get(columnName);
 		assertNotNull(column);
 		assertEquals(columnName, column.getName());
@@ -376,7 +375,6 @@ public class ReportServiceTest {
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(report.getModelType()).thenReturn(ModelType.Contractors);
 		when(report.getName()).thenReturn("fooReport");
-		when(report.getNumTimesFavorited()).thenReturn(5);
 		when(report.getDescription()).thenReturn("A basic report for testing");
 		when(report.getSql()).thenReturn("select * from dual");
 		when(report.getFilterExpression()).thenReturn("where somecolumn is 'foo'");

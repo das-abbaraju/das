@@ -38,7 +38,6 @@ public class Report extends BaseTable {
 	private String name;
 	private String description;
 	private String filterExpression;
-	private int numTimesFavorited;
 	private String sql;
 	private boolean deleted;
 	private boolean isPublic;
@@ -48,7 +47,7 @@ public class Report extends BaseTable {
 	private List<Sort> sorts = new ArrayList<Sort>();
 
 	private List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
-
+    private List<ReportPermissionAccount> reportPermissionAccounts = new ArrayList<ReportPermissionAccount>();
 	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -80,16 +79,6 @@ public class Report extends BaseTable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Transient
-	// @ReportField(importance = FieldImportance.Average, width = 10)
-	public int getNumTimesFavorited() {
-		return numTimesFavorited;
-	}
-
-	public void setNumTimesFavorited(int numTimesFavorited) {
-		this.numTimesFavorited = numTimesFavorited;
 	}
 
     @ReportField
@@ -174,8 +163,6 @@ public class Report extends BaseTable {
 		return name;
 	}
 
-	@Deprecated
-	// TODO this should not be used here
 	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
 	public List<ReportUser> getReportUsers() {
 		return reportUsers;
@@ -185,25 +172,8 @@ public class Report extends BaseTable {
 		this.reportUsers = reportUsers;
 	}
 
-	@Transient
-	@Deprecated
-	// TODO this should not be used here
-	public ReportUser getReportUser(int userId) {
-		for (ReportUser reportUser : reportUsers) {
-			if (userId == reportUser.getUser().getId()) {
-				return reportUser;
-			}
-		}
-
-		return null;
-	}
-
 	public boolean hasNoColumns() {
 		return CollectionUtils.isEmpty(columns);
-	}
-
-	public boolean hasNoColumnsFiltersOrSorts() {
-		return CollectionUtils.isEmpty(columns) && CollectionUtils.isEmpty(filters) && CollectionUtils.isEmpty(sorts);
 	}
 
 	public boolean hasNoModelType() {
@@ -223,7 +193,16 @@ public class Report extends BaseTable {
 		this.reportPermissionUsers = reportPermissionUsers;
 	}
 
-	public void sortColumns() {
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+    public List<ReportPermissionAccount> getReportPermissionAccounts() {
+        return reportPermissionAccounts;
+    }
+
+    public void setReportPermissionAccounts(List<ReportPermissionAccount> reportPermissionAccounts) {
+        this.reportPermissionAccounts = reportPermissionAccounts;
+    }
+
+    public void sortColumns() {
 		Collections.sort(columns, new Comparator<com.picsauditing.jpa.entities.Column>() {
 			@Override
 			public int compare(com.picsauditing.jpa.entities.Column c1, com.picsauditing.jpa.entities.Column c2) {
