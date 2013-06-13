@@ -23,8 +23,11 @@ public enum ModelType {
     OperatorAccountUsers,
     OperatorUsers,
     PaymentCommissions,
-    ReportPermissions,
     Reports,
+    ReportColumns,
+    ReportFilters,
+    // ReportPermissions,
+    ReportUsers,
     UserAssignments,
 	Users;
 

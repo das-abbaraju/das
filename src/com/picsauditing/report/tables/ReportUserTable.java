@@ -12,7 +12,7 @@ public class ReportUserTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addOptionalKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID")));
-		addOptionalKey(new ReportForeignKey(Report, new ReportTable(), new ReportOnClause("reportID")));
+        addRequiredKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID"))).setMinimumImportance(FieldImportance.Required);
+        addRequiredKey(new ReportForeignKey(Report, new ReportTable(), new ReportOnClause("reportID"))).setMinimumImportance(FieldImportance.Average);
 	}
 }

@@ -4,9 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.fields.DisplayType;
-import com.picsauditing.report.fields.PivotCellMethod;
-import com.picsauditing.report.fields.PivotDimension;
+import com.picsauditing.report.fields.*;
 
 @Entity
 @Table(name = "report_column")
@@ -36,6 +34,7 @@ public class Column extends ReportElement implements Comparable<Column> {
 		this.columnId = columnId;
 	}
 
+    @ReportField(type = FieldType.Integer)
 	public int getWidth() {
 		if (shouldOverrideDefaultWidthWithFieldAnnotation()) {
 			width = field.getWidth();
@@ -52,6 +51,7 @@ public class Column extends ReportElement implements Comparable<Column> {
 		this.width = width;
 	}
 
+    @ReportField(type = FieldType.Integer)
 	public int getSortIndex() {
 		return sortIndex;
 	}

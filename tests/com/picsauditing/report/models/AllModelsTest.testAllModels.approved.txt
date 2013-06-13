@@ -904,33 +904,61 @@ UserLocale
 UserTimezone
 UserUsingVersion7Menus
 
-Model: ReportPermissions
-Permission: Permissions{permissions=[]}
-----------------------------------------
-AccountID
-AccountName
-PermissionEditable
-ReportCreationDate
-ReportID
-ReportModelType
-ReportName
-ReportUpdateDate
-ReportUserFavorite
-ReportUserLastViewedDate
-ReportUserViewCount
-UserID
-UserName
-
 Model: Reports
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 ReportCreationDate
+ReportDescription
+ReportFilterExpression
+ReportID
+ReportModelType
+ReportName
+ReportOwnerID
+ReportOwnerName
+ReportPublic
+ReportUpdateDate
+
+Model: ReportColumns
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ReportColumnFieldName
+ReportColumnSortIndex
+ReportColumnSqlFunction
+ReportColumnWidth
+ReportCreationDate
+ReportID
+ReportModelType
+ReportName
+ReportUpdateDate
+
+Model: ReportFilters
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ReportCreationDate
+ReportFilterFieldName
+ReportFilterOperator
+ReportFilterSqlFunction
+ReportFilterValue
+ReportID
+ReportModelType
+ReportName
+ReportUpdateDate
+
+Model: ReportUsers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+ReportCreationDate
 ReportID
 ReportModelType
 ReportName
 ReportUpdateDate
 ReportUserFavorite
+ReportUserHidden
 ReportUserLastViewedDate
+ReportUserPinnedIndex
+ReportUserSortOrder
+ReportUserUserID
+ReportUserUserName
 ReportUserViewCount
 
 Model: UserAssignments

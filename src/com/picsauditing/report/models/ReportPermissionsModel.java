@@ -13,24 +13,25 @@ public class ReportPermissionsModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
+        // TODO Is ReportPermissionsModel ever used??
 		ModelSpec report = new ModelSpec(null, "Report");
-		ModelSpec reportUser = report.join(ReportTable.User);
-		reportUser.alias = "ReportUser";
-		reportUser.minimumImportance = FieldImportance.Average;
-
-		ModelSpec permission = report.join(ReportTable.Permission);
-		permission.alias = "Permission";
-		permission.minimumImportance = FieldImportance.Average;
-
-		ModelSpec user = permission.join(ReportPermissionView.User);
-		user.minimumImportance = FieldImportance.Required;
-		user.alias = "User";
-		user.category = FieldCategory.AccountInformation;
-
-		ModelSpec account = permission.join(ReportPermissionView.Account);
-		account.minimumImportance = FieldImportance.Required;
-		account.alias = "Account";
-		user.category = FieldCategory.AccountInformation;
+//		ModelSpec reportUser = report.join(ReportTable.User);
+//		reportUser.alias = "ReportUser";
+//		reportUser.minimumImportance = FieldImportance.Average;
+//
+//		ModelSpec permission = report.join(ReportTable.Permission);
+//		permission.alias = "Permission";
+//		permission.minimumImportance = FieldImportance.Average;
+//
+//		ModelSpec user = permission.join(ReportPermissionView.User);
+//		user.minimumImportance = FieldImportance.Required;
+//		user.alias = "User";
+//		user.category = FieldCategory.AccountInformation;
+//
+//		ModelSpec account = permission.join(ReportPermissionView.Account);
+//		account.minimumImportance = FieldImportance.Required;
+//		account.alias = "Account";
+//		user.category = FieldCategory.AccountInformation;
 
 		return report;
 	}

@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -91,6 +92,7 @@ public class Report extends BaseTable {
 		this.numTimesFavorited = numTimesFavorited;
 	}
 
+    @ReportField
 	public String getDescription() {
 		return description;
 	}
@@ -116,7 +118,16 @@ public class Report extends BaseTable {
 		this.deleted = deleted;
 	}
 
-	@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ReportField
+    public String getFilterExpression() {
+        return filterExpression;
+    }
+
+    public void setFilterExpression(String filterExpression) {
+        this.filterExpression = filterExpression;
+    }
+
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<com.picsauditing.jpa.entities.Column> getColumns() {
 		return columns;
 	}
@@ -156,14 +167,6 @@ public class Report extends BaseTable {
 	public void addSort(Sort sort) {
 		sort.setReport(this);
 		sorts.add(sort);
-	}
-
-	public String getFilterExpression() {
-		return filterExpression;
-	}
-
-	public void setFilterExpression(String filterExpression) {
-		this.filterExpression = filterExpression;
 	}
 
 	@Override
@@ -233,7 +236,8 @@ public class Report extends BaseTable {
 		});
 	}
 
-	public boolean isPublic() {
+    @ReportField(type = FieldType.Boolean)
+    public boolean isPublic() {
 		return isPublic;
 	}
 

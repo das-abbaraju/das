@@ -43,6 +43,7 @@ public class Filter extends ReportElement {
 	private static final Logger logger = LoggerFactory.getLogger(Filter.class);
 
 	@Enumerated(EnumType.STRING)
+    @ReportField
 	public QueryFilterOperator getOperator() {
 		return operator;
 	}
@@ -51,6 +52,7 @@ public class Filter extends ReportElement {
 		this.operator = operator;
 	}
 
+    @ReportField
 	public String getValue() {
 		return value;
 	}

@@ -1,8 +1,11 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.ReportTable;
+
+import java.util.List;
 
 public class ReportsModel extends AbstractModel {
 
@@ -12,11 +15,12 @@ public class ReportsModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec report = new ModelSpec(null, "Report");
-
-		ModelSpec reportUser = report.join(ReportTable.User);
-		reportUser.alias = "ReportUser";
-		reportUser.minimumImportance = FieldImportance.Average;
-
+		report.join(ReportTable.Owner);
 		return report;
 	}
+
+    @Override
+    public String getWhereClause(List<Filter> filters) {
+        return "Report.deleted = 0";
+    }
 }
