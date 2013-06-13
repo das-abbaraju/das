@@ -12,7 +12,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
                     '<label>Model:</label><span>{model}</span>',
                 '</li>',
                 '<li>',
-                    '<label>Shares:</label><a href="{shares_url}">{shares}</a>',
+                    '<label>Shares:</label><span>{shares}</span>',
                 '</li>',
                 '<li>',
                     '<label>Favorites:</label><span>{favorites}</span>',
@@ -21,11 +21,11 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
                     '<label>Updated:</label>',
                     '<span>',
                         '{updated}<br />',
-                        '(by <a href="{updated_by_url}">{updated_by}</a>',
+                        '(by {updated_by})',
                     '</span>',
                 '</li>',
                 '<li>',
-                    '<label>Owner:</label><a href="{owner_url}">{owner})</a>',
+                    '<label>Owner:</label><span>{owner}</span>',
                 '</li>',
             '</ul>'
         ])
@@ -44,13 +44,10 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
         report_info_list_html.append(target_el, {
             model: 'Contractors',
             shares: '136',
-            shares_url: 'something.Action',
             favorites: '1,242',
             updated: '2012-12-07 @ 08:22 PST',
             updated_by: 'Matt DeSio',
-            updated_by_url: 'something.Action',
             owner: 'Trevor Allred',
-            owner_url: 'something.Action'
         });
     }
 });

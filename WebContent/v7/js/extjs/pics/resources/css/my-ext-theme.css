@@ -9243,14 +9243,10 @@ textarea.x-form-invalid-field {
     color: #999;
     font-weight: bold;
     margin-right: 5px; }
-  /* line 454, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_info_list a {
-    color: #73BBE8;
-    text-decoration: none; }
-  /* line 462, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 456, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_info_list .update-info label {
     float: left; }
-  /* line 466, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 460, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   #report_info_list .update-info span {
     display: inline-block; }
 

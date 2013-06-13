@@ -37,6 +37,10 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
+        getGetReportInfoUrl: function () {
+            return;
+        },
+
         getExportReportUrl: function () {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,

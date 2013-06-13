@@ -445,6 +445,22 @@ Ext.define('PICS.data.ServerCommunication', {
                         }
                     }
                 });
+            },
+
+            getReportInfo: function (options) {
+                var url = PICS.data.ServerCommunicationUrl.getGetReportInfoUrl(),
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {};
+
+                Ext.Ajax.request({
+                    url: url,
+                    callback: function (options, success, response) {
+                        if (PICS.data.Exception.hasException(response)) {
+                            response: response
+                        } else {
+                            success_callback(response);
+                        }
+                    }
+                });
             }
         };
     }())

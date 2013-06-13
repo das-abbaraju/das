@@ -222,23 +222,38 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.printReport();
     },
 
-    showReportInfo: function (cmp, e, eOpts) {
-        var button = cmp.getEl(),
-            settings_modal_tabs_view = this.getSettingsModalTabs(),
-            active_tab_body = cmp.up('window').body,
-            active_tab = active_tab_body.down('.x-tab-active')
-            target_el = active_tab_body.down('#report_copy');
+    getReportInfo: function (cmp, e, eOpts) {
+        var that = this,
+            button_el = cmp.getEl();
 
-        if (button.hasCls('active')) {
+        if (button_el.hasCls('active')) {
             return;
         }
 
-        button.addCls('active');
+        // TODO: Don't pass in the button element
+        PICS.data.ServerCommunication.getReportInfo(function () {
+            that.showReportInfo(cmp);
+        });
+    },
 
+    showReportInfo: function (cmp) {
+        var button_el = cmp.getEl(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab_body = cmp.up('window').body,
+            active_tab = active_tab_body.down('.x-tab-active'),
+            settings_modal_view = this.getSettingsModal(),
+            target_el = active_tab_body.down('#report_copy');
+
+        // Show the report info view as active
+        button_el.addCls('active');
+
+        // Show the active tab-panel as inactive
         active_tab.removeCls('x-active');
 
         // Create the report info panel
         report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting');
+
+        settings_modal_view.setTitle(report_info_setting_view.modal_title);
 
         // Clear the body of the current tab-window
         target_el.update('');
