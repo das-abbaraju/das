@@ -466,64 +466,42 @@
 
 /* IOL custom print layout*/
 @media print {
-	.iol-print-template #print {
+	#PrintIolRmpAudit__page .print {
 		display: none;
 	}
 }
 
-.iol-print-template {
+#PrintIolRmpAudit__page {
 	font-size: 12px;
 	padding: 20px;
 }
 
-.iol-print-template hr {
-	border-color: #999999;
+#PrintIolRmpAudit__page hr {
 	border-bottom: 0px;
+	border-color: #999999;
+	margin-top: 0px;
 }
 
-.iol-print-template p {
-	margin-bottom: 0px;
-}
-
-.iol-print-template label {
-	cursor: default;
-	display: inline;
-	font-weight: bold;
-	margin-right: 5px;
-}
-
-.iol-print-template h1 {
+#PrintIolRmpAudit__page header h1 {
 	font-size: 18px;
 	margin-bottom: 0px;
 }
 
-.iol-print-template .executive-summary {
-	border: 1px solid #999999;
+#PrintIolRmpAudit__page section h1 {
+	font-size: 16px;
+	margin-bottom: 0px;
 }
 
-.iol-print-template .executive-summary div {
-	border-bottom: 1px solid #999999;
-	padding: 0px 5px;
-}
-
-.iol-print-template .executive-summary .rmp-info,
-.iol-print-template .executive-summary .rmp-info div {
-	border-bottom: 0px;
-}
-
-.iol-print-template .table {
+#PrintIolRmpAudit__page .table {
+	border: 1px solid #999;
 	font-size: 12px;
-	page-break-inside: avoid;
 }
 
-.iol-print-template section {
-	page-break-inside: avoid;
+#PrintIolRmpAudit__page .table td {
+	border: 1px solid #999;
 }
 
-.iol-print-template ol {
-	margin-top: 20px;
-}
-
-.iol-print-template #signatures li {
-	margin-bottom: 20px;
+#PrintIolRmpAudit__page dt {
+    float: left;
+    margin-right: 5px;
 }

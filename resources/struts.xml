@@ -515,7 +515,7 @@
 
         <action name="PrintIolRmpAudit"
                 class="com.picsauditing.actions.audits.PrintIolRmpAudit">
-            <result>struts/audits/iol_print_template.jsp</result>
+            <result>struts/audits/iol-print-template.jsp</result>
         </action>
 
 		<action name="AuditDataSaveAjax" class="com.picsauditing.actions.audits.AuditDataSave">
