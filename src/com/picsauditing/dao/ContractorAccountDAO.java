@@ -501,4 +501,35 @@ public class ContractorAccountDAO extends PicsDAO {
 	public void detach(ContractorAccount contractor) {
 		em.detach(contractor);
 	}
+
+    @Transactional(propagation = Propagation.NESTED)
+    public int expireCurrentCSRAssignment(int conID) {
+        if (conID < 1) {
+            return 0;
+        } else {
+            String sql = "UPDATE account_user SET endDate = NOW() WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID = :accountID";
+            Query q = em.createNativeQuery(sql);
+            q.setParameter("accountID", conID);
+            return q.executeUpdate();
+        }
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public int assignNewCSR(int conID, int newCSRID) {
+        String sql = "INSERT INTO account_user  (accountID, userID, role                    , startDate  , endDate     , ownerPercent, createdBy, creationDate) " +
+                     "VALUES                    (:conID   , :user , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100         , 1        , NOW()) ";
+        Query q = em.createNativeQuery(sql);
+        q.setParameter("conID", conID);
+        q.setParameter("user", newCSRID);
+
+        return q.executeUpdate();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public int rejectRecommendedAssignmentForList(String conIDs) {
+        String sql = "UPDATE contractor_info SET recommendedCsrID = null WHERE id IN (" + conIDs + ")";
+
+        Query q = em.createNativeQuery(sql);
+        return q.executeUpdate();
+    }
 }

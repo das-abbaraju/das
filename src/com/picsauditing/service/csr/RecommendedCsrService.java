@@ -19,28 +19,17 @@ public class RecommendedCsrService {
     public int acceptRecommendedCsrs(String contractorIds, int acceptedByUserId) {
         List<Integer> contractorIdsList = Strings.explodeCommaDelimitedStringOfIds(contractorIds);
 
-        List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
-
-        for (ContractorAccount contractor: contractorList) {
-            contractor.setCurrentCsr(contractor.getRecommendedCsr(), acceptedByUserId);
-            contractorAccountDAO.save(contractor);
+        for (Integer conID : contractorIdsList) {
+            ContractorAccount contractor = contractorAccountDAO.find(conID);
+            contractorAccountDAO.expireCurrentCSRAssignment(conID);
+            contractorAccountDAO.assignNewCSR(conID, contractor.getRecommendedCsr().getId());
         }
 
-        return contractorList.size();
+        return contractorIdsList.size();
     }
 
-
     public int rejectRecommendedCsrs(String contractorIds) {
-        List<Integer> contractorIdsList = Strings.explodeCommaDelimitedStringOfIds(contractorIds);
-
-        List<ContractorAccount> contractorList = contractorAccountDAO.findByIDs(ContractorAccount.class, contractorIdsList);
-
-        for (ContractorAccount contractor: contractorList) {
-            contractor.setRecommendedCsr(null);
-            contractorAccountDAO.save(contractor);
-        }
-
-        return contractorList.size();
+        return contractorAccountDAO.rejectRecommendedAssignmentForList(contractorIds);
     }
 }
 
