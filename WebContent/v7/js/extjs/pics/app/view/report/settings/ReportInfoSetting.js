@@ -2,10 +2,8 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.reportreportinfosetting',
 
-    id: 'report_report_info',
     items: [{
         xtype: 'component',
-        id: 'report_info_list',
         html: new Ext.Template([
             '<ul id="report_info_list">',
                 '<li>',
@@ -38,7 +36,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     modal_title: PICS.text('Report.execute.reportInfoSetting.title'),
 
     update: function (container_el, values) {
-        report_info_list_html = this.down('#report_info_list').html;
+        report_info_list_html = this.down('component').html;
 
         report_info_list_html.compile();
         report_info_list_html.append(container_el, values);

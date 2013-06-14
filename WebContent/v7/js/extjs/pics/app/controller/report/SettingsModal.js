@@ -16,6 +16,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'shareSetting',
         selector: 'reportsharesetting'
+    }, {
+        ref: 'reportInfoSetting',
+        selector: 'reportinfosetting'
+    }, {
+        ref: 'hideReportInfoButton',
+        selector: 'button[action=hide-report-info]'
     }],
 
     stores: [
@@ -33,8 +39,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 close: this.closeSettingsModal
             },
 
-            'reportsettingsmodal button[action=report-info]': {
+            'reportsettingsmodal button[action=show-report-info]': {
                 click: this.getReportInfo
+            },
+
+            'reportsettingsmodal button[action=hide-report-info]': {
+                click: this.hideReportInfo
             },
 
             'reportsettingsmodal button[action=cancel]':  {
@@ -42,7 +52,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodaltabs': {
-                tabchange: this.changeSettingsModalTab
+                tabchange: this.changeSettingsModalTab,
+                beforetabchange: this.hideReportInfoIfVisible
             },
 
             'reportsettingsmodal reporteditsetting': {
@@ -147,9 +158,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
         settings_modal_view.close();
     },
 
+    hideReportInfoIfVisible: function (cmp, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            report_info_container_el = Ext.query('.report-info-container')[0];
+
+        if (report_info_container_el) {
+            this.hideReportInfo();
+        }
+    },
+
     changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             title = nextCard.modal_title;
+
 
         settings_modal_view.setTitle(title);
     },
@@ -222,46 +243,72 @@ Ext.define('PICS.controller.report.SettingsModal', {
         PICS.data.ServerCommunication.printReport();
     },
 
-    getReportInfo: function (cmp, e, eOpts) {
+    getReportInfo: function (button, e, eOpts) {
         var that = this,
-            button_el = cmp.getEl();
+            settings_modal_view = this.getSettingsModal(),
+            load_mask = new Ext.LoadMask(settings_modal_view);
 
-        if (button_el.hasCls('active')) {
-            return;
-        }
+        load_mask.show();
 
         // TODO: Don't pass in the button element
         PICS.data.ServerCommunication.getReportInfo({
             success_callback: function (values) {
-                that.showReportInfo(cmp, values);
+                that.showReportInfo(button, values);
+                load_mask.hide();
             }
         });
     },
 
-    showReportInfo: function (cmp, values) {
-        var button_el = cmp.getEl(),
+    showReportInfo: function (button, values) {
+        var button_el = button.getEl(),
             settings_modal_tabs_view = this.getSettingsModalTabs(),
-            active_tab_body = cmp.up('window').body,
-            active_tab = active_tab_body.down('.x-tab-active'),
-            settings_modal_view = this.getSettingsModal(),
-            container_el = active_tab_body.down('#report_copy');
+            active_tab_body = button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.x-tab-active'),
+            settings_modal_view = this.getSettingsModal();
+            container_el = new Ext.Element(document.createElement('div')),
+            active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
+
+        button.action = 'hide-report-info';
 
         // Show the report info view as active
         button_el.addCls('active');
 
         // Show the active tab-panel as inactive
-        active_tab.removeCls('x-active');
+        active_tab_tab_el.addCls('freeze');
+        active_tab_tab_el.removeCls('x-active');
 
-        // Create the report info panel
-        report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting');
+        // Create the report info panel and show its title in the window
+
+        var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting');
+
+        container_el.addCls('report-info-container');
+
+        report_info_setting_view.update(container_el, values);
 
         settings_modal_view.setTitle(report_info_setting_view.modal_title);
 
-        // Clear the body of the current tab-window
-        container_el.update('');
+        container_el.appendTo(active_tab_panel_el);
+    },
 
-        // Replace its body contents with the report info panel
-        report_info_setting_view.update(container_el, values);
+    hideReportInfo: function (button, e, eOpts) {
+        var button = this.getHideReportInfoButton(),
+            button_el = button.getEl(),
+            container_el = Ext.query('.report-info-container')[0],
+            settings_modal_view = this.getSettingsModal(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs_view.getActiveTab(),
+            active_tab_body = button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.freeze');
+
+        active_tab_tab_el.removeCls('freeze');
+        active_tab_tab_el.addCls('x-active');
+
+        settings_modal_view.setTitle(active_tab.modal_title);
+
+        button.action = 'show-report-info';
+
+        button_el.removeCls('active');
+        container_el.remove();
     },
 
     unfavoriteReport: function (cmp, eOpts) {

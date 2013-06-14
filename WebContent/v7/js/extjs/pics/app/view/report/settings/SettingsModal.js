@@ -17,7 +17,7 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
             text: '<i class="icon-exclamation-sign"></i>',
             tooltip: PICS.text('Report.execute.settingsmodal.tooltipreportinfobutton'),
             width: 20,
-            action: 'report-info'
+            action: 'show-report-info'
         }, {
             type: 'close',
             handler: function () {

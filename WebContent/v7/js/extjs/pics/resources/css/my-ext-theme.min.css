@@ -9343,6 +9343,16 @@ textarea.x-form-invalid-field {
   #report_info_list .update-info span {
     display: inline-block; }
 
+/* line 467, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+.report-info-container {
+  background: #EAEAEA;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999; }
+
 /**
  * Button style guide
  * 
