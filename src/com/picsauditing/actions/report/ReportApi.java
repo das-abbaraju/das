@@ -176,7 +176,7 @@ public class ReportApi extends PicsApiSupport {
 
     public String info() {
         try {
-           json = reportService.buildJsonReportInfo(reportId);
+           json = reportService.buildJsonReportInfo(reportId, permissions.getTimezone());
         } catch (Exception e) {
             logger.error("Error while downloading report", e);
         }
