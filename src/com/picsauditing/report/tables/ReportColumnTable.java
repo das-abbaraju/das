@@ -19,6 +19,6 @@ public class ReportColumnTable extends AbstractTable {
     }
 
     protected void addJoins() {
-        addRequiredKey(new ReportForeignKey(Report, new ReportTable(), new ReportOnClause("id", "reportID"))).setMinimumImportance(FieldImportance.Average);
+        addRequiredKey(new ReportForeignKey(Report, new ReportTable(), new ReportOnClause("reportID"))).setMinimumImportance(FieldImportance.Average);
     }
 }
