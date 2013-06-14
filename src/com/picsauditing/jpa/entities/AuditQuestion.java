@@ -21,7 +21,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;import org.hibernate.annotations.Cache;
+import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;
+import com.picsauditing.report.tables.FieldImportance;
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
@@ -158,7 +160,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
-	@ReportField(type = FieldType.Integer)
+	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
 	public int getNumber() {
 		return this.number;
 	}
@@ -186,7 +188,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
-	@ReportField(type = FieldType.String)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getQuestionType() {
 		return this.questionType;
 	}
@@ -206,7 +208,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Column(nullable = false)
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 	public boolean isHasRequirement() {
 		return hasRequirement;
 	}

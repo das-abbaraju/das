@@ -71,7 +71,6 @@ ContractorRegistrationRequestExpiresOn
 ContractorRenew
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorShowInDirectory
 ContractorSoleProprietor
 ContractorTagTagID

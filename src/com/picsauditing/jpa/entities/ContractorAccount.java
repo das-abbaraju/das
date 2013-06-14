@@ -818,7 +818,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return daysAgo.after(tradesUpdated);
 	}
 
-	@ReportField(type = FieldType.Integer, category = FieldCategory.CompanyStatistics)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average, requiredPermissions = OpPerms.PicsScore)
 	public int getScore() {
 		return score;
 	}

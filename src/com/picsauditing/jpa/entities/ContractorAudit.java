@@ -290,7 +290,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(type = FieldType.Integer, category = FieldCategory.DocumentsAndAudits)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public int getScore() {
 		return score;
 	}
