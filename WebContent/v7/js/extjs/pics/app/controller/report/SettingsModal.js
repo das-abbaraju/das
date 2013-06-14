@@ -53,7 +53,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodaltabs': {
                 tabchange: this.changeSettingsModalTab,
-                beforetabchange: this.hideReportInfoIfVisible
+                render: this.addHideReportInfoEvent
             },
 
             'reportsettingsmodal reporteditsetting': {
@@ -95,6 +95,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.application.on({
             opensettingsmodal: this.openSettingsModal,
             scope: this
+        });
+    },
+
+    addHideReportInfoEvent: function (cmp, eOpts) {
+        var that = this;
+
+        cmp.items.each(function(item) {
+            item.tab.on('click', function(){
+                that.hideReportInfoIfVisible();
+            });
         });
     },
 
@@ -304,10 +314,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
     showReportInfo: function (report_info_button, values) {
         var report_info_button_el = report_info_button.getEl(),
             settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs_view.getActiveTab(),
             active_tab_body = report_info_button.up('window').body,
             active_tab_tab_el = active_tab_body.down('.x-tab-active'),
             active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
-
+a = active_tab;
         report_info_button.action = 'hide-report-info';
         report_info_button_el.addCls('active');
         active_tab_tab_el.removeCls('x-active');
