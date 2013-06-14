@@ -222,8 +222,10 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 					ContractorAuditOperatorWorkflow caow = cao
 							.changeStatus(AuditStatus.Resubmitted, permissions);
-					caow.setNotes("Due to certificate change");
-					dao.save(caow);
+					if (caow != null) {
+						caow.setNotes("Due to certificate change");
+						dao.save(caow);
+					}
 					break;
 				}
 			}
