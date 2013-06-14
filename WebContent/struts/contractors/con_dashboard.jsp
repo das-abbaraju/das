@@ -476,7 +476,7 @@
                                         <s:iterator value="criteriaList.categories" id="datacat">
                                             <s:if test="#datacat != 'Insurance Criteria'">
                                                 <div class="flagData">
-                                                    <strong><s:property value="#datacat"/></strong>
+                                                    <strong><s:property value='%{getText("FlagCriteria.Category." + #datacat)}'/></strong>
                         
                                                     <ul>
                                                         <s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">

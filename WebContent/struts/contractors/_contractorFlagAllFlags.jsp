@@ -9,7 +9,8 @@
 					<thead>
 						<tr>
 							<td><s:text name="ContractorFlag.Flag" /></td>
-							<td><s:property value="#flagData.key" /></td>
+							<%--<td><s:property value="#flagData.key" /></td>--%>
+                            <td><s:property value="%{getText('FlagCriteria.Category.' + #flagData.key)}"/></td>
 							<s:if test="displayCorporate">
 								<td><s:text name="ContractorFlag.Operator" /></td>
 							</s:if>

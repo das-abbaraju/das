@@ -60,7 +60,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	
 	public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 
-	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
+	@ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
 	public String getCategory() {
 		return category;
 	}
