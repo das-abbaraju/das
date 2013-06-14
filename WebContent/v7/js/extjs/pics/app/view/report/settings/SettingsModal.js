@@ -14,7 +14,7 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
             xtype: 'button',
             height: 25,
             id: 'settings_modal_report_info_button',
-            text: '<i class="icon-exclamation-sign"></i>',
+            text: '<i class="icon-info-sign"></i>',
             tooltip: PICS.text('Report.execute.settingsmodal.tooltipreportinfobutton'),
             width: 20,
             action: 'show-report-info'

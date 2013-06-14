@@ -250,65 +250,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         load_mask.show();
 
-        // TODO: Don't pass in the button element
         PICS.data.ServerCommunication.getReportInfo({
             success_callback: function (values) {
                 that.showReportInfo(button, values);
                 load_mask.hide();
             }
         });
-    },
-
-    showReportInfo: function (button, values) {
-        var button_el = button.getEl(),
-            settings_modal_tabs_view = this.getSettingsModalTabs(),
-            active_tab_body = button.up('window').body,
-            active_tab_tab_el = active_tab_body.down('.x-tab-active'),
-            settings_modal_view = this.getSettingsModal();
-            container_el = new Ext.Element(document.createElement('div')),
-            active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
-
-        button.action = 'hide-report-info';
-
-        // Show the report info view as active
-        button_el.addCls('active');
-
-        // Show the active tab-panel as inactive
-        active_tab_tab_el.addCls('freeze');
-        active_tab_tab_el.removeCls('x-active');
-
-        // Create the report info panel and show its title in the window
-
-        var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting');
-
-        container_el.addCls('report-info-container');
-
-        report_info_setting_view.update(container_el, values);
-
-        settings_modal_view.setTitle(report_info_setting_view.modal_title);
-
-        container_el.appendTo(active_tab_panel_el);
-    },
-
-    hideReportInfo: function (button, e, eOpts) {
-        var button = this.getHideReportInfoButton(),
-            button_el = button.getEl(),
-            container_el = Ext.query('.report-info-container')[0],
-            settings_modal_view = this.getSettingsModal(),
-            settings_modal_tabs_view = this.getSettingsModalTabs(),
-            active_tab = settings_modal_tabs_view.getActiveTab(),
-            active_tab_body = button.up('window').body,
-            active_tab_tab_el = active_tab_body.down('.freeze');
-
-        active_tab_tab_el.removeCls('freeze');
-        active_tab_tab_el.addCls('x-active');
-
-        settings_modal_view.setTitle(active_tab.modal_title);
-
-        button.action = 'show-report-info';
-
-        button_el.removeCls('active');
-        container_el.remove();
     },
 
     unfavoriteReport: function (cmp, eOpts) {
@@ -319,7 +266,56 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    /**
+    /*
+     * Report Info
+     */
+
+    createReportInfo: function(values) {
+        var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting'),
+            report_info_container_el = new Ext.Element(document.createElement('div')),
+            settings_modal_view = this.getSettingsModal(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
+
+        report_info_container_el.addCls('report-info-container');
+        report_info_setting_view.update(report_info_container_el, values);
+        settings_modal_view.setTitle(report_info_setting_view.modal_title);
+        report_info_container_el.appendTo(active_tab_panel_el);
+    },
+
+    hideReportInfo: function (report_info_button) {
+        var report_info_button = report_info_button || this.getHideReportInfoButton(), // Passed only when triggered by event
+            report_info_button_el = report_info_button.getEl(),
+            report_info_container_el = Ext.query('.report-info-container')[0],
+            settings_modal_view = this.getSettingsModal(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs_view.getActiveTab(),
+            active_tab_body = report_info_button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.active-suspended');
+
+        active_tab_tab_el.removeCls('active-suspended');
+        active_tab_tab_el.addCls('x-active');
+        settings_modal_view.setTitle(active_tab.modal_title);
+        report_info_button.action = 'show-report-info';
+        report_info_button_el.removeCls('active');
+        report_info_container_el.remove();
+    },
+
+    showReportInfo: function (report_info_button, values) {
+        var report_info_button_el = report_info_button.getEl(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab_body = report_info_button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.x-tab-active'),
+            active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
+
+        report_info_button.action = 'hide-report-info';
+        report_info_button_el.addCls('active');
+        active_tab_tab_el.removeCls('x-active');
+        active_tab_tab_el.addCls('active-suspended');
+        this.createReportInfo(values);        
+    },
+
+    /*
      * Share
      */
 
