@@ -99,6 +99,34 @@ PICS.Charts.PieChart.prototype.getGoogleChart = function () {
     return new google.visualization.PieChart(this.container);
 };
 
+// BarChart
+
+PICS.Charts.BarChart = function (config) {
+    PICS.Charts.LabelsAlongSideChart.call(this, config);
+};
+PICS.Charts.BarChart.prototype = new PICS.Charts.LabelsAlongSideChart();
+PICS.Charts.PieChart.constructor = PICS.Charts.PieChart;
+
+PICS.Charts.BarChart.prototype.getOptions = function () {
+    var labels = this.getLabels(this.data),
+        colors = this.getColors();
+        colors_sorted = this.sortColorsInOrderOfLabels(colors, labels);
+
+    return {
+        width: 400,
+        height: 300,
+        colors: colors_sorted,
+        is3D: true,
+        legend: {
+            position: 'top',
+            alignment: 'center'
+        }
+    };
+};
+PICS.Charts.BarChart.prototype.getGoogleChart = function () {
+    return new google.visualization.BarChart(this.container);
+};
+
 (function ($) {
     PICS.define('home.HomeController', {
         methods: {
@@ -122,12 +150,14 @@ PICS.Charts.PieChart.prototype.getGoogleChart = function () {
                                 var config = data,
                                     chart;
 
-                                config.chart_type = 'Pie';
                                 config.container = chart_container;
+                                config.chart_type = 'Bar'; // Delete this
 
-                                switch (config.type) {                                    
-                                    case 'Flags':
+                                switch (config.chart_type) {
+                                    case 'Pie':
                                         chart = new PICS.Charts.PieChart(config);
+                                    case 'Bar':
+                                        chart = new PICS.Charts.BarChart(config);
                                 }
 
                                 chart.draw();
