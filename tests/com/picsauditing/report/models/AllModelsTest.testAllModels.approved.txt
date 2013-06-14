@@ -376,7 +376,6 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorTradesSelf
 ContractorTradesSub
@@ -497,7 +496,6 @@ ContractorRecommendedCSRID
 ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTradesSelf
@@ -525,7 +523,6 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorTradesSelf
 ContractorTradesSub
@@ -587,7 +584,6 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorStatisticsRate
 ContractorStatisticsRateType
@@ -946,7 +942,6 @@ ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorTradesSelf
 ContractorTradesSub

@@ -79,7 +79,6 @@ ContractorRecommendedCSRID
 ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
-ContractorScore
 ContractorSoleProprietor
 ContractorTagTagID
 ContractorTradesSelf
