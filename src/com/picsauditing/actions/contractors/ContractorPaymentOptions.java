@@ -74,6 +74,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 
 	@Override
 	public void prepare() throws Exception {
+		String[] ids = (String[]) ActionContext.getContext().getParameters().get("id");
+        if (ids != null)
+		    this.id = Integer.parseInt(ids[0]);
+
 		this.findContractor();
 		if (contractor.getCountry().getCurrency().isCAD()) {
 			initCanadianTaxFee();
