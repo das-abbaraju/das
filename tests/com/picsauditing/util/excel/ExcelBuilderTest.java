@@ -36,8 +36,10 @@ public class ExcelBuilderTest {
 	public void testBuild() throws Exception {
 		{
 			Permissions permissions = EntityFactory.makePermission();
+            EntityFactory.addUserPermission(permissions, OpPerms.PicsScore);
+            EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
+            EntityFactory.addUserPermission(permissions, OpPerms.Billing);
 			AbstractModel table = ReportModelFactory.build(ModelType.Contractors, permissions);
-			EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
 			availableFields = table.getAvailableFields();
 		}
 
