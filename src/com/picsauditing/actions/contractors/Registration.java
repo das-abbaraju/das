@@ -11,6 +11,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TimeZoneUtil;
@@ -197,8 +198,13 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		// they don't have an account yet so they won't get this as a default
 		permissions.setSessionCookieTimeoutInSeconds(3600);
 
-		sendWelcomeEmail();
-		addNote(contractor, "Welcome Email Sent");
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SUPPRESS_WELCOME_EMAILS)) {
+			sendWelcomeEmail();
+			addNote(contractor, "Welcome Email Sent");
+		} else {
+			addNote(contractor, "Welcome Email NOT Sent");
+		}
+
 		addNoteThatRequestRegistered();
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
