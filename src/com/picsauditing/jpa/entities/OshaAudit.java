@@ -33,6 +33,9 @@ public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_SWITZERLAND = 3704;
 	public static final int CAT_ID_POLAND = 3756;
 	public static final int CAT_ID_DENMARK = 3762;
+	public static final int CAT_ID_CZECH = 3764;
+	public static final int CAT_ID_HUNGARY = 3760;
+	public static final int CAT_ID_GREECE = 3766;
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
@@ -47,7 +50,8 @@ public class OshaAudit implements OshaVisitable {
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
                     CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND,
 		            CAT_ID_SOUTH_AFRICA, CAT_ID_SWITZERLAND, CAT_ID_SINGAPORE_MOM, CAT_ID_TURKEY,
-		            CAT_ID_SPAIN, CAT_ID_POLAND, CAT_ID_AUSTRIA, CAT_ID_ITALY, CAT_ID_PORTUGAL, CAT_ID_DENMARK)));
+		            CAT_ID_SPAIN, CAT_ID_POLAND, CAT_ID_AUSTRIA, CAT_ID_ITALY, CAT_ID_PORTUGAL, CAT_ID_DENMARK,
+		            CAT_ID_CZECH, CAT_ID_HUNGARY, CAT_ID_GREECE)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -187,6 +191,12 @@ public class OshaAudit implements OshaVisitable {
 	            safetyStatistics = new PortugalStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.DENMARK) {
 	            safetyStatistics = new DenmarkStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.CZECH) {
+	            safetyStatistics = new CzechStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.HUNGARY) {
+	            safetyStatistics = new HungaryStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.GREECE) {
+	            safetyStatistics = new GreeceStatistics(year, contractorAudit.getData(), category.isApplies());
 	        }
 
             if (safetyStatistics != null) {
