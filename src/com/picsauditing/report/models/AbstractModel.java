@@ -22,6 +22,7 @@ public abstract class AbstractModel {
 	ReportJoin startingJoin;
 	protected Permissions permissions;
 	protected PermissionQueryBuilder permissionQueryBuilder;
+    private Map<String, String> urls = new HashMap<String, String>();
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -97,12 +98,20 @@ public abstract class AbstractModel {
 		return startingJoin;
 	}
 
+    public void addUrl(String fieldName, String url) {
+        urls.put(fieldName.toUpperCase(), url);
+    }
+
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = new HashMap<String, Field>();
 		for (Field field : startingJoin.getFields()) {
 			if (field.canUserSeeQueryField(permissions)) {
-				logger.debug(field.getName().toUpperCase() + " was added to the available fields.");
-				fields.put(field.getName().toUpperCase(), field);
+                final String fieldName = field.getName().toUpperCase();
+				fields.put(fieldName, field);
+                if (urls.containsKey(fieldName)) {
+                    field.setUrl(urls.get(fieldName));
+                }
+                logger.debug(fieldName + " was added to the available fields.");
 			}
 		}
 		return fields;
