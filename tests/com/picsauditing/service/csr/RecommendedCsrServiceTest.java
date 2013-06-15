@@ -5,6 +5,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -58,17 +59,15 @@ public class RecommendedCsrServiceTest {
     public void testAcceptRecommendedCsrs_ProxiesLogicToDao() throws Exception {
         recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
 
-        for (ContractorAccount contractor : contractorList) {
-            verify(contractorAccountDAO).expireCurrentCSRAssignment(contractor.getId());
-            verify(contractorAccountDAO).assignNewCSR(contractor.getId(), contractor.getRecommendedCsr().getId());
-        }
+            verify(contractorAccountDAO).expireCurrentCsrForContractors(StringUtils.join(CONTRACTOR_IDS_LIST, ","));
+            verify(contractorAccountDAO).acceptRecommendedCsrForList(StringUtils.join(CONTRACTOR_IDS_LIST, ","));
     }
 
     @Test
     public void testAcceptRecommendedCsrs_ReturnsNumberAccepted() throws Exception {
-        int numAccepted = recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
+        recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
 
-        assertThat(numAccepted, is(equalTo(contractorList.size())));
+        assertThat(CONTRACTOR_IDS_LIST.size(), is(equalTo(contractorList.size())));
     }
 
     @Test

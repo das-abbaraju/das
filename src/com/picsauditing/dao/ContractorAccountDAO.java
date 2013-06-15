@@ -2,11 +2,7 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -15,6 +11,7 @@ import javax.persistence.TemporalType;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.SelectSQL;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -515,21 +512,48 @@ public class ContractorAccountDAO extends PicsDAO {
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public int assignNewCSR(int conID, int newCSRID) {
-        String sql = "INSERT INTO account_user  (accountID, userID, role                    , startDate  , endDate     , ownerPercent, createdBy, creationDate) " +
-                     "VALUES                    (:conID   , :user , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100         , 1        , NOW()) ";
-        Query q = em.createNativeQuery(sql);
-        q.setParameter("conID", conID);
-        q.setParameter("user", newCSRID);
-
-        return q.executeUpdate();
-    }
-
-    @Transactional(propagation = Propagation.NESTED)
     public int rejectRecommendedAssignmentForList(String conIDs) {
         String sql = "UPDATE contractor_info SET recommendedCsrID = null WHERE id IN (" + conIDs + ")";
 
         Query q = em.createNativeQuery(sql);
         return q.executeUpdate();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public int expireCurrentCsrForContractors(String contractorIds) {
+        String sql = "UPDATE account_user SET endDate = DATE(NOW()) WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID IN (" + contractorIds + ")";
+        Query q = em.createNativeQuery(sql);
+        return q.executeUpdate();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public int acceptRecommendedCsrForList(String contractorIds) throws SQLException {
+        String sql = "INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, creationDate) VALUES ";
+
+        List<String> valuesToBeInserted = new ArrayList<String>();
+
+        for (Map.Entry<Integer, Integer> entry : getRecommendedCsrIdsForContractorList(contractorIds).entrySet()) {
+            valuesToBeInserted.add("(" + entry.getKey() + ", " + entry.getValue()+ " , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100, 1, NOW())");
+        }
+
+        sql += StringUtils.join(valuesToBeInserted, ",");
+
+        Query q = em.createNativeQuery(sql);
+        return q.executeUpdate();
+    }
+
+    public Map<Integer, Integer> getRecommendedCsrIdsForContractorList(String contractorIds) throws SQLException {
+        Database db = new Database();
+        Map<Integer, Integer> conIdsAndCsrIds = new HashMap<>();
+
+        String sql = "SELECT id, recommendedCsrId FROM contractor_info where id IN (" + contractorIds + ")";
+
+        List<BasicDynaBean> results = db.select(sql, false);
+
+        for(BasicDynaBean row : results){
+            conIdsAndCsrIds.put(Integer.parseInt(row.get("id").toString()), Integer.parseInt(row.get("recommendedCsrId").toString()));
+        }
+
+        return conIdsAndCsrIds;
     }
 }
