@@ -1,8 +1,6 @@
 package com.picsauditing.actions.report;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Column;
@@ -73,7 +71,18 @@ public class ReportTester extends PicsActionSupport {
 		return reportElements;
 	}
 
-	public Map<String, Field> getAvailableFields() {
-		return availableFields;
+	public List<Field> getAvailableField() {
+        final List<Field> fields = new ArrayList<Field>();
+        fields.addAll(availableFields.values());
+        Collections.sort(fields, new Comparator<Field>() {
+            @Override
+            public int compare(Field o1, Field o2) {
+                if (o1.getCategory() != o2.getCategory()) {
+                    return o1.getCategory().compareTo(o2.getCategory());
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return fields;
 	}
 }
