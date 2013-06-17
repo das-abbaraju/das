@@ -430,6 +430,8 @@ ContractorSafetyRisk
 ContractorTagTagID
 ContractorTransportationRisk
 ForcedFlagPercent
+ReportingClientID
+ReportingClientName
 
 Model: Contractors
 Permission: Permissions{permissions=[]}
