@@ -24,10 +24,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -174,14 +171,28 @@ public class AuditDataSaveTest {
 		Date date;
 		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
 
-		auditData.setAnswer("2025-01-31");
+		auditData.setAnswer("2005-01-31");
 
 		setupCheckUniqueCode("expirationDate");
 		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
 		assertNotNull(audit.getExpiresDate());
 		date = audit.getExpiresDate();
-		assertEquals("2025-01-31", format.format(date));
+		assertEquals("2005-01-31", format.format(date));
 
+	}
+
+	@Test
+	public void testUniqueCode_EffectiveDate() throws Exception {
+		Date date;
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
+
+		Calendar effectiveDate = Calendar.getInstance();
+		effectiveDate.add(Calendar.YEAR, 10);
+		auditData.setAnswer(format.format(effectiveDate.getTime()));
+
+		setupCheckUniqueCode("effectiveDate");
+		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
+		assertNull(audit.getEffectiveDate());
 	}
 
 	private void setupCheckUniqueCode(String code) {
