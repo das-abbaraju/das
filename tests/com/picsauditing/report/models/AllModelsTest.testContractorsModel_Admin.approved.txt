@@ -45,6 +45,7 @@ ContractorAutoAddClientSite
 ContractorBalance
 ContractorContactCountByEmail
 ContractorContactCountByPhone
+ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -74,8 +75,6 @@ ContractorSafetyRiskVerified
 ContractorShowInDirectory
 ContractorSoleProprietor
 ContractorTagTagID
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTradesUpdated
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
