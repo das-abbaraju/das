@@ -442,7 +442,11 @@ public class ReportService {
         String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
 
         infoJson.put("updated",updateDate);
-        infoJson.put("updated_by",report.getUpdatedBy().getName());
+
+        User updatedBy = report.getUpdatedBy();
+        if (updatedBy != null)
+            infoJson.put("updated_by", updatedBy.getName());
+
         infoJson.put("owner",report.getOwner().getName());
 
         return infoJson;
