@@ -457,12 +457,14 @@ Ext.define('PICS.data.ServerCommunication', {
                         var data, json;
 
                         if (PICS.data.Exception.hasException(response)) {
-                            response: response
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
                         } else {
-                            data = response.responseText;
-                            json = Ext.JSON.decode(data);
+                            json = response.responseText;
+                            data = Ext.JSON.decode(json);
 
-                            success_callback(json);
+                            success_callback(data);
                         }
                     }
                 });

@@ -9233,7 +9233,7 @@ textarea.x-form-invalid-field {
   margin-left: 10px; }
 
 /* line 438, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-.report-info-container {
+.report-info {
   background: #EAEAEA;
   height: 100%;
   left: 0;
@@ -9242,21 +9242,21 @@ textarea.x-form-invalid-field {
   width: 100%;
   z-index: 9999; }
   /* line 448, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  .report-info-container ul {
+  .report-info ul {
     padding: 15px; }
   /* line 453, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  .report-info-container li {
+  .report-info li {
     margin-bottom: 10px; }
   /* line 458, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  .report-info-container label {
+  .report-info label {
     color: #999;
     font-weight: bold;
     margin-right: 5px; }
   /* line 467, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  .report-info-container .update-info label {
+  .report-info .update-info label {
     float: left; }
   /* line 472, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  .report-info-container .update-info span {
+  .report-info .update-info span {
     display: inline-block; }
 
 /**
