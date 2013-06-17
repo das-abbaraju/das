@@ -11,8 +11,8 @@ public class RecommendedCsrService {
     private ContractorAccountDAO contractorAccountDAO;
 
     public void acceptRecommendedCsrs(String contractorIds, int acceptedByUserId) throws SQLException {
-        contractorAccountDAO.expireCurrentCsrForContractors(contractorIds);
-        contractorAccountDAO.acceptRecommendedCsrForList(contractorIds);
+        contractorAccountDAO.expireCurrentCsrForContractors(contractorIds, acceptedByUserId);
+        contractorAccountDAO.acceptRecommendedCsrForList(contractorIds, acceptedByUserId);
     }
 
     public int rejectRecommendedCsrs(String contractorIds) {

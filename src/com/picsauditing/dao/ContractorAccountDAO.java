@@ -520,20 +520,20 @@ public class ContractorAccountDAO extends PicsDAO {
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public int expireCurrentCsrForContractors(String contractorIds) {
-        String sql = "UPDATE account_user SET endDate = DATE(NOW()) WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID IN (" + contractorIds + ")";
+    public int expireCurrentCsrForContractors(String contractorIds, int acceptedByUserId) {
+        String sql = "UPDATE account_user SET endDate = DATE(NOW()), updatedBy = " + acceptedByUserId + " WHERE role = 'PICSCustomerServiceRep' AND startdate < NOW() AND endDate > NOW() AND accountID IN (" + contractorIds + ")";
         Query q = em.createNativeQuery(sql);
         return q.executeUpdate();
     }
 
     @Transactional(propagation = Propagation.NESTED)
-    public int acceptRecommendedCsrForList(String contractorIds) throws SQLException {
+    public int acceptRecommendedCsrForList(String contractorIds, int acceptedByUserId) throws SQLException {
         String sql = "INSERT INTO account_user (accountID, userID, role, startDate, endDate, ownerPercent, createdBy, creationDate) VALUES ";
 
         List<String> valuesToBeInserted = new ArrayList<String>();
 
         for (Map.Entry<Integer, Integer> entry : getRecommendedCsrIdsForContractorList(contractorIds).entrySet()) {
-            valuesToBeInserted.add("(" + entry.getKey() + ", " + entry.getValue()+ " , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100, 1, NOW())");
+            valuesToBeInserted.add("(" + entry.getKey() + ", " + entry.getValue()+ " , 'PICSCustomerServiceRep', DATE(NOW()), '4000-01-01', 100, " + acceptedByUserId + ", NOW())");
         }
 
         sql += StringUtils.join(valuesToBeInserted, ",");

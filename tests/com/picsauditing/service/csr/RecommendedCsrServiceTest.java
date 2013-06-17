@@ -59,8 +59,8 @@ public class RecommendedCsrServiceTest {
     public void testAcceptRecommendedCsrs_ProxiesLogicToDao() throws Exception {
         recommendedCsrService.acceptRecommendedCsrs(Strings.implode(CONTRACTOR_IDS_LIST, ","), User.SYSTEM);
 
-            verify(contractorAccountDAO).expireCurrentCsrForContractors(StringUtils.join(CONTRACTOR_IDS_LIST, ","));
-            verify(contractorAccountDAO).acceptRecommendedCsrForList(StringUtils.join(CONTRACTOR_IDS_LIST, ","));
+            verify(contractorAccountDAO).expireCurrentCsrForContractors(StringUtils.join(CONTRACTOR_IDS_LIST, ","), 1);
+            verify(contractorAccountDAO).acceptRecommendedCsrForList(StringUtils.join(CONTRACTOR_IDS_LIST, ","), 1);
     }
 
     @Test
