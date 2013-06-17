@@ -98784,6 +98784,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
 
+        this.hideReportInfoIfVisible();
+
         // reset the share modal
         if (is_editable) {
             share_setting_view.updateAccountDisplayfield('');
