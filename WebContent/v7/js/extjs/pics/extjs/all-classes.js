@@ -66594,6 +66594,29 @@ Ext.define('PICS.data.ServerCommunication', {
                         }
                     }
                 });
+            },
+
+            getReportInfo: function (options) {
+                var url = PICS.data.ServerCommunicationUrl.getGetReportInfoUrl(),
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {};
+
+                Ext.Ajax.request({
+                    url: url,
+                    callback: function (options, success, response) {
+                        var data, json;
+
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            json = response.responseText;
+                            data = Ext.JSON.decode(json);
+
+                            success_callback(data);
+                        }
+                    }
+                });
             }
         };
     }())
@@ -66632,6 +66655,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = {
                 type: report_type,
                 fieldId: field_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getGetReportInfoUrl: function (report_id) {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!info.action?';
+
+            var params = {
+                reportId: report_id,
             };
 
             return path + Ext.Object.toQueryString(params);
@@ -92945,6 +92980,22 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     closeAction: 'hide',
     draggable: false,
     height: 324,
+    header: {
+        tools:[{
+            xtype: 'button',
+            height: 25,
+            id: 'settings_modal_report_info_button',
+            text: '<i class="icon-info-sign"></i>',
+            tooltip: PICS.text('Report.execute.settingsmodal.tooltipreportinfobutton'),
+            width: 20,
+            action: 'show-report-info'
+        }, {
+            type: 'close',
+            handler: function () {
+                this.up('window').close();
+            }
+        }]
+    },
     id: 'report_settings_modal',
     items: [{
         xtype: 'reportsettingsmodaltabs'
@@ -98594,6 +98645,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'shareSetting',
         selector: 'reportsharesetting'
+    }, {
+        ref: 'reportInfoSetting',
+        selector: 'reportinfosetting'
+    }, {
+        ref: 'hideReportInfoButton',
+        selector: 'button[action=hide-report-info]'
     }],
 
     stores: [
@@ -98611,12 +98668,21 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 close: this.closeSettingsModal
             },
 
+            'reportsettingsmodal button[action=show-report-info]': {
+                click: this.getReportInfo
+            },
+
+            'reportsettingsmodal button[action=hide-report-info]': {
+                click: this.hideReportInfo
+            },
+
             'reportsettingsmodal button[action=cancel]':  {
                 click: this.cancelSettingsModal
             },
 
             'reportsettingsmodaltabs': {
-                tabchange: this.changeSettingsModalTab
+                tabchange: this.changeSettingsModalTab,
+                render: this.addHideReportInfoEvent
             },
 
             'reportsettingsmodal reporteditsetting': {
@@ -98658,6 +98724,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.application.on({
             opensettingsmodal: this.openSettingsModal,
             scope: this
+        });
+    },
+
+    addHideReportInfoEvent: function (cmp, eOpts) {
+        var that = this;
+
+        cmp.items.each(function(item) {
+            item.tab.on('click', function(){
+                that.hideReportInfoIfVisible();
+            });
         });
     },
 
@@ -98721,9 +98797,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
         settings_modal_view.close();
     },
 
+    hideReportInfoIfVisible: function (cmp, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            report_info_setting_view = this.getReportInfoSetting();
+
+        if (report_info_setting_view) {
+            this.hideReportInfo();
+        }
+    },
+
     changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
         var settings_modal_view = this.getSettingsModal(),
             title = nextCard.modal_title;
+
 
         settings_modal_view.setTitle(title);
     },
@@ -98804,7 +98890,78 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    /**
+    /*
+     * Report Info
+     */
+
+    createReportInfo: function(values) {
+        var report_info_container = new Ext.Element(document.createElement('div')),
+            settings_modal_view = this.getSettingsModal(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab_panel_el = settings_modal_tabs_view.getActiveTab().getEl();
+
+        report_info_container.addCls('report-info-container');
+        
+        var report_info_setting_view = Ext.create('PICS.view.report.settings.ReportInfoSetting', {
+            renderTo: report_info_container
+        });
+
+        report_info_setting_view.update(values);
+        settings_modal_view.setTitle(report_info_setting_view.modal_title);
+        report_info_container.appendTo(active_tab_panel_el);
+    },
+
+    getReportInfo: function (report_info_button, e, eOpts) {
+        var that = this,
+            settings_modal_view = this.getSettingsModal(),
+            load_mask = new Ext.LoadMask(settings_modal_view);
+
+        load_mask.show();
+
+        PICS.data.ServerCommunication.getReportInfo({
+            success_callback: function (values) {
+                that.showReportInfo(report_info_button, values);
+                load_mask.hide();
+            }
+        });
+    },
+
+    hideReportInfo: function (report_info_button) {
+        var report_info_button = report_info_button || this.getHideReportInfoButton(), // Passed only when triggered by event
+            report_info_button_el = report_info_button.getEl(),
+            report_info_setting_view = this.getReportInfoSetting(),
+            settings_modal_view = this.getSettingsModal(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs_view.getActiveTab(),
+            active_tab_body = report_info_button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.active-suspended'),
+            report_info_container_el = Ext.query('.report-info-container')[0];
+
+        active_tab_tab_el.removeCls('active-suspended');
+        active_tab_tab_el.addCls('x-active');
+        settings_modal_view.setTitle(active_tab.modal_title);
+        report_info_button.action = 'show-report-info';
+        report_info_button_el.removeCls('active');
+        report_info_container_el.remove();
+        //report_info_setting_view.getEl().up('div').remove();
+    },
+
+    showReportInfo: function (report_info_button, values) {
+        var report_info_button_el = report_info_button.getEl(),
+            settings_modal_tabs_view = this.getSettingsModalTabs(),
+            active_tab = settings_modal_tabs_view.getActiveTab(),
+            active_tab_panel_el = active_tab.getEl(),
+            active_tab_body = report_info_button.up('window').body,
+            active_tab_tab_el = active_tab_body.down('.x-tab-active');
+
+        report_info_button.action = 'hide-report-info';
+        report_info_button_el.addCls('active');
+        active_tab_tab_el.removeCls('x-active');
+        active_tab_tab_el.addCls('active-suspended');
+        this.createReportInfo(values);
+    },
+
+    /*
      * Share
      */
 
