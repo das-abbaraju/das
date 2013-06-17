@@ -142,13 +142,6 @@ public class AuditBuilder {
 			}
 		}
 
-		for (ContractorAudit audit: contractor.getAudits()) {
-			ContractorAudit previous = conAuditDao.findPreviousAudit(audit);
-			if (previous != null)
-				System.out.println(audit.getAuditType().getName() + " (" + audit.getId() + ") prev: " + previous.getAuditType().getName() + " (" + previous.getId() + ")");
-			else
-				System.out.println(audit.getAuditType().getName() + " (" + audit.getId() + ") prev: none");
-		}
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
 		/** Generate Categories and CAOs **/
