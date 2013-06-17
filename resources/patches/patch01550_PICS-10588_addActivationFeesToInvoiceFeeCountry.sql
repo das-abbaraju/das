@@ -11,7 +11,7 @@ INSERT IGNORE INTO invoice_fee_country
              effectiveDate,
              expirationDate)
 SELECT
-  333,
+  ifc.feeID,
   rc.isoCode,
   ifc.subdivision,
   ifc.amount,
@@ -22,6 +22,6 @@ SELECT
   NOW(),
   ifc.effectiveDate,
   ifc.expirationDate
-FROM invoice_fee_country ifc
-JOIN ref_country rc ON ifc.country = rc.isoCode
+FROM ref_country rc 
+LEFT JOIN invoice_fee_country ifc ON ifc.id = 18043
 WHERE rc.currency IN ('CAD','EUR','GBP','USD');
