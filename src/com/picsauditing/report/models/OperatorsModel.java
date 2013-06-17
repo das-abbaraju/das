@@ -24,7 +24,6 @@ public class OperatorsModel extends AbstractModel {
         operator.minimumImportance = FieldImportance.Low;
 		ModelSpec reporting = operator.join(OperatorTable.Reporting);
 		reporting.category = FieldCategory.ReportingClientSite;
-        reporting.minimumImportance = FieldImportance.Required;
 		reporting.alias = "ReportingClient";
 
 		ModelSpec parent = operator.join(OperatorTable.Parent);
