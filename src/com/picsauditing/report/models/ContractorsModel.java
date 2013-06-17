@@ -26,6 +26,7 @@ public class ContractorsModel extends AbstractModel {
             account.join(AccountTable.LastLogin);
 		}
 		contractor.join(ContractorTable.PQF);
+        contractor.join(ContractorTable.ContractorTrade);
 		if (permissions.isAdmin()) {
 			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
 			welcomeCall.join(ContractorAuditTable.SingleCAO);

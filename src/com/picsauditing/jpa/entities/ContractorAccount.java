@@ -753,7 +753,6 @@ public class ContractorAccount extends Account implements JSONable {
 		return "0";
 	}
 
-	@ReportField(category = FieldCategory.Classification, width = 300)
 	public String getTradesSelf() {
 		return tradesSelf;
 	}
@@ -762,7 +761,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.tradesSelf = tradesSelf;
 	}
 
-	@ReportField(category = FieldCategory.Classification, width = 300)
 	public String getTradesSub() {
 		return tradesSub;
 	}
