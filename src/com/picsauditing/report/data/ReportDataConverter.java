@@ -135,7 +135,7 @@ public class ReportDataConverter {
             for (Column col : numericColumns) {
                 ReportCell cell = row.getCellByColumn(col);
 
-                rowColumnJson.add(createCellJson(cell.getValue().toString(), null));
+                rowColumnJson.add(createCellJson(cell.getValue().toString(), ""));
             }
 
             totalRowJson.put("c", rowColumnJson);
