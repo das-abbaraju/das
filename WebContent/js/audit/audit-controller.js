@@ -3,12 +3,12 @@
         methods: {
             init: function () {
                 if ($('#Audit__page').length) {
-
                     $('#audit-layout').on('click', '.toggle-excess-criteria', $.proxy(this.toggleExcessCriteria, this));
+                }
 
-                    $('#caoTable').on('click', '.policy-reject', $.proxy(this.rejectPolicy, this));
-
-                   $('.Audit-page').on('click', '#caoTable .buttonAction .button:not(.policy-reject)', $.proxy(this.refreshCaoTable, this));
+                if ($('.cao-table').length) {
+                    $('body').on('click', '.cao-table .policy-reject', $.proxy(this.rejectPolicy, this));
+                    $('body').on('click', '.cao-table .button:not(.policy-reject)', $.proxy(this.refreshCaoTable, this));
                 }
             },
 
