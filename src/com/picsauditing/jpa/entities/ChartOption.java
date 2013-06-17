@@ -1,5 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-public enum ChartFormat {
+public enum ChartOption {
     Flags, Other;
 }

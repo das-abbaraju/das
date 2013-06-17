@@ -8,7 +8,7 @@ CREATE TABLE `report_chart`(
 	`reportID` INT(11) NOT NULL  ,
 	`widgetID` INT(11) NOT NULL  ,
 	`chartType` VARCHAR(20) COLLATE latin1_swedish_ci NULL  ,
-	`chartFormat` VARCHAR(20) COLLATE latin1_swedish_ci NULL  ,
+	`chartOption` VARCHAR(20) COLLATE latin1_swedish_ci NULL  ,
 	`series` VARCHAR(20) COLLATE latin1_swedish_ci NULL  ,
 	PRIMARY KEY (`id`) ,
 	UNIQUE KEY `reportUser`(`reportID`,`widgetID`)

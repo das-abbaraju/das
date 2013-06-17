@@ -54,7 +54,30 @@ public class ReportDataConverter {
 
         List<Column> stringColumns = new ArrayList<Column>();
         List<Column> numericColumns = new ArrayList<Column>();
-;
+
+        extractNumericStringColumnSets(chart, stringColumns, numericColumns);
+
+        validateChart(chart, stringColumns, numericColumns);
+
+        dataJson.put("cols", createChartColumns(stringColumns, numericColumns));
+        dataJson.put("rows", createChartRows(stringColumns, numericColumns));
+
+        return dataJson;
+    }
+
+    private void validateChart(ReportChart chart, List<Column> stringColumns, List<Column> numericColumns) throws ReportValidationException {
+        if (stringColumns.size() < 0 || numericColumns.size() < 0) {
+            throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
+        }
+        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
+            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
+        }
+        if (numericColumns.size() == 1 && chart.getSeries() == ChartSeries.Multi) {
+            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a single-series, not a multi-series", chart.getReport());
+        }
+    }
+
+    private void extractNumericStringColumnSets(ReportChart chart, List<Column> stringColumns, List<Column> numericColumns) {
         for (Column col : chart.getReport().getColumns()) {
             DisplayType type = col.getField().getType().getDisplayType();
             if (col.getSqlFunction() != null) {
@@ -67,28 +90,11 @@ public class ReportDataConverter {
                 stringColumns.add(col);
             }
         }
-
-        if (stringColumns.size() < 0 || numericColumns.size() < 0) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
-        }
-        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
-        }
-        if (numericColumns.size() == 1 && chart.getSeries() == ChartSeries.Multi) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a single-series, not a multi-series", chart.getReport());
-        }
-
-        dataJson.put("cols", createChartColumns(stringColumns, numericColumns));
-
-        dataJson.put("rows", createChartRows(stringColumns, numericColumns));
-
-        return dataJson;
     }
 
     private JSONArray createChartColumns(List<Column> stringColumns, List<Column> numericColumns) {
         JSONArray columnCollection = new JSONArray();
 
-        JSONObject labelJson = new JSONObject();
         String labelID = "";
         String labelText = "";
 
@@ -97,19 +103,10 @@ public class ReportDataConverter {
             labelText += col.getField().getText() + " ";
         }
 
-        labelJson.put("type", "string");
-        labelJson.put("id", labelID.trim());
-        labelJson.put("label", labelText.trim());
-        labelJson.put("pattern", "");
-        columnCollection.add(labelJson);
+        columnCollection.add(createColumnJson("string", labelID, labelText));
 
         for (Column col : numericColumns) {
-            JSONObject seriesJson = new JSONObject();
-
-            seriesJson.put("type", "number");
-            seriesJson.put("id", col.getId());
-            seriesJson.put("label", col.getField().getText());
-            seriesJson.put("pattern", "");
+            JSONObject seriesJson = createColumnJson("number", Integer.toString(col.getId()), col.getField().getText());
 
             columnCollection.add(seriesJson);
         }
@@ -117,49 +114,28 @@ public class ReportDataConverter {
         return columnCollection;
     }
 
+    private JSONObject createColumnJson(String type, String labelID, String labelText) {
+        JSONObject json = new JSONObject();
+        json.put("type", type);
+        json.put("id", labelID.trim());
+        json.put("label", labelText.trim());
+        json.put("pattern", "");
+
+        return json;
+    }
+
     private JSONArray createChartRows(List<Column> stringColumns, List<Column> numericColumns) {
         JSONArray rowsJson = new JSONArray();
 
         for (ReportRow row : reportResults.getRows()) {
             JSONObject totalRowJson = new JSONObject();
-            JSONArray rowColumnJson = new JSONArray();
 
-            JSONObject labelCellJson = new JSONObject();
-            String labelValue = "";
-            String labelFormattedValue = "";
-
-            for (Column col : stringColumns) {
-                ReportCell cell = row.getCellByColumn(col);
-                String cellValue = cell.getValue().toString();
-
-                if (cell.getColumn().getField().getFieldClass().equals(FlagColor.class)) {
-                    String value = null;
-                    try {
-                        FlagColor flagColor = FlagColor.valueOf(cellValue);
-
-                        value = getText(flagColor.getI18nKey(), locale);
-                    } catch (Exception e) {
-                        logger.error("Error translating flag color.");
-                    }
-
-                    labelFormattedValue += value + " ";
-                }
-
-                labelValue += cellValue + " ";
-            }
-
-            labelCellJson.put("v", labelValue.trim());
-            labelCellJson.put("f", labelFormattedValue.trim());
-            rowColumnJson.add(labelCellJson);
+            JSONArray rowColumnJson = createStringRow(stringColumns, row);
 
             for (Column col : numericColumns) {
                 ReportCell cell = row.getCellByColumn(col);
 
-                JSONObject cellJson = new JSONObject();
-                cellJson.put("v", cell.getValue());
-                cellJson.put("f", null);
-
-                rowColumnJson.add(cellJson);
+                rowColumnJson.add(createCellJson(cell.getValue().toString(), null));
             }
 
             totalRowJson.put("c", rowColumnJson);
@@ -167,6 +143,45 @@ public class ReportDataConverter {
         }
 
         return rowsJson;
+    }
+
+    private JSONArray createStringRow(List<Column> stringColumns, ReportRow row) {
+        JSONArray rowColumnJson = new JSONArray();
+
+        String labelValue = "";
+        String labelFormattedValue = "";
+
+        for (Column col : stringColumns) {
+            ReportCell cell = row.getCellByColumn(col);
+            String cellValue = cell.getValue().toString();
+
+            if (cell.getColumn().getField().getFieldClass().equals(FlagColor.class)) {
+                labelFormattedValue += getFormattedLabelValue(cellValue);
+            }
+
+            labelValue += cellValue + " ";
+        }
+
+        rowColumnJson.add(createCellJson(labelValue, labelFormattedValue));
+        return rowColumnJson;
+    }
+
+    private String getFormattedLabelValue(String cellValue) {
+        FlagColor flagColor = FlagColor.valueOf(cellValue);
+
+        if (flagColor != null) {
+            return getText(flagColor.getI18nKey(), locale);
+        }
+
+        return "";
+    }
+
+    private JSONObject createCellJson(String labelValue, String labelFormattedValue) {
+        JSONObject json = new JSONObject();
+        json.put("v", labelValue.trim());
+        json.put("f", labelFormattedValue.trim());
+        return json;
+
     }
 
     private Object convertValueForJson(ReportCell cell, TimeZone timezone) {

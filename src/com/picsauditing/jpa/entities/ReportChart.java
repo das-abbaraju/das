@@ -13,7 +13,7 @@ public class ReportChart extends BaseTable {
 	private Widget widget;
 	private Report report;
     private ChartType chartType;
-	private ChartFormat chartFormat;
+	private ChartOption chartOption;
     private ChartSeries series;
 
 	public ReportChart() {
@@ -52,12 +52,12 @@ public class ReportChart extends BaseTable {
         this.chartType = chartType;
     }
 
-    public ChartFormat getChartFormat() {
-        return chartFormat;
+    public ChartOption getChartOption() {
+        return chartOption;
     }
 
-    public void setChartFormat(ChartFormat chartFormat) {
-        this.chartFormat = chartFormat;
+    public void setChartOption(ChartOption chartOption) {
+        this.chartOption = chartOption;
     }
 
     public ChartSeries getSeries() {

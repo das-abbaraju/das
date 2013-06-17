@@ -318,7 +318,7 @@ public class ReportService {
         JSONObject responseJson = new JSONObject();
 
         responseJson.put("chart_type", chart.getChartType().toString());
-        responseJson.put("style_type", chart.getChartFormat().toString());
+        responseJson.put("style_type", chart.getChartOption().toString());
         responseJson.put("series", chart.getSeries().toString());
 
 		ReportDataConverter converter = new ReportDataConverter(chart.getReport().getColumns(), queryResults);
