@@ -407,8 +407,6 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		crr.setAuditColumns();
 		crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
 				+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
-		crr.setStatus(crr.getContactCountByPhone() > 0 ? ContractorRegistrationRequestStatus.ClosedContactedSuccessful
-				: ContractorRegistrationRequestStatus.ClosedSuccessful);
 
 		requestDAO.save(crr);
 
