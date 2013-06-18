@@ -66031,8 +66031,6 @@ Ext.define('PICS.data.Exception', {
         function handleKnown2xxException(response, callback) {
             var response_text = response.responseText;
 
-            PICS.createStackTrace();
-
             try {
                 var json = Ext.JSON.decode(response_text),
                     title = json.title,
@@ -66050,17 +66048,14 @@ Ext.define('PICS.data.Exception', {
                 title = error.title,
                 message = error.message;
 
-            PICS.createStackTrace();
             showException(title, message, callback);
         }
 
         function handleTimeoutException(response, callback) {
-            PICS.createStackTrace();
             showException(timeout_error.title, timeout_error.message, callback);
         }
 
         function handleUnknown2xxException(response, callback) {
-            PICS.createStackTrace();
             showException(unknown_error.title, unknown_error.message);
         }
 
