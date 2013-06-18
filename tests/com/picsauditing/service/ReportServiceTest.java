@@ -1,9 +1,6 @@
 package com.picsauditing.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -27,15 +24,18 @@ import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
@@ -44,21 +44,25 @@ import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
 import com.picsauditing.report.ReportJson;
+import com.picsauditing.report.ReportUtil;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
+import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
-public class ReportServiceTest extends PicsTranslationTest {
+public class ReportServiceTest {
 
 	private ReportService reportService;
 
@@ -71,6 +75,8 @@ public class ReportServiceTest extends PicsTranslationTest {
 	@Mock
 	private Report report;
 	@Mock
+	private ReportPermissionUser reportPermissionUser;
+	@Mock
 	private Permissions permissions;
 	@Mock
 	private ReportContext reportContext;
@@ -80,17 +86,21 @@ public class ReportServiceTest extends PicsTranslationTest {
 	private ReportPreferencesService reportPreferencesService;
 	@Mock
 	private SqlBuilder sqlBuilder;
+	@Mock
+	protected I18nCache i18nCache;
 
 	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
 	private final int ACCOUNT_ID = 23;
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
-		when(translationService.getText(anyString(), any(Locale.class))).then(translate());
-
 		reportService = new ReportService();
 
 		setInternalState(reportService, "reportDao", reportDao);
@@ -104,11 +114,21 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(permissions.getAccountIdString()).thenReturn(String.valueOf(ACCOUNT_ID));
 		when(permissions.getUserIdString()).thenReturn(String.valueOf(USER_ID));
+
+		when(i18nCache.getText(anyString(), any(Locale.class))).then(translate());
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
+		Whitebox.setInternalState(ReportDataConverter.class, "i18nCache", i18nCache);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", (I18nCache) null);
+		Whitebox.setInternalState(ReportDataConverter.class, "i18nCache", (I18nCache) null);
 	}
 
 	@Test
-	public void testBuildJsonResponse_whenIncludeData_resultsElementShouldBePopulated()
-			throws ReportValidationException, SQLException, RecordNotFoundException {
+	public void testBuildJsonResponse_whenIncludeData_resultsElementShouldBePopulated() throws ReportValidationException, SQLException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, true, false, false, 0, 0);
 		when(reportDao.findById(REPORT_ID)).thenReturn(report);
@@ -129,7 +149,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		JSONObject resultsJson = (JSONObject) responseJson.get(ReportJson.LEVEL_RESULTS);
 		assertEquals(3, resultsJson.size());
 
-		boolean successFlag = (Boolean) responseJson.get(ReportJson.EXT_JS_SUCCESS);
+		boolean successFlag = (Boolean)responseJson.get(ReportJson.EXT_JS_SUCCESS);
 		assertTrue(successFlag);
 
 		int resultsTotal = (Integer) resultsJson.get(ReportJson.RESULTS_TOTAL);
@@ -163,14 +183,11 @@ public class ReportServiceTest extends PicsTranslationTest {
 		assertEquals(expectedResultsDataRow.get("AccountCountry"), actualResultsDataRow.get("AccountCountry"));
 		assertEquals(expectedResultsDataRow.get("AccountStatus"), actualResultsDataRow.get("AccountStatus"));
 		assertEquals(expectedResultsDataRow.get("AccountID"), actualResultsDataRow.get("AccountID"));
-		assertEquals(expectedResultsDataRow.get("AccountCountrySubdivision"),
-				actualResultsDataRow.get("AccountCountrySubdivision"));
+		assertEquals(expectedResultsDataRow.get("AccountCountrySubdivision"), actualResultsDataRow.get("AccountCountrySubdivision"));
 		assertEquals(expectedResultsDataRow.get("AccountCountryName"), actualResultsDataRow.get("AccountCountryName"));
 		assertEquals(expectedResultsDataRow.get("AccountCity"), actualResultsDataRow.get("AccountCity"));
-		assertEquals(expectedResultsDataRow.get("ContractorMembershipDate"),
-				actualResultsDataRow.get("ContractorMembershipDate"));
-		assertEquals(expectedResultsDataRow.get("ContractorPayingFacilities"),
-				actualResultsDataRow.get("ContractorPayingFacilities"));
+		assertEquals(expectedResultsDataRow.get("ContractorMembershipDate"), actualResultsDataRow.get("ContractorMembershipDate"));
+		assertEquals(expectedResultsDataRow.get("ContractorPayingFacilities"), actualResultsDataRow.get("ContractorPayingFacilities"));
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -198,11 +215,11 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testCreateOrLoadReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson()
-			throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenJsonIsPassedInAndIncludeDataIsTrue_LoadFromJson() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
 
@@ -210,8 +227,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testCreateOrLoadReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException,
-			RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenIncludeDataIsFalse_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, false, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
@@ -224,8 +240,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testCreateOrLoadReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException,
-			RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportJsonIsEmpty_HitTheDb() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		when(reportDao.findById(anyInt())).thenReturn(report);
@@ -238,8 +253,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated()
-			throws ReportValidationException, RecordNotFoundException {
+	public void testCreateOrLoadReport_WhenReportIsLoadedFromDb_ReportPropertiesAreNotMutated() throws ReportValidationException, RecordNotFoundException {
 		JSONObject payloadJson = new JSONObject();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		setupMockBasicReport();
@@ -255,6 +269,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		assertEquals(report.getFilterExpression(), resultReport.getFilterExpression());
 	}
 
+
 	@Test(expected = Exception.class)
 	public void testCopy_WhenUserDoesntHavePermissionToCopy_ThenExceptionIsThrown() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
@@ -268,8 +283,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	public void testCopy_WhenReportIsCopied_ThenReportIsValidatedAndSaved() throws Exception {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		User user = new User(USER_ID);
-		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false,
-				false, 0, 0);
+		ReportContext reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(reportDao.findById(REPORT_ID)).thenReturn(report);
 		when(permissionService.canUserViewReport(user, report, permissions)).thenReturn(true);
 		ReportService reportServiceSpy = spy(reportService);
@@ -318,8 +332,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testUnpublicizeReport_WhenReportIsUnpublicized_ThenReportShouldNotBePublic()
-			throws ReportPermissionException {
+	public void testUnpublicizeReport_WhenReportIsUnpublicized_ThenReportShouldNotBePublic() throws ReportPermissionException {
 		Report report = new Report();
 		report.setPublic(true);
 		when(permissionService.canUserPublicizeReport(user, report)).thenReturn(true);
@@ -335,8 +348,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		assertEquals(columnName, column.getName());
 	}
 
-	private void verifyFilter(String filterName, QueryFilterOperator operator, String value,
-			Map<String, Filter> filterMap) {
+	private void verifyFilter(String filterName, QueryFilterOperator operator, String value, Map<String, Filter> filterMap) {
 		Filter filter = filterMap.get(filterName);
 		assertNotNull(filter);
 		assertEquals(filterName, filter.getName());
@@ -401,7 +413,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 				Object[] args = invocation.getArguments();
 				String translation = translate((String) args[0]);
 				if (translation == null) {
-					translation = "translation:" + Arrays.toString(args);
+					translation =  "translation:" + Arrays.toString(args);
 				}
 				return translation;
 			}
@@ -469,15 +481,13 @@ public class ReportServiceTest extends PicsTranslationTest {
 	}
 
 	private String translate(String key) {
-		Map<String, String> translation = new HashMap<String, String>() {
-			{
-				put("CountrySubdivision.US-TX", "Texas");
-				put("CountrySubdivision.CA-BC", "British Columbia");
-				put("Country.US", "United States");
-				put("Country.CA", "Canada");
-				put("AccountStatus.Active", "Active");
-			}
-		};
+		Map<String, String> translation = new HashMap<String, String>() {{
+			put("CountrySubdivision.US-TX", "Texas");
+			put("CountrySubdivision.CA-BC", "British Columbia");
+			put("Country.US", "United States");
+			put("Country.CA", "Canada");
+			put("AccountStatus.Active", "Active");
+		}};
 		return translation.get(key);
 	}
 
@@ -499,7 +509,6 @@ public class ReportServiceTest extends PicsTranslationTest {
 		return basicDynaBeans;
 	}
 
-	@SuppressWarnings("unchecked")
 	private JSONArray getExpectedResultData() {
 		JSONArray resultDataArray = new JSONArray();
 
@@ -510,7 +519,6 @@ public class ReportServiceTest extends PicsTranslationTest {
 				columnValue = translateColumnValueIfNecessary(columnName, columnValue);
 				jsonObject.put(columnName, columnValue);
 			}
-
 			resultDataArray.add(jsonObject);
 		}
 
@@ -521,15 +529,12 @@ public class ReportServiceTest extends PicsTranslationTest {
 		if (columnName.equals("AccountCountry")) {
 			columnValue = translate("Country." + columnValue);
 		}
-
 		if (columnName.equals("AccountStatus")) {
 			columnValue = translate("AccountStatus." + columnValue);
 		}
-
 		if (columnName.equals("AccountCountrySubdivision")) {
 			columnValue = translate("CountrySubdivision." + columnValue);
 		}
-
 		return columnValue;
 	}
 
@@ -616,5 +621,6 @@ public class ReportServiceTest extends PicsTranslationTest {
 	private String getExpectedResultsSql() {
 		return "SELECT SQL_CALC_FOUND_ROWS TRIM(Account.name) AS `AccountName`, Account.id AS `AccountID`, Account.status AS `AccountStatus`, Contractor.membershipdate AS `ContractorMembershipDate`, Account.city AS `AccountCity`, Account.countrysubdivision AS `AccountCountrySubdivision`, Account.country AS `AccountCountry` FROM contractor_info AS Contractor JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor' WHERE ((true) AND (true)) ORDER BY AccountName LIMIT 0";
 	}
+
 
 }

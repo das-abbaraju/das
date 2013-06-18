@@ -25,7 +25,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -35,7 +35,8 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Country implements Comparable<Country>, Serializable, Autocompleteable, IsoCode, Translatable {
+public class Country /* extends BaseTranslatable */implements Comparable<Country>, Serializable, Autocompleteable,
+		IsoCode, Translatable {
 	public static final String DEFAULT_COUNTRY_SUBDIVISION_LABEL = "ContractorAccount.countrySubdivision";
 	public static final String COUNTRY_SUBDIVISION_LABEL_FORMAT = "Country.%s.SubdivisionLabel";
 
@@ -80,6 +81,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 			.asList("BG", "CZ", "DK", UK_ISO_CODE, "GI", "HU", "LT", "LV", "PL", "RO", "SE")));
 
 	protected String isoCode;
+	// protected TranslatableString name;
 	protected String name;
 	protected String english;
 	protected String phone;
@@ -117,11 +119,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Transient
 	public String getName() {
-		if (name != null) {
-			return name;
-		}
-
-		return new TranslatableString(getI18nKey()).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey()).toTranslatedString();
 	}
 
 	public void setName(String name) {

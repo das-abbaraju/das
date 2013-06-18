@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -19,7 +19,9 @@ import com.picsauditing.util.Strings;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditOptionValue extends BaseTable {
 
+	// private TranslatableString name;
 	private String name;
+
 	private AuditOptionGroup group;
 	private boolean visible = true;
 	private int number = 0;
@@ -28,11 +30,7 @@ public class AuditOptionValue extends BaseTable {
 
 	@Transient
 	public String getName() {
-		if (name != null) {
-			return name;
-		}
-
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {

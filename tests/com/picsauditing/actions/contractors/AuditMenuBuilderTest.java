@@ -1,25 +1,11 @@
 package com.picsauditing.actions.contractors;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.URLUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,28 +13,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OperatorTagCategory;
-import com.picsauditing.util.URLUtils;
+import java.util.*;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
-public class AuditMenuBuilderTest extends PicsTranslationTest {
+public class AuditMenuBuilderTest {
 	private AuditMenuBuilder auditMenuBuilder;
 
 	@Mock
 	private ContractorAccount contractorAccount;
-
+	@Mock
+	private I18nCache i18nCache;
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -57,10 +37,10 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
 
 		auditMenuBuilder = new AuditMenuBuilder(contractorAccount, permissions);
 
+		Whitebox.setInternalState(auditMenuBuilder, "i18nCache", i18nCache);
 		Whitebox.setInternalState(auditMenuBuilder, "locale", Locale.US);
 		Whitebox.setInternalState(auditMenuBuilder, "urlUtils", urlUtils);
 	}
@@ -126,7 +106,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_NoPQFAndTradeMenuForSafetyContractorUserWithNoOperators() throws Exception {
+	public void testBuildAuditMenuFrom_NoPQFAndTradeMenuForSafetyContractorUserWithNoOperators() throws
+			Exception {
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
@@ -140,7 +121,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_PQFAndTradeMenuForSafetyContractorUserWithOperators() throws Exception {
+	public void testBuildAuditMenuFrom_PQFAndTradeMenuForSafetyContractorUserWithOperators() throws
+			Exception {
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
 		ArgumentCaptor<String> actionCaptor = ArgumentCaptor.forClass(String.class);
@@ -153,30 +135,32 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		assertTrue(actionCaptor.getAllValues().contains("ContractorTrades"));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
-	public void testBuildAuditMenuFrom_AnnualUpdateLink() throws Exception {
+	public void testBuildAuditMenuFrom_AnnualUpdateLink() throws
+			Exception {
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
 		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
-		verify(translationService).getText(eq("ContractorActionSupport.Update"), any(Locale.class), any());
+		verify(i18nCache).getText(eq("ContractorActionSupport.Update"), any(Locale.class), any());
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_NoInsureGUARDForNonInsuranceContractorUser() throws Exception {
+	public void testBuildAuditMenuFrom_NoInsureGUARDForNonInsuranceContractorUser() throws
+			Exception {
 		when(permissions.isContractor()).thenReturn(true);
 
 		List<MenuComponent> menuComponents = auditMenuBuilder.buildAuditMenuFrom(audits());
 		assertNotNull(menuComponents);
 
-		verify(translationService, never()).getText(eq("global.InsureGUARD"), any(Locale.class));
+		verify(i18nCache, never()).getText(eq("global.InsureGUARD"), any(Locale.class));
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_InsureGUARDForInsuranceContractorUser() throws Exception {
+	public void testBuildAuditMenuFrom_InsureGUARDForInsuranceContractorUser() throws
+			Exception {
 		when(permissions.hasPermission(OpPerms.ContractorInsurance)).thenReturn(true);
 
 		ArgumentCaptor<String> translationKeyCaptor = ArgumentCaptor.forClass(String.class);
@@ -185,14 +169,15 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
-		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
+		verify(i18nCache, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
 		assertTrue(translationKeyCaptor.getAllValues().contains("global.InsureGUARD"));
 		assertTrue(translationKeyCaptor.getAllValues().contains("ContractorActionSupport.ManageCertificates"));
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_PicsEmployeeWithVerificationHasVerificationLink() throws Exception {
+	public void testBuildAuditMenuFrom_PicsEmployeeWithVerificationHasVerificationLink() throws
+			Exception {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.AuditVerification)).thenReturn(true);
 
@@ -208,7 +193,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_SafetyContractorUserDoesNotHaveEmployeeGUARDTag() throws Exception {
+	public void testBuildAuditMenuFrom_SafetyContractorUserDoesNotHaveEmployeeGUARDTag() throws
+			Exception {
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
@@ -224,7 +210,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_SafetyContractorUserHasEmployeeGUARDTag() throws Exception {
+	public void testBuildAuditMenuFrom_SafetyContractorUserHasEmployeeGUARDTag() throws
+			Exception {
 		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
@@ -259,7 +246,8 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testBuildAuditMenuFrom_SafetyContractorUserHasInsureGUARD() throws Exception {
+	public void testBuildAuditMenuFrom_SafetyContractorUserHasInsureGUARD() throws
+			Exception {
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
@@ -269,13 +257,15 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
-		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
+		verify(i18nCache, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
 		assertTrue(translationKeyCaptor.getAllValues().contains("global.AuditGUARD"));
 	}
 
+
 	@Test
-	public void testBuildAuditMenuFrom_SafetyContractorUserHasClientReviews() throws Exception {
+	public void testBuildAuditMenuFrom_SafetyContractorUserHasClientReviews() throws
+			Exception {
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
 
@@ -285,18 +275,18 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		assertNotNull(menuComponents);
 		assertFalse(menuComponents.isEmpty());
 
-		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
+		verify(i18nCache, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
 		assertTrue(translationKeyCaptor.getAllValues().contains("global.ClientReviews"));
 	}
 
 	@Test
-	public void testCompetencyRequiresDocumentation_NoTagsNoOperatorCompetencyRequiringDocumentation() throws Exception {
-		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag> emptyList());
+	public void testCompetencyRequiresDocumentation_NoTagsNoOperatorCompetencyRequiringDocumentation()
+			throws Exception {
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
 		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(false);
 
-		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
-				"competencyRequiresDocumentation");
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
 
 		assertFalse("Contractor has no tags and no operators requiring competencies", competencyRequiresDocumentation);
 	}
@@ -314,8 +304,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(contractorTag.getTag()).thenReturn(operatorTag);
 		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.RemoveEmployeeGUARD);
 
-		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
-				"competencyRequiresDocumentation");
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
 
 		assertFalse("Contractor has no tags and no operators requiring competencies", competencyRequiresDocumentation);
 	}
@@ -323,11 +312,10 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	@Test
 	public void testCompetencyRequiresDocumentation_NoTagsHasOperatorCompetencyRequiringDocumentation()
 			throws Exception {
-		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag> emptyList());
+		when(contractorAccount.getOperatorTags()).thenReturn(Collections.<ContractorTag>emptyList());
 		when(contractorAccount.hasOperatorWithCompetencyRequiringDocumentation()).thenReturn(true);
 
-		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
-				"competencyRequiresDocumentation");
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
 
 		assertTrue("Contractor has at least one operator requiring competencies and no tags",
 				competencyRequiresDocumentation);
@@ -346,8 +334,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(contractorTag.getTag()).thenReturn(operatorTag);
 		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.RemoveEmployeeGUARD);
 
-		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
-				"competencyRequiresDocumentation");
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
 
 		assertFalse("Contractor has at least one operator requiring competencies and a tag removing EG",
 				competencyRequiresDocumentation);
@@ -366,8 +353,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		when(contractorTag.getTag()).thenReturn(operatorTag);
 		when(operatorTag.getCategory()).thenReturn(OperatorTagCategory.OtherEmployeeGUARD);
 
-		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder,
-				"competencyRequiresDocumentation");
+		boolean competencyRequiresDocumentation = Whitebox.invokeMethod(auditMenuBuilder, "competencyRequiresDocumentation");
 
 		assertTrue("Contractor has at least one operator requiring competencies and a tag that does not remove EG",
 				competencyRequiresDocumentation);

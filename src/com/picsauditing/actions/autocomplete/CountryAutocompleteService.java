@@ -9,10 +9,10 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public class CountryAutocompleteService extends AbstractAutocompleteService<Country> {
@@ -29,11 +29,11 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 	 * be done using the list of Country ISO Codes against the Country table and
 	 * another query will be run against the Country Table with a join against
 	 * the translations.
-	 * 
+	 *
 	 * If the query String is not a set of ISO Codes, then it is assumed to be a
 	 * Country name and the Country and translations table will be queries for
 	 * that.
-	 * 
+	 *
 	 * The returned Collection will be a unique set of Countries.
 	 */
 	@Override
@@ -47,10 +47,11 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 		if (queryContainsIsoCodes(search)) {
 			// no need to escape string because it will fail Regex check
 			result.addAll(countryDAO.findWhere("isoCode IN ('" + search + "')"));
-			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%", RESULT_SET_LIMIT));
-		} else {
-			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search) + "%",
+			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%",
 					RESULT_SET_LIMIT));
+		} else {
+			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search)
+					+ "%", RESULT_SET_LIMIT));
 		}
 
 		return result;
@@ -72,7 +73,7 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 
 	@Override
 	protected Object getValue(Country country, Permissions permissions) {
-		return TranslationServiceFactory.getTranslationService().getText(country.getI18nKey(), permissions.getLocale());
+		return I18nCache.getInstance().getText(country.getI18nKey(), permissions.getLocale());
 	}
 
 	@Override

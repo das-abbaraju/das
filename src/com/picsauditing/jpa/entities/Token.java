@@ -14,16 +14,17 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Token implements Translatable {
+public class Token /* extends BaseTranslatable */implements Translatable {
 	private int id;
 	private String name;
 	private ListType listType;
-	private String velocityCode;
+
+	// private TranslatableString velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -45,17 +46,18 @@ public class Token implements Translatable {
 		this.name = name;
 	}
 
+	// @Transient
+	// public TranslatableString getVelocityCode() {
+	// return velocityCode;
+	// }
+	//
+	// public void setVelocityCode(TranslatableString velocityCode) {
+	// this.velocityCode = velocityCode;
+	// }
+
 	@Transient
 	public String getVelocityCode() {
-		if (velocityCode != null) {
-			return velocityCode;
-		}
-
-		return new TranslatableString(getI18nKey("velocityCode")).toTranslatedString();
-	}
-
-	public void setVelocityCode(String velocityCode) {
-		this.velocityCode = velocityCode;
+		return new LlewellynTranslatableString(getI18nKey("velocityCode")).toTranslatedString();
 	}
 
 	@Enumerated(EnumType.STRING)

@@ -7,17 +7,14 @@ import java.util.Map;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.service.i18n.TranslationService;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")
 public class ReportFilter extends TranslationActionSupport implements Serializable {
-
-	protected static TranslationService translationService = TranslationServiceFactory.getTranslationService();
-
-	protected String destinationAction = Strings.EMPTY_STRING;
+	protected static I18nCache cache = I18nCache.getInstance();
+	protected String destinationAction = "";
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;
 	protected boolean allowMailMerge = false;
@@ -51,9 +48,8 @@ public class ReportFilter extends TranslationActionSupport implements Serializab
 	}
 
 	public String getDestinationAction() {
-		if (destinationAction.equals("")) {
+		if (destinationAction.equals(""))
 			return ServletActionContext.getActionMapping().getName();
-		}
 		return destinationAction;
 	}
 

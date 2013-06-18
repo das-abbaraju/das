@@ -77,7 +77,7 @@ public class UsersManageTest extends PicsActionTest {
         Whitebox.setInternalState(usersManage, "groupManagementService", groupManagementService);
 
         when(permissions.getOperatorChildren()).thenReturn(new HashSet<Integer>());
-        when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+        when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 	}
 
     @Test
@@ -106,7 +106,7 @@ public class UsersManageTest extends PicsActionTest {
     public void testSave_NewGroup_NameIsAvailable() throws Exception {
         saveGroupCommon();
 
-        when(translationService.getText(eq("UsersManage.GroupSavedSuccessfully"), eq(Locale.ENGLISH), any())).thenReturn("GroupSavedSuccessfully");
+        when(i18nCache.getText(eq("UsersManage.GroupSavedSuccessfully"), eq(Locale.ENGLISH), any())).thenReturn("GroupSavedSuccessfully");
         when(groupManagementService.isGroupnameAvailable(user)).thenReturn(true);
         // newUser (e.g. new group)
         when(user.getId()).thenReturn(0);
@@ -122,7 +122,7 @@ public class UsersManageTest extends PicsActionTest {
     public void testSave_NewGroup_NameIsNotAvailableResetsAndAddsError() throws Exception {
         saveGroupCommon();
 
-        when(translationService.getText(eq("UsersManage.GroupnameNotAvailable"), eq(Locale.ENGLISH), any())).thenReturn("GroupnameNotAvailable");
+        when(i18nCache.getText(eq("UsersManage.GroupnameNotAvailable"), eq(Locale.ENGLISH), any())).thenReturn("GroupnameNotAvailable");
         when(groupManagementService.isGroupnameAvailable(user)).thenReturn(false);
         // newUser (e.g. new group)
         when(user.getId()).thenReturn(0);
@@ -176,7 +176,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testUnlock_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-        when(translationService.getText(eq("UsersManage.Unlocked"), eq(Locale.ENGLISH), any())).thenReturn("unlocked");
+        when(i18nCache.getText(eq("UsersManage.Unlocked"), eq(Locale.ENGLISH), any())).thenReturn("unlocked");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -193,7 +193,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testMove_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-        when(translationService.getText(eq("UsersManage.SuccessfullyMoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyMoved");
+        when(i18nCache.getText(eq("UsersManage.SuccessfullyMoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyMoved");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -213,7 +213,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testMove_ErrorDoesNotProxyAddsErrorAndRedirects() throws Exception {
-        when(translationService.getText(eq("NotOkToMove"), eq(Locale.ENGLISH), any())).thenReturn("NotOkToMove");
+        when(i18nCache.getText(eq("NotOkToMove"), eq(Locale.ENGLISH), any())).thenReturn("NotOkToMove");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -236,7 +236,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDeactivate_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-        when(translationService.getText(eq("UsersManage.UserInactivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserInactivated");
+        when(i18nCache.getText(eq("UsersManage.UserInactivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserInactivated");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -254,7 +254,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDeactivate_NotOkAddsMessageAndRedirects() throws Exception {
-        when(translationService.getText(eq("NotOkToDeactivate"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDeactivate");
+        when(i18nCache.getText(eq("NotOkToDeactivate"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDeactivate");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -276,7 +276,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testActivate_Happy() throws Exception {
-        when(translationService.getText(eq("UsersManage.UserActivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserActivated");
+        when(i18nCache.getText(eq("UsersManage.UserActivated"), eq(Locale.ENGLISH), anyVararg())).thenReturn("UserActivated");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -293,7 +293,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDelete_ProxiesToServiceAddsMessageAndRedirects() throws Exception {
-        when(translationService.getText(eq("UsersManage.SuccessfullyRemoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyRemoved");
+        when(i18nCache.getText(eq("UsersManage.SuccessfullyRemoved"), eq(Locale.ENGLISH), anyVararg())).thenReturn("SuccessfullyRemoved");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);
@@ -311,7 +311,7 @@ public class UsersManageTest extends PicsActionTest {
 
     @Test
     public void testDelete_AddsErrorMessageAndRedirects_NotOk() throws Exception {
-        when(translationService.getText(eq("NotOkToDelete"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDelete");
+        when(i18nCache.getText(eq("NotOkToDelete"), eq(Locale.ENGLISH), anyVararg())).thenReturn("NotOkToDelete");
         when(user.getId()).thenReturn(123);
         when(account.getId()).thenReturn(456);
         usersManage.setUser(user);

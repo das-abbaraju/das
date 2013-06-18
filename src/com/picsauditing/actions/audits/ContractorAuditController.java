@@ -352,6 +352,10 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			AuditCategory category = new AuditCategory();
+			// TranslatableString t = new TranslatableString();
+			// t.putTranslation("en",
+			// "Previewing Categories is not supported for this audit", false);
+			// category.setName(t);
 			category.setName("Previewing Categories is not supported for this audit");
 			cats.add(category);
 			return;

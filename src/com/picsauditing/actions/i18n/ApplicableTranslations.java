@@ -36,9 +36,26 @@ public class ApplicableTranslations extends PicsActionSupport {
 						+ "WHERE msgKey RLIKE 'AuditQuestion\\\\.[0-9]*\\\\.'");
 
 				List<AuditQuestion> expired = dao.findWhere(AuditQuestion.class, "t.expirationDate <= CURDATE()");
+				// List<Field> translatableStrings = new ArrayList<Field>();
+
+				// for (Field field : AuditQuestion.class.getDeclaredFields()) {
+				// if (field.getType().equals(TranslatableString.class)) {
+				// translatableStrings.add(field);
+				// }
+				// }
 
 				for (AuditQuestion question : expired) {
-					String msgKeys = Strings.EMPTY_STRING;
+					String msgKeys = "";
+
+					// for (Field field : translatableStrings) {
+					// if (!Strings.isEmpty(msgKeys)) {
+					// msgKeys += ", ";
+					// }
+					//
+					// msgKeys += "'" + question.getI18nKey(field.getName()) +
+					// "'";
+					// }
+
 					database.executeUpdate(String.format(
 							"UPDATE app_translation SET applicable = 0 WHERE msgKey IN (%s)", msgKeys));
 				}

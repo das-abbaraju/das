@@ -1,35 +1,7 @@
 package com.picsauditing.report.converter;
 
-import static com.picsauditing.report.ReportJson.COLUMN_ID;
-import static com.picsauditing.report.ReportJson.COLUMN_ID_PREFIX;
-import static com.picsauditing.report.ReportJson.COLUMN_SORTABLE;
-import static com.picsauditing.report.ReportJson.COLUMN_SQL_FUNCTION;
-import static com.picsauditing.report.ReportJson.COLUMN_TYPE;
-import static com.picsauditing.report.ReportJson.COLUMN_URL;
-import static com.picsauditing.report.ReportJson.COLUMN_WIDTH;
-import static com.picsauditing.report.ReportJson.FILTER_COLUMN_COMPARE;
-import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
-import static com.picsauditing.report.ReportJson.FILTER_TYPE;
-import static com.picsauditing.report.ReportJson.FILTER_VALUE;
-import static com.picsauditing.report.ReportJson.REPORT_COLUMNS;
-import static com.picsauditing.report.ReportJson.REPORT_DESCRIPTION;
-import static com.picsauditing.report.ReportJson.REPORT_EDITABLE;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_CATEGORY;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_DB_ID;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_DESCRIPTION;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
-import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_FAVORITE;
-import static com.picsauditing.report.ReportJson.REPORT_FILTERS;
-import static com.picsauditing.report.ReportJson.REPORT_FILTER_EXPRESSION;
-import static com.picsauditing.report.ReportJson.REPORT_ID;
-import static com.picsauditing.report.ReportJson.REPORT_MODEL_TYPE;
-import static com.picsauditing.report.ReportJson.REPORT_NAME;
-import static com.picsauditing.report.ReportJson.REPORT_SORTS;
-import static com.picsauditing.report.ReportJson.SORT_DIRECTION;
-import static com.picsauditing.util.Assert.assertContains;
-import static com.picsauditing.util.Assert.assertJson;
-import static com.picsauditing.util.Assert.assertJsonNoQuotes;
+import static com.picsauditing.report.ReportJson.*;
+import static com.picsauditing.util.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -43,11 +15,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.Sort;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -66,6 +41,8 @@ public class JsonReportBuilderTest {
 	private PermissionService permissionService;
 	@Mock
 	private ReportPreferencesService reportPreferencesService;
+	@Mock
+	private Account account;
 
 	private static final int USER_ID = 123;
 
@@ -282,7 +259,7 @@ public class JsonReportBuilderTest {
 	@Test
 	public void testAssignColumnIds_columnIdShouldBeSet() {
 
-		String[] columnNames = { "foo", "foo", "bar", "baz", "qux" };
+		String[] columnNames = {"foo", "foo", "bar", "baz", "qux"};
 		List<Column> columns = buildTestColumns(columnNames);
 
 		JsonReportBuilder.assignColumnIds(columns);

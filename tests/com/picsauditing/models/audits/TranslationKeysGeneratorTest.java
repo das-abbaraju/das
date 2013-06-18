@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.AuditType;
 public class TranslationKeysGeneratorTest {
 
 	private TranslationKeysGenerator translationKeysGenerator = new TranslationKeysGenerator();
+	// private static final String DUMMY_TRANSLATION = "Dummy Translation";
 	private static final String NAME = "name";
 
 	@Test
@@ -114,4 +115,13 @@ public class TranslationKeysGeneratorTest {
 		category.setQuestions(auditQuestions);
 	}
 
+	// private TranslatableString buildTranslatableString(BaseTable
+	// translatableObject, String attribute) {
+	// TranslatableString translatableString =
+	// EntityFactory.makeTranslatableString(DUMMY_TRANSLATION);
+	// translatableString.setKey(translatableObject.getClass().getSimpleName() +
+	// translatableObject.getId() + "."
+	// + attribute);
+	// return translatableString;
+	// }
 }

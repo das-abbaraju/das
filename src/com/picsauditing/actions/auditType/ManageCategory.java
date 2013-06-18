@@ -8,11 +8,7 @@ import java.util.Set;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditRule;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.RequiresLanguages;
+import com.picsauditing.jpa.entities.*;
 
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType implements Preparable {
@@ -73,11 +69,10 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 			}
 
 			if (category.getLanguages().isEmpty()) {
-				if (category.getParent() != null && category.getParent().getLanguages().size() >= 1) {
+				if (category.getParent() != null && category.getParent().getLanguages().size() >= 1)
 					category.setLanguages(category.getParent().getLanguages());
-				} else if (auditType.getLanguages().size() >= 1) {
+				else if (auditType.getLanguages().size() >= 1)
 					category.setLanguages(auditType.getLanguages());
-				}
 			}
 
 			if (category.hasMissingChildRequiredLanguages()) {
@@ -100,16 +95,14 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 					// Ancestors should be loaded
 					categoryParent = ancestors.get(ancestors.size() - 1);
 					for (AuditCategory sibling : categoryParent.getSubCategories()) {
-						if (sibling.getNumber() > maxID) {
+						if (sibling.getNumber() > maxID)
 							maxID = sibling.getNumber();
-						}
 					}
 				} else if (category.getAuditType() != null) {
 					AuditType audit = auditTypeDAO.find(category.getAuditType().getId());
 					for (AuditCategory sibling : audit.getCategories()) {
-						if (sibling.getNumber() > maxID) {
+						if (sibling.getNumber() > maxID)
 							maxID = sibling.getNumber();
-						}
 					}
 				}
 				category.setNumber(maxID + 1);
@@ -122,15 +115,15 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public String findTranslations() throws IOException {
 		Set<String> usedKeys = translationKeysGenerator.generateCategoryKeys(category);
 		populateSessionVariablesForManageTranslationsRedirect(usedKeys);
-
+		
 		return setUrlForRedirect("ManageTranslations.action");
 	}
-
+	
 	protected boolean delete() {
 		try {
 			if (category.getSubCategories().size() > 0) {
@@ -184,9 +177,8 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 	@Override
 	public List<Locale> getAvailableLocalesFrom(RequiresLanguages entity) {
-		if (entity == null) {
+		if (entity == null)
 			entity = category.getAuditType();
-		}
 		return super.getAvailableLocalesFrom(entity);
 	}
 }

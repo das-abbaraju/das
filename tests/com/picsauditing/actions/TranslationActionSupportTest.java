@@ -1,19 +1,22 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
+import com.picsauditing.PicsTest;
+import com.picsauditing.model.i18n.LanguageModel;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.PicsTest;
+import static org.junit.Assert.assertEquals;
 
 public class TranslationActionSupportTest extends PicsTest {
+	@Mock
+	private LanguageModel languageModel;
 
 	private TranslationActionSupport translationActionSupport;
 
@@ -38,35 +41,42 @@ public class TranslationActionSupportTest extends PicsTest {
 		sortedTranslationMap.put(new Locale("no"), "Hello");
 		sortedTranslationMap.put(new Locale("pt"), "Hello");
 
-		Map<Locale, String> supposedlySortedTranslationMap = Whitebox.invokeMethod(translationActionSupport,
-				"sortTranslationsByLocaleDisplayNames", sortedTranslationMap);
+		Map<Locale, String> supposedlySortedTranslationMap = Whitebox
+				.invokeMethod(translationActionSupport,
+						"sortTranslationsByLocaleDisplayNames",
+						sortedTranslationMap);
 
-		String[] expectedValues = new String[] { "Dutch", "English", "French", "German", "Norwegian", "Portuguese",
-				"Spanish", "Swedish" };
+		String[] expectedValues = new String[]{"Dutch", "English", "French",
+				"German", "Norwegian", "Portuguese", "Spanish", "Swedish"};
 		int counter = 0;
-		for (Map.Entry<Locale, String> entry : supposedlySortedTranslationMap.entrySet()) {
+		for (Map.Entry<Locale, String> entry : supposedlySortedTranslationMap
+				.entrySet()) {
 
-			assertEquals(expectedValues[counter++], entry.getKey().getDisplayLanguage());
+			assertEquals(expectedValues[counter++], entry.getKey()
+					.getDisplayLanguage());
 		}
 	}
 
 	@Test
 	public void testConvertStringToLocale_JustLanguage() throws Exception {
-		Locale locale = Whitebox.invokeMethod(translationActionSupport, "convertStringToLocale", "en");
+		Locale locale = Whitebox.invokeMethod(translationActionSupport,
+				"convertStringToLocale", "en");
 
 		assertEquals(Locale.ENGLISH, locale);
 	}
 
 	@Test
 	public void testConvertStringToLocale_LanguageAndCountry() throws Exception {
-		Locale locale = Whitebox.invokeMethod(translationActionSupport, "convertStringToLocale", "en_GB");
+		Locale locale = Whitebox.invokeMethod(translationActionSupport,
+				"convertStringToLocale", "en_GB");
 
 		assertEquals(Locale.UK, locale);
 	}
 
 	@Test
 	public void testConvertStringToLocale_LanguageCountryAndExtraJunk() throws Exception {
-		Locale locale = Whitebox.invokeMethod(translationActionSupport, "convertStringToLocale", "en_GB_junk_yeah");
+		Locale locale = Whitebox.invokeMethod(translationActionSupport,
+				"convertStringToLocale", "en_GB_junk_yeah");
 
 		assertEquals(Locale.UK, locale);
 	}

@@ -131,6 +131,10 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			AuditCategory category = new AuditCategory();
+			// TranslatableString t = new TranslatableString();
+			// t.putTranslation("en",
+			// "Previewing Categories is not supported for this audit", false);
+			// category.setName(t);
 			category.setName("Previewing Categories is not supported for this audit");
 			categories.add(category);
 			return;

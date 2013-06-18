@@ -1,19 +1,15 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.EmployeeDAO;
+import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
+import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,18 +17,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.OperatorCompetency;
-import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
-import com.picsauditing.util.URLUtils;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+public class EmployeeDocumentationFileUploadTest {
 	private EmployeeDocumentationFileUpload employeeDocumentationFileUpload;
 
+	@Mock
+	private Database database;
 	@Mock
 	private Date expiration;
 	@Mock
@@ -47,7 +47,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		employeeDocumentationFileUpload = new EmployeeDocumentationFileUpload();
 		employeeDocumentationFileUpload.setEmployee(employee);
@@ -57,6 +57,11 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 
 		Whitebox.setInternalState(employeeDocumentationFileUpload, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(employeeDocumentationFileUpload, "urlUtils", urlUtils);
+	}
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test
@@ -120,8 +125,7 @@ public class EmployeeDocumentationFileUploadTest extends PicsTranslationTest {
 
 	@Test
 	public void testSave_Happy() throws Exception {
-		ArgumentCaptor<OperatorCompetencyEmployeeFile> fileCaptor = ArgumentCaptor
-				.forClass(OperatorCompetencyEmployeeFile.class);
+		ArgumentCaptor<OperatorCompetencyEmployeeFile> fileCaptor = ArgumentCaptor.forClass(OperatorCompetencyEmployeeFile.class);
 		List<OperatorCompetencyEmployeeFile> files = new ArrayList<>();
 		when(employee.getCompetencyFiles()).thenReturn(files);
 		when(urlUtils.getActionUrl(anyString(), anyString(), anyObject())).thenReturn("/EmployeeSkillsTraining");

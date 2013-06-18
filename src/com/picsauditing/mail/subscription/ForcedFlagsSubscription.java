@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.DynaBean;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectAccount;
@@ -39,11 +40,10 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			sql.addWhere("ff.forceFlag IS NOT NULL");
 			if (o.isOperatorCorporate()) {
 				String opIds = " ff.opid = " + o.getId() + " OR ";
-				if (o.isOperator()) {
+				if (o.isOperator())
 					opIds += " ff.opid IN (SELECT corporateID from facilities where opID = " + o.getId() + ")";
-				} else {
+				else
 					opIds += " ff.opid IN (SELECT opID from facilities where corporateID = " + o.getId() + ")";
-				}
 				sql.addWhere(opIds);
 			}
 			sql.addField("o.name AS opName");

@@ -16,7 +16,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
-
 	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
 	protected boolean showIndustry = true;
@@ -54,9 +53,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String[] getTypeList() {
-		return new String[] { translationService.getText("global.AssessmentCenter", getLocaleStatic()),
-				translationService.getText("global.Corporate", getLocaleStatic()),
-				translationService.getText("global.Operator", getLocaleStatic()) };
+		return new String[] { cache.getText("global.AssessmentCenter", getLocaleStatic()),
+				cache.getText("global.Corporate", getLocaleStatic()),
+				cache.getText("global.Operator", getLocaleStatic()) };
 	}
 
 	public FlagColor[] getFlagStatusList() {
@@ -199,7 +198,7 @@ public class ReportFilterAccount extends ReportFilter {
 		// IE9 always sets the location, even if it doesn't know it, whereas the
 		// other browsers don't try to set it. So, to be consisitent, we'll
 		// ignore a String[] with one empty string.
-		if (location.length > 1 || (location.length == 1 && location[0].length() > 0)) {
+		if (location.length > 1 || (location.length == 1 &&  location[0].length() > 0)) {
 			this.location = location;
 		}
 	}
@@ -288,15 +287,15 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public static String getDefaultName() {
-		return String.format("- %s -", translationService.getText("global.CompanyName", getLocaleStatic()));
+		return String.format("- %s -", cache.getText("global.CompanyName", getLocaleStatic()));
 	}
 
 	public static String getDefaultCity() {
-		return String.format("- %s -", translationService.getText("global.City", getLocaleStatic()));
+		return String.format("- %s -", cache.getText("global.City", getLocaleStatic()));
 	}
 
 	public static String getDefaultZip() {
-		return String.format("- %s -", translationService.getText("global.ZipPostalCode", getLocaleStatic()));
+		return String.format("- %s -", cache.getText("global.ZipPostalCode", getLocaleStatic()));
 	}
 
 	private CountrySubdivisionDAO countrySubdivisionDAO() {

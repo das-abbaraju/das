@@ -16,14 +16,15 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -31,7 +32,6 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.FlagColor;
 
 public class ReportFilterAccountTest extends PicsActionTest {
-
 	public ReportFilterAccount accountFilter;
 
 	@Mock
@@ -39,15 +39,20 @@ public class ReportFilterAccountTest extends PicsActionTest {
 	@Mock
 	private CountryDAO countryDAO;
 
+	@AfterClass
+	public static void classTearDown() throws Exception {
+		Whitebox.setInternalState(ReportFilter.class, "cache", (I18nCache) null);
+		PicsActionTest.classTearDown();
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Mockito.reset(translationService);
-
 		accountFilter = new ReportFilterAccount();
 		super.setupMocks();
 
 		Whitebox.setInternalState(accountFilter, "countrySubdivisionDAOForTests", countrySubdivisionDAO);
+		Whitebox.setInternalState(ReportFilter.class, "cache", i18nCache);
 	}
 
 	@Test
@@ -203,7 +208,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getAccountName();
 
-		verify(translationService).getText(eq("global.CompanyName"), (Locale) any());
+		verify(i18nCache).getText(eq("global.CompanyName"), (Locale) any());
 	}
 
 	@Test
@@ -212,7 +217,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getAccountName();
 
-		verify(translationService, never()).getText("global.CompanyName", Locale.ENGLISH);
+		verify(i18nCache, never()).getText("global.CompanyName", Locale.ENGLISH);
 	}
 
 	@Test
@@ -221,7 +226,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getCity();
 
-		verify(translationService).getText(eq("global.City"), (Locale) any());
+		verify(i18nCache).getText(eq("global.City"), (Locale) any());
 	}
 
 	@Test
@@ -230,7 +235,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getCity();
 
-		verify(translationService, never()).getText(anyString(), any(Locale.class));
+		verify(i18nCache, never()).getText(anyString(), (Locale) any(Locale.class));
 	}
 
 	@Test
@@ -250,12 +255,10 @@ public class ReportFilterAccountTest extends PicsActionTest {
 	public void testGetLocation_Empty_IE9() {
 		assertNull(accountFilter.getLocation());
 
-		// IE9 always sets the location, even if it doesn't know it. The other
-		// browsers don't try to set it.
+		// IE9 always sets the location, even if it doesn't know it.  The other browsers don't try to set it.
 		String[] locations = new String[] { "" };
 		accountFilter.setLocation(locations);
-		// The new setter code ignores a String[] with one empty string, so the
-		// field should still be null:
+		// The new setter code ignores a String[] with one empty string, so the field should still be null:
 		assertNull(accountFilter.getLocation());
 	}
 
@@ -265,7 +268,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getZip();
 
-		verify(translationService).getText(eq("global.ZipPostalCode"), (Locale) any());
+		verify(i18nCache).getText(eq("global.ZipPostalCode"), (Locale) any());
 	}
 
 	@Test
@@ -274,7 +277,7 @@ public class ReportFilterAccountTest extends PicsActionTest {
 
 		accountFilter.getZip();
 
-		verify(translationService, never()).getText(anyString(), any(Locale.class));
+		verify(i18nCache, never()).getText(anyString(), (Locale) any(Locale.class));
 	}
 
 	@Test

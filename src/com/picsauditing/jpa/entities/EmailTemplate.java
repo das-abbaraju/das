@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 
 @SuppressWarnings("serial")
 @Entity
@@ -35,8 +35,12 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	private String templateName = "";
 	private String subject;
 	private String body;
+
+	// private TranslatableString translatedSubject;
+	// private TranslatableString translatedBody;
 	private String translatedSubject;
 	private String translatedBody;
+
 	private String recipient;
 	private ListType listType;
 	private boolean allowsVelocity = false;
@@ -74,11 +78,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 
 	@Transient
 	public String getTranslatedSubject() {
-		if (translatedSubject != null) {
-			return translatedSubject;
-		}
-
-		return new TranslatableString(getI18nKey("translatedSubject")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("translatedSubject")).toTranslatedString();
 	}
 
 	public void setTranslatedSubject(String translatedSubject) {
@@ -87,11 +87,7 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 
 	@Transient
 	public String getTranslatedBody() {
-		if (translatedBody != null) {
-			return translatedBody;
-		}
-
-		return new TranslatableString("translatedBody").toTranslatedString();
+		return new LlewellynTranslatableString("translatedBody").toTranslatedString();
 	}
 
 	public void setTranslatedBody(String translatedBody) {

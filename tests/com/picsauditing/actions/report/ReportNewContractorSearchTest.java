@@ -31,8 +31,8 @@ public class ReportNewContractorSearchTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(reportNewContractorSearch,
 				"permissions", permissions);
 
-		when(translationService.hasKey("global.CompanyName", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
-		when(translationService.getText("global.CompanyName", Locale.ENGLISH)).thenReturn("Company Name");
+		when(i18nCache.hasKey("global.CompanyName", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("global.CompanyName", Locale.ENGLISH)).thenReturn("Company Name");
 	}
 
 	@Test

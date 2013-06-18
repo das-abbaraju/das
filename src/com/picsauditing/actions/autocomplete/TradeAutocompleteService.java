@@ -7,10 +7,10 @@ import java.util.Collections;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public final class TradeAutocompleteService extends AbstractAutocompleteService<Trade> {
@@ -34,8 +34,7 @@ public final class TradeAutocompleteService extends AbstractAutocompleteService<
 
 	@Override
 	protected Object getValue(Trade trade, Permissions permissions) {
-		return TranslationServiceFactory.getTranslationService().getText(trade.getI18nKey() + ".name",
-				permissions.getLocale());
+		return I18nCache.getInstance().getText(trade.getI18nKey() + ".name", permissions.getLocale());
 	}
 
 	@Override
@@ -47,5 +46,6 @@ public final class TradeAutocompleteService extends AbstractAutocompleteService<
 
 		return Arrays.asList(tradeDAO.find(tradeId));
 	}
+
 
 }

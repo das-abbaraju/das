@@ -1,9 +1,9 @@
 package com.picsauditing.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.Collator;
+import java.util.*;
 
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
@@ -60,7 +59,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Delete this method and property when we start i18n
-	 * 
+	 *
 	 * @return
 	 */
 	public String getSubHeading() {
@@ -99,7 +98,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of notes up to the limit, using the given where clause
-	 * 
+	 *
 	 * @param where
 	 *            should be in the format of "AND field=1", can be an empty
 	 *            string
@@ -108,9 +107,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	 * @return
 	 */
 	public List<Note> getNotes(String where, int firstLimit, int limit) {
-		if (notes == null) {
+		if (notes == null)
 			notes = noteDao.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit, limit);
-		}
 
 		return notes;
 	}
@@ -127,7 +125,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	/**
 	 * Get a list of 5 embedded notes, based on noteCategory
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Note> getNotes() {
@@ -168,9 +166,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public int getViewableByAccount(Account account) {
-		if (account != null) {
+		if (account != null)
 			return account.getId();
-		}
 		return Account.EVERYONE;
 	}
 
@@ -206,7 +203,7 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public List<Country> getCountryList() {
 		List<Country> countryList = countryDAO.findAll();
-		Collections.sort(countryList, Country.NAME_COMPARATOR);
+        Collections.sort(countryList, Country.NAME_COMPARATOR);
 		countryList.add(0, countryDAO.find("GB"));
 		countryList.add(0, countryDAO.find("CA"));
 		countryList.add(0, countryDAO.find("US"));
@@ -214,6 +211,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		return countryList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<CountrySubdivision> getCountrySubdivisionList() {
 		if (account == null) {
 			return getCountrySubdivisionList(null);
@@ -233,12 +231,12 @@ public class AccountActionSupport extends PicsActionSupport {
 				negative = true;
 			}
 
-			List<String> validCountriesWithSubdivisions = new ArrayList<>();
-			for (String country : countries.split("[|]")) {
-				if (Country.COUNTRIES_WITH_SUBDIVISIONS.contains(country)) {
-					validCountriesWithSubdivisions.add(country);
-				}
-			}
+            List<String> validCountriesWithSubdivisions = new ArrayList<>();
+            for (String country : countries.split("[|]")) {
+                if (Country.COUNTRIES_WITH_SUBDIVISIONS.contains(country)) {
+                    validCountriesWithSubdivisions.add(country);
+                }
+            }
 
 			result = countrySubdivisionDAO.findByCountries(validCountriesWithSubdivisions, negative);
 		}
@@ -265,10 +263,9 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public boolean isShowMoreNotes() {
-		if (Account.CONTRACTOR_ACCOUNT_TYPE.equals(account.getType())) {
+		if (account.getType().equals("Contractor")) {
 			return permissions.hasPermission(OpPerms.ContractorDetails);
 		}
-
 		return true;
 	}
 

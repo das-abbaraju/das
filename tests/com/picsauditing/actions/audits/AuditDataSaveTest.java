@@ -1,27 +1,17 @@
 package com.picsauditing.actions.audits;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.SpringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,74 +20,51 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.PicsDateFormat;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-@SuppressWarnings("deprecation")
-public class AuditDataSaveTest extends PicsTranslationTest {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
+public class AuditDataSaveTest {
 	private AuditDataSave auditDataSave;
 	private User user;
 
-	@Mock
-	private Permissions permissions;
-	@Mock
-	private ContractorAuditDAO auditDao;
-	@Mock
-	private ContractorAccountDAO contractorAccountDao;
-	@Mock
-	private AuditDataDAO auditDataDao;
-	@Mock
-	private AuditCategoryDataDAO catDataDao;
-	@Mock
-	private AuditDecisionTableDAO auditRuleDAO;
-	@Mock
-	private AuditQuestionDAO questionDao;
-	@Mock
-	private AuditCategoryRuleCache categoryRuleCache;
-	@Mock
-	private AuditPercentCalculator auditPercentCalculatior;
+	@Mock private Permissions permissions;
+	@Mock private ContractorAuditDAO auditDao;
+	@Mock private ContractorAccountDAO contractorAccountDao;
+	@Mock private AuditDataDAO auditDataDao;
+	@Mock private AuditCategoryDataDAO catDataDao;
+	@Mock private AuditDecisionTableDAO auditRuleDAO;
+	@Mock private AuditQuestionDAO questionDao;
+	@Mock private AuditCategoryRuleCache categoryRuleCache;
+	@Mock private AuditPercentCalculator auditPercentCalculatior;
+	@Mock private I18nCache i18nCache;
+	@Mock private Database databaseForTesting;
 
 	private ContractorAccount contractor;
 	private AuditData auditData;
 	private ContractorAudit audit;
-
 	private AnswerMap answerMap;
 	private AuditCatData catData;
+    @Mock private ApplicationContext applicationContext;
 
 	@AfterClass
 	public static void classTearDown() {
-		PicsTranslationTest.tearDownTranslationService();
-		PicsTestUtil.resetSpringUtilsBeans();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
 		auditDataSave = new AuditDataSave();
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(auditDataSave, this);
@@ -128,6 +95,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditCategoryRuleCache", categoryRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditPercentCalculator", auditPercentCalculatior);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "conAudit", audit);
+		PicsTestUtil.forceSetPrivateField(auditDataSave, "i18nCache", i18nCache);
 
 		when(auditDataDao.findAnswers(anyInt(), (Collection<Integer>) Matchers.anyObject())).thenReturn(answerMap);
 		when(auditDao.find(anyInt())).thenReturn(audit);
@@ -169,20 +137,20 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertTrue(auditData.getAnswer().equals("John Smith / Supervisor"));
 	}
 
-	@Test
-	public void testESignatureReset() throws Exception {
-		AuditData auditData = EntityFactory.makeAuditData(null);
-		auditData.setComment(null);
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		question.setQuestionType("ESignature");
-		auditData.setQuestion(question);
+    @Test
+    public void testESignatureReset() throws Exception {
+        AuditData auditData = EntityFactory.makeAuditData(null);
+        auditData.setComment(null);
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        question.setQuestionType("ESignature");
+        auditData.setQuestion(question);
 
-		Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, auditData);
-		assertTrue(result);
-		assertTrue(auditData.getComment().equals(""));
-		assertTrue(auditData.getAnswer().equals(""));
+        Boolean result = Whitebox.invokeMethod(auditDataSave, "answerFormatValid", auditData, auditData);
+        assertTrue(result);
+        assertTrue(auditData.getComment().equals(""));
+        assertTrue(auditData.getAnswer().equals(""));
 
-	}
+    }
 
 	@Test
 	public void testCheckUniqueCode_PolicyEffectiveDate() throws Exception {
@@ -234,6 +202,62 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		auditData.getQuestion().setUniqueCode(code);
 	}
 
+//	@Test
+//	public void testExecute_NoIncidents_HSE_COHS_INCIDENT_QUESTION() throws Exception {
+//		AuditType annualType = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
+//		audit.setAuditType(annualType);
+//
+//		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
+//		AuditData[] safetyData = null;
+//
+//		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.COHS_INCIDENT_QUESTION_ID);
+//		safetyData = new AuditData[AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length];
+//		setupSafetyDataAnswers(safetyData, AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS);
+//		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+//
+//		String strutsAction = auditDataSave.execute();
+//		
+//		assertEquals("success", strutsAction);
+//		for (int i = 0; i < AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
+//			assertEquals("0", safetyData[i].getAnswer());
+//		}
+//	}
+
+//	@Test
+//	public void testExecute_NoIncidents_OSHA_INCIDENT_QUESTION() throws Exception {
+//		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
+//		AuditData[] safetyData = null;
+//
+//		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.OSHA_INCIDENT_QUESTION_ID);
+//		safetyData = new AuditData[AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length];
+//		setupSafetyDataAnswers(safetyData, AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS);
+//		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+//
+//		assertEquals("success", auditDataSave.execute());
+//		for (int i = 0; i < AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
+//			assertEquals("0", safetyData[i].getAnswer());
+//		}
+//	}
+
+	private void setUpIncidentQuestion(AuditQuestion coshIncidentsQuestion, int questionID) {
+		coshIncidentsQuestion.setId(questionID);
+		auditData.setAnswer("No");
+		auditData.setQuestion(coshIncidentsQuestion);
+		auditData.getQuestion().setAuditCategoryRules(new ArrayList<AuditCategoryRule>());
+		auditData.getQuestion().setAuditTypeRules(new ArrayList<AuditTypeRule>());
+		auditData.getQuestion()
+				.setCategory(EntityFactory.addCategories(audit.getAuditType(), 104, "Test Category 104"));
+	}
+
+	private void setupSafetyDataAnswers(AuditData[] safetyData, int[] questionIds) {
+		for (int i = 0; i < questionIds.length; i++) {
+			AuditData auditAnswer = EntityFactory.makeAuditData("6");
+			auditAnswer.setId(questionIds[i]);
+			safetyData[i] = auditAnswer;
+			when(auditDataDao.findAnswerToQuestion(audit.getId(), safetyData[i].getId())).thenReturn(safetyData[i]);
+		}
+	}
+
 	@Test
 	public void testExecute_Verify() throws Exception {
 		AuditData oldData = EntityFactory.makeAuditData("No");
@@ -260,7 +284,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		AuditData data = new AuditData();
 		data.setQuestion(question);
-
+		
 		// null answer
 		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
 		assertTrue(result);
@@ -282,7 +306,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
 		assertFalse(result);
 	}
-
+	
 	@Test
 	public void testTrimWhitespaceLeadingZerosAndAllCommas() throws Exception {
 		assertEquals("10.10", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("10.10"));
@@ -306,7 +330,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		assertEquals("ABC", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("  ABC  "));
 	}
 
-	// @Test
+	//@Test
 	public void testExecute_SimpleAnswer() throws Exception {
 		assertEquals("success", auditDataSave.execute());
 	}
@@ -317,55 +341,57 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		auditData.setAnswer("12-345"); // the '-' in the middle will cause a
 										// BigDecimal exception
 
-		when(translationService.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[]) null)).thenReturn(
-				"Unit Test String");
+		when(i18nCache.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[]) null)).thenReturn("Unit Test String");
 		assertEquals("success", auditDataSave.execute());
 		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
 	}
 
-	// Test case to cover this issue: PICS-8585.
+    // Test case to cover this issue: PICS-8585.
 	@Test
 	public void testExecute_NewMoneyAnswer() throws Exception {
-		PicsTestUtil.setSpringUtilsBeans(new HashMap<String, Object>());
-		AuditQuestion questionInTheDatabase = auditData.getQuestion();
-		questionInTheDatabase.setQuestionType("Money");
+        AuditQuestion questionInTheDatabase = auditData.getQuestion();
+        questionInTheDatabase.setQuestionType("Money");
 
-		// This is to simulate not having a fully hydrated audit question
-		// because
-		// it hasn't been pulled up from the database yet.
-		AuditQuestion questionInstantiatedFromPostParameters = new AuditQuestion();
-		questionInstantiatedFromPostParameters.setId(questionInTheDatabase.getId());
+        // This is to simulate not having a fully hydrated audit question because
+        // it hasn't been pulled up from the database yet.
+        AuditQuestion questionInstantiatedFromPostParameters = new AuditQuestion();
+        questionInstantiatedFromPostParameters.setId(questionInTheDatabase.getId());
 		auditData.setQuestion(questionInstantiatedFromPostParameters);
-		auditData.setId(0);
-		auditData.setAnswer("2000000");
+        auditData.setId(0);
+        auditData.setAnswer("2000000");
 
-		when(questionDao.find(questionInTheDatabase.getId())).thenReturn(questionInTheDatabase);
-		when(auditDataDao.find(auditData.getId())).thenReturn(auditData);
+        Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
+
+        when(questionDao.find(questionInTheDatabase.getId())).thenReturn(questionInTheDatabase);
+        when(auditDataDao.find(auditData.getId())).thenReturn(auditData);
 
 		assertEquals("success", auditDataSave.execute());
 		assertEquals(0, auditDataSave.getActionErrors().size());
-		assertEquals("2,000,000", auditData.getAnswer());
+        assertEquals("2,000,000", auditData.getAnswer());
 	}
 
-	@Test
+    @AfterClass
+    public static void teardown() {
+        Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext)null);
+    }
+
+    @Test
 	public void testExecute_SetAnswerToDateOrRecordError_BadDateRecordsErrorReturnsFalse() throws Exception {
 
-		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "setAnswerToDateOrRecordError", auditData,
-				"BAD_DATE");
+		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "setAnswerToDateOrRecordError", auditData, "BAD_DATE");
 
 		assertFalse(returnValue);
-		verify(translationService).hasKey("AuditData.error.InvalidDate", Locale.ENGLISH);
+		verify(i18nCache).hasKey("AuditData.error.InvalidDate", Locale.ENGLISH);
 	}
 
 	@Test
 	public void testExecute_SetAnswerToDateOrRecordError_DateTooFarInFutureRecordsErrorReturnsFalse() throws Exception {
 
 		// this seems silly, but it is the behavior of the CUT
-		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "setAnswerToDateOrRecordError", auditData,
-				"10000-01-01");
+		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "setAnswerToDateOrRecordError", auditData, "10000-01-01");
 
 		assertFalse(returnValue);
-		verify(translationService).hasKey("AuditData.error.DateOutOfRange", Locale.ENGLISH);
+		verify(i18nCache).hasKey("AuditData.error.DateOutOfRange", Locale.ENGLISH);
 	}
 
 	@Test
@@ -387,8 +413,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	public void testIsInvalidNegativeNumber() throws Exception {
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(AuditQuestion.EMR);
-		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(-1),
-				question);
+		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(-1), question);
 		assertTrue(returnValue);
 
 		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(1), question);

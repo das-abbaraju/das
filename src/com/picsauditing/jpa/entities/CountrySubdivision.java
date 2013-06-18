@@ -17,13 +17,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 
 @Entity
 @Table(name = "ref_country_subdivision")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class CountrySubdivision implements Comparable<CountrySubdivision>, Serializable, Autocompleteable, IsoCode,
-		Translatable {
+public class CountrySubdivision /* extends BaseTranslatable */implements Comparable<CountrySubdivision>, Serializable,
+		Autocompleteable, IsoCode, Translatable {
 	private static final long serialVersionUID = -7010252482295453919L;
 
     public static final Comparator<CountrySubdivision> NAME_COMPARATOR =  new Comparator<CountrySubdivision>() {
@@ -35,8 +35,10 @@ public class CountrySubdivision implements Comparable<CountrySubdivision>, Seria
     };
 
 	protected String isoCode;
+	// protected TranslatableString name;
 	protected String name;
 	protected String english;
+
 	protected Country country;
 
 	public CountrySubdivision() {
@@ -76,12 +78,8 @@ public class CountrySubdivision implements Comparable<CountrySubdivision>, Seria
 
 	@Transient
 	public String getName() {
-		if (name != null) {
-			return String.format("%s, %s", name, country.getName());
-		}
-
-		return String.format("%s, %s", new TranslatableString(getI18nKey()).toTranslatedString(),
-				new TranslatableString(country.getI18nKey()).toTranslatedString());
+		return String.format("%s, %s", new LlewellynTranslatableString(getI18nKey()).toTranslatedString(),
+				new LlewellynTranslatableString(country.getI18nKey()).toTranslatedString());
 	}
 
 	public void setName(String name) {
@@ -96,11 +94,7 @@ public class CountrySubdivision implements Comparable<CountrySubdivision>, Seria
 
 	@Transient
 	public String getSimpleName() {
-		if (name != null) {
-			return name;
-		}
-
-		return new TranslatableString(getI18nKey()).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey()).toTranslatedString();
 	}
 
 	@Override

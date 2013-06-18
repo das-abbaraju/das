@@ -256,6 +256,8 @@ public class TaxServiceTest {
 	private InvoiceFee createInvoiceFee(int id, String feeName) {
 		InvoiceFee invoiceFee = new InvoiceFee();
 		invoiceFee.setId(id);
+		// TranslatableString fee = new TranslatableString();
+		// fee.setKey(feeName);
 		invoiceFee.setFee(feeName);
 		return invoiceFee;
 	}

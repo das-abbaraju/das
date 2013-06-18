@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,7 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -44,34 +43,33 @@ import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OperatorTagCategory;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.test.TranslatorFactorySetup;
 
-public class EmployeeDashboardTest extends PicsTranslationTest {
-
+public class EmployeeDashboardTest {
 	private ContractorAccount contractorAccount;
 	private EmployeeDashboard employeeDashboard;
 
 	@Mock
 	private EntityManager entityManager;
 	@Mock
+	private I18nCache i18nCache;
+	@Mock
 	private Permissions permissions;
-
-	@BeforeClass
-	public static void classSetUp() throws Exception {
-		PicsTranslationTest.setupTranslationServiceForTest();
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
-	}
+	@Mock
+	private Database databaseForTesting;
 
 	@AfterClass
-	public static void classTearDown() throws Exception {
-		PicsTranslationTest.tearDownTranslationService();
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
 		employeeDashboard = new EmployeeDashboard();
 		setupContractor();
@@ -306,11 +304,11 @@ public class EmployeeDashboardTest extends PicsTranslationTest {
 
 	private void setPrivateVariables() {
 		Whitebox.setInternalState(employeeDashboard, "contractor", contractorAccount);
+		Whitebox.setInternalState(employeeDashboard, "i18nCache", i18nCache);
 		Whitebox.setInternalState(employeeDashboard, "operators", contractorAccount.getOperators());
 		Whitebox.setInternalState(employeeDashboard, "permissions", permissions);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setExpectedActions() {
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(contractorAccount.getId());
@@ -318,7 +316,7 @@ public class EmployeeDashboardTest extends PicsTranslationTest {
 
 		when(entityManager.find(ContractorAccount.class, contractorAccount.getId())).thenReturn(contractorAccount);
 
-		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-		when(translationService.getText(anyString(), any(Locale.class), anyObject())).thenReturn("Hello World");
+		when(i18nCache.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+		when(i18nCache.getText(anyString(), any(Locale.class), anyObject())).thenReturn("Hello World");
 	}
 }

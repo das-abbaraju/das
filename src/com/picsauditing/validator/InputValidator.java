@@ -171,13 +171,13 @@ public class InputValidator {
 			return false;
 		}
 
-		List<KeyValue<String, String>> stableLanguages = supportedLanguages.getVisibleLanguagesSansDialect();
+		List<KeyValue> stableLanguages = supportedLanguages.getVisibleLanguagesSansDialect();
 
 		if (stableLanguages == null) {
 			return false;
 		}
 
-		for (KeyValue<String, String> stableLanguage : stableLanguages) {
+		for (KeyValue stableLanguage : stableLanguages) {
 			if (StringUtils.equals(stableLanguage.getKey(), language)) {
 				return true;
 			}

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,19 +25,19 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
 
-@SuppressWarnings("deprecation")
-public class DataConversionRequestAccountTest extends PicsTranslationTest {
-
+public class DataConversionRequestAccountTest {
 	private DataConversionRequestAccount requestConversion;
-
 	private PicsTestUtil picsTestUtil;
 
+	@Mock
+	private Database database;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -49,7 +50,7 @@ public class DataConversionRequestAccountTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		requestConversion = new DataConversionRequestAccount();
 		picsTestUtil = new PicsTestUtil();
@@ -59,6 +60,11 @@ public class DataConversionRequestAccountTest extends PicsTranslationTest {
 		Whitebox.setInternalState(requestConversion, "permissions", permissions);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
+	}
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

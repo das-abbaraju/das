@@ -1,48 +1,30 @@
 package com.picsauditing.report;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.persistence.EnumType;
-import javax.servlet.ServletOutputStream;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ReportModelFactory;
-import com.picsauditing.service.i18n.TranslationService;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import javax.persistence.EnumType;
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -55,13 +37,13 @@ public final class ReportUtil {
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
 	public static final String REPORT_FUNCTION_KEY_PREFIX = "Report.Function.";
 
-	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
+	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	private ReportUtil() {
 	}
 
 	public static String getText(String key, Locale locale) {
-		return translationService.getText(key, locale);
+		return i18nCache.getText(key, locale);
 	}
 
 	public static void translateField(Field field, Locale locale) {
@@ -95,8 +77,7 @@ public final class ReportUtil {
 			if (column.getSqlFunction() != null) {
 				field.setName(column.getFieldNameWithoutMethod());
 				field.setTranslationPrefixAndSuffix(null, null);
-				String functionTranslation = getText(REPORT_FUNCTION_KEY_PREFIX + column.getSqlFunction().toString(),
-						locale);
+				String functionTranslation = getText(REPORT_FUNCTION_KEY_PREFIX + column.getSqlFunction().toString(), locale);
 				field.setText(functionTranslation + ": " + translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
 				field.setName(column.getName());
@@ -107,11 +88,11 @@ public final class ReportUtil {
 
 	public static Map<String, String> getTranslatedFunctionsForField(Locale locale, DisplayType type) {
 		Map<String, String> translatedFunctions = new TreeMap<String, String>();
-		/*
-		 * for (SqlFunction function : type.getFunctions()) {
-		 * translatedFunctions.put(function.toString(),
-		 * getText("Report.Function." + function.toString(), locale)); }
-		 */
+/*
+		for (SqlFunction function : type.getFunctions()) {
+			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
+		}
+*/
 		return translatedFunctions;
 	}
 
@@ -245,7 +226,7 @@ public final class ReportUtil {
 	}
 
 	private static int createExcelSheet(Map<String, String> translations, HSSFWorkbook workBook,
-			HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
+										HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
 		HSSFSheet sheet = workBook.createSheet();
 
 		sheet.setDefaultColumnStyle(0, cellStyle);
@@ -288,10 +269,10 @@ public final class ReportUtil {
 	}
 
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
-			SqlFunction[] methods, Locale locale) {
+												   SqlFunction[] methods, Locale locale) {
 		for (Report report : reports) {
-			Map<String, Field> availableFields = ReportModelFactory.build(report.getModelType(),
-					createSuperUserPermissions()).getAvailableFields();
+			Map<String, Field> availableFields = ReportModelFactory
+					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();
@@ -322,9 +303,8 @@ public final class ReportUtil {
 		return permissions;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions)
-			throws ClassNotFoundException {
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions) throws ClassNotFoundException {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
@@ -374,7 +354,7 @@ public final class ReportUtil {
 
 		if (StringUtils.isNotEmpty(countrySubdivision)) {
 			String key = "CountrySubdivision." + countrySubdivision;
-			String translatedCountrySubdivision = translationService.getText(key, locale);
+			String translatedCountrySubdivision = i18nCache.getText(key, locale);
 
 			if (!StringUtils.equals(key, translatedCountrySubdivision)) {
 				location = cityLocation + translatedCountrySubdivision;

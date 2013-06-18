@@ -118,6 +118,8 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				}
 				AuditCategory cat = new AuditCategory();
 				cat.setAuditColumns(permissions);
+				// cat.setName(new TranslatableString());
+				// cat.getName().putTranslation("en", operator.getName(), true);
 				cat.setName(operator.getName());
 				cat.setParent(parent);
 				cat.setAuditType(auditType);
@@ -149,22 +151,33 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq1 = new AuditQuestion();
 				aq1.setNumber(1);
 				aq1.setAuditColumns(permissions);
+				// aq1.setName(new TranslatableString());
+				// aq1.getName().putTranslation("en", QUESTION1, true);
 				aq1.setName(QUESTION1);
 				aq1.setCategory(cat);
 				aq1.setQuestionType("FileCertificate");
 				aq1.setRequired(true);
 				aq1.setEffectiveDate(effDate.getTime());
 				aq1.setExpirationDate(exDate.getTime());
+				// aq1.setColumnHeader(new TranslatableString().toString());
+				// aq1.getColumnHeader().putTranslation("en", "Certificate",
+				// true);
 				aq1.setColumnHeader("Certificate");
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
+				// aq2.setName(new TranslatableString().toString());
+				// aq2.getName().putTranslation("en", QUESTION2 +
+				// operator.getName() + ".", true);
 				aq2.setName(QUESTION2 + operator.getName() + ".");
 				aq2.setCategory(cat);
 				aq2.setQuestionType("Yes/No");
 				aq2.setRequired(true);
 				aq2.setEffectiveDate(effDate.getTime());
 				aq2.setExpirationDate(exDate.getTime());
+				// aq2.setColumnHeader(new TranslatableString());
+				// aq2.getColumnHeader().putTranslation("en", "Certificate",
+				// true);
 				aq2.setColumnHeader("Certificate");
 				typeDAO.save(cat);
 				typeDAO.save(auditType);

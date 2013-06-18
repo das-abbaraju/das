@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.PhysicalAddress;
 import com.picsauditing.model.general.PhysicalAddressBean;
+import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class PhysicalAddressUtilsTest {
 
@@ -20,8 +22,14 @@ public class PhysicalAddressUtilsTest {
 	Map<String, CountrySubdivision> countrySubdivisions;
 	CountrySubdivision california;
 
+	@AfterClass
+	public static void classTearDown() {
+		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
+	}
+
 	@Before
 	public void setUp() throws Exception {
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 		countries = EntityFactory.mostCommonCountries();
 		unitedStates = countries.get("US");
 		countrySubdivisions = EntityFactory.someExampleCountrySubdivisions();
@@ -31,8 +39,8 @@ public class PhysicalAddressUtilsTest {
 	@Test
 	public void testAssumptions() throws Exception {
 		assertEquals("CA", california.getIsoCode());
-		assertEquals("California, United States", california.getName());
-		assertEquals("California", california.getSimpleName());
+		assertEquals("Translate[CountrySubdivision.CA=>null], Translate[Country.US=>null]", california.getName());
+		assertEquals("Translate[CountrySubdivision.CA=>null]", california.getSimpleName());
 	}
 
 	@Test
@@ -125,16 +133,20 @@ public class PhysicalAddressUtilsTest {
 		PhysicalAddress a = new PhysicalAddressBean(null, null, null, "Anytown", california, "99999", unitedStates);
 
 		// default base Country = US
-		assertEquals("Anytown, California", PhysicalAddressUtils.shortAddress(a, ", "));
-		assertEquals("Anytown; California", PhysicalAddressUtils.shortAddress(a, "; "));
+		assertEquals("Anytown, Translate[CountrySubdivision.CA=>null]", PhysicalAddressUtils.shortAddress(a, ", "));
+		assertEquals("Anytown; Translate[CountrySubdivision.CA=>null]", PhysicalAddressUtils.shortAddress(a, "; "));
 
 		// explicit base Country = US
-		assertEquals("Anytown, California", PhysicalAddressUtils.shortAddress(a, ", ", "US"));
-		assertEquals("Anytown; California", PhysicalAddressUtils.shortAddress(a, "; ", "US"));
+		assertEquals("Anytown, Translate[CountrySubdivision.CA=>null]",
+				PhysicalAddressUtils.shortAddress(a, ", ", "US"));
+		assertEquals("Anytown; Translate[CountrySubdivision.CA=>null]",
+				PhysicalAddressUtils.shortAddress(a, "; ", "US"));
 
 		// base Country = UK, so show that country is US
-		assertEquals("Anytown, California, United States", PhysicalAddressUtils.shortAddress(a, ", ", "UK"));
-		assertEquals("Anytown; California; United States", PhysicalAddressUtils.shortAddress(a, "; ", "UK"));
+		assertEquals("Anytown, Translate[CountrySubdivision.CA=>null], United States",
+				PhysicalAddressUtils.shortAddress(a, ", ", "UK"));
+		assertEquals("Anytown; Translate[CountrySubdivision.CA=>null]; United States",
+				PhysicalAddressUtils.shortAddress(a, "; ", "UK"));
 
 	}
 

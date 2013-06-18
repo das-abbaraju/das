@@ -17,7 +17,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import javax.servlet.http.Cookie;
@@ -30,11 +29,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
@@ -48,6 +47,7 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class LoginControllerTest extends PicsActionTest {
@@ -70,6 +70,8 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private Account switchAccount;
 	@Mock
+	private ApplicationContext applicationContext;
+	@Mock
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private HierarchyBuilder hierarchyBuilder;
@@ -85,8 +87,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		PicsActionTest.classTearDown();
-		PicsTestUtil.resetSpringUtilsBeans();
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
 	}
 
 	@Before
@@ -96,6 +97,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 		MockitoAnnotations.initMocks(this);
 		loginController = new LoginController();
+//		permissionBuilder = new PermissionBuilder();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
@@ -110,8 +112,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginService, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
 		Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
-
-		setupSpringUtils();
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
 		when(user.getAccount()).thenReturn(account);
@@ -120,11 +121,11 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.findName(anyString())).thenReturn(user);
 		when(userDAO.find(941)).thenReturn(user);
 		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
+//		when(userDAO.find(anyInt())).thenReturn(user);
+//		when(user.getId()).thenReturn(1);
+//		when(permissionBuilder.login(user)).thenReturn(permissions);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
-	}
 
-	private void setupSpringUtils() {
-		PicsTestUtil.setSpringUtilsBeans(new HashMap<String, Object>());
 	}
 
 	@Test(expected = Exception.class)
@@ -180,7 +181,8 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "user", user);
 
 		LoginService loginService = mock(LoginService.class);
-		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(HomePageType.Deactivated);
+		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
+				HomePageType.Deactivated);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
 
 		String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
@@ -226,15 +228,11 @@ public class LoginControllerTest extends PicsActionTest {
 	// Then the system adds an action message
 	// And returns success
 	// But does not clear session or permissions
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testExecute_logoutNotAdminCookiesDisabled() throws Exception {
 		String testMessage = "Test Message";
 		loginController.setButton("login");
-
-		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-		when(translationService.getText(eq("Login.CookiesAreDisabled"), eq(Locale.ENGLISH), any())).thenReturn(
-				testMessage);
+		when(i18nCache.getText(eq("Login.CookiesAreDisabled"), eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 		when(request.getCookies()).thenReturn(null);
 
 		String actionResult = loginController.execute();
@@ -269,17 +267,13 @@ public class LoginControllerTest extends PicsActionTest {
 	// When the user clicks the link
 	// Then the system saves the confirmation date
 	// And action messages the user they're confirmed
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testExecute_Confirm() throws Exception {
 		String testMessage = "You are confirmed";
 		loginController.setButton("confirm");
 		loginController.setUsername("test");
 		when(userDAO.findName("test")).thenReturn(user);
-
-		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-		when(translationService.getText(eq("Login.ConfirmedEmailAddress"), eq(Locale.ENGLISH), any())).thenReturn(
-				testMessage);
+		when(i18nCache.getText(eq("Login.ConfirmedEmailAddress"), eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 
 		String actionResult = loginController.execute();
 
@@ -295,16 +289,13 @@ public class LoginControllerTest extends PicsActionTest {
 	// And the system fails to find the username
 	// Then the system does not save the confirmation date
 	// And action messages informs the user they're NOT confirmed
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testExecute_ConfirmFailure() throws Exception {
 		String testMessage = "You are NOT confirmed";
 		loginController.setButton("confirm");
 		loginController.setUsername("test");
-
 		when(userDAO.findName("test")).thenReturn(null);
-		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-		when(translationService.getText(eq("Login.AccountConfirmationFailed"), eq(Locale.ENGLISH), any())).thenReturn(
+		when(i18nCache.getText(eq("Login.AccountConfirmationFailed"), eq(Locale.ENGLISH), any())).thenReturn(
 				testMessage);
 
 		String actionResult = loginController.execute();
@@ -393,13 +384,12 @@ public class LoginControllerTest extends PicsActionTest {
 		verify(user).setForcePasswordReset(true);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testExecuteReset_NullUserGivesErrorMessage() throws Exception {
 		when(userService.loadUserByUsername(anyString())).thenReturn(null);
-		when(translationService.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
-		when(translationService.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg())).thenReturn(
-				"Password incorrect");
+		when(i18nCache.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
+		when(i18nCache.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg()))
+				.thenReturn("Password incorrect");
 
 		loginController.setButton("reset");
 		loginController.execute();

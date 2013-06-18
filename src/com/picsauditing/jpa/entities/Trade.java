@@ -21,7 +21,7 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -63,6 +63,10 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private boolean selectable = true;
 	private Float naicsTRIR;
 	private Float naicsLWCR;
+
+	// private TranslatableString name;
+	// private TranslatableString name2;
+	// private TranslatableString help;
 	private String name;
 	private String name2;
 	private String help;
@@ -412,14 +416,20 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	 * the parent trade to make sense. Can stand alone in a list and be
 	 * understood.
 	 */
+	// @Transient
+	// @IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
+	// public TranslatableString getName() {
+	// return name;
+	// }
+	//
+	// public void setName(TranslatableString name) {
+	// this.name = name;
+	// }
+
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
 	public String getName() {
-		if (name != null) {
-			return name;
-		}
-
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {
@@ -439,6 +449,25 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public void setName2(String name2) {
 		this.name2 = name2;
 	}
+
+	// @Transient
+	// @IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
+	// public TranslatableString getName2() {
+	// return name2;
+	// }
+	//
+	// public void setName2(TranslatableString name2) {
+	// this.name2 = name2;
+	// }
+
+	// @Transient
+	// public TranslatableString getHelp() {
+	// return help;
+	// }
+	//
+	// public void setHelp(TranslatableString help) {
+	// this.help = help;
+	// }
 
 	@Transient
 	public String getHelp() {

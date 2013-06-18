@@ -1,30 +1,13 @@
 package com.picsauditing.util;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.ApprovalStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.ListType;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
-import com.picsauditing.service.i18n.TranslationService;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
+
+import java.util.*;
 
 public class ReportFilterContractor extends ReportFilterAccount {
 
@@ -125,7 +108,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] generalContractor;
 	protected int[] insideSalesID;
 
-	protected String generalContractorAlias = "gc";
+    protected String generalContractorAlias = "gc";
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -474,9 +457,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getTaxID() {
-		if (Strings.isEmpty(taxID)) {
+		if (Strings.isEmpty(taxID))
 			taxID = getDefaultTaxID();
-		}
 
 		return taxID;
 	}
@@ -553,9 +535,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		super.setPermissions(permissions);
 		setShowConWithPendingAudits(true);
 
-		if (permissions.isOperatorCorporate()) {
+		if (permissions.isOperatorCorporate())
 			setShowFlagStatus(true);
-		}
 		if (permissions.isOperator()) {
 			setShowOperator(false);
 			setShowWaitingOn(true);
@@ -567,43 +548,38 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowPrimaryInformation(true);
 			setShowTradeInformation(true);
 		}
-		if (permissions.hasPermission(OpPerms.ContractorTags)) {
+		if (permissions.hasPermission(OpPerms.ContractorTags))
 			setShowOpertorTagName(true);
-		}
 
 		if (permissions.isPicsEmployee()) {
 			setShowConAuditor(true);
 		}
-		if (permissions.hasPermission(OpPerms.Billing)) {
+		if (permissions.hasPermission(OpPerms.Billing))
 			setShowCcOnFile(true);
-		}
 	}
 
 	public String[] getTradePerformedByList() {
-		String[] list = { getDefaultPerformedBy(), "Self Performed", "Sub Contracted" };
+		String[] list = {getDefaultPerformedBy(), "Self Performed", "Sub Contracted"};
 		return list;
 	}
 
 	public List<ContractorAccount> getContractorList() throws Exception {
-		if (permissions == null) {
+		if (permissions == null)
 			return null;
-		}
 		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 		return dao.findWhere("", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		if (permissions == null) {
+		if (permissions == null)
 			return null;
-		}
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(false, "", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
-		if (permissions == null) {
+		if (permissions == null)
 			return null;
-		}
 		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
 		return dao.findWhere(true, "", permissions);
 	}
@@ -628,24 +604,24 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public static Map<String, String> getDeactivationReasons() {
-		TranslationService translationService = TranslationServiceFactory.getTranslationService();
+		I18nCache cache = I18nCache.getInstance();
 		Locale locale = getLocaleStatic();
 
 		Map<String, String> deactivationReasons = new HashMap<String, String>();
 		deactivationReasons.put(AccountStatusChanges.CHARGEBACK_REASON,
-				translationService.getText("Filters.status.Deactivation.ChargeBack", locale));
+				cache.getText("Filters.status.Deactivation.ChargeBack", locale));
 		deactivationReasons.put(AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
-				translationService.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
+				cache.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
 		deactivationReasons.put(AccountStatusChanges.DOES_NOT_WORK_FOR_OPERATOR_REASON,
-				translationService.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
+				cache.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
 		deactivationReasons.put(AccountStatusChanges.DUPLICATE_MERGED_ACCOUNT_REASON,
-				translationService.getText("Filters.status.Deactivation.DuplicateMerged", locale));
+				cache.getText("Filters.status.Deactivation.DuplicateMerged", locale));
 		deactivationReasons.put(AccountStatusChanges.OPERATOR_EXEMPTION_REASON,
-				translationService.getText("Filters.status.Deactivation.OperatorExemption", locale));
+				cache.getText("Filters.status.Deactivation.OperatorExemption", locale));
 		deactivationReasons.put(AccountStatusChanges.PAYMENTS_NOT_CURRENT_REASON,
-				translationService.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
+				cache.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
 		deactivationReasons.put(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON,
-				translationService.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
+				cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
 		return Collections.unmodifiableMap(deactivationReasons);
 	}
 
@@ -812,9 +788,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getGlEachOccurrence() {
-		if (Strings.isEmpty(glEachOccurrence)) {
+		if (Strings.isEmpty(glEachOccurrence))
 			glEachOccurrence = getDefaultAmount();
-		}
 
 		return glEachOccurrence;
 	}
@@ -824,9 +799,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getGlGeneralAggregate() {
-		if (Strings.isEmpty(glGeneralAggregate)) {
+		if (Strings.isEmpty(glGeneralAggregate))
 			glGeneralAggregate = getDefaultAmount();
-		}
 
 		return glGeneralAggregate;
 	}
@@ -836,9 +810,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getAlCombinedSingle() {
-		if (Strings.isEmpty(alCombinedSingle)) {
+		if (Strings.isEmpty(alCombinedSingle))
 			alCombinedSingle = getDefaultAmount();
-		}
 
 		return alCombinedSingle;
 	}
@@ -848,9 +821,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getWcEachAccident() {
-		if (Strings.isEmpty(wcEachAccident)) {
+		if (Strings.isEmpty(wcEachAccident))
 			wcEachAccident = getDefaultAmount();
-		}
 
 		return wcEachAccident;
 	}
@@ -860,9 +832,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getExEachOccurrence() {
-		if (Strings.isEmpty(exEachOccurrence)) {
+		if (Strings.isEmpty(exEachOccurrence))
 			exEachOccurrence = getDefaultAmount();
-		}
 
 		return exEachOccurrence;
 	}
@@ -956,19 +927,19 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public static String getDefaultAmount() {
-		return translationService.getText("JS.Filters.label.EnterAmount", getLocaleStatic());
+		return cache.getText("JS.Filters.label.EnterAmount", getLocaleStatic());
 	}
 
 	public static String getDefaultTaxID() {
-		return translationService.getText("Filters.label.TaxID", getLocaleStatic());
+		return cache.getText("Filters.label.TaxID", getLocaleStatic());
 	}
 
 	public static String getDefaultPerformedBy() {
-		return translationService.getText("Filters.label.NoPreference", getLocaleStatic());
+		return cache.getText("Filters.label.NoPreference", getLocaleStatic());
 	}
 
 	public static String getDefaultSelectPerformedBy() {
-		return translationService.getText("Filters.label.SelfPerformed", getLocaleStatic());
+		return cache.getText("Filters.label.SelfPerformed", getLocaleStatic());
 	}
 
 	public String getRiskType() {
@@ -1011,11 +982,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.insideSalesID = insideSalesID;
 	}
 
-	public String getGeneralContractorAlias() {
-		return generalContractorAlias;
-	}
+    public String getGeneralContractorAlias() {
+        return generalContractorAlias;
+    }
 
-	public void setGeneralContractorAlias(String generalContractorAlias) {
-		this.generalContractorAlias = generalContractorAlias;
-	}
+    public void setGeneralContractorAlias(String generalContractorAlias) {
+        this.generalContractorAlias = generalContractorAlias;
+    }
 }

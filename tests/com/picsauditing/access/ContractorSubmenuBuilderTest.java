@@ -2,9 +2,11 @@ package com.picsauditing.access;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,47 +14,67 @@ import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
 import org.json.simple.JSONArray;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.report.ReportUtil;
+import com.picsauditing.search.Database;
 
 @UseReporter(DiffReporter.class)
-public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
+public class ContractorSubmenuBuilderTest {
 
 	public static final int ACCOUNT_ID = 5;
 	public static final int CONTRACTOR_ID = 5;
 
 	private ContractorSubmenuBuilder contractorSubmenuBuilder;
-
 	@Mock
 	private Permissions permissions;
 	@Mock
+	protected I18nCache i18nCache;
+	@Mock
 	private ContractorAccount contractorAccount;
+	@Mock
+	private ContractorAccountDAO contractorAccountDao;
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
+	}
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
-		when(translationService.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
-
 		contractorSubmenuBuilder = new ContractorSubmenuBuilder();
+		MockitoAnnotations.initMocks(this);
 
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 		when(contractorAccount.getId()).thenReturn(CONTRACTOR_ID);
+		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnMockTranslation());
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", i18nCache);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(ReportUtil.class, "i18nCache", (I18nCache) null);
 	}
 
 	@Test
 	public void testAddCompanyMenu_defaultCase() throws Exception {
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -63,7 +85,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		when(permissions.isAdmin()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -75,7 +98,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -86,7 +110,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		when(permissions.isContractor()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -97,7 +122,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		when(permissions.isGeneralContractor()).thenReturn(true);
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions, contractorAccount);
+		menubar = contractorSubmenuBuilder.addCompanyMenu(menubar, permissions,
+				contractorAccount);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -108,7 +134,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addDocuguardMenu(menubar, permissions, contractorAccount, auditMenu);
+		menubar = contractorSubmenuBuilder.addDocuguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -119,7 +146,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addAuditguardMenu(menubar, permissions, contractorAccount, auditMenu);
+		menubar = contractorSubmenuBuilder.addAuditguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -130,7 +158,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		MenuComponent menubar = new MenuComponent();
 		List<MenuComponent> auditMenu = buildTestAuditMenu();
 
-		menubar = contractorSubmenuBuilder.addInsureguardMenu(menubar, permissions, contractorAccount, auditMenu);
+		menubar = contractorSubmenuBuilder.addInsureguardMenu(menubar,
+				permissions, contractorAccount, auditMenu);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -140,7 +169,8 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 	public void testAddSupportMenu_defaultCase() throws Exception {
 		MenuComponent menubar = new MenuComponent();
 
-		menubar = contractorSubmenuBuilder.addSupportMenu(menubar, permissions, contractorAccount, true);
+		menubar = contractorSubmenuBuilder.addSupportMenu(menubar, permissions,
+				contractorAccount, true);
 
 		JSONArray result = MenuWriter.convertMenuToJSON(menubar);
 		Approvals.verify(result.toString());
@@ -172,8 +202,7 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		auditMenu.add(pqfComponent);
 
 		// Auditguard
-		MenuComponent auditguardComponent = new MenuComponent(ContractorSubmenuBuilder.AUDITGUARD,
-				"/ContractorDocuments.action?id=3");
+		MenuComponent auditguardComponent = new MenuComponent(ContractorSubmenuBuilder.AUDITGUARD, "/ContractorDocuments.action?id=3");
 
 		childItem = new MenuComponent(ContractorSubmenuBuilder.MANUAL_AUDIT + " '12", "/Audit.action?auditID=1");
 		childItem.setAuditId(20);
@@ -186,20 +215,17 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		auditMenu.add(auditguardComponent);
 
 		// Insureguard
-		MenuComponent insureguardComponent = new MenuComponent(ContractorSubmenuBuilder.INSUREGUARD,
-				"/ContractorDocuments.action?id=3");
+		MenuComponent insureguardComponent = new MenuComponent(ContractorSubmenuBuilder.INSUREGUARD, "/ContractorDocuments.action?id=3");
 
 		childItem = new MenuComponent(ContractorSubmenuBuilder.MANAGE_CERTIFICATES, "/Audit.action?auditID=1");
 		childItem.setAuditId(40);
 		insureguardComponent.getChildren().add(childItem);
 
-		childItem = new MenuComponent(ContractorSubmenuBuilder.AUTOMOBILE_LIABILITY + " (New)",
-				"/Audit.action?auditID=1");
+		childItem = new MenuComponent(ContractorSubmenuBuilder.AUTOMOBILE_LIABILITY + " (New)", "/Audit.action?auditID=1");
 		childItem.setAuditId(50);
 		insureguardComponent.getChildren().add(childItem);
 
-		childItem = new MenuComponent(ContractorSubmenuBuilder.EXCESS_UMBRELLA_LIABILITY + " (New)",
-				"/Audit.action?auditID=1");
+		childItem = new MenuComponent(ContractorSubmenuBuilder.EXCESS_UMBRELLA_LIABILITY + " (New)", "/Audit.action?auditID=1");
 		childItem.setAuditId(60);
 		insureguardComponent.getChildren().add(childItem);
 
@@ -216,12 +242,12 @@ public class ContractorSubmenuBuilderTest extends PicsTranslationTest {
 		return auditMenu;
 	}
 
-	private static Answer<String> returnMockTranslation() {
+	private Answer<String> returnMockTranslation() {
 		return new Answer<String>() {
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
-				return args[0].toString();
+				return Arrays.toString(args);
 			}
 		};
 	}

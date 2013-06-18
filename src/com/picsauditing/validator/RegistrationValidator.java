@@ -17,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
@@ -37,6 +37,7 @@ public class RegistrationValidator implements Validator {
 	private VATValidator vatValidator;
 
 	private Map<String, String> errors = new HashMap<String, String>();
+	private static I18nCache i18nCache;
 
 	@Override
 	public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
@@ -126,8 +127,7 @@ public class RegistrationValidator implements Validator {
 		return errors;
 	}
 
-	private static boolean isDialectInvalid(String language, String dialect, LanguageModel languageModel,
-			InputValidator inputValidator) {
+	private static boolean isDialectInvalid(String language, String dialect, LanguageModel languageModel, InputValidator inputValidator) {
 		if (!languageModel.getDialectCountriesBasedOn(language).isEmpty()) {
 
 			return StringUtils.isEmpty(dialect) || !inputValidator.containsOnlySafeCharacters(dialect);
@@ -213,7 +213,16 @@ public class RegistrationValidator implements Validator {
 	}
 
 	private String getText(String key, Locale locale) {
-		return TranslationServiceFactory.getTranslationService().getText(key, locale);
+		return getI18nCache().getText(key, locale);
+	}
+
+	// the purpose of this is for testing
+	private I18nCache getI18nCache() {
+		if (i18nCache == null) {
+			return I18nCache.getInstance();
+		}
+
+		return i18nCache;
 	}
 
 }

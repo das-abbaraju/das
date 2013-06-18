@@ -24,7 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
@@ -56,11 +56,17 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	private AuditType auditType;
 	private AuditCategory parent;
+
+	// private TranslatableString name;
 	private String name;
+
 	private int number;
 	private int numRequired;
 	private int numQuestions;
+
+	// private TranslatableString helpText;
 	private String helpText;
+
 	private boolean hasHelpText;
 	private String uniqueCode;
 	private float scoreWeight = 0f;
@@ -134,11 +140,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public String getName() {
-		if (name != null) {
-			return name;
-		}
-
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {
@@ -246,11 +248,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public String getHelpText() {
-		if (helpText != null) {
-			return helpText;
-		}
-
-		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("helpText")).toTranslatedString();
 	}
 
 	public void setHelpText(String helpText) {

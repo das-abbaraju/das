@@ -1,17 +1,17 @@
 package com.picsauditing.util.test;
 
+import com.picsauditing.model.i18n.TranslatorFactory;
 import com.picsauditing.service.i18n.EchoTranslationService;
-import com.picsauditing.service.i18n.TranslationService;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.service.i18n.TranslatorServiceImpl;
 
 public class TranslatorFactorySetup {
 
 	public static void setupTranslatorFactoryForTest() {
-		TranslationServiceFactory.registerTranslationService(new EchoTranslationService());
+		TranslatorFactory.registerTranslatorService(new EchoTranslationService());
 	}
 
 	public static void resetTranslatorFactoryAfterTest() {
-		TranslationServiceFactory.registerTranslationService((TranslationService) null);
+		TranslatorFactory.registerTranslatorService(new TranslatorServiceImpl());
 	}
 
 }

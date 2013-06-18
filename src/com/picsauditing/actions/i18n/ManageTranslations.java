@@ -1,23 +1,8 @@
 package com.picsauditing.actions.i18n;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONObject;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.report.ReportActionSupport;
@@ -25,10 +10,22 @@ import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.service.i18n.TranslationService;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
@@ -145,14 +142,17 @@ public class ManageTranslations extends ReportActionSupport {
 
 	private boolean isInvalid(AppTranslation xlatn) {
 		String transKey = xlatn.getKey();
-		return (null == transKey || transKey.isEmpty() || transKey.contains(" ") || transKey.startsWith(".") || transKey
-				.endsWith("."));
+		return (null == transKey
+				|| transKey.isEmpty()
+				|| transKey.contains(" ")
+				|| transKey.startsWith(".")
+				|| transKey.endsWith("."));
 	}
 
 	private void updateOtherLanguagesToQuestionable() {
 		if (updateOtherLocales) {
-			List<AppTranslation> nowQuestionable = dao.findWhere(AppTranslation.class, String.format(
-					"t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage "
+			List<AppTranslation> nowQuestionable = dao.findWhere(AppTranslation.class,
+					String.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage "
 							+ "AND t.qualityRating > 1", translation.getKey(), translation.getLocale()));
 			for (AppTranslation questionable : nowQuestionable) {
 				questionable.setQualityRating(TranslationQualityRating.Questionable);
@@ -169,8 +169,7 @@ public class ManageTranslations extends ReportActionSupport {
 				translation.setAuditColumns();
 
 				// FIXME KLUDGE this is a temporary solution for PICS-8676
-				// Remove this when we figure out why double double quotes are
-				// being added
+				// Remove this when we figure out why double double quotes are being added
 				String scrubbedValue = TranslationUtil.scrubValue(translation.getValue());
 				translation.setValue(scrubbedValue);
 
@@ -194,8 +193,8 @@ public class ManageTranslations extends ReportActionSupport {
 	}
 
 	public String preview() {
-		TranslationService translationService = TranslationServiceFactory.getTranslationService();
-		output = translationService.getText(key, (localeTo != null ? localeTo : localeFrom));
+		I18nCache cache = I18nCache.getInstance();
+		output = cache.getText(key, (localeTo != null ? localeTo : localeFrom));
 
 		return BLANK;
 	}
@@ -274,10 +273,9 @@ public class ManageTranslations extends ReportActionSupport {
 			}
 		}
 
-		if (!Strings.isEmpty(search)) {
+		if (!Strings.isEmpty(search))
 			sql.addWhere("t1.msgValue LIKE '%" + Strings.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
 					+ Strings.escapeQuotes(search).toLowerCase() + "%'");
-		}
 
 		if (!Strings.isEmpty(key)) {
 			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Strings.escapeQuotes(key).toLowerCase() + "%'");
@@ -308,9 +306,9 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		if (isTracingOn()) {
-			if (getI18nUsedKeys().size() > 0) {
+			if (getI18nUsedKeys().size() > 0)
 				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys()) + ")");
-			} else {
+			else {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 			}
 		}
@@ -422,9 +420,8 @@ public class ManageTranslations extends ReportActionSupport {
 		public List<AppTranslation> getItems() {
 			List<AppTranslation> list = new ArrayList<AppTranslation>();
 			list.add(from);
-			if (to == null || !to.equals(from)) {
+			if (to == null || !to.equals(from))
 				list.add(to);
-			}
 			return list;
 		}
 	}

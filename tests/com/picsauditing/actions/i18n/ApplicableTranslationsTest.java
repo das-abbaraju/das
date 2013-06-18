@@ -14,19 +14,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.search.Database;
 
-public class ApplicableTranslationsTest extends PicsTranslationTest {
+public class ApplicableTranslationsTest {
 	private ApplicableTranslations applicableTranslations;
 
 	@Mock
@@ -37,12 +38,17 @@ public class ApplicableTranslationsTest extends PicsTranslationTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		applicableTranslations = new ApplicableTranslations();
 
 		Whitebox.setInternalState(applicableTranslations, "dao", basicDAO);
 		Whitebox.setInternalState(applicableTranslations, "database", database);
+	}
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

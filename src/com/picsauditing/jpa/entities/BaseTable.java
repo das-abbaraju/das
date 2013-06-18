@@ -32,7 +32,8 @@ import com.picsauditing.search.IndexableField;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, JSONAware, Translatable {
+public abstract class BaseTable /* extends BaseTranslatable */implements JSONable, Serializable, Autocompleteable,
+		JSONAware, Translatable {
 
 	protected int id;
 	protected User createdBy;

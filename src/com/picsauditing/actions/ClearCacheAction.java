@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")
 public class ClearCacheAction extends PicsActionSupport {
@@ -28,9 +28,8 @@ public class ClearCacheAction extends PicsActionSupport {
 	private AppPropertyDAO appPropertyDAO;
 
 	private SimpleDateFormat databaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	
 	private final Logger logger = LoggerFactory.getLogger(ClearCacheAction.class);
-
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
@@ -56,7 +55,7 @@ public class ClearCacheAction extends PicsActionSupport {
 		auditCategoryRuleCache.clear();
 
 		// Clear the translations from the cache
-		TranslationServiceFactory.getTranslationService().clear();
+		I18nCache.getInstance().clear();
 
 		// Clear the config environment settings
 		PicsActionSupport.CONFIG = null;
@@ -67,9 +66,9 @@ public class ClearCacheAction extends PicsActionSupport {
 	@Anonymous
 	public String monitor() {
 		String property = appPropertyDAO.getProperty(CLEAR_CACHE_PROPERTY);
-		Date lastClearDoneOnI18nCache = TranslationServiceFactory.getTranslationService().getLastCleared();
+		Date lastClearDoneOnI18nCache = I18nCache.getLastCleared();
 		Date lastClearCommandIssued = null;
-
+		
 		try {
 			lastClearCommandIssued = databaseFormat.parse(property);
 		} catch (Exception e) {

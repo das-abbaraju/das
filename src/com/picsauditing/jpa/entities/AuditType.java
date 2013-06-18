@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
-import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -72,7 +72,9 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
+	// protected TranslatableString name;
 	protected String name;
+
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 	protected int displayOrder = 100;
 	protected String description;
@@ -124,7 +126,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	@Transient
 	public String getName() {
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {

@@ -2,10 +2,7 @@ package com.picsauditing.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +26,13 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.validator.ContractorValidator;
 
 public class ContractorValidatorTest extends PicsTest {
 
+	
+	@Mock
+	private ContractorAccount contractor;
 	@Mock
 	private AuditDataDAO auditDataDao;
 	@Mock
@@ -41,11 +42,10 @@ public class ContractorValidatorTest extends PicsTest {
 	@Mock
 	private ContractorAccountDAO contractorAccountDao;
 
-	private ContractorAccount contractor;
 	private ContractorValidator contractorValidator;
-
+	
 	private static final String YES_WITH_OFFICE = "YesWithOffice";
-
+	
 	@Before
 	public void setup() throws Exception {
 		super.setUp();
@@ -54,17 +54,22 @@ public class ContractorValidatorTest extends PicsTest {
 		contractorValidator = new ContractorValidator();
 		autowireEMInjectedDAOs(contractorValidator);
 
-		PicsTestUtil.forceSetPrivateField(contractorValidator, "auditDataDao", auditDataDao);
-		PicsTestUtil.forceSetPrivateField(contractorValidator, "contractorAuditDao", contractorAuditDao);
-		PicsTestUtil.forceSetPrivateField(contractorValidator, "auditQuestionDao", auditQuestionDao);
-		PicsTestUtil.forceSetPrivateField(contractorValidator, "contractorAccountDao", contractorAccountDao);
+		PicsTestUtil.forceSetPrivateField(contractorValidator, "auditDataDao",
+				auditDataDao);
+		PicsTestUtil.forceSetPrivateField(contractorValidator,
+				"contractorAuditDao", contractorAuditDao);
+		PicsTestUtil.forceSetPrivateField(contractorValidator,
+				"auditQuestionDao", auditQuestionDao);
+		PicsTestUtil.forceSetPrivateField(contractorValidator,
+				"contractorAccountDao", contractorAccountDao);
 	}
 
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_SwitchToAlberta() {
-		AuditData officeLocationAnswer = setupOfficeLocationTest(new CountrySubdivision("CA-AB"),
+		AuditData officeLocationAnswer = setupOfficeLocationTest(
+				new CountrySubdivision("CA-AB"),
 				new CountrySubdivision("CA-BC"), true);
-
+		
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 
 		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getAnswer());
@@ -72,33 +77,33 @@ public class ContractorValidatorTest extends PicsTest {
 
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_SwitchToCalifornia() {
-		AuditData officeLocationAnswer = setupOfficeLocationTest(new CountrySubdivision("US-CA"),
-				new CountrySubdivision("US-TX"), true);
+		AuditData officeLocationAnswer = setupOfficeLocationTest(
+				new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), true);
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-
+		
 		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getAnswer());
 	}
-
+	
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_NoAuditData() {
 		setupOfficeLocationTest(new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), false);
-
+		
 		ArgumentCaptor<AuditData> officeLocationAnswer = ArgumentCaptor.forClass(AuditData.class);
-
+				
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 		verify(auditDataDao).save(officeLocationAnswer.capture());
-
+				
 		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getValue().getAnswer());
 	}
-
+		
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_NullContractor() {
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(null);
 	}
-
+	
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_NullCountrySubdivision() {
-		contractor.setCountrySubdivision(null);
+		when(contractor.getCountrySubdivision()).thenReturn(null);
 
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 
@@ -109,16 +114,15 @@ public class ContractorValidatorTest extends PicsTest {
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_ValidateQuestionUniqeCode() {
 		setupOfficeLocationTest(new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), false);
 		@SuppressWarnings({ "unchecked" })
-		ArgumentCaptor<List<String>> uniqueCodePassedToAuditQuestionDao = (ArgumentCaptor<List<String>>) (Object) ArgumentCaptor
-				.forClass(List.class);
-
+		ArgumentCaptor<List<String>> uniqueCodePassedToAuditQuestionDao = (ArgumentCaptor<List<String>>) (Object) ArgumentCaptor.forClass(List.class);
+		
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-
+		
 		verify(auditQuestionDao).findQuestionsByUniqueCodes(uniqueCodePassedToAuditQuestionDao.capture());
-
+		
 		assertEquals("US-TX", uniqueCodePassedToAuditQuestionDao.getValue().get(0));
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private AuditData setupOfficeLocationTest(CountrySubdivision oldCountrySubdivision,
 			CountrySubdivision newCountrySubdivision, boolean auditDataFindable) {
@@ -126,14 +130,16 @@ public class ContractorValidatorTest extends PicsTest {
 		ContractorAccount previousContractorSettings = new ContractorAccount();
 		previousContractorSettings.setCountrySubdivision(oldCountrySubdivision);
 
-		when(contractorAccountDao.find(contractor.getId())).thenReturn(previousContractorSettings);
+		when(contractorAccountDao.find(contractor.getId())).thenReturn(
+				previousContractorSettings);
 
 		List<String> uniqueCodes = new ArrayList<String>();
 		uniqueCodes.add(newCountrySubdivision.toString());
 		List<AuditQuestion> mockResultSetForAuditQuestionDao = new ArrayList<AuditQuestion>();
 		AuditQuestion officeLocationQuestion = new AuditQuestion();
 		mockResultSetForAuditQuestionDao.add(officeLocationQuestion);
-		when(auditQuestionDao.findQuestionsByUniqueCodes(any(List.class))).thenReturn(mockResultSetForAuditQuestionDao);
+		when(auditQuestionDao.findQuestionsByUniqueCodes(any(List.class)))
+				.thenReturn(mockResultSetForAuditQuestionDao);
 
 		List<ContractorAudit> mockSetforContractorAuditDao = new ArrayList<ContractorAudit>();
 		ContractorAudit testContractorsPqf = new ContractorAudit();
@@ -142,15 +148,22 @@ public class ContractorValidatorTest extends PicsTest {
 		testContractorsPqf.setAuditType(pqfAuditType);
 		mockSetforContractorAuditDao.add(testContractorsPqf);
 
-		when(contractorAuditDao.findByContractor(contractor.getId())).thenReturn(mockSetforContractorAuditDao);
+		when(contractorAuditDao.findByContractor(contractor.getId()))
+				.thenReturn(mockSetforContractorAuditDao);
 
 		AuditData officeLocationAnswer = new AuditData();
 		if (auditDataFindable) {
-			when(auditDataDao.findAnswerByAuditQuestion(testContractorsPqf.getId(), officeLocationQuestion.getId()))
-					.thenReturn(officeLocationAnswer);
+			when(
+				auditDataDao.findAnswerByAuditQuestion(
+						testContractorsPqf.getId(),
+						officeLocationQuestion.getId())).thenReturn(
+				officeLocationAnswer);
 		} else {
-			when(auditDataDao.findAnswerByAuditQuestion(testContractorsPqf.getId(), officeLocationQuestion.getId()))
-					.thenReturn(null);
+			when(
+				auditDataDao.findAnswerByAuditQuestion(
+						testContractorsPqf.getId(),
+						officeLocationQuestion.getId())).thenReturn(
+				null);
 		}
 		return officeLocationAnswer;
 	}

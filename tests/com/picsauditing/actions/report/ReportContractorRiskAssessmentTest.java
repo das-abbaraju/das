@@ -14,18 +14,16 @@ import static org.powermock.reflect.Whitebox.setInternalState;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
@@ -46,6 +44,8 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Report;
+import com.picsauditing.util.ReportFilterContractor;
+import com.picsauditing.util.SpringUtils;
 
 public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private ReportContractorRiskAssessment reportContractorRiskAssessment;
@@ -61,17 +61,15 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	@Mock
 	private Report report;
 	@Mock
+	private ReportFilterContractor reportFilterContractor;
+	@Mock
 	private UserDAO userDAO;
+	@Mock
+	private ApplicationContext applicationContext;
 	@Mock
 	private EmailSender emailSender;
 	@Mock
 	private EmailBuilder emailBuilder;
-
-	@AfterClass
-	public static void classTearDown() throws Exception {
-		PicsActionTest.classTearDown();
-		PicsTestUtil.resetSpringUtilsBeans();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -128,20 +126,16 @@ public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	}
 
 	private void setExpectedBehaviors() throws SQLException {
-		setupApplicationContext();
+		setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		doNothing().when(contractorAccount).syncBalance();
 
 		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
 		when(permissions.hasPermission(OpPerms.RiskRank, OpType.View)).thenReturn(true);
 		when(report.getPage(false)).thenReturn(new ArrayList<BasicDynaBean>());
-	}
 
-	private void setupApplicationContext() {
-		Map<String, Object> beans = new HashMap<>();
-		beans.put("EmailTemplateDAO", emailTemplateDAO);
-		beans.put("UserDAO", userDAO);
-		PicsTestUtil.setSpringUtilsBeans(beans);
+		when(applicationContext.getBean("EmailTemplateDAO")).thenReturn(emailTemplateDAO);
+		when(applicationContext.getBean("UserDAO")).thenReturn(userDAO);
 	}
 
 	private List<ContractorAudit> generatePQFWithRiskAnswers() {

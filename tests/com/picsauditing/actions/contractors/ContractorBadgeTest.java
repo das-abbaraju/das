@@ -4,29 +4,40 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "ContractorBadgeTest-context.xml" })
-public class ContractorBadgeTest extends PicsTranslationTest {
+public class ContractorBadgeTest {
 	private ContractorBadge contractorBadge;
 	private FeatureToggle featureToggle;
+
+	@Mock
+	private Database databaseForTesting;
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
-
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
 		contractorBadge = new ContractorBadge();
 
 		featureToggle = SpringUtils.getBean("FeatureToggle");
@@ -34,16 +45,16 @@ public class ContractorBadgeTest extends PicsTranslationTest {
 	}
 
 	@Test
-	public void testContractorBadgeToggle_Developer() throws Exception {
+	public void testContractorBadgeToggle_Developer() throws Exception{
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_BADGE)).thenReturn(true);
 
 		String strutsResult = Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle");
 
 		assertEquals("success", strutsResult);
 	}
-
+	
 	@Test
-	public void testContractorBadgeToggle_Stakeholder() throws Exception {
+	public void testContractorBadgeToggle_Stakeholder() throws Exception{
 		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_BADGE)).thenReturn(false);
 
 		String strutsResult = Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle");

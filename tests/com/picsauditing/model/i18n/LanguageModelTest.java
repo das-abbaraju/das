@@ -1,23 +1,12 @@
 package com.picsauditing.model.i18n;
 
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Language;
+import com.picsauditing.jpa.entities.LanguageStatus;
+import com.picsauditing.toggle.FeatureToggle;
 import org.apache.struts2.ServletActionContext;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,13 +18,12 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Language;
-import com.picsauditing.jpa.entities.LanguageStatus;
-import com.picsauditing.toggle.FeatureToggle;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class LanguageModelTest {
 
@@ -135,7 +123,7 @@ public class LanguageModelTest {
 
 		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languages);
 
-		final List<KeyValue<String, String>> supportedLanguages = languageModel.getVisibleLanguagesSansDialect();
+		final List<KeyValue> supportedLanguages = languageModel.getVisibleLanguagesSansDialect();
 		assertNotNull(supportedLanguages);
 		assertEquals(2, supportedLanguages.size());
 		assertEquals(Locale.GERMAN.getLanguage(), supportedLanguages.get(0).getKey());
@@ -272,9 +260,14 @@ public class LanguageModelTest {
 		assertTrue(languages.contains(Locale.CHINESE.getLanguage()));
 	}
 
+
 	@Test
 	public void testGetMatchingVisibleLanguageLocale() throws Exception {
-		List<Language> languageList = mockLanguageList(new Locale[] { Locale.FRENCH, Locale.GERMAN, Locale.ITALIAN });
+		List<Language> languageList = mockLanguageList(new Locale[]{
+				Locale.FRENCH,
+				Locale.GERMAN,
+				Locale.ITALIAN
+		});
 
 		when(languageProvider.findByStatuses(any(LanguageStatus[].class))).thenReturn(languageList);
 
@@ -284,8 +277,12 @@ public class LanguageModelTest {
 
 	@Test
 	public void testGetMatchingVisibleLanguageLocale_WithNull() throws Exception {
-		List<Language> languageList = mockLanguageList(new Locale[] { Locale.FRENCH, Locale.GERMAN, null,
-				Locale.ITALIAN });
+		List<Language> languageList = mockLanguageList(new Locale[]{
+				Locale.FRENCH,
+				Locale.GERMAN,
+				null,
+				Locale.ITALIAN
+		});
 		Logger logger = Mockito.mock(Logger.class);
 
 		Whitebox.setInternalState(languageModel, "logger", logger);
@@ -299,7 +296,8 @@ public class LanguageModelTest {
 
 		verify(logger).error(errorMessageCaptor.capture());
 
-		assertEquals("Null locale found in getVisibleLocales: null,de,fr,it", errorMessageCaptor.getValue());
+		assertEquals("Null locale found in getVisibleLocales: null,de,fr,it",
+				errorMessageCaptor.getValue());
 	}
 
 	private List<Language> mockLanguageList(Locale[] localesToMock) {
@@ -319,7 +317,7 @@ public class LanguageModelTest {
 
 	@Test
 	public void testInvoiceIsToBeEmailedViaBPROCS_NoLanguagesSpecified() {
-		// String contractorsLanguage = "de";
+		String contractorsLanguage = "de";
 		Locale localeContractorAccountShouldReturn = Locale.GERMANY;
 		when(contractorAccount.getLocale()).thenReturn(localeContractorAccountShouldReturn);
 
@@ -407,6 +405,10 @@ public class LanguageModelTest {
 
 	private void removeLanguageFromEmailList(String language) {
 		languageModel.getLanguagesToEmailInvoicesInBPROCS().remove(language);
+	}
+
+	private List<String> getLanguageList() {
+		return Whitebox.getInternalState(LanguageModel.class, "languagesToEmailInvoicesInBPROCS");
 	}
 
 	@Test

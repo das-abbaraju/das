@@ -1,18 +1,15 @@
 package com.picsauditing.actions.contractors;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.reflect.Whitebox.invokeMethod;
-import static org.powermock.reflect.Whitebox.setInternalState;
-
-import java.util.ArrayList;
-import java.util.Map;
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.search.Database;
+import com.picsauditing.validator.VATValidator;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,31 +19,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.User;
+import java.util.ArrayList;
+import java.util.Map;
 
-public class RegistrationTest extends PicsTranslationTest {
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.powermock.reflect.Whitebox.invokeMethod;
+import static org.powermock.reflect.Whitebox.setInternalState;
 
+public class RegistrationTest {
 	Registration classUnderTest;
-
-	private final static String DEMO_NAME = "^^^demo";
-	private final static String REAL_NAME = "fooBar";
 
 	@Mock
 	private ContractorAccount contractor;
@@ -65,7 +48,11 @@ public class RegistrationTest extends PicsTranslationTest {
 	@Mock
 	private Map<FeeClass, ContractorFee> contractorFees;
 	@Mock
-	private ThreadLocal<ActionContext> mockThreadLocal;
+	private I18nCache cache;
+	@Mock
+	private Database databaseForTesting;
+	@Mock
+	private ThreadLocal mockThreadLocal;
 	@Mock
 	private ActionContext mockContext;
 	@Mock
@@ -73,15 +60,14 @@ public class RegistrationTest extends PicsTranslationTest {
 
 	@AfterClass
 	public static void tearDown() {
-		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
-		PicsTranslationTest.tearDownTranslationService();
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal());
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.resetTranslationService();
-
+		setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		setInternalState(ActionContext.class, "actionContext", mockThreadLocal);
 		when(mockThreadLocal.get()).thenReturn(mockContext);
 		classUnderTest = new Registration();
@@ -147,7 +133,6 @@ public class RegistrationTest extends PicsTranslationTest {
 		verify(feeDAO, atLeastOnce()).findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testTransferRegistrationRequestTags_MultipleTags() throws Exception {
 		OperatorTag operatorTag = new OperatorTag();
@@ -168,7 +153,6 @@ public class RegistrationTest extends PicsTranslationTest {
 		verify(operatorTagDAO, times(2)).find(anyInt());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testTransferRegistrationRequestTags_NoTags() throws Exception {
 		ContractorAccount contractor = EntityFactory.makeContractor();
@@ -182,4 +166,6 @@ public class RegistrationTest extends PicsTranslationTest {
 		verify(operatorTagDAO, never()).find(anyInt());
 	}
 
+	private final static String DEMO_NAME = "^^^demo";
+	private final static String REAL_NAME = "fooBar";
 }
