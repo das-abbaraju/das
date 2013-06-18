@@ -38,7 +38,6 @@ public class ReportApi extends PicsApiSupport {
 	private ReportDAO reportDao;
 
 	protected int reportId;
-	protected int widgetId;
 	protected String debugSQL = "";
 	protected int limit = 50;
 	protected int pageNumber = 1;
@@ -193,11 +192,7 @@ public class ReportApi extends PicsApiSupport {
 		ReportContext reportContext = buildReportContext(null);
 
 		try {
-			ReportChart chart = reportDao.findByWidgetID(widgetId);
-
-			if (chart != null) {
-				json = reportService.buildReportResultsForChart(reportContext, chart);
-			}
+			json = reportService.buildReportResultsForChart(report, reportContext);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);
 		}
@@ -263,10 +258,6 @@ public class ReportApi extends PicsApiSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
-	}
-
-	public void setWidgetId(int widgetId) {
-		this.widgetId = widgetId;
 	}
 
 	public ReportResults getReportResults() {

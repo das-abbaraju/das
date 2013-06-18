@@ -134,16 +134,15 @@ PICS.Charts.BarChart.prototype.getGoogleChart = function () {
                 if ($('#Home__page').length) {
                     var that = this;
 
-                    $('.panel_content[data-widget-type=Chart][data-widget-id=23]').each(function (key, value) {
+                    $('.panel_content[data-widget-type=GoogleChart]').each(function (key, value) {
                         var chart_container = this,
                             $chart_container = $(chart_container),
-                            widget_id = $chart_container.data('widget-id');
+                            url = $chart_container.data('url'),
+                            chart_type = $chart_container.data('chart-type');
 
+                        console.log("Calling URL " + url);
                         PICS.ajax({
-                            url: 'ReportApi!chart.action',
-                            data: {
-                                widgetId: widget_id
-                            },
+                            url: url,
                             type: 'GET',
                             dataType: 'json',
                             success: function(data, textStatus, jqXHR) {
@@ -151,9 +150,9 @@ PICS.Charts.BarChart.prototype.getGoogleChart = function () {
                                     chart;
 
                                 config.container = chart_container;
-                                config.chart_type = 'Bar'; // Delete this
+                                // config.chart_type = 'Bar'; // Delete this
 
-                                switch (config.chart_type) {
+                                switch (chart_type) {
                                     case 'Pie':
                                         chart = new PICS.Charts.PieChart(config);
                                     case 'Bar':

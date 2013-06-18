@@ -69,11 +69,10 @@
                 						<a href="<s:property value="url"/>" target="_BLANK" class = "debug">URL</a>
                 					</pics:permission>
                 				</div>
-                                <div id="panel<s:property value="widgetID"/>_content" class="panel_content" data-widget-type="${widgetType}" data-widget-id="${widgetID}">
-                                    <s:if test="widgetType!='Chart' || widgetID!=23">
-                                       <s:property value="content" escape="false" />
-                                   </s:if>
-                               </div>
+                                <div id="panel<s:property value="widgetID"/>_content" class="panel_content"
+                                     data-widget-type="${widgetType}" data-url="${url}" data-chart-type="${googleChartType}">
+                                   <s:property value="content" escape="false" />
+                                </div>
             				</div>
         				</div>
         			</s:if>

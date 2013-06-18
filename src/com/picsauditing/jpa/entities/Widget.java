@@ -38,6 +38,8 @@ public class Widget {
 
 	protected ChartType chartType = ChartType.Column2D;
 
+    protected com.picsauditing.jpa.entities.ChartType googleChartType;
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "widgetID", nullable = false, updatable = false)
@@ -145,6 +147,12 @@ public class Widget {
 					+ "_" + widgetID, 400, 400, debug, false);
 		}
 
+        if (widgetType.equals("GoogleChart")) {
+            if (googleChartType == null)
+                return "chartType is null";
+            return "";
+        }
+
 		if (widgetType.equals("Html") || widgetType.equals("Rss"))
 			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
 					+ "');</script>";
@@ -170,4 +178,12 @@ public class Widget {
 
 		return "";
 	}
+
+    public com.picsauditing.jpa.entities.ChartType getGoogleChartType() {
+        return googleChartType;
+    }
+
+    public void setGoogleChartType(com.picsauditing.jpa.entities.ChartType gChartType) {
+        this.googleChartType = gChartType;
+    }
 }

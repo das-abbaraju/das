@@ -310,20 +310,17 @@ public class ReportService {
 		return converter.getReportResults();
 	}
 
-	public JSONObject buildReportResultsForChart(ReportContext reportContext, ReportChart chart)
+	public JSONObject buildReportResultsForChart(Report report, ReportContext reportContext)
 			throws ReportValidationException, PicsSqlException {
-        SelectSQL sql = initializeReportAndBuildSql(reportContext, chart.getReport());
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
         List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 
         JSONObject responseJson = new JSONObject();
+        // responseJson.put("style_type", chart.getChartOption().toString());
 
-        responseJson.put("chart_type", chart.getChartType().toString());
-        responseJson.put("style_type", chart.getChartOption().toString());
-        responseJson.put("series", chart.getSeries().toString());
-
-		ReportDataConverter converter = new ReportDataConverter(chart.getReport().getColumns(), queryResults);
+		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-        responseJson.put("data", converter.convertForChart(chart));
+        responseJson.put("data", converter.convertForChart());
 
 		return responseJson;
 	}

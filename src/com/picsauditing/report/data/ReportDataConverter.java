@@ -49,15 +49,15 @@ public class ReportDataConverter {
     }
 
     @SuppressWarnings("unchecked")
-    public JSONObject convertForChart(ReportChart chart) throws ReportValidationException {
+    public JSONObject convertForChart() throws ReportValidationException {
         JSONObject dataJson = new JSONObject();
 
         List<Column> stringColumns = new ArrayList<Column>();
         List<Column> numericColumns = new ArrayList<Column>();
 
-        extractNumericStringColumnSets(chart, stringColumns, numericColumns);
+        extractNumericStringColumnSets(stringColumns, numericColumns);
 
-        validateChart(chart, stringColumns, numericColumns);
+        validateChart(stringColumns, numericColumns);
 
         dataJson.put("cols", createChartColumns(stringColumns, numericColumns));
         dataJson.put("rows", createChartRows(stringColumns, numericColumns));
@@ -65,10 +65,10 @@ public class ReportDataConverter {
         return dataJson;
     }
 
-    private void validateChart(ReportChart chart, List<Column> stringColumns, List<Column> numericColumns) throws ReportValidationException {
-        if (stringColumns.size() < 0 || numericColumns.size() < 0) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
-        }
+    private void validateChart(List<Column> stringColumns, List<Column> numericColumns) throws ReportValidationException {
+//        if (stringColumns.size() < 0 || numericColumns.size() < 0) {
+//            throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
+//        }
 //        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
 //            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
 //        }
@@ -77,8 +77,8 @@ public class ReportDataConverter {
 //        }
     }
 
-    private void extractNumericStringColumnSets(ReportChart chart, List<Column> stringColumns, List<Column> numericColumns) {
-        for (Column col : chart.getReport().getColumns()) {
+    private void extractNumericStringColumnSets(List<Column> stringColumns, List<Column> numericColumns) {
+        for (Column col : reportResults.getColumns()) {
             DisplayType type = col.getField().getType().getDisplayType();
             if (col.getSqlFunction() != null) {
                 type = col.getSqlFunction().getDisplayType();

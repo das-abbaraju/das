@@ -13,8 +13,8 @@ public class ReportChart extends BaseTable {
 	private Widget widget;
 	private Report report;
     private ChartType chartType;
-	private ChartOption chartOption;
-    private ChartSeries series;
+	private ChartOption chartOption; // Possibly not needed
+    private ChartSeries series; // Possibly not needed
 
 	public ReportChart() {
 	}
