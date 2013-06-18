@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.TranslatableString;
 
 @SuppressWarnings("serial")
 public class ContractorSimulator extends PicsActionSupport {
@@ -54,7 +55,8 @@ public class ContractorSimulator extends PicsActionSupport {
 			if (operatorIds != null && operatorIds.size() == 1) {
 				operators = new ArrayList<OperatorAccount>();
 				for (Integer opID : operatorIds) {
-					OperatorAccount operator = auditTypeDAO.findWhere(OperatorAccount.class, "id = " + opID, 1).get(0);
+					OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class,
+							"id = " + opID, 1).get(0);
 					operators.add(operator);
 				}
 			}
@@ -65,7 +67,8 @@ public class ContractorSimulator extends PicsActionSupport {
 		operators = new ArrayList<OperatorAccount>();
 		for (Integer opID : operatorIds) {
 			ContractorOperator co = new ContractorOperator();
-			OperatorAccount operator = auditTypeDAO.findWhere(OperatorAccount.class, "id = " + opID, 1).get(0);
+			OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class, "id = " + opID,
+					1).get(0);
 			operators.add(operator);
 			co.setContractorAccount(contractor);
 			co.setOperatorAccount(operator);
@@ -120,8 +123,8 @@ public class ContractorSimulator extends PicsActionSupport {
 	}
 
 	/**
-	 * Determine which categories should be on a given audit and add ones that
-	 * aren't there and remove ones that shouldn't be there
+	 * Determine which categories should be on a given audit and add ones that aren't there and remove ones that
+	 * shouldn't be there
 	 * 
 	 * @param conAudit
 	 */
@@ -131,11 +134,9 @@ public class ContractorSimulator extends PicsActionSupport {
 
 		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			AuditCategory category = new AuditCategory();
-			// TranslatableString t = new TranslatableString();
-			// t.putTranslation("en",
-			// "Previewing Categories is not supported for this audit", false);
-			// category.setName(t);
-			category.setName("Previewing Categories is not supported for this audit");
+			TranslatableString t = new TranslatableString();
+			t.putTranslation("en", "Previewing Categories is not supported for this audit", false);
+			category.setName(t);
 			categories.add(category);
 			return;
 		}

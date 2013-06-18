@@ -40,7 +40,7 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 
 	@Override
 	protected Object getValue(AuditType auditType, Permissions permissions) {
-		return auditType.getName(); // .toString(permissions.getLocale());
+		return auditType.getName().toString(permissions.getLocale());
 	}
 
 	@Override

@@ -1,17 +1,5 @@
 package com.picsauditing.mail;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -19,19 +7,20 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.Token;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Merges an email template with a map of token data and creates an email
- * 
+ *
  * @author Trevor
  */
 public class EmailBuilder {
@@ -93,9 +82,8 @@ public class EmailBuilder {
 		email.setCcAddresses(ccAddresses);
 		email.setBccAddresses(bccAddresses);
 		email.setFromPassword(password);
-		if (conID > 0) {
+		if (conID > 0)
 			email.setContractorAccount(new ContractorAccount(conID));
-		}
 
 		if (permissions != null) {
 			tokens.put(PERMISSIONS, permissions);
@@ -121,30 +109,15 @@ public class EmailBuilder {
 			String translatedBodyForUser = null;
 			String translatedSubjectForUser = null;
 
-			// if (template.getTranslatedBody() != null) {
-			// translatedBodyForUser = getUserTranslation(locale,
-			// template.getTranslatedBody().getTranslations());
-			// }
-			//
-			// if (template.getTranslatedSubject() != null) {
-			// translatedSubjectForUser = getUserTranslation(locale,
-			// template.getTranslatedSubject().getTranslations());
-			// }
+			if (template.getTranslatedBody() != null)
+				translatedBodyForUser = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
+			if (template.getTranslatedSubject() != null)
+				translatedSubjectForUser = getUserTranslation(locale, template.getTranslatedSubject().getTranslations());
 
-			if (template.getTranslatedBody() != null) {
-				translatedBodyForUser = template.getTranslatedBody();
-			}
-
-			if (template.getTranslatedSubject() != null) {
-				translatedSubjectForUser = template.getTranslatedSubject();
-			}
-
-			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedBodyForUser)) {
+			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedBodyForUser))
 				templateBody = translatedBodyForUser;
-			}
-			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedSubjectForUser)) {
+			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedSubjectForUser))
 				templateSubject = translatedSubjectForUser;
-			}
 		}
 
 		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity());
@@ -184,14 +157,13 @@ public class EmailBuilder {
 		Set<String> emails = new HashSet<String>();
 		for (User user : contractor.getUsersByRole(role)) {
 			if (user.isActiveB()) {
-				if (Strings.isValidEmail(user.getEmail())) {
+				if (Strings.isValidEmail(user.getEmail()))
 					emails.add(user.getEmail());
-				}
 			}
 		}
-		if (emails.size() > 0) {
+		if (emails.size() > 0)
 			toAddresses = Strings.implode(emails, ", ");
-		} else {
+		else {
 			if (role.equals(OpPerms.ContractorAdmin)) {
 				// The contractor doesn't have any admin users
 				// so this results in an endless loop
@@ -209,9 +181,8 @@ public class EmailBuilder {
 	// End of custom token setters
 
 	public String getSentTo() {
-		if (Strings.isEmpty(ccAddresses)) {
+		if (Strings.isEmpty(ccAddresses))
 			return toAddresses;
-		}
 		return toAddresses + ", " + ccAddresses;
 	}
 
@@ -235,7 +206,7 @@ public class EmailBuilder {
 	/**
 	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
 	 * like this ${token.name}
-	 * 
+	 *
 	 * @param text
 	 * @param allowsVelocity
 	 * @return
@@ -297,34 +268,32 @@ public class EmailBuilder {
 		return tokens.containsKey(key) && tokens.get(key) != null;
 	}
 
-	// private String getUserTranslation(Locale locale, Collection<Translation>
-	// translations) {
-	// String english = I18nCache.DEFAULT_TRANSLATION;
-	// String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
-	// for (Translation translation : translations) {
-	// if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
-	// english = translation.getValue();
-	// }
-	//
-	// if (locale.getLanguage().equals(translation.getLocale())
-	// && !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
-	// notVariantTranslation = translation.getValue();
-	// }
-	//
-	// if (Strings.isNotEmpty(locale.getCountry())) {
-	// if (translation.getLocale().equals(locale.getLanguage() + "_" +
-	// locale.getCountry())) {
-	// return translation.getValue();
-	// }
-	// }
-	// }
-	//
-	// if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
-	// return notVariantTranslation;
-	// }
-	//
-	// return english;
-	// }
+	private String getUserTranslation(Locale locale, Collection<Translation> translations) {
+		String english = I18nCache.DEFAULT_TRANSLATION;
+		String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
+		for (Translation translation : translations) {
+			if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
+				english = translation.getValue();
+			}
+
+			if (locale.getLanguage().equals(translation.getLocale())
+					&& !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
+				notVariantTranslation = translation.getValue();
+			}
+
+			if (Strings.isNotEmpty(locale.getCountry())) {
+				if (translation.getLocale().equals(locale.getLanguage() + "_" + locale.getCountry())) {
+					return translation.getValue();
+				}
+			}
+		}
+
+		if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
+			return notVariantTranslation;
+		}
+
+		return english;
+	}
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
@@ -394,7 +363,7 @@ public class EmailBuilder {
 	 * subject and body. If edited, we're not going to pull up any translations
 	 * and send out the email as is. MassMailer and everywhere else we edit the
 	 * body/subject for an email should set this flag to true.
-	 * 
+	 *
 	 * @param edited
 	 */
 	public void setEdited(boolean edited) {
@@ -418,7 +387,6 @@ public class EmailBuilder {
 	}
 
 	public void setFromAddressAsCSRFor(ContractorAccount contractor) {
-		setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<" + contractor.getCurrentCsr().getEmail()
-				+ ">");
+		setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<" + contractor.getCurrentCsr().getEmail() + ">");
 	}
 }

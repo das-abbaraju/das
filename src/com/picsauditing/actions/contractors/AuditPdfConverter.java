@@ -28,7 +28,6 @@ import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.audits.AuditActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -41,7 +40,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.TranslationUtil;
 
 @SuppressWarnings("serial")
 public class AuditPdfConverter extends AuditActionSupport {
@@ -62,18 +60,16 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin()) {
+		if (!forceLogin())
 			return LOGIN;
-		}
 		limitedView = true;
 		if (auditID > 0) {
 			findConAudit();
 		} else {
 			findContractor();
-		}
+        }
 
-		// commas in the filename in Content-Disposition will make it think
-		// there are multiple dispo headers
+        // commas in the filename in Content-Disposition will make it think there are multiple dispo headers
 		String filename = contractor.getName().replaceAll(",", "");
 		filename += ".pdf";
 
@@ -105,8 +101,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 				loadAuditDocument(document, conAudit);
 			} else {
 				for (ContractorAudit audit : contractor.getAudits()) {
-					if (!audit.isExpired()
-							&& (audit.getAuditType().isPicsPqf() || audit.getAuditType().isAnnualAddendum())) {
+					if (!audit.isExpired() && (audit.getAuditType().isPicsPqf() || audit.getAuditType().isAnnualAddendum())) {
 						loadAuditDocument(document, audit);
 					}
 					document.newPage();
@@ -119,11 +114,10 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void loadAuditDocument(Document document, ContractorAudit audit) throws DocumentException {
 		String auditName = audit.getAuditType().getName().toString() + " - ";
-		if (audit.getAuditType().isPicsPqf()) {
+		if (audit.getAuditType().isPicsPqf())
 			auditName += DateBean.format(audit.getEffectiveDateLabel(), "MMM yyyy");
-		} else if (!Strings.isEmpty(audit.getAuditFor())) {
+		else if (!Strings.isEmpty(audit.getAuditFor()))
 			auditName += audit.getAuditFor();
-		}
 
 		Paragraph name = new Paragraph(auditName, auditFont);
 		name.setAlignment(Element.ALIGN_CENTER);
@@ -134,9 +128,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 		Map<AuditCategory, AuditCatData> allCategories = getCategories(audit, true);
 
 		for (AuditCategory category : allCategories.keySet()) {
-			if (category.getParent() == null) {
+			if (category.getParent() == null)
 				handleCategory(document, allCategories, answerMap, category, 0);
-			}
 		}
 	}
 
@@ -150,9 +143,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 			document.add(categoryParagraph);
 
 			for (AuditQuestion auditQuestion : category.getQuestions()) {
-				if (auditQuestion.isCurrent()) {
+				if (auditQuestion.isCurrent())
 					handleQuestion(document, auditQuestion, answerMap, indentLevel);
-				}
 			}
 
 			for (AuditCategory subCategory : category.getSubCategories()) {
@@ -163,9 +155,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void handleQuestion(Document document, AuditQuestion auditQuestion, AnswerMap answerMap, int indentLevel)
 			throws DocumentException {
-		if (auditQuestion.getTitle() != null
-				&& TranslationUtil.isTranslation(auditQuestion, "title", auditQuestion.getTitle())) {
-			Paragraph questionTitleParagraph = new Paragraph(20, Utilities.stripTags(auditQuestion.getTitle()),
+		if (auditQuestion.getTitle() != null && auditQuestion.getTitle().isExists()) {
+			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle().getStripTags(),
 					questionTitleFont);
 			questionTitleParagraph.setIndentationLeft(indentLevel + 30);
 			document.add(questionTitleParagraph);
@@ -174,9 +165,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 		Paragraph questionAnswer = new Paragraph();
 		questionAnswer.setIndentationLeft(indentLevel + 30);
 		String questionLine = "";
-		if (auditQuestion.isRequired()) {
+		if (auditQuestion.isRequired())
 			questionLine += "* ";
-		}
 		questionLine += auditQuestion.getNumber() + ". " + auditQuestion.getName();
 
 		processQuestion(questionAnswer, questionLine);
@@ -266,11 +256,10 @@ public class AuditPdfConverter extends AuditActionSupport {
 				if (!pdfReader.isEncrypted()) {
 					for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
 						Rectangle rec = pdfReader.getPageSizeWithRotation(i);
-						if (rec.getWidth() > rec.getHeight()) {
+						if (rec.getWidth() > rec.getHeight())
 							document.setPageSize(PageSize.A3.rotate());
-						} else {
+						else
 							document.setPageSize(PageSize.A4);
-						}
 						document.newPage();
 						PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, i);
 						cb.addTemplate(page, 0, 0);

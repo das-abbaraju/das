@@ -14,9 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
@@ -56,17 +55,11 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	private AuditType auditType;
 	private AuditCategory parent;
-
-	// private TranslatableString name;
-	private String name;
-
+	private TranslatableString name;
 	private int number;
 	private int numRequired;
 	private int numQuestions;
-
-	// private TranslatableString helpText;
-	private String helpText;
-
+	private TranslatableString helpText;
 	private boolean hasHelpText;
 	private String uniqueCode;
 	private float scoreWeight = 0f;
@@ -122,39 +115,36 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public AuditCategory getTopParent() {
-		if (parent != null) {
+		if (parent != null)
 			return parent.getTopParent();
-		}
 
 		return this;
 	}
 
 	@Transient
 	public AuditType getParentAuditType() {
-		if (auditType == null) {
+		if (auditType == null)
 			return parent.getParentAuditType();
-		}
 
 		return auditType;
 	}
 
 	@Transient
-	public String getName() {
-		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
+	public TranslatableString getName() {
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
 	@Transient
 	@Override
 	public String getI18nKey() {
-		if (Strings.isEmpty(uniqueCode)) {
+		if (Strings.isEmpty(uniqueCode))
 			return super.getI18nKey();
-		} else {
+		else
 			return "AuditCategory." + uniqueCode;
-		}
 	}
 
 	@Column(nullable = false)
@@ -169,18 +159,16 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public String getFullNumber() {
-		if (parent == null) {
+		if (parent == null)
 			return "" + number;
-		}
 
 		return parent.getFullNumber() + "." + number;
 	}
 
 	@Transient
 	public String getFullyQualifiedName() {
-		if (parent == null) {
+		if (parent == null)
 			return getAuditType().getName().toString() + " - " + name;
-		}
 
 		return parent.getFullyQualifiedName() + " : " + name;
 	}
@@ -239,19 +227,18 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		for (AuditQuestion question : questions) {
 			if (question.isCurrent()) {
 				numQuestions++;
-				if (question.isRequired()) {
+				if (question.isRequired())
 					numRequired++;
-				}
 			}
 		}
 	}
 
 	@Transient
-	public String getHelpText() {
-		return new LlewellynTranslatableString(getI18nKey("helpText")).toTranslatedString();
+	public TranslatableString getHelpText() {
+		return helpText;
 	}
 
-	public void setHelpText(String helpText) {
+	public void setHelpText(TranslatableString helpText) {
 		this.helpText = helpText;
 	}
 
@@ -281,12 +268,10 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public boolean isCurrent(Date now) {
-		if (effectiveDate != null && effectiveDate.after(now)) {
+		if (effectiveDate != null && effectiveDate.after(now))
 			return false;
-		}
-		if (expirationDate != null && expirationDate.before(now)) {
+		if (expirationDate != null && expirationDate.before(now))
 			return false;
-		}
 		return true;
 	}
 
@@ -362,9 +347,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	private void addAncestors(List<AuditCategory> ancestors, AuditCategory category) {
-		if (category.getParent() != null) {
+		if (category.getParent() != null)
 			addAncestors(ancestors, category.getParent());
-		}
 
 		ancestors.add(category);
 	}
@@ -409,29 +393,25 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		int cmp = getAuditType().compareTo(other.getAuditType());
 
-		if (cmp != 0) {
+		if (cmp != 0)
 			return cmp;
-		}
 
 		String[] thisFullNumber = getFullNumber().split("\\.");
 		String[] otherFullNumber = other.getFullNumber().split("\\.");
 
 		for (int i = 0; i < Math.max(thisFullNumber.length, otherFullNumber.length); i++) {
-			if (thisFullNumber.length - 1 < i) {
+			if (thisFullNumber.length-1 < i)
 				return -1;
-			}
-			if (otherFullNumber.length - 1 < i) {
+			if (otherFullNumber.length-1 < i)
 				return 1;
-			}
 
 			int thisNumber = Integer.parseInt(thisFullNumber[i]);
 			int otherNumber = Integer.parseInt(otherFullNumber[i]);
 
-			int numCompare = thisNumber - otherNumber;
+			int numCompare = thisNumber-otherNumber;
 
-			if (numCompare != 0) {
+			if (numCompare != 0)
 				return numCompare;
-			}
 		}
 
 		return getFullNumber().compareTo(other.getFullNumber());
@@ -454,11 +434,10 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public List<String> getAvailableRequiredLanguages() {
-		if (parent != null) {
+		if (parent != null)
 			return parent.getLanguages();
-		} else {
+		else
 			return auditType.getLanguages();
-		}
 	}
 
 	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
@@ -486,12 +465,10 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Transient
 	public boolean requiresViewFullPQFPermission() {
-		if (id == WORK_HISTORY) {
+		if (id == WORK_HISTORY)
 			return true;
-		}
-		if (id == FINANCIAL_HISTORY) {
+		if (id == FINANCIAL_HISTORY)
 			return true;
-		}
 		return false;
 	}
 }

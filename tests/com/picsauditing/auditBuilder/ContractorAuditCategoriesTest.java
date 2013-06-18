@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Set;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,7 +21,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class ContractorAuditCategoriesTest {
 	@Mock
@@ -34,15 +32,9 @@ public class ContractorAuditCategoriesTest {
 
 	private AuditType testAuditType;
 
-	@AfterClass
-	public static void classTearDown() {
-		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 		testAuditType = EntityFactory.makeAuditType(100);
 		categories = new ArrayList<AuditCatData>();
 		createCategory();
@@ -55,8 +47,8 @@ public class ContractorAuditCategoriesTest {
 		requiredCategories.add(acd2.getCategory());
 
 		when(permissions.isOperatorCorporate()).thenReturn(true);
-		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions,
-				requiredCategories, categories);
+		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories,
+				categories);
 		assertEquals(0, answer.size());
 	}
 
@@ -68,8 +60,8 @@ public class ContractorAuditCategoriesTest {
 
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ViewFullPQF)).thenReturn(true);
-		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions,
-				requiredCategories, categories);
+		Map<AuditCategory, AuditCatData> answer = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories,
+				categories);
 		assertEquals(1, answer.size());
 	}
 
@@ -138,7 +130,7 @@ public class ContractorAuditCategoriesTest {
 		when(permissions.isContractor()).thenReturn(true);
 		NavigableSet<AuditCategory> answer = ContractorAuditCategories.getApplicableCategories(permissions, null,
 				categories).navigableKeySet();
-
+		
 		assertEquals(1, answer.first().getNumber());
 		assertEquals(3, answer.last().getNumber());
 	}

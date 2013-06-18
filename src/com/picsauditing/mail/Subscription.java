@@ -4,6 +4,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 
 public enum Subscription implements Translatable {
@@ -202,28 +203,21 @@ public enum Subscription implements Translatable {
 			setDefaultTimePeriod(SubscriptionTimePeriod.Weekly);
 			setRequiredForAdmin(true);
 		}
-		// TODO: Write up a PQF Submitted subscription, find out what that was
-		// for.
-		// },
-		// PQFSubmitted {
-		// public void initialize() {
-		// setTemplateID(220);
-		// setSupportedTimePeriods(new SubscriptionTimePeriod[] {
-		// SubscriptionTimePeriod.None,
-		// SubscriptionTimePeriod.Daily });
-		// setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
-		// setRequiredForAdmin(true);
-		// }
+		// TODO: Write up a PQF Submitted subscription, find out what that was for. 
+//	},
+//	PQFSubmitted {
+//		public void initialize() {
+//			setTemplateID(220);
+//			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
+//					SubscriptionTimePeriod.Daily });
+//			setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
+//			setRequiredForAdmin(true);
+//		}
 	};
 
 	private int templateID;
-
-	// private TranslatableString description;
-	// private TranslatableString longDescription;
-
-	private String description;
-	private String longDescription;
-
+	private TranslatableString description;
+	private TranslatableString longDescription;
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
 			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
 	private boolean requiredForOperator = false;
@@ -251,35 +245,19 @@ public enum Subscription implements Translatable {
 		this.templateID = templateID;
 	}
 
-	// public TranslatableString getDescription() {
-	// return description;
-	// }
-	//
-	// public void setDescription(TranslatableString description) {
-	// this.description = description;
-	// }
-	//
-	// public TranslatableString getLongDescription() {
-	// return longDescription;
-	// }
-	//
-	// public void setLongDescription(TranslatableString longDescription) {
-	// this.longDescription = longDescription;
-	// }
-
-	public String getDescription() {
+	public TranslatableString getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(TranslatableString description) {
 		this.description = description;
 	}
 
-	public String getLongDescription() {
+	public TranslatableString getLongDescription() {
 		return longDescription;
 	}
 
-	public void setLongDescription(String longDescription) {
+	public void setLongDescription(TranslatableString longDescription) {
 		this.longDescription = longDescription;
 	}
 

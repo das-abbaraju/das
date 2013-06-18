@@ -14,15 +14,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -35,13 +34,8 @@ public class InvoiceFee extends BaseTable {
 	public final static int VAT = 201;
 	public final static int IMPORTFEE = 340;
 	public final static int IMPORTFEEZEROLEVEL = 343;
-
-	// private TranslatableString fee;
-	// private TranslatableString description;
-
-	private String fee;
-	private String description;
-
+	private TranslatableString fee;
+	private TranslatableString description;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private BigDecimal ratePercent = BigDecimal.ZERO;
 	private boolean visible = true;
@@ -62,31 +56,21 @@ public class InvoiceFee extends BaseTable {
 		this.id = id;
 	}
 
-	// @Transient
-	// public TranslatableString getFee() {
-	// return fee;
-	// }
-	//
-	// public void setFee(TranslatableString fee) {
-	// this.fee = fee;
-	// }
-
 	@Transient
-	public String getFee() {
-		return new LlewellynTranslatableString(getI18nKey("fee")).toTranslatedString();
-		// return fee;
+	public TranslatableString getFee() {
+		return fee;
 	}
 
-	public void setFee(String fee) {
+	public void setFee(TranslatableString fee) {
 		this.fee = fee;
 	}
 
 	@Transient
-	public String getDescription() {
+	public TranslatableString getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(TranslatableString description) {
 		this.description = description;
 	}
 
@@ -117,7 +101,7 @@ public class InvoiceFee extends BaseTable {
 
 	/**
 	 * Activation, Membership, Misc, Free, Other
-	 * 
+	 *
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -138,8 +122,8 @@ public class InvoiceFee extends BaseTable {
 		this.minFacilities = minFacilities;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
-	public int getMaxFacilities() {
+    @ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
+    public int getMaxFacilities() {
 		return maxFacilities;
 	}
 

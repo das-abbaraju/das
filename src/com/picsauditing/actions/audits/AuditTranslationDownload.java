@@ -18,7 +18,6 @@ import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -26,12 +25,11 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.TranslationUtil;
 import com.picsauditing.util.excel.ExcelBuilder;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -40,8 +38,8 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(AuditTranslationDownload.class);
 	private Map<String, Column> reportColumns = new HashMap<String, Column>();
 	private ExcelBuilder excelBuilder = new ExcelBuilder();
-
-	private static final Comparator<AuditCatData> CATEGORY_COMPARATOR = new Comparator<AuditCatData>() {
+	
+	private static final Comparator<AuditCatData> CATEGORY_COMPARATOR = new Comparator<AuditCatData>(){
 		public int compare(AuditCatData o1, AuditCatData o2) {
 			return o1.getCategory().compareTo(o2.getCategory());
 		}
@@ -85,97 +83,59 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 	private void addSheet(ContractorAudit conAudit) {
 		String sheetName = conAudit.getAuditType().getName().toString();
 		ReportResults data = new ReportResults();
-
+		
 		List<AuditCatData> sortedAuditCatData = conAudit.getCategories();
 		Collections.sort(sortedAuditCatData, CATEGORY_COMPARATOR);
 		for (AuditCatData auditCatData : sortedAuditCatData) {
 			addCategory(data, auditCatData);
 		}
-
+		
 		excelBuilder.addSheet(sheetName, data);
 	}
 
 	private void addCategory(ReportResults data, AuditCatData auditCatData) {
-		if (!auditCatData.isApplies()) {
+		if (!auditCatData.isApplies())
 			return;
-		}
-
+		
 		AuditCategory category = auditCatData.getCategory();
-
-		data.addRow(addRow(category.getI18nKey("name"), category.getName(), category.getFullNumber(), "Category Name"));
-		if (TranslationUtil.isTranslation(category, "helpText", category.getHelpText())) {
-			data.addRow(addRow(category.getI18nKey("helpText"), category.getHelpText(), category.getFullNumber(),
-					"Category Help"));
-		}
-
+		
+		data.addRow(addRow(category.getName(), category.getFullNumber(), "Category Name"));
+		if (category.getHelpText().isExists())
+			data.addRow(addRow(category.getHelpText(), category.getFullNumber(), "Category Help"));
+		
 		List<AuditQuestion> sortedQuestions = category.getQuestions();
 		Collections.sort(sortedQuestions);
 
 		for (AuditQuestion question : sortedQuestions) {
 			if (question.isValidQuestion(new Date())) {
 				String order = category.getFullNumber() + "." + question.getNumber();
-				if (TranslationUtil.isTranslation(question, "title", question.getTitle())) {
-					data.addRow(addRow(question.getI18nKey("title"), question.getTitle(), order, "Question Heading"));
-				}
-
-				data.addRow(addRow(question.getI18nKey("name"), question.getName(), order, "Question Text"));
-
-				if (TranslationUtil.isTranslation(question, "columnHeader", question.getColumnHeader())) {
-					data.addRow(addRow(question.getI18nKey("columnHeader"), question.getColumnHeader(), order,
-							"Question Text Short"));
-				}
-
-				if (TranslationUtil.isTranslation(question, "helpText", question.getHelpText())) {
-					data.addRow(addRow(question.getI18nKey("helpText"), question.getHelpText(), order, "Question Help"));
-				}
-
-				if (TranslationUtil.isTranslation(question, "requirement", question.getRequirement())) {
-					data.addRow(addRow(question.getI18nKey("requirement"), question.getRequirement(), order,
-							"Question Requirement"));
-				}
+				if (question.getTitle().isExists())
+					data.addRow(addRow(question.getTitle(), order, "Question Heading"));
+				data.addRow(addRow(question.getName(), order, "Question Text"));
+				if (question.getColumnHeader().isExists())
+					data.addRow(addRow(question.getColumnHeader(), order, "Question Text Short"));
+				if (question.getHelpText().isExists())
+					data.addRow(addRow(question.getHelpText(), order, "Question Help"));
+				if (question.getRequirement().isExists())
+					data.addRow(addRow(question.getRequirement(), order, "Question Requirement"));
 			}
 		}
 	}
 
-	// private ReportRow addRow(TranslatableString translatableString, String
-	// order, String fieldType) {
-	// Map<Column, Object> row = new HashMap<Column, Object>();
-	// row.put(reportColumns.get("msgKey"), translatableString.getKey());
-	// row.put(reportColumns.get("order"), order);
-	// row.put(reportColumns.get("type"), fieldType);
-	// String toTranslation =
-	// translatableString.toString(permissions.getLocale());
-	// String fromTranslation = translatableString.toString(Locale.ENGLISH);
-	// if (translatableString.getKey().equals(toTranslation) ||
-	// fromTranslation.equals(toTranslation)) {
-	// toTranslation = "";
-	// }
-	// row.put(reportColumns.get("toTranslation"), toTranslation);
-	// row.put(reportColumns.get("fromTranslation"), fromTranslation);
-	// // row.put(reportColumns.get("fromPreviousTranslation"), "");
-	// return new ReportRow(row);
-	// }
-
-	private ReportRow addRow(String key, String translation, String order, String fieldType) {
+	private ReportRow addRow(TranslatableString translatableString, String order, String fieldType) {
 		Map<Column, Object> row = new HashMap<Column, Object>();
-		row.put(reportColumns.get("msgKey"), translation);
+		row.put(reportColumns.get("msgKey"), translatableString.getKey());
 		row.put(reportColumns.get("order"), order);
 		row.put(reportColumns.get("type"), fieldType);
-		// String toTranslation =
-		// translatableString.toString(permissions.getLocale());
-		String baseTranslation = getEnglishTranslation(key); // translatableString.toString(Locale.ENGLISH);
-		if (key.equals(translation) || baseTranslation.equals(translation)) {
-			translation = Strings.EMPTY_STRING;
+		String toTranslation = translatableString.toString(permissions.getLocale());
+		String fromTranslation = translatableString.toString(Locale.ENGLISH);
+		if (translatableString.getKey().equals(toTranslation) || fromTranslation.equals(toTranslation)) {
+			toTranslation = "";
 		}
-
-		row.put(reportColumns.get("toTranslation"), translation);
-		row.put(reportColumns.get("fromTranslation"), baseTranslation);
+		row.put(reportColumns.get("toTranslation"), toTranslation);
+		row.put(reportColumns.get("fromTranslation"), fromTranslation);
 		// row.put(reportColumns.get("fromPreviousTranslation"), "");
 		return new ReportRow(row);
-	}
-
-	private String getEnglishTranslation(String key) {
-		return I18nCache.getInstance().getText(key, Locale.ENGLISH);
 	}
 
 	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {

@@ -1,35 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.builders.AuditTypeBuilder;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -72,9 +56,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
-	// protected TranslatableString name;
-	protected String name;
-
+	protected TranslatableString name;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 	protected int displayOrder = 100;
 	protected String description;
@@ -99,8 +81,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	protected List<AuditCategory> topCategories;
 
-	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[] { 145, 146,
-			143, 170, 261, 168, 148, 147, 169, 166, 167, 144 }));
+	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[]{145, 146,
+			143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
 	public AuditType() {
 	}
@@ -125,11 +107,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
-	public String getName() {
-		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
+	public TranslatableString getName() {
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
@@ -162,7 +144,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	/**
 	 * More than one audit of this type can be active for a contractor at a time
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isHasMultiple() {
@@ -229,7 +211,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 * Can the existing audit be renewed (aka extended aka resubmitted)? <br>
 	 * Examples of true: PQF, Site Specific Audits <br>
 	 * Examples of false: Desktop, Office, Field, Policies
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(type = FieldType.Boolean, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
@@ -294,9 +276,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		if (topCategories == null) {
 			topCategories = new ArrayList<AuditCategory>();
 			for (AuditCategory cat : categories) {
-				if (cat.getParent() == null) {
+				if (cat.getParent() == null)
 					topCategories.add(cat);
-				}
 			}
 		}
 
@@ -314,38 +295,31 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	/**
 	 * Return the name of the icon we use on reports for each audit type
-	 * 
+	 *
 	 * @param auditTypeID
 	 * @return
 	 */
 	public static String getIcon(int auditTypeID) {
 		String auditType = "";
-		if (auditTypeID == AuditType.PQF) {
+		if (auditTypeID == AuditType.PQF)
 			auditType = "PQF";
-		}
-		if (auditTypeID == AuditType.DESKTOP) {
+		if (auditTypeID == AuditType.DESKTOP)
 			auditType = "Desktop";
-		}
-		if (auditTypeID == AuditType.OFFICE) {
+		if (auditTypeID == AuditType.OFFICE)
 			auditType = "Office";
-		}
-		if (auditTypeID == AuditType.DA) {
+		if (auditTypeID == AuditType.DA)
 			auditType = "DA";
-		}
 		return "icon_" + auditType + ".gif";
 	}
 
 	@Transient
 	public boolean isShowManual() {
-		if (this.id == OFFICE) {
+		if (this.id == OFFICE)
 			return true;
-		}
-		if (this.id == DESKTOP) {
+		if (this.id == DESKTOP)
 			return true;
-		}
-		if (this.id == BPIISNCASEMGMT) {
+		if (this.id == BPIISNCASEMGMT)
 			return true;
-		}
 		return false;
 	}
 
@@ -464,9 +438,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
 		for (AuditCategory category : categories) {
-			if (category.getParent() == null) {
+			if (category.getParent() == null)
 				category.addAndRemoveRequiredLanguages(add, remove);
-			}
 		}
 	}
 
@@ -474,9 +447,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		boolean hasMissingChild = false;
 
 		for (AuditCategory category : categories) {
-			if (category.getParent() == null) {
+			if (category.getParent() == null)
 				hasMissingChild = hasMissingChild || category.hasMissingChildRequiredLanguages();
-			}
 		}
 
 		return hasMissingChild || getLanguages().isEmpty();

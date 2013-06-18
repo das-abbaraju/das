@@ -9,6 +9,7 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowState;
 import com.picsauditing.jpa.entities.WorkflowStep;
@@ -46,9 +47,8 @@ public class ManageWorkFlow extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin()) {
+		if (!forceLogin())
 			return LOGIN;
-		}
 
 		tryPermissions(OpPerms.ManageAuditWorkFlow);
 		if (id > 0) {
@@ -58,9 +58,8 @@ public class ManageWorkFlow extends PicsActionSupport {
 		if (button != null) {
 			tryPermissions(OpPerms.ManageAuditWorkFlow, OpType.Edit);
 			// Get workflow steps
-			if ("getSteps".equals(button) && workFlow != null) {
+			if ("getSteps".equals(button) && workFlow != null)
 				return "steps";
-			}
 
 			// create
 			if ("create".equalsIgnoreCase(button)) {
@@ -94,26 +93,22 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setAuditColumns(permissions);
 				ws.setOldStatus(oldStatus);
 				ws.setNewStatus(newStatus);
-				if (emailTemplateID > 0) {
+				if (emailTemplateID > 0)
 					ws.setEmailTemplate(templateDAO.find(emailTemplateID));
-				} else {
+				else
 					ws.setEmailTemplate(null);
-				}
 				ws.setNoteRequired(noteRequired);
-
-				if (Strings.isEmpty(label)) {
+				
+				if (Strings.isEmpty(label))
 					label = newStatus.name();
-				}
-				// TranslatableString buttonLabel = new TranslatableString();
-				// buttonLabel.putTranslation("en", label, true);
-				// ws.setName(buttonLabel.toString());
-				ws.setName(label);
-
+				TranslatableString buttonLabel = new TranslatableString();
+				buttonLabel.putTranslation("en", label, true);
+				ws.setName(buttonLabel);
+				
 				if (!Strings.isEmpty(helpText)) {
-					// TranslatableString text = new TranslatableString();
-					// text.putTranslation("en", helpText, true);
-					// ws.setHelpText(text.toString());
-					ws.setHelpText(helpText);
+					TranslatableString text = new TranslatableString();
+					text.putTranslation("en", helpText, true);
+					ws.setHelpText(text);
 				}
 
 				workFlowDAO.save(ws);
@@ -133,12 +128,11 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setWorkflow(workFlow);
 				ws.setAuditColumns(permissions);
 				ws.setStatus(status);
-				if (Strings.isEmpty(label)) {
+				if (Strings.isEmpty(label))
 					label = status.name();
-				}
-				// TranslatableString name = new TranslatableString();
-				// name.putTranslation("en", label, true);
-				ws.setName(label);
+				TranslatableString name = new TranslatableString();
+				name.putTranslation("en", label, true);
+				ws.setName(name);
 				ws.setContractorCanEdit(contractorCanEdit);
 				ws.setOperatorCanEdit(operatorCanEdit);
 				dao.save(ws);
@@ -171,11 +165,10 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setAuditColumns(permissions);
 				ws.setOldStatus(oldStatus);
 				ws.setNewStatus(newStatus);
-				if (emailTemplateID > 0) {
+				if (emailTemplateID > 0)
 					ws.setEmailTemplate(templateDAO.find(emailTemplateID));
-				} else {
+				else
 					ws.setEmailTemplate(null);
-				}
 				ws.setNoteRequired(noteRequired);
 				workFlowDAO.save(ws);
 				return "steps";
@@ -196,14 +189,14 @@ public class ManageWorkFlow extends PicsActionSupport {
 					addActionError("Could not delete state, please try again.");
 					return "steps";
 				}
-
+				
 				if (workFlow.isUsingState(ws.getStatus())) {
 					addActionError("Could not delete state; it is in use.");
 					return "steps";
-
+					
 				}
 				workFlowDAO.remove(ws);
-
+				
 				return "steps";
 			}
 			if ("editStatus".equalsIgnoreCase(button)) {
@@ -223,7 +216,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 		}
 		return SUCCESS;
 	}
-
+	
 	public List<Workflow> getWorkflowList() {
 		return workFlowDAO.findAll();
 	}
@@ -257,11 +250,10 @@ public class ManageWorkFlow extends PicsActionSupport {
 	}
 
 	public void setOldStatus(String oldStatus) {
-		if (oldStatus != null && !oldStatus.equals(AuditStatus.DEFAULT)) {
+		if (oldStatus != null && !oldStatus.equals(AuditStatus.DEFAULT))
 			this.oldStatus = AuditStatus.valueOf(oldStatus);
-		} else {
+		else
 			this.oldStatus = null;
-		}
 	}
 
 	public AuditStatus getNewStatus() {

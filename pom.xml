@@ -945,7 +945,7 @@
       		<groupId>ApprovalTests</groupId>
       		<artifactId>ApprovalTests</artifactId>
       		<version>1.0</version>
-      		<!-- <scope>test</scope> -->
+      		<scope>test</scope>
     	</dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

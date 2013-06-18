@@ -1,42 +1,26 @@
 package com.picsauditing.jpa.entities;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.Collator;
+import java.util.*;
 
 @Entity
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Country /* extends BaseTranslatable */implements Comparable<Country>, Serializable, Autocompleteable,
-		IsoCode, Translatable {
+public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 	public static final String DEFAULT_COUNTRY_SUBDIVISION_LABEL = "ContractorAccount.countrySubdivision";
 	public static final String COUNTRY_SUBDIVISION_LABEL_FORMAT = "Country.%s.SubdivisionLabel";
 
@@ -47,16 +31,15 @@ public class Country /* extends BaseTranslatable */implements Comparable<Country
 	public static final String CANADA_ISO_CODE = "CA";
 	public static final String US_ISO_CODE = "US";
 
-	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
-			.asList(US_ISO_CODE, CANADA_ISO_CODE)));
+	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays.asList(US_ISO_CODE, CANADA_ISO_CODE)));
 
-	public static final Comparator<Country> NAME_COMPARATOR = new Comparator<Country>() {
-		Collator collator = Collator.getInstance();
+    public static final Comparator<Country> NAME_COMPARATOR =  new Comparator<Country>() {
+        Collator collator = Collator.getInstance();
 
-		public int compare(Country o1, Country o2) {
-			return collator.compare(o1.getName(), o2.getName());
-		}
-	};
+        public int compare(Country o1, Country o2) {
+            return collator.compare(o1.getName(), o2.getName());
+        }
+    };
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	/*
@@ -71,9 +54,8 @@ public class Country /* extends BaseTranslatable */implements Comparable<Country
 	 */
 
 	// The 17 Countries in the EuroZone (that have adopted the Euro)
-	private static final Set<String> EUROZONE = Collections
-			.unmodifiableSet(new HashSet<String>(Arrays.asList("AT", "BE", "CY", "DE", "EE", "ES", "FI",
-					FRANCE_ISO_CODE, "GR", "IE", "IT", "LU", "MT", "NL", "PT", "SI", "SK")));
+	private static final Set<String> EUROZONE = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("AT",
+			"BE", "CY", "DE", "EE", "ES", "FI", FRANCE_ISO_CODE, "GR", "IE", "IT", "LU", "MT", "NL", "PT", "SI", "SK")));
 
 	// The 10 additional countries that are in the European Union, but not in
 	// the EuroZone (i.e. that have not yet adopted the Euro, or never will)
@@ -81,14 +63,13 @@ public class Country /* extends BaseTranslatable */implements Comparable<Country
 			.asList("BG", "CZ", "DK", UK_ISO_CODE, "GI", "HU", "LT", "LV", "PL", "RO", "SE")));
 
 	protected String isoCode;
-	// protected TranslatableString name;
-	protected String name;
+	protected TranslatableString name;
 	protected String english;
 	protected String phone;
 	protected String salesPhone;
 	protected String fax;
 	protected Double corruptionPerceptionIndex;
-	protected boolean proforma;
+    protected boolean proforma;
 
 	protected Currency currency = Currency.USD;
 
@@ -119,10 +100,10 @@ public class Country /* extends BaseTranslatable */implements Comparable<Country
 
 	@Transient
 	public String getName() {
-		return new LlewellynTranslatableString(getI18nKey()).toTranslatedString();
+		return name.toString();
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
@@ -199,15 +180,15 @@ public class Country /* extends BaseTranslatable */implements Comparable<Country
 		this.currency = curreny;
 	}
 
-	public boolean isProforma() {
-		return proforma;
-	}
+    public boolean isProforma() {
+        return proforma;
+    }
 
-	public void setProforma(boolean proforma) {
-		this.proforma = proforma;
-	}
+    public void setProforma(boolean proforma) {
+        this.proforma = proforma;
+    }
 
-	@OneToMany(mappedBy = "country")
+    @OneToMany(mappedBy = "country")
 	public List<InvoiceFeeCountry> getAmountOverrides() {
 		return this.amountOverrides;
 	}

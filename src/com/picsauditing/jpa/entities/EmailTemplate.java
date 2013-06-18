@@ -13,8 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
@@ -35,20 +33,16 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	private String templateName = "";
 	private String subject;
 	private String body;
-
-	// private TranslatableString translatedSubject;
-	// private TranslatableString translatedBody;
-	private String translatedSubject;
-	private String translatedBody;
-
+	private TranslatableString translatedSubject;
+	private TranslatableString translatedBody;
 	private String recipient;
 	private ListType listType;
 	private boolean allowsVelocity = false;
 	private boolean html = false;
 	private boolean translated = false;
 
-	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections
-			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71, 85, 86)));
+	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71,
+			85, 86)));
 
 	@Column(nullable = false)
 	public int getAccountID() {
@@ -77,20 +71,20 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	}
 
 	@Transient
-	public String getTranslatedSubject() {
-		return new LlewellynTranslatableString(getI18nKey("translatedSubject")).toTranslatedString();
+	public TranslatableString getTranslatedSubject() {
+		return translatedSubject;
 	}
 
-	public void setTranslatedSubject(String translatedSubject) {
+	public void setTranslatedSubject(TranslatableString translatedSubject) {
 		this.translatedSubject = translatedSubject;
 	}
 
 	@Transient
-	public String getTranslatedBody() {
-		return new LlewellynTranslatableString("translatedBody").toTranslatedString();
+	public TranslatableString getTranslatedBody() {
+		return translatedBody;
 	}
 
-	public void setTranslatedBody(String translatedBody) {
+	public void setTranslatedBody(TranslatableString translatedBody) {
 		this.translatedBody = translatedBody;
 	}
 

@@ -1,11 +1,7 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.toggle.FeatureToggle;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,28 +9,20 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceFeeCountry;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.toggle.FeatureToggle;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
 
 public class TaxServiceTest {
 
 	private TaxService taxService = new TaxService();
 
-	@Mock
-	private InvoiceService invoiceService;
-	@Mock
-	private Invoice invoice;
-	@Mock
-	private Account account;
-	@Mock
-	private FeatureToggle featureToggle;
+	@Mock private InvoiceService invoiceService;
+	@Mock private Invoice invoice;
+	@Mock private Account account;
+	@Mock private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
@@ -57,12 +45,10 @@ public class TaxServiceTest {
 
 	@Test
 	public void testFindTaxInvoiceFee_WhenNoTaxInInvoice_ReturnsNull() {
-		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>() {
-			{
-				add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-				add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			}
-		};
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+		}};
 		when(invoice.getItems()).thenReturn(invoiceItems);
 
 		InvoiceItem foundInvoiceItem = taxService.findTaxInvoiceItem(invoice);
@@ -159,8 +145,7 @@ public class TaxServiceTest {
 	@Test
 	public void testApplyTax_whenInvoiceHasNoTaxAndToggleIsOn_ApplyNewCanadianTax() throws Exception {
 		InvoiceFee taxInvoiceFee = createTaxInvoiceFee(FeeClass.CanadianTax, 5, 9.975);
-		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(
-				taxInvoiceFee);
+		when(invoiceService.getCanadianTaxInvoiceFeeForProvince(any(CountrySubdivision.class))).thenReturn(taxInvoiceFee);
 		ArrayList<InvoiceItem> invoiceItems = buildInvoiceItemsWithoutTax();
 		Invoice invoice = buildInvoice(invoiceItems, Currency.CAD);
 		int beforeInvoiceItemCount = invoice.getItems().size();
@@ -207,24 +192,20 @@ public class TaxServiceTest {
 	}
 
 	private ArrayList<InvoiceItem> buildInvoiceItemsWithTax(final InvoiceFee taxInvoiceFee) {
-		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>() {
-			{
-				add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-				add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-				add(createInvoiceItem(3, taxInvoiceFee, new BigDecimal("15.00")));
-			}
-		};
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+			add(createInvoiceItem(3, taxInvoiceFee, new BigDecimal("15.00")));
+		}};
 
 		return invoiceItems;
 	}
 
 	private ArrayList<InvoiceItem> buildInvoiceItemsWithoutTax() {
-		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>() {
-			{
-				add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
-				add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
-			}
-		};
+		ArrayList<InvoiceItem> invoiceItems = new ArrayList<InvoiceItem>(){{
+			add(createInvoiceItem(1, createInvoiceFee(1, "Fee1"), new BigDecimal("100.00")));
+			add(createInvoiceItem(2, createInvoiceFee(2, "Fee2"), new BigDecimal("200.00")));
+		}};
 
 		return invoiceItems;
 	}
@@ -256,9 +237,9 @@ public class TaxServiceTest {
 	private InvoiceFee createInvoiceFee(int id, String feeName) {
 		InvoiceFee invoiceFee = new InvoiceFee();
 		invoiceFee.setId(id);
-		// TranslatableString fee = new TranslatableString();
-		// fee.setKey(feeName);
-		invoiceFee.setFee(feeName);
+		TranslatableString fee = new TranslatableString();
+		fee.setKey(feeName);
+		invoiceFee.setFee(fee);
 		return invoiceFee;
 	}
 

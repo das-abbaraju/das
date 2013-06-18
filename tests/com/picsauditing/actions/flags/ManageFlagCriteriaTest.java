@@ -1,44 +1,46 @@
 package com.picsauditing.actions.flags;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.test.TranslatorFactorySetup;
+import com.picsauditing.jpa.entities.TranslatableString;
 
 public class ManageFlagCriteriaTest extends PicsTest {
 	ManageFlagCriteria manageFlagCriteria;
 
-	@AfterClass
-	public static void classTearDown() {
-		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
-	}
+	@Mock
+	TranslatableString emptyTranslation;
+
+	@Mock
+	TranslatableString somethingTranslation;
 
 	@Before
 	public void setUp() throws Exception {
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
-
 		super.setUp();
 		MockitoAnnotations.initMocks(this);
 
 		manageFlagCriteria = new ManageFlagCriteria();
 		autowireEMInjectedDAOs(manageFlagCriteria);
+
+		when(somethingTranslation.toString()).thenReturn("Test translation");
 	}
 
 	@Test
 	public void testSave_InputValidation() throws Exception {
 		FlagCriteria flagCriteria = new FlagCriteria();
 
-		flagCriteria.setLabel("Test translation");
-		flagCriteria.setDescription("Test translation");
+		flagCriteria.setLabel(somethingTranslation);
+		flagCriteria.setDescription(somethingTranslation);
 		flagCriteria.setCategory("Audits");
 		flagCriteria.setRequiredLanguages("[\"en\"]");
 		flagCriteria.setDefaultValue("test");
@@ -61,16 +63,16 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		flagCriteria.setDisplayOrder(999);
 
 		// bad label
-		flagCriteria.setLabel(Strings.EMPTY_STRING);
+		flagCriteria.setLabel(emptyTranslation);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setLabel("Test translation");
+		flagCriteria.setLabel(somethingTranslation);
 
 		// bad description
-		flagCriteria.setDescription(Strings.EMPTY_STRING);
+		flagCriteria.setDescription(emptyTranslation);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setDescription("Test translation");
+		flagCriteria.setDescription(somethingTranslation);
 
 		// bad data type
 		flagCriteria.setDataType("boolean");

@@ -44,7 +44,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.search.Database;
-import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class EmployeeDashboardTest {
 	private ContractorAccount contractorAccount;
@@ -62,12 +61,10 @@ public class EmployeeDashboardTest {
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 

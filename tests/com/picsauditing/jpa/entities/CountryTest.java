@@ -48,7 +48,7 @@ public class CountryTest {
 	public void testToString() {
 		// TODO this is barely scratching the surface
 		assertEquals("United States", usa.toString());
-//		usa.name = null;
+		usa.name = null;
 		assertEquals("United States", usa.toString());
 		usa.english = null;
 		assertEquals("US", usa.toString());
