@@ -3,7 +3,8 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     alias: 'widget.reportsettingsmodal',
 
     requires: [
-        'PICS.view.report.settings.SettingsModalTabs'
+        'PICS.view.report.settings.SettingsModalTabs',
+        'PICS.view.report.settings.ReportInfoSetting'
     ],
 
     closeAction: 'hide',

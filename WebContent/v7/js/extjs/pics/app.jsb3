@@ -895,6 +895,11 @@
                     "path": "app/ux/window/"
                 },
                 {
+                    "clsName": "PICS.view.report.settings.ReportInfoSetting",
+                    "name": "ReportInfoSetting.js",
+                    "path": "app/view/report/settings/"
+                },
+                {
                     "clsName": "Ext.panel.Table",
                     "name": "Table.js",
                     "path": "extjs/src/panel/"
