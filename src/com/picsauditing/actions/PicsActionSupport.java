@@ -7,10 +7,7 @@ import com.picsauditing.PICS.MainPage;
 import com.picsauditing.access.*;
 import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
@@ -163,7 +160,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private PicsEnvironment picsEnvironment;
 
 	private PicsEnvironment getEnvironmentDeterminer() {
-	    /*
+		/*
 		 * Note: Lazy-loading like this is often overused in action code
 		 * (because the class only stays instantiated for as long as it takes to
 		 * render the page, and get-accessors normally only get called once in
@@ -1193,6 +1190,25 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	private enum PhoneNumberType {
-		FAX, MAIN, SALES;
+		FAX, MAIN, SALES
+	}
+
+	public String getLocalizedPhoneNumberForUser(User user) {
+		return getLocalizedPhoneNumberForUser(user, null);
+	}
+
+	public String getLocalizedPhoneNumberForUser(User user, Country country) {
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_COUNTRY_PHONE_NUMBER)
+				&& user.getPhone().length() <= 4) {
+			String format = "%s x%s";
+
+			if (country != null) {
+				return String.format(format, country.getPhone(), user.getPhone());
+			} else {
+				return String.format(format, getPicsPhoneNumber(), user.getPhone());
+			}
+		}
+
+		return user.getPhone();
 	}
 }

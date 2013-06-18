@@ -33,6 +33,7 @@ public interface FeatureToggle {
 	String TOGGLE_REGISTRATION_AUTOFILL = "Toggle.RegistrationAutoFill";
 	String TOGGLE_SUPPRESS_WELCOME_EMAILS = "Toggle.SuppressWelcomeEmails";
 	String TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER = "Toggle.TranslationServiceAdapter";
+	String TOGGLE_COUNTRY_PHONE_NUMBER = "Toggle.CountryPhoneNumber";
 
 	boolean isFeatureEnabled(String toggleName);
 
