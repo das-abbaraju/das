@@ -16,18 +16,17 @@ import java.util.List;
 public class ReportPivotBuilderTest {
     private final Logger logger = LoggerFactory.getLogger(ReportPivotBuilderTest.class);
 
-    @Test
-    @Ignore
-    public void testSimplePivot() throws Exception {
-        final List<Column> columns = PivotTestData.getColumnsForFlagChart();
-        final List<List<Serializable>> data = PivotTestData.getDataForFlagChart();
-
-        ReportResults results = ReportResultsFromArrayLists.build(columns, data);
-
-        ReportPivotBuilder builder = new ReportPivotBuilder();
-        ReportResults converted = builder.convertToPivot(results);
-
-        String actual = "Original \n" + results.toString() + "\n\nConverted\n" + converted.toString();
-        Approvals.verify(actual);
-    }
+//    @Test
+//    public void testSimplePivot() throws Exception {
+//        final List<Column> columns = PivotTestData.getColumnsForFlagChart();
+//        final List<List<Serializable>> data = PivotTestData.getDataForFlagChart();
+//
+//        ReportResults results = ReportResultsFromArrayLists.build(columns, data);
+//
+//        ReportPivotBuilder builder = new ReportPivotBuilder();
+//        ReportResults converted = builder.convertToPivot(results);
+//
+//        String actual = "Original \n" + results.toString() + "\n\nConverted\n" + converted.toString();
+//        Approvals.verify(actual);
+//    }
 }
