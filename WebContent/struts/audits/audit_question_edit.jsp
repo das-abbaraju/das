@@ -65,7 +65,7 @@
 				</s:if>
 			</s:if>
 			<s:else>
-				<s:select list="#q.option.values" headerValue="- Select -" headerKey="" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}" />
+				<s:select list="#q.option.values" headerValue="%{getText('global.list.select.header')}" headerKey="" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}" />
 			</s:else>
 		</s:if>
 
