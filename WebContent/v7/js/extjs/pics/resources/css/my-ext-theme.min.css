@@ -9752,6 +9752,14 @@ textarea.x-form-invalid-field {
 .x-tool-over .x-tool-close {
   background-position: 0 0 !important; }
 
+/* line 1, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_grid.scss */
+.x-grid-group-hd-collapsible .x-grid-group-title {
+  background-position: 100% -14px !important; }
+
+/* line 5, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_grid.scss */
+.x-grid-group-hd-collapsible.x-over .x-grid-group-title {
+  background-position: 100% 0px !important; }
+
 /* line 94, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
