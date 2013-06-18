@@ -69,12 +69,12 @@ public class ReportDataConverter {
         if (stringColumns.size() < 0 || numericColumns.size() < 0) {
             throw new ReportValidationException("Report " + chart.getReport().getId() + " is not formatted correctly to become a chart", chart.getReport());
         }
-        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
-        }
-        if (numericColumns.size() == 1 && chart.getSeries() == ChartSeries.Multi) {
-            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a single-series, not a multi-series", chart.getReport());
-        }
+//        if (numericColumns.size() > 1 && chart.getSeries() == ChartSeries.Single) {
+//            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a multi-series, not a single-series", chart.getReport());
+//        }
+//        if (numericColumns.size() == 1 && chart.getSeries() == ChartSeries.Multi) {
+//            throw new ReportValidationException("Report " + chart.getReport().getId() + " is formatted to be a single-series, not a multi-series", chart.getReport());
+//        }
     }
 
     private void extractNumericStringColumnSets(ReportChart chart, List<Column> stringColumns, List<Column> numericColumns) {
