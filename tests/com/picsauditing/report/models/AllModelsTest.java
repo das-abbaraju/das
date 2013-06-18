@@ -104,6 +104,14 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testContractorFeesModel_Billing() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+        permissions.setAccountType("Admin");
+        model = new ContractorFeesModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testInvoiceModel() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new InvoicesModel(permissions);

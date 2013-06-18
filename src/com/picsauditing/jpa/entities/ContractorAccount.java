@@ -445,7 +445,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE "
-			+ ReportOnClause.ToAlias + ".mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
+			+ ReportOnClause.ToAlias + ".mustPay WHEN 'Yes' THEN 1 ELSE 0 END", importance = FieldImportance.Average)
 	public String getMustPay() {
 		return this.mustPay;
 	}
@@ -594,7 +594,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}

@@ -24,6 +24,7 @@ public class ContractorFeesModel extends AbstractModel {
         ModelSpec account = contractor.join(ContractorTable.Account);
         account.alias = "Account";
         account.minimumImportance = FieldImportance.Average;
+        account.join(AccountTable.Country);
 
         ModelSpec fee = contractorFee.join(ContractorFeeTable.NewFee);
         fee.alias = "Fee";
