@@ -19,7 +19,9 @@ public class VATValidator {
         String prefix = vatPrefixFor(country);
         String finalCode = (vatCode.startsWith(prefix)) ? vatCode : prefix + vatCode;
 
-        webValidator.webValidate(finalCode);
+        if (!demoVatNumber(vatCode)) {
+            webValidator.webValidate(finalCode);
+        }
 
         return finalCode;
     }
@@ -42,5 +44,8 @@ public class VATValidator {
         return false;
     }
 
-
+    // PICS-11482
+    private boolean demoVatNumber(String vatCode) {
+        return vatCode.equalsIgnoreCase("999999999");
+    }
 }
