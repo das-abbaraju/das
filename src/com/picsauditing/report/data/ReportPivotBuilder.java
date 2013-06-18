@@ -1,160 +1,120 @@
 package com.picsauditing.report.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.ReportPivotDefinition;
-import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.*;
 
 public class ReportPivotBuilder {
-	private List<Column> columnsIn = new ArrayList<Column>();
-	private List<Column> columnsOut = new ArrayList<Column>();
-	private Set<String> columnValueSet = new HashSet<String>();
-	private Map<Object, Map<Object, List<Object>>> dataTree = new TreeMap<Object, Map<Object, List<Object>>>();
+    private final Logger logger = LoggerFactory.getLogger(ReportPivotBuilder.class);
+    private ReportPivotDefinition definition;
+    private Map<Object, Map<Object, List<Object>>> dataTree = new TreeMap<Object, Map<Object, List<Object>>>();
+    private List<Column> newReportColumns;
 
-	public ReportPivotBuilder(List<Column> columns) {
-		this.columnsIn.addAll(columns);
-	}
+    @SuppressWarnings("unchecked")
+    public ReportResults convertToPivot(ReportResults original) {
+        definition = new ReportPivotDefinition(original.getColumns());
+        if (!definition.isPivotable()) {
+            logger.debug("Not a valid pivot table. Don't make any changes");
+            return original;
+        }
 
-	@SuppressWarnings("unchecked")
-	public JSONArray convertToPivot(JSONArray jsonResults) {
-		ReportPivotDefinition definition = new ReportPivotDefinition(columnsIn);
-		if (!definition.isPivotable()) {
-			// Don't make any changes, just exit
-			columnsOut.addAll(columnsIn);
-			return jsonResults;
-		}
+        Map<Object, ReportCell> pivotedColumns = getPivotedColumns(original);
+        newReportColumns = getNewReportColumns(pivotedColumns);
 
-		columnsOut.add(definition.getRow());
+        pivotDataIntoDataTree(original);
 
-		for (Object jsonRowObject : jsonResults) {
-			JSONObject jsonRow = (JSONObject) jsonRowObject;
-			Object rowValue = jsonRow.get(definition.getRow().getName());
-			Object columnValue = jsonRow.get(definition.getColumn().getName());
-			Object cellValue = jsonRow.get(definition.getCell().getName());
-			getColumn(rowValue, columnValue).add(cellValue);
-		}
+        List<List<Serializable>> data = buildPivotedData(pivotedColumns);
 
-		JSONArray pivotedResults = new JSONArray();
+        return ReportResultsFromArrayLists.build(newReportColumns, data);
+    }
 
-		Field pivotField = definition.getCell().getField();
-		
-		for (Object rowValue : this.dataTree.keySet()) {
-			JSONObject rowObject = new JSONObject();
-			rowObject.put(definition.getRow().getName(), rowValue);
-			pivotedResults.add(rowObject);
-			for (Object colValue : this.dataTree.get(rowValue).keySet()) {
-				List<Object> columnValues = getRow(rowValue).get(colValue);
-				Object valueObject = null;
-				
-				DisplayType displayType = pivotField.getType().getDisplayType();
-				switch (definition.getCell().getPivotCellMethod()) {
-				case Average:
-					valueObject = sum(columnValues, displayType) / count(columnValues);
-					break;
-				case Min:
-					valueObject = min(columnValues, displayType);
-					break;
-				case Max:
-					valueObject = max(columnValues, displayType);
-					break;
-				case Sum:
-					valueObject = sum(columnValues, displayType);
-					break;
-				default:
-					valueObject = count(columnValues);
-					break;
-				}
-				rowObject.put(colValue, valueObject);
-			}
-		}
+    private List<List<Serializable>> buildPivotedData(Map<Object, ReportCell> pivotedColumns) {
+        List<List<Serializable>> data = new ArrayList<>();
+        for (Object pivotedRow : dataTree.keySet()) {
+            logger.debug("Adding row data for {}", pivotedRow);
+            List<Serializable> dataRow = new ArrayList<>();
+            dataRow.add(pivotedRow.toString());
+            data.add(dataRow);
+            for (Object pivotedColumn : pivotedColumns.keySet()) {
+                logger.debug("Adding cell data for {}", pivotedColumn);
+                final List<Object> cellDatas = dataTree.get(pivotedRow).get(pivotedColumn);
+                Serializable cellValue = calculatePivotedCellValue(cellDatas);
+                dataRow.add(cellValue);
+            }
+        }
+        return data;
+    }
 
-		for (String columnValue : columnValueSet) {
-			Column columnForValue = new Column(columnValue);
-			columnForValue.setField(pivotField);
-			columnsOut.add(columnForValue);
-		}
+    private Serializable calculatePivotedCellValue(List<Object> cellDatas) {
+        if (cellDatas != null) {
+            for (Object cell : cellDatas) {
+                return cell.toString();
+            }
+        }
+        return "0";
+    }
 
-		return pivotedResults;
-	}
+    private void pivotDataIntoDataTree(ReportResults original) {
+        for (ReportRow originalRow : original.getRows()) {
+            final Object rowValue = originalRow.getCellByColumn(definition.getRow()).getValue();
+            final Object colValue = originalRow.getCellByColumn(definition.getColumn()).getValue();
+            final Object cellValue = originalRow.getCellByColumn(definition.getCell()).getValue();
+            logger.debug(rowValue.toString() + colValue.toString() + cellValue.toString());
 
-	public List<Column> getColumns() {
-		return columnsOut;
-	}
+            fillOutTree(rowValue, colValue);
+            dataTree.get(rowValue).get(colValue).add(cellValue);
+        }
+    }
 
-	private Map<Object, List<Object>> getRow(Object row) {
-		if (dataTree.containsKey(row))
-			return dataTree.get(row);
+    private void fillOutTree(Object rowValue, Object colValue) {
+        if (!dataTree.containsKey(rowValue)) {
+            dataTree.put(rowValue, new HashMap<Object, List<Object>>());
+        }
+        if (!dataTree.get(rowValue).containsKey(colValue)) {
+            dataTree.get(rowValue).put(colValue, new ArrayList<Object>());
+        }
+    }
 
-		Map<Object, List<Object>> newRow = new TreeMap<Object, List<Object>>();
-		dataTree.put(row, newRow);
-		return newRow;
-	}
+    private Map<Object, ReportCell> getPivotedColumns(ReportResults original) {
+        Map<Object, ReportCell> pivotedColumns = new TreeMap<>();
+        for (ReportRow originalRow : original.getRows()) {
+            final ReportCell dataForPivotColumn = originalRow.getCellByColumn(definition.getColumn());
+            pivotedColumns.put(dataForPivotColumn.getValue(), dataForPivotColumn);
+        }
+        return pivotedColumns;
+    }
 
-	private List<Object> getColumn(Object row, Object column) {
-		Map<Object, List<Object>> rowTree = getRow(row);
-		if (rowTree.containsKey(column))
-			return rowTree.get(column);
+    private List<Column> getNewReportColumns(Map<Object, ReportCell> pivotedColumns) {
+        List<Column> columns = new ArrayList<>();
+        addFirstColumnBasedOnRow(columns);
+        int sortIndex = 10;
+        for (Object columnHeadings : pivotedColumns.keySet()) {
+            Column column = new Column(columnHeadings.toString());
+            column.setId(sortIndex);
+            final Field field = definition.getColumn().getField().clone();
+            column.setField(field);
+            field.setSortable(false);
+            field.setText(columnHeadings.toString());
+            field.setHelp(definition.getColumn().getField().getText());
+            column.setSortIndex(sortIndex++);
+            column.setSqlFunction(null);
+            logger.debug("Adding pivoted column {}", column);
+            columns.add(column);
+        }
+        return columns;
+    }
 
-		List<Object> newColumn = new ArrayList<Object>();
-		rowTree.put(column, newColumn);
-		columnValueSet.add(column.toString());
-		return newColumn;
-	}
+    private void addFirstColumnBasedOnRow(List<Column> columns) {
+        logger.debug("Adding first column based on the row {}", definition.getRow());
+        columns.add(definition.getRow());
+    }
 
-	private Object max(List<Object> columnValues, DisplayType type) {
-		Object max = null;
-		for (Object object : columnValues) {
-			try {
-				// TODO Write this part here
-				if (max == null) {
-					max = object;
-				}
-			} catch (Exception e) {
-
-			}
-		}
-		return max;
-	}
-
-	private Object min(List<Object> columnValues, DisplayType type) {
-		Object min = null;
-		for (Object object : columnValues) {
-			try {
-				// TODO Write this part here
-				if (min == null) {
-					min = object;
-				}
-			} catch (Exception e) {
-
-			}
-		}
-		return min;
-	}
-
-	private int count(List<Object> columnValues) {
-		return columnValues.size();
-	}
-
-	private double sum(List<Object> columnValues, DisplayType extFieldType) {
-		
-		double sum = 0;
-		for (Object object : columnValues) {
-			try {
-				sum += Double.parseDouble(object.toString());
-			} catch (Exception e) {
-
-			}
-		}
-		return sum;
-	}
+    public List<Column> getColumns() {
+        return newReportColumns;
+    }
 }
