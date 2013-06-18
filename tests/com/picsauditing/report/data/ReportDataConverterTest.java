@@ -59,12 +59,12 @@ public class ReportDataConverterTest {
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 22:56\","
-				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\","
-				+ "\"ContractorMembershipDate\":\"1970-01-14\"}]";
+        String expected = "\\[\\{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ 2\\d:56\","
+                + "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\","
+                + "\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
 
-        assertEquals(expected, json.toString());
-	}
+        assertTrue(json.toString().matches(expected));
+    }
 
 	@Test
 	public void testConvertQueryResultsToJson_Simple() {
