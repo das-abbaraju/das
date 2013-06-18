@@ -1,0 +1,15 @@
+Original 
+ContractorCount	FlagColor	ClientSite	
+12	Red	Suncor	
+6	Amber	Suncor	
+18	Green	Suncor	
+4	Red	BASF	
+1	Amber	BASF	
+12	Green	Tesoro	
+
+
+Converted
+FlagColor	BASF	Suncor	Tesoro	
+Amber	1	6	0	
+Green	0	18	12	
+Red	4	12	0	

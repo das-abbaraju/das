@@ -61,18 +61,6 @@ public class Column extends ReportElement implements Comparable<Column> {
 	}
 
 	@Transient
-	public PivotDimension getPivotDimension() {
-		// Need to move this to another table or decide to store it here
-		return null;
-	}
-
-	@Transient
-	public PivotCellMethod getPivotCellMethod() {
-		// Need to move this to another table or decide to store it here
-		return null;
-	}
-
-	@Transient
 	public DisplayType getDisplayType() {
 		if (sqlFunction != null) {
 			return sqlFunction.getDisplayType(getField());
