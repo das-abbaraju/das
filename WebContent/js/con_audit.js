@@ -9,21 +9,21 @@ $(function () {
 
 	$('#refresh_cao').live('click', function(e) {
 		e.preventDefault();
-		
+
 		updateCategoriesNow();
 	});
 
 	$('#next_cat').live('click', function(e) {
 		e.preventDefault();
-		
+
 		$('li.current').next('li.catlist').find('a.hist-category').click();
 	});
 
 	$('#done').live('click', function(e){
 		e.preventDefault();
-		
+
 		updateCategoriesNow();
-		
+
 		$.scrollTo(0, 800, {
 		    axis: 'y'
         });
@@ -44,7 +44,7 @@ $(function () {
 	$('#submitRemind').ajaxComplete(function(e, xhr, settings){
 		if(settings.headers && settings.headers.refresh && settings.headers.refresh == 'true') {
 			$.getJSON('AuditAjax.action', {
-			    auditID: auditID, 
+			    auditID: auditID,
 			    button: 'SubmitRemind'
 	        }, function (json) {
 				if (json && json.remind) {
@@ -55,12 +55,12 @@ $(function () {
 			});
 		}
 	});
-	
+
 	$('#auditProblems, #problemsHide').live('click', function () {
 		$('#problems').slideDown();
 		$('#problemsHide').hide();
 	});
-	
+
 	$('#problems .bottom').live('click', function () {
 		$('#problems').slideUp();
 		$('#problemsHide').show();
@@ -90,25 +90,25 @@ function showNavButtons() {
 function highlight_category(category) {
 	var ccat = $('#category_'+category).addClass('current');;
 	var list = ccat.closest('ul.catUL');
-	
+
 	if (list.is(':hidden')) {
 		$('ul.catUL:visible').hide();
-		
+
 		list.show();
 	}
 }
 
 function _updateCategories() {
 	$('#auditHeader').addClass('dirty');
-	
+
 	var currentCategory = $('li.catlist.current'), categoryID = 0;
-	
+
 	if (currentCategory.length > 0) {
 		categoryID = currentCategory.attr('id').split('_')[1];
 	}
-	
+
 	ucXHR && ucXHR.abort();
-	
+
 	ucXHR = $.ajax({
 		url: 'CaoSaveAjax!refresh.action',
 		data: {
@@ -121,12 +121,12 @@ function _updateCategories() {
 		success: function(text, status, xhr) {
 			if (xhr.status) {
 				var me = $(text);
-				
+
 				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
 				$('#caoTable').html(me.filter('#cao_table_refresh').html());
 				$('#auditScore').html(me.filter('#auditScore_refresh').html());
 				$('#auditHeader').removeClass('dirty');
-				
+
 				highlight_category(categoryID);
 				showNavButtons();
 			}
@@ -138,7 +138,7 @@ function updateCategories() {
 	if (ucTimeout) {
 		clearTimeout(ucTimeout);
 	}
-	
+
 	ucTimeout = setTimeout(_updateCategories, 10000);
 }
 
@@ -146,18 +146,23 @@ function updateCategoriesNow() {
 	if (ucTimeout) {
 		clearTimeout(ucTimeout);
 	}
-	
+
 	_updateCategories();
 }
 
 function updateModes(mode) {
 	$('#modes a').show();
-	
+
 	if (mode.length > 0) {
 		$('#modes a.'+mode).hide();
 	}
 }
 
-function printPreview(auditID) {
-	window.open('AuditPrintAjax.action?button=load&mode=ViewAll&auditID='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640')
+function printPreview(auditID, auditTypeId) {
+	if (auditTypeId == '420') {
+		window.open('PrintIolRmpAudit.action?audit='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=768,width=1024')
+	} else {
+		window.open('AuditPrintAjax.action?button=load&mode=ViewAll&auditID='+auditID, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640')
+	}
+
 }

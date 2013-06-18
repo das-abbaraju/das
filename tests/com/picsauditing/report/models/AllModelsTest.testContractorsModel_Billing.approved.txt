@@ -49,6 +49,7 @@ ContractorBillingCountrySubdivision
 ContractorBillingZip
 ContractorCcExpiration
 ContractorCcOnFile
+ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -73,8 +74,6 @@ ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorTagTagID
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId

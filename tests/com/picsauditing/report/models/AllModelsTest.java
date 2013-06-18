@@ -4,11 +4,15 @@ import com.google.common.base.Joiner;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.search.SelectSQL;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -31,12 +35,35 @@ public class AllModelsTest {
         StringBuilder actual = new StringBuilder();
 
         for (ModelType type : ModelType.values()) {
-            actual.append(String.format("Model: %s\nPermission: %s\n----------------------------------------\n", type,permissions));
+            actual.append(String.format("Model: %s\nPermission: %s\n----------------------------------------\n", type, permissions));
             permissions = EntityFactory.makePermission();
             model = ReportModelFactory.build(type, permissions);
             if (model != null) {
                 actual.append(getJoin());
             } else {
+                actual.append("Not Yet Implemented");
+            }
+            actual.append("\n\n");
+        }
+        Approvals.verify(actual.toString());
+    }
+
+    @Test
+    @Ignore
+    public void testAllSql() throws Exception {
+        SqlBuilder builder = new SqlBuilder();
+        StringBuilder actual = new StringBuilder();
+
+        for (ModelType type : ModelType.values()) {
+            actual.append(String.format("Model: %s\nPermission: %s\n----------------------------------------\n", type, permissions));
+            permissions = EntityFactory.makePermission();
+            try {
+                final Report report = new Report();
+                model = ReportModelFactory.build(type, permissions);
+                report.setModelType(type);
+                final SelectSQL selectSQL = builder.initializeReportAndBuildSql(report, permissions);
+                actual.append(selectSQL.toString());
+            } catch (Exception e) {
                 actual.append("Not Yet Implemented");
             }
             actual.append("\n\n");
@@ -73,6 +100,14 @@ public class AllModelsTest {
     public void testContractorAuditOperatorsModel() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new ContractorAuditOperatorsModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
+    public void testContractorFeesModel_Billing() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+        permissions.setAccountType("Admin");
+        model = new ContractorFeesModel(permissions);
         Approvals.verify(getJoin());
     }
 

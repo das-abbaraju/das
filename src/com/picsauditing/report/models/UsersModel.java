@@ -33,7 +33,6 @@ public class UsersModel extends AbstractModel {
 
 			ModelSpec reporting = operator.join(OperatorTable.Reporting);
 			reporting.category = FieldCategory.ReportingClientSite;
-			reporting.minimumImportance = FieldImportance.Required;
 			reporting.alias = "ReportingClient";
 		}
 

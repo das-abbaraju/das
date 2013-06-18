@@ -6,7 +6,7 @@
 	<li class="head">
 		<s:text name="Audit.header.Toolbar" />
 	</li>
-	
+
 	<s:if test="canSystemEdit">
 		<li>
 			<a class="edit1" href="ConAuditMaintain.action?auditID=<s:property value="auditID" />">
@@ -14,13 +14,13 @@
 			</a>
 		</li>
 	</s:if>
-	
+
 	<li>
 		<a class="percent" href="Audit.action?auditID=<s:property value="auditID"/>&button=Recalculate">
 			<s:text name="Audit.button.Recalculate" />
 		</a>
 	</li>
-	
+
 	<s:if test="canVerifyPqf">
 		<li>
 			<a class="verify" href="VerifyView.action?id=<s:property value="id" />">
@@ -28,7 +28,7 @@
 			</a>
 		</li>
 	</s:if>
-	
+
 	<s:if test="canPreview">
 		<li>
 			<a class="preview" href="#mode=ViewQ">
@@ -36,13 +36,13 @@
 			</a>
 		</li>
 	</s:if>
-	
+
 	<li>
 		<a class="file" href="#viewBlanks=false&mode=View" id="viewBlanks">
 			<s:text name="Audit.button.ViewAnswered" />
 		</a>
 	</li>
-	
+
 	<s:if test="(permissions.admin || permissions.auditor) && conAudit.auditType.categories.size() > 1">
 		<li>
 			<a class="addremove" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
@@ -50,7 +50,7 @@
 			</a>
 		</li>
 	</s:if>
-	
+
 	<s:if test="canViewRequirements">
 		<li>
 			<a class="print" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true">
@@ -65,7 +65,7 @@
 				</a>
 			</li>
 		</s:if>
-		
+
 		<s:if test="permissions.admin">
 			<li>
 				<a class="uploadreq" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">
@@ -87,7 +87,7 @@
 				</a>
 			</li>
 		</s:elseif>
-		
+
 		<s:if test="permissions.operatorCorporate">
 			<li>
 				<a class="file" href="ContractorAuditFileUpload.action?auditID=<s:property value="auditID"/>">
@@ -96,7 +96,7 @@
 			</li>
 		</s:if>
 	</s:if>
-	
+
 	<s:if test="canSchedule">
 		<li>
 			<a class="calendar" href="ScheduleAudit<s:if test="conAudit.scheduledDate != null && permissions.admin">!edit</s:if>.action?auditID=<s:property value="conAudit.id"/>">
@@ -104,9 +104,9 @@
 			</a>
 		</li>
 	</s:if>
-	
+
 	<li>
-		<a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;">
+		<a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>, <s:property value="conAudit.auditType.id"/>); return false;">
 			<s:text name="Audit.button.PrintAll" />
 		</a>
 	</li>
@@ -130,38 +130,38 @@
 		<li class="head">
 			<s:text name="Audit.header.Categories" />
 		</li>
-		
+
 		<s:iterator value="categoryNodes" id="catNode">
 			<li id="category_<s:property value="#catNode.category.id"/>" class="catlist">
 				<a class="hist-category" href="#categoryID=<s:property value="#catNode.category.id"/>">
 					<span class="category-name"><s:property value="#catNode.category.name" /></span>
-					
+
 					<span class="cat-percent">
 						<s:if test="permissions.admin || permissions.auditor">
 							<s:if test="#catNode.override">
 								<img src="images/add_remove.png" />
 							</s:if>
 						</s:if>
-	
-						<s:if test="!isEveryCAOCompleteOrHigher()">					
+
+						<s:if test="!isEveryCAOCompleteOrHigher()">
 							<s:if test="showVerified">
 								<s:if test="#catNode.percentVerified < 100" >
 									<s:if test="!conAudit.auditType.annualAddendum" >
 										<img src="images/icon_text_alert.png"/>
 									</s:if>
 								</s:if>
-								<s:else>						
+								<s:else>
 									<img src="images/okCheck.gif" />
 								</s:else>
 							</s:if>
 							<s:else>
 								<s:property value="#catNode.percentComplete" />%
-							</s:else> 
+							</s:else>
 						</s:if>
 					</span>
 				</a>
-				
-				<s:set name="subcatNode" value="%{#catNode}" /> 
+
+				<s:set name="subcatNode" value="%{#catNode}" />
 				<s:if test="#catNode.subCategories.size() > 0">
 					<div class="subcat">
 						<s:include value="con_audit_sidebar_subcat.jsp" />

@@ -1,0 +1,249 @@
+Model: Accounts
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM accounts AS Account
+
+Model: AuditTypes
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM audit_type AS AuditType
+
+Model: ContractorAudits
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_audit AS Audit
+JOIN contractor_info AS Contractor ON Audit.conID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+JOIN audit_type AS AuditType ON Audit.auditTypeID = AuditType.id
+
+Model: ContractorAuditDatas
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM pqfData AS AuditData
+JOIN contractor_audit AS Audit ON AuditData.auditID = Audit.id
+JOIN audit_type AS AuditType ON Audit.auditTypeID = AuditType.id
+JOIN contractor_info AS Contractor ON Audit.conID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+JOIN audit_question AS Question ON AuditData.questionID = Question.id
+WHERE (1=0) 
+
+Model: ContractorAuditFiles
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_audit_file AS ContractorAuditFile
+JOIN contractor_audit AS Audit ON ContractorAuditFile.auditID = Audit.id
+JOIN contractor_info AS ContractorInfo ON Audit.conID = ContractorInfo.id
+JOIN accounts AS Account ON ContractorInfo.id = Account.id AND Account.type = 'Contractor'
+WHERE (1=0 AND AuditOperator.visible = 1) 
+
+Model: ContractorAuditOperators
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_audit_operator AS AuditOperator
+JOIN accounts AS AuditOperatorAccount ON AuditOperator.opID = AuditOperatorAccount.id
+JOIN contractor_audit AS Audit ON AuditOperator.auditID = Audit.id
+JOIN audit_type AS AuditType ON Audit.auditTypeID = AuditType.id
+JOIN contractor_info AS Contractor ON Audit.conID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+WHERE (1=0 AND AuditOperator.visible = 1) 
+
+Model: ContractorFees
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_fee AS ContractorFee
+JOIN contractor_info AS Contractor ON ContractorFee.conID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+JOIN invoice_fee AS Fee ON ContractorFee.newLevel = Fee.id
+WHERE (1=0) 
+
+Model: ContractorFlagDatas
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM flag_data AS FlagData
+JOIN generalcontractors AS ContractorFlag ON FlagData.conID = ContractorFlag.subID AND FlagData.opID = ContractorFlag.genID
+JOIN accounts AS ContractorOperatorOperator ON ContractorFlag.genID = ContractorOperatorOperator.id
+JOIN flag_criteria_operator AS OperatorCriteria ON FlagData.criteriaID = OperatorCriteria.criteriaID AND FlagData.opID = OperatorCriteria.opID
+JOIN flag_criteria AS FlagCriteria ON FlagData.criteriaID = FlagCriteria.id
+JOIN accounts AS Account ON FlagData.conID = Account.id
+WHERE (1=0) 
+
+Model: ContractorNumbers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_operator_number AS OperatorContractorNumber
+JOIN contractor_info AS Contractor ON OperatorContractorNumber.conID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+WHERE (1=0) 
+
+Model: ContractorOperators
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM generalcontractors AS ContractorOperator
+JOIN accounts AS ContractorOperatorOperator ON ContractorOperator.genID = ContractorOperatorOperator.id
+JOIN contractor_info AS Contractor ON ContractorOperator.subID = Contractor.id
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+WHERE (1 = 0) 
+
+Model: Contractors
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_info AS Contractor
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+WHERE (1=0) 
+
+Model: ContractorSearch
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_info AS Contractor
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+WHERE (Account.status NOT IN ('Demo','Deleted')) 
+
+Model: ContractorStatistics
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM contractor_info AS Contractor
+JOIN accounts AS Account ON Contractor.id = Account.id AND Account.type = 'Contractor'
+JOIN (SELECT ca1.conID, ca1.auditFor,  CASE WHEN pd1.questionID = 8812 THEN 'Fatalities' ELSE 'TRIR' END AS rateType, pd1.answer  FROM contractor_audit ca1	 JOIN pqfdata pd1 ON ca1.id = pd1.auditID  WHERE ca1.auditTypeID = 11  AND pd1.questionID IN (8812,8977)) AS ContractorStatistics ON Contractor.id = ContractorStatistics.conID
+WHERE (1=0) 
+
+Model: EmployeeCompetencies
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM employee_competency AS EmployeeCompetency
+JOIN operator_competency AS EmployeeCompetencyCompetency ON EmployeeCompetency.competencyID = EmployeeCompetencyCompetency.id
+JOIN employee AS EmployeeCompetencyEmployee ON EmployeeCompetency.employeeID = EmployeeCompetencyEmployee.id
+JOIN accounts AS EmployeeCompetencyEmployeeAccount ON EmployeeCompetencyEmployee.accountID = EmployeeCompetencyEmployeeAccount.id
+
+Model: ForcedFlags
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM (SELECT gc.subID AS conID, gc.genID AS opID, gc.forceBegin, gc.forceEnd, gc.forcedBy, gc.forceFlag, 'Overall' AS label FROM generalcontractors gc WHERE gc.forceFlag IS NOT NULL UNION SELECT fdo.conID, fdo.opID, fdo.updateDate AS forceBegin, fdo.forceEnd, fdo.updatedBy AS forcedBy, fdo.forceFlag, CONCAT(fc1.id, '.label') AS label FROM flag_data_override fdo JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id WHERE fdo.forceFlag IS NOT NULL ) AS ContractorFlag
+JOIN contractor_info AS ContractorFlagContractor ON ContractorFlag.conID = ContractorFlagContractor.id
+JOIN accounts AS Account ON ContractorFlagContractor.id = Account.id AND Account.type = 'Contractor'
+
+Model: ForcedFlagPercents
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM (SELECT gc.genID AS opID, gc.subID as conID, gc.workStatus, (ROUND(COUNT(DISTINCT CASE WHEN gc.forceFlag IS NOT NULL OR fdo.forceFlag IS NOT NULL THEN gc.`subID` ELSE NULL END)/COUNT(DISTINCT subID)*100,2)) AS percentForced 
+FROM generalcontractors gc 
+JOIN accounts a ON gc.subID = a.id AND a.status = 'Active'
+LEFT JOIN flag_data_override fdo ON fdo.`conID` = gc.`subID` AND fdo.`opID` = gc.`genID` 
+GROUP BY gc.genID) AS ForcedFlag
+JOIN accounts AS ContractorOperatorOperator ON ForcedFlag.opID = ContractorOperatorOperator.id
+WHERE (1 = 0) 
+
+Model: InvoiceItems
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM invoice_item AS InvoiceItem
+JOIN invoice_fee AS InvoiceItemFee ON InvoiceItem.feeID = InvoiceItemFee.id
+JOIN invoice AS Invoice ON InvoiceItem.invoiceID = Invoice.id
+JOIN accounts AS Account ON Invoice.accountID = Account.id
+JOIN contractor_info AS Contractor ON Account.id = Contractor.id
+WHERE (Invoice.tableType = 'I') 
+
+Model: Invoices
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM invoice AS Invoice
+JOIN accounts AS Account ON Invoice.accountID = Account.id
+JOIN contractor_info AS Contractor ON Account.id = Contractor.id
+WHERE (Invoice.tableType = 'I') 
+
+Model: Operators
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM accounts AS Account
+WHERE (1=0) 
+
+Model: OperatorAccountUsers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM account_user AS AccountUser
+JOIN accounts AS Account ON AccountUser.accountID = Account.id
+
+Model: OperatorUsers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM users AS User
+JOIN accounts AS Account ON User.accountID = Account.id
+
+Model: PaymentCommissions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM payment_commission AS PaymentCommission
+JOIN invoice_commission AS InvoiceCommission ON PaymentCommission.commissionID = InvoiceCommission.id
+JOIN invoice AS Invoice ON InvoiceCommission.invoiceID = Invoice.id
+JOIN accounts AS Account ON Invoice.accountID = Account.id
+JOIN account_user AS AccountUser ON InvoiceCommission.accountUserID = AccountUser.id
+
+Model: Reports
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM report AS Report
+WHERE (Report.deleted = 0) 
+
+Model: ReportColumns
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM report_column AS ReportColumn
+JOIN report AS Report ON ReportColumn.reportID = Report.id
+
+Model: ReportFilters
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM report_filter AS ReportFilter
+JOIN report AS Report ON ReportFilter.reportID = Report.id
+
+Model: ReportPermissions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM report AS Report
+
+Model: ReportUsers
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM report_user AS ReportUser
+JOIN report AS Report ON ReportUser.reportID = Report.id
+JOIN users AS ReportUserUser ON ReportUser.userID = ReportUserUser.id
+
+Model: UserAssignments
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM user_assignment AS UserAssignment
+
+Model: Users
+Permission: Permissions{permissions=[]}
+----------------------------------------
+SELECT *
+FROM users AS User
+JOIN accounts AS Account ON User.accountID = Account.id
+

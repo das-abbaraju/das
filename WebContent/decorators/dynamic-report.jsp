@@ -37,8 +37,6 @@
             return typeof escape == 'boolean' && escape ? translation.replace(/'/g, "\\'") : translation;
         };
         </script>
-
-        <script src="${app_dir}/app/data/debug.js" type="text/javascript"></script>
 		
         <s:if test="#is_development_mode == true">
             <script type="text/javascript" src="${extjs_dir}/ext-debug.js"></script>

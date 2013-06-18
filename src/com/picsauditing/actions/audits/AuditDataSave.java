@@ -824,6 +824,13 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError(getText("Audit.message.InvalidDate"));
 				return false;
 			}
+
+			Calendar today = Calendar.getInstance();
+			if (DateBean.getYearFromDate(enteredDate) > today.get(Calendar.YEAR) + 10) {
+				addActionError(getText("Audit.message.InvalidDate"));
+				return false;
+			}
+
 		}
 		return true;
 	}

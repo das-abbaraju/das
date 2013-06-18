@@ -377,8 +377,6 @@ ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 OperatorContractorNumberType
@@ -432,6 +430,8 @@ ContractorSafetyRisk
 ContractorTagTagID
 ContractorTransportationRisk
 ForcedFlagPercent
+ReportingClientID
+ReportingClientName
 
 Model: Contractors
 Permission: Permissions{permissions=[]}
@@ -478,6 +478,7 @@ AccountWebUrl
 AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -498,8 +499,6 @@ ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
 ContractorTagTagID
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
@@ -524,8 +523,6 @@ ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
@@ -588,8 +585,6 @@ ContractorSoleProprietor
 ContractorStatisticsRate
 ContractorStatisticsRateType
 ContractorStatisticsStatisticFor
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
@@ -943,8 +938,6 @@ ContractorProductRiskVerified
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
-ContractorTradesSelf
-ContractorTradesSub
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 FeeFeeClass

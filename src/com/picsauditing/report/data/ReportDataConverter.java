@@ -30,8 +30,8 @@ public class ReportDataConverter {
     private static I18nCache i18nCache = I18nCache.getInstance();
     private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
-    public ReportDataConverter(Collection<Column> columns, List<BasicDynaBean> results) {
-        reportResults = new ReportResults(columns, results);
+    public ReportDataConverter(List<Column> columns, List<BasicDynaBean> results) {
+        reportResults = ReportResultsFromDynaBean.build(columns, results);
     }
 
     public void convertForExtJS(TimeZone timezone) {

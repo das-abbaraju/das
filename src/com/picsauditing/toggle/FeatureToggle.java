@@ -31,6 +31,7 @@ public interface FeatureToggle {
 	String TOGGLE_RULES_BASED_INSURANCE_CRITERIA = "Toggle.RBIC";
 	String TOGGLE_NEW_JS_TRANSLATIONS = "Toggle.NewJsTranslations";
 	String TOGGLE_REGISTRATION_AUTOFILL = "Toggle.RegistrationAutoFill";
+	String TOGGLE_SUPPRESS_WELCOME_EMAILS = "Toggle.SuppressWelcomeEmails";
 
 	boolean isFeatureEnabled(String toggleName);
 

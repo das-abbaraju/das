@@ -10,12 +10,14 @@ import static com.picsauditing.report.ReportJson.LEVEL_RESULTS;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.models.ReportModelFactory;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -449,24 +451,31 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public JSONObject buildJsonReportInfo(int reportId) throws Exception {
-		Report report = reportDao.findById(reportId);
+    public JSONObject buildJsonReportInfo(int reportId, TimeZone timezone) throws Exception {
+        Report report = reportDao.findById(reportId);
 
-		JSONObject infoJson = new JSONObject();
-		infoJson.put("model", report.getModelType().toString());
+        JSONObject infoJson = new JSONObject();
+        infoJson.put("model", report.getModelType().toString());
 
 		int shares = report.getReportPermissionUsers().size() + report.getReportPermissionAccounts().size();
 		infoJson.put("shares", Integer.toString(shares));
 
-		int favorites = 0;
-		for (ReportUser user : report.getReportUsers()) {
-			if (user.isFavorite())
-				favorites++;
-		}
-		infoJson.put("favorites", Integer.toString(favorites));
-		infoJson.put("updated", report.getUpdateDate().toString());
-		infoJson.put("updated_by", report.getUpdatedBy().getName());
-		infoJson.put("owner", report.getOwner().getName());
+        int favorites = 0;
+        for (ReportUser user : report.getReportUsers()) {
+            if (user.isFavorite())
+                favorites++;
+        }
+        infoJson.put("favorites",Integer.toString(favorites));
+
+        String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
+
+        infoJson.put("updated",updateDate);
+
+        User updatedBy = report.getUpdatedBy();
+        if (updatedBy != null)
+            infoJson.put("updated_by", updatedBy.getName());
+
+        infoJson.put("owner",report.getOwner().getName());
 
 		return infoJson;
 	}

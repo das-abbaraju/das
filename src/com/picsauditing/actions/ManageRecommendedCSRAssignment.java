@@ -68,10 +68,10 @@ public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 		return queryResults;
 	}
 
-	public String save() throws IOException {
+	public String save() throws IOException, SQLException {
 		if (Strings.isNotEmpty(acceptRecommendations)) {
-            int numRowsAffected = recommendedCsrService.acceptRecommendedCsrs(acceptRecommendations, permissions.getUserId());
-			logger.info(numRowsAffected + " changes accepted, ids: " + acceptRecommendations);
+            recommendedCsrService.acceptRecommendedCsrs(acceptRecommendations, permissions.getUserId());
+			logger.info(" changes accepted, ids: " + acceptRecommendations);
 		}
 
 		if (Strings.isNotEmpty(rejectRecommendations)) {

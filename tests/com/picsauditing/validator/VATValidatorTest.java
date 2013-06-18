@@ -170,4 +170,12 @@ public class VATValidatorTest {
         assertEquals(GREAT_BRITAIN_ISO + testVat.toUpperCase(), classUnderTest.validatedVATfromAudit(mockData));
     }
 
+    @Test
+    public void testValidate_demoNumber() throws ValidationException {
+        when(mockContractor.getCountry()).thenReturn(GERMANY);
+        String testVat = "DE999999999"; // demo VAT
+        when(mockData.getAnswer()).thenReturn(testVat);
+        assertEquals(testVat, classUnderTest.validatedVATfromAudit(mockData));
+    }
+
 }

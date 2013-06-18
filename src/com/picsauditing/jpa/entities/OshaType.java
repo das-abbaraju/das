@@ -44,6 +44,12 @@ public enum OshaType implements Translatable {
 			OshaRateType.Fatalities, OshaRateType.Hours }),
 	DENMARK(OshaAudit.CAT_ID_DENMARK, AuditQuestion.DENMARK_KEPT_ID, true, new OshaRateType[] { OshaRateType.AFR, OshaRateType.IR,
 			OshaRateType.Fatalities, OshaRateType.Hours }),
+	CZECH(OshaAudit.CAT_ID_CZECH, AuditQuestion.CZECH_KEPT_ID, true, new OshaRateType[] { OshaRateType.AFR, OshaRateType.IR,
+			OshaRateType.Fatalities, OshaRateType.Hours }),
+	HUNGARY(OshaAudit.CAT_ID_HUNGARY, AuditQuestion.HUNGARY_KEPT_ID, true, new OshaRateType[] { OshaRateType.AFR, OshaRateType.IR,
+			OshaRateType.Fatalities, OshaRateType.Hours }),
+	GREECE(OshaAudit.CAT_ID_GREECE, AuditQuestion.GREECE_KEPT_ID, true, new OshaRateType[] { OshaRateType.AFR, OshaRateType.IR,
+			OshaRateType.Fatalities, OshaRateType.Hours }),
 	EMR(OshaAudit.CAT_ID_EMR, AuditQuestion.EMR_KEPT_ID, true, new OshaRateType[] { OshaRateType.EMR });
 	
 

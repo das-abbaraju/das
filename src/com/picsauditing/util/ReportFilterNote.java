@@ -1,9 +1,14 @@
 package com.picsauditing.util;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
+
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 @SuppressWarnings("serial")
 public class ReportFilterNote extends ReportFilter {
@@ -71,13 +76,27 @@ public class ReportFilterNote extends ReportFilter {
 		this.status = status;
 	}
 
-	public LowMedHigh[] getPriorityList() {
-		// return LowMedHigh.values();
-		return new LowMedHigh[] { LowMedHigh.Low, LowMedHigh.Med, LowMedHigh.High };
+	public Map<LowMedHigh, String> getPriorityList() {
+        I18nCache cache = I18nCache.getInstance();
+        Locale locale = getLocaleStatic();
+
+        Map<LowMedHigh, String> priorityList = new TreeMap<>();
+        priorityList.put(LowMedHigh.Low, cache.getText(LowMedHigh.Low.getI18nKey(), locale));
+        priorityList.put(LowMedHigh.Med, cache.getText(LowMedHigh.Med.getI18nKey(), locale));
+        priorityList.put(LowMedHigh.High, cache.getText(LowMedHigh.High.getI18nKey(), locale));
+        return priorityList;
 	}
 
-	public NoteCategory[] getCategoryList() {
-		return NoteCategory.values();
+    public Map<String, String> getCategoryList() {
+        I18nCache cache = I18nCache.getInstance();
+        Locale locale = getLocaleStatic();
+
+        Map<String, String> categoryList = new TreeMap<>();
+
+        for (NoteCategory category : NoteCategory.values()) {
+            categoryList.put(category.name(), cache.getText(category.getI18nKey(), locale));
+        }
+        return categoryList;
 	}
 
 	public NoteStatus[] getStatusList() {

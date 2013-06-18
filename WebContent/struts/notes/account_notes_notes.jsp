@@ -16,8 +16,8 @@
 					<s:hidden name="id"></s:hidden>
 					<s:hidden name="returnType" value="notes"></s:hidden>
 					
-					<s:select list="filter.priorityList" headerKey="" headerValue="- Priority -" onchange="runNoteSearch('notes')" cssClass="forms" name="filter.priority" />
-					<s:select list="filter.categoryList" headerKey="" headerValue="- Category -" onchange="runNoteSearch('notes')" cssClass="forms" name="filter.category" />
+					<s:select list="filter.priorityList" headerKey="" headerValue="%{getText('ContractorNotes.filter.priority')}" onchange="runNoteSearch('notes')" cssClass="forms" name="filter.priority" />
+					<s:select list="filter.categoryList" headerKey="" headerValue="%{getText('ContractorNotes.filter.category')}" onchange="runNoteSearch('notes')" cssClass="forms" name="filter.category" />
 					<s:textfield onchange="runNoteSearch('notes')" cssClass="forms" name="filter.keyword" size="10"></s:textfield>
 					
 					<s:if test="countRows > 0">
@@ -113,7 +113,7 @@
 					</s:if>
 					
 					<a class="filter" href="#" onclick="filter('notes', 'filter.category', '<s:property value="noteCategory" />'); return false;">
-						<s:property value="noteCategory" />
+						<s:text name="%{noteCategory.i18nKey}" />
 					</a>:
 
 					

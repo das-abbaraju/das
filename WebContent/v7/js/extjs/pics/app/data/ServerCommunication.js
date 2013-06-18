@@ -445,6 +445,29 @@ Ext.define('PICS.data.ServerCommunication', {
                         }
                     }
                 });
+            },
+
+            getReportInfo: function (options) {
+                var url = PICS.data.ServerCommunicationUrl.getGetReportInfoUrl(),
+                    success_callback = typeof options.success_callback == 'function' ? options.success_callback : function () {};
+
+                Ext.Ajax.request({
+                    url: url,
+                    callback: function (options, success, response) {
+                        var data, json;
+
+                        if (PICS.data.Exception.hasException(response)) {
+                            PICS.data.Exception.handleException({
+                                response: response
+                            });
+                        } else {
+                            json = response.responseText;
+                            data = Ext.JSON.decode(json);
+
+                            success_callback(data);
+                        }
+                    }
+                });
             }
         };
     }())
