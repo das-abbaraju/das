@@ -4,8 +4,6 @@ import java.util.Locale;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.model.i18n.ThreadLocalLocale;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
 import com.spun.util.ObjectUtils;
 import com.spun.util.persistence.Loader;
 
@@ -28,9 +26,14 @@ public class TranslationServiceFactory {
 		return I18nCache.getInstance();
 	}
 
+	/**
+	 * This is a place-holder that will read off a system or toggle property to
+	 * determine which TranslationService implementation to use.
+	 * 
+	 * @return
+	 */
 	private static boolean useTranslationServiceAdapter() {
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER);
+		return false;
 	}
 
 	public static void registerTranslationService(TranslationService translationService) {
