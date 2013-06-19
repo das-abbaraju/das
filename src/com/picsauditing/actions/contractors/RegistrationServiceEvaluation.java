@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.*;
@@ -29,6 +30,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
@@ -178,6 +181,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		loadPqfAnswers();
 		loadSsipAnswers();
 
+		recalculateAuditPercentages();
+
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 
@@ -199,6 +204,12 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		}
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
+	}
+
+	private void recalculateAuditPercentages() {
+		for (ContractorAudit audit:contractor.getAudits()) {
+			auditPercentCalculator.percentCalculateComplete(audit, true);
+		}
 	}
 
 	private boolean validateSsipAuditAnswers() {
