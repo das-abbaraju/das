@@ -141,7 +141,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             share_editable_icon = Ext.select('.icon-edit'),
             report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            is_editable = report.get('is_editable');
+            is_editable = report.get('is_editable'),
+            report_info_container_el = Ext.query('.report-info-container')[0];
 
         // TODO: reject changes
         
@@ -155,7 +156,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
 
-        this.hideReportInfoIfVisible();
+        if (report_info_container_el) {
+            report_info_container_el.remove();            
+        }
 
         // reset the share modal
         if (is_editable) {
