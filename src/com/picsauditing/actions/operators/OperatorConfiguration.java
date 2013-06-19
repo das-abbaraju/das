@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +28,6 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.BaseHistory;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
 
@@ -108,8 +106,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			if ("buildCat".equals(button)) {
 				AuditType auditType = typeDAO.find(auditTypeID);
-				if (auditType == null)
+				if (auditType == null) {
 					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
+				}
 				AuditCategory parent = null;
 				for (AuditCategory c : auditType.getTopCategories()) {
 					if (c.getName().toString().startsWith(auditType.getName().toString())) {
@@ -119,25 +118,27 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				}
 				AuditCategory cat = new AuditCategory();
 				cat.setAuditColumns(permissions);
-				cat.setName(new TranslatableString());
-				cat.getName().putTranslation("en", operator.getName(), true);
+				// cat.setName(new TranslatableString());
+				// cat.getName().putTranslation("en", operator.getName(), true);
+				cat.setName(operator.getName());
 				cat.setParent(parent);
 				cat.setAuditType(auditType);
 				auditType.getCategories().add(cat);
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
 					public int compare(AuditCategory o1, AuditCategory o2) {
 						if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
-							if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory())
+							if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
 								return o1.getName().toString().compareTo(o2.getName().toString());
+							}
 							return -1;
-						} else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory())
+						} else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
 							return 1;
+						}
 						return o1.getName().toString().compareTo(o2.getName().toString());
 					}
 				});
 				int num = 1;
-				for (Iterator<AuditCategory> it = auditType.getCategories().iterator(); it.hasNext();) {
-					AuditCategory currentCategory = it.next();
+				for (AuditCategory currentCategory : auditType.getCategories()) {
 					if (currentCategory.getParent() != null) {
 						currentCategory.setNumber(num);
 						num++;
@@ -150,27 +151,34 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				AuditQuestion aq1 = new AuditQuestion();
 				aq1.setNumber(1);
 				aq1.setAuditColumns(permissions);
-				aq1.setName(new TranslatableString());
-				aq1.getName().putTranslation("en", QUESTION1, true);
+				// aq1.setName(new TranslatableString());
+				// aq1.getName().putTranslation("en", QUESTION1, true);
+				aq1.setName(QUESTION1);
 				aq1.setCategory(cat);
 				aq1.setQuestionType("FileCertificate");
 				aq1.setRequired(true);
 				aq1.setEffectiveDate(effDate.getTime());
 				aq1.setExpirationDate(exDate.getTime());
-				aq1.setColumnHeader(new TranslatableString());
-				aq1.getColumnHeader().putTranslation("en", "Certificate", true);
+				// aq1.setColumnHeader(new TranslatableString().toString());
+				// aq1.getColumnHeader().putTranslation("en", "Certificate",
+				// true);
+				aq1.setColumnHeader("Certificate");
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
-				aq2.setName(new TranslatableString());
-				aq2.getName().putTranslation("en", QUESTION2 + operator.getName() + ".", true);
+				// aq2.setName(new TranslatableString().toString());
+				// aq2.getName().putTranslation("en", QUESTION2 +
+				// operator.getName() + ".", true);
+				aq2.setName(QUESTION2 + operator.getName() + ".");
 				aq2.setCategory(cat);
 				aq2.setQuestionType("Yes/No");
 				aq2.setRequired(true);
 				aq2.setEffectiveDate(effDate.getTime());
 				aq2.setExpirationDate(exDate.getTime());
-				aq2.setColumnHeader(new TranslatableString());
-				aq2.getColumnHeader().putTranslation("en", "Certificate", true);
+				// aq2.setColumnHeader(new TranslatableString());
+				// aq2.getColumnHeader().putTranslation("en", "Certificate",
+				// true);
+				aq2.setColumnHeader("Certificate");
 				typeDAO.save(cat);
 				typeDAO.save(auditType);
 				typeDAO.save(aq1);
@@ -253,9 +261,11 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public List<OperatorAccount> getAllParents() {
 		if (allParents == null) {
 			allParents = new ArrayList<OperatorAccount>();
-			for (Facility f : operator.getCorporateFacilities())
-				if (!f.getOperator().isInPicsConsortium() && !f.getCorporate().isInPicsConsortium())
+			for (Facility f : operator.getCorporateFacilities()) {
+				if (!f.getOperator().isInPicsConsortium() && !f.getCorporate().isInPicsConsortium()) {
 					allParents.add(f.getCorporate());
+				}
+			}
 
 			if (allParents.size() > 2) {
 				Collections.sort(allParents, new Comparator<OperatorAccount>() {
@@ -310,8 +320,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			List<AuditTypeRule> excludedAudits = adtDAO.findAuditTypeRulesByOperator(operator.getId(), "r.include = 0");
 
 			usedAuditTypes.addAll(getTypeList());
-			for (AuditTypeRule type : excludedAudits)
+			for (AuditTypeRule type : excludedAudits) {
 				usedAuditTypes.add(type.getAuditType());
+			}
 
 			otherAudits = typeDAO.findAll();
 			otherAudits.removeAll(usedAuditTypes);
@@ -334,8 +345,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 					"r.include = 0");
 
 			usedCategories.addAll(getCategoryList());
-			for (AuditCategoryRule type : excludedCategories)
+			for (AuditCategoryRule type : excludedCategories) {
 				usedCategories.add(type.getAuditCategory());
+			}
 
 			otherCategories = auditCategoryDAO.findWhere("auditType.id = 1 AND parent IS NULL");
 			otherCategories.removeAll(usedCategories);

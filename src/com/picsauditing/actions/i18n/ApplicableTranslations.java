@@ -1,15 +1,12 @@
 package com.picsauditing.actions.i18n;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
@@ -39,24 +36,25 @@ public class ApplicableTranslations extends PicsActionSupport {
 						+ "WHERE msgKey RLIKE 'AuditQuestion\\\\.[0-9]*\\\\.'");
 
 				List<AuditQuestion> expired = dao.findWhere(AuditQuestion.class, "t.expirationDate <= CURDATE()");
-				List<Field> translatableStrings = new ArrayList<Field>();
+				// List<Field> translatableStrings = new ArrayList<Field>();
 
-				for (Field field : AuditQuestion.class.getDeclaredFields()) {
-					if (field.getType().equals(TranslatableString.class)) {
-						translatableStrings.add(field);
-					}
-				}
+				// for (Field field : AuditQuestion.class.getDeclaredFields()) {
+				// if (field.getType().equals(TranslatableString.class)) {
+				// translatableStrings.add(field);
+				// }
+				// }
 
 				for (AuditQuestion question : expired) {
 					String msgKeys = "";
 
-					for (Field field : translatableStrings) {
-						if (!Strings.isEmpty(msgKeys)) {
-							msgKeys += ", ";
-						}
-
-						msgKeys += "'" + question.getI18nKey(field.getName()) + "'";
-					}
+					// for (Field field : translatableStrings) {
+					// if (!Strings.isEmpty(msgKeys)) {
+					// msgKeys += ", ";
+					// }
+					//
+					// msgKeys += "'" + question.getI18nKey(field.getName()) +
+					// "'";
+					// }
 
 					database.executeUpdate(String.format(
 							"UPDATE app_translation SET applicable = 0 WHERE msgKey IN (%s)", msgKeys));
@@ -68,6 +66,10 @@ public class ApplicableTranslations extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	private String getAllTranslationKeysForQuestion(AuditQuestion question) {
+		return Strings.EMPTY_STRING;
 	}
 
 	public String getType() {

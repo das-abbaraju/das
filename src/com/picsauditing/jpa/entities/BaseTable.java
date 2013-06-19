@@ -32,7 +32,8 @@ import com.picsauditing.search.IndexableField;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class BaseTable extends BaseTranslatable implements JSONable, Serializable, Autocompleteable, JSONAware {
+public abstract class BaseTable /* extends BaseTranslatable */implements JSONable, Serializable, Autocompleteable,
+		JSONAware, Translatable {
 
 	protected int id;
 	protected User createdBy;
@@ -97,15 +98,17 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 
 	@Transient
 	public User getUpdatedBy2() {
-		if (getUpdatedBy() == null)
+		if (getUpdatedBy() == null) {
 			return getCreatedBy();
+		}
 		return getUpdatedBy();
 	}
 
 	@Transient
 	public Date getUpdateDate2() {
-		if (updateDate == null)
+		if (updateDate == null) {
 			return creationDate;
+		}
 		return updateDate;
 	}
 
@@ -130,15 +133,18 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 	public void setAuditColumns() {
 		updateDate = new Date();
 
-		if (createdBy == null)
+		if (createdBy == null) {
 			createdBy = updatedBy;
-		if (creationDate == null)
+		}
+		if (creationDate == null) {
 			creationDate = updateDate;
+		}
 	}
 
 	public void setAuditColumns(User user) {
-		if (user != null)
+		if (user != null) {
 			updatedBy = user;
+		}
 
 		setAuditColumns();
 	}
@@ -151,19 +157,21 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 		int userID = permissions.getUserId();
 		if (permissions.getAdminID() > 0) {
 			userID = permissions.getAdminID();
-        }
+		}
 		setAuditColumns(new User(userID));
 	}
 
 	@Transient
 	public String getWhoString() {
-		if (createdBy == null)
+		if (createdBy == null) {
 			return "";
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a");
 		StringBuilder sb = new StringBuilder();
 		sb.append("Created By ").append(createdBy.getName()).append("(").append(createdBy.getId()).append(")");
-		if (creationDate != null)
+		if (creationDate != null) {
 			sb.append(" on ").append(sdf.format(creationDate));
+		}
 		if (updatedBy != null) {
 			if (updatedBy.getId() == createdBy.getId()) {
 				if (updateDate != null && !updateDate.equals(creationDate)) {
@@ -174,8 +182,9 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 			} else {
 				sb.append("; Updated By ").append(updatedBy.getName()).append("(").append(updatedBy.getId())
 						.append(")");
-				if (updateDate != null)
+				if (updateDate != null) {
 					sb.append(" on ").append(sdf.format(updateDate));
+				}
 			}
 		}
 		return sb.toString();
@@ -213,17 +222,21 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 	}
 
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (id == 0)
+		}
+		if (id == 0) {
 			return false;
+		}
 
 		try {
 			BaseTable other = (BaseTable) obj;
-			if (other.getId() == 0)
+			if (other.getId() == 0) {
 				return false;
+			}
 
 			return id == other.getId();
 		} catch (Exception e) {
@@ -235,10 +248,11 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 
 	@Override
 	public int hashCode() {
-		if (id == 0)
+		if (id == 0) {
 			return super.hashCode();
-		else
+		} else {
 			return ((getClass().getName().hashCode() % 1000) * 10000000) + id;
+		}
 	}
 
 	public void update(BaseTable b) {
@@ -265,9 +279,9 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 				}
 			}
 
-			if (found != null)
+			if (found != null) {
 				changes.remove(found); // update was performed
-			else {
+			} else {
 				removalList.add(fromDB);
 			}
 		}
@@ -298,9 +312,9 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 				}
 			}
 
-			if (found != null)
+			if (found != null) {
 				changes.remove(found); // update was performed
-			else {
+			} else {
 				deletes.add(fromDB);
 				dbIterator.remove();
 			}
@@ -308,12 +322,14 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 
 		// merging remaining changes (updates/inserts)
 		unLinkedList.addAll(changes);
-		for (T insertOrUpdate : unLinkedList)
+		for (T insertOrUpdate : unLinkedList) {
 			dao.save(insertOrUpdate);
+		}
 
 		// performing deletes
-		for (T delete : deletes)
+		for (T delete : deletes) {
 			dao.remove(delete);
+		}
 	}
 
 	@Transient

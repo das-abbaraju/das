@@ -1,6 +1,9 @@
 package com.picsauditing.actions.contractors;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Certificate;
-import com.picsauditing.jpa.entities.TranslatableString;
 
 public class ConInsureGuardTest extends PicsActionTest {
 
@@ -29,8 +31,6 @@ public class ConInsureGuardTest extends PicsActionTest {
 	private AuditQuestion auditQuestion;
 	@Mock
 	private AuditCategory auditCategory;
-	@Mock
-	private TranslatableString tString;
 	@Mock
 	private Map<Certificate, List<String>> certificates;
 	@Mock
@@ -46,8 +46,7 @@ public class ConInsureGuardTest extends PicsActionTest {
 	@Test
 	public void testAssociateClientSitesWithCertificate_AddsNewClientSites() throws Exception {
 		Whitebox.invokeMethod(conInsureGuard, "initializeMaps");
-		when(tString.toString()).thenReturn("abc");
-		when(auditCategory.getName()).thenReturn(tString);
+		when(auditCategory.getName()).thenReturn("abc");
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
 		when(auditData.getQuestion()).thenReturn(auditQuestion);
 

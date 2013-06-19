@@ -4,20 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
-
+import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class AuditCategoryTest {
-	
+
 	private List<AuditCategory> list = new ArrayList<AuditCategory>();
-	
+
 	private AuditType auditType = EntityFactory.makeAuditType();
+
+	@AfterClass
+	public static void classTearDown() {
+		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
+	}
 
 	@Test
 	public void testCompareTo() throws Exception {
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
+
 		buildCategory(2);
 		AuditCategory cat = buildCategory(1);
 		buildCategory(cat, 1);
@@ -32,7 +40,7 @@ public class AuditCategoryTest {
 		Assert.assertEquals("2", list.get(3).getFullNumber());
 		Assert.assertEquals("11", list.get(4).getFullNumber());
 	}
-	
+
 	private AuditCategory buildCategory(int number) {
 		AuditCategory cat = new AuditCategory();
 		list.add(cat);

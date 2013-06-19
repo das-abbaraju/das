@@ -4,12 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.Entity;
+import javax.persistence.EntityResult;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.SecondaryTable;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
+import com.picsauditing.model.i18n.LlewellynTranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -26,7 +38,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade")
-@SecondaryTable(name = "ref_trade_calc", pkJoinColumns = {@PrimaryKeyJoinColumn(name="tradeID")})
+@SecondaryTable(name = "ref_trade_calc", pkJoinColumns = { @PrimaryKeyJoinColumn(name = "tradeID") })
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 @IndexableOverride(ignores = { @IndexOverrideIgnore(methodName = "getId") })
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {
@@ -52,9 +64,12 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private Float naicsTRIR;
 	private Float naicsLWCR;
 
-	private TranslatableString name;
-	private TranslatableString name2;
-	private TranslatableString help;
+	// private TranslatableString name;
+	// private TranslatableString name2;
+	// private TranslatableString help;
+	private String name;
+	private String name2;
+	private String help;
 
 	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
 	private List<Trade> children = new ArrayList<Trade>();
@@ -88,19 +103,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public Boolean getProductI() {
 		if (product == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return false;
-			else
+			} else {
 				return parent.getProductI();
+			}
 		}
 		return product;
 	}
 
 	public void setProductI(Boolean product) {
-		if (!Objects.equal(parent, TOP) && product == parent.getProductI())
+		if (!Objects.equal(parent, TOP) && product == parent.getProductI()) {
 			this.product = null;
-		else
+		} else {
 			this.product = product;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
@@ -115,19 +132,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public boolean getServiceI() {
 		if (service == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return false;
-			else
+			} else {
 				return parent.getServiceI();
+			}
 		}
 		return service;
 	}
 
 	public void setServiceI(Boolean service) {
-		if (!Objects.equal(parent, TOP) && service == parent.getServiceI())
+		if (!Objects.equal(parent, TOP) && service == parent.getServiceI()) {
 			this.service = null;
-		else
+		} else {
 			this.service = service;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
@@ -142,19 +161,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public boolean getTransportationI() {
 		if (transportation == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return false;
-			else
+			} else {
 				return parent.getTransportationI();
+			}
 		}
 		return transportation;
 	}
 
 	public void setTransportationI(Boolean transportation) {
-		if (!Objects.equal(parent, TOP) && transportation == parent.getTransportationI())
+		if (!Objects.equal(parent, TOP) && transportation == parent.getTransportationI()) {
 			this.service = null;
-		else
+		} else {
 			this.transportation = transportation;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Boolean)
@@ -169,19 +190,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public boolean getPsmAppliesI() {
 		if (psmApplies == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return false;
-			else
+			} else {
 				return parent.getPsmAppliesI();
+			}
 		}
 		return psmApplies;
 	}
 
 	public void setPsmAppliesI(Boolean psmApplies) {
-		if (!Objects.equal(parent, TOP) && psmApplies == parent.getPsmAppliesI())
+		if (!Objects.equal(parent, TOP) && psmApplies == parent.getPsmAppliesI()) {
 			this.psmApplies = null;
-		else
+		} else {
 			this.psmApplies = psmApplies;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
@@ -196,19 +219,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public LowMedHigh getProductRiskI() {
 		if (productRisk == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return LowMedHigh.Low;
-			else
+			} else {
 				return parent.getProductRiskI();
+			}
 		}
 		return productRisk;
 	}
 
 	public void setProductRiskI(LowMedHigh productRisk) {
-		if (!Objects.equal(parent, TOP) && productRisk == parent.getProductRiskI())
+		if (!Objects.equal(parent, TOP) && productRisk == parent.getProductRiskI()) {
 			this.productRisk = null;
-		else
+		} else {
 			this.productRisk = productRisk;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
@@ -223,19 +248,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public LowMedHigh getSafetyRiskI() {
 		if (safetyRisk == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return LowMedHigh.Low;
-			else
+			} else {
 				return parent.getSafetyRiskI();
+			}
 		}
 		return safetyRisk;
 	}
 
 	public void setSafetyRiskI(LowMedHigh safetyRisk) {
-		if (!Objects.equal(parent, TOP) && safetyRisk == parent.getSafetyRiskI())
+		if (!Objects.equal(parent, TOP) && safetyRisk == parent.getSafetyRiskI()) {
 			this.safetyRisk = null;
-		else
+		} else {
 			this.safetyRisk = safetyRisk;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.LowMedHigh)
@@ -250,19 +277,21 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public LowMedHigh getTransportationRiskI() {
 		if (transportationRisk == null) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return LowMedHigh.Low;
-			else
+			} else {
 				return parent.getTransportationRiskI();
+			}
 		}
 		return transportationRisk;
 	}
 
 	public void setTransportationRiskI(LowMedHigh transportationRisk) {
-		if (!Objects.equal(parent, TOP) && transportationRisk == parent.getTransportationRiskI())
+		if (!Objects.equal(parent, TOP) && transportationRisk == parent.getTransportationRiskI()) {
 			this.transportationRisk = null;
-		else
+		} else {
 			this.transportationRisk = transportationRisk;
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Low, type = FieldType.Integer)
@@ -300,7 +329,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		this.needsIndexing = needsIndexing;
 	}
 
-    @Column(table = "ref_trade_calc")
+	@Column(table = "ref_trade_calc")
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getContractorCount() {
 		return contractorCount;
@@ -321,18 +350,20 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	public String getImageLocationI() {
 		if (Strings.isEmpty(imageExtension)) {
-			if (Objects.equal(parent, TOP))
+			if (Objects.equal(parent, TOP)) {
 				return "";
-			else
+			} else {
 				return parent.getImageLocationI();
+			}
 		}
 		return getImageLocation();
 	}
 
 	@Transient
 	public String getImageLocation() {
-		if (Strings.isEmpty(imageExtension))
+		if (Strings.isEmpty(imageExtension)) {
 			return "";
+		}
 		return "/files/" + FileUtils.thousandize(id) + "trade_" + id + "." + imageExtension;
 	}
 
@@ -362,8 +393,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		for (TradeAlternate ta : getAlternates()) {
 			String[] strArray = ta.getName().toUpperCase().replaceAll("[^a-zA-Z0-9\\s]", " ").split("\\s+");
 			for (String str : strArray) {
-				if (!Strings.isEmpty(str))
+				if (!Strings.isEmpty(str)) {
 					indexValues.add(new IndexObject(str, 6));
+				}
 			}
 		}
 
@@ -371,8 +403,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			for (IndexObject parentIndex : parent.getIndexValues()) {
 				IndexObject inheritedIndex = new IndexObject(parentIndex.getValue(), parentIndex.getWeight() - 2);
 				indexValues.add(inheritedIndex);
-				if (inheritedIndex.getWeight() < 1)
+				if (inheritedIndex.getWeight() < 1) {
 					inheritedIndex.setWeight(1);
+				}
 			}
 		}
 		return indexValues;
@@ -383,13 +416,23 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	 * the parent trade to make sense. Can stand alone in a list and be
 	 * understood.
 	 */
+	// @Transient
+	// @IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
+	// public TranslatableString getName() {
+	// return name;
+	// }
+	//
+	// public void setName(TranslatableString name) {
+	// this.name = name;
+	// }
+
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
-	public TranslatableString getName() {
-		return name;
+	public String getName() {
+		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -399,42 +442,64 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	 */
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
-	public TranslatableString getName2() {
+	public String getName2() {
 		return name2;
 	}
 
-	public void setName2(TranslatableString name2) {
+	public void setName2(String name2) {
 		this.name2 = name2;
 	}
 
+	// @Transient
+	// @IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
+	// public TranslatableString getName2() {
+	// return name2;
+	// }
+	//
+	// public void setName2(TranslatableString name2) {
+	// this.name2 = name2;
+	// }
+
+	// @Transient
+	// public TranslatableString getHelp() {
+	// return help;
+	// }
+	//
+	// public void setHelp(TranslatableString help) {
+	// this.help = help;
+	// }
+
 	@Transient
-	public TranslatableString getHelp() {
+	public String getHelp() {
 		return help;
 	}
 
-	public void setHelp(TranslatableString help) {
+	public void setHelp(String help) {
 		this.help = help;
 	}
 
 	/**
 	 * Is this trade equal to t or a child of t? For example, Residential
 	 * Construction is a childOf Residential Construction and Construction.
-	 *
+	 * 
 	 * @param candidateParent
 	 * @return
 	 */
 	@Transient
 	public boolean childOf(Trade candidateParent) {
-		if (this.parent == null)
+		if (this.parent == null) {
 			// Gone all the way up and didn't find our parent
 			return false;
+		}
 
-		if (candidateParent == null)
+		if (candidateParent == null) {
 			return false;
+		}
 
-		if (this.equals(candidateParent))
+		if (this.equals(candidateParent)) {
 			// We don't consider you to be a child of yourself
 			return false;
+		}
 
 		// Parent Level,Start,End = 1,1,12
 		// Child Level,Start,End = 2,6,9
@@ -474,8 +539,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		st.add(this.name.toString());
 		st.add(this.name2.toString());
 
-		for (TradeAlternate ta : getAlternates())
+		for (TradeAlternate ta : getAlternates()) {
 			tas.add(ta.getName());
+		}
 
 		String alternate = Strings.implode(tas, ", ");
 		st.add(alternate);
@@ -500,7 +566,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getNodeDisplay() {
-		if (name2 == null || !name2.isExists()) {
+		if (Strings.isEmpty(name2)) {
 			return name.toString();
 		} else {
 			return name2.toString();
@@ -514,16 +580,17 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		Map<String, String> attr = new JSONObject();
 		attr.put("id", "" + id);
 		attr.put("class", "trade-" + id);
-		if (getProductI() && getServiceI())
+		if (getProductI() && getServiceI()) {
 			attr.put("rel", "product-service");
-		else if (getServiceI() && getTransportationI())
+		} else if (getServiceI() && getTransportationI()) {
 			attr.put("rel", "transportation-service");
-		else if (getTransportationI())
+		} else if (getTransportationI()) {
 			attr.put("rel", "transportation");
-		else if (getServiceI())
+		} else if (getServiceI()) {
 			attr.put("rel", "service");
-		else if (getProductI())
+		} else if (getProductI()) {
 			attr.put("rel", "product");
+		}
 		return attr;
 	}
 
@@ -532,23 +599,27 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
-		if (name != null && name.isExists())
+		if (Strings.isEmpty(name)) {
 			json.put("name", name.toString());
-		if (name2 != null && name2.isExists())
+		}
+		if (Strings.isEmpty(name2)) {
 			json.put("name2", name2.toString());
-		if (help != null && help.isExists())
+		}
+		if (Strings.isEmpty(help)) {
 			json.put("name2", help.toString());
+		}
 
-		if (getProductI() && getServiceI())
+		if (getProductI() && getServiceI()) {
 			json.put("type", "product-service");
-		else if (getServiceI())
+		} else if (getServiceI()) {
 			json.put("type", "service");
-		else if (getProductI())
+		} else if (getProductI()) {
 			json.put("type", "product");
-		else if (getServiceI() && getTransportationI())
+		} else if (getServiceI() && getTransportationI()) {
 			json.put("type", "transportation-service");
-		else if (getTransportationI())
+		} else if (getTransportationI()) {
 			json.put("type", "transportation");
+		}
 
 		return json;
 	}
@@ -578,12 +649,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public Float getNaicsTRIRI() {
-		if (naicsTRIR != null && naicsTRIR != 0.0)
+		if (naicsTRIR != null && naicsTRIR != 0.0) {
 			return naicsTRIR;
-		else if (parent != null)
+		} else if (parent != null) {
 			return parent.getNaicsTRIRI();
-		else
+		} else {
 			return Float.valueOf(4);
+		}
 	}
 
 	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Average, type = FieldType.Float)
@@ -597,12 +669,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public Float getNaicsLWCRI() {
-		if (naicsLWCR != null && naicsLWCR != 0.0)
+		if (naicsLWCR != null && naicsLWCR != 0.0) {
 			return naicsLWCR;
-		else if (parent != null)
+		} else if (parent != null) {
 			return parent.getNaicsLWCRI();
-		else
+		} else {
 			return Float.valueOf(4);
+		}
 	}
 
 	@Transient
