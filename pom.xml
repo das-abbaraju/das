@@ -997,5 +997,10 @@
             <artifactId>org.jacoco.core</artifactId>
             <version>${jacoco.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ApprovalTests</groupId>
+            <artifactId>ApprovalTests</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -17,6 +17,7 @@ public enum SqlFunction {
 	GroupConcat(DisplayType.String, FilterType.String, true),
 	Month(DisplayType.String, FilterType.String, false),
 	Date(DisplayType.String, FilterType.String, false),
+    DaysFromNow(DisplayType.Number, FilterType.Number, false),
 
 	// displayType = null indicates to use the DisplayType of the input value. Same with filterType = null.
 	Max(null, null, true),
