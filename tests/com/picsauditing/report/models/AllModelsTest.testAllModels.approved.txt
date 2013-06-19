@@ -478,7 +478,6 @@ AccountWebUrl
 AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -502,6 +501,8 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
+DirectTradeTradeName
+TradeTradeName
 
 Model: ContractorSearch
 Permission: Permissions{permissions=[]}

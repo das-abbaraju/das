@@ -45,7 +45,6 @@ ContractorAutoAddClientSite
 ContractorBalance
 ContractorContactCountByEmail
 ContractorContactCountByPhone
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -84,3 +83,5 @@ ContractorWelcomeCallCaoID
 ContractorWelcomeCallCaoStatus
 ContractorWelcomeCallID
 ContractorWelcomeCallTypeName
+DirectTradeTradeName
+TradeTradeName

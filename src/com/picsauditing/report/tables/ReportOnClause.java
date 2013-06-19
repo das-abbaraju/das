@@ -39,9 +39,13 @@ public class ReportOnClause {
 	}
 
 	public String toSql(String fromAlias, String toAlias, Permissions permissions) {
-		String onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
+        String onClause = "1";
+        if (fromKey != null && toKey != null)
+		    onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
+
 		if (Strings.isNotEmpty(extraClauses))
 			onClause += " AND " + extraClauses;
+
 		onClause = onClause.replace(VisibleAccountIDs, Strings.implodeForDB(permissions.getVisibleAccounts()));
 		onClause = onClause.replace(AccountID, permissions.getAccountIdString());
 		onClause = onClause.replace(UserID, permissions.getUserIdString());

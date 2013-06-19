@@ -26,8 +26,14 @@ public class ContractorsModel extends AbstractModel {
             account.join(AccountTable.LastLogin);
 		}
 		contractor.join(ContractorTable.PQF);
-        contractor.join(ContractorTable.ContractorTrade);
-		if (permissions.isAdmin()) {
+        ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
+        contractorTrade.alias = "ContractorTrade";
+        ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
+        directTrade.alias = "DirectTrade";
+        ModelSpec trade = directTrade.join(TradeTable.Children);
+        trade.alias = "Trade";
+
+        if (permissions.isAdmin()) {
 			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
 			welcomeCall.join(ContractorAuditTable.SingleCAO);
 		}

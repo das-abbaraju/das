@@ -12,13 +12,6 @@ public class ContractorTradeTable extends AbstractTable {
 	public ContractorTradeTable() {
 		super("contractor_trade");
 		addFields(ContractorTrade.class);
-
-        Field tradeName = new Field("TradeName","tradeID", FieldType.Trade);
-        tradeName.setTranslationPrefixAndSuffix("Trade","name");
-        tradeName.setImportance(FieldImportance.Required);
-        tradeName.setCategory(FieldCategory.AccountInformation);
-        tradeName.setVisible(false);
-        addField(tradeName);
 	}
 
 	protected void addJoins() {
