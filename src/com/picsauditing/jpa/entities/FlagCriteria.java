@@ -20,7 +20,7 @@ import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.builders.FlagCriteriaBuilder;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -38,12 +38,8 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	private AuditType auditType;
 	private OshaType oshaType;
 	private OshaRateType oshaRateType;
-
-	// private TranslatableString label;
-	// private TranslatableString description;
 	private String label;
 	private String description;
-
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
 	protected AuditStatus requiredStatus = AuditStatus.Complete;
@@ -118,7 +114,11 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Transient
 	public String getLabel() {
-		return new LlewellynTranslatableString(getI18nKey("label")).toTranslatedString();
+		if (label != null) {
+			return label;
+		}
+
+		return new TranslatableString(getI18nKey("label")).toTranslatedString();
 	}
 
 	public void setLabel(String label) {
@@ -127,7 +127,11 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Transient
 	public String getDescription() {
-		return new LlewellynTranslatableString(getI18nKey("description")).toTranslatedString();
+		if (description != null) {
+			return description;
+		}
+
+		return new TranslatableString(getI18nKey("description")).toTranslatedString();
 	}
 
 	public void setDescription(String description) {

@@ -13,7 +13,6 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,7 +22,7 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Employee;
@@ -31,13 +30,11 @@ import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.search.Database;
 
-public class ManageEmployeeSiteTest {
+public class ManageEmployeeSiteTest extends PicsTranslationTest {
+
 	private ManageEmployeeSite manageEmployeeSite;
 
-	@Mock
-	private Database databaseForTesting;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -46,7 +43,7 @@ public class ManageEmployeeSiteTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		super.resetTranslationService();
 
 		manageEmployeeSite = new ManageEmployeeSite();
 
@@ -54,11 +51,6 @@ public class ManageEmployeeSiteTest {
 		picsTestUtil.autowireEMInjectedDAOs(manageEmployeeSite, entityManager);
 
 		Whitebox.setInternalState(manageEmployeeSite, "permissions", permissions);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

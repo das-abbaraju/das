@@ -1,12 +1,18 @@
 package com.picsauditing.validator;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.model.i18n.KeyValue;
-import com.picsauditing.model.i18n.LanguageModel;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +20,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.model.i18n.KeyValue;
+import com.picsauditing.model.i18n.LanguageModel;
+import com.picsauditing.util.Strings;
 
 public class InputValidatorTest {
 
@@ -175,8 +182,7 @@ public class InputValidatorTest {
 
 	@Test
 	public void testValidateUsername_OneHundredCharacters_ReturnsEmpty() {
-		String string100CharactersLong =
-				"0123456789" + // 1
+		String string100CharactersLong = "0123456789" + // 1
 				"0123456789" + // 2
 				"0123456789" + // 3
 				"0123456789" + // 4
@@ -194,8 +200,7 @@ public class InputValidatorTest {
 
 	@Test
 	public void testValidateUsername_OverOneHundredCharacters_ReturnsNotEmpty() {
-		String string101CharactersLong =
-				"0123456789" + // 1
+		String string101CharactersLong = "0123456789" + // 1
 				"0123456789" + // 2
 				"0123456789" + // 3
 				"0123456789" + // 4
@@ -213,11 +218,8 @@ public class InputValidatorTest {
 
 	@Test
 	public void testValidateUsername_InvalidCharactersReturnFalse() {
-		String[] invalidChars = {
-				"`", "~", "!", "#", "$", "%", "^", "&", "*", "(", ")",
-				"=", "[", "]", "{", "}", "\\", "|", ":", ";", "'", "\"",
-				",", "<", ">", "?", "/"
-		};
+		String[] invalidChars = { "`", "~", "!", "#", "$", "%", "^", "&", "*", "(", ")", "=", "[", "]", "{", "}", "\\",
+				"|", ":", ";", "'", "\"", ",", "<", ">", "?", "/" };
 
 		for (String invalidChar : invalidChars) {
 			String errorMessageKey = inputValidator.validateUsername("abcd" + invalidChar);
@@ -334,7 +336,7 @@ public class InputValidatorTest {
 
 	@Test
 	public void testIsLanguageValid_WhenLanguageIsEmpty_ThenReturnFalse() {
-		String language = "";
+		String language = Strings.EMPTY_STRING;
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
 
@@ -363,7 +365,7 @@ public class InputValidatorTest {
 	@Test
 	public void testIsLanguageValid_WhenNoStableLanguages_ThenReturnFalse() {
 		String language = Locale.ENGLISH.getLanguage();
-		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(new ArrayList<KeyValue>());
+		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(new ArrayList<KeyValue<String, String>>());
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
 
@@ -373,8 +375,8 @@ public class InputValidatorTest {
 	@Test
 	public void testIsLanguageValid_WhenLanguageIsInStableLanguages_ThenReturnTrue() {
 		String language = Locale.ENGLISH.getLanguage();
-		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
-		stableLanguages.add(new KeyValue(language, ""));
+		List<KeyValue<String, String>> stableLanguages = new ArrayList<>();
+		stableLanguages.add(new KeyValue<String, String>(language, Strings.EMPTY_STRING));
 		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(stableLanguages);
 
 		boolean result = inputValidator.isLanguageValid(language, supportedLanguages);
@@ -386,8 +388,8 @@ public class InputValidatorTest {
 	public void testIsLanguageValid_WhenLanguageIsNotInStableLanguages_ThenReturnFalse() {
 		String languageEnglish = Locale.ENGLISH.getLanguage();
 		String languageFrench = Locale.FRENCH.getLanguage();
-		List<KeyValue> stableLanguages = new ArrayList<KeyValue>();
-		stableLanguages.add(new KeyValue(languageFrench, ""));
+		List<KeyValue<String, String>> stableLanguages = new ArrayList<>();
+		stableLanguages.add(new KeyValue<String, String>(languageFrench, Strings.EMPTY_STRING));
 		when(supportedLanguages.getVisibleLanguagesSansDialect()).thenReturn(stableLanguages);
 
 		boolean result = inputValidator.isLanguageValid(languageEnglish, supportedLanguages);

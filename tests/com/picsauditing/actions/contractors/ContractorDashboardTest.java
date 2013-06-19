@@ -1,35 +1,45 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.*;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ApprovalStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 
-public class ContractorDashboardTest {
+public class ContractorDashboardTest extends PicsTranslationTest {
 	// NOTE: when you need Struts/Spring stuff do not use PowerMockRunner.
 	// Instead, extend PicsActionTest and take a look at any of its other
 	// subclasses (see me for help - Galen)
@@ -42,8 +52,8 @@ public class ContractorDashboardTest {
 	private ContractorOperator conCorp;
 	private Permissions permissions;
 
-    @Mock
-    private UserDAO userDAO;
+	@Mock
+	private UserDAO userDAO;
 	@Mock
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Mock
@@ -57,16 +67,11 @@ public class ContractorDashboardTest {
 	@Mock
 	private Permissions operatorPermissions2;
 
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
-	}
-	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		
+		super.resetTranslationService();
+
 		dashboard = new ContractorDashboard();
 
 		contractor = EntityFactory.makeContractor();
@@ -107,7 +112,7 @@ public class ContractorDashboardTest {
 
 	@Test
 	public void testGetUsersWithPermission() throws Exception {
-        PicsTestUtil.autowireDAOsFromDeclaredMocks(dashboard, this);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(dashboard, this);
 		OperatorAccount site1 = EntityFactory.makeOperator();
 		OperatorAccount site2 = EntityFactory.makeOperator();
 		OperatorAccount corporate = EntityFactory.makeOperator();
@@ -148,9 +153,9 @@ public class ContractorDashboardTest {
 		when(operatorPermissions1.hasPermission(OpPerms.AddContractors)).thenReturn(true);
 		when(operatorPermissions2.hasPermission(OpPerms.AddContractors)).thenReturn(false);
 		when(corporatePermissions.hasPermission(OpPerms.AddContractors)).thenReturn(false);
-        when(userDAO.findByOperatorAccount(eq(corporate), anyInt())).thenReturn(corporate.getUsers());
-        when(userDAO.findByOperatorAccount(eq(site1), anyInt())).thenReturn(site1.getUsers());
-        when(userDAO.findByOperatorAccount(eq(site2), anyInt())).thenReturn(site2.getUsers());
+		when(userDAO.findByOperatorAccount(eq(corporate), anyInt())).thenReturn(corporate.getUsers());
+		when(userDAO.findByOperatorAccount(eq(site1), anyInt())).thenReturn(site1.getUsers());
+		when(userDAO.findByOperatorAccount(eq(site2), anyInt())).thenReturn(site2.getUsers());
 
 		Whitebox.setInternalState(dashboard, "permissionBuilder", permissionBuilder);
 
@@ -181,13 +186,12 @@ public class ContractorDashboardTest {
 		String year2 = "" + date.get(Calendar.YEAR);
 		contractor.getAudits().add(createAU(year1, AuditStatus.Complete));
 		contractor.getAudits().add(createAU(year2, AuditStatus.Pending));
-		
-		
-		String results = Whitebox.invokeMethod(dashboard, "getIncompleteAnnualUpdates" , contractor, operator.getId());
+
+		String results = Whitebox.invokeMethod(dashboard, "getIncompleteAnnualUpdates", contractor, operator.getId());
 		assertTrue(results.contains(year2));
 		assertTrue(!results.contains(year1));
 	}
-	
+
 	private ContractorAudit createAU(String year, AuditStatus status) {
 		ContractorAudit audit;
 		audit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, year);

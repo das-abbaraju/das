@@ -39,7 +39,7 @@ public class OperatorFlagYearHistoryTest extends PicsTest {
 		
 		super.setUp();
 		
-		mockI18nCacheForEnglishMonthNames();
+		mockTranslationServiceForEnglishMonthNames();
 		
 		when(permissions.getAccountId()).thenReturn(OPERATOR_ACCOUNT_ID);
 		

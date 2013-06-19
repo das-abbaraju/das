@@ -18,7 +18,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.PICS.InvoiceService;
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -36,12 +36,8 @@ public class InvoiceFee extends BaseTable {
 	public final static int IMPORTFEE = 340;
 	public final static int IMPORTFEEZEROLEVEL = 343;
 
-	// private TranslatableString fee;
-	// private TranslatableString description;
-
 	private String fee;
 	private String description;
-
 	private BigDecimal amount = BigDecimal.ZERO;
 	private BigDecimal ratePercent = BigDecimal.ZERO;
 	private boolean visible = true;
@@ -62,19 +58,13 @@ public class InvoiceFee extends BaseTable {
 		this.id = id;
 	}
 
-	// @Transient
-	// public TranslatableString getFee() {
-	// return fee;
-	// }
-	//
-	// public void setFee(TranslatableString fee) {
-	// this.fee = fee;
-	// }
-
 	@Transient
 	public String getFee() {
-		return new LlewellynTranslatableString(getI18nKey("fee")).toTranslatedString();
-		// return fee;
+		if (fee != null) {
+			return fee;
+		}
+
+		return new TranslatableString(getI18nKey("fee")).toTranslatedString();
 	}
 
 	public void setFee(String fee) {

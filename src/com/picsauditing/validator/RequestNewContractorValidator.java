@@ -1,15 +1,19 @@
 package com.picsauditing.validator;
 
-import com.opensymphony.xwork2.util.ValueStack;
-import com.opensymphony.xwork2.validator.ValidatorContext;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.actions.contractors.RequestNewContractorAccount;
-import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
-import com.picsauditing.jpa.entities.*;
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import com.opensymphony.xwork2.util.ValueStack;
+import com.opensymphony.xwork2.validator.ValidatorContext;
+import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 public class RequestNewContractorValidator implements Validator {
 
@@ -17,9 +21,6 @@ public class RequestNewContractorValidator implements Validator {
 	private InputValidator inputValidator;
 
 	private ValidatorContext validatorContext;
-
-	// For testing
-	private I18nCache i18nCache;
 
 	@Override
 	public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
@@ -64,16 +65,16 @@ public class RequestNewContractorValidator implements Validator {
 			addFieldError("contractor.country", getText("RequestNewContractor.error.SelectCountry"));
 		}
 
-		if (country != null
-				&& country.isHasCountrySubdivisions()
-				&& contractor.getCountrySubdivision() == null) {
-			addFieldError("contractor.countrySubdivision", getText("RequestNewContractor.error.SelectCountrySubdivision"));
+		if (country != null && country.isHasCountrySubdivisions() && contractor.getCountrySubdivision() == null) {
+			addFieldError("contractor.countrySubdivision",
+					getText("RequestNewContractor.error.SelectCountrySubdivision"));
 		}
 
 		ContractorOperator requestRelationship = (ContractorOperator) valueStack.findValue("requestRelationship");
 
 		if (requestRelationship.getOperatorAccount() == null || requestRelationship.getOperatorAccount().getId() == 0) {
-			addFieldError("requestRelationship.operatorAccount", getText("RequestNewContractor.error.SelectRequestedByAccount"));
+			addFieldError("requestRelationship.operatorAccount",
+					getText("RequestNewContractor.error.SelectRequestedByAccount"));
 		}
 
 		if (requestRelationship.getRequestedByName() == null) {
@@ -89,7 +90,8 @@ public class RequestNewContractorValidator implements Validator {
 		}
 
 		if (StringUtils.isEmpty(requestRelationship.getReasonForRegistration())) {
-			addFieldError("requestRelationship.reasonForRegistration", getText("RequestNewContractor.error.EnterRegistrationReason"));
+			addFieldError("requestRelationship.reasonForRegistration",
+					getText("RequestNewContractor.error.EnterRegistrationReason"));
 		}
 
 		String contactNote = valueStack.findString("contactNote");
@@ -110,15 +112,7 @@ public class RequestNewContractorValidator implements Validator {
 	}
 
 	private String getText(String key) {
-		return getI18nCache().getText(key, validatorContext.getLocale());
+		return TranslationServiceFactory.getTranslationService().getText(key, validatorContext.getLocale());
 	}
 
-	// the purpose of this is for testing
-	private I18nCache getI18nCache() {
-		if (i18nCache == null) {
-			return I18nCache.getInstance();
-		}
-
-		return i18nCache;
-	}
 }

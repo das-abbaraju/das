@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import javax.persistence.EntityManager;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,8 +18,8 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.PICS.ContractorWatchlistHelper;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -28,9 +27,8 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
 
-public class ReportActivityWatchTest {
+public class ReportActivityWatchTest extends PicsTranslationTest {
 	private ReportActivityWatch reportActivityWatch;
 
 	@Mock
@@ -40,8 +38,6 @@ public class ReportActivityWatchTest {
 	@Mock
 	private ContractorWatchlistHelper helper;
 	@Mock
-	private Database database;
-	@Mock
 	private EntityManager entityManager;
 	@Mock
 	private Permissions permissions;
@@ -49,7 +45,7 @@ public class ReportActivityWatchTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		reportActivityWatch = new ReportActivityWatch();
 		PicsTestUtil testUtil = new PicsTestUtil();
@@ -57,16 +53,12 @@ public class ReportActivityWatchTest {
 
 		Whitebox.setInternalState(reportActivityWatch, "contractorWatchlistHelper", helper);
 		Whitebox.setInternalState(reportActivityWatch, "permissions", permissions);
+
 		// This would otherwise call run(sql) and instantiate a new Database
 		// object
 		Whitebox.setInternalState(reportActivityWatch, "runReport", false);
 
 		when(permissions.isAdmin()).thenReturn(true);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test(expected = NoRightsException.class)

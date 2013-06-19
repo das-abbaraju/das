@@ -12,7 +12,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
@@ -25,6 +24,8 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
@@ -111,7 +112,7 @@ public class EmailBuilder {
 
 		// Include i18nCache for every email
 		if (!tokens.containsKey("i18nCache")) {
-			tokens.put("i18nCache", I18nCache.getInstance());
+			tokens.put("i18nCache", TranslationServiceFactory.getTranslationService());
 			tokens.put(LOCALE, locale);
 		}
 
@@ -139,10 +140,10 @@ public class EmailBuilder {
 				translatedSubjectForUser = template.getTranslatedSubject();
 			}
 
-			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedBodyForUser)) {
+			if (!TranslationService.DEFAULT_TRANSLATION.equals(translatedBodyForUser)) {
 				templateBody = translatedBodyForUser;
 			}
-			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedSubjectForUser)) {
+			if (!TranslationService.DEFAULT_TRANSLATION.equals(translatedSubjectForUser)) {
 				templateSubject = translatedSubjectForUser;
 			}
 		}

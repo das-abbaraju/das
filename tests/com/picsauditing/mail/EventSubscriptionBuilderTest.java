@@ -1,11 +1,11 @@
 package com.picsauditing.mail;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.search.Database;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,15 +18,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"EventSubscriptionBuilderTest-context.xml"})
-public class EventSubscriptionBuilderTest {
+@ContextConfiguration(locations = { "EventSubscriptionBuilderTest-context.xml" })
+public class EventSubscriptionBuilderTest extends PicsTranslationTest {
 
 	@Mock
 	private EmailBuilder emailBuilder;
@@ -34,8 +38,6 @@ public class EventSubscriptionBuilderTest {
 	private EmailQueue email;
 	@Mock
 	private EmailTemplate emailTemplate;
-	@Mock
-	private Database databaseForTesting;
 
 	@Autowired
 	private EmailSender emailSender;
@@ -48,14 +50,14 @@ public class EventSubscriptionBuilderTest {
 
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder) null);
+		PicsTranslationTest.tearDownTranslationService();
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		super.resetTranslationService();
 		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", emailBuilder);
 
 		when(emailBuilder.build()).thenReturn(email);

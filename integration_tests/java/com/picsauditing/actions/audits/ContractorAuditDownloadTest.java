@@ -231,9 +231,6 @@ public class ContractorAuditDownloadTest {
 	@Ignore
 	@Test
 	public void testFillExcelQuestions_QuestionHyperlinkEmptyAnswer() throws Exception {
-		// AuditQuestion question = EntityFactory.makeAuditQuestion();
-		// question.setName(EntityFactory.makeTranslatableString("<a href=\"Link\" target=\"Target\">Test</a>"));
-
 		AuditData data = EntityFactory.makeAuditData("", question);
 		List<AuditData> datas = new ArrayList<AuditData>();
 		datas.add(data);
@@ -322,7 +319,8 @@ public class ContractorAuditDownloadTest {
 		when(question.isCurrent()).thenReturn(true);
 		when(question.isValidQuestion(audit.getValidDate())).thenReturn(true);
 		when(question.isVisibleInAudit(audit)).thenReturn(true);
-		when(question.getName()).thenReturn(EntityFactory.makeTranslatableString("jUnit Mock Question Name"));
+		when(question.getName()).thenReturn("jUnit Mock Question Name");
+		
 
 		when(entityManager.find(eq(ContractorAudit.class), anyInt())).thenReturn(audit);
 		when(permissions.isContractor()).thenReturn(true);

@@ -1,18 +1,19 @@
 package com.picsauditing.jpa.entities;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import java.util.Locale;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.Locale;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "app_language")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Language /* extends BaseTranslatable */ implements Comparable<Language>, Translatable {
+public class Language implements Comparable<Language>, Translatable {
 	private Locale locale;
 	private String language;
 	private String country;

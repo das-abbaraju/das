@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.model.i18n.LlewellynTranslatableString;
+import com.picsauditing.model.i18n.TranslatableString;
 
 @Entity
 @Table(name = "workflow_step")
@@ -20,8 +20,6 @@ public class WorkflowStep extends BaseTable {
 	private AuditStatus newStatus;
 	private EmailTemplate emailTemplate;
 	private boolean noteRequired = false;
-	// private TranslatableString name;
-	// private TranslatableString helpText;
 	private String name;
 	private String helpText;
 
@@ -88,7 +86,11 @@ public class WorkflowStep extends BaseTable {
 
 	@Transient
 	public String getName() {
-		return new LlewellynTranslatableString(getI18nKey("name")).toTranslatedString();
+		if (name != null) {
+			return name;
+		}
+
+		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
 	public void setName(String name) {

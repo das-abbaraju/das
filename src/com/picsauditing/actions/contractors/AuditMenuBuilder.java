@@ -1,19 +1,36 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.OperatorTagCategory;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class AuditMenuBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(AuditMenuBuilder.class);
@@ -22,7 +39,6 @@ public class AuditMenuBuilder {
 
 	private ContractorAccount contractor;
 	private Permissions permissions;
-	private I18nCache i18nCache;
 	private Locale locale;
 	private URLUtils urlUtils;
 
@@ -43,9 +59,10 @@ public class AuditMenuBuilder {
 		}
 
 		auditMenu = new ArrayList<>();
-		// PICS-9473 Operators should not be able to view a Pending/Requested Contractor's PQF or Flag
-		if (permissions.isOperatorCorporate() && (contractor.getStatus() == AccountStatus.Pending ||
-				contractor.getStatus() == AccountStatus.Requested)) {
+		// PICS-9473 Operators should not be able to view a Pending/Requested
+		// Contractor's PQF or Flag
+		if (permissions.isOperatorCorporate()
+				&& (contractor.getStatus() == AccountStatus.Pending || contractor.getStatus() == AccountStatus.Requested)) {
 			return auditMenu;
 		}
 
@@ -75,7 +92,8 @@ public class AuditMenuBuilder {
 	private void buildPQFSection() {
 		try {
 			if (contractorSafetyOrNonContractorUser()) {
-				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id", contractor.getId());
+				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
+						contractor.getId());
 
 				// Add the PQF
 				MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), contractorDocumentsPage);
@@ -91,8 +109,7 @@ public class AuditMenuBuilder {
 								|| auditType.getId() == AuditType.IMPORT_PQF) {
 							if (subMenu.getChildren().size() < MAX_MENU_ITEM || auditType.isPicsPqf()) {
 								MenuComponent childMenu = createMenuItem(subMenu, audit);
-								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID",
-										audit.getId()));
+								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID", audit.getId()));
 							}
 
 							addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
@@ -102,7 +119,8 @@ public class AuditMenuBuilder {
 								MenuComponent tradeItem = subMenu.addChild(getText("ContractorTrades.title"),
 										urlUtils().getActionUrl("ContractorTrades", "id", contractor.getId()));
 								if (!contractor.isNeedsTradesUpdated() && permissions.isOperatorCorporate()) {
-									// Only operators need to see the checkmarks?
+									// Only operators need to see the
+									// checkmarks?
 									tradeItem.setCssClass("done");
 								}
 							}
@@ -127,9 +145,10 @@ public class AuditMenuBuilder {
 		try {
 			if (contractorSafetyOrNonContractorUser()) {
 				// Add the Annual Updates
-				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id", contractor.getId());
-				MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"),
-						contractorDocumentsPage + "#" + ContractorDocuments.getSafeName(getText("AuditType.11.name")));
+				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
+						contractor.getId());
+				MenuComponent subMenu = new MenuComponent(getText("AuditType.11.name"), contractorDocumentsPage + "#"
+						+ ContractorDocuments.getSafeName(getText("AuditType.11.name")));
 				Iterator<ContractorAudit> iterator = sortedAudits.iterator();
 
 				while (iterator.hasNext()) {
@@ -162,9 +181,8 @@ public class AuditMenuBuilder {
 
 				while (iterator.hasNext()) {
 					ContractorAudit audit = iterator.next();
-					if ((audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) ||
-							audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE)
-							&& audit.getOperators().size() > 0) {
+					if ((audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) || audit.getAuditType()
+							.getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE) && audit.getOperators().size() > 0) {
 						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 							MenuComponent childMenu = createMenuItem(subMenu, audit);
 							if (audit.getAuditType().getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE) {
@@ -173,7 +191,8 @@ public class AuditMenuBuilder {
 								String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 								childMenu.setName(getText(audit.getAuditType().getI18nKey("name")) + " '" + year);
 							} else {
-								childMenu.setName(getText(audit.getAuditType().getI18nKey("name")) + " " + getText("ContractorAudit.New"));
+								childMenu.setName(getText(audit.getAuditType().getI18nKey("name")) + " "
+										+ getText("ContractorAudit.New"));
 							}
 
 							String linkUrl = urlUtils().getActionUrl("Audit", "auditID", audit.getId());
@@ -262,8 +281,8 @@ public class AuditMenuBuilder {
 	}
 
 	private boolean canManuallyAddAudits() {
-		return (manuallyAdded != null && manuallyAdded.size() > 0) &&
-				(permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit) || permissions.isOperatorCorporate());
+		return (manuallyAdded != null && manuallyAdded.size() > 0)
+				&& (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit) || permissions.isOperatorCorporate());
 	}
 
 	private void buildAuditGUARDSection() {
@@ -271,7 +290,8 @@ public class AuditMenuBuilder {
 			if (contractorSafetyOrNonContractorUser()) {
 				// Add All AuditGUARD Audits
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
-						contractor.getId()) + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD"));
+						contractor.getId())
+						+ "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD"));
 
 				MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), contractorDocumentsPage);
 				boolean addMoreMenu = false;
@@ -280,10 +300,11 @@ public class AuditMenuBuilder {
 					if (displayAuditUnderAuditGUARDMenu(audit) && subMenu.getChildren().size() < MAX_MENU_ITEM
 							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
 						MenuComponent childMenu;
-						if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review))
+						if (audit.getAuditType().getClassType().equals(AuditTypeClass.Review)) {
 							childMenu = createMenuItemMovedMenuItem(subMenu, audit);
-						else
+						} else {
 							childMenu = createMenuItem(subMenu, audit);
+						}
 
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
@@ -307,7 +328,6 @@ public class AuditMenuBuilder {
 			logger.error("Error building AuditGUARD section in AuditMenuBuilder", exception);
 		}
 	}
-
 
 	private MenuComponent createMenuItemMovedMenuItem(MenuComponent subMenu, ContractorAudit audit) {
 		String link = urlUtils().getActionUrl("AuditMoved", "auditID", audit.getId());
@@ -340,7 +360,8 @@ public class AuditMenuBuilder {
 			if (contractorSafetyOrNonContractorUser()) { // Add
 				// All Reviews Audits
 				String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id",
-						contractor.getId()) + "#" + ContractorDocuments.getSafeName(getText("global.ClientReviews"));
+						contractor.getId())
+						+ "#" + ContractorDocuments.getSafeName(getText("global.ClientReviews"));
 				MenuComponent subMenu = new MenuComponent(getText("global.ClientReviews"), contractorDocumentsPage);
 				boolean addMoreMenu = false;
 
@@ -352,8 +373,9 @@ public class AuditMenuBuilder {
 
 							String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 							String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
-							if (!Strings.isEmpty(audit.getAuditFor()))
+							if (!Strings.isEmpty(audit.getAuditFor())) {
 								linkText = audit.getAuditFor() + " " + linkText;
+							}
 							childMenu.setName(linkText);
 
 							addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
@@ -442,7 +464,7 @@ public class AuditMenuBuilder {
 
 	private String getText(String key) {
 		if (Strings.isNotEmpty(key)) {
-			return i18nCache().getText(key, locale());
+			return getTranslationService().getText(key, locale());
 		}
 
 		return null;
@@ -452,7 +474,7 @@ public class AuditMenuBuilder {
 		String translation = null;
 
 		if (Strings.isNotEmpty(key)) {
-			translation = i18nCache().getText(key, locale(), arguments);
+			translation = getTranslationService().getText(key, locale(), arguments);
 		}
 
 		return translation;
@@ -460,8 +482,8 @@ public class AuditMenuBuilder {
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
 		if (subMenu.getChildren().size() > 0) {
-			logger.info("Found [{}] {}{}", new Object[]{subMenu.getChildren().size(), subMenu.getName(),
-					(subMenu.getChildren().size() == 1 ? "" : "s")});
+			logger.info("Found [{}] {}{}", new Object[] { subMenu.getChildren().size(), subMenu.getName(),
+					(subMenu.getChildren().size() == 1 ? "" : "s") });
 			menu.add(subMenu);
 		}
 	}
@@ -486,12 +508,8 @@ public class AuditMenuBuilder {
 		return audit.getAuditType().isRenewable() || !audit.isExpired();
 	}
 
-	private I18nCache i18nCache() {
-		if (i18nCache == null) {
-			i18nCache = I18nCache.getInstance();
-		}
-
-		return i18nCache;
+	private TranslationService getTranslationService() {
+		return TranslationServiceFactory.getTranslationService();
 	}
 
 	private Locale locale() {
