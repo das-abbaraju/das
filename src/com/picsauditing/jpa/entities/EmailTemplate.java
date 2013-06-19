@@ -1,19 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.picsauditing.model.i18n.TranslatableString;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.picsauditing.model.i18n.TranslatableString;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -85,20 +76,30 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 		this.translatedSubject = translatedSubject;
 	}
 
-	@Transient
+    @Transient
+    public String getTranslatedSubject(Locale locale) {
+        return new TranslatableString(getI18nKey("translatedSubject")).toTranslatedString(locale);
+    }
+
+    @Transient
 	public String getTranslatedBody() {
 		if (translatedBody != null) {
 			return translatedBody;
 		}
 
-		return new TranslatableString("translatedBody").toTranslatedString();
+		return new TranslatableString(getI18nKey("translatedBody")).toTranslatedString();
 	}
 
 	public void setTranslatedBody(String translatedBody) {
 		this.translatedBody = translatedBody;
 	}
 
-	public String getRecipient() {
+    @Transient
+    public String getTranslatedBody(Locale locale) {
+        return new TranslatableString(getI18nKey("translatedBody")).toTranslatedString(locale);
+    }
+
+    public String getRecipient() {
 		return recipient;
 	}
 

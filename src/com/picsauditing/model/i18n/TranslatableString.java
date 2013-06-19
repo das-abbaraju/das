@@ -2,6 +2,8 @@ package com.picsauditing.model.i18n;
 
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 
+import java.util.Locale;
+
 public class TranslatableString {
 
 	private String key;
@@ -11,10 +13,14 @@ public class TranslatableString {
 	}
 
 	public String toTranslatedString() {
-		return TranslationServiceFactory.getTranslationService().getText(key, TranslationServiceFactory.getLocale());
+		return toTranslatedString(TranslationServiceFactory.getLocale());
 	}
 
-	@Override
+    public String toTranslatedString(Locale locale) {
+        return TranslationServiceFactory.getTranslationService().getText(key, locale);
+    }
+
+    @Override
 	public String toString() {
 		return key;
 	}

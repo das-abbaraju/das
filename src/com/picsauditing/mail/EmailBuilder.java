@@ -106,14 +106,14 @@ public class EmailBuilder {
 			}
 		}
 
-		Locale locale = getUserLocale();
+		Locale userLocale = getUserLocale();
 		String templateBody = template.getBody();
 		String templateSubject = template.getSubject();
 
 		// Include i18nCache for every email
 		if (!tokens.containsKey("i18nCache")) {
 			tokens.put("i18nCache", TranslationServiceFactory.getTranslationService());
-			tokens.put(LOCALE, locale);
+			tokens.put(LOCALE, userLocale);
 		}
 
 		// If we're using the default template, pull up the correct translation
@@ -132,12 +132,12 @@ public class EmailBuilder {
 			// template.getTranslatedSubject().getTranslations());
 			// }
 
-			if (template.getTranslatedBody() != null) {
-				translatedBodyForUser = template.getTranslatedBody();
+			if (template.getTranslatedBody(userLocale) != null) {
+				translatedBodyForUser = template.getTranslatedBody(userLocale);
 			}
 
-			if (template.getTranslatedSubject() != null) {
-				translatedSubjectForUser = template.getTranslatedSubject();
+			if (template.getTranslatedSubject(userLocale) != null) {
+				translatedSubjectForUser = template.getTranslatedSubject(userLocale);
 			}
 
 			if (!TranslationService.DEFAULT_TRANSLATION.equals(translatedBodyForUser)) {
@@ -298,36 +298,38 @@ public class EmailBuilder {
 		return tokens.containsKey(key) && tokens.get(key) != null;
 	}
 
-	// private String getUserTranslation(Locale locale, Collection<Translation>
-	// translations) {
-	// String english = I18nCache.DEFAULT_TRANSLATION;
-	// String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
-	// for (Translation translation : translations) {
-	// if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
-	// english = translation.getValue();
-	// }
-	//
-	// if (locale.getLanguage().equals(translation.getLocale())
-	// && !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
-	// notVariantTranslation = translation.getValue();
-	// }
-	//
-	// if (Strings.isNotEmpty(locale.getCountry())) {
-	// if (translation.getLocale().equals(locale.getLanguage() + "_" +
-	// locale.getCountry())) {
-	// return translation.getValue();
-	// }
-	// }
-	// }
-	//
-	// if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
-	// return notVariantTranslation;
-	// }
-	//
-	// return english;
-	// }
+    /*
+    private String getUserTranslation(Locale locale, Collection<Translation>
+            translations) {
+        String english = I18nCache.DEFAULT_TRANSLATION;
+        String notVariantTranslation = I18nCache.DEFAULT_TRANSLATION;
+        for (Translation translation : translations) {
+            if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale())) {
+                english = translation.getValue();
+            }
 
-	public void setPermissions(Permissions permissions) {
+            if (locale.getLanguage().equals(translation.getLocale())
+                    && !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue())) {
+                notVariantTranslation = translation.getValue();
+            }
+
+            if (Strings.isNotEmpty(locale.getCountry())) {
+                if (translation.getLocale().equals(locale.getLanguage() + "_" +
+                        locale.getCountry())) {
+                    return translation.getValue();
+                }
+            }
+        }
+
+        if (!notVariantTranslation.equals(I18nCache.DEFAULT_TRANSLATION)) {
+            return notVariantTranslation;
+        }
+
+        return english;
+    }
+    */
+
+    public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		addToken(PERMISSIONS, permissions);
 	}

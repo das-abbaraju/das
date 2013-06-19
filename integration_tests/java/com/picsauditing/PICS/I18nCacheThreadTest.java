@@ -80,13 +80,13 @@ public class I18nCacheThreadTest implements I18nCacheBuildAware {
 		
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		i18nCache = I18nCache.getInstance();
-		i18nCache.addBuildListener(this);
+		// i18nCache.addBuildListener(this);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		i18nCache.clearBuildListeners();
-	}
+//	@After
+//	public void tearDown() throws Exception {
+//		i18nCache.clearBuildListeners();
+//	}
 
 	@Test
 	public void testThreadsafe_InstanceCountOfGetInstance() throws Exception {
