@@ -17,7 +17,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportChart;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.ReportContext;
@@ -189,9 +188,10 @@ public class ReportApi extends PicsApiSupport {
 	}
 
 	public String chart() {
-		ReportContext reportContext = buildReportContext(null);
+        ReportContext reportContext = buildReportContext(null);
 
-		try {
+        try {
+            report = reportDao.findById(reportId);
 			json = reportService.buildReportResultsForChart(report, reportContext);
 		} catch (Exception e) {
 			logger.error("Error while downloading report", e);

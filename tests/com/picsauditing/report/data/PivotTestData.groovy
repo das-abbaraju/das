@@ -26,6 +26,23 @@ class PivotTestData {
         ]
     }
 
+    static List<Column> getColumnsForFlagsByClientSite() {
+        [
+                newColumn("FlagColor", FieldType.FlagColor),
+                newColumn("Suncor", FieldType.Integer),
+                newColumn("BASF", FieldType.Integer),
+                newColumn("Tesoro", FieldType.Integer)
+        ]
+    }
+
+    static List<List<Serializable>> getDataForFlagsByClientSite() {
+        [
+                ["Red", 12, 4, 0],
+                ["Amber", 6, 1, 0],
+                ["Green", 18, 0, 12]
+        ]
+    }
+
     static Column newColumn(String fieldName) {
         newColumn(fieldName, FieldType.String)
     }

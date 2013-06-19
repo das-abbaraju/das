@@ -16,29 +16,23 @@ PICS.Charts.Chart = function (config) {
 PICS.Charts.Chart.prototype.getColors = function () {
     switch (this.style_type) {
         case 'Flags':
-        default:
             return {
                 'Clear': '#FFF',
                 'Red': '#CF0F0F',
                 'Amber': '#FFCF3F',
                 'Green': '#3F9F0F'
             };
+        default:
+            return null;
     }
-};
-PICS.Charts.Chart.prototype.sortColorsInOrderOfLabels = function (colors, labels) {
-    var colors_sorted = [];
-
-    $.each(colors, function (label, color) {
-        colors_sorted[labels.indexOf(label)] = color;
-    });
-
-    return colors_sorted;
 };
 PICS.Charts.Chart.prototype.draw = function () {
     var data_table = new google.visualization.DataTable(this.data),
         options = this.getOptions(),
         google_chart = this.getGoogleChart();
 
+    console.log(data_table);
+    console.log(options);
     google_chart.draw(data_table, options);
 };
 PICS.Charts.Chart.prototype.getGoogleChart = function () {
@@ -82,12 +76,10 @@ PICS.Charts.PieChart.constructor = PICS.Charts.PieChart;
 PICS.Charts.PieChart.prototype.getOptions = function () {
     var labels = this.getLabels(this.data),
         colors = this.getColors();
-        colors_sorted = this.sortColorsInOrderOfLabels(colors, labels);
 
     return {
         width: 400,
         height: 300,
-        colors: colors_sorted,
         is3D: true,
         legend: {
             position: 'top',
@@ -110,12 +102,10 @@ PICS.Charts.PieChart.constructor = PICS.Charts.PieChart;
 PICS.Charts.BarChart.prototype.getOptions = function () {
     var labels = this.getLabels(this.data),
         colors = this.getColors();
-        colors_sorted = this.sortColorsInOrderOfLabels(colors, labels);
 
     return {
         width: 400,
         height: 300,
-        colors: colors_sorted,
         is3D: true,
         legend: {
             position: 'top',
@@ -135,35 +125,44 @@ PICS.Charts.BarChart.prototype.getGoogleChart = function () {
                     var that = this;
 
                     $('.panel_content[data-widget-type=GoogleChart]').each(function (key, value) {
-                        var chart_container = this,
-                            $chart_container = $(chart_container),
-                            url = $chart_container.data('url'),
-                            chart_type = $chart_container.data('chart-type');
-
-                        console.log("Calling URL " + url);
-                        PICS.ajax({
-                            url: url,
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(data, textStatus, jqXHR) {
-                                var config = data,
-                                    chart;
-
-                                config.container = chart_container;
-                                // config.chart_type = 'Bar'; // Delete this
-
-                                switch (chart_type) {
-                                    case 'Pie':
-                                        chart = new PICS.Charts.PieChart(config);
-                                    case 'Bar':
-                                        chart = new PICS.Charts.BarChart(config);
-                                }
-
-                                chart.draw();
-                            }
-                        });
+                        that.refreshWidget(this);
                     });
                 }
+            },
+
+            refreshWidget: function (chart_container) {
+                var $chart_container = $(chart_container),
+                    url = $chart_container.data('url'),
+                    chart_type = $chart_container.data('chart-type');
+
+                PICS.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR) {
+                        var config = data, chart;
+                        var options = {};
+
+                        switch (chart_type) {
+                            case 'Pie':
+                                chart =  new google.visualization.PieChart(chart_container);
+                                options.height = 400;
+                                break;
+                            case 'Bar':
+                                chart = new google.visualization.BarChart(chart_container);
+                                break;
+                            case 'Column':
+                                chart = new google.visualization.ColumnChart(chart_container);
+                                options.isStacked = true;
+                                break;
+                        }
+
+                        var google_data = new google.visualization.DataTable(config.data);
+                        // TODO
+                        chart.draw(google_data, options);
+                    }
+                });
+
             }
         }
     });

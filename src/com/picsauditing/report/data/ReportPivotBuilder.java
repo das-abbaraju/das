@@ -3,6 +3,7 @@ package com.picsauditing.report.data;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.ReportPivotDefinition;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +102,7 @@ public class ReportPivotBuilder {
             field.setSortable(false);
             field.setText(columnHeadings.toString());
             field.setHelp(definition.getColumn().getField().getText());
+            field.setType(FieldType.Integer);
             column.setSortIndex(sortIndex++);
             column.setSqlFunction(null);
             logger.debug("Adding pivoted column {}", column);

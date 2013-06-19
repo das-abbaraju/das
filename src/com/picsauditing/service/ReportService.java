@@ -15,6 +15,7 @@ import java.util.*;
 import javax.servlet.ServletOutputStream;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.data.*;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;
@@ -41,8 +42,6 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.converter.ReportBuilder;
-import com.picsauditing.report.data.ReportDataConverter;
-import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
@@ -295,21 +294,20 @@ public class ReportService {
 
 	protected ReportResults buildReportResults(Report report, ReportContext reportContext,
 			List<BasicDynaBean> queryResults) {
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
-
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForExtJS(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-		converter.convertForExtJS(reportContext.user.getTimezone());
-		ReportResults reportResults = converter.getReportResults();
-
+		converter.convert(reportContext.user.getTimezone());
 		return reportResults;
 	}
 
 	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
 			List<BasicDynaBean> queryResults) {
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForPrinting(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-		converter.convertForPrinting();
-		return converter.getReportResults();
+		converter.convert(reportContext.user.getTimezone());
+		return reportResults;
 	}
 
 	public JSONObject buildReportResultsForChart(Report report, ReportContext reportContext)
@@ -320,9 +318,11 @@ public class ReportService {
         JSONObject responseJson = new JSONObject();
         // responseJson.put("style_type", chart.getChartOption().toString());
 
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForCharts(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-        responseJson.put("data", converter.convertForChart());
+        converter.convert(reportContext.user.getTimezone());
+        responseJson.put("data", new ChartWriter(reportResults).toJson());
 
 		return responseJson;
 	}

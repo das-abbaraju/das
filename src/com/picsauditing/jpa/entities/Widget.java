@@ -38,7 +38,7 @@ public class Widget {
 
 	protected ChartType chartType = ChartType.Column2D;
 
-    protected com.picsauditing.jpa.entities.ChartType googleChartType;
+    protected String googleChartType;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -179,11 +179,11 @@ public class Widget {
 		return "";
 	}
 
-    public com.picsauditing.jpa.entities.ChartType getGoogleChartType() {
+    public String getGoogleChartType() {
         return googleChartType;
     }
 
-    public void setGoogleChartType(com.picsauditing.jpa.entities.ChartType gChartType) {
+    public void setGoogleChartType(String gChartType) {
         this.googleChartType = gChartType;
     }
 }
