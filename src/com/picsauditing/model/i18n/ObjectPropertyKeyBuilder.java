@@ -13,14 +13,18 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.util.Strings;
 
-public class ObjectPropertyTranslator {
+/**
+ * The purpose of this class is to walk through the Action class object
+ * hierarchy and build a translation key for the property in the ActionClass.
+ */
+public class ObjectPropertyKeyBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(ObjectPropertyTranslator.class);
+	private static final Logger logger = LoggerFactory.getLogger(ObjectPropertyKeyBuilder.class);
 
 	public static Map<String, Class<?>> mapNameToType(Class<?> c, String property) throws SecurityException {
 		Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>();
 		String[] hierarchy = property.split("\\.");
-		Class<?> type = getTypeFromInheritedClasses(c.getClass(), hierarchy[0]);
+		Class<?> type = getTypeFromInheritedClasses(c, hierarchy[0]);
 		result.put(hierarchy[0], type);
 
 		for (int i = 1; i < hierarchy.length; i++) {

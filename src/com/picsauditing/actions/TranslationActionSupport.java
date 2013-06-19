@@ -16,7 +16,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.model.i18n.LanguageModel;
-import com.picsauditing.model.i18n.ObjectPropertyTranslator;
+import com.picsauditing.model.i18n.ObjectPropertyKeyBuilder;
 import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.TranslationUtil;
@@ -41,23 +41,23 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	public String getTranslationName(String property) throws SecurityException {
-		return ObjectPropertyTranslator.getTranslationName(this.getClass(), property);
+		return ObjectPropertyKeyBuilder.getTranslationName(this.getClass(), property);
 	}
 
 	public String getDefaultValueFromType(String property) throws SecurityException {
-		return ObjectPropertyTranslator.getDefaultValueFromType(this.getClass(), property);
+		return ObjectPropertyKeyBuilder.getDefaultValueFromType(this.getClass(), property);
 	}
 
 	public Map<String, Class<?>> mapNameToType(String property) throws SecurityException {
-		return ObjectPropertyTranslator.mapNameToType(this.getClass(), property);
+		return ObjectPropertyKeyBuilder.mapNameToType(this.getClass(), property);
 	}
 
 	public Class<?> getTypeFromInheritedClasses(Class<?> type, String field) throws SecurityException {
-		return ObjectPropertyTranslator.getTypeFromInheritedClasses(type, field);
+		return ObjectPropertyKeyBuilder.getTypeFromInheritedClasses(type, field);
 	}
 
 	public boolean isTranslatable(Class<?> c) {
-		return ObjectPropertyTranslator.isTranslatable(c);
+		return ObjectPropertyKeyBuilder.isTranslatable(c);
 	}
 
 	public String getScope() {

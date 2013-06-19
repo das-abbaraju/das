@@ -56,6 +56,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 			return collator.compare(o1.getName(), o2.getName());
 		}
 	};
+
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	/*

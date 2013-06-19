@@ -97,7 +97,7 @@ public class EntityFactory {
 	 * 
 	 * @return
 	 */
-	static public ContractorAccount makeContractor() {
+	public static ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
 		// contractor.setActive('Y');
 		contractor.setId(counter++);
@@ -112,7 +112,7 @@ public class EntityFactory {
 		return contractor;
 	}
 
-	static public Employee makeEmployee(Account account) {
+	public static Employee makeEmployee(Account account) {
 		Employee employee = new Employee();
 		employee.setId(counter++);
 		employee.setStatus(UserStatus.Active);
@@ -128,6 +128,7 @@ public class EntityFactory {
 		if (countries != null && countries.size() > 0) {
 			return countries;
 		}
+
 		countries = new HashMap<String, Country>();
 		countries.put("US", makeCountry("US", "United States"));
 		countries.put("FR", makeCountry("FR", "France"));
@@ -174,7 +175,7 @@ public class EntityFactory {
 		return country;
 	}
 
-	static public ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
+	public static ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
@@ -188,7 +189,7 @@ public class EntityFactory {
 	 * @param auditTypeID
 	 * @return
 	 */
-	static public ContractorAudit makeContractorAudit(int auditTypeID, ContractorAccount contractor) {
+	public static ContractorAudit makeContractorAudit(int auditTypeID, ContractorAccount contractor) {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
@@ -202,14 +203,14 @@ public class EntityFactory {
 	 * @param auditType
 	 * @return
 	 */
-	static public ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
+	public static ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(auditType);
 		conAudit.setContractorAccount(contractor);
 		return conAudit;
 	}
 
-	static public ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
+	public static ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
@@ -218,13 +219,13 @@ public class EntityFactory {
 		return conAudit;
 	}
 
-	static public OshaAudit makeOshaAudit(ContractorAccount contractor, String auditFor) {
+	public static OshaAudit makeOshaAudit(ContractorAccount contractor, String auditFor) {
 		ContractorAudit audit = makeAnnualUpdate(11, contractor, auditFor);
 		OshaAudit oshaAudit = new OshaAudit(audit);
 		return oshaAudit;
 	}
 
-	static public AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
+	public static AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
 		AuditCatData auditCatData = new AuditCatData();
 		auditCatData.setAudit(conAudit);
 		auditCatData.setCategory(new AuditCategory());
@@ -233,7 +234,7 @@ public class EntityFactory {
 		return auditCatData;
 	}
 
-	static public AuditCategory addCategories(AuditType auditType, int categoryID, String name) {
+	public static AuditCategory addCategories(AuditType auditType, int categoryID, String name) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryID);
 		auditCategory.setAuditType(auditType);
@@ -244,7 +245,7 @@ public class EntityFactory {
 	}
 
 	// TODO: FIX ME
-	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
+	public static OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
 		/*
 		 * OshaAudit oshaAudit = new OshaAudit();
 		 * oshaAudit.setConAudit(conAudit); oshaAudit.setType(OshaType.OSHA);
@@ -259,7 +260,7 @@ public class EntityFactory {
 		return makeAuditType(counter++);
 	}
 
-	static public AuditType makeAuditType(int auditTypeID) {
+	public static AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
 		auditType.setName("Unit Test " + auditTypeID);
@@ -310,7 +311,7 @@ public class EntityFactory {
 	 * 
 	 * @param conAudit
 	 */
-	static public ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
+	public static ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
 		ContractorAuditOperator cao = new ContractorAuditOperator();
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
@@ -320,7 +321,7 @@ public class EntityFactory {
 		return cao;
 	}
 
-	static public AuditQuestion makeAuditQuestion() {
+	public static AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(counter++);
 		question.setName("jUnit Question " + question.getId());
@@ -348,11 +349,11 @@ public class EntityFactory {
 		return auditCategory;
 	}
 
-	static public AuditData makeAuditData(String answer) {
+	public static AuditData makeAuditData(String answer) {
 		return makeAuditData(answer, makeAuditQuestion());
 	}
 
-	static public AuditData makeAuditData(String answer, AuditQuestion question) {
+	public static AuditData makeAuditData(String answer, AuditQuestion question) {
 		AuditData data = new AuditData();
 		data.setQuestion(question);
 		data.setAnswer(answer);
@@ -360,18 +361,18 @@ public class EntityFactory {
 		return data;
 	}
 
-	static public AuditData makeAuditData(String answer, int id) {
+	public static AuditData makeAuditData(String answer, int id) {
 		AuditQuestion question = makeAuditQuestion();
 		question.setId(id);
 		return makeAuditData(answer, question);
 	}
 
-	static public Permissions makePermission() {
+	public static Permissions makePermission() {
 		User user = makeUser();
 		return makePermission(user);
 	}
 
-	static public Permissions makePermission(User user) {
+	public static Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
 			LanguageModel languageModel = mock(LanguageModel.class);
@@ -385,7 +386,7 @@ public class EntityFactory {
 		return permission;
 	}
 
-	static public User makeUser() {
+	public static User makeUser() {
 		User user = new User(counter++);
 		user.setAccount(new Account());
 		user.getAccount().setId(Account.PicsID);
@@ -394,7 +395,7 @@ public class EntityFactory {
 	}
 
 	@SuppressWarnings("rawtypes")
-	static public User makeUser(Class clazz) {
+	public static User makeUser(Class clazz) {
 		User user = new User(counter++);
 		if (clazz.equals(OperatorAccount.class)) {
 			user.setAccount(makeOperator());
@@ -405,7 +406,7 @@ public class EntityFactory {
 		return user;
 	}
 
-	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
+	public static EmailSubscription makeEmailSubscription(User user, Subscription subscription,
 			SubscriptionTimePeriod timePeriod) {
 		EmailSubscription sub = new EmailSubscription();
 
