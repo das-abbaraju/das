@@ -23,22 +23,8 @@
                     dataType: 'json',
                     success: function(data, textStatus, jqXHR) {
                         var config = data,
-                            google_data = config.data;
-                        google_data = {
-                          cols: [{id: 'A', label: 'NEW A', type: 'string', p: { class_name: 'green-flag'}},
-                                 {id: 'B', label: 'B-label', type: 'number', p: { class_name: 'red-flag'}},
-                                 {id: 'C', label: 'C-label', type: 'date', p: { class_name: 'yellow-flag'}}
-                                ],
-                          rows: [{c:[{v: 'a'}, {v: 1.0, f: 'One'}, {v: new Date(2008, 1, 28, 0, 31, 26), f: '2/28/08 12:31 AM'}]},
-                                 {c:[{v: 'b'}, {v: 2.0, f: 'Two'}, {v: new Date(2008, 2, 30, 0, 31, 26), f: '3/30/08 12:31 AM'}]},
-                                 {c:[{v: 'c'}, {v: 3.0, f: 'Three'}, {v: new Date(2008, 3, 30, 0, 31, 26), f: '4/30/08 12:31 AM'}]}
-                                ],
-                          p: {foo: 'hello', bar: 'world!'}
-                        };
-
-
-var
-                            style_type = config.style_type || 'Flags',
+                            google_data = config.data,
+                            style_type = config.style_type || '',
                             chart = that.getChartByType(chart_type, chart_container),
                             data_table = new google.visualization.DataTable(google_data),
                             options = $.extend({}, that.getChartOptionsForStyleType(style_type, data_table), that.getDefaultChartOptions());
