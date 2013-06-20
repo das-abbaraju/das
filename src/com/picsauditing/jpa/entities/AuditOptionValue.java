@@ -127,6 +127,6 @@ public class AuditOptionValue extends BaseTable {
 	@Override
 	@Transient
 	public String getAutocompleteResult() {
-		return name.toString();
+		return getName();
 	}
 }

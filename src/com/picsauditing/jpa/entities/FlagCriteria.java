@@ -140,20 +140,22 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Transient
 	public String getDescriptionBeforeHurdle() {
+        String desc = getDescription();
 		try {
-			return description.substring(0, description.indexOf("{HURDLE}"));
+			return desc.substring(0, desc.indexOf("{HURDLE}"));
 		} catch (Exception e) {
-			return description;
+			return desc;
 		}
 	}
 
 	@Transient
 	public String getDescriptionAfterHurdle() {
+        String desc = getDescription();
 		try {
-			if (description.indexOf("{HURDLE}") < 0) {
+			if (desc.indexOf("{HURDLE}") < 0) {
 				return null;
 			}
-			return description.substring(description.indexOf("{HURDLE}") + 8);
+			return desc.substring(desc.indexOf("{HURDLE}") + 8);
 		} catch (Exception e) {
 			return null;
 		}
@@ -285,7 +287,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Override
 	public String toString() {
-		return category + ": " + description;
+		return category + ": " + getDescription();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -299,8 +301,8 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		json.put("auditType", auditType == null ? null : auditType.toJSON(full));
 		json.put("oshaType", oshaType == null ? null : oshaType.toString());
 		json.put("oshaRateType", oshaRateType == null ? null : oshaRateType.toString());
-		json.put("label", label.toString());
-		json.put("description", description.toString());
+		json.put("label", getLabel());
+		json.put("description", getDescription());
 		json.put("comparison", comparison);
 		json.put("multiYearScope", multiYearScope == null ? null : multiYearScope.toString());
 		json.put("requiredStatus", requiredStatus);

@@ -72,7 +72,7 @@ public class WorkflowStep extends BaseTable {
 
 	@Transient
 	public String getButtonName() {
-		return name.toString();
+		return getName();
 	}
 
 	@Transient

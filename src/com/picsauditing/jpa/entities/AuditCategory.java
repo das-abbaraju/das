@@ -76,7 +76,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	}
 
 	public AuditCategory(AuditCategory a, AuditType at) {
-		this.name = a.name;
+		this.name = a.getName();
 		this.number = a.getNumber();
 		this.numQuestions = a.getNumQuestions();
 		this.numRequired = a.getNumRequired();
@@ -87,7 +87,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	public AuditCategory(AuditCategory a) {
 		this.auditType = a.auditType;
 		this.parent = a.parent;
-		this.name = a.name;
+		this.name = a.getName();
 		this.number = a.getNumber();
 		this.numRequired = a.numRequired;
 		this.numQuestions = a.numQuestions;
@@ -177,10 +177,10 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	@Transient
 	public String getFullyQualifiedName() {
 		if (parent == null) {
-			return getAuditType().getName().toString() + " - " + name;
+			return getAuditType().getName().toString() + " - " + getName();
 		}
 
-		return parent.getFullyQualifiedName() + " : " + name;
+		return parent.getFullyQualifiedName() + " : " + getName();
 	}
 
 	@Column(nullable = false)
@@ -374,7 +374,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	@Transient
 	@Override
 	public String getAutocompleteItem() {
-		return "[" + id + "] " + name;
+		return "[" + id + "] " + getName();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -383,7 +383,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		JSONObject j = super.toJSON(full);
 		j.put("auditType", auditType == null ? null : auditType.toJSON());
 		j.put("parent", parent == null ? null : parent.toJSON());
-		j.put("name", name);
+		j.put("name", getName());
 
 		if (full) {
 			JSONArray qArray = new JSONArray();
@@ -441,7 +441,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	@Override
 	public String toString() {
-		return getFullNumber() + " " + name;
+		return getFullNumber() + " " + getName();
 	}
 
 	@Transient

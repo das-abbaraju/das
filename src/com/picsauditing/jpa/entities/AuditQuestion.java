@@ -142,7 +142,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	public AuditQuestion(AuditQuestion a, AuditCategory ac) {
 		this.number = a.number;
-		this.name = a.name;
+		this.name = a.getName();
 		this.questionType = a.questionType;
 		this.option = a.option;
 		this.hasRequirement = a.hasRequirement;
@@ -152,15 +152,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.requiredAnswer = a.requiredAnswer;
 		this.visibleQuestion = a.visibleQuestion;
 		this.visibleAnswer = a.visibleAnswer;
-		this.columnHeader = a.columnHeader;
+		this.columnHeader = a.getColumnHeader();
 		this.uniqueCode = a.uniqueCode;
-		this.title = a.title;
+		this.title = a.getTitle();
 		this.groupedWithPrevious = a.groupedWithPrevious;
 		this.showComment = a.showComment;
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
-		this.helpText = a.helpText;
-		this.requirement = a.requirement;
+		this.helpText = a.getHelpText();
+		this.requirement = a.getRequirement();
 		this.category = ac;
 		this.effectiveDate = a.effectiveDate;
 		this.expirationDate = a.expirationDate;
@@ -596,6 +596,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeaderOrQuestion() {
+        String columnHeader = getColumnHeader();
 		if (columnHeader != null && !Strings.isEmpty(columnHeader.toString())) {
 			return columnHeader.toString();
 		}
@@ -670,7 +671,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public JSONObject toJSON(boolean full) {
 		JSONObject j = super.toJSON(full);
 		j.put("category", category.toJSON());
-		j.put("name", name);
+		j.put("name", getName());
 
 		return j;
 	}
@@ -787,13 +788,13 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	@Override
 	public String getAutocompleteItem() {
-		return "[" + id + "] " + name;
+		return "[" + id + "] " + getName();
 	}
 
 	@Transient
 	@Override
 	public String getAutocompleteValue() {
-		return name.toString();
+		return getName();
 	}
 
 	/**

@@ -406,7 +406,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	@Override
 	public JSONObject toJSON(boolean full) {
 		JSONObject j = super.toJSON(full);
-		j.put("name", name);
+		j.put("name", getName());
 		j.put("displayOrder", displayOrder);
 
 		if (full) {
@@ -422,7 +422,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	@Override
 	public String toString() {
-		return name + "(" + id + ")";
+		return getName() + "(" + id + ")";
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -457,7 +457,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	@Override
 	@Transient
 	public String getAutocompleteItem() {
-		return name.toString();
+		return getName();
 	}
 
 	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {

@@ -507,7 +507,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public String getSearchText() {
 		List<String> st = new ArrayList<String>();
 		List<String> tas = new ArrayList<String>();
-		st.add(this.name.toString());
+		st.add(this.getName());
 		st.add(this.name2.toString());
 
 		for (TradeAlternate ta : getAlternates()) {
@@ -527,18 +527,18 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getAutocompleteItem() {
-		return "[" + id + "]" + name.toString();
+		return "[" + id + "]" + getName();
 	}
 
 	@Transient
 	public String getAutocompleteValue() {
-		return getName().toString();
+		return getName();
 	}
 
 	@Transient
 	public String getNodeDisplay() {
 		if (Strings.isEmpty(name2)) {
-			return name.toString();
+			return getName();
 		} else {
 			return name2.toString();
 		}
@@ -570,8 +570,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
+        String name = getName();
 		if (Strings.isEmpty(name)) {
-			json.put("name", name.toString());
+			json.put("name", name);
 		}
 		if (Strings.isEmpty(name2)) {
 			json.put("name2", name2.toString());
