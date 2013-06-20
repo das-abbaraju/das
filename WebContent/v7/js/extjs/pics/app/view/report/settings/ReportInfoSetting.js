@@ -3,7 +3,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     alias: 'widget.reportinfosetting',
 
     cls: 'report-info',
-    tpl: new Ext.Template([
+    tpl: new Ext.XTemplate([
         '<ul id="report_info_list">',
             '<li>',
                 '<label>Model:</label><span>{model}</span>',
@@ -18,7 +18,9 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
                 '<label>Updated:</label>',
                 '<span>',
                     '{updated}<br />',
-                    '(by {updated_by})',
+                    '<tpl if="updated_by">',
+                        '(by {updated_by})',
+                    '</tpl>',
                 '</span>',
             '</li>',
             '<li>',
@@ -34,7 +36,6 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     modal_title: PICS.text('Report.execute.reportInfoSetting.title'),
 
     update: function (values) {
-
         this.callParent([values]);
     }
 });

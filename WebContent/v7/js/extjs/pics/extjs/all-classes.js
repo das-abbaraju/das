@@ -67559,7 +67559,7 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     alias: 'widget.reportinfosetting',
 
     cls: 'report-info',
-    tpl: new Ext.Template([
+    tpl: new Ext.XTemplate([
         '<ul id="report_info_list">',
             '<li>',
                 '<label>Model:</label><span>{model}</span>',
@@ -67574,7 +67574,9 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
                 '<label>Updated:</label>',
                 '<span>',
                     '{updated}<br />',
-                    '(by {updated_by})',
+                    '<tpl if="updated_by">',
+                        '(by {updated_by})',
+                    '</tpl>',
                 '</span>',
             '</li>',
             '<li>',
@@ -67590,7 +67592,6 @@ Ext.define('PICS.view.report.settings.ReportInfoSetting', {
     modal_title: PICS.text('Report.execute.reportInfoSetting.title'),
 
     update: function (values) {
-
         this.callParent([values]);
     }
 });
@@ -98806,11 +98807,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             share_editable_icon = Ext.select('.icon-edit'),
             report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            is_editable = report.get('is_editable'),
-            report_info_container_el = Ext.query('.report-info-container')[0];
+            is_editable = report.get('is_editable');
 
-        // TODO: reject changes
-        
+        // Remove the Report Info panel
+        this.hideReportInfoIfVisible();
         
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
@@ -98820,10 +98820,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
-
-        if (report_info_container_el) {
-            report_info_container_el.remove();            
-        }
 
         // reset the share modal
         if (is_editable) {
@@ -98836,15 +98832,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var settings_modal_view = this.getSettingsModal();
 
         settings_modal_view.close();
-    },
-
-    hideReportInfoIfVisible: function (cmp, eOpts) {
-        var settings_modal_view = this.getSettingsModal(),
-            report_info_setting_view = this.getReportInfoSetting();
-
-        if (report_info_setting_view) {
-            this.hideReportInfo();
-        }
     },
 
     changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
@@ -98978,13 +98965,28 @@ Ext.define('PICS.controller.report.SettingsModal', {
             active_tab_tab_el = active_tab_body.down('.active-suspended'),
             report_info_container_el = Ext.query('.report-info-container')[0];
 
-        active_tab_tab_el.removeCls('active-suspended');
-        active_tab_tab_el.addCls('x-active');
+        if (active_tab_tab_el) {
+            active_tab_tab_el.removeCls('active-suspended');
+            active_tab_tab_el.addCls('x-active');
+        }
+
         settings_modal_view.setTitle(active_tab.modal_title);
+
         report_info_button.action = 'show-report-info';
         report_info_button_el.removeCls('active');
-        report_info_container_el.remove();
-        //report_info_setting_view.getEl().up('div').remove();
+
+        if (report_info_container_el) {
+            report_info_container_el.remove();
+        }
+    },
+
+    hideReportInfoIfVisible: function (cmp, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            report_info_setting_view = this.getReportInfoSetting();
+
+        if (report_info_setting_view) {
+            this.hideReportInfo();
+        }
     },
 
     showReportInfo: function (report_info_button, values) {
