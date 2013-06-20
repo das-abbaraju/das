@@ -23,7 +23,7 @@
                     dataType: 'json',
                     success: function(data, textStatus, jqXHR) {
                         var config = data,
-                            google_data = config.data,
+                            google_data = config.data;
                             style_type = config.style_type || '',
                             chart = that.getChartByType(chart_type, chart_container),
                             data_table = new google.visualization.DataTable(google_data),
@@ -58,16 +58,16 @@
                     num_columns = data_table.getNumberOfColumns(),
                     colors = [];
 
-                var color_options = {
+                var styles = {
                     'red-flag': 'red',
                     'yellow-flag': 'yellow',
                     'green-flag': 'green'
                 };
 
                 for (; column_index < num_columns; column_index += 1) {
-                    class_name = data_table.getColumnProperty(column_index, 'class_name');
+                    style_type = data_table.getColumnProperty(column_index, 'style_type');
 
-                    colors.push(color_options[class_name]);
+                    colors.push(styles[style_type]);
                 }
 
                 return {
