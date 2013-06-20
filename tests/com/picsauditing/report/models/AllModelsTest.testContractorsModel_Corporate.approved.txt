@@ -84,5 +84,5 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
-DirectTradeTradeName
-TradeTradeName
+DirectTradeName
+TradeName

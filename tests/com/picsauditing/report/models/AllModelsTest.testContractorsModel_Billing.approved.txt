@@ -77,5 +77,5 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId
 ContractorWatchwatch
-DirectTradeTradeName
-TradeTradeName
+DirectTradeName
+TradeName

@@ -501,8 +501,8 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
-DirectTradeTradeName
-TradeTradeName
+DirectTradeName
+TradeName
 
 Model: ContractorSearch
 Permission: Permissions{permissions=[]}

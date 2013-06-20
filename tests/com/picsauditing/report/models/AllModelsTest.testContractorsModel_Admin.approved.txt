@@ -83,5 +83,5 @@ ContractorWelcomeCallCaoID
 ContractorWelcomeCallCaoStatus
 ContractorWelcomeCallID
 ContractorWelcomeCallTypeName
-DirectTradeTradeName
-TradeTradeName
+DirectTradeName
+TradeName

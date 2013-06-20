@@ -13,7 +13,7 @@ public class TradeTable extends AbstractTable {
 		super("ref_trade");
 		addFields(Trade.class);
 
-        Field tradeName = new Field("TradeName","id", FieldType.Trade);
+        Field tradeName = new Field("Name","id", FieldType.Trade);
         tradeName.setTranslationPrefixAndSuffix("Trade","name");
         tradeName.setImportance(FieldImportance.Required);
         tradeName.setCategory(FieldCategory.AccountInformation);
