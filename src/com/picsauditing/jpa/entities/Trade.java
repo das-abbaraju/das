@@ -571,13 +571,13 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		JSONObject json = super.toJSON(full);
 
         String name = getName();
-		if (Strings.isEmpty(name)) {
+		if (!Strings.isEmpty(name)) {
 			json.put("name", name);
 		}
-		if (Strings.isEmpty(name2)) {
+		if (!Strings.isEmpty(name2)) {
 			json.put("name2", name2.toString());
 		}
-		if (Strings.isEmpty(help)) {
+		if (!Strings.isEmpty(help)) {
 			json.put("name2", help.toString());
 		}
 
