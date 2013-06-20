@@ -79,7 +79,6 @@
                 switch (style_type) {
                     case 'Flags':
                         return this.getChartOptionsForFlagStyleType(data_table);
-                        break;
                     default:
                         return {};
                 }
