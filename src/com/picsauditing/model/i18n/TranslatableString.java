@@ -1,10 +1,10 @@
 package com.picsauditing.model.i18n;
 
-import com.picsauditing.service.i18n.TranslationServiceFactory;
-
 import java.util.Locale;
 
-public class TranslatableString {
+import com.picsauditing.service.i18n.TranslationServiceFactory;
+
+public final class TranslatableString {
 
 	private String key;
 
@@ -12,16 +12,16 @@ public class TranslatableString {
 		this.key = key;
 	}
 
-	public String toTranslatedString() {
+	public final String toTranslatedString() {
 		return toTranslatedString(TranslationServiceFactory.getLocale());
 	}
 
-    public String toTranslatedString(Locale locale) {
-        return TranslationServiceFactory.getTranslationService().getText(key, locale);
-    }
+	public final String toTranslatedString(Locale locale) {
+		return TranslationServiceFactory.getTranslationService().getText(key, locale);
+	}
 
-    @Override
-	public String toString() {
+	@Override
+	public final String toString() {
 		return key;
 	}
 

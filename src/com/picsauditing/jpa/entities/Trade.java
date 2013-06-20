@@ -433,7 +433,17 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
 	public String getName2() {
-		return name2;
+		if (name2 != null) {
+			return name2;
+		}
+
+		String name2Key = getI18nKey("name2");
+		String name2Text = new TranslatableString(name2Key).toTranslatedString();
+		if (name2Key.equals(name2Text)) {
+			return Strings.EMPTY_STRING;
+		}
+
+		return name2Text;
 	}
 
 	public void setName2(String name2) {
@@ -442,7 +452,17 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getHelp() {
-		return help;
+		if (help != null) {
+			return help;
+		}
+
+		String helpKey = getI18nKey("help");
+		String helpText = new TranslatableString(helpKey).toTranslatedString();
+		if (helpKey.equals(helpText)) {
+			return Strings.EMPTY_STRING;
+		}
+
+		return helpText;
 	}
 
 	public void setHelp(String help) {
@@ -508,7 +528,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		List<String> st = new ArrayList<String>();
 		List<String> tas = new ArrayList<String>();
 		st.add(this.getName());
-		st.add(this.name2.toString());
+		st.add(this.getName2());
 
 		for (TradeAlternate ta : getAlternates()) {
 			tas.add(ta.getName());
@@ -537,10 +557,11 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getNodeDisplay() {
+		String name2 = getName2();
 		if (Strings.isEmpty(name2)) {
 			return getName();
 		} else {
-			return name2.toString();
+			return name2;
 		}
 	}
 
@@ -570,15 +591,19 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
-        String name = getName();
+		String name = getName();
 		if (!Strings.isEmpty(name)) {
 			json.put("name", name);
 		}
+
+		String name2 = getName2();
 		if (!Strings.isEmpty(name2)) {
 			json.put("name2", name2.toString());
 		}
+
+		String help = getHelp();
 		if (!Strings.isEmpty(help)) {
-			json.put("name2", help.toString());
+			json.put("help", help);
 		}
 
 		if (getProductI() && getServiceI()) {

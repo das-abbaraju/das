@@ -174,7 +174,7 @@
 							name="category.helpText"
 							cssStyle="width: 480px;"
 							rows="5"
-							value="%{category.helpText.exists ? category.helpText : ''}" />
+							value="%{(category.helpText != null && !category.helpText.equals('') && !category.helpText.equals(category.getI18nKey('helpText')))  ? category.helpText : ''}" />
 					</li>
 					
 					<s:if test="category.auditType.dynamicCategories">

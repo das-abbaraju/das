@@ -18,7 +18,7 @@
 			<s:if test="trade.trade.parent != null">
 				<div class="trade-section">
 					<s:iterator value="tradeClassification" var="atrade">
-						<s:if test="#atrade.name2.exists">
+						<s:if test="#atrade.name2 != null && !#atrade.name2.equals('') && !#atrade.name2.equals(#atrade.getI18nKey('name2'))">
 							<s:set name="trade_name" value="#atrade.name2" />
 						</s:if>
 						<s:else>
@@ -33,7 +33,7 @@
 	
 		<h3>${trade.trade.name}</h3>
 		
-		<s:if test="trade.trade.help.exists">
+		<s:if test="trade.trade.help != null && !trade.trade.help.equals('') && !trade.trade.help.equals(trade.trade.getI18nKey('help'))">
 			<div id="trade_description" class="trade-section">
 				<s:property value="trade.trade.help" />
 			</div>
@@ -67,7 +67,7 @@
 							<s:iterator value="trade.trade.children" var="atrade">
 								<li class="trade-child">
 									<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
-										<s:if test="#atrade.name2.exists">
+										<s:if test="#atrade.name2 != null && !#atrade.name2.equals('') && !#atrade.name2.equals(#atrade.getI18nKey('name2'))">
 											<s:property value="#atrade.name2"/>
 										</s:if>
 										<s:else>
