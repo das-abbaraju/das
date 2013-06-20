@@ -42,6 +42,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	private String dialect;
 	private int requestID;
 	private CountrySubdivision countrySubdivision;
+	private Locale locale;
 
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;

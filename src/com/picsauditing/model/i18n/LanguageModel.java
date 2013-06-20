@@ -234,6 +234,18 @@ public class LanguageModel {
 		return countries;
 	}
 
+	public Map<String, String> getCountriesBasedOn(String language) {
+		List<Language> dialects = languageProvider.findDialectsByLanguage(language);
+		Map<String, String> countryDialects = new TreeMap<>();
+
+		for (Language dialectLanguage : dialects) {
+			Locale dialectLocale = dialectLanguage.getLocale();
+			countryDialects.put(dialectLanguage.getCountry(), dialectLocale.getDisplayCountry(dialectLocale));
+		}
+
+		return countryDialects;
+	}
+
 	private List<String> extractLanguageIsoCodesFrom(Collection<Language> visibleLanguages) {
 		List<String> supportedLanguageKeys = new ArrayList<>();
 
