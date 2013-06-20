@@ -104,7 +104,7 @@ public class FacilityChanger {
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 
-		addNote("Linked contractor to " + operator.getName());
+		addNote("Linked contractor to " + operator.getName() + " by " + permissions.getName() + " of " + permissions.getAccountName());
 
 		if (!permissions.isContractor()) {
 			// Send the contractor an email that the operator added them
@@ -183,7 +183,7 @@ public class FacilityChanger {
 				contractor.getOperators().remove(co);
 
 				addNote("Unlinked " + co.getContractorAccount().getName() + " from "
-						+ co.getOperatorAccount().getName() + "'s db");
+						+ co.getOperatorAccount().getName() + "'s db by " + permissions.getName() + " of " + permissions.getAccountName());
 
 				// If user is a non-billing user, notify billing to
 				// adjust invoice

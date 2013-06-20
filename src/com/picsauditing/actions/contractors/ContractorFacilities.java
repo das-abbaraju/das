@@ -194,17 +194,8 @@ public class ContractorFacilities extends ContractorActionSupport {
             List<BasicDynaBean> data = database().select(sql, false);
             if (data != null) {
                 processSearchResults(data);
-
-                currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
-                Iterator<OperatorAccount> iterator = searchResults.iterator();
-                while (iterator.hasNext()) {
-                    OperatorAccount searchResult = iterator.next();
-                    for (ContractorOperator currentOperator : currentOperators) {
-                        if (currentOperator.getOperatorAccount().getId() == searchResult.getId()) {
-                            iterator.remove();
-                        }
-                    }
-                }
+	            removeCurrentSitesFromSearchResults();
+	            removeNonRelatedSitesFromSearchResults();
             }
         } else if (contractor.getNonCorporateOperators().size() == 0) {
             // Only turn on smart facility suggest for US and Canada
@@ -233,7 +224,35 @@ public class ContractorFacilities extends ContractorActionSupport {
         return "search";
     }
 
-    private String nameAndLocationQuery() {
+	private void removeNonRelatedSitesFromSearchResults() {
+		if (!permissions.isOperatorCorporate())
+			return;
+
+		Iterator<OperatorAccount> iterator = searchResults.iterator();
+		while (iterator.hasNext()) {
+			OperatorAccount searchResult = iterator.next();
+			if (!permissions.getCorporateParent().contains(searchResult.getId())
+					&& !permissions.getOperatorChildren().contains(searchResult.getId())) {
+				iterator.remove();
+			}
+		}
+
+	}
+
+	private void removeCurrentSitesFromSearchResults() {
+		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
+		Iterator<OperatorAccount> iterator = searchResults.iterator();
+		while (iterator.hasNext()) {
+		    OperatorAccount searchResult = iterator.next();
+		    for (ContractorOperator currentOperator : currentOperators) {
+		        if (currentOperator.getOperatorAccount().getId() == searchResult.getId()) {
+		            iterator.remove();
+		        }
+		    }
+		}
+	}
+
+	private String nameAndLocationQuery() {
         SelectSQL sql = new SelectSQL("accounts a");
         sql.addField("a.id opID");
         sql.addField("a.status");
