@@ -78,11 +78,17 @@ public class ChartWriter {
         switch (cell.getColumn().getDisplayType()) {
             case Number:
                 json.put("v", Double.parseDouble(cell.getValue().toString()));
-                // json.put("f", labelValue.trim());
                 break;
             default:
                 json.put("v", cell.getValue());
         }
+        if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
+            String p = cell.getValue() + "-flag";
+            JSONObject pJson = new JSONObject();
+            pJson.put("style_type", p.toLowerCase());
+            json.put("p", pJson);
+        }
+
         return json;
 
     }

@@ -316,7 +316,6 @@ public class ReportService {
         List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 
         JSONObject responseJson = new JSONObject();
-        // responseJson.put("style_type", chart.getChartOption().toString());
 
         ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
         ReportDataConverter converter = new ReportDataConverterForCharts(reportResults);
