@@ -532,7 +532,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getAutocompleteValue() {
-		return name.toString();
+		return getName().toString();
 	}
 
 	@Transient
