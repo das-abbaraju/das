@@ -52,7 +52,13 @@ public class ChartWriter {
             label = column.getName();
         }
         json.put("label", label);
-        // json.put("pattern", "");
+
+        JSONObject styleJson = new JSONObject();
+        if (column.getField().getPreTranslation().equals("FlagColor")) {
+            String p = column.getName() + "-flag";
+            styleJson.put("style_type", p.toLowerCase());
+        }
+        json.put("p", styleJson);
 
         return json;
     }
