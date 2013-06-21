@@ -62,11 +62,21 @@ public class ChartWriter {
 
         for (ReportRow row : reportResults.getRows()) {
             JSONArray rowColumnJson = new JSONArray();
+            JSONObject styleJson = new JSONObject();
+
             for (Column column : reportResults.getColumns()) {
-                rowColumnJson.add(createCellJson(row.getCellByColumn(column)));
+                ReportCell cell = row.getCellByColumn(column);
+                rowColumnJson.add(createCellJson(cell));
+
+                if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
+                    String p = cell.getValue() + "-flag";
+                    styleJson.put("style_type", p.toLowerCase());
+                }
             }
             JSONObject totalRowJson = new JSONObject();
             totalRowJson.put("c", rowColumnJson);
+            totalRowJson.put("p", styleJson);
+
             rowsJson.add(totalRowJson);
         }
 
@@ -81,12 +91,6 @@ public class ChartWriter {
                 break;
             default:
                 json.put("v", cell.getValue());
-        }
-        if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
-            String p = cell.getValue() + "-flag";
-            JSONObject pJson = new JSONObject();
-            pJson.put("style_type", p.toLowerCase());
-            json.put("p", pJson);
         }
 
         return json;
