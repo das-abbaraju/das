@@ -70,7 +70,7 @@
                 					</pics:permission>
                 				</div>
                                 <div id="panel<s:property value="widgetID"/>_content" class="panel_content"
-                                     data-widget-type="${widgetType}" data-url="${url}" data-chart-type="${googleChartType}">
+                                     data-widget-type="${widgetType}" data-url="${url}" data-chart-type="${googleChartType}" data-style-type="${googleStyleType}">
                                    <s:property value="content" escape="false" />
                                 </div>
             				</div>
