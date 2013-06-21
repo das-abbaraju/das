@@ -80,11 +80,10 @@
                 var type_color_associations = {
                     'red-flag': '#ac030c',
                     'amber-flag': '#e67e1c',
-                    'green-flag': '#229322',
-                    'contractor': 'purple'
+                    'green-flag': '#229322'
                 };
 
-                var options = {}
+                var options = {};
 
                 options.colors = this.getColors(data_table, type_color_associations);
 
