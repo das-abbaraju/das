@@ -1,6 +1,5 @@
 package com.picsauditing.service.i18n;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -30,11 +29,13 @@ public interface TranslationService {
 
 	boolean hasKey(String key, Locale locale);
 
-	void saveTranslation(String key, String translation, List<String> requiredLanguages);
+	void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception;
 
-	void removeTranslations(List<String> keys) throws SQLException;
+	void saveTranslation(String key, String translation) throws Exception;
 
-	void removeTranslation(String key);
+	void removeTranslations(List<String> keys) throws Exception;
+
+	void removeTranslation(String key) throws Exception;
 
 	List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales);
 

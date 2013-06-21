@@ -82,4 +82,8 @@ public class EchoTranslationService implements TranslationService {
 		return new Date();
 	}
 
+	@Override
+	public void saveTranslation(String key, String translation) throws Exception {
+	}
+
 }

@@ -89,4 +89,10 @@ public class TranslationServiceAdapter implements TranslationService {
 		return null;
 	}
 
+	@Override
+	public void saveTranslation(String key, String translation) throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
 }

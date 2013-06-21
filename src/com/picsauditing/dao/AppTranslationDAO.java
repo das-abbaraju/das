@@ -19,8 +19,10 @@ import com.picsauditing.util.Strings;
 public class AppTranslationDAO extends PicsDAO {
 
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
+	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
+	private static final String SAVE_TRANSLATIONS = "";
 
-	private final Database database = new Database();
+	private static Database database = new Database();
 
 	private static final Logger logger = LoggerFactory.getLogger(AppTranslationDAO.class);
 
@@ -69,6 +71,11 @@ public class AppTranslationDAO extends PicsDAO {
 		return Collections.emptyList();
 	}
 
+	public void removeTranslations(List<String> keys) throws Exception {
+		String query = String.format(REMOVE_TRANSLATIONS_BY_KEY, Strings.implodeForDB(keys));
+		database.execute(query);
+	}
+
 	private List<ContextTranslation> loadTranslationsUsingStoredProc() throws SQLException {
 		return database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
 	}
@@ -86,6 +93,22 @@ public class AppTranslationDAO extends PicsDAO {
 				+ ",	@Context_nm	:= null" + ",	@Context_cd	:= null" + ",	@Language_cd	:= null"
 				+ ",	@Country_cd	:= null" + ",	@Status_nm	:= null" + ",	@Item_tx	:= null" + ",	@EFF_dm		:= null"
 				+ ",	@USE_dm		:= null" + ",	@Key_cd		:= null" + ");";
+	}
+
+	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
+		// String insert =
+		// String.format("INSERT INTO %s.app_translation(%s, %s) ", target,
+		// fields, getAuditColumnList());
+		// String select =
+		// String.format("SELECT %s, %d, NOW(), NULL, NULL FROM %s.app_translation a WHERE a.id IN (%s) ",
+		// fields, permissions.getUserId(), getLocal(),
+		// Strings.implode(translationsToTransfer));
+		// String update =
+		// String.format("ON DUPLICATE KEY UPDATE msgValue = a.msgValue, updatedBy = %d, "
+		// + "updateDate = NOW()", permissions.getUserId());
+
+		String query = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) VALUE (?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
+
 	}
 
 }

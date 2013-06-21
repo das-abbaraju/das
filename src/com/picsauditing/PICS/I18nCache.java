@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -33,11 +34,6 @@ public class I18nCache implements TranslationService, Serializable {
 	private static final String TRANSLATION_MISSING = "Translation Missing";
 
 	private static final long serialVersionUID = -9105914451729814391L;
-
-	// public static final String CACHE_NAME = "daily";
-	// public static final String DEFAULT_LANGUAGE = "en";
-	// public static final String DEFAULT_TRANSLATION = Strings.EMPTY_STRING;
-	// public static final String ACTION_TRANSLATION_KEYWORD = "ACTION";
 
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
@@ -359,20 +355,22 @@ public class I18nCache implements TranslationService, Serializable {
 	}
 
 	@Override
-	public void saveTranslation(String key, String translation, List<String> requiredLanguages) {
-		// TODO Auto-generated method stub
-
+	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
+		appTranslationDAO.saveTranslation(key, translation, requiredLanguages);
 	}
 
 	@Override
-	public void removeTranslations(List<String> keys) throws SQLException {
-		// TODO Auto-generated method stub
-
+	public void removeTranslations(List<String> keys) throws Exception {
+		appTranslationDAO.removeTranslations(keys);
 	}
 
 	@Override
-	public void removeTranslation(String key) {
-		// TODO Auto-generated method stub
+	public void removeTranslation(String key) throws Exception {
+		appTranslationDAO.removeTranslations(Arrays.asList(key));
+	}
+
+	@Override
+	public void saveTranslation(String key, String translation) throws Exception {
 
 	}
 }

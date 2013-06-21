@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
 import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.translation.strategy.EmptyTranslationStrategy;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -437,13 +438,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			return name2;
 		}
 
-		String name2Key = getI18nKey("name2");
-		String name2Text = new TranslatableString(name2Key).toTranslatedString();
-		if (name2Key.equals(name2Text)) {
-			return Strings.EMPTY_STRING;
-		}
-
-		return name2Text;
+		return new TranslatableString(getI18nKey("name2"), new EmptyTranslationStrategy()).toTranslatedString();
 	}
 
 	public void setName2(String name2) {
@@ -456,13 +451,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			return help;
 		}
 
-		String helpKey = getI18nKey("help");
-		String helpText = new TranslatableString(helpKey).toTranslatedString();
-		if (helpKey.equals(helpText)) {
-			return Strings.EMPTY_STRING;
-		}
-
-		return helpText;
+		return new TranslatableString(getI18nKey("help"), new EmptyTranslationStrategy()).toTranslatedString();
 	}
 
 	public void setHelp(String help) {
