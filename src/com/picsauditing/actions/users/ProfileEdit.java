@@ -119,6 +119,25 @@ public class ProfileEdit extends PicsActionSupport {
 		return setUrlForRedirect("ProfileEdit.action");
 	}
 
+	public String version6Menu() throws Exception {
+		u.setUsingVersion7Menus(false);
+		u.setUsingDynamicReports(false);
+		userDAO.save(u);
+
+		return setUrlForRedirect(getReferer());
+	}
+
+	public String version7Menu() throws Exception {
+		Date today = new Date();
+		u.setUsingDynamicReports(true);
+		u.setusingDynamicReportsDate(today);
+		u.setUsingVersion7Menus(true);
+		u.setUsingVersion7MenusDate(today);
+		userDAO.save(u);
+
+		return setUrlForRedirect(getReferer());
+	}
+
 	private boolean isUserSetForNewMenu() {
 		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			return isUsingVersion7Menus() && u.getUsingVersion7MenusDate() == null;

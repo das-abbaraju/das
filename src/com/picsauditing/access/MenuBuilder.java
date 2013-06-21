@@ -1,18 +1,8 @@
 package com.picsauditing.access;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import com.picsauditing.jpa.entities.AccountStatus;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -22,6 +12,15 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public final class MenuBuilder {
 
@@ -33,7 +32,7 @@ public final class MenuBuilder {
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions) {
-		return buildMenubar(permissions, Collections.<ReportUser> emptyList());
+		return buildMenubar(permissions, Collections.<ReportUser>emptyList());
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports) {
@@ -58,7 +57,7 @@ public final class MenuBuilder {
 
 	// For Operators, Corporate users, and PICS employees
 	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions,
-			List<ReportUser> favoriteReports) {
+	                                        List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 		addReportsMenu(menubar, favoriteReports, permissions);
 		addConfigureMenu(menubar, permissions);
@@ -141,7 +140,7 @@ public final class MenuBuilder {
 	}
 
 	private static void buildOperatorCorporateMenubar(MenuComponent menubar, Permissions permissions,
-			List<ReportUser> favoriteReports) {
+	                                                  List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 		addReportsMenu(menubar, favoriteReports, permissions);
 		addManageMenu(menubar, permissions);
@@ -335,8 +334,8 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-        if (permissions.getAccountStatus() != AccountStatus.Demo)
-		    addLegacyReports(permissions, reportsMenu);
+		if (permissions.getAccountStatus() != AccountStatus.Demo)
+			addLegacyReports(permissions, reportsMenu);
 
 		if (permissions.has(OpPerms.Report)) {
 			MenuComponent adminMenu = reportsMenu.addChild("Administration");
@@ -345,18 +344,18 @@ public final class MenuBuilder {
 		}
 
 		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-        if (CollectionUtils.isNotEmpty(favoriteReports)) {
-            reportsMenu.addChild("separator", null);
-            MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+		if (CollectionUtils.isNotEmpty(favoriteReports)) {
+			reportsMenu.addChild("separator", null);
+			MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
 
-            reportsMenu.addChild(favoriteLabel);
-        }
+			reportsMenu.addChild(favoriteLabel);
+		}
 
-        for (ReportUser reportUser : favoriteReports) {
-            Report report = reportUser.getReport();
-            reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-                    "report_" + report.getId());
-        }
+		for (ReportUser reportUser : favoriteReports) {
+			Report report = reportUser.getReport();
+			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+					"report_" + report.getId());
+		}
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
@@ -435,7 +434,7 @@ public final class MenuBuilder {
 					getText("PolicyVerification.title"),
 					"PolicyVerification.action"
 							+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""), "PolicyVerification");
+							+ permissions.getShadowedUserID() : ""), "PolicyVerification");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
 			legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
@@ -520,6 +519,11 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			userMenu.addChild("My Schedule", "MySchedule.action", "my_schedule");
+		}
+
+		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+			userMenu.addChild(getText("Menu.SwitchToVersion6"), "ProfileEdit!version6Menu.action?u=" + permissions.getUserId(), "switch_to_v6");
 		}
 
 		if (permissions.getAdminID() > 0) {
