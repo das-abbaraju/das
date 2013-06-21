@@ -61,23 +61,23 @@ public class ChartWriter {
         JSONArray rowsJson = new JSONArray();
 
         for (ReportRow row : reportResults.getRows()) {
-            JSONArray rowColumnJson = new JSONArray();
+            JSONArray cellsJson = new JSONArray();
             JSONObject styleJson = new JSONObject();
 
             for (Column column : reportResults.getColumns()) {
                 ReportCell cell = row.getCellByColumn(column);
-                rowColumnJson.add(createCellJson(cell));
+                cellsJson.add(createCellJson(cell));
 
                 if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
                     String p = cell.getValue() + "-flag";
                     styleJson.put("style_type", p.toLowerCase());
                 }
             }
-            JSONObject totalRowJson = new JSONObject();
-            totalRowJson.put("c", rowColumnJson);
-            totalRowJson.put("p", styleJson);
+            JSONObject rowJson = new JSONObject();
+            rowJson.put("c", cellsJson);
+            rowJson.put("p", styleJson);
 
-            rowsJson.add(totalRowJson);
+            rowsJson.add(rowJson);
         }
 
         return rowsJson;
