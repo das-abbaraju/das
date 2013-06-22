@@ -56,8 +56,8 @@
             rejectPolicy: function (event) {
                 var $cao_table = $('#caoTable'),
                     $element = $(event.target),
-                    audit_id = $('#auditID').val();
-                    cao_id = $element.find('.bCaoID').val();
+                    audit_id = $('#auditID').val(),
+                    cao_id = $element.find('.bCaoID').val(),
                     status = $element.find('.bStatus').val();
 
                 $element.trigger('reject', [cao_id, function () {
