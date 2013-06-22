@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -8,9 +9,11 @@ import java.util.Set;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.mapper.ContextTranslationMapper;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -20,7 +23,8 @@ public class AppTranslationDAO extends PicsDAO {
 
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
-	private static final String SAVE_TRANSLATIONS = "";
+	private static final String SAVE_TRANSLATIONS = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
+			+ "VALUES (%s, %s, %s, %d, %d, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = %s, updateDate = NOW(), updatedBy = %d";
 
 	private static Database database = new Database();
 
@@ -62,7 +66,7 @@ public class AppTranslationDAO extends PicsDAO {
 
 	public List<ContextTranslation> findAllForJS() {
 		try {
-			// return loadTranslationsUsingStoredProc();
+			// return loadTranslationsUsingStoredProc();q
 			return loadTranslationsFromTableDirectly();
 		} catch (Exception e) {
 			logger.error("Error while retrieving all the translations for JS.", e);
@@ -76,6 +80,7 @@ public class AppTranslationDAO extends PicsDAO {
 		database.execute(query);
 	}
 
+	@SuppressWarnings("unused")
 	private List<ContextTranslation> loadTranslationsUsingStoredProc() throws SQLException {
 		return database.select(buildStoredProcedureCall(), new ContextTranslationMapper());
 	}
@@ -96,19 +101,18 @@ public class AppTranslationDAO extends PicsDAO {
 	}
 
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
-		// String insert =
-		// String.format("INSERT INTO %s.app_translation(%s, %s) ", target,
-		// fields, getAuditColumnList());
-		// String select =
-		// String.format("SELECT %s, %d, NOW(), NULL, NULL FROM %s.app_translation a WHERE a.id IN (%s) ",
-		// fields, permissions.getUserId(), getLocal(),
-		// Strings.implode(translationsToTransfer));
-		// String update =
-		// String.format("ON DUPLICATE KEY UPDATE msgValue = a.msgValue, updatedBy = %d, "
-		// + "updateDate = NOW()", permissions.getUserId());
+		if (CollectionUtils.isEmpty(requiredLanguages)) {
+			return;
+		}
 
-		String query = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) VALUE (?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
+		List<String> queries = new ArrayList<>();
+		for (String language : requiredLanguages) {
+			if (Strings.isNotEmpty(language)) {
+				queries.add(String.format(SAVE_TRANSLATIONS, key, language, translation, User.SYSTEM, User.SYSTEM,
+						translation, User.SYSTEM));
+			}
+		}
 
+		database.executeBatch(queries);
 	}
-
 }

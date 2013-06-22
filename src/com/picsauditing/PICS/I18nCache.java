@@ -26,6 +26,7 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.AppTranslationDAO;
 import com.picsauditing.model.i18n.ContextTranslation;
 import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
 
@@ -232,14 +233,6 @@ public class I18nCache implements TranslationService, Serializable {
 		return stopWatch;
 	}
 
-	// private Database getDatabase() {
-	// if (databaseForTesting == null) {
-	// return new Database();
-	// } else {
-	// return databaseForTesting;
-	// }
-	// }
-
 	private String getLocaleFallback(String key, Locale locale) {
 		String localeString = locale.toString();
 		if (hasKey(key, localeString)) {
@@ -371,6 +364,13 @@ public class I18nCache implements TranslationService, Serializable {
 
 	@Override
 	public void saveTranslation(String key, String translation) throws Exception {
+		String language = DEFAULT_LANGUAGE;
 
+		Locale locale = TranslationServiceFactory.getLocale();
+		if (locale != null) {
+			language = locale.toString();
+		}
+
+		appTranslationDAO.saveTranslation(key, translation, Arrays.asList(language));
 	}
 }

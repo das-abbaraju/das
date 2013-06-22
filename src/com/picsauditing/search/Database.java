@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -287,32 +286,28 @@ public class Database {
 		}
 	}
 
-	public static <T> void execute(String sql, Object... args) throws SQLException {
-		if (Strings.isEmpty(sql)) {
-			return;
-		}
-
+	public void executeBatch(List<String> queries) throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		try {
 			connection = DBBean.getDBConnection();
-			preparedStatement = connection.prepareStatement(sql);
-			mapToPreparedStatement(preparedStatement, args);
-			preparedStatement.execute();
+			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+
+			int count = 0;
+			for (String query : queries) {
+				statement.addBatch(query);
+
+				if (++count % BATCH_SIZE == 0) {
+					statement.executeBatch();
+				}
+			}
+
 		} finally {
+			DatabaseUtil.closeResultSet(resultSet);
 			DatabaseUtil.closeStatement(preparedStatement);
 			DatabaseUtil.closeConnection(connection);
-		}
-	}
-
-	private static void mapToPreparedStatement(PreparedStatement preparedStatement, Object... args) throws SQLException {
-		if (ArrayUtils.isEmpty(args)) {
-			return;
-		}
-
-		for (int index = 0; index < args.length; index++) {
-			preparedStatement.setObject(index + 1, args[index]);
 		}
 	}
 
