@@ -45,8 +45,8 @@
             </a>
             <br clear="all" />
         </s:if>
-        
-        <s:if test="conAudit.auditType.classType.policy && conAudit.hasCaoStatus('Incomplete') && problems.size() > 0">
+
+        <s:if test="problems.size() > 0">
             <div id="auditProblems">
                 <s:text name="Audit.ProblemsWithAudit" />
             </div>

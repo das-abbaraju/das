@@ -43,6 +43,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -230,7 +231,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (conAudit != null) {
 			getValidSteps();
 
-			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+			if ((conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().getClassType().isPolicy()) && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
 					if (caow.getCao().isVisible()) {

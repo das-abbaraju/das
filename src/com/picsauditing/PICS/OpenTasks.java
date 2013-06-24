@@ -569,9 +569,13 @@ public class OpenTasks extends TranslationActionSupport {
 							conAudit.getCreationDate());
 					openTasks.add(text);
 					addedOpenTask = true;
+				} else if (conAudit.getAuditType().isAnnualAddendum() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixAnnualUpdateIssues",
+							conAudit.getId(), conAudit.getAuditFor()));
+					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
-							conAudit.getId(), auditName, showAuditFor, auditFor));
+							conAudit.getId(), auditFor));
 					addedOpenTask = true;
 				}
 			}

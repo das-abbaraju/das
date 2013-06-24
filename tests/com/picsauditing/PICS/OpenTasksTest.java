@@ -92,6 +92,7 @@ public class OpenTasksTest extends PicsActionTest {
 	private final String OpenInvoiceReminder = "You have an invoice due ";
 	private final String UpdatePaymentMethod = "Please update your payment method";
 	private final String FixPolicyIssues = "Please fix issues with your Policy";
+	private final String FixAnnualIssues = "Please fix issues with your Annual Update";
 	private final String FixWcbIssues = "Please fix issues with your {1}{2,choice,0#|1# for {3}}";
 	private final String UploadAndSubmitPolicy = "Please upload and submit your Policy";
 	private final String ResubmitPolicy = "Please review and resubmit your Policy";
@@ -497,6 +498,16 @@ public class OpenTasksTest extends PicsActionTest {
 	}
 
 	@Test
+	public void testGetOpenTasks_FixAnnualUpdateIssues() throws Exception {
+		when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(true);
+		setUpAnnualUpdateAuditTask();
+
+		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
+
+		assertThat(openTaskList, hasItem(FixAnnualIssues));
+	}
+
+	@Test
 	public void testGetOpenTasks_UploadAndSubmitPolicy() throws Exception {
 		when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(false);
 		setUpPolicyAuditTask();
@@ -595,6 +606,16 @@ public class OpenTasksTest extends PicsActionTest {
 
 		when(permissions.hasPermission(OpPerms.ContractorInsurance)).thenReturn(true);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+	}
+
+	private void setUpAnnualUpdateAuditTask() {
+		setUpAuditTask();
+
+		when(auditType.isAnnualAddendum()).thenReturn(true);
+		when(auditType.getId()).thenReturn(AuditType.ANNUALADDENDUM);
+		when(auditType.isCanContractorEdit()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -728,6 +749,9 @@ public class OpenTasksTest extends PicsActionTest {
 		when(
 				translationService.getText(eq("ContractorWidget.message.FixPolicyIssues"), eq(Locale.ENGLISH),
 						anyVararg())).thenReturn(FixPolicyIssues);
+		when(
+				translationService.getText(eq("ContractorWidget.message.FixAnnualUpdateIssues"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(FixAnnualIssues);
 		when(
 				translationService.getText(eq("ContractorWidget.message.UploadAndSubmitPolicy"), eq(Locale.ENGLISH),
 						anyVararg())).thenReturn(UploadAndSubmitPolicy);
