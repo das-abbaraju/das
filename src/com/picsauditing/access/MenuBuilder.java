@@ -402,6 +402,10 @@ public final class MenuBuilder {
             }
         }
 
+        if (permissions.hasPermission(OpPerms.RiskRank)) {
+            legacyMenu.addChild(getText("ContractorRiskAssessment.title"), "ReportContractorRiskLevel.action", "ContractorRiskLevel");
+        }
+
         if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
 					"subMenu_ApproveContractors");
