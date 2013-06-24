@@ -44,6 +44,8 @@
 				<s:textfield cssClass="sysEditDate" name="conAudit.contractorConfirm" value="%{conAudit.contractorConfirm && getText('dates', {conAudit.contractorConfirm})}"/></li>
 			<li><label>Safety Professional Confirmation:</label>
 				<s:textfield cssClass="sysEditDate" name="conAudit.auditorConfirm" value="%{conAudit.auditorConfirm && getText('dates', {conAudit.auditorConfirm})}"/></li>
+            <li><label>SLA:</label>
+                <s:textfield cssClass="sysEditDate" name="conAudit.slaDate" value="%{conAudit.slaDate && getText('dates', {conAudit.slaDate})}"/></li>
 			<li style="font-style: italic;">* Dates are in this format: 01/31/08 12:03 AM</li>
 		</ol>
 	</fieldset>
