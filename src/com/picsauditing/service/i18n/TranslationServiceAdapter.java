@@ -53,7 +53,12 @@ public class TranslationServiceAdapter implements TranslationService {
 		return false;
 	}
 
-	@Override
+    @Override
+    public boolean hasKeyInLocale(String key, String locale) {
+        return false;
+    }
+
+    @Override
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) {
 		// TODO Auto-generated method stub
 

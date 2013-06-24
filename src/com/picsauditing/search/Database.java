@@ -303,7 +303,8 @@ public class Database {
 					statement.executeBatch();
 				}
 			}
-
+            // execute those statements that didn't make batch size
+            statement.executeBatch();
 		} finally {
 			DatabaseUtil.closeResultSet(resultSet);
 			DatabaseUtil.closeStatement(preparedStatement);

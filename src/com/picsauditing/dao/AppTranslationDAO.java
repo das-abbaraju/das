@@ -24,7 +24,7 @@ public class AppTranslationDAO extends PicsDAO {
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
 	private static final String SAVE_TRANSLATIONS = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
-			+ "VALUES (%s, %s, %s, %d, %d, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = %s, updateDate = NOW(), updatedBy = %d";
+			+ "VALUES ('%s', '%s', '%s', %d, %d, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = '%s', updateDate = NOW(), updatedBy = %d";
 
 	private static Database database = new Database();
 

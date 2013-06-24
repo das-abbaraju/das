@@ -124,6 +124,9 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	@Transient
 	public String getName() {
+        if (name != null) {
+            return name;
+        }
 		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 

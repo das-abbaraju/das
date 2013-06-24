@@ -29,6 +29,8 @@ public interface TranslationService {
 
 	boolean hasKey(String key, Locale locale);
 
+    boolean hasKeyInLocale(String key, String locale);
+
 	void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception;
 
 	void saveTranslation(String key, String translation) throws Exception;

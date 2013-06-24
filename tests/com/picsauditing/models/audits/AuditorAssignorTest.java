@@ -40,7 +40,7 @@ public class AuditorAssignorTest {
 		Permissions permissions = Permissions.builder().userId(userId).build();
 		AuditorAssignor.assignClosingAuditor(closingAuditor, audit, note, permissions);
 
-		assertEquals("Assigned John Test as Closing Auditor for Translate[AuditType.0.name=>null]", note.getSummary());
+        assertEquals("Assigned John Test as Closing Auditor for Test Audit", note.getSummary());
 		assertEquals(userId, audit.getUpdatedBy().getId());
 		assertEquals(accountId, note.getAccount().getId());
 		assertEquals(NoteCategory.Audits, note.getNoteCategory());
@@ -59,7 +59,7 @@ public class AuditorAssignorTest {
 		Permissions permissions = Permissions.builder().userId(userId).build();
 		AuditorAssignor.assignClosingAuditor(closingAuditor, audit, note, permissions);
 
-		assertEquals("Unassigned closing auditor for Translate[AuditType.0.name=>null]", note.getSummary());
+        assertEquals("Unassigned closing auditor for Test Audit", note.getSummary());
 		assertEquals(userId, audit.getUpdatedBy().getId());
 		assertEquals(accountId, note.getAccount().getId());
 		assertEquals(NoteCategory.Audits, note.getNoteCategory());
@@ -83,7 +83,7 @@ public class AuditorAssignorTest {
 		Permissions permissions = Permissions.builder().userId(userId).build();
 		AuditorAssignor.assignClosingAuditor(closingAuditor, audit, note, permissions);
 
-		assertEquals("Assigned John Test as Closing Auditor for Translate[AuditType.0.name=>null]", note.getSummary());
+        assertEquals("Assigned John Test as Closing Auditor for Test Audit", note.getSummary());
 		assertEquals(userId, audit.getUpdatedBy().getId());
 		assertEquals(accountId, note.getAccount().getId());
 		assertEquals(NoteCategory.Audits, note.getNoteCategory());

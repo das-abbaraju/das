@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -210,8 +212,9 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 	public boolean save() {
 		try {
-			if (auditType == null)
+			if (auditType == null) {
 				return false;
+            }
 			if (auditType.getName() == null || auditType.getName().toString().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
@@ -219,15 +222,18 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (!Strings.isEmpty(operatorID)) {
 				auditType.setAccount(new Account());
 				auditType.getAccount().setId(Integer.parseInt(operatorID));
-			} else
+			} else {
 				auditType.setAccount(null);
+            }
 
 			if (editPerm != null && !editPerm.isEmpty()) {
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
-			} else
+			} else {
 				auditType.setEditPermission(null);
-			if ("".equals(auditType.getAssigneeLabel()))
+            }
+			if ("".equals(auditType.getAssigneeLabel())) {
 				auditType.setAssigneeLabel(null);
+            }
 			if (auditType.getAssigneeLabel() != null) {
 				String key = auditType.getAssigneeLabel().trim();
 				if (key.startsWith("Assignee.")) {
@@ -256,8 +262,10 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
-			
-			if (auditType.getAssigneeLabel() != null) {
+
+            saveRequiredTranslationsForAuditTypeName();
+
+            if (auditType.getAssigneeLabel() != null) {
 				AppTranslation translation = null;
 				try {
 					translation = dao.findOne(AppTranslation.class, "t.key='Assignee." + auditType.getAssigneeLabel() + "'");
@@ -286,7 +294,23 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		return false;
 	}
 
-	public String workFlowSteps() {
+    private void saveRequiredTranslationsForAuditTypeName() throws Exception {
+        // we can use the same logic for new/update -
+        // save the language the user is currently using and any required languages for which there is no extant key
+        List<String> localesToSave = new ArrayList<>();
+        localesToSave.add(permissions.getLocale().getLanguage());
+
+        TranslationService translationService = TranslationServiceFactory.getTranslationService();
+        for (String language : auditType.getLanguages()) {
+            if (!translationService.hasKeyInLocale(auditType.getI18nKey("name"), language)) {
+                localesToSave.add(language);
+            }
+        }
+        translationService.saveTranslation(auditType.getI18nKey("name"), auditType.getName(), localesToSave);
+        translationService.clear();
+    }
+
+    public String workFlowSteps() {
 		return "workFlowSteps";
 	}
 

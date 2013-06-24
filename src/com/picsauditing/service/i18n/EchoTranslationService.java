@@ -48,7 +48,12 @@ public class EchoTranslationService implements TranslationService {
 		return true;
 	}
 
-	@Override
+    @Override
+    public boolean hasKeyInLocale(String key, String locale) {
+        return true;
+    }
+
+    @Override
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) {
 	}
 

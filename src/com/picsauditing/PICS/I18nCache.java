@@ -85,12 +85,12 @@ public class I18nCache implements TranslationService, Serializable {
 		return null;
 	}
 
-	private boolean hasKey(String key, String locale) {
+	public boolean hasKeyInLocale(String key, String locale) {
 		return cache.contains(TranslationUtil.prepareKeyForCache(key), locale);
 	}
 
 	public boolean hasKey(String key, Locale locale) {
-		return hasKey(key, getLocaleFallback(key, locale));
+		return hasKeyInLocale(key, getLocaleFallback(key, locale));
 	}
 
 	public Map<String, String> getText(String key) {
@@ -123,7 +123,7 @@ public class I18nCache implements TranslationService, Serializable {
 	}
 
 	public String getText(String key, String locale, Object... args) {
-		if (hasKey(key, locale)) {
+		if (hasKeyInLocale(key, locale)) {
 			if (args == null || args.length == 0) {
 				return getText(key, locale);
 			}
@@ -235,16 +235,16 @@ public class I18nCache implements TranslationService, Serializable {
 
 	private String getLocaleFallback(String key, Locale locale) {
 		String localeString = locale.toString();
-		if (hasKey(key, localeString)) {
+		if (hasKeyInLocale(key, localeString)) {
 			return localeString;
 		}
 
 		String languageString = locale.getLanguage();
-		if (hasKey(key, languageString)) {
+		if (hasKeyInLocale(key, languageString)) {
 			return languageString;
 		}
 
-		if (!hasKey(key, DEFAULT_LANGUAGE)) {
+		if (!hasKeyInLocale(key, DEFAULT_LANGUAGE)) {
 			String anyLocale = findAnyLocale(key);
 
 			if (anyLocale != null) {
