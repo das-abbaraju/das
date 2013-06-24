@@ -79,8 +79,9 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static final String TYPE_NUMBER = "Number";
 	public static final String TYPE_DATE = "Date";
 	public static final String TYPE_DECIMAL = "Decimal Number";
+    public static final String TYPE_FILE_CERTIFICATE = "FileCertificate";
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
-			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", "FileCertificate",
+			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", TYPE_FILE_CERTIFICATE,
 			"License", "Money", TYPE_NUMBER, "ESignature", "Tagit", "MultiSelect", "Percent" };
 
 	private int number;

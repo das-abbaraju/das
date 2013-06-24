@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.models.audits.InsuranceCategoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
@@ -105,86 +106,15 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			}
 
 			if ("buildCat".equals(button)) {
-				AuditType auditType = typeDAO.find(auditTypeID);
-				if (auditType == null) {
-					throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
-				}
-				AuditCategory parent = null;
-				for (AuditCategory c : auditType.getTopCategories()) {
-					if (c.getName().toString().startsWith(auditType.getName().toString())) {
-						parent = c;
-						break;
-					}
-				}
-				AuditCategory cat = new AuditCategory();
-				cat.setAuditColumns(permissions);
-				cat.setName(operator.getName());
-				cat.setParent(parent);
-				cat.setAuditType(auditType);
-				auditType.getCategories().add(cat);
-				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
-					public int compare(AuditCategory o1, AuditCategory o2) {
-						if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
-							if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
-								return o1.getName().toString().compareTo(o2.getName().toString());
-							}
-							return -1;
-						} else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
-							return 1;
-						}
-						return o1.getName().toString().compareTo(o2.getName().toString());
-					}
-				});
-				int num = 1;
-				for (AuditCategory currentCategory : auditType.getCategories()) {
-					if (currentCategory.getParent() != null) {
-						currentCategory.setNumber(num);
-						num++;
-					}
-				}
-				Calendar effDate = Calendar.getInstance();
-				effDate.set(2001, Calendar.JANUARY, 1);
-				Calendar exDate = Calendar.getInstance();
-				exDate.set(4000, Calendar.JANUARY, 1);
-				AuditQuestion aq1 = new AuditQuestion();
-				aq1.setNumber(1);
-				aq1.setAuditColumns(permissions);
-				aq1.setName(QUESTION1);
-				aq1.setCategory(cat);
-				aq1.setQuestionType("FileCertificate");
-				aq1.setRequired(true);
-				aq1.setEffectiveDate(effDate.getTime());
-				aq1.setExpirationDate(exDate.getTime());
-				aq1.setColumnHeader("Certificate");
-				AuditQuestion aq2 = new AuditQuestion();
-				aq2.setNumber(2);
-				aq2.setAuditColumns(permissions);
-				aq2.setName(QUESTION2 + operator.getName() + ".");
-				aq2.setCategory(cat);
-				aq2.setQuestionType("Yes/No");
-				aq2.setRequired(true);
-				aq2.setEffectiveDate(effDate.getTime());
-				aq2.setExpirationDate(exDate.getTime());
-				aq2.setColumnHeader("Certificate");
-				typeDAO.save(cat);
-				typeDAO.save(auditType);
-				typeDAO.save(aq1);
-				typeDAO.save(aq2);
+                AuditType auditType = typeDAO.find(auditTypeID);
+                if (auditType == null) {
+                    throw new RecordNotFoundException("Audit Type not found :" + auditTypeID);
+                }
+                AuditCategory cat = InsuranceCategoryBuilder.build(typeDAO, auditType, permissions, operator);
 
-				AuditCategoryRule acr = new AuditCategoryRule();
-				acr.setAuditType(auditType);
-				acr.setAuditCategory(cat);
-				acr.setRootCategory(false);
-				acr.setOperatorAccount(operator);
-				acr.setAuditColumns(permissions);
-				acr.setEffectiveDate(Calendar.getInstance().getTime());
-				acr.setExpirationDate(BaseHistory.END_OF_TIME);
-				acr.calculatePriority();
-				typeDAO.save(acr);
-				auditCategoryRuleCache.clear();
-				flagClearCache();
-
-				return this.setUrlForRedirect("ManageCategory.action?id=" + cat.getId());
+                auditCategoryRuleCache.clear();
+                flagClearCache();
+                return this.setUrlForRedirect("ManageCategory.action?id=" + cat.getId());
 			}
 
 			if ("Add Audit".equals(button)) {
