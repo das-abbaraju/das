@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,9 @@ import com.picsauditing.dao.mapper.ContextTranslationMapper;
 import com.picsauditing.dao.mapper.LegacyTranslationMapper;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.ContextTranslation;
+import com.picsauditing.model.i18n.TranslationWrapper;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.QueryMapper;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -24,7 +27,7 @@ public class AppTranslationDAO extends PicsDAO {
 	private static final String I18N_CACHE_QUERY = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 	private static final String REMOVE_TRANSLATIONS_BY_KEY = "DELETE FROM app_translation WHERE msgKey IN (%s)";
 	private static final String SAVE_TRANSLATIONS = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed) "
-			+ "VALUES ('%s', '%s', '%s', %d, %d, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = '%s', updateDate = NOW(), updatedBy = %d";
+			+ "VALUES (?, ?, ?, ?, ?, NOW(), NOW(), DATE(NOW())) ON DUPLICATE KEY UPDATE msgValue = ?, updateDate = NOW(), updatedBy = ?";
 
 	private static Database database = new Database();
 
@@ -100,19 +103,35 @@ public class AppTranslationDAO extends PicsDAO {
 				+ ",	@USE_dm		:= null" + ",	@Key_cd		:= null" + ");";
 	}
 
+	@SuppressWarnings("static-access")
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
 		if (CollectionUtils.isEmpty(requiredLanguages)) {
 			return;
 		}
 
-		List<String> queries = new ArrayList<>();
+		List<TranslationWrapper> translations = new ArrayList<>();
 		for (String language : requiredLanguages) {
-			if (Strings.isNotEmpty(language)) {
-				queries.add(String.format(SAVE_TRANSLATIONS, key, language, translation, User.SYSTEM, User.SYSTEM,
-						translation, User.SYSTEM));
-			}
+			translations.add(new TranslationWrapper.Builder().key(key).translation(translation).locale(language)
+					.createdBy(User.SYSTEM).updatedBy(User.SYSTEM).build());
 		}
 
-		database.executeBatch(queries);
+		database.executeBatch(SAVE_TRANSLATIONS, translations, buildQueryMapper());
+	}
+
+	private QueryMapper<TranslationWrapper> buildQueryMapper() {
+		return new QueryMapper<TranslationWrapper>() {
+
+			@Override
+			public void mapObjectToPreparedStatement(TranslationWrapper translationWrapper,
+					PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setString(1, translationWrapper.getKey());
+				preparedStatement.setString(2, translationWrapper.getLocale());
+				preparedStatement.setString(3, translationWrapper.getTranslation());
+				preparedStatement.setInt(4, translationWrapper.getCreatedBy());
+				preparedStatement.setInt(5, translationWrapper.getUpdatedBy());
+				preparedStatement.setString(6, translationWrapper.getTranslation());
+				preparedStatement.setInt(7, translationWrapper.getUpdatedBy());
+			}
+		};
 	}
 }
