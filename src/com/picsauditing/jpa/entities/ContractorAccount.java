@@ -460,7 +460,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "payingFacilities", nullable = false)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllOperators)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
 	}

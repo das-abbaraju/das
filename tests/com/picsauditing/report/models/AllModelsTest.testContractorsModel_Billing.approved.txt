@@ -64,7 +64,6 @@ ContractorOperatorOperatorID
 ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
 ContractorPaymentExpires
 ContractorPaymentMethod
 ContractorProductRisk

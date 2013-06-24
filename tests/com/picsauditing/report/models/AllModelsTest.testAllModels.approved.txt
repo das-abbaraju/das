@@ -100,7 +100,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -147,7 +146,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -232,7 +230,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -267,7 +264,6 @@ ContractorFeeFeeClass
 ContractorFeeNewAmount
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -371,7 +367,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -431,7 +426,6 @@ ContractorOperatorOperatorType
 ContractorOperatorProcessCompletion
 ContractorOperatorWaitingOn
 ContractorOperatorWorkStatus
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTagTagID
@@ -498,7 +492,6 @@ ContractorOperatorOperatorID
 ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID
@@ -527,7 +520,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorOperatorFlagColor
 ContractorOperatorNetworkLevel
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -586,7 +578,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -652,7 +643,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -698,7 +688,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -942,7 +931,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk

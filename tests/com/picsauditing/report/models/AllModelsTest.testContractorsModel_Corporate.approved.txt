@@ -72,7 +72,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID
