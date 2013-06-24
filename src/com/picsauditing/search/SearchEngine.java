@@ -1,23 +1,17 @@
 package com.picsauditing.search;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.Strings;
+import java.sql.SQLException;
+import java.util.*;
 
 public class SearchEngine {
 	private static final Logger logger = LoggerFactory.getLogger(SearchEngine.class);
@@ -42,9 +36,8 @@ public class SearchEngine {
 
 	/**
 	 * Gets ids of contractors in a users system
-	 * 
-	 * @param perm
-	 *            Permission of user doing search
+	 *
+	 * @param perm Permission of user doing search
 	 * @return Hashtable of ids of contractors in the users system
 	 */
 	public Hashtable<Integer, Integer> getConIds(Permissions perm) {
@@ -74,14 +67,11 @@ public class SearchEngine {
 
 	/**
 	 * Builds a query for finding common terms in a search term
-	 * 
-	 * @param terms
-	 *            The terms used in the search
-	 * @param ignore
-	 *            (Optional) List of terms to explicitly ignore
-	 * @param total
-	 *            count of the term is divided by this to see if it's included
-	 *            in this query
+	 *
+	 * @param terms  The terms used in the search
+	 * @param ignore (Optional) List of terms to explicitly ignore
+	 * @param total  count of the term is divided by this to see if it's included
+	 *               in this query
 	 * @return A String containing the search query
 	 */
 	public String buildCommonTermQuery(List<String> terms, String ignore, int total) {
@@ -110,26 +100,19 @@ public class SearchEngine {
 
 	/**
 	 * Builds the Query based on term and returns it as a string
-	 * 
-	 * @param currPerm
-	 *            permissions to use, pass in null to do an unrestricted search
-	 * @param terms
-	 *            Term to use to search for
-	 * @param extraWhere
-	 *            Additional where to limit query
-	 * @param start
-	 *            Row to start at
-	 * @param limit
-	 *            Limit for Search
-	 * @param buildCommon
-	 *            If True then skip over total rows and various other parts of
-	 *            query
-	 * @param fullSearch
-	 *            True for full search, false for 10 result ajax search
+	 *
+	 * @param currPerm    permissions to use, pass in null to do an unrestricted search
+	 * @param terms       Term to use to search for
+	 * @param extraWhere  Additional where to limit query
+	 * @param start       Row to start at
+	 * @param limit       Limit for Search
+	 * @param buildCommon If True then skip over total rows and various other parts of
+	 *                    query
+	 * @param fullSearch  True for full search, false for 10 result ajax search
 	 * @return A string that is the query to run using db.select
 	 */
 	public String buildQuery(Permissions currPerm, List<String> terms, String extraWhere, Integer start, Integer limit,
-			boolean buildCommon, boolean fullSearch) {
+	                         boolean buildCommon, boolean fullSearch) {
 		StringBuilder sql = new StringBuilder();
 
 		sql.append("SELECT ");
@@ -202,10 +185,10 @@ public class SearchEngine {
 		sql.append("\n ) t").append(terms.size());
 
 		if (currPerm != null) {
-			String accountStatuses = "'Requested','Active','Pending'";
+			String accountStatuses = "'Requested','Active'";
 			String userStatuses = "'yes'";
 			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
-				accountStatuses += ",'Demo'";
+				accountStatuses += ",'Pending','Demo'";
 
 			if (currPerm.isCorporate()) {
 				sql.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
@@ -295,7 +278,7 @@ public class SearchEngine {
 				+ " then 'C' when 'Corporate' then 'CO' when 'Operator' then 'O'"
 				+ "when 'Assessment' then 'AS' end indexType");
 		if (currPerm != null && !currPerm.isAdmin()) {
-			sql.addWhere("a.status IN ('Requested','Active','Pending')");
+			sql.addWhere("a.status IN ('Requested','Active')");
 		}
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
@@ -362,13 +345,10 @@ public class SearchEngine {
 
 	/**
 	 * Builds string array of terms from a string containing the search term
-	 * 
-	 * @param check
-	 *            The String to use to build the terms
-	 * @param sort
-	 *            True if you want to sort based on commonality
-	 * @param removeDups
-	 *            True if you want to remove duplicates
+	 *
+	 * @param check      The String to use to build the terms
+	 * @param sort       True if you want to sort based on commonality
+	 * @param removeDups True if you want to remove duplicates
 	 * @return An array of search terms, sorted from least to most common
 	 */
 	public List<String> buildTerm(String check, boolean sort, boolean removeDups) {
@@ -396,11 +376,9 @@ public class SearchEngine {
 
 	/**
 	 * Sorts the terms based on commonality
-	 * 
-	 * @param terms
-	 *            List of terms to sort
-	 * @param onlyValid
-	 *            If true then will remove terms that are not in the index
+	 *
+	 * @param terms     List of terms to sort
+	 * @param onlyValid If true then will remove terms that are not in the index
 	 * @return
 	 */
 	public List<String> sortSearchTerms(List<String> terms, boolean onlyValid) {
