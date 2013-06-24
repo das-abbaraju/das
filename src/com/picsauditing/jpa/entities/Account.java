@@ -511,7 +511,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.type = type;
 	}
 
-	@ReportField(category = FieldCategory.Billing, width = 200)
+	@ReportField(category = FieldCategory.Billing, width = 200, requiredPermissions = OpPerms.AllOperators)
 	public String getReason() {
 		return reason;
 	}
@@ -1104,7 +1104,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.passwordSecurityLevelId = passwordSecurityLevelId;
 	}
 
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Date)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date, requiredPermissions = OpPerms.AllOperators)
 	public Date getDeactivationDate() {
 		return deactivationDate;
 	}
