@@ -390,7 +390,19 @@ public final class MenuBuilder {
 					"DelinquentContractorAccounts");
 		}
 
-		if (permissions.hasPermission(OpPerms.ContractorApproval)) {
+        if (permissions.hasPermission(OpPerms.AssignAudits)) {
+            if (permissions.isOperatorCorporate()) {
+                legacyMenu.addChild(getText("ScheduleAndAssign.title"),
+                        "AuditAssignments.action?filter.status=Active",
+                        "AuditAssignments");
+            } else {
+                legacyMenu.addChild(getText("ScheduleAndAssign.title"),
+                        "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
+                        "AuditAssignments");
+            }
+        }
+
+        if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
 					"subMenu_ApproveContractors");
 		}
