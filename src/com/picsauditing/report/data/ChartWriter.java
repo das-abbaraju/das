@@ -55,7 +55,7 @@ public class ChartWriter {
 
         // TODO: Find a better solution than using pre-translation
         JSONObject styleJson = new JSONObject();
-        if (column.getField().getPreTranslation().equals("FlagColor")) {
+        if (column.getField() != null && "FlagColor".equals(column.getField().getPreTranslation())) {
             String p = column.getName() + "-flag";
             styleJson.put("style_type", p.toLowerCase());
         }
