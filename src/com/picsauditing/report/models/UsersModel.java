@@ -25,16 +25,21 @@ public class UsersModel extends AbstractModel {
 		ModelSpec account = spec.join(UserTable.Account);
 		account.alias = "Account";
 
-		if (permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
-			ModelSpec operator = account.join(AccountTable.Operator);
-			operator.category = FieldCategory.AccountInformation;
-			operator.minimumImportance = FieldImportance.Required;
-			operator.alias = "Operator";
+        ModelSpec accountUser = account.join(AccountTable.AccountManager);
+        accountUser.category = FieldCategory.CustomerService;
+        accountUser.alias = "AccountManager";
 
-			ModelSpec reporting = operator.join(OperatorTable.Reporting);
-			reporting.category = FieldCategory.ReportingClientSite;
-			reporting.alias = "ReportingClient";
-		}
+        ModelSpec accountManager = accountUser.join(AccountUserTable.User);
+        accountManager.category = FieldCategory.CustomerService;
+        accountManager.alias = "AccountManagerUser";
+
+        ModelSpec operator = account.join(AccountTable.Operator);
+        operator.category = FieldCategory.AccountInformation;
+        operator.alias = "Operator";
+
+        ModelSpec reporting = operator.join(OperatorTable.Reporting);
+        reporting.category = FieldCategory.ReportingClientSite;
+        reporting.alias = "ReportingClient";
 
 		return spec;
 	}

@@ -55,13 +55,11 @@ public class AccountTable extends AbstractTable {
 
 		addOptionalKey(new ReportForeignKey(AccountManager, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
 				UserAccountRole.PICSAccountRep + "' AND " + ReportOnClause.ToAlias +
-				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
-				.setMinimumImportance(FieldImportance.Required);
+				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")));
 
 		addOptionalKey(new ReportForeignKey(SalesRep, new AccountUserTable(), new ReportOnClause("id", "accountID", ReportOnClause.ToAlias + ".role = '" +
 				UserAccountRole.PICSSalesRep + "' AND " + ReportOnClause.ToAlias +
-				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")))
-				.setMinimumImportance(FieldImportance.Required);
+				".startDate < NOW() AND " + ReportOnClause.ToAlias + ".endDate >= NOW()")));
 
         ReportForeignKey lastLogin = new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID"));
         lastLogin.setMinimumImportance(FieldImportance.Average);
