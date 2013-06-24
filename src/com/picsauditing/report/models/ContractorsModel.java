@@ -7,6 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 
 public class ContractorsModel extends AbstractModel {
@@ -37,10 +38,19 @@ public class ContractorsModel extends AbstractModel {
 			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
 			welcomeCall.join(ContractorAuditTable.SingleCAO);
 		}
+
+
 		if (permissions.isOperatorCorporate()) {
-			ModelSpec flag = contractor.join(ContractorTable.Flag);
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.join(ContractorOperatorTable.ForcedByUser);
 		}
+        else {
+            ModelSpec contractorOperator = contractor.join(ContractorTable.ContractorOperator);
+            contractorOperator.minimumImportance = FieldImportance.None;
+            ModelSpec opAccount = contractorOperator.join(ContractorOperatorTable.Operator);
+            opAccount.alias = "ContractorOperatorOperator";
+            opAccount.category = FieldCategory.ReportingClientSite;
+        }
 
 		ModelSpec csr = contractor.join(ContractorTable.CustomerService);
         csr.minimumImportance = FieldImportance.Required;
@@ -98,6 +108,14 @@ public class ContractorsModel extends AbstractModel {
         if (permissions.isOperatorCorporate()) {
             Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
+        }
+        else {
+            Field contractorOperatorOperatorID = fields.get("ContractorOperatorOperatorID".toUpperCase());
+            contractorOperatorOperatorID.setVisible(false);
+            contractorOperatorOperatorID.setType(FieldType.Operator);
+            Field contractorOperatorOperatorName = fields.get("ContractorOperatorOperatorName".toUpperCase());
+            contractorOperatorOperatorName.setVisible(false);
+            contractorOperatorOperatorName.setFilterable(false);
         }
 
         return fields;

@@ -494,6 +494,8 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities

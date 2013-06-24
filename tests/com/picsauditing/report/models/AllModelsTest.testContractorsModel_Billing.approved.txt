@@ -60,6 +60,8 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities

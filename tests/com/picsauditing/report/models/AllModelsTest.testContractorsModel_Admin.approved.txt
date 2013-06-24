@@ -60,6 +60,8 @@ ContractorLastContactedByInsideSalesDate
 ContractorLcCorNotification
 ContractorLcCorPhase
 ContractorMembershipDate
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities
