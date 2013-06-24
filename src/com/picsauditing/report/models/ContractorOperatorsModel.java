@@ -21,6 +21,7 @@ public class ContractorOperatorsModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, CONTRACTOR_OPERATOR);
 		ModelSpec opAccount = spec.join(ContractorOperatorTable.Operator);
+        opAccount.minimumImportance = FieldImportance.Average;
 		ModelSpec operator = opAccount.join(AccountTable.Operator);
 		operator.alias = "Operator";
 
