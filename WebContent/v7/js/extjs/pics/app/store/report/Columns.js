@@ -13,5 +13,8 @@ Ext.define('PICS.store.report.Columns', {
     sorters: [{
         property: 'category',
         direction: 'ASC'
+    }, {
+        property: 'name',
+        direction: 'ASC'
     }]
 });
