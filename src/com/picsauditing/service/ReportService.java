@@ -149,27 +149,12 @@ public class ReportService {
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 		Report report = createReportFromPayload(reportContext.reportId, reportJson);
 
-		setReportOwnerIfNecessary(report, reportContext.user);
-
 		validate(report);
 
 		report.setAuditColumns(reportContext.permissions);
 		reportDao.save(report);
 
 		return report;
-	}
-
-	@Deprecated
-	private void setReportOwnerIfNecessary(Report report, User user) {
-		// FIXME: This is a temporary workaround to set the required ownerId of
-		// a report for saving. Please delete
-		// this method when we can verify that the ownerId is passed to the
-		// frontend and is returned back to the backend
-		// in the reportContext.payloadJson.
-		if (report.getOwner() == null) {
-			ReportUser reportUser = reportPreferencesService.loadReportUser(user.getId(), report.getId());
-			report.setOwner(reportUser.getUser());
-		}
 	}
 
 	public Report copy(ReportContext reportContext) throws Exception {

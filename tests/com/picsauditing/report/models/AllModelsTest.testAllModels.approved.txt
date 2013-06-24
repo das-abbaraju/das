@@ -960,6 +960,8 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 AccountStatus
 AccountTimezone
