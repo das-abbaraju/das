@@ -232,20 +232,12 @@ public class ReportService {
 			throw new ReportValidationException("Report object is null. (Possible security concern.)");
 		}
 
-		if (report.hasNoOwner()) {
-			throw new ReportValidationException("Report " + report.getId() + " has no owner.");
-		}
-
 		if (report.hasNoModelType()) {
 			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
 		}
 
 		if (report.hasNoColumns()) {
 			throw new ReportValidationException("Report contained no columns");
-		}
-
-		if (report.getOwner() == null) {
-			throw new ReportValidationException("Report does not have an owner");
 		}
 	}
 

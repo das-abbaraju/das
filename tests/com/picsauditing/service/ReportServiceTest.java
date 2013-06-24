@@ -296,7 +296,6 @@ public class ReportServiceTest extends PicsTranslationTest {
 		reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
 		ReportUser reportUser = new ReportUser(USER_ID, report);
-		when(reportPreferencesService.loadReportUser(USER_ID, REPORT_ID)).thenReturn(reportUser);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report report = reportServiceSpy.save(reportContext);
