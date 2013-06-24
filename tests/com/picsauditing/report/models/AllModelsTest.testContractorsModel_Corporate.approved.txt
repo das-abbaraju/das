@@ -15,7 +15,6 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
@@ -30,7 +29,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
