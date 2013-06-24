@@ -783,6 +783,14 @@ GroupsLocale
 GroupsName
 GroupsPhone
 GroupsTimezone
+OperatorAutoApproveInsurance
+OperatorCanSeeInsurance
+OperatorDiscountExpiration
+OperatorDoContractorsPay
+OperatorIsUserManualUploaded
+OperatorPrimaryCorporate
+OperatorRequiredTags
+OperatorSalesForceID
 UserCreationDate
 UserDepartment
 UserEmail

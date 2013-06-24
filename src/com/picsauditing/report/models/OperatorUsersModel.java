@@ -6,10 +6,7 @@ import java.util.Map;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.UserGroupTable;
-import com.picsauditing.report.tables.UserTable;
+import com.picsauditing.report.tables.*;
 
 public class OperatorUsersModel extends AbstractModel {
 
@@ -29,6 +26,7 @@ public class OperatorUsersModel extends AbstractModel {
 
         ModelSpec operator = account.join(AccountTable.Operator);
         operator.category = FieldCategory.AccountInformation;
+        operator.minimumImportance = FieldImportance.Low;
         operator.alias = "Operator";
 
         ModelSpec loginLog = spec.join(UserTable.LoginLog);
