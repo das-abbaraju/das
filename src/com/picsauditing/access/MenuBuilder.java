@@ -392,18 +392,18 @@ public final class MenuBuilder {
 
         if (permissions.hasPermission(OpPerms.AssignAudits)) {
             if (permissions.isOperatorCorporate()) {
-                legacyMenu.addChild(getText("ScheduleAndAssign.title"),
+                legacyMenu.addChild("Sched. &amp; Assign",
                         "AuditAssignments.action?filter.status=Active",
                         "AuditAssignments");
             } else {
-                legacyMenu.addChild(getText("ScheduleAndAssign.title"),
+                legacyMenu.addChild("Sched. &amp; Assign",
                         "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
                         "AuditAssignments");
             }
         }
 
         if (permissions.hasPermission(OpPerms.RiskRank)) {
-            legacyMenu.addChild(getText("ContractorRiskAssessment.title"), "ReportContractorRiskLevel.action", "ContractorRiskLevel");
+            legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
         }
 
         if (permissions.hasPermission(OpPerms.ContractorApproval)) {
