@@ -242,8 +242,8 @@
 				});
 
 				element.block({
-					message : 'Clearing answer...'
-				});
+					message : translate('JS.Audit.ClearingAnswer')
+                });
 
 				AUDIT.question.execute(element, url, data);
 			},
@@ -261,8 +261,8 @@
 			    }
 
 				element.block({
-					message: 'Saving answer...'
-				});
+					message: translate('JS.Audit.SavingAnswer')
+                });
 
 				AUDIT.question.execute(element, url, data);
 			},

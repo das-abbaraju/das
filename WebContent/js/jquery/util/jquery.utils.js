@@ -19,7 +19,7 @@
 	}
 	$.fn.think = function(options) {
 		var settings = {
-			message : 'Communicating with PICS...',
+			message : translate('JS.global.CommunicatingWithPICS'),
 			img : 'images/ajax_process.gif'
 		};
 		$.extend(settings, options);
