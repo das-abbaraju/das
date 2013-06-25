@@ -21,6 +21,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.AppTranslationDAO;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
 
@@ -31,15 +32,18 @@ public class I18nCacheTest extends PicsActionTest {
 	private final Locale FOREIGN_LOCALE = Locale.CANADA;
 
 	private static AppTranslationDAO appTranslationDAO = Mockito.mock(AppTranslationDAO.class);
+	private static FeatureToggle featureToggle = Mockito.mock(FeatureToggle.class);
 
 	@BeforeClass
 	public static void classSetUp() {
 		Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", appTranslationDAO);
+		Whitebox.setInternalState(I18nCache.class, "featureToggle", featureToggle);
 	}
 
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "appTranslationDAO", (AppTranslationDAO) null);
+		Whitebox.setInternalState(I18nCache.class, "featureToggle", (AppTranslationDAO) null);
 	}
 
 	@Before
@@ -47,6 +51,10 @@ public class I18nCacheTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 		super.setupMocks();
 		Mockito.reset(appTranslationDAO);
+		Mockito.reset(featureToggle);
+
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(false);
+
 		i18nCache = I18nCache.getInstance();
 	}
 
@@ -55,6 +63,7 @@ public class I18nCacheTest extends PicsActionTest {
 		I18nCache.getInstance().clear();
 	}
 
+	// This is a locking test
 	@Test
 	public void testDefaultTranslationIsEmptyString() {
 		// The fallbacks for missing/invalid translations depend on the default
@@ -206,6 +215,20 @@ public class I18nCacheTest extends PicsActionTest {
 	public void testGetText_ValidEnglish_KeyEndsWithHelpText_ShouldReturnTranslation() {
 		String keyHelpText = "VALID_KEY.helpText";
 		String validTranslation = "VALID_TRANSLATION";
+		Table<String, String, String> cache = TreeBasedTable.create();
+		cache.put(TranslationUtil.prepareKeyForCache(keyHelpText), Locale.ENGLISH.toString(), validTranslation);
+		Whitebox.setInternalState(i18nCache, "cache", cache);
+
+		String value = i18nCache.getText(keyHelpText, Locale.ENGLISH);
+
+		assertEquals(validTranslation, value);
+	}
+
+	@Test
+	public void testGetText_ValidEnglish_KeyEndsWithHelpText_ShouldReturnTranslation_ToggleOn() {
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION)).thenReturn(true);
+		String keyHelpText = "VALID_KEY.helpText";
+		String validTranslation = "";
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(TranslationUtil.prepareKeyForCache(keyHelpText), Locale.ENGLISH.toString(), validTranslation);
 		Whitebox.setInternalState(i18nCache, "cache", cache);

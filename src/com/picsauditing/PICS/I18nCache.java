@@ -24,9 +24,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.dao.AppTranslationDAO;
+import com.picsauditing.dao.jdbc.JdbcFeatureToggleProvider;
 import com.picsauditing.model.i18n.ContextTranslation;
 import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.toggle.FeatureToggleCheckerGroovy;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.TranslationUtil;
 
@@ -50,6 +53,7 @@ public class I18nCache implements TranslationService, Serializable {
 	// This is for JUnit testing
 	static AtomicInteger instantiationCount = new AtomicInteger(0);
 	private static AppTranslationDAO appTranslationDAO;
+	private static FeatureToggle featureToggle;
 
 	private I18nCache() {
 	}
@@ -230,6 +234,7 @@ public class I18nCache implements TranslationService, Serializable {
 		for (I18nCacheBuildAware listener : buildListeners) {
 			listener.cacheBuildStarted(stopWatch.getStartTime());
 		}
+
 		return stopWatch;
 	}
 
@@ -273,7 +278,8 @@ public class I18nCache implements TranslationService, Serializable {
 		}
 
 		if (DEFAULT_LANGUAGE.equals(locale)) {
-			logger.error("Translation key '{}' has no english translation.", key);
+			// logger.error("Translation key '{}' has no english translation.",
+			// key);
 		} else {
 			// If a foreign translation was invalid, check the English
 			// translation
@@ -282,7 +288,8 @@ public class I18nCache implements TranslationService, Serializable {
 			if (isValidTranslation(englishValue)) {
 				fallbackTranslation = englishValue;
 			} else {
-				logger.error("Translation key '{}' has no english translation.", key);
+				// logger.error("Translation key '{}' has no english translation.",
+				// key);
 			}
 		}
 
@@ -298,7 +305,7 @@ public class I18nCache implements TranslationService, Serializable {
 			return false;
 		}
 
-		if (DEFAULT_TRANSLATION.equals(translation)) {
+		if (DEFAULT_TRANSLATION.equals(translation) && !isEmptyStringValidTranslation()) {
 			return false;
 		}
 
@@ -309,6 +316,10 @@ public class I18nCache implements TranslationService, Serializable {
 		}
 
 		return true;
+	}
+
+	private boolean isEmptyStringValidTranslation() {
+		return getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
 	}
 
 	public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
@@ -345,6 +356,14 @@ public class I18nCache implements TranslationService, Serializable {
 		}
 
 		return appTranslationDAO;
+	}
+
+	private FeatureToggle getFeatureToggle() {
+		if (featureToggle == null) {
+			featureToggle = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
+		}
+
+		return featureToggle;
 	}
 
 	@Override
