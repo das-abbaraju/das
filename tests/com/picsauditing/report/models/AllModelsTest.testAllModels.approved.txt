@@ -455,6 +455,7 @@ AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -471,6 +472,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorCustomerServiceUserID
@@ -482,8 +484,6 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorOperatorOperatorID
-ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorProductRisk
@@ -498,6 +498,7 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
 DirectTradeName
+ReportingClient
 TradeName
 
 Model: ContractorSearch

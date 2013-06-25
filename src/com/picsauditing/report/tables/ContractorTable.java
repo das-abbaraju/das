@@ -16,7 +16,6 @@ public class ContractorTable extends AbstractTable {
     public static final String RecommendedCSR = "RecommendedCSR";
     public static final String PQF = "PQF";
     public static final String Flag = "Flag";
-    public static final String ContractorOperator = "ContractorOperator";
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
     public static final String Watch = "Watch";
@@ -55,10 +54,6 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey flagKey = addRequiredKey(new ReportForeignKey(Flag, new ContractorOperatorTable(),
                 new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
         flagKey.setMinimumImportance(FieldImportance.Low);
-
-        ReportForeignKey ContractorOperatorKey = addOptionalKey(new ReportForeignKey(ContractorOperator, new ContractorOperatorTable(),
-                new ReportOnClause("id", "subID")));
-        ContractorOperatorKey.setMinimumImportance(FieldImportance.None);
 
         ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
                 "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSCustomerServiceRep + "' AND " +

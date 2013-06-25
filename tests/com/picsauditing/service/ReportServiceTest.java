@@ -100,6 +100,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
+        when(report.getOwner()).thenReturn(new User(USER_ID));
 		when(account.getId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(permissions.getAccountIdString()).thenReturn(String.valueOf(ACCOUNT_ID));
@@ -203,6 +204,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		JSONObject payloadJson = buildMinimalPayloadJson();
 		reportContext = new ReportContext(payloadJson, REPORT_ID, null, permissions, false, true, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
+        when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 
 		Report resultReport = reportService.createOrLoadReport(reportContext);
 
@@ -272,6 +274,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 				false, 0, 0);
 		when(reportDao.findById(REPORT_ID)).thenReturn(report);
 		when(permissionService.canUserViewReport(user, report, permissions)).thenReturn(true);
+        when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report newReport = reportServiceSpy.copy(reportContext);
@@ -296,6 +299,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		reportContext = new ReportContext(payloadJson, REPORT_ID, user, permissions, false, false, false, false, 0, 0);
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(true);
 		ReportUser reportUser = new ReportUser(USER_ID, report);
+        when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 		ReportService reportServiceSpy = spy(reportService);
 
 		Report report = reportServiceSpy.save(reportContext);

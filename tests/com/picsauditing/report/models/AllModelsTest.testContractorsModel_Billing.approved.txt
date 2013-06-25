@@ -22,6 +22,7 @@ AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -38,6 +39,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBillingAddress
@@ -58,8 +60,6 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
-ContractorOperatorOperatorID
-ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPaymentExpires
@@ -77,4 +77,5 @@ ContractorTransportationRiskVerified
 ContractorVatId
 ContractorWatchwatch
 DirectTradeName
+ReportingClient
 TradeName

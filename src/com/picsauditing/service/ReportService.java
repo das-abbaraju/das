@@ -223,22 +223,30 @@ public class ReportService {
 
 	public Report buildReportFromJson(JSONObject jsonReport, int reportId) throws ReportValidationException {
 		Report report = ReportBuilder.fromJson(jsonReport);
+        Report reportFromDB = reportDao.find(Report.class, reportId);
+
 		report.setId(reportId);
+        report.setOwner(reportFromDB.getOwner());
+
 		return report;
 	}
 
 	void validate(Report report) throws ReportValidationException {
-		if (report == null) {
-			throw new ReportValidationException("Report object is null. (Possible security concern.)");
-		}
+        if (report == null) {
+            throw new ReportValidationException("Report object is null. (Possible security concern.)");
+        }
 
-		if (report.hasNoModelType()) {
-			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
-		}
+        if (report.hasNoOwner()) {
+            throw new ReportValidationException("Report " + report.getId() + " has no owner.");
+        }
 
-		if (report.hasNoColumns()) {
-			throw new ReportValidationException("Report contained no columns");
-		}
+        if (report.hasNoModelType()) {
+            throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
+        }
+
+        if (report.hasNoColumns()) {
+            throw new ReportValidationException("Report contained no columns");
+        }
 	}
 
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {

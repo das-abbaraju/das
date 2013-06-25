@@ -20,6 +20,7 @@ AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -36,6 +37,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorCustomerServiceUserID
@@ -82,4 +84,5 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
 DirectTradeName
+ReportingClient
 TradeName

@@ -21,6 +21,7 @@ AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -38,6 +39,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAgreementDate
 ContractorAuditGUARD
@@ -60,8 +62,6 @@ ContractorLastContactedByInsideSalesDate
 ContractorLcCorNotification
 ContractorLcCorPhase
 ContractorMembershipDate
-ContractorOperatorOperatorID
-ContractorOperatorOperatorName
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities
@@ -86,4 +86,5 @@ ContractorWelcomeCallCaoStatus
 ContractorWelcomeCallID
 ContractorWelcomeCallTypeName
 DirectTradeName
+ReportingClient
 TradeName
