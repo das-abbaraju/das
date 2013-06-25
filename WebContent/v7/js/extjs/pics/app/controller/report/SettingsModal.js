@@ -309,9 +309,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         report_info_button.action = 'show-report-info';
         report_info_button_el.removeCls('active');
 
-        if (report_info_container_el) {
-            report_info_container_el.remove();
-        }
+        Ext.removeNode(report_info_container_el);
     },
 
     hideReportInfoIfVisible: function (cmp, eOpts) {
