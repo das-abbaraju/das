@@ -107,49 +107,33 @@
 					</a>
 				</li>
 
-				<pics:toggle name="${MibewChatEnabled}">
-					<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
+				<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
 
-					<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href_url">
-						<s:param name="locale">${mibew_language_code}</s:param>
-						<s:param name="style">PICS</s:param>
-						<s:param name="name">${User.name}</s:param>
-						<s:param name="email">${User.email}</s:param>
-					</s:url>
+				<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href_url">
+					<s:param name="locale">${mibew_language_code}</s:param>
+					<s:param name="style">PICS</s:param>
+					<s:param name="name">${User.name}</s:param>
+					<s:param name="email">${User.email}</s:param>
+				</s:url>
 
-					<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_onclick_url">
-						<s:param name="locale">${mibew_language_code}</s:param>
-						<s:param name="style">PICS</s:param>
-						<s:param name="name">${User.name}</s:param>
-						<s:param name="email">${User.email}</s:param>
-						<s:param name="url">${requestURL}</s:param>
-						<s:param name="referrer">${referer}</s:param>
-					</s:url>
+				<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_onclick_url">
+					<s:param name="locale">${mibew_language_code}</s:param>
+					<s:param name="style">PICS</s:param>
+					<s:param name="name">${User.name}</s:param>
+					<s:param name="email">${User.email}</s:param>
+					<s:param name="url">${requestURL}</s:param>
+					<s:param name="referrer">${referer}</s:param>
+				</s:url>
 
-					<li>
-						<label><s:text name="Header.Chat"/>:</label>
+				<li>
+					<label><s:text name="Header.Chat"/>:</label>
 
-						<a href="${mibew_href_url}"
-						   target="_blank"
-						   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('${mibew_onclick_url}', 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;">
-							<s:text name="Header.Chat"/>
-						</a>
-					</li>
-				</pics:toggle>
-				<pics:toggleElse>
-					<s:if test="liveChatEnabled">
-						<li>
-							<label><s:text name="Header.Chat"/>:</label>
-
-							<a id="_lpChatBtn"
-							   href="https://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=https://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/${DisplayLanguage}/General/3a"
-							   target='chat90511184'
-							   onClick="lpButtonCTTUrl = 'https://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=https://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/${DisplayLanguage}/General/3a&amp;referer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-								<span><s:text name="Header.Chat"/></span>
-							</a>
-						</li>
-					</s:if>
-				</pics:toggleElse>
+					<a href="${mibew_href_url}"
+					   target="_blank"
+					   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('${mibew_onclick_url}', 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;">
+						<s:text name="Header.Chat"/>
+					</a>
+				</li>
 			</ol>
 		</fieldset>
 	</form>

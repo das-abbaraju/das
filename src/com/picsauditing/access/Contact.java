@@ -4,16 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.picsauditing.model.i18n.LanguageModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountUserDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.model.i18n.LanguageModel;
 
 @SuppressWarnings("serial")
 public class Contact extends PicsActionSupport {
@@ -56,12 +54,8 @@ public class Contact extends PicsActionSupport {
 		return accountRepUser;
 	}
 
-	public String getMibewChatEnabled() {
-		return FeatureToggle.TOGGLE_MIBEW_CHAT;
-	}
-
-    public String getDisplayLanguage() {
-    	Locale locale = getLocaleStatic();
+	public String getDisplayLanguage() {
+		Locale locale = getLocaleStatic();
 		return languageModel.getClosestVisibleLocale(locale).getDisplayLanguage();
-    }
+	}
 }

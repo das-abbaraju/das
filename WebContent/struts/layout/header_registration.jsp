@@ -23,7 +23,5 @@
 	
 	<span id="pics_phone_number" class="phone" title="${phone_country}">${picsPhoneNumber}</span>
 	
-	<s:if test="liveChatEnabled">
-		<s:include value="/struts/layout/chat.jsp" />
-	</s:if>
+	<s:include value="/struts/layout/chat.jsp" />
 </header>
