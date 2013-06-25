@@ -65,6 +65,7 @@ ContractorMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities
+ContractorPaymentExpires
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID

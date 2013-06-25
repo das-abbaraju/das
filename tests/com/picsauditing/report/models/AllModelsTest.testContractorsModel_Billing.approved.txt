@@ -62,7 +62,6 @@ ContractorMembershipDate
 ContractorMustPay
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPaymentExpires
 ContractorPaymentMethod
 ContractorProductRisk
 ContractorProductRiskVerified
