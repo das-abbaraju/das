@@ -34,6 +34,10 @@ public class ForcedFlagsModel extends AbstractModel {
         opAccount.minimumImportance = FieldImportance.Required;
         opAccount.category = FieldCategory.ReportingClientSite;
 
+        ModelSpec forcedFlagPercent = operator.join(OperatorTable.ForcedFlagPercent);
+        forcedFlagPercent.alias = "ForcedFlagPercent";
+        forcedFlagPercent.category = FieldCategory.ReportingClientSite;
+
         ModelSpec accountManager = opAccount.join(AccountTable.AccountManager);
         accountManager.alias = "AccountManager";
         accountManager.category = FieldCategory.CustomerService;

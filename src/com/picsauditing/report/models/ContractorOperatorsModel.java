@@ -25,6 +25,10 @@ public class ContractorOperatorsModel extends AbstractModel {
 		ModelSpec operator = opAccount.join(AccountTable.Operator);
 		operator.alias = "Operator";
 
+        ModelSpec percentForcedFlag = operator.join(OperatorTable.ForcedFlagPercent);
+        percentForcedFlag.alias = "ForcedFlag";
+        percentForcedFlag.category = FieldCategory.AccountInformation;
+
         ModelSpec reportingClient = operator.join(OperatorTable.Reporting);
         reportingClient.alias = "ReportingClient";
         reportingClient.category = FieldCategory.ReportingClientSite;
@@ -47,10 +51,6 @@ public class ContractorOperatorsModel extends AbstractModel {
 		account.alias = "Account";
 		account.minimumImportance = FieldImportance.Average;
 		account.join(AccountTable.Contact);
-
-        ModelSpec percentForcedFlag = spec.join(ContractorOperatorTable.ForcedFlagPercent);
-        percentForcedFlag.alias = "ForcedFlag";
-        percentForcedFlag.category = FieldCategory.AccountInformation;
 
 		return spec;
 	}

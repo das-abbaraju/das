@@ -610,6 +610,7 @@ ContractorOperatorForcedByUserName
 ContractorOperatorOperatorID
 ContractorOperatorOperatorName
 ContractorOperatorOperatorType
+ForcedFlagPercentPercent
 
 Model: ForcedFlagPercents
 Permission: Permissions{permissions=[]}

@@ -6,6 +6,7 @@ public class OperatorTable extends AbstractTable {
     public static final String Account = "Account";
     public static final String Reporting = "Reporting";
     public static final String Parent = "Parent";
+    public static final String ForcedFlagPercent = "ForcedFlagPercent";
 
     public OperatorTable() {
         super("operators");
@@ -18,5 +19,9 @@ public class OperatorTable extends AbstractTable {
 
         addOptionalKey(new ReportForeignKey(Reporting, new AccountTable(), new ReportOnClause("reportingID", "id")));
         addOptionalKey(new ReportForeignKey(Parent, new AccountTable(), new ReportOnClause("parentID", "id")));
+
+        ReportForeignKey forcedFlagPercent = new ReportForeignKey(ForcedFlagPercent, new ForcedFlagPercentageView(), new ReportOnClause("id","opID"));
+        forcedFlagPercent.setMinimumImportance(FieldImportance.Average);
+        addOptionalKey(forcedFlagPercent);
     }
 }
