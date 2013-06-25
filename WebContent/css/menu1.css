@@ -297,3 +297,7 @@ div.auditSubMenu a.current {
 #toolbox a.preview {
 	background-image: url('../images/preview.gif');
 }
+
+#toolbox a.bad {
+    background-image: url('../images/icon-16-remove.png');
+}

@@ -160,6 +160,11 @@
 																<s:text name="button.Void" />
 															</a>
 														</li>
+                                                        <li>
+                                                            <a class="bad" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=baddebt">
+                                                                <s:text name="button.BadDebt" />
+                                                            </a>
+                                                        </li>
 													</pics:permission>
 													<pics:permission perm="InvoiceEdit">
 														<li>
@@ -362,6 +367,9 @@
 												<s:elseif test="payment.paymentMethod.check">
 													<s:text name="InvoiceDetail.Check" /> <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0"><s:text name="InvoiceDetail.CheckNumber" /><s:property value="payment.checkNumber"/></s:if>
 												</s:elseif>
+                                                <s:elseif test="payment.paymentMethod.badDebt">
+                                                    <s:text name="InvoiceDetail.BadDebt" />
+                                                </s:elseif>
 												<s:else>
 													<label>EFT</label>
 												</s:else>
