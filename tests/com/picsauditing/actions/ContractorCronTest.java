@@ -57,67 +57,205 @@ public class ContractorCronTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testSafetyManualSla() throws Exception {
+	public void testManualAuditSlaReset() throws Exception {
 		contractor = EntityFactory.makeContractor();
 
 		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
-		contractor.getAudits().add(pqf);
-		ContractorAuditOperator pqfCao = EntityFactory.addCao(pqf, EntityFactory.makeOperator());
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+
+		ContractorAuditOperator noNeedManualAuditCao = addCaoCaop(pqf, EntityFactory.makeOperator());
+		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+		ContractorAuditOperator needManualAuditCao2 = addCaoCaop(pqf, EntityFactory.makeOperator());
+		addCaoCaop(audit, needManualAuditCao1.getOperator());
+		addCaoCaop(audit, needManualAuditCao2.getOperator());
+
 		AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
 		data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
 		pqf.getData().add(data);
 
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
-		contractor.getAudits().add(audit);
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-
-		// pqf pending
-		audit.setSlaDate(null);
-		contractor.setBalance(BigDecimal.ZERO);
-		pqfCao.changeStatus(AuditStatus.Pending, null);
-		cao.changeStatus(AuditStatus.Pending, null);
-		data.setAnswer("");
-		data.setDateVerified(null);
+		// pqf & safety manual not complete, reset any existing SLA date
+		audit.setSlaDate(new Date());
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
-		audit.setSlaDate(null);
-		pqfCao.changeStatus(AuditStatus.Complete, null);
+		// safety manual not complete, reset any existing SLA date
+		audit.setSlaDate(new Date());
+		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() == null);
 
-		// safety manual not verified
-		audit.setSlaDate(null);
+		// pqf not complete, reset any existing SLA date
+		audit.setSlaDate(new Date());
+		needManualAuditCao1.changeStatus(AuditStatus.Pending, null);
 		data.setAnswer("doc");
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() == null);
-
-		// verified safety manual
-		audit.setSlaDate(null);
 		data.setDateVerified(new Date());
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+
+		// non-audit manual pqf complete, reset any existing SLA date
+		audit.setSlaDate(new Date());
+		noNeedManualAuditCao.changeStatus(AuditStatus.Complete, null);
+		data.setAnswer("doc");
+		data.setDateVerified(new Date());
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() == null);
+	}
+
+	@Test
+	public void testManualAuditSlaValidPqfSafetyManual() throws Exception {
+		contractor = EntityFactory.makeContractor();
+
+		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
+
+		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+		addCaoCaop(audit, needManualAuditCao1.getOperator());
+
+		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+
+		AuditData data = EntityFactory.makeAuditData("doc", EntityFactory.makeAuditQuestion());
+		data.setDateVerified(new Date());
+		data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+		pqf.getData().add(data);
+
+		// pqf & safety manual complete, don't reset any existing SLA date
+		Date currentSlaData = new Date();
+		audit.setSlaDate(currentSlaData);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate().equals(currentSlaData));
+
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.DATE, 21);
+		Date lestRecent = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, 7);
+		Date mostRecent = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, 14);
+		Date targetDate = DateBean.setToEndOfDay(date.getTime());
+
+		// two weeks from pqf
+		needManualAuditCao1.setStatusChangedDate(mostRecent);
+		data.setDateVerified(lestRecent);
+		audit.setSlaDate(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
 		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
 
-		Date targetSlaDate = audit.getSlaDate();
+		// two weeks from safety manual
+		needManualAuditCao1.setStatusChangedDate(lestRecent);
+		data.setDateVerified(mostRecent);
+		audit.setSlaDate(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
+
+		// from current date
+		date = Calendar.getInstance();
+		date.add(Calendar.DATE, 14);
+		targetDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, -30);
+		needManualAuditCao1.setStatusChangedDate(DateBean.setToEndOfDay(date.getTime()));
+		data.setDateVerified(DateBean.setToEndOfDay(date.getTime()));
+		audit.setSlaDate(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
+	}
+
+	@Test
+	public void testManualAuditSlaValidPreviousAudit() throws Exception {
+		contractor = EntityFactory.makeContractor();
+
+		ContractorAudit pqf = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
 		ContractorAudit previousAudit = EntityFactory.makeContractorAudit(AuditType.DESKTOP, contractor);
-		contractor.getAudits().add(previousAudit);
-		ContractorAuditOperator previousCao = EntityFactory.addCao(previousAudit, EntityFactory.makeOperator());
-		previousCao.changeStatus(AuditStatus.Complete, null);
 
-		//expiring manual audit exist and is earlier
-		previousAudit.setExpiresDate(targetSlaDate);
-		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() != null && audit.getSlaDate().equals(targetSlaDate));
+		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
+		addCaoCaop(audit, needManualAuditCao1.getOperator());
+		addCaoCaop(previousAudit, needManualAuditCao1.getOperator());
 
-		// expiring manual audit exists and is later
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(targetSlaDate);
-		calendar.add(Calendar.DATE, 60);
-		previousAudit.setExpiresDate(calendar.getTime());
-		calendar.add(Calendar.DATE, -30);
-		targetSlaDate = calendar.getTime();
+		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+		previousAudit.getOperators().get(0).changeStatus(AuditStatus.Complete, null);
+		previousAudit.setId(3);
+
+		AuditData data = EntityFactory.makeAuditData("doc", EntityFactory.makeAuditQuestion());
+		data.setDateVerified(new Date());
+		data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
+		pqf.getData().add(data);
+
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.DATE, 21);
+		Date completionDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, 60);
+		Date expirationDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, -30);
+		Date targetDate = DateBean.setToEndOfDay(date.getTime());
+
+		// 30 days from previous
+		needManualAuditCao1.setStatusChangedDate(completionDate);
+		data.setDateVerified(completionDate);
+		previousAudit.setExpiresDate(expirationDate);
+		audit.setSlaDate(null);
 		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
-		assertTrue(audit.getSlaDate() != null && audit.getSlaDate().equals(targetSlaDate));
+		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
+
+		date = Calendar.getInstance();
+		date.add(Calendar.DATE, 21);
+		expirationDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, 60);
+		completionDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, 14);
+		targetDate = DateBean.setToEndOfDay(date.getTime());
+
+		// from completion date
+		needManualAuditCao1.setStatusChangedDate(completionDate);
+		data.setDateVerified(completionDate);
+		previousAudit.setExpiresDate(expirationDate);
+		audit.setSlaDate(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
+
+		date = Calendar.getInstance();
+		date.add(Calendar.DATE, 14);
+		targetDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, -21);
+		completionDate = DateBean.setToEndOfDay(date.getTime());
+		date.add(Calendar.DATE, -14);
+		expirationDate = DateBean.setToEndOfDay(date.getTime());
+
+		// from current date
+		needManualAuditCao1.setStatusChangedDate(completionDate);
+		data.setDateVerified(completionDate);
+		previousAudit.setExpiresDate(expirationDate);
+		audit.setSlaDate(null);
+		Whitebox.invokeMethod(contractorCron, "checkSla", contractor);
+		assertTrue(audit.getSlaDate() != null);
+		assertTrue(dateMatches(targetDate, audit.getSlaDate()));
+	}
+
+	private boolean dateMatches(Date expectedDate, Date actualDate) {
+		Calendar expected = Calendar.getInstance();
+		expected.setTime(expectedDate);
+		Calendar actual = Calendar.getInstance();
+		actual.setTime(actualDate);
+		if (expected.get(Calendar.YEAR) == actual.get(Calendar.YEAR) &&
+				expected.get(Calendar.MONTH) == actual.get(Calendar.MONTH) &&
+				expected.get(Calendar.DAY_OF_MONTH) == actual.get(Calendar.DAY_OF_MONTH)) {
+			return true;
+		}
+		return false;
+	}
+
+	private ContractorAuditOperator addCaoCaop(ContractorAudit audit, OperatorAccount operator) {
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
+		cao.changeStatus(AuditStatus.Pending, null);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setCao(cao);
+		caop.setOperator(operator);
+		cao.getCaoPermissions().add(caop);
+
+		return cao;
 	}
 
 	/**
