@@ -62,4 +62,11 @@ public class ForcedFlagsModel extends AbstractModel {
 
         return fields;
 	}
+
+    @Override
+    public String getWhereClause(List<Filter> filters) {
+        super.getWhereClause(filters);
+
+        return permissionQueryBuilder.buildWhereClause();
+    }
 }
