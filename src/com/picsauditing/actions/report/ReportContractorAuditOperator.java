@@ -81,9 +81,6 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
                     + "))");
         }
 
-        if (getFilter().isShowAuditStatus() && getFilter().getAuditStatus() == null)
-            getFilter().setAuditStatus(AuditStatus.activeStatusesBeyondPending());
-
         getFilter().setShowOperator(false);
         getFilter().setShowTrade(false);
         getFilter().setShowLocation(false);
