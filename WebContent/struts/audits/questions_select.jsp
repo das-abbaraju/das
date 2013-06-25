@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+
 <s:if test="questions.size > 0">
 	<s:select name="questions[99].id" list="{}" cssClass="forms">
 		<s:iterator value="questionMap" var="q">
-			<s:optgroup label="%{#q.key.name}" list="#q.value" listKey="id" listValue="name.stripTags" />
+			<s:optgroup label="%{#q.key.name}" list="#q.value" listKey="id" listValue="%{@com.picsauditing.PICS.Utilities@stripTags(name)}" />
 		</s:iterator>
 	</s:select>
 	<br clear="all" />

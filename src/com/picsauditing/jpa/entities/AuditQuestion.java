@@ -79,7 +79,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static final String TYPE_NUMBER = "Number";
 	public static final String TYPE_DATE = "Date";
 	public static final String TYPE_DECIMAL = "Decimal Number";
-    public static final String TYPE_FILE_CERTIFICATE = "FileCertificate";
+	public static final String TYPE_FILE_CERTIFICATE = "FileCertificate";
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", TYPE_FILE_CERTIFICATE,
 			"License", "Money", TYPE_NUMBER, "ESignature", "Tagit", "MultiSelect", "Percent" };
@@ -93,21 +93,16 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private String requiredAnswer;
 	private String visibleAnswer;
 
-	// private TranslatableString name;
 	private String name;
 
 	private String questionType;
 	private AuditOptionGroup option;
 	private String okAnswer;
 
-	// TODO Convert this into a TranslatableString PICS-5137
-	// private TranslatableString columnHeader;
 	private String columnHeader;
 
 	private String uniqueCode;
 
-	// private TranslatableString title;
-	// private TranslatableString requirement;
 	private String title;
 	private String requirement;
 
@@ -189,6 +184,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getName() {
+		if (name != null) {
+			return name;
+		}
+
 		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
@@ -597,7 +596,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeaderOrQuestion() {
-        String columnHeader = getColumnHeader();
+		String columnHeader = getColumnHeader();
 		if (columnHeader != null && !Strings.isEmpty(columnHeader.toString())) {
 			return columnHeader.toString();
 		}
@@ -652,16 +651,19 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 			public int compare(AuditQuestion o1, AuditQuestion o2) {
 				String[] o1a = o1.getExpandedNumber().split("\\.");
 				String[] o2a = o2.getExpandedNumber().split("\\.");
+
 				for (int i = 0; i < o1a.length; i++) {
 					if (i >= o2a.length) {
 						return -1;
 					}
+
 					if (o1a[i].equals(o2a[i])) {
 						continue;
 					} else {
 						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
 					}
 				}
+
 				return 0;
 			}
 		};
