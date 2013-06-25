@@ -575,7 +575,7 @@ public class OpenTasks extends TranslationActionSupport {
 					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
-							conAudit.getId(), auditFor));
+							conAudit.getId(), auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				}
 			}
