@@ -19,7 +19,6 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
-ContractorPaymentExpires
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk

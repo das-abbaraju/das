@@ -392,6 +392,8 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 AccountStatus
 AccountTimezone
@@ -596,6 +598,8 @@ Model: ForcedFlags
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 ContractorFlagForceBegin
 ContractorFlagForceEnd
@@ -603,6 +607,10 @@ ContractorFlagForceFlag
 ContractorFlagLabel
 ContractorOperatorForcedByUserID
 ContractorOperatorForcedByUserName
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
+ContractorOperatorOperatorType
+ForcedFlagPercentPercent
 
 Model: ForcedFlagPercents
 Permission: Permissions{permissions=[]}

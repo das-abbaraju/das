@@ -34,6 +34,7 @@ public interface FeatureToggle {
 	String TOGGLE_SUPPRESS_WELCOME_EMAILS = "Toggle.SuppressWelcomeEmails";
 	String TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER = "Toggle.TranslationServiceAdapter";
 	String TOGGLE_COUNTRY_PHONE_NUMBER = "Toggle.CountryPhoneNumber";
+	String TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION = "Toggle.EmptyStringIsValidTranslation";
 
 	boolean isFeatureEnabled(String toggleName);
 

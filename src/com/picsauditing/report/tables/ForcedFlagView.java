@@ -9,6 +9,7 @@ import com.picsauditing.search.SelectCase;
 public class ForcedFlagView extends AbstractTable {
 
     public static final String Contractor = "Contractor";
+    public static final String Operator = "Operator";
     public static final String ForcedByUser = "ForcedByUser";
 
 	public ForcedFlagView() {
@@ -30,6 +31,7 @@ public class ForcedFlagView extends AbstractTable {
 
 	public void addJoins() {
         addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
+        addRequiredKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("opID")));
 
         ReportForeignKey forcedByUser = new ReportForeignKey(ForcedByUser, new UserTable(), new ReportOnClause("forcedBy"));
         forcedByUser.setMinimumImportance(FieldImportance.Average);
