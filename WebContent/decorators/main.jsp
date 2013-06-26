@@ -328,34 +328,32 @@
 	}
 %>
 
+<%
+String mibew_href = MenuBuilder.getMibewURL(locale, permissions);
+String chat_link_text = i18nCache.getText("Header.Chat", locale);
+String help_link_text = i18nCache.getText("Header.HelpCenter", locale);
+String help_url = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
+
+if (permissions.isOperatorCorporate()) {
+	help_url += "os_username=operator&os_password=oper456ator";
+} else if (permissions.isContractor()) {
+	help_url += "os_username=contractor&os_password=con123tractor";
+} else {
+	help_url += "os_username=admin&os_password=ad9870mins";
+}
+%>
+
 <div id="main">
 	<div id="bodyholder">
 		<div id="notify"></div>
 
 		<div id="helpbox">
-			<%
-				String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-				if (permissions.isOperatorCorporate()) {
-					helpUrl += "os_username=operator&os_password=oper456ator";
-				} else if (permissions.isContractor()) {
-					helpUrl += "os_username=contractor&os_password=con123tractor";
-				} else {
-					helpUrl += "os_username=admin&os_password=ad9870mins";
-				}
-
-			%>
-
 			<div id="helpcenter" style="float:left;">
-				<a href="<%=helpUrl%>" target="_BLANK"><%=translationService.getText("Header.HelpCenter", locale)%>
-				</a>
+				<a href="<%= help_url %>" target="_BLANK"><%= help_link_text %></a>
 			</div>
 
 			<div id="helpchat" style="float:left;">
-				<a href="<%=MenuBuilder.getMibewURL(locale, permissions) %>"
-				   target="_blank"
-				   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('<%=MenuBuilder.getMibewURL(locale, permissions)%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=i18nCache.getText("Header.Chat", locale)%>
-				</a>
+				<a class="chat-link" href="<%= mibew_href %>" target="_blank"><%= chat_link_text %></a>
 			</div>
 		</div>
 
@@ -392,31 +390,28 @@
 						<%
 							if (item.getName().equals("Online Chat")) {
 						%>
-								<a href="<%=MenuBuilder.getMibewURL(locale, permissions) %>"
-								   target="_blank"
-								   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('<%=MenuBuilder.getMibewURL(locale, permissions)%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=i18nCache.getText("Header.Chat", locale)%>
-								</a>
+								<a href="<%= mibew_href %>" target="_blank"><%= chat_link_text %></a>
 						<%
 							} else {
 								String dataFields = "";
+
 								for (String dataKey : item.getDataFields().keySet()) {
 									dataFields += "data-" + dataKey + "=\"" + item.getDataFields().get(dataKey) + "\" ";
-								} %>
-
-							<a
+								}
+						%>
+								<a
 									<%=item.hasUrl() ? ("href=\"" + item.getUrl() + "\"") : ""%>
 									<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : ""%>
-									<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"")
-											: ""%>
+									<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"") : ""%>
 									<%=dataFields%>
 									>
-								<span><%=item.getName()%></span>
-							</a>
+									<span><%=item.getName()%></span>
+								</a>
 						<%
 							}
 						%>
 						</li>
-							<%
+						<%
 					}
 				}
 			%>
