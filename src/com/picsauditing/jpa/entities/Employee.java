@@ -52,7 +52,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 4)
-	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -63,7 +63,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 5)
-	@ReportField(type = FieldType.String, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
 	public String getLastName() {
 		return lastName;
 	}
@@ -121,7 +121,7 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	// "com.picsauditing.jpa.entities.UserStatus") })
 	@Enumerated(EnumType.STRING)
 	//TODO Add UserStatus DR FieldType
-	@ReportField(type = FieldType.String, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.EmployeeStatus, importance = FieldImportance.Average)
 	public UserStatus getStatus() {
 		return status;
 	}

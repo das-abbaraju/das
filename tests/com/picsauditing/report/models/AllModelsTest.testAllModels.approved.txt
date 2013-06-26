@@ -593,12 +593,21 @@ ContractorTransportationRiskVerified
 Model: EmployeeCompetencies
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-EmployeeCompetencyCompetencyLabel
-EmployeeCompetencyEmployeeAccountID
-EmployeeCompetencyEmployeeAccountName
-EmployeeCompetencyEmployeeFirstName
-EmployeeCompetencyEmployeeLastName
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+CompetencyLabel
 EmployeeCompetencySkilled
+EmployeeFirstName
+EmployeeLastName
+EmployeeName
+EmployeeStatus
 
 Model: ForcedFlags
 Permission: Permissions{permissions=[]}
