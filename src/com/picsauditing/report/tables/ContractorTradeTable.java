@@ -15,8 +15,7 @@ public class ContractorTradeTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID", "id",
-				ReportOnClause.ToAlias + ".type = 'Contractor'")));
+		addRequiredKey(new ReportForeignKey(Contractor, new AccountTable(), new ReportOnClause("conID", "id")));
 
 		addRequiredKey(new ReportForeignKey(Trade, new TradeTable(), new ReportOnClause("tradeID")));
 	}

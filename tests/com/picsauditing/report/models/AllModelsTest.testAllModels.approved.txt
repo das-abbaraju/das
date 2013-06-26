@@ -590,6 +590,15 @@ ContractorStatisticsStatisticFor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
+Model: ContractorTrades
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
+TradeName
+
 Model: EmployeeCompetencies
 Permission: Permissions{permissions=[]}
 ----------------------------------------

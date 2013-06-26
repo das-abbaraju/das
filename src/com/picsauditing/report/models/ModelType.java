@@ -14,6 +14,7 @@ public enum ModelType {
     Contractors,
     ContractorSearch,
     ContractorStatistics,
+    ContractorTrades,
     EmployeeCompetencies,
     ForcedFlags,
     ForcedFlagPercents,
@@ -32,7 +33,6 @@ public enum ModelType {
 	Users;
 
 //    ContractorAuditOperatorWorkflows,
-//    ContractorTrades,
 //    Country,
 //    EmailExclusions,
 //    Emails,

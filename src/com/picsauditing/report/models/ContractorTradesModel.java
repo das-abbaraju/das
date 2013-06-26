@@ -20,16 +20,12 @@ public class ContractorTradesModel extends AbstractModel {
 		ModelSpec spec = new ModelSpec(null, "ContractorTrade");
 
         ModelSpec contractor = spec.join(ContractorTradeTable.Contractor);
-        contractor.alias = "Contractor";
-        ModelSpec account = contractor.join(ContractorTable.Account);
-        account.alias = "Account";
+        contractor.alias = "Account";
 
         ModelSpec directTrade = spec.join(ContractorTradeTable.Trade);
-        directTrade.alias = "DirectTrade";
-        ModelSpec trade = directTrade.join(TradeTable.Children);
-        trade.alias = "Trade";
+        directTrade.alias = "Trade";
 
-		return contractor;
+		return spec;
 	}
 
 	@Override
@@ -42,11 +38,9 @@ public class ContractorTradesModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
-		Field tradeName = fields.get("TradeName".toUpperCase());
-		tradeName.setVisible(true);
 
-        Field directTradeName = fields.get("DirectTradeName".toUpperCase());
-        directTradeName.setVisible(true);
+        Field tradeName = fields.get("TradeName".toUpperCase());
+        tradeName.setVisible(true);
 
         return fields;
 	}
