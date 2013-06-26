@@ -400,7 +400,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				emailBuilder.setToAddresses(billingEmail);
 				emailBuilder.setFromAddress(billingEmail);
 				EmailQueue email = emailBuilder.build();
-				email.setViewableById(Account.PicsID);
+				email.setSubjectViewableById(Account.PicsID);
+				email.setBodyViewableById(Account.PicsID);
 				email.setMediumPriority();
 				emailQueueDAO.save(email);
 

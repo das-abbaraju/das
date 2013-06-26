@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
@@ -162,7 +161,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						try {
 							emailQueue = emailBuilder.build();
 							emailQueue.setVeryHighPriority();
-							emailQueue.setViewableById(Account.PicsID);
+							emailQueue.setSubjectViewableById(Account.PicsID);
+							emailQueue.setBodyViewableById(Account.PicsID);
 							emailSender.send(emailQueue);
 						} catch (Exception e) {
 							PicsLogger

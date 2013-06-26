@@ -167,7 +167,8 @@ public class ReportBiddingContractors extends ReportAccount {
 //						: EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_WITH_NAME);
 				emailQueue.setFromAddress((templateId == 73) ? EmailAddressUtils.getBillingEmail(contractor.getCurrency())
 						: EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_WITH_NAME);
-				emailQueue.setViewableById(permissions.getTopAccountID());
+				emailQueue.setSubjectViewableById(permissions.getTopAccountID());
+				emailQueue.setBodyViewableById(permissions.getTopAccountID());
 				emailSender.send(emailQueue);
 				addActionMessage(summary);
 			} catch (Exception e) {

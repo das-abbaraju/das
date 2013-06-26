@@ -111,8 +111,8 @@ public abstract class SubscriptionBuilder {
 			}
 
 			EmailQueue email = emailBuilder.build();
-			// TODO: Make this solution more extensible
-			email.setViewableById(subscription.getSubscription().getViewableBy());
+			email.setSubjectViewableById(subscription.getSubscription().getSubjectViewableBy());
+			email.setBodyViewableById(subscription.getSubscription().getBodyViewableBy());
 			email.setCreatedBy(user);
 
 			return email;

@@ -156,7 +156,8 @@ public enum Subscription implements Translatable {
 			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
 					SubscriptionTimePeriod.Monthly });
 			setRequiredForContractor(true);
-			setViewableBy(Account.PicsID);
+			setSubjectViewableBy(Account.EVERYONE);
+			setBodyViewableBy(Account.PicsID);
 		}
 	},
 	RegistrationRequests {
@@ -226,7 +227,8 @@ public enum Subscription implements Translatable {
 	private boolean requiredForAdmin = false;
 	private OpPerms requiredPerms = null;
 	private boolean requiresOQ = false;
-	private int viewableBy = Account.PRIVATE;
+	private int subjectViewableBy = Account.PRIVATE;
+	private int bodyViewableBy = Account.PRIVATE;
 	private SubscriptionTimePeriod defaultTimePeriod = SubscriptionTimePeriod.Monthly;
 
 	Subscription() {
@@ -314,12 +316,20 @@ public enum Subscription implements Translatable {
 		return requiresOQ;
 	}
 
-	public void setViewableBy(int viewableBy) {
-		this.viewableBy = viewableBy;
+	public void setSubjectViewableBy(int subjectViewableBy) {
+		this.subjectViewableBy = subjectViewableBy;
 	}
 
-	public int getViewableBy() {
-		return viewableBy;
+	public int getSubjectViewableBy() {
+		return subjectViewableBy;
+	}
+
+	public void setBodyViewableBy(int bodyViewableBy) {
+		this.bodyViewableBy = bodyViewableBy;
+	}
+
+	public int getBodyViewableBy() {
+		return bodyViewableBy;
 	}
 
 	public void setDefaultTimePeriod(SubscriptionTimePeriod defaultTimePeriod) {

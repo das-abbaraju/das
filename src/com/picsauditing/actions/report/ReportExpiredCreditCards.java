@@ -83,7 +83,8 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						emailBuilder.setContractor(con, OpPerms.ContractorBilling);
 						emailBuilder.setFromAddress(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 						EmailQueue email = emailBuilder.build();
-						email.setViewableById(Account.PicsID);
+						email.setSubjectViewableById(Account.PicsID);
+						email.setBodyViewableById(Account.PicsID);
 						emailSender.send(email);
 
 						Note note = new Note();

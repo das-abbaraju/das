@@ -56,7 +56,8 @@ public class EventSubscriptionBuilder {
 			builder.setUser(subscription.getUser());
 			EmailQueue q = builder.build();
 			q.setHtml(true);
-			q.setViewableBy(co.getOperatorAccount().getTopAccount());
+			q.setSubjectViewableBy(co.getOperatorAccount().getTopAccount());
+			q.setBodyViewableBy(co.getOperatorAccount().getTopAccount());
 
 			emailSender.send(q);
 
@@ -113,7 +114,8 @@ public class EventSubscriptionBuilder {
 		EmailQueue email = emailBuilder.build();
 		email.setHighPriority();
 		email.setHtml(true);
-		email.setViewableById(Account.PicsID);
+		email.setSubjectViewableById(Account.PicsID);
+		email.setBodyViewableById(Account.PicsID);
 		return email;
 	}
 
@@ -178,7 +180,8 @@ public class EventSubscriptionBuilder {
 		try {
 			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
-			email.setViewableById(Account.EVERYONE);
+			email.setSubjectViewableById(Account.EVERYONE);
+			email.setBodyViewableById(Account.EVERYONE);
 			emailSender.send(email);
 
 			stampNote(audit.getContractorAccount(),
@@ -207,7 +210,8 @@ public class EventSubscriptionBuilder {
 					+ "The system is unable to send automated emails to this account. "
 					+ "Attempted to send 1 week prior audit implementation email.");
 			email.setLowPriority();
-			email.setViewableById(Account.PicsID);
+			email.setSubjectViewableById(Account.PicsID);
+			email.setBodyViewableById(Account.PicsID);
 			emailSender.send(email);
 			stampNote(email.getContractorAccount(),
 					"Failed to send Audit Notification because of no valid email address.", NoteCategory.Audits);
@@ -246,7 +250,8 @@ public class EventSubscriptionBuilder {
 
 		EmailQueue email = emailBuilder.build();
 		email.setLowPriority();
-		email.setViewableById(Account.EVERYONE);
+		email.setSubjectViewableById(Account.EVERYONE);
+		email.setBodyViewableById(Account.EVERYONE);
 		emailSender.send(email);
 
 		stampNote(user.getAccount(), "Sent Policy Expiration Email to " + emailBuilder.getSentTo(),

@@ -64,7 +64,8 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				EmailQueue email = emailBuilder.build();
 				email.setVeryLowPriority();
 				email.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
-				email.setViewableById(Account.EVERYONE);
+				email.setSubjectViewableById(Account.EVERYONE);
+				email.setBodyViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
 
 				Note note = new Note();

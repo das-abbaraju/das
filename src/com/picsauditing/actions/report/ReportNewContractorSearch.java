@@ -231,7 +231,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setViewableById(Account.EVERYONE);
+			emailQueue.setSubjectViewableById(Account.EVERYONE);
+			emailQueue.setBodyViewableById(Account.EVERYONE);
 			emailSender.send(emailQueue);
 			addActionMessage(getText("NewContractor.EmailSent"));
 		} catch (Exception e) {
@@ -295,7 +296,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setHighPriority();
 				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-				emailQueue.setViewableById(Account.PicsID);
+				emailQueue.setSubjectViewableById(Account.PicsID);
+				emailQueue.setBodyViewableById(Account.PicsID);
 				emailSender.send(emailQueue);
 			}
 		}

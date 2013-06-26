@@ -203,10 +203,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailQueue.setHighPriority();
 			emailQueue.setFromAddress(EmailAddressUtils
 					.getBillingEmail(contractor.getCurrency()));
-			if (permissions.isOperator())
-				emailQueue.setViewableById(permissions.getTopAccountID());
-			else
-				emailQueue.setViewableById(Account.EVERYONE);
+			if (permissions.isOperator()) {
+				emailQueue.setSubjectViewableById(permissions.getTopAccountID());
+				emailQueue.setBodyViewableById(permissions.getTopAccountID());
+			}
+			else {
+				emailQueue.setSubjectViewableById(Account.EVERYONE);
+				emailQueue.setBodyViewableById(Account.EVERYONE);
+			}
 			emailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {

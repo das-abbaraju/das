@@ -138,7 +138,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 					emailBuilder.setToAddresses(reqUser.getEmail());
 					EmailQueue emailQueue = emailBuilder.build();
-					emailQueue.setViewableById(Account.EVERYONE);
+					emailQueue.setSubjectViewableById(Account.EVERYONE);
+					emailQueue.setBodyViewableById(Account.EVERYONE);
 					emailSender.send(emailQueue);
 				} catch (Exception e) {
 				}

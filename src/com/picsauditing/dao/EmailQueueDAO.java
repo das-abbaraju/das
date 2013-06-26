@@ -75,15 +75,17 @@ public class EmailQueueDAO extends PicsDAO {
 	public List<EmailQueue> findByContractorId(int id, Permissions permissions) {
 		String permWhere;
 		// Show the user's private notes
-		permWhere = "(createdBy.id = " + permissions.getUserId() + " AND viewableBy.id = " + Account.PRIVATE + ")";
+        permWhere = "(createdBy.id = " + permissions.getUserId() + " AND (subjectViewableBy.id = " + Account.PRIVATE + " OR bodyViewableBy.id = " + Account.PRIVATE + ")" + ")";
 		// Show the note available to all users
-		permWhere += " OR (viewableBy.id = " + Account.EVERYONE + ")";
+		permWhere += " OR (subjectViewableBy.id = " + Account.EVERYONE + " OR bodyViewableBy.id = " + Account.EVERYONE + ")";
 
 		// Show intra-company notes users
-		if (permissions.isOperatorCorporate())
-			permWhere += " OR (viewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
-		else
-			permWhere += " OR (viewableBy IS NULL) OR (viewableBy.id > 2)";
+		if (permissions.isOperatorCorporate()) {
+			permWhere += " OR (subjectViewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + ")" +
+                    "OR bodyViewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+		} else {
+			permWhere += " OR (subjectViewableBy IS NULL OR bodyViewableBy is null) OR (subjectViewableBy.id > 2 OR bodyViewableBy > 2)";
+		}
 		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id AND (" + permWhere
 				+ ") ORDER BY sentDate DESC");
 		query.setMaxResults(25);

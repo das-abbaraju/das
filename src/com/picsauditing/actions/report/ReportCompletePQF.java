@@ -91,7 +91,8 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 					if (conAudit.getContractorAccount().getCurrentCsr() != null)
 						emailBuilder.setFromAddress(conAudit.getContractorAccount().getCurrentCsr());
 					EmailQueue email = emailBuilder.build();
-					email.setViewableById(Account.EVERYONE);
+					email.setSubjectViewableById(Account.EVERYONE);
+					email.setBodyViewableById(Account.EVERYONE);
 					emailSender.send(email);
 
 					Note note = new Note();

@@ -201,10 +201,12 @@ public class MassMailer extends RequiredLanguagesSupport {
 						// I really think we should be saving this. Not sure why
 						// we
 						// weren't
-						if (templateID < 0)
+						if (templateID < 0) {
 							email.setEmailTemplate(null);
+						}
 
-						email.setViewableById(permissions.getTopAccountID());
+						email.setSubjectViewableById(permissions.getTopAccountID());
+						email.setBodyViewableById(permissions.getTopAccountID());
 						emailQueueDAO.save(email);
 					} catch (EmailException e) {
 						e.printStackTrace();

@@ -472,7 +472,8 @@ public class CaoSave extends AuditActionSupport {
 		emailBuilder.addToken("cao", cao);
 		emailBuilder.addToken("note", note);
 		EmailQueue email = emailBuilder.build();
-		email.setViewableBy(cao.getOperator());
+		email.setSubjectViewableBy(cao.getOperator());
+		email.setBodyViewableBy(cao.getOperator());
 		emailSender.send(email);
 	}
 

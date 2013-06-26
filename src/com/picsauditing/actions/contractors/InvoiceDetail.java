@@ -201,7 +201,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         try {
             emailQueue = emailBuilder.build();
             emailQueue.setVeryHighPriority();
-            emailQueue.setViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PicsID);
+			emailQueue.setBodyViewableById(Account.PicsID);
             emailSender.send(emailQueue);
         } catch (Exception e) {
             PicsLogger
