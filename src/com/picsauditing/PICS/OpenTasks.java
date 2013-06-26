@@ -67,7 +67,6 @@ public class OpenTasks extends TranslationActionSupport {
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
-			gatherTasksAboutEmployeeCompetencies();
 		}
 
 		gatherTasksAboutMarketing();
@@ -363,14 +362,6 @@ public class OpenTasks extends TranslationActionSupport {
 					}
 				}
 			}
-		}
-	}
-
-	private void gatherTasksAboutEmployeeCompetencies() {
-		if (contractor.isRequiresCompetencyReview() && contractor.getEmployees().isEmpty()
-				&& contractor.hasOperatorWithCompetencyRequiringDocumentation()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(),
-					"ContractorWidget.message.EmployeesNeedToBeAdded", contractor.getId()));
 		}
 	}
 
