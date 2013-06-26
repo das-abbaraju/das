@@ -260,15 +260,18 @@ public class AuditDataSave extends AuditActionSupport {
 				catData.setOverride(false);
 				catData.setAuditColumns(new User(User.SYSTEM));
 
-				catDataDao.save(catData);
+				try {
+					catDataDao.save(catData);
 
-				// Need to refresh the auditData to query up the required
-				// questions off of it
-				auditData = auditDataDAO.find(auditData.getId());
+					// Need to refresh the auditData to query up the required
+					// questions off of it
+					auditData = auditDataDAO.find(auditData.getId());
 
-				loadAnswerMap();
+					loadAnswerMap();
+				} catch (Exception x) {
+					throw new Exception("Error saving category. Please refresh the page and try again.");
+				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
