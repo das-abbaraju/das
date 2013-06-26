@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.RequiresLanguages;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType implements Preparable {
@@ -117,6 +118,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 			category.setAuditColumns(permissions);
 			category = auditCategoryDAO.save(category);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(category, permissions);
 
 			return true;
 		}

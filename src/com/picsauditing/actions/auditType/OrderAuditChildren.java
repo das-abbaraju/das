@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditOptionValue;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 
 @SuppressWarnings("serial")
 public class OrderAuditChildren extends PicsActionSupport {
@@ -33,8 +34,9 @@ public class OrderAuditChildren extends PicsActionSupport {
 	protected AuditOptionValueDAO auditQuestionOptionDAO;
 
 	public String execute() {
-		if (type == null)
+		if (type == null) {
 			return SUCCESS;
+		}
 
 		for (int i = 0; i < item.length; i++) {
 
@@ -59,7 +61,9 @@ public class OrderAuditChildren extends PicsActionSupport {
 			for (AuditCategory subCategory : auditCategory.getSubCategories()) {
 				subCategory.setNumber(list.get(subCategory.getId()));
 			}
+
 			auditCategoryDAO.save(auditCategory);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(auditCategory, permissions);
 		}
 
 		// Change the Order numbers of the AuditQuestions
@@ -69,6 +73,7 @@ public class OrderAuditChildren extends PicsActionSupport {
 				question.setNumber(list.get(question.getId()));
 			}
 			auditCategoryDAO.save(auditSubCategory);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(auditSubCategory, permissions);
 		}
 
 		// Change the Order numbers of the AuditQuestions

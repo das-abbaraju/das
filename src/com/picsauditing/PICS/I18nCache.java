@@ -369,6 +369,7 @@ public class I18nCache implements TranslationService, Serializable {
 	@Override
 	public void saveTranslation(String key, String translation, List<String> requiredLanguages) throws Exception {
 		appTranslationDAO.saveTranslation(key, translation, requiredLanguages);
+		addTranslations(key, translation, requiredLanguages);
 	}
 
 	@Override
@@ -390,6 +391,22 @@ public class I18nCache implements TranslationService, Serializable {
 			language = locale.toString();
 		}
 
-		appTranslationDAO.saveTranslation(key, translation, Arrays.asList(language));
+		List<String> requiredLanguages = Arrays.asList(language);
+		appTranslationDAO.saveTranslation(key, translation, requiredLanguages);
+		addTranslations(key, translation, requiredLanguages);
+	}
+
+	private void addTranslations(String key, String translation, List<String> requiredLanguages) {
+		if (CollectionUtils.isEmpty(requiredLanguages)) {
+			return;
+		}
+
+		synchronized (this) {
+			for (String language : requiredLanguages) {
+				if (Strings.isNotEmpty(language)) {
+					cache.put(TranslationUtil.prepareKeyForCache(key), language, translation);
+				}
+			}
+		}
 	}
 }

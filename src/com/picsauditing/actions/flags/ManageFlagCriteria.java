@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -114,6 +115,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			criteria.setAuditColumns(permissions);
 
 			criteriaDAO.save(criteria);
+			EntityTranslationHelper.saveRequiredTranslationsForFlagCriteria(criteria, permissions);
 			addActionMessage("Criteria saved successfully.");
 
 			return this.setUrlForRedirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());

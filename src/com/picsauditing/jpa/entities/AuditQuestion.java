@@ -291,6 +291,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeader() {
+		if (columnHeader != null) {
+			return columnHeader;
+		}
+
 		return new TranslatableString(getI18nKey("columnHeader")).toTranslatedString();
 	}
 
@@ -309,6 +313,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getTitle() {
+		if (title != null) {
+			return title;
+		}
+
 		return new TranslatableString(getI18nKey("title")).toTranslatedString();
 	}
 
@@ -344,7 +352,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.riskLevel = risk;
 	}
 
-	// @Deprecated
 	@Column(length = 100)
 	public String getHelpPage() {
 		return helpPage;
@@ -356,6 +363,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getHelpText() {
+		if (helpText != null) {
+			return helpText;
+		}
+
 		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
 	}
 
@@ -365,6 +376,10 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getRequirement() {
+		if (requirement != null) {
+			return requirement;
+		}
+
 		return new TranslatableString(getI18nKey("requirement")).toTranslatedString();
 	}
 
@@ -602,7 +617,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		}
 
 		if (getName() == null) {
-			return "";
+			return Strings.EMPTY_STRING;
 		}
 
 		return getName().toString();

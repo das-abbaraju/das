@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowState;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -111,6 +112,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				}
 
 				workFlowDAO.save(ws);
+				EntityTranslationHelper.saveRequiredTranslationsForWorkflowStep(ws, permissions);
 				return "steps";
 			}
 			// add
@@ -134,6 +136,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setContractorCanEdit(contractorCanEdit);
 				ws.setOperatorCanEdit(operatorCanEdit);
 				dao.save(ws);
+				EntityTranslationHelper.saveRequiredTranslationsForWorkflowState(ws, permissions);
 				workFlow.getStates().add(ws);
 				dao.save(workFlow);
 				return "steps";
@@ -170,6 +173,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				}
 				ws.setNoteRequired(noteRequired);
 				workFlowDAO.save(ws);
+				EntityTranslationHelper.saveRequiredTranslationsForWorkflowStep(ws, permissions);
 				return "steps";
 			}
 			if ("deleteStep".equalsIgnoreCase(button)) {
@@ -209,6 +213,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 				ws.setOperatorCanEdit(operatorCanEdit);
 
 				workFlowDAO.save(ws);
+				EntityTranslationHelper.saveRequiredTranslationsForWorkflowState(ws, permissions);
 
 				return "steps";
 			}

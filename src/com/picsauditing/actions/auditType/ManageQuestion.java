@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,10 +21,12 @@ import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTransformOption;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageQuestion extends ManageCategory implements Preparable {
+
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
@@ -53,7 +54,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	protected void loadParent(int id) {
 		super.load(id);
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		String result = super.execute();
@@ -66,14 +67,16 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	private AuditExtractOption auditExtractOptionForAuditQuestion() {
 		return auditQuestionDAO.findAuditExtractOptionByQuestionId(question.getId());
 	}
-	
+
 	protected void load(AuditQuestion o) {
 		this.question = o;
 		AuditExtractOption extractOption = auditExtractOptionForAuditQuestion();
-		if (question.getRequiredQuestion() != null)
+		if (question.getRequiredQuestion() != null) {
 			requiredQuestionID = question.getRequiredQuestion().getId();
-		if (question.getVisibleQuestion() != null)
+		}
+		if (question.getVisibleQuestion() != null) {
 			visibleQuestionID = question.getVisibleQuestion().getId();
+		}
 		extractOptionDefined = (extractOption != null);
 		if (extractOptionDefined) {
 			stopAt = extractOption.getStopAt().toString();
@@ -81,10 +84,12 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			startingPoint = extractOption.getStartingPoint();
 			collectAsLines = extractOption.isCollectAsLines();
 			stoppingPoint = extractOption.getStoppingPoint();
-			if (startingPoint == null)
+			if (startingPoint == null) {
 				startingPoint = "";
-			if (stoppingPoint == null)
+			}
+			if (stoppingPoint == null) {
 				stoppingPoint = "";
+			}
 		}
 		load(question.getCategory());
 	}
@@ -94,8 +99,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 		super.prepare();
 
 		groupID = getParameter("groupID");
-		if (groupID > 0)
+		if (groupID > 0) {
 			question.setOption(auditOptionValueDAO.findOptionGroup(groupID));
+		}
 	}
 
 	public boolean save() {
@@ -109,7 +115,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				addActionError("Option type is required when 'Multiple Choice' is used as the question type");
 				return false;
 			}
-			
+
 			if (question.getLanguages().isEmpty() && category.getLanguages().size() >= 1) {
 				question.setLanguages(category.getLanguages());
 			}
@@ -120,9 +126,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				return false;
 			}
 
-			if (requiredQuestionID == null || requiredQuestionID == 0)
+			if (requiredQuestionID == null || requiredQuestionID == 0) {
 				question.setRequiredQuestion(null);
-			else {
+			} else {
 				HashSet<Integer> circularRefIds = new HashSet<Integer>();
 				circularRefIds.add(question.getId());
 				if (circularRefIds.contains(requiredQuestionID)) {
@@ -130,7 +136,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 					return false;
 				}
 				circularRefIds.add(requiredQuestionID);
-				
+
 				AuditQuestion requiredQuestion = auditQuestionDAO.find(requiredQuestionID);
 				while (requiredQuestion.getRequiredQuestion() != null) {
 					if (circularRefIds.contains(requiredQuestion.getRequiredQuestion().getId())) {
@@ -139,13 +145,13 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 					}
 					requiredQuestion = requiredQuestion.getRequiredQuestion();
 				}
-				
+
 				question.setRequiredQuestion(auditQuestionDAO.find(requiredQuestionID));
 			}
 
-			if (visibleQuestionID == null || visibleQuestionID == 0)
+			if (visibleQuestionID == null || visibleQuestionID == 0) {
 				question.setVisibleQuestion(null);
-			else {
+			} else {
 				HashSet<Integer> circularRefIds = new HashSet<Integer>();
 				circularRefIds.add(question.getId());
 				if (circularRefIds.contains(visibleQuestionID)) {
@@ -153,7 +159,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 					return false;
 				}
 				circularRefIds.add(visibleQuestionID);
-				
+
 				AuditQuestion requiredQuestion = auditQuestionDAO.find(visibleQuestionID);
 				while (requiredQuestion.getVisibleQuestion() != null) {
 					if (circularRefIds.contains(requiredQuestion.getVisibleQuestion().getId())) {
@@ -162,15 +168,16 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 					}
 					requiredQuestion = requiredQuestion.getVisibleQuestion();
 				}
-				
+
 				question.setVisibleQuestion(auditQuestionDAO.find(visibleQuestionID));
 			}
 
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : category.getQuestions()) {
-					if (sibling.getNumber() > maxID)
+					if (sibling.getNumber() > maxID) {
 						maxID = sibling.getNumber();
+					}
 				}
 				question.setNumber(maxID + 1);
 			}
@@ -181,23 +188,28 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				cal.setTime(new Date());
 				question.setEffectiveDate(cal.getTime());
 			}
-			if (question.getExpirationDate() == null)
+			if (question.getExpirationDate() == null) {
 				question.setExpirationDate(DateBean.getEndOfTime());
+			}
 
-			if (question.getCategory() == null)
+			if (question.getCategory() == null) {
 				question.setCategory(category);
+			}
 
-			if (question.getScoreWeight() > 0)
+			if (question.getScoreWeight() > 0) {
 				question.setRequired(true);
+			}
 
 			manageExtractOption();
 
 			question = auditQuestionDAO.save(question);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 			id = question.getCategory().getId();
 
 			recalculateCategory();
 			return true;
 		}
+
 		return false;
 	}
 
@@ -213,15 +225,17 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			option.setStopAt(ImportStopAt.valueOf(stopAt));
 			option.setStartAtBeginning(startAtBeginning);
 			startingPoint = startingPoint.trim();
-			if (startingPoint.length() == 0)
+			if (startingPoint.length() == 0) {
 				option.setStartingPoint(null);
-			else
+			} else {
 				option.setStartingPoint(startingPoint);
+			}
 			stoppingPoint = stoppingPoint.trim();
-			if (stoppingPoint.length() == 0)
+			if (stoppingPoint.length() == 0) {
 				option.setStoppingPoint(null);
-			else
+			} else {
 				option.setStoppingPoint(stoppingPoint);
+			}
 		} else {
 			if (option != null) {
 				option.setQuestion(null);
@@ -258,21 +272,23 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	@Override
 	protected boolean move() {
 		try {
-			if (targetID == 0)
+			if (targetID == 0) {
 				addActionMessage("Please Select SubCategory to move to");
-			else {
+			} else {
 				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
 				question.setCategory(targetSubCategory);
 				question.setAuditColumns(permissions);
 
 				int number = 0;
 				for (AuditQuestion q : targetSubCategory.getQuestions()) {
-					if (q.getNumber() > number)
+					if (q.getNumber() > number) {
 						number = q.getNumber();
+					}
 				}
 				question.setNumber(number + 1);
 
 				auditQuestionDAO.save(question);
+				EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 				recalculateCategory(question.getCategory());
 				return true;
 			}
@@ -286,21 +302,23 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	@Override
 	protected boolean copy() {
 		try {
-			if (targetID == 0)
+			if (targetID == 0) {
 				addActionMessage("Please Select SubCategory to copy to");
-			else {
+			} else {
 				AuditCategory targetSubCategory = auditCategoryDAO.find(targetID);
 				AuditQuestion copy = new AuditQuestion(question, targetSubCategory);
 				copy.setAuditColumns(permissions);
 
 				int number = 0;
 				for (AuditQuestion q : targetSubCategory.getQuestions()) {
-					if (q.getNumber() > number)
+					if (q.getNumber() > number) {
 						number = q.getNumber();
+					}
 				}
 				copy.setNumber(number + 1);
 
 				question = auditQuestionDAO.save(copy);
+				EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 				recalculateCategory(question.getCategory());
 				return true;
 			}
@@ -363,8 +381,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	}
 
 	public boolean isExtractable() {
-		if (question != null && question.getId() != 0 && question.getAuditType().isExtractable())
+		if (question != null && question.getId() != 0 && question.getAuditType().isExtractable()) {
 			return true;
+		}
 		return false;
 	}
 

@@ -10,6 +10,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -22,8 +23,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits)
 	public String execute() throws Exception {
-		if (group == null)
+		if (group == null) {
 			addActionError("Missing Option Group");
+		}
 
 		return SUCCESS;
 	}
@@ -31,8 +33,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Edit)
 	public String save() throws Exception {
-		if (value.getName() == null)
+		if (value.getName() == null) {
 			addActionError("Missing answer");
+		}
 
 		if (getActionErrors().size() == 0) {
 			if (!Strings.isEmpty(value.getUniqueCode()) && value.getUniqueCode().contains(" ")) {
@@ -43,6 +46,7 @@ public class ManageOptionValue extends ManageOptionComponent {
 			value.setGroup(group);
 			value.setAuditColumns(permissions);
 			auditOptionValueDAO.save(value);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditOptionValue(value, permissions);
 		}
 
 		return SUCCESS;
@@ -53,8 +57,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 	public String delete() throws Exception {
 		List<AuditData> data = auditDataDAO.findByOptionGroupAndValue(group.getId(), value.getIdentifier());
 
-		if (data.size() > 0)
+		if (data.size() > 0) {
 			addActionError("Option value '" + value.getName() + "' is being used in Audit Data");
+		}
 
 		if (getActionErrors().size() == 0) {
 			String valueName = value.getName().toString();
@@ -82,8 +87,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Edit)
 	public String editAjax() throws Exception {
-		if (value == null)
+		if (value == null) {
 			value = new AuditOptionValue();
+		}
 
 		return "edit";
 	}
@@ -99,8 +105,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 	public int getNextNumber() {
 		int number = 0;
 		for (AuditOptionValue value : group.getValues()) {
-			if (number < value.getNumber())
+			if (number < value.getNumber()) {
 				number = value.getNumber();
+			}
 		}
 
 		return number + 1;
@@ -108,6 +115,7 @@ public class ManageOptionValue extends ManageOptionComponent {
 
 	@Override
 	protected void fillSelectedLocales() {
-		// TODO Check if we need to update audit option values to have required languages as well
+		// TODO Check if we need to update audit option values to have required
+		// languages as well
 	}
 }

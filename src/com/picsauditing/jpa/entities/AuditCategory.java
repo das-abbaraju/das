@@ -1,6 +1,11 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +26,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.model.i18n.translation.strategy.EmptyTranslationStrategy;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
@@ -49,21 +55,22 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	public static final int TRANSPORTATION_SAFETY_EVAL = 3251;
 	public static final int SSIP_EVALUATION = 3707;
 	public static final int SSIP = 3732;
-    public static final Comparator<AuditCategory> INSURANCE_POLICY_COMPARATOR = new Comparator<AuditCategory>() {
-        public int compare(AuditCategory o1, AuditCategory o2) {
-            if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
-                if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
-                    return o1.getName().toString().compareTo(o2.getName().toString());
-                }
-                return -1;
-            } else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
-                return 1;
-            }
-            return o1.getName().toString().compareTo(o2.getName().toString());
-        }
-    };
 
-    private AuditType auditType;
+	public static final Comparator<AuditCategory> INSURANCE_POLICY_COMPARATOR = new Comparator<AuditCategory>() {
+		public int compare(AuditCategory o1, AuditCategory o2) {
+			if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
+				if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
+					return o1.getName().toString().compareTo(o2.getName().toString());
+				}
+				return -1;
+			} else if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory()) {
+				return 1;
+			}
+			return o1.getName().toString().compareTo(o2.getName().toString());
+		}
+	};
+
+	private AuditType auditType;
 	private AuditCategory parent;
 	private String name;
 	private int number;
@@ -147,7 +154,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 			return name;
 		}
 
-		return new TranslatableString(getI18nKey("name")).toTranslatedString();
+		return new TranslatableString(getI18nKey("name"), new EmptyTranslationStrategy()).toTranslatedString();
 	}
 
 	public void setName(String name) {
