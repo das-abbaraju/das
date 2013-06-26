@@ -22,8 +22,6 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, AUDIT_OPERATOR);
-		// Let's try to set the categories on the entity fields
-		// spec.category = FieldCategory.Audits;
 
 		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
 		operatorAccount.alias = "AuditOperatorAccount";
@@ -31,11 +29,14 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 
 		ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
 		conAudit.alias = "Audit";
-		// Let's try to set the categories on the entity fields
-		// conAudit.category = FieldCategory.Audits;
 		conAudit.join(ContractorAuditTable.Type);
 		conAudit.join(ContractorAuditTable.Auditor);
 		conAudit.join(ContractorAuditTable.ClosingAuditor);
+
+        ModelSpec previousAudit = conAudit.join(ContractorAuditTable.PreviousAudit);
+        previousAudit.alias = "PreviousAudit";
+        previousAudit.minimumImportance = FieldImportance.Average;
+        previousAudit.category = FieldCategory.DocumentsAndAudits;
 
 		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
 		contractor.alias = "Contractor";

@@ -52,6 +52,12 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PreviousAuditAuditFor
+PreviousAuditEffectiveDate
+PreviousAuditExpiresDate
+PreviousAuditID
+PreviousAuditScore
+PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
 SafetyManualDateVerified
