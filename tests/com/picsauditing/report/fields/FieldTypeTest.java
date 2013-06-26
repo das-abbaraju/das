@@ -31,7 +31,7 @@ public class FieldTypeTest {
 	public void testGetSqlFunctions_SqlFunctionProfile_String() {
 
 		Set<FieldType> fieldTypes = FieldType.getAllBySqlFunctionProfile(SqlFunctionProfile.String);
-		assertEquals(33, fieldTypes.size());
+		assertEquals(34, fieldTypes.size());
 
 		for (FieldType fieldType : fieldTypes) {
 //			System.out.println("Testing fieldType: " + fieldType);
