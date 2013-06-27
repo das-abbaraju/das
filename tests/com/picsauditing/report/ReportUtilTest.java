@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Locale;
 
+import com.picsauditing.access.OpPerms;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -48,16 +49,17 @@ public class ReportUtilTest extends PicsTranslationTest {
 			throws ClassNotFoundException {
 		Permissions permissions = EntityFactory.makePermission();
 
+
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
 		JSONArray results = (JSONArray) json.get("result");
 
 		assertEquals(7, FieldType.AccountStatus.getEnumClass().getEnumConstants().length);
-		assertEquals(5, results.size());
+		assertEquals(1, results.size());
 		assertContains("\"key\":\"Active\"}", json.toJSONString());
-		assertContains("\"key\":\"Pending\"}", json.toJSONString());
-		assertContains("\"key\":\"Requested\"}", json.toJSONString());
-		assertContains("\"key\":\"Deactivated\"}", json.toJSONString());
-		assertContains("\"key\":\"Declined\"}", json.toJSONString());
+        assertNotContains("\"key\":\"Pending\"}", json.toJSONString());
+        assertNotContains("\"key\":\"Requested\"}", json.toJSONString());
+        assertNotContains("\"key\":\"Deactivated\"}", json.toJSONString());
+        assertNotContains("\"key\":\"Declined\"}", json.toJSONString());
 		assertNotContains("\"key\":\"Demo\"}", json.toJSONString());
 		assertNotContains("\"key\":\"Deleted\"}", json.toJSONString());
 	}
@@ -72,12 +74,12 @@ public class ReportUtilTest extends PicsTranslationTest {
 		String format = "{\"value\":\"translation:[AccountStatus.%1$s, " + LanguageModel.ENGLISH.toString() + "]\","
 				+ "\"key\":\"%1$s\"}";
 
-		assertEquals(5, results.size());
+		assertEquals(1, results.size());
 		assertContains(String.format(format, "Active"), json.toJSONString());
-		assertContains(String.format(format, "Pending"), json.toJSONString());
-		assertContains(String.format(format, "Requested"), json.toJSONString());
-		assertContains(String.format(format, "Deactivated"), json.toJSONString());
-		assertContains(String.format(format, "Declined"), json.toJSONString());
+        assertNotContains(String.format(format, "Pending"), json.toJSONString());
+        assertNotContains(String.format(format, "Requested"), json.toJSONString());
+        assertNotContains(String.format(format, "Deactivated"), json.toJSONString());
+        assertNotContains(String.format(format, "Declined"), json.toJSONString());
 	}
 
 	@Test
