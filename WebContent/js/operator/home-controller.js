@@ -1,40 +1,22 @@
 (function ($) {
-    PICS.define('home.HomeController', {
-        methods: {
-            init: function () {
-                if ($('#Home__page').length) {
-                    var that = this;
-
-                    $('.panel_content[data-widget-type=GoogleChart]').each(function (key, value) {
-                        that.loadWidget(this);
-                    });
-                }
-            },
-
-            loadWidget: function (chart_container) {
+    PICS.define('widget.Chart', {
+        methods: (function () {
+            function loadCharts() {
                 var that = this,
-                    $chart_container = $(chart_container),
-                    url = $chart_container.data('url'),
-                    chart_type = $chart_container.data('chart-type'),
-                    style_type = $chart_container.data('style-type') || '';
+                    widget_selector = getWidgetSelectorFromStyleType(that.style_type);
 
-                PICS.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data, textStatus, jqXHR) {
-                        var config = data,
-                            google_data = config.data,
-                            chart = that.getChartByType(chart_type, chart_container),
-                            data_table = new google.visualization.DataTable(google_data),
-                            options = $.extend({}, that.getDefaultChartOptions(), that.getChartOptionsForStyleType(data_table, style_type));
+                $(widget_selector).each(function (key, value) {
+                    var chart_container = this;
 
-                        chart.draw(data_table, options);
-                    }
+                    loadChart.call(that, chart_container);
                 });
-            },
+            }
 
-            getChartByType: function (chart_type, chart_container) {
+            function getWidgetSelectorFromStyleType(style_type) {
+                return '.panel_content[data-widget-type=GoogleChart][data-style-type=' + style_type + ']';
+            }
+
+            function getChartByType (chart_type, chart_container) {
                 switch (chart_type) {
                     case 'Pie':
                         return new google.visualization.PieChart(chart_container);
@@ -45,9 +27,9 @@
                     default:
                         $.error('Invalid chart type: ' + chart_type);
                 }
-            },
+            }
 
-            getDefaultChartOptions: function () {
+            function getDefaultChartOptions() {
                 return {
                     height: 400,
                     colors: [
@@ -65,27 +47,110 @@
                         '#e67e22'
                     ]
                 };
+            }
+
+            function loadChart(chart_container) {
+                var that = this,
+                    $chart_container = $(chart_container),
+                    url = $chart_container.data('url'),
+                    chart_type = $chart_container.data('chart-type');
+
+                PICS.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR) {
+                        var config = data,
+                            google_data = config.data,
+                            chart = getChartByType(chart_type, chart_container),
+                            data_table = new google.visualization.DataTable(google_data),
+                            type_specific_options = (typeof that.getChartOptions == 'function') ? that.getChartOptions(data_table) : {},
+                            options = $.extend({}, getDefaultChartOptions(), type_specific_options);
+
+                        chart.draw(data_table, options);
+                    }
+                });
+            }
+
+            return {
+                loadCharts: loadCharts
+            };
+        }())
+    });
+}(jQuery));
+
+(function ($) {
+    PICS.define('widget.DefaultChart', {
+        extend: 'Chart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'Default';
+
+                this.loadCharts();
             },
 
-            getChartOptionsForStyleType: function (data_table, style_type) {
-                switch (style_type) {
-                    case 'Flags':
-                        return this.getChartOptionsForStyleTypeFlags(data_table);
-                    default:
-                        return {};
-                }
+            getStyleType: function () {
+                return this.style_type;
+            }
+        }
+    });
+}(jQuery));
+
+(function ($) {
+    PICS.define('widget.StackedColumnChart', {
+        extend: 'Chart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'StackedColumn';
+
+                this.loadCharts();
             },
 
-            getChartOptionsForStyleTypeFlags: function (data_table) {
-                var type_color_associations = {
+            getStyleType: function () {
+                return this.style_type;
+            },
+
+            getChartOptions: function (data_table) {
+                var options = {};
+
+                options.isStacked = true;
+
+                return options;
+            }
+        }
+    });
+}(jQuery));
+
+(function ($) {
+    PICS.define('FlagsChart', {
+        extend: 'Chart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'Flags';
+                this.type_color_associations = {
                     'red-flag': '#ac030c',
                     'amber-flag': '#e67e1c',
                     'green-flag': '#229322'
-                };
+                }
 
+                this.loadCharts();
+            },
+
+            getStyleType: function () {
+                return this.style_type;
+            },
+
+            getTypeColorAssociations: function () {
+                return this.type_color_associations;
+            },
+
+            getChartOptions: function (data_table) {
                 var options = {};
 
-                options.colors = this.getColors(data_table, type_color_associations);
+                options.colors = this.getColors(data_table, this.getTypeColorAssociations());
 
                 return options;
             },
