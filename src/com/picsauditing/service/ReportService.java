@@ -306,7 +306,7 @@ public class ReportService {
         ReportDataConverter converter = new ReportDataConverterForCharts(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
         converter.convert(reportContext.user.getTimezone());
-        responseJson.put("data", new ChartWriter(reportResults).toJson());
+        responseJson.put("data", new ChartWriter(reportResults,reportContext.permissions.getLocale()).toJson());
 
 		return responseJson;
 	}

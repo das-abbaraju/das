@@ -1,5 +1,6 @@
 package com.picsauditing.report.data;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.report.fields.DisplayType;
@@ -10,15 +11,21 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class ChartWriter {
     private static final Logger logger = LoggerFactory.getLogger(ChartWriter.class);
 
+    private static I18nCache i18nCache = I18nCache.getInstance();
+
+    private Locale locale;
+
     private ReportResults reportResults;
 
-    public ChartWriter(ReportResults reportResults) {
+    public ChartWriter(ReportResults reportResults, Locale locale) {
         this.reportResults = reportResults;
+        this.locale = locale;
     }
 
     public JSONObject toJson() {
@@ -82,7 +89,7 @@ public class ChartWriter {
 
             for (Column column : reportResults.getColumns()) {
                 ReportCell cell = row.getCellByColumn(column);
-                cellsJson.add(createCellJson(cell));
+                cellsJson.add(createCellJson(cell, column.getField().getPreTranslation(), column.getField().getPostTranslation()));
 
                 if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
                     String p = cell.getValue() + "-flag";
@@ -99,18 +106,28 @@ public class ChartWriter {
         return rowsJson;
     }
 
-    private JSONObject createCellJson(ReportCell cell) {
+    private JSONObject createCellJson(ReportCell cell, String prefix, String suffix) {
         JSONObject json = new JSONObject();
         switch (cell.getColumn().getDisplayType()) {
             case Number:
                 json.put("v", Double.parseDouble(cell.getValue().toString()));
                 break;
             default:
-                json.put("v", cell.getValue());
+                String text = cell.getValue().toString();
+                if (!prefix.isEmpty()) {
+                    text = prefix + "." + text;
+                }
+                if (!suffix.isEmpty()) {
+                    text = text + "." + suffix;
+                }
+                json.put("v", getText(text,locale));
         }
 
         return json;
 
     }
 
+    protected static String getText(String key, Locale locale) {
+        return i18nCache.getText(key, locale);
+    }
 }
