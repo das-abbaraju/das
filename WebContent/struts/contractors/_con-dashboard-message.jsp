@@ -83,19 +83,32 @@
 </s:elseif>
 
 <s:elseif test="#result.contractorNotApprovedExpectSomeSites"> <!--Corporate Not Approved.  Child sites: Approved, Not Approved -->
-    <div class="alert">
-        <p>
-            <s:property value="contractor.name"/>
-			<s:text name="ContractorView.ContractorDashboard.AwaitingApproval"/>
-        </p>
-    </div>
-    <ul class="users-with-permissions">
-        <s:iterator value="#unapproved_sites" var="unapproved_site">
-            <li>
-                <s:property value="#unapproved_site.name"/>
-            </li>
-        </s:iterator>
-    </ul>
+
+	<!-- Show just one client site's data -->
+	<s:if test="#unapproved_sites.size() == 1" >
+		<div class="alert">
+			<p>
+				<s:property value="contractor.name"/>
+				<s:text name="ContractorView.ContractorDashboard.AwaitingApprovalSingle"/>
+			</p>
+		</div>
+	</s:if>
+	<s:else>
+		<div class="alert">
+			<p>
+				<s:property value="contractor.name"/>
+				<s:text name="ContractorView.ContractorDashboard.AwaitingApproval"/>
+			</p>
+		</div>
+		<ul class="users-with-permissions">
+			<s:iterator value="#unapproved_sites" var="unapproved_site">
+				<li>
+					<s:property value="#unapproved_site.name"/>
+				</li>
+			</s:iterator>
+		</ul>
+	</s:else>
+
 </s:elseif>
 
 <s:elseif test="#result.showEverySiteExceptApprovedOnes"> <!--Corporate Approved.  Child sites: Approved, Not Approved -->
