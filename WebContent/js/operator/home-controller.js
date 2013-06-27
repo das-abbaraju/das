@@ -81,7 +81,7 @@
 
 (function ($) {
     PICS.define('widget.DefaultChart', {
-        extend: 'Chart',
+        extend: 'widget.Chart',
 
         methods: {
             init: function () {
@@ -99,7 +99,7 @@
 
 (function ($) {
     PICS.define('widget.StackedColumnChart', {
-        extend: 'Chart',
+        extend: 'widget.Chart',
 
         methods: {
             init: function () {
@@ -124,8 +124,8 @@
 }(jQuery));
 
 (function ($) {
-    PICS.define('FlagsChart', {
-        extend: 'Chart',
+    PICS.define('widget.FlagsChart', {
+        extend: 'widget.Chart',
 
         methods: {
             init: function () {
