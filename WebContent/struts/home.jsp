@@ -54,15 +54,29 @@
         <s:iterator value="columns">
         	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
         		<s:iterator value="value">
-                    <div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
-                        <div class="panel" id="panel<s:property value="widgetID"/>">
-                            <div class="panel_header">
-                            </div>
-                            <div id="panel<s:property value="widgetID"/>_content" class="panel_content"
-                                 data-widget-type="GoogleChart" data-url="js/operator/multi-series.json" data-chart-type="Column" data-style-type="StackedColumn">
-                            </div>
-                        </div>
-                    </div>
+                   <s:if test="widgetID !=19 || permissions.approvesRelationships" >
+                   <s:if test="widgetID != 11 || !permissions.insuranceOnlyContractorUser">
+                       <div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
+                           <div class="panel" id="panel<s:property value="widgetID"/>">
+                               <div class="panel_header">
+                                   <s:if test="!synchronous">
+                                       <a href="#" onclick="<s:property value="reload" escape="false" />; return false;" style="float: right"><img src="images/arrow-360.png" /></a>
+                                   </s:if>
+
+                                   <s:text name="%{'Widget.' + widgetID + '.caption'}" />
+
+                                   <pics:permission perm="DevelopmentEnvironment">
+                                       <a href="<s:property value="url"/>" target="_BLANK" class = "debug">URL</a>
+                                   </pics:permission>
+                               </div>
+                                <div id="panel<s:property value="widgetID"/>_content" class="panel_content"
+                                     data-widget-type="${widgetType}" data-url="${url}" data-chart-type="${googleChartType}" data-style-type="${googleStyleType}">
+                                   <s:property value="content" escape="false" />
+                                </div>
+                           </div>
+                       </div>
+                   </s:if>
+                   </s:if>
         		</s:iterator>
         	</div>
         </s:iterator>
