@@ -1,0 +1,2 @@
+ALTER TABLE report_user
+ADD COLUMN score INT(20) NOT NULL;

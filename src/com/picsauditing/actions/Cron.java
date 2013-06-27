@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.dao.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -36,19 +37,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditType;
@@ -116,6 +104,8 @@ public class Cron extends PicsActionSupport {
 	protected NoteDAO noteDAO;
 	@Autowired
 	protected UserDAO userDAO;
+    @Autowired
+    private ReportDAO reportDAO;
 
 	@Autowired
 	protected AuditBuilder auditBuilder;
@@ -305,6 +295,14 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("Expiring Flag Changes...");
 			expireFlagChanges();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+        try {
+            startTask("Refresh Report Suggestions...");
+            reportDAO.updateReportSuggestions();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
