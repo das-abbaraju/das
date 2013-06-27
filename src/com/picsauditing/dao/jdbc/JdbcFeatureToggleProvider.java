@@ -27,11 +27,13 @@ public class JdbcFeatureToggleProvider implements FeatureToggleProvider {
 		try {
 			List<AppProperty> appProperties = Database.select(FIND_TOGGLE_BY_NAME, toggleName,
 					new GenericQueryMapper<String>(), new AppPropertyRowMapper());
-			return appProperties.get(0).getValue();
-		} catch (SQLException e) {
-			logger.error("Error finding toggle {}", toggleName, e);
+            if (appProperties != null && appProperties.size() > 0) {
+			    return appProperties.get(0).getValue();
+            }
+		} catch (Exception e) {
+			logger.error("Error finding toggle {}: {}", toggleName, e);
 		}
-
+        logger.error("Error finding toggle {}", toggleName);
 		return null;
 	}
 
