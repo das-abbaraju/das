@@ -618,6 +618,16 @@ EmployeeLastName
 EmployeeName
 EmployeeStatus
 
+Model: FlagArchive
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
+FlagArchiveCreationDate
+FlagArchiveFlagColor
+
 Model: ForcedFlags
 Permission: Permissions{permissions=[]}
 ----------------------------------------

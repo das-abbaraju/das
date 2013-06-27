@@ -27,6 +27,7 @@ public class FlagArchiveModel extends AbstractModel {
 
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
+        account.minimumImportance = FieldImportance.Required;
 
 		return spec;
 	}
