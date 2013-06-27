@@ -17,12 +17,12 @@ AccountCountry
 AccountCountryCurrency
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -32,7 +32,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -40,6 +39,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBillingAddress
@@ -49,7 +49,6 @@ ContractorBillingCountrySubdivision
 ContractorBillingZip
 ContractorCcExpiration
 ContractorCcOnFile
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -63,8 +62,6 @@ ContractorMembershipDate
 ContractorMustPay
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
-ContractorPaymentExpires
 ContractorPaymentMethod
 ContractorProductRisk
 ContractorProductRiskVerified
@@ -78,3 +75,6 @@ ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId
 ContractorWatchwatch
+DirectTradeName
+ReportingClient
+TradeName

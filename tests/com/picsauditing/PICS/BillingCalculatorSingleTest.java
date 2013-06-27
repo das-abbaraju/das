@@ -1,10 +1,16 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,13 +22,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -40,9 +46,8 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.billing.InvoiceModel;
-import com.picsauditing.search.Database;
 
-public class BillingCalculatorSingleTest {
+public class BillingCalculatorSingleTest extends PicsTranslationTest {
 	private BillingCalculatorSingle billingService;
 
 	private static Date twoHundredDaysFromNow = DateBean.addDays(new Date(), 200);
@@ -53,8 +58,6 @@ public class BillingCalculatorSingleTest {
 	private Country country;
 	private BigDecimal invoiceTotal;
 
-	@Mock
-	private Database databaseForTesting;
 	@Mock
 	private ContractorAccount contractor;
 	@Mock
@@ -84,15 +87,9 @@ public class BillingCalculatorSingleTest {
 	@Mock
 	private AuditDataDAO auditDataDAO;
 
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
-	}
-
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
 		billingService = new BillingCalculatorSingle();
 		Whitebox.setInternalState(billingService, "taxService", taxService);
@@ -100,7 +97,7 @@ public class BillingCalculatorSingleTest {
 		Whitebox.setInternalState(billingService, "invoiceModel", invoiceModel);
 		Whitebox.setInternalState(billingService, "auditDataDAO", auditDataDAO);
 
-		assert(OAMocksSet.isEmpty());
+		assert (OAMocksSet.isEmpty());
 
 		setupInvoiceAndItems();
 		setupStandardFees();
@@ -118,7 +115,8 @@ public class BillingCalculatorSingleTest {
 
 	private void setupStandardFees() {
 		fees = new HashMap<FeeClass, ContractorFee>();
-		// all contractors have bid only and list only fees, they may just be hidden and $0
+		// all contractors have bid only and list only fees, they may just be
+		// hidden and $0
 		fees.put(FeeClass.BidOnly, bidOnlyFee);
 		fees.put(FeeClass.ListOnly, listOnlyFee);
 		when(bidOnlyFee.getCurrentLevel()).thenReturn(bidOnlyInvoiceFee);
@@ -158,7 +156,6 @@ public class BillingCalculatorSingleTest {
 		}
 	}
 
-
 	@Test
 	public void testCalculateInvoiceTotal() throws Exception {
 		InvoiceItem anotherItem = mock(InvoiceItem.class);
@@ -190,7 +187,6 @@ public class BillingCalculatorSingleTest {
 
 		verify(contractor).setRenew(true);
 	}
-
 
 	@Test
 	public void testCreateInvoiceWithItems_Activation_InvoiceDueDateSetAsExpected() throws Exception {
@@ -329,7 +325,8 @@ public class BillingCalculatorSingleTest {
 		setupCreateInvoiceWithItemsTestsCommon();
 		// this will skip an activation fee
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
-		// currently this will result in zero invoice items which will be a zero dollar invoice
+		// currently this will result in zero invoice items which will be a zero
+		// dollar invoice
 		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
 
 		Invoice invoice = billingService.createInvoice(contractor, contractor.getBillingStatus(), user);
@@ -415,10 +412,10 @@ public class BillingCalculatorSingleTest {
 		assertTrue(welder.getPayingFacilities() == 4);
 	}
 
-
-
-	@Mock OperatorAccount mockOA1;
-	@Mock OperatorAccount mockOA2;
+	@Mock
+	OperatorAccount mockOA1;
+	@Mock
+	OperatorAccount mockOA2;
 	Set<OperatorAccount> OAMocksSet = new HashSet<OperatorAccount>();
 
 	@After
@@ -427,7 +424,7 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
-	public void InsureGuardQualificationTest_yes () {
+	public void InsureGuardQualificationTest_yes() {
 		OAMocksSet.add(mockOA1);
 		OAMocksSet.add(mockOA2);
 		when(mockOA1.getId()).thenReturn(333);
@@ -436,7 +433,7 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
-	public void InsureGuardQualificationTest_no () {
+	public void InsureGuardQualificationTest_no() {
 		OAMocksSet.add(mockOA1);
 		OAMocksSet.add(mockOA2);
 		when(mockOA1.getId()).thenReturn(OperatorAccount.AI);
@@ -445,7 +442,7 @@ public class BillingCalculatorSingleTest {
 	}
 
 	@Test
-	public void InsureGuardQualificationTest_no2 () {
+	public void InsureGuardQualificationTest_no2() {
 		OAMocksSet.add(mockOA1);
 		OAMocksSet.add(mockOA2);
 		when(mockOA1.getId()).thenReturn(333);
@@ -453,9 +450,9 @@ public class BillingCalculatorSingleTest {
 		assertTrue(billingService.qualifiesForInsureGuard(OAMocksSet));
 	}
 
-	//Test for PICS-6344
+	// Test for PICS-6344
 	@Test
-	public void InsureGuardQualificationTest_checkParentage () {
+	public void InsureGuardQualificationTest_checkParentage() {
 		OperatorAccount oa = new OperatorAccount();
 		oa.setId(19427);
 		oa.setParent(mockOA2);

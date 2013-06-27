@@ -80,7 +80,7 @@
 			</div>
 		</pics:permission>
 		
-		<s:if test="#category.helpText.exists">
+		<s:if test="#category.helpText != null && !#category.helpText.equals(#category.getI18nKey('helpText')) && !#category.helpText.equals('')">
 			<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 		</s:if>
 		
@@ -104,7 +104,7 @@
 							<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 							
 							<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
-								<s:if test="#q.title != null && #q.title.exists && !#hidden">
+								<s:if test="#q.title != null && !#q.title.equals('') && !#q.title.equals(#q.getI18nKey('title')) && !#hidden">
 									<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
 										<s:property value="#q.title" escape="false"/>
 									</h4>

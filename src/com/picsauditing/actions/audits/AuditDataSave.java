@@ -1,29 +1,27 @@
 package com.picsauditing.actions.audits;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.persistence.NoResultException;
-
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.rbic.InsuranceCriteriaDisplay;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.events.AuditDataSaveEvent;
+import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.NoResultException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class AuditDataSave extends AuditActionSupport {
 
@@ -68,12 +66,15 @@ public class AuditDataSave extends AuditActionSupport {
 			if (auditData != null && auditData.getId() > 0) {
 				databaseCopy = auditDataDAO.find(auditData.getId());
 			} else {
-				if (auditData == null)
+				if (auditData == null) {
 					throw new Exception("Missing Audit Data");
-				if (auditData.getAudit() == null)
+				}
+				if (auditData.getAudit() == null) {
 					throw new Exception("Missing Audit");
-				if (auditData.getQuestion() == null)
+				}
+				if (auditData.getQuestion() == null) {
 					throw new Exception("Missing Question");
+				}
 				databaseCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
 						.getId());
 			}
@@ -146,11 +147,13 @@ public class AuditDataSave extends AuditActionSupport {
 			checkNaicsQuestionAndValidity(currentQuestionId);
 
 			if (auditData.getAnswer() != null && !auditData.getAnswer().isEmpty()) {
-				if (!areAllHSEJobRoleQuestionsAnswered(currentQuestionId, auditData.getAudit().getContractorAccount()))
+				if (!areAllHSEJobRoleQuestionsAnswered(currentQuestionId, auditData.getAudit().getContractorAccount())) {
 					return SUCCESS;
+				}
 			}
 
 			auditDataDAO.save(auditData);
+			auditDataDAO.refresh(auditData); // needed for PICS-11673
 
 			if (conAudit == null) {
 				findConAudit();
@@ -169,8 +172,9 @@ public class AuditDataSave extends AuditActionSupport {
 				ContractorAudit tempAudit = null;
 				if (!auditDao.isContained(auditData.getAudit())) {
 					tempAudit = conAudit;
-				} else
+				} else {
 					tempAudit = auditData.getAudit();
+				}
 
 				ContractorAccount contractor = tempAudit.getContractorAccount();
 				contractor.incrementRecalculation();
@@ -190,6 +194,7 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
+
 				contractorAccountDao.save(contractor);
 
 				AuditQuestion checkRecalculateCategories = questionDao.find(currentQuestionId);
@@ -200,12 +205,14 @@ public class AuditDataSave extends AuditActionSupport {
 
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 
-				if ((tempAudit.getAuditType().isAnnualAddendum() || tempAudit.getAuditType().getClassType().isPolicy()) && !toggleVerify && !commentChanged) {
+				if ((tempAudit.getAuditType().isAnnualAddendum() || tempAudit.getAuditType().getClassType().isPolicy())
+						&& !toggleVerify && !commentChanged) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
 						Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
+						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 							operators.add(caop.getOperator());
+						}
 						builder.calculate(auditData.getAudit(), operators);
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
@@ -224,8 +231,9 @@ public class AuditDataSave extends AuditActionSupport {
 							break;
 						}
 					}
-					if (updateAudit)
+					if (updateAudit) {
 						auditDao.save(tempAudit);
+					}
 				}
 
 				if (tempAudit.getAuditType().getId() == AuditType.COR) {
@@ -252,23 +260,27 @@ public class AuditDataSave extends AuditActionSupport {
 				catData.setOverride(false);
 				catData.setAuditColumns(new User(User.SYSTEM));
 
-				catDataDao.save(catData);
+				try {
+					catDataDao.save(catData);
 
-				// Need to refresh the auditData to query up the required
-				// questions off of it
-				auditData = auditDataDAO.find(auditData.getId());
+					// Need to refresh the auditData to query up the required
+					// questions off of it
+					auditData = auditDataDAO.find(auditData.getId());
 
-				loadAnswerMap();
+					loadAnswerMap();
+				} catch (Exception x) {
+					throw new Exception("Error saving category. Please refresh the page and try again.");
+				}
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			addActionError(e.getMessage());
 			return BLANK;
 		}
 
-		if (conAudit == null)
+		if (conAudit == null) {
 			findConAudit();
+		}
 
 		if (toggleVerify) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
@@ -287,11 +299,12 @@ public class AuditDataSave extends AuditActionSupport {
 
 			// refresh auditData since it might be not a complete representation
 			// this is okay at this time because auditData has a valid id
-			// and setting the question will not conflict with database key contraints
+			// and setting the question will not conflict with database key
+			// contraints
 			auditData = auditDataDAO.find(auditData.getId());
 			AuditQuestion auditDataQuestion = questionDao.find(auditData.getQuestion().getId());
 			auditData.setQuestion(auditDataQuestion);
-			
+
 			if (checkDependentQuestions() || checkOtherRules()) {
 				auditBuilder.recalculateCategories(conAudit);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
@@ -300,8 +313,9 @@ public class AuditDataSave extends AuditActionSupport {
 				auditPercentCalculator.updatePercentageCompleted(catData);
 				catData.setAuditColumns();
 				auditDao.save(catData);
-			} else
+			} else {
 				addActionError("Error saving answer, please try again.");
+			}
 		}
 		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
@@ -356,8 +370,8 @@ public class AuditDataSave extends AuditActionSupport {
 			newCopy.setAuditor(null);
 		}
 
-		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) &&
-				(permissions.isPicsEmployee() || permissions.hasPermission(OpPerms.AuditEdit))) {
+		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)
+				&& (permissions.isPicsEmployee() || permissions.hasPermission(OpPerms.AuditEdit))) {
 			newCopy.setWasChanged(YesNo.Yes);
 		}
 
@@ -366,16 +380,18 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private boolean hasAnswerChanged(AuditData newCopy) {
 		if (auditData.getAnswer() != null) {
-			if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
+			if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private boolean hasCommentChanged(AuditData newCopy) {
 		if (auditData.getComment() != null) {
-			if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
+			if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment())) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -482,8 +498,9 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("expirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
 			Date expiresDate = DateBean.setToEndOfDay(DateBean.parseDate(auditData.getAnswer()));
-			if (!DateBean.isNullDate(expiresDate))
+			if (!DateBean.isNullDate(expiresDate)) {
 				tempAudit.setExpiresDate(expiresDate);
+			}
 			// In case the answer is not a valid date we add 1 year
 			if (tempAudit.getExpiresDate() == null) {
 				tempAudit.setExpiresDate(DateBean.setToEndOfDay(DateBean.addMonths(tempAudit.getCreationDate(), 12)));
@@ -493,8 +510,9 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
 			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
-			if (!DateBean.isNullDate(expiresDate))
+			if (!DateBean.isNullDate(expiresDate)) {
 				tempAudit.setExpiresDate(expiresDate);
+			}
 			// In case the answer is not a valid date we add 1 year
 			// to the policy's creation date.
 			if (tempAudit.getExpiresDate() == null) {
@@ -522,8 +540,9 @@ public class AuditDataSave extends AuditActionSupport {
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
 			int monthsToExpire = 12;
 			Integer specifiedMonthsToExpire = tempAudit.getAuditType().getMonthsToExpire();
-			if (specifiedMonthsToExpire != null)
+			if (specifiedMonthsToExpire != null) {
 				monthsToExpire = specifiedMonthsToExpire.intValue();
+			}
 
 			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
 			if (!DateBean.isNullDate(expiresDate)) {
@@ -568,8 +587,9 @@ public class AuditDataSave extends AuditActionSupport {
 	 */
 	private boolean checkOtherRules() {
 		for (AuditCategoryRule acr : auditRuleDAO.findCategoryRulesByQuestion(auditData.getQuestion().getId())) {
-			if (acr.isMatchingAnswer(auditData))
+			if (acr.isMatchingAnswer(auditData)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -580,8 +600,9 @@ public class AuditDataSave extends AuditActionSupport {
 	 */
 	private boolean checkDependentQuestions() {
 		for (AuditQuestion aq : auditData.getQuestion().getDependentQuestions()) {
-			if (aq.getCategory() != auditData.getQuestion().getCategory())
+			if (aq.getCategory() != auditData.getQuestion().getCategory()) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -673,27 +694,27 @@ public class AuditDataSave extends AuditActionSupport {
 
 		if (databaseCopy == null) {
 			databaseCopy = auditData;
-            databaseCopy.setQuestion(questionDao.find(databaseCopy.getQuestion().getId()));
+			databaseCopy.setQuestion(questionDao.find(databaseCopy.getQuestion().getId()));
 		}
 
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		AuditQuestion question = databaseCopy.getQuestion();
 		String answer = auditData.getAnswer();
 
-        if ("ESignature".equals(questionType)) {
+		if ("ESignature".equals(questionType)) {
 			if (eSignatureName == null && eSignatureTitle == null) {
 				setESignatureData(answer);
 			}
 
-	        if ("Verify".equals(mode)) {
+			if ("Verify".equals(mode)) {
 				setESignatureData(databaseCopy.getAnswer());
-	        }
+			}
 
-            if (eSignatureName == null && eSignatureTitle == null) {
-                auditData.setAnswer("");
-                auditData.setComment("");
-                return true;
-            }
+			if (eSignatureName == null && eSignatureTitle == null) {
+				auditData.setAnswer("");
+				auditData.setComment("");
+				return true;
+			}
 
 			if (Strings.isEmpty(eSignatureName)) {
 				addActionError(getText("AuditData.ESignature.name.missing"));
@@ -712,12 +733,12 @@ public class AuditDataSave extends AuditActionSupport {
 			auditData.setComment(getIP());
 		}
 
-        // Null or blank answers are always OK
-        if (Strings.isEmpty(answer)) {
-            return true;
-        }
+		// Null or blank answers are always OK
+		if (Strings.isEmpty(answer)) {
+			return true;
+		}
 
-        if ("Tagit".equals(questionType) && "[]".equals(answer)) {
+		if ("Tagit".equals(questionType) && "[]".equals(answer)) {
 			auditData.setAnswer("");
 			return true;
 		}
@@ -726,14 +747,16 @@ public class AuditDataSave extends AuditActionSupport {
 			return isDateValid(auditData);
 		}
 
-		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType) || "Percent".equals(questionType)) {
+		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)
+				|| "Percent".equals(questionType)) {
 			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
 
 			boolean hasBadChar = false;
 			for (int i = 0; i < answer.length(); i++) {
 				char c = answer.charAt(i);
-				if (!Character.isDigit(c) && (c != '.') && (c != '-'))
+				if (!Character.isDigit(c) && (c != '.') && (c != '-')) {
 					hasBadChar = true;
+				}
 			}
 
 			if (hasBadChar) {
@@ -773,8 +796,9 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Check Box".equals(questionType)) {
-			if (answer.equals("false"))
+			if (answer.equals("false")) {
 				auditData.setAnswer("");
+			}
 		}
 
 		return true;
@@ -786,7 +810,8 @@ public class AuditDataSave extends AuditActionSupport {
 				return true;
 			}
 		}
-		return false;  //To change body of created methods use File | Settings | File Templates.
+		return false; // To change body of created methods use File | Settings |
+						// File Templates.
 	}
 
 	private void setESignatureData(String response) {
@@ -799,10 +824,11 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	private boolean isDateValid(AuditData auditData) {
-		if (auditData.getAnswer() == null || auditData.getAnswer().equals(""))
+		if (auditData.getAnswer() == null || auditData.getAnswer().equals("")) {
 			return true;
-		
-		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode()) 
+		}
+
+		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
 				|| "policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())) {
 			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			Date enteredDate = null;
@@ -813,13 +839,13 @@ public class AuditDataSave extends AuditActionSupport {
 				df = new SimpleDateFormat("yyyy-MM-dd");
 				df.setLenient(true);
 				try {
-				enteredDate = df.parse(auditData.getAnswer());
+					enteredDate = df.parse(auditData.getAnswer());
 				} catch (Exception second) {
 					addActionError(getText("Audit.message.InvalidDate"));
 					return false;
 				}
 			}
-			
+
 			if (DateBean.getYearFromDate(enteredDate) < 2001) {
 				addActionError(getText("Audit.message.InvalidDate"));
 				return false;
@@ -865,17 +891,20 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private boolean isValidNAICScode(String code) {
 		Naics naics = naicsDAO.find(code);
-		if (naics != null)
+		if (naics != null) {
 			return true;
+		}
 		return false;
 	}
 
 	private String guessNaicsCode(String naics) {
-		if (Strings.isEmpty(naics))
+		if (Strings.isEmpty(naics)) {
 			return "0";
+		}
 
-		if (isValidNAICScode(naics))
+		if (isValidNAICScode(naics)) {
 			return naics;
+		}
 
 		return guessNaicsCode(naics.substring(0, naics.length() - 1));
 	}
@@ -895,7 +924,8 @@ public class AuditDataSave extends AuditActionSupport {
 	public void setESignatureTitle(String eSignatureTitle) {
 		this.eSignatureTitle = eSignatureTitle;
 	}
-    public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
-        return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
-    }
+
+	public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
+		return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
+	}
 }

@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -17,7 +18,8 @@ import com.picsauditing.util.Strings;
 @Table(name = "audit_option_value")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditOptionValue extends BaseTable {
-	private TranslatableString name;
+
+	private String name;
 	private AuditOptionGroup group;
 	private boolean visible = true;
 	private int number = 0;
@@ -25,11 +27,15 @@ public class AuditOptionValue extends BaseTable {
 	private int score = 0;
 
 	@Transient
-	public TranslatableString getName() {
-		return name;
+	public String getName() {
+		if (name != null) {
+			return name;
+		}
+
+		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -82,15 +88,17 @@ public class AuditOptionValue extends BaseTable {
 
 	@Transient
 	public float getScorePercent() {
-		if (group.getMaxScore() == 0)
+		if (group.getMaxScore() == 0) {
 			return 0;
+		}
 		return (((float) score) / group.getMaxScore());
 	}
 
 	@Transient
 	public String getIdentifier() {
-		if (!Strings.isEmpty(uniqueCode))
+		if (!Strings.isEmpty(uniqueCode)) {
 			return uniqueCode;
+		}
 		return id + "";
 	}
 
@@ -98,8 +106,9 @@ public class AuditOptionValue extends BaseTable {
 	@Transient
 	public String getI18nKey() {
 		if (!Strings.isEmpty(group.getUniqueCode())) {
-			if (group.getUniqueCode().equals("Country") || group.getUniqueCode().equals("CountrySubdivision"))
+			if (group.getUniqueCode().equals("Country") || group.getUniqueCode().equals("CountrySubdivision")) {
 				return group.getUniqueCode() + "." + getIdentifier();
+			}
 		}
 
 		return group.getI18nKey() + "." + getIdentifier();
@@ -108,8 +117,9 @@ public class AuditOptionValue extends BaseTable {
 	@Override
 	@Transient
 	public String getI18nKey(String property) {
-		if (property != null && !property.isEmpty() && property.equals("name"))
+		if (property != null && !property.isEmpty() && property.equals("name")) {
 			return getI18nKey();
+		}
 
 		return super.getI18nKey(property);
 	}
@@ -117,6 +127,6 @@ public class AuditOptionValue extends BaseTable {
 	@Override
 	@Transient
 	public String getAutocompleteResult() {
-		return name.toString();
+		return getName();
 	}
 }

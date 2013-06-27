@@ -29,6 +29,7 @@ public enum SqlFunctionGroup {
 		add(SqlFunction.WeekDay);
 		add(SqlFunction.Hour);
 		add(SqlFunction.Date);
+        add(SqlFunction.DaysFromNow);
 	}});
 
 	private HashSet<SqlFunction> sqlFunctions;

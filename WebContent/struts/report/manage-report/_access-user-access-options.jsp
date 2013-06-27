@@ -32,7 +32,7 @@
     </button>
     
     <ul class="dropdown-menu">
-        <s:if test="currentUserOwner">
+        <s:if test="canTransferOwnership">
         
             <li class="owner">
                 <a href="${transfer_ownership_url}" data-report-id="${reportId}"><i class="icon-key"></i> <s:text name="ManageReports.access.dropDown.owner" /></a>

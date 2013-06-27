@@ -255,7 +255,8 @@ public class VerifyView extends ContractorActionSupport {
 			emailBuilder.setTemplate(emailTemplate);
 		}
 		EmailQueue email = emailBuilder.build();
-		email.setViewableById(Account.EVERYONE);
+		email.setSubjectViewableById(Account.EVERYONE);
+		email.setBodyViewableById(Account.EVERYONE);
 		emailSender.send(email);
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);

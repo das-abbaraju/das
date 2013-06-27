@@ -1,35 +1,26 @@
 package com.picsauditing.util.excel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.search.Database;
+import com.picsauditing.PicsTranslationTest;
 
-public class ExcelSheetTest {
+public class ExcelSheetTest extends PicsTranslationTest {
+
 	private ExcelSheet excelSheet;
-
-	@Mock private Database databaseForTesting;
-	
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
-	}
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		super.resetTranslationService();
 
 		excelSheet = new ExcelSheet();
 	}
-	
+
 	@Test
 	public void testDisplayOrder() {
 		excelSheet.addColumn(new ExcelColumn("first")); // order 10

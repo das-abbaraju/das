@@ -3,6 +3,7 @@ package com.picsauditing.service;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.dao.ReportDAO;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,17 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
 
     @Autowired
     private ReportUserDAO reportUserDAO;
+    @Autowired
+    private ReportDAO reportDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(ReportInfoProvider.class);
 
-    public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
-        return reportUserDAO.findTenMostFavoritedReports(permissions);
+    public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions, int size) {
+        return reportUserDAO.findTenMostFavoritedReports(permissions, size);
+    }
+
+    public List<ReportInfo> findReportSuggestions(Permissions permissions) {
+        return reportDAO.findReportSuggestions(permissions);
     }
 
     @Override

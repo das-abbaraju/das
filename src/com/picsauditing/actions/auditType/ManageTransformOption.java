@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.importpqf.ImportComparison;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditTransformOption;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -21,8 +22,9 @@ public class ManageTransformOption extends ManageQuestion {
 		// load(question.getCategory());
 
 		String[] ids = (String[]) ActionContext.getContext().getParameters().get("transformId");
-		if (ids != null && ids.length > 0)
+		if (ids != null && ids.length > 0) {
 			transformId = Integer.parseInt(ids[0]);
+		}
 
 		for (AuditTransformOption op : question.getTransformOptions()) {
 			if (op.getId() == transformId) {
@@ -126,6 +128,7 @@ public class ManageTransformOption extends ManageQuestion {
 			origOption.copy(option);
 		}
 		question = auditQuestionDAO.save(question);
+		EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 
 		try {
 			setUrlForRedirect("ManageQuestion.action?id=" + question.getId());
@@ -140,6 +143,7 @@ public class ManageTransformOption extends ManageQuestion {
 			dao.remove(origOption);
 			question.getTransformOptions().remove(origOption);
 			question = auditQuestionDAO.save(question);
+			EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 			try {
 				setUrlForRedirect("ManageQuestion.action?id=" + question.getId());
 			} catch (Exception x) {
@@ -152,8 +156,9 @@ public class ManageTransformOption extends ManageQuestion {
 	private boolean validateMappingOption() {
 		option.setAnswerMapOptions(nullOnEmpty(option.getAnswerMapOptions()));
 
-		if (Strings.isEmpty(option.getAnswerMapOptions()))
+		if (Strings.isEmpty(option.getAnswerMapOptions())) {
 			return true;
+		}
 
 		int count = 0;
 		String sanitizedMapping = "";
@@ -162,8 +167,9 @@ public class ManageTransformOption extends ManageQuestion {
 		for (String value : values) {
 			if (value.length() > 0) {
 				count++;
-				if (sanitizedMapping.length() > 0)
+				if (sanitizedMapping.length() > 0) {
 					sanitizedMapping += ",";
+				}
 				sanitizedMapping += value;
 			}
 		}
@@ -194,8 +200,9 @@ public class ManageTransformOption extends ManageQuestion {
 		String questions = "";
 		String[] values = option.getComparisonQuestions().split("[, ]");
 		for (String value : values) {
-			if (value.length() == 0)
+			if (value.length() == 0) {
 				continue;
+			}
 			int compareId = Integer.parseInt(value);
 			AuditQuestion compareQuestion = auditQuestionDAO.find(compareId);
 			if (compareQuestion == null
@@ -204,8 +211,9 @@ public class ManageTransformOption extends ManageQuestion {
 				addActionError("Invalid Comparison Question ID list.  You must specify a question ID from this audit for comparison.");
 				return false;
 			}
-			if (questions.length() > 0)
+			if (questions.length() > 0) {
 				questions += ",";
+			}
 			questions += value;
 		}
 
@@ -220,8 +228,9 @@ public class ManageTransformOption extends ManageQuestion {
 	}
 
 	private String nullOnEmpty(String value) {
-		if (Strings.isEmpty(value))
+		if (Strings.isEmpty(value)) {
 			return null;
+		}
 		return value.trim();
 	}
 
@@ -270,8 +279,9 @@ public class ManageTransformOption extends ManageQuestion {
 	}
 
 	public int getDecimalPlaces() {
-		if (option.getDecimalPlaces() < 0)
+		if (option.getDecimalPlaces() < 0) {
 			return 0;
+		}
 
 		return option.getDecimalPlaces();
 	}
@@ -289,8 +299,9 @@ public class ManageTransformOption extends ManageQuestion {
 	}
 
 	public float getLevel() {
-		if (option.getLevel() < 0)
+		if (option.getLevel() < 0) {
 			return 0f;
+		}
 
 		return option.getLevel();
 	}

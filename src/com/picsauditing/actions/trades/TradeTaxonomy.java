@@ -23,6 +23,7 @@ import com.picsauditing.dao.TradeAlternateDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.TradeAlternate;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Node;
@@ -118,6 +119,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 				tradeDAO.save(trade);
 			}
 
+			EntityTranslationHelper.saveRequiredTranslationsForTrade(trade, permissions);
 		}
 
 		return "edit";
@@ -126,8 +128,9 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Delete)
 	public String deleteTradeAjax() throws Exception {
 		if (trade != null) {
-			if (deleteTrade(trade))
+			if (deleteTrade(trade)) {
 				trade = null;
+			}
 		}
 
 		return "edit";
@@ -138,8 +141,9 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public String deleteMultipleJson() {
 		boolean success = true;
 		for (Trade t : trades) {
-			if (!deleteTrade(t))
+			if (!deleteTrade(t)) {
 				success = false;
+			}
 		}
 
 		json.put("success", success);
@@ -152,10 +156,11 @@ public class TradeTaxonomy extends PicsActionSupport {
 			trade = new Trade();
 		}
 
-		if (permissions.hasPermission(OpPerms.ManageTrades, OpType.Edit))
+		if (permissions.hasPermission(OpPerms.ManageTrades, OpType.Edit)) {
 			return "edit";
-		else
+		} else {
 			return "view";
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -187,11 +192,12 @@ public class TradeTaxonomy extends PicsActionSupport {
 		}
 
 		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName, alternateCategory);
-		if (trade.getAlternates().contains(tradeAlternate))
+		if (trade.getAlternates().contains(tradeAlternate)) {
 			addActionError(getText("TradeTaxonomy.error.NeedAlternateCategory"));
-		else {
+		} else {
 			trade.getAlternates().add(tradeAlternate);
 			tradeDAO.save(trade);
+			EntityTranslationHelper.saveRequiredTranslationsForTrade(trade, permissions);
 		}
 
 		return "alternate";
@@ -210,6 +216,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 			trade.setImageExtension(null);
 			trade.setAuditColumns(permissions);
 			tradeDAO.save(trade);
+			EntityTranslationHelper.saveRequiredTranslationsForTrade(trade, permissions);
 		}
 
 		return "edit";
@@ -227,7 +234,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	private boolean deleteTrade(Trade trade) {
 		if (Objects.equal(trade, Trade.TOP)) {
 			/*
-			 * This is a sanity check. It should never happen as there is nothing in the UI to allow it.
+			 * This is a sanity check. It should never happen as there is
+			 * nothing in the UI to allow it.
 			 */
 			addActionError(getText("TradeTaxonomy.error.CannotDeleteTopNode"));
 			return false;
@@ -247,10 +255,11 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 			List<TradeAlternate> alternates = tradeAlternateDAO.findByTrade(trade.getId());
 			for (TradeAlternate ta : alternates) {
-				if (hasAlternate(ta, parent))
+				if (hasAlternate(ta, parent)) {
 					trade.getAlternates().remove(ta);
-				else
+				} else {
 					ta.setTrade(parent);
+				}
 			}
 
 			tradeDAO.refresh(parent);
@@ -353,8 +362,9 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public boolean hasAlternate(TradeAlternate tradeAlternate, Trade parent) {
 		boolean result = false;
 		for (TradeAlternate ta : parent.getAlternates()) {
-			if (ta.getName().equals(tradeAlternate.getName()))
+			if (ta.getName().equals(tradeAlternate.getName())) {
 				result = true;
+			}
 		}
 		return result;
 	}
@@ -362,7 +372,8 @@ public class TradeTaxonomy extends PicsActionSupport {
 	public List<Trade> getTradeClassification() {
 		List<Trade> list = tradeDAO.findListByTrade(trade.getId(), -1);
 		/*
-		 * TODO: This is the only instance I have found to exclude TOP. Find out if the other usages need changing.
+		 * TODO: This is the only instance I have found to exclude TOP. Find out
+		 * if the other usages need changing.
 		 */
 		list.remove(Trade.TOP);
 

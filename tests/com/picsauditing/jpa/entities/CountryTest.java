@@ -1,12 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CountryTest {
 	Country usa;
@@ -21,15 +23,13 @@ public class CountryTest {
 	public void setUp() throws Exception {
 		usa = new Country("US");
 		usa.english = "United States";
-		// TODO this is barely scratching the surface, e.g. it's not filling in
-		// name, which is a TranslatableString, etc.
-
 		france = new Country("FR");
 		canada = new Country("CA");
 		uk = new Country("GB");
 		uae = new Country("AE");
 
-		// See http://tickets.picsauditing.com/browse/PICS-6555?focusedCommentId=34012&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-34012
+		// See
+		// http://tickets.picsauditing.com/browse/PICS-6555?focusedCommentId=34012&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-34012
 		austria = new Country("AT");
 		lithuania = new Country("LT");
 	}
@@ -48,7 +48,6 @@ public class CountryTest {
 	public void testToString() {
 		// TODO this is barely scratching the surface
 		assertEquals("United States", usa.toString());
-		usa.name = null;
 		assertEquals("United States", usa.toString());
 		usa.english = null;
 		assertEquals("US", usa.toString());

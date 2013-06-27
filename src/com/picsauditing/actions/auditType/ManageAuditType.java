@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.models.audits.TranslationKeysGenerator;
 import com.picsauditing.util.Strings;
 
@@ -51,7 +52,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected List<WorkflowStep> steps;
 
 	private List<AuditType> auditTypes = null;
-	
+
 	private List<String> assigneeLabels = null;
 
 	@Autowired
@@ -123,16 +124,18 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 
 		if ("AddNew".equals(button)) {
-			if (category == null)
+			if (category == null) {
 				category = new AuditCategory();
+			}
 
 			if (question != null && category != null && category.getId() > 0) {
 				question.setCategory(category);
 				addUserPreferredLanguage(question);
 			}
 
-			if (auditType != null && auditType.getId() > 0)
+			if (auditType != null && auditType.getId() > 0) {
 				category.setAuditType(auditType);
+			}
 
 			addUserPreferredLanguage(category);
 
@@ -151,22 +154,23 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 					i++;
 				}
 			}
-			if (renumbered)
+			if (renumbered) {
 				addAlertMessage("The categories were not correctly numbered from 1-n, so they were auto renumbered.");
+			}
 			return SUCCESS;
 		}
 
 		return "top";
 	}
-	
+
 	public String findTranslations() throws IOException {
 		Set<String> usedKeys = translationKeysGenerator.generateAuditTypeKeys(auditType);
 
 		populateSessionVariablesForManageTranslationsRedirect(usedKeys);
-		
+
 		return setUrlForRedirect("ManageTranslations.action");
 	}
-	
+
 	protected void populateSessionVariablesForManageTranslationsRedirect(Set<String> usedKeys) {
 		Map<String, Object> session = ActionContext.getContext().getSession();
 		session.put("usedI18nKeys", usedKeys);
@@ -210,8 +214,9 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 	public boolean save() {
 		try {
-			if (auditType == null)
+			if (auditType == null) {
 				return false;
+			}
 			if (auditType.getName() == null || auditType.getName().toString().length() == 0) {
 				addActionError("Audit name is required");
 				return false;
@@ -219,15 +224,18 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (!Strings.isEmpty(operatorID)) {
 				auditType.setAccount(new Account());
 				auditType.getAccount().setId(Integer.parseInt(operatorID));
-			} else
+			} else {
 				auditType.setAccount(null);
+			}
 
 			if (editPerm != null && !editPerm.isEmpty()) {
 				auditType.setEditPermission(OpPerms.valueOf(editPerm));
-			} else
+			} else {
 				auditType.setEditPermission(null);
-			if ("".equals(auditType.getAssigneeLabel()))
+			}
+			if ("".equals(auditType.getAssigneeLabel())) {
 				auditType.setAssigneeLabel(null);
+			}
 			if (auditType.getAssigneeLabel() != null) {
 				String key = auditType.getAssigneeLabel().trim();
 				if (key.startsWith("Assignee.")) {
@@ -256,11 +264,14 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
-			
+
+			EntityTranslationHelper.saveRequiredTranslationsForAuditTypeName(auditType, permissions);
+
 			if (auditType.getAssigneeLabel() != null) {
 				AppTranslation translation = null;
 				try {
-					translation = dao.findOne(AppTranslation.class, "t.key='Assignee." + auditType.getAssigneeLabel() + "'");
+					translation = dao.findOne(AppTranslation.class, "t.key='Assignee." + auditType.getAssigneeLabel()
+							+ "'");
 				} catch (Exception ignore) {
 				}
 				if (translation == null) {
@@ -326,11 +337,13 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			AuditCategory categoryCopy = copyAuditCategory(category, auditTypeCopy);
 
 			// Copying Questions
-			for (AuditQuestion question : categoryCopy.getQuestions())
+			for (AuditQuestion question : categoryCopy.getQuestions()) {
 				copyAuditQuestion(question, categoryCopy);
+			}
 		}
 
 		auditTypeDAO.save(auditTypeCopy);
+		EntityTranslationHelper.saveRequiredTranslationsForAuditTypeName(auditTypeCopy, permissions);
 
 		return auditTypeCopy.getId();
 	}
@@ -349,11 +362,13 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		AuditCategory copy = new AuditCategory(a, at);
 		copy.setAuditColumns(permissions);
 
-		if (at.getCategories() == null)
+		if (at.getCategories() == null) {
 			at.setCategories(new ArrayList<AuditCategory>());
-		at.getCategories().add(copy);
+		}
 
+		at.getCategories().add(copy);
 		auditCategoryDAO.save(copy);
+		EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(copy, permissions);
 
 		return copy;
 	}
@@ -365,6 +380,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		AuditQuestion copy = new AuditQuestion(sourceQuestion, destinationCategory);
 		copy.setAuditColumns(permissions);
 		auditQuestionDAO.save(copy);
+		EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(copy, permissions);
 		return copy;
 	}
 
@@ -383,7 +399,6 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		return workFlowList;
 	}
 
-	
 	// GETTERS && SETTERS
 
 	public List<String> getAssigneeLabels() {
@@ -464,8 +479,9 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 	public String getEditPerm() {
 		String result = "";
-		if (auditType.getEditPermission() != null)
+		if (auditType.getEditPermission() != null) {
 			result = auditType.getEditPermission().name();
+		}
 		return result;
 	}
 
@@ -501,7 +517,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		if (steps == null) {
 			steps = wfDAO.getWorkFlowSteps(workFlowID);
 		}
-		
+
 		return steps;
 	}
 

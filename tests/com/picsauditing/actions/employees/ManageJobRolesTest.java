@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,7 +27,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -45,14 +44,11 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.search.Database;
 
-public class ManageJobRolesTest {
-	
+public class ManageJobRolesTest extends PicsTranslationTest {
+
 	private ManageJobRoles manageJobRoles;
 
-	@Mock
-	private Database database;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -65,7 +61,7 @@ public class ManageJobRolesTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		manageJobRoles = new ManageJobRoles();
 		PicsTestUtil testUtil = new PicsTestUtil();
@@ -74,11 +70,6 @@ public class ManageJobRolesTest {
 		Whitebox.setInternalState(manageJobRoles, "permissions", permissions);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test
@@ -302,7 +293,7 @@ public class ManageJobRolesTest {
 		OperatorAccount operator = EntityFactory.makeOperator();
 		User user = EntityFactory.makeUser(OperatorAccount.class);
 		Permissions permissions = EntityFactory.makePermission(user);
-		
+
 		user.addOwnedPermissions(OpPerms.DefineRoles, 1);
 
 		permissions.login(user);

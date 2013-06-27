@@ -13,7 +13,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,7 +21,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Account;
@@ -32,14 +31,12 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
-import com.picsauditing.search.Database;
 import com.picsauditing.util.DoubleMap;
 
-public class JobCompetencyMatrixTest {
+public class JobCompetencyMatrixTest extends PicsTranslationTest {
+
 	private JobCompetencyMatrix jobCompetencyMatrix;
 
-	@Mock
-	private Database database;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -50,7 +47,7 @@ public class JobCompetencyMatrixTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		jobCompetencyMatrix = new JobCompetencyMatrix();
 		PicsTestUtil util = new PicsTestUtil();
@@ -59,11 +56,6 @@ public class JobCompetencyMatrixTest {
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 
 		Whitebox.setInternalState(jobCompetencyMatrix, "permissions", permissions);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

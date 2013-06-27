@@ -89,12 +89,18 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 		data['auditData.comment'] = commentElm.val();
 	}
 
-	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
+	startThinking({
+        div:'thinking_' + divId,
+        message: translate('JS.Audit.SavingAnswer')
+    });
 	var dependents = $(divName).find(".dependentQuestions").html();
 	var depends = dependents.split(",");
 	var x=0;
 	for (x=1; x < depends.length; x++) {
-		startThinking({div:'thinking_' + depends[x], message: "Recalculating Requirement"});
+		startThinking({
+            div:'thinking_' + depends[x],
+            translate('JS.Audit.RecalculatingRequirement')
+        });
 		$('#node_'+depends[x]).find(":input").attr("disabled", true);
 	}
 
@@ -105,7 +111,7 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 					reloadQuestion(depends[x]);
 				}
 			} else {
-				alert('Failed to save answer ');
+                alert(translate('JS.Audit.FailedToSaveAnswer'));
 			}
 		});
 	return true;
@@ -124,7 +130,10 @@ function reloadQuestion(divId) {
 			'mode':mode
 	};
 
-	startThinking({div:'thinking_' + divId, message: "Saving Answer"});
+	startThinking({
+        div:'thinking_' + divId,
+        message: translate('JS.Audit.SavingAnswer')
+    });
 	$(divName).load('AuditDataSaveAjax.action',data);
 	return true;
 }
@@ -160,7 +169,10 @@ function showCertificates(conID, caoID, button, catDataID) {
 	if (catDataID != undefined)
 		data['catDataID'] = catDataID;
 
-	startThinking({div:'certificates'+caoID, message:' Searching for Certificates'});
+	startThinking({
+        div:'certificates'+caoID,
+        message: translate('JS.Audit.SearchingForCertificates')
+    });
 
 	$('#certificates'+caoID).load('ContractorCertificatesAjax.action', data);
 }
@@ -175,13 +187,16 @@ function saveCao(form, button, divName) {
 	if (divName === undefined)
 		divName = '#auditHeader'+data['cao.id'];
 
-	startThinking({div:'thinking_'+data['cao.id'], message: "Saving Answer"});
+	startThinking({
+        div:'thinking_'+data['cao.id'],
+        message: translate('JS.Audit.SavingAnswer')
+    });
 	$('#cao_'+data['cao.id']).load('PolicySaveAjax.action', data, function(response, status){
 		stopThinking({div:'thinking_'+data['cao.id']});
 		if (status=='success')
 			$(divName).effect('highlight', {color: '#FFFF11'}, 1000);
 		else
-			alert('failed to save answer');
+			alert(translate('JS.Audit.FailedToSaveAnswer'));
 	});
 }
 
@@ -212,7 +227,7 @@ function savePolicy(form, button, divName, dataID, catDataID) {
 		if (status=='success')
 			$(divName).effect('highlight', {color: '#FFFF11'}, 1000);
 		else
-			alert('failed to save answer');
+            alert(translate('JS.Audit.FailedToSaveAnswer'));
 	});
 }
 

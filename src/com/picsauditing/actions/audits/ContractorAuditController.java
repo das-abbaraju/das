@@ -1,10 +1,18 @@
 package com.picsauditing.actions.audits;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,8 +23,27 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.InsuranceCriteriaContractorOperator;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -47,7 +74,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected Map<ContractorAuditOperator, String> problems = new TreeMap<ContractorAuditOperator, String>();
 	// Policy verification (next/first buttons)
 	private boolean policy;
-	private boolean refreshAudit=false;
+	private boolean refreshAudit = false;
 
 	private int auditTypeId;
 	private AuditType auditType;
@@ -76,8 +103,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 			operators = new ArrayList<OperatorAccount>();
 			for (int id : operatorIds) {
-				OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class,
-						"id = " + id, 1).get(0);
+				OperatorAccount operator = auditTypeDAO.findWhere(OperatorAccount.class, "id = " + id, 1).get(0);
 				operators.add(operator);
 
 				co.setOperatorAccount(operator);
@@ -95,7 +121,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (button != null) {
 			if (categoryID > 0 && isUserPermittedToAddRemoveCategory()) {
-				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
+				AuditCategory auditCategory = catDataDao.find(AuditCategory.class, categoryID);
 				if ("IncludeCategory".equals(button)) {
 					AuditCatData auditCatData = addManuallyAddedCategory(auditCategory);
 					auditDao.save(auditCatData);
@@ -142,7 +168,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				if (auditID == 0 && categoryID > 0) {
 
 					previewCat = true;
-					AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
+					AuditCategory auditCategory = catDataDao.find(AuditCategory.class, categoryID);
 					conAudit = new ContractorAudit();
 					conAudit.setAuditType(auditCategory.getAuditType());
 					if (auditCategory.getAuditType().isAnnualAddendum()) {
@@ -154,14 +180,15 @@ public class ContractorAuditController extends AuditActionSupport {
 					categoryData.setCategory(auditCategory);
 					categoryData.setApplies(true);
 					categories.put(auditCategory, categoryData);
-					if (mode == null)
+					if (mode == null) {
 						mode = EDIT;
+					}
 					return SUCCESS;
 				}
 			}
 
 			if (categoryID > 0) {
-				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
+				AuditCategory auditCategory = catDataDao.find(AuditCategory.class, categoryID);
 				Set<Integer> questionIDs = new HashSet<Integer>();
 				categoryData = getCategories().get(auditCategory);
 				if (categoryData == null) {
@@ -173,20 +200,25 @@ public class ContractorAuditController extends AuditActionSupport {
 				for (AuditCategory childCategory : categoryData.getCategory().getChildren()) {
 					for (AuditQuestion question : childCategory.getQuestions()) {
 						questionIDs.add(question.getId());
-						if (question.getRequiredQuestion() != null)
+						if (question.getRequiredQuestion() != null) {
 							questionIDs.add(question.getRequiredQuestion().getId());
-						if (question.getVisibleQuestion() != null)
+						}
+						if (question.getVisibleQuestion() != null) {
 							questionIDs.add(question.getVisibleQuestion().getId());
+						}
 					}
 				}
 				// Get a map of all answers in this audit
 				List<AuditData> requiredAnswers = new ArrayList<AuditData>();
-				for (AuditData answer : conAudit.getData())
-					if (questionIDs.contains(answer.getQuestion().getId()))
+				for (AuditData answer : conAudit.getData()) {
+					if (questionIDs.contains(answer.getQuestion().getId())) {
 						requiredAnswers.add(answer);
+					}
+				}
 				answerMap = new AnswerMap(requiredAnswers);
-				if (mode == null && isCanEditAudit())
+				if (mode == null && isCanEditAudit()) {
 					mode = EDIT;
+				}
 			} else {
 				// When we want to show all categories
 				answerMap = auditDataDAO.findAnswers(auditID);
@@ -199,7 +231,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (conAudit != null) {
 			getValidSteps();
 
-			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+			if ((conAudit.getAuditType().isAnnualAddendum() || conAudit.getAuditType().getClassType().isPolicy()) && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
 					if (caow.getCao().isVisible()) {
@@ -215,8 +247,9 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 
 			String message = determineMessageForUser();
-			if (!Strings.isEmpty(message))
+			if (!Strings.isEmpty(message)) {
 				addAlertMessage(message);
+			}
 		}
 
 		return SUCCESS;
@@ -246,10 +279,12 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 		}
 
-		if (conAudit.getOperators().size() == 0)
+		if (conAudit.getOperators().size() == 0) {
 			message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
-		if (conAudit.hasOnlyInvisibleCaos())
+		}
+		if (conAudit.hasOnlyInvisibleCaos()) {
 			message = "This audit has no visible CAOs and cannot be seen by external users.  Data is not deleted when facilities are disassociated, but it is no longer visible to external users.";
+		}
 
 		return message;
 	}
@@ -318,9 +353,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			AuditCategory category = new AuditCategory();
-			TranslatableString t = new TranslatableString();
-			t.putTranslation("en", "Previewing Categories is not supported for this audit", false);
-			category.setName(t);
+			category.setName("Previewing Categories is not supported for this audit");
 			cats.add(category);
 			return;
 		}
@@ -432,8 +465,9 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (conAudit.getAuditType().getId() == 3) {
 			auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2432);
 		}
-		if (auditData != null)
+		if (auditData != null) {
 			return auditData.getAnswer();
+		}
 
 		return null;
 	}
@@ -512,8 +546,9 @@ public class ContractorAuditController extends AuditActionSupport {
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
 									&& (contractor.getCountry().getAmount(ii.getInvoiceFee()).equals(ii.getAmount()) || i
-											.getTotalAmount().intValue() > 450))
+											.getTotalAmount().intValue() > 450)) {
 								return true;
+							}
 						}
 					}
 				}
@@ -541,8 +576,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	 * @return true if they should see the upsell message
 	 */
 	public boolean isNeedsImportPQFQuestion() {
-		if (!conAudit.getAuditType().isPicsPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending))
+		if (!conAudit.getAuditType().isPicsPqf() || conAudit.hasCaoStatusAfter(AuditStatus.Pending)) {
 			return false;
+		}
 
 		ContractorAccount con = conAudit.getContractorAccount();
 		if (con.getCompetitorMembership() != null) {
@@ -554,21 +590,25 @@ public class ContractorAuditController extends AuditActionSupport {
 				// that they've been charged for this
 				// before.
 				if (con.getFees().get(FeeClass.ImportFee) != null
-						&& !con.getFees().get(FeeClass.ImportFee).getNewLevel().isFree())
+						&& !con.getFees().get(FeeClass.ImportFee).getNewLevel().isFree()) {
 					return false;
+				}
 
 				for (ContractorAudit importAudit : con.getAudits()) {
 					if (importAudit.getAuditType().getId() == AuditType.IMPORT_PQF
-							&& importAudit.hasCaoStatusBefore(AuditStatus.NotApplicable))
+							&& importAudit.hasCaoStatusBefore(AuditStatus.NotApplicable)) {
 						return false;
+					}
 				}
-			} else
+			} else {
 				return false;
+			}
 		}
 
 		for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-			if (cao.getPercentComplete() > 50)
+			if (cao.getPercentComplete() > 50) {
 				return false;
+			}
 		}
 
 		return true;
@@ -581,12 +621,15 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	private void checkMode() {
-		if (mode == null)
+		if (mode == null) {
 			mode = VIEW;
-		if (mode.equals(EDIT) && !isCanEditAudit())
+		}
+		if (mode.equals(EDIT) && !isCanEditAudit()) {
 			mode = VIEW;
-		if (mode.equals(VERIFY) && !isCanVerifyAudit())
+		}
+		if (mode.equals(VERIFY) && !isCanVerifyAudit()) {
 			mode = VIEW;
+		}
 	}
 
 	public Map<ContractorAuditOperator, String> getProblems() {
@@ -612,7 +655,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setOperatorIds(Set<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
 	}
-    public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
-        return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
-    }
+
+	public SortedMap<Integer, List<InsuranceCriteriaContractorOperator>> getInsuranceCriteriaMap(AuditQuestion question) {
+		return InsuranceCriteriaDisplay.getInsuranceCriteriaMap(question, contractor);
+	}
 }

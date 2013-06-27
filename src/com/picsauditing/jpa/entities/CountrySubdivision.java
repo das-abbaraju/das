@@ -17,10 +17,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.model.i18n.TranslatableString;
+
 @Entity
 @Table(name = "ref_country_subdivision")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class CountrySubdivision extends BaseTranslatable implements Comparable<CountrySubdivision>, Serializable, Autocompleteable, IsoCode {
+public class CountrySubdivision implements Comparable<CountrySubdivision>, Serializable, Autocompleteable, IsoCode,
+		Translatable {
 	private static final long serialVersionUID = -7010252482295453919L;
 
     public static final Comparator<CountrySubdivision> NAME_COMPARATOR =  new Comparator<CountrySubdivision>() {
@@ -32,9 +35,8 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
     };
 
 	protected String isoCode;
-	protected TranslatableString name;
+	protected String name;
 	protected String english;
-
 	protected Country country;
 
 	public CountrySubdivision() {
@@ -74,10 +76,15 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 
 	@Transient
 	public String getName() {
-		return name.toString() + ", " + country.getName();
+		if (name != null) {
+			return String.format("%s, %s", name, country.getName());
+		}
+
+		return String.format("%s, %s", new TranslatableString(getI18nKey()).toTranslatedString(),
+				new TranslatableString(country.getI18nKey()).toTranslatedString());
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -89,7 +96,11 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 
 	@Transient
 	public String getSimpleName() {
-		return name.toString();
+		if (name != null) {
+			return name;
+		}
+
+		return new TranslatableString(getI18nKey()).toTranslatedString();
 	}
 
 	@Override
@@ -143,7 +154,7 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 	public int compareTo(CountrySubdivision o) {
 		return this.getI18nKey().compareTo(o.getI18nKey());
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof CountrySubdivision && this.isoCode.equals(((CountrySubdivision) obj).getIsoCode());

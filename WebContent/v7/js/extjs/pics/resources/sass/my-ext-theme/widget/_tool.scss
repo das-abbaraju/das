@@ -1,0 +1,9 @@
+.x-tool-close {
+    background-position: -15px 0 !important;
+}
+
+.x-tool-over {
+    .x-tool-close {
+        background-position: 0 0 !important;
+    }
+}

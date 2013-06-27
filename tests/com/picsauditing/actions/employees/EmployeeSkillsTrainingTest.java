@@ -1,6 +1,30 @@
 package com.picsauditing.actions.employees;
 
-import com.picsauditing.PICS.I18nCache;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -11,31 +35,14 @@ import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.jpa.entities.OperatorCompetencyEmployeeFile;
 import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.search.Database;
 import com.picsauditing.util.URLUtils;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+public class EmployeeSkillsTrainingTest extends PicsTranslationTest {
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
-public class EmployeeSkillsTrainingTest {
 	private EmployeeSkillsTraining employeeSkillsTraining;
 
 	@Mock
 	private BasicDAO basicDAO;
-	@Mock
-	private Database databaseForTesting;
 	@Mock
 	private Employee employee;
 	@Mock
@@ -52,7 +59,7 @@ public class EmployeeSkillsTrainingTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		super.resetTranslationService();
 
 		employeeSkillsTraining = new EmployeeSkillsTraining();
 		employeeSkillsTraining.setEmployee(employee);
@@ -67,10 +74,11 @@ public class EmployeeSkillsTrainingTest {
 		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(true);
 	}
 
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-	}
+	// @AfterClass
+	// public static void classTearDown() {
+	// Whitebox.setInternalState(I18nCache.class, "databaseForTesting",
+	// (Database) null);
+	// }
 
 	@Test(expected = RecordNotFoundException.class)
 	public void testExecute_NullEmployee() throws Exception {
@@ -118,10 +126,12 @@ public class EmployeeSkillsTrainingTest {
 	}
 
 	@Test
-	public void testGetCompetenciesMissingDocumentation_NoEmployeeCompetenciesMeansNoneMissing() throws NoRightsException {
-		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency>emptyList());
+	public void testGetCompetenciesMissingDocumentation_NoEmployeeCompetenciesMeansNoneMissing()
+			throws NoRightsException {
+		when(employee.getEmployeeCompetencies()).thenReturn(Collections.<EmployeeCompetency> emptyList());
 
-		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining.getCompetenciesMissingDocumentation();
+		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining
+				.getCompetenciesMissingDocumentation();
 		assertNotNull(competenciesMissingDocumentation);
 		assertTrue(competenciesMissingDocumentation.isEmpty());
 	}
@@ -134,7 +144,8 @@ public class EmployeeSkillsTrainingTest {
 		when(employee.getEmployeeCompetencies()).thenReturn(competencies);
 		when(employeeCompetency.isMissingDocumentation()).thenReturn(false);
 
-		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining.getCompetenciesMissingDocumentation();
+		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining
+				.getCompetenciesMissingDocumentation();
 		assertNotNull(competenciesMissingDocumentation);
 		assertTrue(competenciesMissingDocumentation.isEmpty());
 	}
@@ -148,7 +159,8 @@ public class EmployeeSkillsTrainingTest {
 		when(employeeCompetency.getCompetency()).thenReturn(operatorCompetency);
 		when(employeeCompetency.isMissingDocumentation()).thenReturn(true);
 
-		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining.getCompetenciesMissingDocumentation();
+		List<OperatorCompetency> competenciesMissingDocumentation = employeeSkillsTraining
+				.getCompetenciesMissingDocumentation();
 		assertNotNull(competenciesMissingDocumentation);
 		assertFalse(competenciesMissingDocumentation.isEmpty());
 		assertEquals(operatorCompetency, competenciesMissingDocumentation.get(0));
@@ -156,7 +168,7 @@ public class EmployeeSkillsTrainingTest {
 
 	@Test
 	public void testGetFilesByStatus_NoCompetencyFilesEmptyMap() throws NoRightsException {
-		when(employee.getCompetencyFiles()).thenReturn(Collections.<OperatorCompetencyEmployeeFile>emptyList());
+		when(employee.getCompetencyFiles()).thenReturn(Collections.<OperatorCompetencyEmployeeFile> emptyList());
 
 		Map<String, List<OperatorCompetencyEmployeeFile>> map = employeeSkillsTraining.getFilesByStatus();
 		assertNotNull(map);

@@ -15,7 +15,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,28 +22,23 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.ReportNewReqConImport.RegistrationRequestColumn;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 
-public class ReportNewReqConImportTest {
+public class ReportNewReqConImportTest extends PicsTranslationTest {
+
 	private ReportNewReqConImport reportNewReqConImport;
 
 	@Mock
 	private Cell cell;
 	@Mock
 	private Country country;
-	@Mock
-	private CountrySubdivision countrySubdivision;
-	@Mock
-	private Database database;
 	@Mock
 	private EntityManager entityManager;
 	@Mock
@@ -67,7 +61,7 @@ public class ReportNewReqConImportTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		reportNewReqConImport = new ReportNewReqConImport();
 		PicsTestUtil picsTestUtil = new PicsTestUtil();
@@ -78,11 +72,6 @@ public class ReportNewReqConImportTest {
 		Whitebox.setInternalState(reportNewReqConImport, "featureToggle", featureToggle);
 		Whitebox.setInternalState(reportNewReqConImport, "permissions", permissions);
 		Whitebox.setInternalState(reportNewReqConImport, "workbook", workbook);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

@@ -32,9 +32,11 @@ public interface FeatureToggle {
 	String TOGGLE_NEW_JS_TRANSLATIONS = "Toggle.NewJsTranslations";
 	String TOGGLE_REGISTRATION_AUTOFILL = "Toggle.RegistrationAutoFill";
 	String TOGGLE_SUPPRESS_WELCOME_EMAILS = "Toggle.SuppressWelcomeEmails";
+	String TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER = "Toggle.TranslationServiceAdapter";
+	String TOGGLE_COUNTRY_PHONE_NUMBER = "Toggle.CountryPhoneNumber";
+	String TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION = "Toggle.EmptyStringIsValidTranslation";
 
 	boolean isFeatureEnabled(String toggleName);
 
 	void addToggleVariable(String name, Object value);
 }
-

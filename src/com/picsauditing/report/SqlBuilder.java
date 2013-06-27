@@ -220,6 +220,8 @@ public class SqlBuilder {
 				} else {
 					continue;
 				}
+            } else if (column.getField() == null) {
+                continue;
 			} else {
 				fieldName = column.getName();
 			}

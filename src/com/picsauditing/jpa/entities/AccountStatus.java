@@ -8,12 +8,12 @@ import javax.persistence.Transient;
 
 public enum AccountStatus implements Translatable, PermissionAware {
     Active(false),
-	Pending(false),
-	Requested(false),
+	Pending(true),
+	Requested(true),
 	Demo(true),
 	Deleted(true),
-	Deactivated(false),
-	Declined(false);
+	Deactivated(true),
+	Declined(true);
 
 	private boolean enforcePermissions;
 

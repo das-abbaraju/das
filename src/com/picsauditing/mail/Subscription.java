@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Translatable;
-import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 
 public enum Subscription implements Translatable {
@@ -157,7 +156,8 @@ public enum Subscription implements Translatable {
 			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
 					SubscriptionTimePeriod.Monthly });
 			setRequiredForContractor(true);
-			setViewableBy(Account.PicsID);
+			setSubjectViewableBy(Account.EVERYONE);
+			setBodyViewableBy(Account.PicsID);
 		}
 	},
 	RegistrationRequests {
@@ -203,21 +203,23 @@ public enum Subscription implements Translatable {
 			setDefaultTimePeriod(SubscriptionTimePeriod.Weekly);
 			setRequiredForAdmin(true);
 		}
-		// TODO: Write up a PQF Submitted subscription, find out what that was for. 
-//	},
-//	PQFSubmitted {
-//		public void initialize() {
-//			setTemplateID(220);
-//			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-//					SubscriptionTimePeriod.Daily });
-//			setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
-//			setRequiredForAdmin(true);
-//		}
+		// TODO: Write up a PQF Submitted subscription, find out what that was
+		// for.
+		// },
+		// PQFSubmitted {
+		// public void initialize() {
+		// setTemplateID(220);
+		// setSupportedTimePeriods(new SubscriptionTimePeriod[] {
+		// SubscriptionTimePeriod.None,
+		// SubscriptionTimePeriod.Daily });
+		// setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
+		// setRequiredForAdmin(true);
+		// }
 	};
 
 	private int templateID;
-	private TranslatableString description;
-	private TranslatableString longDescription;
+	private String description;
+	private String longDescription;
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
 			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
 	private boolean requiredForOperator = false;
@@ -225,7 +227,8 @@ public enum Subscription implements Translatable {
 	private boolean requiredForAdmin = false;
 	private OpPerms requiredPerms = null;
 	private boolean requiresOQ = false;
-	private int viewableBy = Account.PRIVATE;
+	private int subjectViewableBy = Account.PRIVATE;
+	private int bodyViewableBy = Account.PRIVATE;
 	private SubscriptionTimePeriod defaultTimePeriod = SubscriptionTimePeriod.Monthly;
 
 	Subscription() {
@@ -245,19 +248,19 @@ public enum Subscription implements Translatable {
 		this.templateID = templateID;
 	}
 
-	public TranslatableString getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(TranslatableString description) {
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public TranslatableString getLongDescription() {
+	public String getLongDescription() {
 		return longDescription;
 	}
 
-	public void setLongDescription(TranslatableString longDescription) {
+	public void setLongDescription(String longDescription) {
 		this.longDescription = longDescription;
 	}
 
@@ -313,12 +316,20 @@ public enum Subscription implements Translatable {
 		return requiresOQ;
 	}
 
-	public void setViewableBy(int viewableBy) {
-		this.viewableBy = viewableBy;
+	public void setSubjectViewableBy(int subjectViewableBy) {
+		this.subjectViewableBy = subjectViewableBy;
 	}
 
-	public int getViewableBy() {
-		return viewableBy;
+	public int getSubjectViewableBy() {
+		return subjectViewableBy;
+	}
+
+	public void setBodyViewableBy(int bodyViewableBy) {
+		this.bodyViewableBy = bodyViewableBy;
+	}
+
+	public int getBodyViewableBy() {
+		return bodyViewableBy;
 	}
 
 	public void setDefaultTimePeriod(SubscriptionTimePeriod defaultTimePeriod) {

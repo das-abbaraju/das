@@ -97,17 +97,8 @@ public class ReportDAO extends PicsDAO {
 	private SelectSQL buildQueryForFindByOwnerId(ReportSearch reportSearch) {
 		SelectSQL sql = new SelectSQL("report r");
 
-		sql.addField("r.id AS " + ReportInfoMapper.ID_FIELD);
-		sql.addField("r.name AS " + ReportInfoMapper.NAME_FIELD);
-		sql.addField("r.description AS " + ReportInfoMapper.DESCRIPTION_FIELD);
-		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
-		sql.addField("ru.favorite AS " + ReportInfoMapper.FAVORITE_FIELD);
-		sql.addField("1 AS " + ReportInfoMapper.EDITABLE_FIELD); // because if you own it, you can edit it
-		sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
-		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
-		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
-		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
-		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
+        addFields(sql);
+        sql.addField("1 AS " + ReportInfoMapper.EDITABLE_FIELD); // because if you own it, you can edit it
 
 		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + reportSearch.getPermissions().getUserId());
 		sql.addJoin("JOIN users u ON u.id = ru.userID");
@@ -135,17 +126,9 @@ public class ReportDAO extends PicsDAO {
 	private SelectSQL buildQueryForFindSharedWith(ReportSearch reportSearch, Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
-		sql.addField("r.id AS " + ReportInfoMapper.ID_FIELD);
-		sql.addField("r.name AS " + ReportInfoMapper.NAME_FIELD);
-		sql.addField("r.description AS " + ReportInfoMapper.DESCRIPTION_FIELD);
-		sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
-		sql.addField("ru.favorite AS " + ReportInfoMapper.FAVORITE_FIELD);
+        addFields(sql);
+        sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("MAX(rp.editable) AS " + ReportInfoMapper.EDITABLE_FIELD);
-		sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
-		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
-		sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
-		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
-		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
 
 		sql.addJoin("LEFT JOIN report_user ru ON r.id = ru.reportID AND ru.userID = " + permissions.getUserId());
 		sql.addJoin("LEFT JOIN users u ON u.id = ru.userID");
@@ -176,6 +159,18 @@ public class ReportDAO extends PicsDAO {
                 + " SELECT reportID, editable FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
     }
 
+    private void addFields(SelectSQL sql) {
+        sql.addField("r.id AS " + ReportInfoMapper.ID_FIELD);
+        sql.addField("r.name AS " + ReportInfoMapper.NAME_FIELD);
+        sql.addField("r.description AS " + ReportInfoMapper.DESCRIPTION_FIELD);
+        sql.addField("r.creationDate AS " + ReportInfoMapper.CREATION_DATE_FIELD);
+        sql.addField("ru.favorite AS " + ReportInfoMapper.FAVORITE_FIELD);
+        sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
+        sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
+        sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
+        sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");
+    }
+
     private void addOrderBy(SelectSQL sql, ReportSearch reportSearch) {
 		if (Strings.isEmpty(reportSearch.getSortType()) || Strings.isEmpty(reportSearch.getSortDirection())) {
 			return;
@@ -184,4 +179,41 @@ public class ReportDAO extends PicsDAO {
 		sql.addOrderBy(getOrderBySort(reportSearch.getSortType()) + Strings.SINGLE_SPACE
 				+ reportSearch.getSortDirection());
 	}
+
+    public void updateReportSuggestions() throws SQLException {
+        Database database = new Database();
+        database.select("CALL dw_calc_inherited_user_groups();", true);
+        database.select("CALL dw_calc_report_suggestions();", true);
+    }
+
+    public List<ReportInfo> findReportSuggestions(Permissions permissions) {
+        SelectSQL sql = new SelectSQL("calc_inherited_user_group c");
+
+        addFields(sql);
+        sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD);
+        sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
+        sql.addField("MAX(rgs.score) AS myScore");
+
+        sql.addJoin("JOIN report_group_suggestion rgs ON rgs.groupID = c.groupID");
+        sql.addJoin("JOIN report r ON r.id = rgs.reportID AND r.deleted = 0 AND r.public = 1");
+        sql.addJoin("LEFT JOIN report_user ru ON rgs.reportID = ru.reportID AND ru.userID = c.userID");
+        sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
+        sql.addJoin("LEFT JOIN users u ON ru.userID = u.id");
+
+        sql.addWhere("c.userID = " + permissions.getUserId());
+        sql.addWhere("ru.favorite IS NULL OR (ru.favorite = 0 AND ru.hidden = 0)");
+
+        sql.addGroupBy("rgs.reportID");
+        sql.addOrderBy("myScore DESC");
+        sql.setLimit(10);
+
+        try {
+            return new Database().select(sql.toString(), new ReportInfoMapper());
+        } catch (SQLException e) {
+
+        }
+
+        return Collections.EMPTY_LIST;
+    }
+
 }

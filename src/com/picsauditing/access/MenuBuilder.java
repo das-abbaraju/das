@@ -1,38 +1,38 @@
 package com.picsauditing.access;
 
+import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.report.ManageReports;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.picsauditing.jpa.entities.AccountStatus;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.actions.report.ManageReports;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-
 public final class MenuBuilder {
 
 	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
-	private static I18nCache i18nCache = I18nCache.getInstance();
+	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	private MenuBuilder() {
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions) {
-		return buildMenubar(permissions, Collections.<ReportUser> emptyList());
+		return buildMenubar(permissions, Collections.<ReportUser>emptyList());
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports) {
@@ -57,7 +57,7 @@ public final class MenuBuilder {
 
 	// For Operators, Corporate users, and PICS employees
 	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions,
-			List<ReportUser> favoriteReports) {
+	                                        List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 		addReportsMenu(menubar, favoriteReports, permissions);
 		addConfigureMenu(menubar, permissions);
@@ -140,7 +140,7 @@ public final class MenuBuilder {
 	}
 
 	private static void buildOperatorCorporateMenubar(MenuComponent menubar, Permissions permissions,
-			List<ReportUser> favoriteReports) {
+	                                                  List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 		addReportsMenu(menubar, favoriteReports, permissions);
 		addManageMenu(menubar, permissions);
@@ -334,8 +334,8 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-        if (permissions.getAccountStatus() != AccountStatus.Demo)
-		    addLegacyReports(permissions, reportsMenu);
+		if (permissions.getAccountStatus() != AccountStatus.Demo)
+			addLegacyReports(permissions, reportsMenu);
 
 		if (permissions.has(OpPerms.Report)) {
 			MenuComponent adminMenu = reportsMenu.addChild("Administration");
@@ -344,18 +344,18 @@ public final class MenuBuilder {
 		}
 
 		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-        if (CollectionUtils.isNotEmpty(favoriteReports)) {
-            reportsMenu.addChild("separator", null);
-            MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+		if (CollectionUtils.isNotEmpty(favoriteReports)) {
+			reportsMenu.addChild("separator", null);
+			MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
 
-            reportsMenu.addChild(favoriteLabel);
-        }
+			reportsMenu.addChild(favoriteLabel);
+		}
 
-        for (ReportUser reportUser : favoriteReports) {
-            Report report = reportUser.getReport();
-            reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-                    "report_" + report.getId());
-        }
+		for (ReportUser reportUser : favoriteReports) {
+			Report report = reportUser.getReport();
+			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+					"report_" + report.getId());
+		}
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
@@ -390,7 +390,23 @@ public final class MenuBuilder {
 					"DelinquentContractorAccounts");
 		}
 
-		if (permissions.hasPermission(OpPerms.ContractorApproval)) {
+        if (permissions.hasPermission(OpPerms.AssignAudits)) {
+            if (permissions.isOperatorCorporate()) {
+                legacyMenu.addChild("Sched. &amp; Assign",
+                        "AuditAssignments.action?filter.status=Active",
+                        "AuditAssignments");
+            } else {
+                legacyMenu.addChild("Sched. &amp; Assign",
+                        "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
+                        "AuditAssignments");
+            }
+        }
+
+        if (permissions.hasPermission(OpPerms.RiskRank)) {
+            legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
+        }
+
+        if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
 					"subMenu_ApproveContractors");
 		}
@@ -434,7 +450,7 @@ public final class MenuBuilder {
 					getText("PolicyVerification.title"),
 					"PolicyVerification.action"
 							+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""), "PolicyVerification");
+							+ permissions.getShadowedUserID() : ""), "PolicyVerification");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
 			legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
@@ -463,7 +479,7 @@ public final class MenuBuilder {
 					"ReportEmrRates");
 			if (permissions.isAuditor()) {
 				legacyMenu
-				.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
+						.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action", "ReportAuditorEmrRates");
 			}
 		}
 
@@ -504,7 +520,8 @@ public final class MenuBuilder {
 		}
 
 		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
-		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action", "navigation_restructure");
+		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
+				"navigation_restructure");
 		referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
 		referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
 	}
@@ -518,6 +535,11 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			userMenu.addChild("My Schedule", "MySchedule.action", "my_schedule");
+		}
+
+		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+		if (featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+			userMenu.addChild(getText("Menu.SwitchToVersion6"), "ProfileEdit!version6Menu.action?u=" + permissions.getUserId(), "switch_to_v6");
 		}
 
 		if (permissions.getAdminID() > 0) {
@@ -637,7 +659,7 @@ public final class MenuBuilder {
 	}
 
 	private static String getText(String key) {
-		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
+		return translationService.getText(key, TranslationActionSupport.getLocaleStatic());
 	}
 
 	private static MenuComponent buildUniqueFavoritesMenuComponent() {
@@ -666,7 +688,7 @@ public final class MenuBuilder {
 	}
 
 	public static String getMibewURL(Locale locale, Permissions permissions) throws UnsupportedEncodingException {
-		String mibew_language_code = i18nCache.getText("Mibew.LanguageCode", locale);
+		String mibew_language_code = translationService.getText("Mibew.LanguageCode", locale);
 
 		StringBuilder mibewURL = new StringBuilder();
 		mibewURL.append("https://chat.picsorganizer.com/client.php?");

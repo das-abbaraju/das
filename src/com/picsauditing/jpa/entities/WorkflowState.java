@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.model.i18n.TranslatableString;
+
 @Entity
 @Table(name = "workflow_state")
 @SuppressWarnings("serial")
@@ -16,7 +18,7 @@ public class WorkflowState extends BaseTable {
 	private Workflow workflow;
 	private AuditStatus status;
 	private boolean hasRequirements;
-	private TranslatableString name;
+	private String name;
 	private boolean contractorCanEdit;
 	private boolean operatorCanEdit;
 
@@ -41,14 +43,17 @@ public class WorkflowState extends BaseTable {
 	}
 
 	@Transient
-	public TranslatableString getName() {
-		return this.name;
+	public String getName() {
+		if (name != null) {
+			return name;
+		}
+
+		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public boolean isHasRequirements() {
 		return hasRequirements;

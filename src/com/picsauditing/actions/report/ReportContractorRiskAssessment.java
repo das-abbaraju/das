@@ -250,7 +250,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		try {
 			emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PicsID);
+			emailQueue.setBodyViewableById(Account.PicsID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {
 			Logger logger = LoggerFactory.getLogger(this.getClass());

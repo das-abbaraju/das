@@ -447,10 +447,8 @@ function loadStatus(caoID, addUserNote){
                                 <s:property value="conAudit.closingAuditor.name" />
                             </s:if>
                             <s:else>
-                                <a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
-                                    <s:text name="Audit.message.NotAssigned" />
-                                    </a>
-                             </s:else>
+                                <s:text name="Audit.message.NotAssigned" />
+                            </s:else>
                          </s:else>
                        </s:if>
                         </li>
@@ -480,9 +478,7 @@ function loadStatus(caoID, addUserNote){
 									    <s:property value="conAudit.auditor.name" />
 								    </s:if>
                                     <s:else>
-                                        <a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
-                                            <s:text name="Audit.message.NotAssigned" />
-                                        </a>
+                                        <s:text name="Audit.message.NotAssigned" />
                                     </s:else>
                                 </s:else>
 

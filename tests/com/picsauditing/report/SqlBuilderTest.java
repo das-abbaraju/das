@@ -1,6 +1,7 @@
 package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
+import static com.picsauditing.util.Assert.assertNotContains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
@@ -244,8 +245,19 @@ public class SqlBuilderTest {
 		assertContains("ORDER BY Account.status DESC", selectSQL.toString());
 	}
 
+    @Test
+    public void testSortsDesc_BadValue() throws Exception {
+        Report report = new Report();
+        Sort sort = new Sort("asdf");
+        sort.setAscending(false);
+        report.getSorts().add(sort);
 
-	@Test
+        SelectSQL selectSQL = initializeReportAndBuildSql(report);
+
+        assertNotContains("ORDER BY Account.status DESC", selectSQL.toString());
+    }
+
+    @Test
 	public void testSql() throws Exception {
 		Report report = new Report();
 		addColumn("accountCountry", report);

@@ -328,44 +328,60 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void setSlaManualAudit(ContractorAccount contractor) {
-		Date beginDate = pqfAndSafetyManualSlaStartDate(contractor);
-		if (beginDate == null)
-			return;
-		Calendar date = Calendar.getInstance();
-		date.setTime(beginDate);
-		date.add(Calendar.DATE, 14);
-		beginDate = DateBean.setToEndOfDay(date.getTime());
-
-		Date previousManualExpirationDate = previousManualAudit(contractor);
-		if (previousManualExpirationDate != null) {
-			date.setTime(previousManualExpirationDate);
-			date.add(Calendar.DATE, -30);
-			previousManualExpirationDate = DateBean.setToEndOfDay(date.getTime());
-		}
-
-		if (previousManualExpirationDate != null && previousManualExpirationDate.after(beginDate)) {
-			beginDate = previousManualExpirationDate;
-		}
-
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() &&
 					audit.hasCaoStatus(AuditStatus.Pending)) {
+				Date beginDate = pqfAndSafetyManualSlaStartDate(contractor, audit);
+				if (beginDate == null) {
+					if (audit.getSlaDate() != null) {
+						audit.setSlaDate(null);
+						dao.save(audit);
+					}
+					return;
+				}
+
+				if (audit.getSlaDate() != null)
+					return;
+
+				Calendar date = Calendar.getInstance();
+				date.setTime(beginDate);
+				date.add(Calendar.DATE, 14);
+				beginDate = DateBean.setToEndOfDay(date.getTime());
+
+				Date previousManualExpirationDate = previousManualAudit(contractor, audit);
+				if (previousManualExpirationDate != null) {
+					date.setTime(previousManualExpirationDate);
+					date.add(Calendar.DATE, -30);
+					previousManualExpirationDate = DateBean.setToEndOfDay(date.getTime());
+				}
+
+				if (previousManualExpirationDate != null && previousManualExpirationDate.after(beginDate)) {
+					beginDate = previousManualExpirationDate;
+				}
+
+				date = Calendar.getInstance();
+				date.add(Calendar.DATE, 14);
+				Date minimumDate = DateBean.setToEndOfDay(date.getTime());
+				if (minimumDate.after(beginDate)) {
+					beginDate = minimumDate;
+				}
+
 				audit.setSlaDate(beginDate);
 				dao.save(audit);
 			}
 		}
 	}
 
-	private Date previousManualAudit(ContractorAccount contractor) {
+	private Date previousManualAudit(ContractorAccount contractor, ContractorAudit manualAudit) {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isDesktop() && audit.getExpiresDate() != null) {
+			if (audit.getAuditType().isDesktop() && audit.getId() != manualAudit.getId() && audit.getExpiresDate() != null) {
 				return audit.getExpiresDate();
 			}
 		}
 		return null;
 	}
 
-	private Date pqfAndSafetyManualSlaStartDate(ContractorAccount contractor) {
+	private Date pqfAndSafetyManualSlaStartDate(ContractorAccount contractor, ContractorAudit manualAudit) {
 		boolean pqfRequirementsMet = false;
 		boolean safetyManualRequirementsMet = false;
 		Date caoDate = null;
@@ -373,7 +389,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isPicsPqf()) {
-				caoDate = findMaxCompleteDate(audit);
+				caoDate = findMaxCompleteDate(audit, manualAudit);
 				if (caoDate != null) {
 					pqfRequirementsMet = true;
 
@@ -407,10 +423,20 @@ public class ContractorCron extends PicsActionSupport {
 		return null;
 	}
 
-	private Date findMaxCompleteDate(ContractorAudit audit) {
+	private Date findMaxCompleteDate(ContractorAudit audit, ContractorAudit manualAudit) {
 		Date completeDate = null;
+
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		for (ContractorAuditOperator cao: manualAudit.getOperators()) {
+			if (cao.isVisible()) {
+				for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+					operators.add(caop.getOperator());
+				}
+			}
+		}
+
 		for (ContractorAuditOperator cao : audit.getOperators()) {
-			if (cao.isVisible() && cao.getStatus().equals(AuditStatus.Complete)) {
+			if (hasMatchingCompletedOperator(cao, operators)) {
 				Date checkDate = (cao.getStatusChangedDate() != null) ? cao.getStatusChangedDate() : cao.getUpdateDate();
 				if (completeDate == null || (checkDate != null && completeDate.before(checkDate))) {
 					completeDate = checkDate;
@@ -418,6 +444,20 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 		return completeDate;
+	}
+
+	private boolean hasMatchingCompletedOperator(ContractorAuditOperator cao, Set<OperatorAccount> operators) {
+		if (!cao.isVisible() || !cao.getStatus().equals(AuditStatus.Complete)) {
+			return false;
+		}
+
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			if (operators.contains(caop.getOperator())) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {

@@ -196,7 +196,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		try {
 			emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PicsID);
+			emailQueue.setBodyViewableById(Account.PicsID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {
 			logger.error("Cannot send email to  {} ({})\n{}", new Object[] { contractor.getName(), contractor.getId(),

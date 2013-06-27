@@ -33,10 +33,10 @@ public class ReportUserDAO extends PicsDAO {
 		return findOne(ReportUser.class, query);
 	}
 
-	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
+	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions, int size) {
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
-			sql.setLimit(10);
+			sql.setLimit(10-size);
 			return new Database().select(sql.toString(), new ReportInfoMapper());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");
@@ -104,12 +104,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("f.total AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
 		sql.addField("IFNULL(ru.favorite, 0) AS " + ReportInfoMapper.FAVORITE_FIELD);
 		sql.addField("r.public AS " + ReportInfoMapper.PUBLIC_FIELD);
-		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD); // we do not
-																	// know
-																	// their
-																	// permissions
-																	// at this
-																	// point
+		sql.addField("0 AS " + ReportInfoMapper.EDITABLE_FIELD);
 		sql.addField("ru.lastViewedDate AS " + ReportInfoMapper.LAST_VIEWED_DATE_FIELD);
 		sql.addField("u.id AS '" + UserMapper.USER_ID_FIELD + "'");
 		sql.addField("u.name AS '" + UserMapper.USER_NAME_FIELD + "'");

@@ -42,6 +42,7 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 	private String dialect;
 	private int requestID;
 	private CountrySubdivision countrySubdivision;
+	private Locale locale;
 
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
@@ -327,7 +328,8 @@ public class Registration extends RegistrationAction implements AjaxValidator {
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setHtml(true);
 		emailQueue.setVeryHighPriority();
-		emailQueue.setViewableById(Account.EVERYONE);
+		emailQueue.setSubjectViewableById(Account.EVERYONE);
+		emailQueue.setBodyViewableById(Account.EVERYONE);
 		emailSender.send(emailQueue);
 	}
 

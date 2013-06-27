@@ -118,7 +118,7 @@
                     </li>
                     <li>
                         <label>Name:</label>
-                        <s:textfield name="auditType.name" />
+                        <s:textfield name="auditType.name" value='%{(auditType.id > 0) ? auditType.name : ""}'/>
                         
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditType.${auditType.id}.name</s:param>

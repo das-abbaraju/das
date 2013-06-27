@@ -88,7 +88,7 @@ function reloadQuestion(qid) {
 	}
 	
 	element.block({
-		message: 'Reloading question...'
+		message: translate('JS.Audit.ReloadingQuestion')
 	});
 
 	$.post(url, data, function(data, textStatus, XMLHttpRequest) {

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,30 +14,27 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.access.UserService;
-import com.picsauditing.service.ReportFavoriteInfoConverter;
-import com.picsauditing.service.ReportPreferencesService;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserService;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
 import com.picsauditing.service.ManageReportsService;
+import com.picsauditing.service.ReportFavoriteInfoConverter;
+import com.picsauditing.service.ReportPreferencesService;
 import com.picsauditing.service.ReportService;
 import com.picsauditing.strutsutil.AjaxUtils;
 
-public class ManageReportsTest {
+public class ManageReportsTest extends PicsTranslationTest {
 
 	private ManageReports manageReports;
 
@@ -60,8 +56,6 @@ public class ManageReportsTest {
 	@Mock
 	private Permissions permissions;
 	@Mock
-	private I18nCache i18nCache;
-	@Mock
 	private HttpServletRequest httpRequest;
 	@Mock
 	private UserService userService;
@@ -71,19 +65,10 @@ public class ManageReportsTest {
 	@Mock
 	private Report report;
 
-	@BeforeClass
-	public static void setupClass() throws Exception {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mock(Database.class));
-	}
-
-	@AfterClass
-	public static void classTearDown() throws Exception {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		super.resetTranslationService();
 
 		manageReports = new ManageReports();
 
@@ -97,7 +82,6 @@ public class ManageReportsTest {
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
-		Whitebox.setInternalState(manageReports, "i18nCache", i18nCache);
 	}
 
 	@Test
@@ -222,11 +206,11 @@ public class ManageReportsTest {
 		verify(manageReportsService).deleteReport(null, report, permissions);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void setUpI18nCacheText() {
-		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH)))
-		.thenReturn(true);
+		when(translationService.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 
-		when(i18nCache.getText(eq("ManageReports.message.NoFavorites"), eq(Locale.ENGLISH), any()))
-		.thenReturn("No Favorites.");
+		when(translationService.getText(eq("ManageReports.message.NoFavorites"), eq(Locale.ENGLISH), any()))
+				.thenReturn("No Favorites.");
 	}
 }

@@ -7,6 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 
 public class ContractorsModel extends AbstractModel {
@@ -26,13 +27,22 @@ public class ContractorsModel extends AbstractModel {
             account.join(AccountTable.LastLogin);
 		}
 		contractor.join(ContractorTable.PQF);
-        contractor.join(ContractorTable.ContractorTrade);
-		if (permissions.isAdmin()) {
+
+        ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
+        contractorTrade.alias = "ContractorTrade";
+        ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
+        directTrade.alias = "DirectTrade";
+        ModelSpec trade = directTrade.join(TradeTable.Children);
+        trade.alias = "Trade";
+
+        if (permissions.isAdmin()) {
 			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
 			welcomeCall.join(ContractorAuditTable.SingleCAO);
 		}
+
+
 		if (permissions.isOperatorCorporate()) {
-			ModelSpec flag = contractor.join(ContractorTable.Flag);
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.join(ContractorOperatorTable.ForcedByUser);
 		}
 
@@ -93,6 +103,36 @@ public class ContractorsModel extends AbstractModel {
             Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
+
+        Field accountManager = new Field("AccountManager","Account.id",FieldType.AccountUser);
+        accountManager.setVisible(false);
+        accountManager.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "JOIN account_user au ON au.accountID = co.genID " +
+                "JOIN users u ON au.userID = u.id " +
+                "WHERE u.id IN ");
+        accountManager.setSuffixValue("");
+        accountManager.setCategory(FieldCategory.CustomerService);
+        fields.put(accountManager.getName().toUpperCase(), accountManager);
+
+        Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
+        clientSite.setVisible(false);
+        clientSite.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "WHERE co.genID IN ");
+        clientSite.setSuffixValue("");
+        clientSite.setCategory(FieldCategory.ReportingClientSite);
+        fields.put(clientSite.getName().toUpperCase(), clientSite);
+
+        Field reportingClient = new Field("ReportingClient","Account.id",FieldType.Operator);
+        reportingClient.setVisible(false);
+        reportingClient.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "JOIN operators o ON o.id = co.genID " +
+                "WHERE o.reportingID IN ");
+        reportingClient.setSuffixValue("");
+        reportingClient.setCategory(FieldCategory.ReportingClientSite);
+        fields.put(reportingClient.getName().toUpperCase(), reportingClient);
 
         return fields;
 	}

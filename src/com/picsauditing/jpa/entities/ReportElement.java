@@ -180,6 +180,8 @@ public abstract class ReportElement {
 			return "COUNT(DISTINCT " + fieldSql + ")";
 		case Date:
 			return "DATE(" + fieldSql + ")";
+        case DaysFromNow:
+            return "DATEDIFF(" + fieldSql + ", NOW())";
 		case GroupConcat:
 			return "GROUP_CONCAT(" + fieldSql + ")";
 		case Hour:

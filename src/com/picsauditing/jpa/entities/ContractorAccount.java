@@ -460,7 +460,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "payingFacilities", nullable = false)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllOperators)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
 	}
@@ -594,7 +594,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date, requiredPermissions = OpPerms.AllOperators, importance = FieldImportance.Average)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -1025,7 +1025,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public Date getLastUpgradeDate() {
 		return lastUpgradeDate;
 	}

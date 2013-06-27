@@ -1,46 +1,49 @@
 package com.picsauditing.actions.flags;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.TranslatableString;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.test.TranslatorFactorySetup;
 
 public class ManageFlagCriteriaTest extends PicsTest {
 	ManageFlagCriteria manageFlagCriteria;
 
-	@Mock
-	TranslatableString emptyTranslation;
+	private static final String TEST_TRANSLATION = "Test translations";
+	private static final String EMPTY_TRANSLATION = Strings.EMPTY_STRING;
 
-	@Mock
-	TranslatableString somethingTranslation;
+	@AfterClass
+	public static void classTearDown() {
+		PicsTranslationTest.tearDownTranslationService();
+		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
+	}
 
 	@Before
 	public void setUp() throws Exception {
+		TranslatorFactorySetup.setupTranslatorFactoryForTest();
+
 		super.setUp();
 		MockitoAnnotations.initMocks(this);
 
 		manageFlagCriteria = new ManageFlagCriteria();
 		autowireEMInjectedDAOs(manageFlagCriteria);
-
-		when(somethingTranslation.toString()).thenReturn("Test translation");
 	}
 
 	@Test
 	public void testSave_InputValidation() throws Exception {
 		FlagCriteria flagCriteria = new FlagCriteria();
 
-		flagCriteria.setLabel(somethingTranslation);
-		flagCriteria.setDescription(somethingTranslation);
+		flagCriteria.setLabel(TEST_TRANSLATION);
+		flagCriteria.setDescription(TEST_TRANSLATION);
 		flagCriteria.setCategory("Audits");
 		flagCriteria.setRequiredLanguages("[\"en\"]");
 		flagCriteria.setDefaultValue("test");
@@ -51,7 +54,7 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(!manageFlagCriteria.hasActionErrors());
 
 		// no category
-		flagCriteria.setCategory("");
+		flagCriteria.setCategory(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
 		flagCriteria.setCategory("Audits");
@@ -63,16 +66,16 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		flagCriteria.setDisplayOrder(999);
 
 		// bad label
-		flagCriteria.setLabel(emptyTranslation);
+		flagCriteria.setLabel(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setLabel(somethingTranslation);
+		flagCriteria.setLabel(TEST_TRANSLATION);
 
 		// bad description
-		flagCriteria.setDescription(emptyTranslation);
+		flagCriteria.setDescription(EMPTY_TRANSLATION);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setDescription(somethingTranslation);
+		flagCriteria.setDescription(TEST_TRANSLATION);
 
 		// bad data type
 		flagCriteria.setDataType("boolean");
@@ -101,5 +104,4 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(manageFlagCriteria.hasActionErrors());
 		flagCriteria.setRequiredStatus(null);
 	}
-
 }

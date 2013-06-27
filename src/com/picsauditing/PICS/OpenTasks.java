@@ -67,7 +67,6 @@ public class OpenTasks extends TranslationActionSupport {
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
-			gatherTasksAboutEmployeeCompetencies();
 		}
 
 		gatherTasksAboutMarketing();
@@ -366,14 +365,6 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	private void gatherTasksAboutEmployeeCompetencies() {
-		if (contractor.isRequiresCompetencyReview() && contractor.getEmployees().isEmpty()
-				&& contractor.hasOperatorWithCompetencyRequiringDocumentation()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(),
-					"ContractorWidget.message.EmployeesNeedToBeAdded", contractor.getId()));
-		}
-	}
-
 	private void vopakSpecificOperatorQualificationTag() {
 		vopakSpecificOperatorQualificationTagEmail(getLocaleStatic());
 	}
@@ -568,6 +559,10 @@ public class OpenTasks extends TranslationActionSupport {
 							+ getTextParameterized(locale, "ContractorWidget.message.ReviewCORNote",
 							conAudit.getCreationDate());
 					openTasks.add(text);
+					addedOpenTask = true;
+				} else if (conAudit.getAuditType().isAnnualAddendum() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
+					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixAnnualUpdateIssues",
+							conAudit.getId(), conAudit.getAuditFor()));
 					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",

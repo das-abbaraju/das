@@ -51,9 +51,12 @@ public class ManageReportsService {
 	}
 
 	public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<ReportInfo> pagination) {
-		// By default, show the top ten most favorited reports sorted by number	 of favorites
 		if (Strings.isEmpty(searchTerm)) {
-			return reportInfoProvider.findTenMostFavoritedReports(permissions);
+            List<ReportInfo> reports = reportInfoProvider.findReportSuggestions(permissions);
+
+            reports.addAll(reportInfoProvider.findTenMostFavoritedReports(permissions, reports.size()));
+
+			return reports;
 		}
 
 		ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);

@@ -11,10 +11,10 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
@@ -104,7 +104,7 @@ abstract public class PicsDAO {
 		q.setParameter("ids", ids);
 		return q.getResultList();
 	}
-	
+
 	public <T extends BaseTable> T findOne(Class<T> c, String where) {
 		Query q = em.createQuery("FROM " + c.getName() + " t WHERE " + where);
 		return (T) q.getSingleResult();
@@ -120,8 +120,9 @@ abstract public class PicsDAO {
 
 	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit, String orderBy) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY " + orderBy);
-		if (limit > 0)
+		if (limit > 0) {
 			q.setMaxResults(limit);
+		}
 		return q.getResultList();
 	}
 
@@ -175,9 +176,10 @@ abstract public class PicsDAO {
 		}
 
 		try {
-			if (cls.getDeclaredField("uniqueCode") != null)
+			if (cls.getDeclaredField("uniqueCode") != null) {
 				sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName()
 						+ ".',IF(t.uniqueCode <> '',t.uniqueCode,t." + identifier + ")" + name + ") = tr.msgKey");
+			}
 		} catch (NoSuchFieldException theFieldDoesNotExist) {
 			sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t." + identifier + name
 					+ ") = tr.msgKey");
@@ -192,8 +194,9 @@ abstract public class PicsDAO {
 
 		sql.addField("t.*");
 
-		if (locale != null)
+		if (locale != null) {
 			sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+		}
 
 		Query query = em.createNativeQuery(sql.toString(), cls);
 		query.setParameter("value", value);
@@ -201,7 +204,7 @@ abstract public class PicsDAO {
 		if (locale != null) {
 			query.setParameter("locale", locale);
 			query.setParameter("lang", locale.getLanguage());
-			query.setParameter("default", I18nCache.DEFAULT_LANGUAGE);
+			query.setParameter("default", TranslationService.DEFAULT_LANGUAGE);
 		}
 
 		if (limit > NO_LIMIT) {

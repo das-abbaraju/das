@@ -7,10 +7,10 @@ import java.util.Collections;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public class AuditCategoryAutocompleteService extends AbstractAutocompleteService<AuditCategory> {
@@ -20,8 +20,8 @@ public class AuditCategoryAutocompleteService extends AbstractAutocompleteServic
 
 	@Override
 	protected Collection<AuditCategory> getItemsForSearch(String search, Permissions permissions) {
-		return auditCategoryDAO.findByTranslatableField(AuditCategory.class, Strings.EMPTY_STRING, "name",
-				"%" + Strings.escapeQuotes(search) + "%", permissions.getLocale(), RESULT_SET_LIMIT);
+		return auditCategoryDAO.findByTranslatableField(AuditCategory.class, Strings.EMPTY_STRING, "name", "%"
+				+ Strings.escapeQuotes(search) + "%", permissions.getLocale(), RESULT_SET_LIMIT);
 	}
 
 	@Override
@@ -31,7 +31,8 @@ public class AuditCategoryAutocompleteService extends AbstractAutocompleteServic
 
 	@Override
 	protected Object getValue(AuditCategory auditCategory, Permissions permissions) {
-		return I18nCache.getInstance().getText(auditCategory.getI18nKey() + ".name", permissions.getLocale());
+		return TranslationServiceFactory.getTranslationService().getText(auditCategory.getI18nKey() + ".name",
+				permissions.getLocale());
 	}
 
 	@Override

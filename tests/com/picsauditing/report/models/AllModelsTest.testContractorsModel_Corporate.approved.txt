@@ -15,12 +15,12 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -30,7 +30,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -38,9 +37,9 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -73,7 +72,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID
@@ -85,3 +83,6 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
+DirectTradeName
+ReportingClient
+TradeName

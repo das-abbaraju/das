@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.access.Permissions;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -50,7 +51,8 @@ public class EmailQueue implements java.io.Serializable {
 	private EmailTemplate emailTemplate;
 	private ContractorAccount contractorAccount;
 	private boolean html = false;
-	private Account viewableBy;
+	private Account bodyViewableBy;
+	private Account subjectViewableBy;
 
 	@JsonProperty
 	@Id
@@ -233,20 +235,38 @@ public class EmailQueue implements java.io.Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "viewableBy")
-	public Account getViewableBy() {
-		return viewableBy;
+	@JoinColumn(name = "bodyViewableBy")
+	public Account getBodyViewableBy() {
+		return bodyViewableBy;
 	}
 
-	public void setViewableBy(Account viewableBy) {
-		this.viewableBy = viewableBy;
+	public void setBodyViewableBy(Account bodyViewableBy) {
+		this.bodyViewableBy = bodyViewableBy;
 	}
 
-	public void setViewableById(int viewableBy) {
-		if (viewableBy == 0)
-			this.viewableBy = null;
-		this.viewableBy = new Account();
-		this.viewableBy.setId(viewableBy);
+	public void setBodyViewableById(int bodyViewableBy) {
+		if (bodyViewableBy == 0)
+			this.bodyViewableBy = null;
+		this.bodyViewableBy = new Account();
+		this.bodyViewableBy.setId(bodyViewableBy);
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "subjectViewableBy")
+	public Account getSubjectViewableBy() {
+		return subjectViewableBy;
+	}
+
+	public void setSubjectViewableBy(Account subjectViewableBy) {
+		this.subjectViewableBy = subjectViewableBy;
+	}
+
+	public void setSubjectViewableById(int subjectViewableByID) {
+		if (subjectViewableByID == 0) {
+			this.subjectViewableBy = null;
+		}
+		this.subjectViewableBy = new Account();
+		this.subjectViewableBy.setId(subjectViewableByID);
 	}
 
 	@Override
@@ -335,5 +355,4 @@ public class EmailQueue implements java.io.Serializable {
 	{
 		priority = 10;
 	}
-	
 }

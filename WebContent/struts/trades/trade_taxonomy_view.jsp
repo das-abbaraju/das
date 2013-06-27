@@ -19,7 +19,7 @@
 			<div class="trade-section">
 				<s:iterator value="tradeClassification" var="atrade">
 					<a href="<s:url method="tradeAjax"><s:param name="trade" value="%{#atrade.id}"/></s:url>" class="trade">
-						<s:if test="#atrade.name2.exists">
+						<s:if test="#atrade.name2 != null && !#atrade.name2.equals('') && !#atrade.name2.equals(#atrade.getI18nKey('name2'))">
 							<s:property value="#atrade.name2"/>
 						</s:if>
 						<s:else>

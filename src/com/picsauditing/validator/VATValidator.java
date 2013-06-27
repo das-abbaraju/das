@@ -46,6 +46,7 @@ public class VATValidator {
 
     // PICS-11482
     private boolean demoVatNumber(String vatCode) {
-        return vatCode.equalsIgnoreCase("999999999");
+        return vatCode.equalsIgnoreCase("999999999") ||
+                vatCode.equalsIgnoreCase("4111111111111111");
     }
 }

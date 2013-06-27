@@ -67554,6 +67554,47 @@ Ext.define('PICS.ux.window.Window', {
         this.callParent(arguments);
     }
 });
+Ext.define('PICS.view.report.settings.ReportInfoSetting', {
+    extend: 'Ext.Component',
+    alias: 'widget.reportinfosetting',
+
+    cls: 'report-info',
+    tpl: new Ext.XTemplate([
+        '<ul id="report_info_list">',
+            '<li>',
+                '<label>Model:</label><span>{model}</span>',
+            '</li>',
+            '<li>',
+                '<label>Shares:</label><span>{shares}</span>',
+            '</li>',
+            '<li>',
+                '<label>Favorites:</label><span>{favorites}</span>',
+            '</li>',
+            '<li class="update-info">',
+                '<label>Updated:</label>',
+                '<span>',
+                    '{updated}',
+                    '<tpl if="updated_by">',
+                        '<br />(by {updated_by})',
+                    '</tpl>',
+                '</span>',
+            '</li>',
+            '<li>',
+                '<label>Owner:</label><span>{owner}</span>',
+            '</li>',
+        '</ul>'
+    ]),
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
+    // custom config
+    modal_title: PICS.text('Report.execute.reportInfoSetting.title'),
+
+    update: function (values) {
+        this.callParent([values]);
+    }
+});
 /**
  * @author Nicolas Ferrero
  *
@@ -83400,6 +83441,9 @@ Ext.define('PICS.store.report.Filters', {
     sorters: [{
         property: 'category',
         direction: 'ASC'
+    }, {
+        property: 'name',
+        direction: 'ASC'
     }]
 });
 /**
@@ -92969,7 +93013,8 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     alias: 'widget.reportsettingsmodal',
 
     requires: [
-        'PICS.view.report.settings.SettingsModalTabs'
+        'PICS.view.report.settings.SettingsModalTabs',
+        'PICS.view.report.settings.ReportInfoSetting'
     ],
 
     closeAction: 'hide',
@@ -96465,6 +96510,9 @@ Ext.define('PICS.store.report.Columns', {
     sorters: [{
         property: 'category',
         direction: 'ASC'
+    }, {
+        property: 'name',
+        direction: 'ASC'
     }]
 });
 Ext.define('PICS.model.report.DataTable', {
@@ -98767,8 +98815,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report = report_store.first(),
             is_editable = report.get('is_editable');
 
-        // TODO: reject changes
-        
+        // Remove the Report Info panel
+        this.hideReportInfoIfVisible();
         
         // reset the edit form
         edit_setting_form.loadRecord(edit_setting_form.getRecord());
@@ -98778,8 +98826,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         
         // reset the copy favorite regardless
         copy_favorite.toggleUnfavorite();
-
-        this.hideReportInfoIfVisible();
 
         // reset the share modal
         if (is_editable) {
@@ -98792,15 +98838,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var settings_modal_view = this.getSettingsModal();
 
         settings_modal_view.close();
-    },
-
-    hideReportInfoIfVisible: function (cmp, eOpts) {
-        var settings_modal_view = this.getSettingsModal(),
-            report_info_setting_view = this.getReportInfoSetting();
-
-        if (report_info_setting_view) {
-            this.hideReportInfo();
-        }
     },
 
     changeSettingsModalTab: function (cmp, nextCard, oldCard, eOpts) {
@@ -98934,13 +98971,26 @@ Ext.define('PICS.controller.report.SettingsModal', {
             active_tab_tab_el = active_tab_body.down('.active-suspended'),
             report_info_container_el = Ext.query('.report-info-container')[0];
 
-        active_tab_tab_el.removeCls('active-suspended');
-        active_tab_tab_el.addCls('x-active');
+        if (active_tab_tab_el) {
+            active_tab_tab_el.removeCls('active-suspended');
+            active_tab_tab_el.addCls('x-active');
+        }
+
         settings_modal_view.setTitle(active_tab.modal_title);
+
         report_info_button.action = 'show-report-info';
         report_info_button_el.removeCls('active');
-        report_info_container_el.remove();
-        //report_info_setting_view.getEl().up('div').remove();
+
+        Ext.removeNode(report_info_container_el);
+    },
+
+    hideReportInfoIfVisible: function (cmp, eOpts) {
+        var settings_modal_view = this.getSettingsModal(),
+            report_info_setting_view = this.getReportInfoSetting();
+
+        if (report_info_setting_view) {
+            this.hideReportInfo();
+        }
     },
 
     showReportInfo: function (report_info_button, values) {

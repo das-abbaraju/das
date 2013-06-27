@@ -2,12 +2,16 @@ package com.picsauditing.actions;
 
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.MainPage;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -18,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -38,6 +43,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@Mock
 	private AppPropertyDAO propertyDAO;
 	@Mock
+	private FeatureToggle featureToggleChecker;
+	@Mock
 	private HierarchyBuilder hierarchyBuilder;
 	@Mock
 	private BufferedReader bufferedReader;
@@ -53,6 +60,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		super.setUp(picsActionSupport);
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
+		Whitebox.setInternalState(picsActionSupport, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(picsActionSupport, "userDAO", userDAO);
 		Whitebox.setInternalState(picsActionSupport, "permissions", permissions);
 	}
@@ -388,6 +396,63 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		verify(spy, times(1)).close();
 		assertEquals(json, actual.toJSONString());
+	}
+
+	@Test
+	public void testGetLocalizedPhoneNumberForUser_FeatureToggleNotEnabled() {
+		/*
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_COUNTRY_PHONE_NUMBER)
+				&& user.getPhone().length() <= 4) {
+			String format = "%s x%s";
+
+			if (country != null) {
+				return String.format(format, country.getPhone(), user.getPhone());
+			} else {
+				return String.format(format, getPicsPhoneNumber(), user.getPhone());
+			}
+		}
+
+		return user.getPhone();
+		 */
+		User user = mock(User.class);
+		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(false);
+		when(user.getPhone()).thenReturn("Phone");
+
+		assertEquals("Phone", picsActionSupport.getLocalizedPhoneNumberForUser(user));
+	}
+
+	@Test
+	public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthGreaterThan4() {
+		User user = mock(User.class);
+		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
+		when(user.getPhone()).thenReturn("Phone");
+
+		assertEquals("Phone", picsActionSupport.getLocalizedPhoneNumberForUser(user));
+	}
+
+	@Test
+	public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthEqualTo4() {
+		CountryDAO countryDAO = mock(CountryDAO.class);
+		User user = mock(User.class);
+
+		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
+		when(user.getPhone()).thenReturn("1234");
+
+		Whitebox.setInternalState(picsActionSupport, "countryDAO", countryDAO);
+
+		assertEquals(MainPage.PICS_PHONE_NUMBER + " x1234", picsActionSupport.getLocalizedPhoneNumberForUser(user));
+	}
+
+	@Test
+	public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthEqualTo4AndCountryProvided() {
+		Country country = mock(Country.class);
+		User user = mock(User.class);
+
+		when(country.getPhone()).thenReturn("Country Phone");
+		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
+		when(user.getPhone()).thenReturn("1234");
+
+		assertEquals("Country Phone x1234", picsActionSupport.getLocalizedPhoneNumberForUser(user, country));
 	}
 
 	@Ignore

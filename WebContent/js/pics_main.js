@@ -39,7 +39,7 @@ function clearText(thefield)
 function startThinking( args ) {
 	 var oOptions = augment({
       div: "mainThinkingDiv",
-      message: "Communicating with PICS",
+      message : translate('JS.global.CommunicatingWithPICS'),
       type: "small"
     }, args);
 

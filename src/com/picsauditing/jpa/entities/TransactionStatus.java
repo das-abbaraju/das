@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum TransactionStatus {
-	Paid, Unpaid, Void;
+	Paid, Unpaid, Void, BadDebt;
 
 	public boolean isPaid() {
 		return this == Paid;

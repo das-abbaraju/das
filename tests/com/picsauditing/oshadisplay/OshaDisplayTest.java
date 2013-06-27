@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.sql.DataSource;
-
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
@@ -41,12 +37,11 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.search.Database;
 import com.picsauditing.util.YearList;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "OshaDisplayTest-context.xml" })
-public class OshaDisplayTest {
+public class OshaDisplayTest extends PicsTranslationTest {
 	private OshaDisplay oshaDisplay;
 
 	@Autowired
@@ -72,22 +67,11 @@ public class OshaDisplayTest {
 	private FlagCriteria flagCriteria;
 	@Mock
 	private FlagCriteria canadianFlagCriteria;
-	@Mock
-	private Database databaseForTesting;
-	@Mock
-	private DataSource dataSource;
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-		Whitebox.setInternalState(DBBean.class, "staticDataSource", (DataSource) null);
-	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		Whitebox.setInternalState(DBBean.class, "staticDataSource", dataSource);
+		super.resetTranslationService();
 
 		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 		ContractorOperator conOp = new ContractorOperator();

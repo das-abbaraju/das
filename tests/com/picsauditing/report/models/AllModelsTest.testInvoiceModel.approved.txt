@@ -24,7 +24,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk

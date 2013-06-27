@@ -43,7 +43,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk
@@ -53,6 +52,12 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PreviousAuditAuditFor
+PreviousAuditEffectiveDate
+PreviousAuditExpiresDate
+PreviousAuditID
+PreviousAuditScore
+PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
 SafetyManualDateVerified

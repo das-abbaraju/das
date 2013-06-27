@@ -18,11 +18,12 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.report.ReportContractorAuditOperator;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 public class ExcelSheet {
@@ -31,7 +32,7 @@ public class ExcelSheet {
 	private List<BasicDynaBean> data;
 	private ReportContractorAuditOperator reportCAO;
 
-	private I18nCache i18nCache = I18nCache.getInstance();
+	private TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	private int lastDisplayOrderAdded = 0;
 
@@ -55,8 +56,9 @@ public class ExcelSheet {
 
 		while (i.hasNext()) {
 			ExcelColumn column = i.next();
-			if (column.getName().equals(name))
+			if (column.getName().equals(name)) {
 				i.remove();
+			}
 		}
 	}
 
@@ -76,23 +78,24 @@ public class ExcelSheet {
 		for (ExcelColumn column : columns.values()) {
 			HSSFCellStyle cellStyle = wb.createCellStyle();
 
-			if (ExcelCellType.Date.equals(column.getCellType()))
+			if (ExcelCellType.Date.equals(column.getCellType())) {
 				cellStyle.setDataFormat(df.getFormat("m/d/yyyy"));
-			else if (ExcelCellType.Integer.equals(column.getCellType()))
+			} else if (ExcelCellType.Integer.equals(column.getCellType())) {
 				cellStyle.setDataFormat(df.getFormat("0"));
-			else if (ExcelCellType.Double.equals(column.getCellType()))
+			} else if (ExcelCellType.Double.equals(column.getCellType())) {
 				cellStyle.setDataFormat(df.getFormat("#,##0.00"));
-			else if (ExcelCellType.Money.equals(column.getCellType()))
+			} else if (ExcelCellType.Money.equals(column.getCellType())) {
 				cellStyle.setDataFormat(df.getFormat("($#,##0_);($#,##0)"));
-			else
+			} else {
 				cellStyle.setDataFormat(df.getFormat("@"));
+			}
 
 			cellStyle.setFont(font);
 
 			sheet.setDefaultColumnStyle(col, cellStyle);
 			col++;
 		}
-			
+
 		HSSFFont headerFont = wb.createFont();
 		headerFont.setFontHeightInPoints((short) 12);
 		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
@@ -112,14 +115,15 @@ public class ExcelSheet {
 			rowNumber++;
 			for (Map.Entry<Integer, ExcelColumn> entry : this.columns.entrySet()) {
 				HSSFCell c = r.createCell(columnCount);
-				if (showOrder)
+				if (showOrder) {
 					c.setCellValue(new HSSFRichTextString(entry.getValue().getColumnHeader() + " - " + entry.getKey()));
-				else
+				} else {
 					c.setCellValue(new HSSFRichTextString(entry.getValue().getColumnHeader()));
+				}
 				c.setCellStyle(headerStyle);
 				columnCount++;
 			}
-	
+
 		}
 
 		for (int i = 0; i < data.size(); i++) {
@@ -131,58 +135,55 @@ public class ExcelSheet {
 				// TODO Look at data type here
 
 				try {
-					if (row.get(column.getName()) == null)
+					if (row.get(column.getName()) == null) {
 						c.setCellValue(new HSSFRichTextString(""));
-					else if (ExcelCellType.Date.equals(column.getCellType())) {
+					} else if (ExcelCellType.Date.equals(column.getCellType())) {
 						c.setCellValue((Date) row.get(column.getName()));
 					} else if (ExcelCellType.Integer.equals(column.getCellType())
 							|| ExcelCellType.Double.equals(column.getCellType())
-							|| ExcelCellType.Money.equals(column.getCellType()))
+							|| ExcelCellType.Money.equals(column.getCellType())) {
 						c.setCellValue(Double.parseDouble(row.get(column.getName()).toString()));
-					else if (ExcelCellType.Enum.equals(column.getCellType())) {
+					} else if (ExcelCellType.Enum.equals(column.getCellType())) {
 						String value = "";
-						if ("safetyRisk".equals(column.getName()) || "productRisk".equals(column.getName()))
+						if ("safetyRisk".equals(column.getName()) || "productRisk".equals(column.getName())) {
 							value = LowMedHigh.getName((Integer) row.get(column.getName()));
-						else if ("waitingOn".equals(column.getName()))
+						} else if ("waitingOn".equals(column.getName())) {
 							value = WaitingOn.valueOf((Integer) row.get(column.getName())).toString();
+						}
 						c.setCellValue(new HSSFRichTextString(value));
 					} else if (ExcelCellType.Translated == column.getCellType()) {
 						String key = row.get(column.getName()).toString();
-						String translated = i18nCache.getText(key, ActionContext.getContext().getLocale());
+						String translated = translationService.getText(key, ActionContext.getContext().getLocale());
 						c.setCellValue(new HSSFRichTextString(translated));
 					} else if (column.getColumnHeader().equals("AmBest")) {
 						String value = "";
-						if (reportCAO != null
-								&& row.get(column.getName()) != null) {
+						if (reportCAO != null && row.get(column.getName()) != null) {
 							try {
 								Object cellData = row.get(column.getName());
-								int auditId = Integer.parseInt(cellData
-										.toString());
-								List<AuditData> auditDataList = reportCAO
-										.getDataForAudit(auditId, "AMBest");
+								int auditId = Integer.parseInt(cellData.toString());
+								List<AuditData> auditDataList = reportCAO.getDataForAudit(auditId, "AMBest");
 								for (AuditData auditData : auditDataList) {
-									if (value.length() > 0)
+									if (value.length() > 0) {
 										value += ", ";
-									value += reportCAO
-											.getAMBestRatings(auditData
-													.getComment());
+									}
+									value += reportCAO.getAMBestRatings(auditData.getComment());
 								}
 							} catch (Exception e) {
 							}
 						}
-						c.setCellValue(new HSSFRichTextString(value
-								.replaceAll("<[^>]+>", "")
+						c.setCellValue(new HSSFRichTextString(value.replaceAll("<[^>]+>", "")
 								.replaceAll("Class", " Class").trim()));
-					} else
+					} else {
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-				} catch(IllegalArgumentException iae) {
+					}
+				} catch (IllegalArgumentException iae) {
 					c.setCellValue(new HSSFRichTextString(""));
-				}
-				catch (Exception e) {
-					if (!Strings.isEmpty(row.get(column.getName()).toString()))
+				} catch (Exception e) {
+					if (!Strings.isEmpty(row.get(column.getName()).toString())) {
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-					else
+					} else {
 						c.setCellValue(new HSSFRichTextString(""));
+					}
 				}
 				columnCount++;
 			}

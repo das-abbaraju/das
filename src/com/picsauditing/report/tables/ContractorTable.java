@@ -16,7 +16,6 @@ public class ContractorTable extends AbstractTable {
     public static final String RecommendedCSR = "RecommendedCSR";
     public static final String PQF = "PQF";
     public static final String Flag = "Flag";
-    // TODO Michael, Why does this table have so many one to many joins? This is wrong. -- Trevor
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
     public static final String Watch = "Watch";
@@ -55,11 +54,6 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey flagKey = addRequiredKey(new ReportForeignKey(Flag, new ContractorOperatorTable(),
                 new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
         flagKey.setMinimumImportance(FieldImportance.Low);
-
-//		ReportForeignKey oldCsrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(),
-//				new ReportOnClause("welcomeAuditor_id")));
-//		oldCsrKey.setMinimumImportance(FieldImportance.Average);
-//		oldCsrKey.setCategory(FieldCategory.CustomerService);
 
         ReportForeignKey csr = new ReportForeignKey(CustomerService, new AccountUserTable(), new ReportOnClause("id",
                 "accountID", ReportOnClause.ToAlias + ".role = '" + UserAccountRole.PICSCustomerServiceRep + "' AND " +
@@ -103,7 +97,7 @@ public class ContractorTable extends AbstractTable {
 
         ReportForeignKey trade = new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
                 "conID"));
-        trade.setMinimumImportance(FieldImportance.Average);
+//        trade.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(trade);
 
         ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),

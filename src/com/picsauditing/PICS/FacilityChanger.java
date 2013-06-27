@@ -30,7 +30,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
@@ -104,7 +103,7 @@ public class FacilityChanger {
 		contractorOperatorDAO.save(co);
 		contractor.getOperators().add(co);
 
-		addNote("Linked contractor to " + operator.getName());
+		addNote("Linked contractor to " + operator.getName() + " by " + permissions.getName() + " of " + permissions.getAccountName());
 
 		if (!permissions.isContractor()) {
 			// Send the contractor an email that the operator added them
@@ -116,7 +115,8 @@ public class FacilityChanger {
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setViewableBy(operator.getTopAccount());
+			emailQueue.setSubjectViewableBy(operator.getTopAccount());
+			emailQueue.setBodyViewableBy(operator.getTopAccount());
 			emailSender.send(emailQueue);
 		}
 
@@ -159,7 +159,8 @@ public class FacilityChanger {
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(60);
-		emailQueue.setViewableBy(operator.getTopAccount());
+		emailQueue.setSubjectViewableBy(operator.getTopAccount());
+		emailQueue.setBodyViewableBy(operator.getTopAccount());
 		emailSender.send(emailQueue);
 	}
 
@@ -183,7 +184,7 @@ public class FacilityChanger {
 				contractor.getOperators().remove(co);
 
 				addNote("Unlinked " + co.getContractorAccount().getName() + " from "
-						+ co.getOperatorAccount().getName() + "'s db");
+						+ co.getOperatorAccount().getName() + "'s db by " + permissions.getName() + " of " + permissions.getAccountName());
 
 				// If user is a non-billing user, notify billing to
 				// adjust invoice

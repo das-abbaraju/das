@@ -1,29 +1,41 @@
 package com.picsauditing;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.picsauditing.dao.BaseTableDAO;
 import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.util.SpringUtils;
 
 public class PicsTestUtil {
+
 	private EntityManager em;
-	
+
 	@SuppressWarnings("unchecked")
-	public static <T> void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
+	public static <T> void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom)
 			throws InstantiationException, IllegalAccessException {
 		Class<T> classOfToObject = (Class<T>) objectToAutowire.getClass();
 		Class<T> classOfFromObject = (Class<T>) toTakeMockDaosFrom.getClass();
 		Field[] fields = classOfFromObject.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		for (Field field : fields) {
 			autowireDaoInTargetWithMocksFromSource(objectToAutowire, toTakeMockDaosFrom, classOfToObject, field);
 		}
 	}
@@ -32,8 +44,7 @@ public class PicsTestUtil {
 	private static <T> void autowireDaoInTargetWithMocksFromSource(Object objectToAutowire, Object toTakeMockDaosFrom,
 			Class<T> classOfToObject, Field field) throws IllegalAccessException {
 		Annotation[] annotations = field.getAnnotations();
-		for (int j = 0; j < annotations.length; j++) {
-			Annotation annotation = annotations[j];
+		for (Annotation annotation : annotations) {
 			if (annotation instanceof Mock) {
 				Class<T> classOfField = (Class<T>) field.getType();
 				if (PicsDAO.class.isAssignableFrom(classOfField) || BaseTableDAO.class.isAssignableFrom(classOfField)) {
@@ -53,8 +64,7 @@ public class PicsTestUtil {
 		getAllFields(fields, classOfToObject);
 		for (Field field : fields) {
 			Annotation[] annotations = field.getAnnotations();
-			for (int j = 0; j < annotations.length; j++) {
-				Annotation annotation = annotations[j];
+			for (Annotation annotation : annotations) {
 				if (annotation instanceof Autowired) {
 					Class<T> classOfTargetField = (Class<T>) field.getType();
 					if (classOfTargetField.isAssignableFrom(classOfField)) {
@@ -65,17 +75,16 @@ public class PicsTestUtil {
 		}
 		return fieldName;
 	}
-	
+
 	public static void getAllFields(List<Field> fields, Class<?> type) {
-	    for (Field field: type.getDeclaredFields()) {
-	        fields.add(field);
-	    }
-	    if (type.getSuperclass() != null) {
-	         getAllFields(fields, type.getSuperclass());
-	    }
+		for (Field field : type.getDeclaredFields()) {
+			fields.add(field);
+		}
+		if (type.getSuperclass() != null) {
+			getAllFields(fields, type.getSuperclass());
+		}
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public <T> void autowireEMInjectedDAOs(Object objectToAutowire, EntityManager em) throws InstantiationException,
 			IllegalAccessException {
@@ -86,7 +95,7 @@ public class PicsTestUtil {
 			classOfObject = (Class<T>) classOfObject.getSuperclass();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static <T> void forceSetPrivateField(Object objectToForceSet, String fieldname, Object fieldValue) {
 		Class<T> classOfObject = (Class<T>) objectToForceSet.getClass();
@@ -96,8 +105,7 @@ public class PicsTestUtil {
 	private <T> void autowireEMInjectedDAOs(Object objectToAutowire, Class<T> classOfObject)
 			throws InstantiationException, IllegalAccessException {
 		Field[] fields = classOfObject.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		for (Field field : fields) {
 			wireDAOAnnotations(objectToAutowire, field);
 		}
 	}
@@ -105,8 +113,7 @@ public class PicsTestUtil {
 	private void wireDAOAnnotations(Object objectToAutowire, Field field) throws InstantiationException,
 			IllegalAccessException {
 		Annotation[] annotations = field.getAnnotations();
-		for (int j = 0; j < annotations.length; j++) {
-			Annotation annotation = annotations[j];
+		for (Annotation annotation : annotations) {
 			wireIfDAOAnnotation(objectToAutowire, field, annotation);
 		}
 	}
@@ -125,7 +132,8 @@ public class PicsTestUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> void forceSetPrivateField(Class<T> classOfObject, Object objectToForceSet, String fieldname, Object fieldValue) {
+	private static <T> void forceSetPrivateField(Class<T> classOfObject, Object objectToForceSet, String fieldname,
+			Object fieldValue) {
 		try {
 			Field field = classOfObject.getDeclaredField(fieldname);
 			field.setAccessible(true);
@@ -140,5 +148,32 @@ public class PicsTestUtil {
 		} catch (IllegalAccessException x) {
 			// ignore
 		}
+	}
+
+	public static void setSpringUtilsBeans(final Map<String, Object> beans) {
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString())).thenAnswer(new Answer<Object>() {
+
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object[] arguments = invocation.getArguments();
+				if (MapUtils.isEmpty(beans) || ArrayUtils.isEmpty(arguments)) {
+					return null;
+				}
+
+				if (arguments[0] instanceof String) {
+					return beans.get(arguments[0]);
+				}
+
+				return null;
+			}
+
+		});
+
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
+	}
+
+	public static void resetSpringUtilsBeans() {
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
 	}
 }

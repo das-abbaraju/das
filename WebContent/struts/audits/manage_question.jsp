@@ -283,7 +283,7 @@
 						<s:textfield
 							name="question.title"
 							size="65"
-							value="%{question.title.exists ? question.title : ''}" />
+							value="%{(question.title != null && !question.title.equals(question.getI18nKey('title'))) ? question.title : ''}" />
 					</li>
             		<li>
                         <label>Required:</label>
@@ -320,7 +320,7 @@
 							name="question.columnHeader"
 							size="20"
 							maxlength="30"
-							value="%{question.columnHeader.exists ? question.columnHeader : ''}" />
+							value="%{(question.columnHeader != null && !question.columnHeader.equals(question.getI18nKey('columnHeader')) ? question.columnHeader : ''}" />
 					</li>
             		<li>
                         <label>Field Identifier:</label>
@@ -468,7 +468,7 @@
                         <label>Requirement</label>
             			<s:textarea
             				name="question.requirement"
-            				value="%{question.requirement.exists ? question.requirement : ''}" />
+            				value="%{(question.requirement != null && !question.requirement.equals(question.getI18nKey('requirement'))) ? question.requirement : ''}" />
                         
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.requirement</s:param>
@@ -560,7 +560,7 @@
 						<s:textarea
 							name="question.helpText"
 							rows="4"
-							value="%{question.helpText.exists ? question.helpText : ''}" />
+							value="%{(question.helpText != null && !question.helpText.equals(question.getI18nKey('helpText'))) ? question.helpText : ''}" />
 	
 						<s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.helpText</s:param>

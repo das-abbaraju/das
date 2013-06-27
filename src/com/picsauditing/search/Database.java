@@ -19,13 +19,18 @@ import com.picsauditing.PICS.DBBean;
 import com.picsauditing.util.DatabaseUtil;
 import com.picsauditing.util.Strings;
 
+/**
+ * TODO: Refactor this to use anonymous classes within a static method to
+ * execute the queries so we don't need to constantly create a new connection
+ * for every single method.
+ */
 public class Database {
 
 	private static final int BATCH_SIZE = 500;
 
 	private int allRows = 0;
 
-	private final Logger logger = LoggerFactory.getLogger(Database.class);
+	private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
@@ -223,7 +228,8 @@ public class Database {
 		return results;
 	}
 
-	public static <T, E> List<T> select(String sql, E queryObject, QueryMapper<E> queryMapper, RowMapper<T> rowMapper) throws SQLException {
+	public static <T, E> List<T> select(String sql, E queryObject, QueryMapper<E> queryMapper, RowMapper<T> rowMapper)
+			throws SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -268,13 +274,39 @@ public class Database {
 				preparedStatement.addBatch();
 
 				// once we hit the batch size maximum, run the batch
-				if(++count % BATCH_SIZE == 0) {
-			        preparedStatement.executeBatch();
-			    }
+				if (++count % BATCH_SIZE == 0) {
+					preparedStatement.executeBatch();
+				}
 			}
 
 			preparedStatement.executeBatch();
 		} finally {
+			DatabaseUtil.closeStatement(preparedStatement);
+			DatabaseUtil.closeConnection(connection);
+		}
+	}
+
+	public void executeBatch(List<String> queries) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = DBBean.getDBConnection();
+			Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+
+			int count = 0;
+			for (String query : queries) {
+				statement.addBatch(query);
+
+				if (++count % BATCH_SIZE == 0) {
+					statement.executeBatch();
+				}
+			}
+            // execute those statements that didn't make batch size
+            statement.executeBatch();
+		} finally {
+			DatabaseUtil.closeResultSet(resultSet);
 			DatabaseUtil.closeStatement(preparedStatement);
 			DatabaseUtil.closeConnection(connection);
 		}

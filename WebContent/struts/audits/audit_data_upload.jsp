@@ -21,8 +21,8 @@
                     <s:text name="AuditDataUpload.UploadFile">
                        <s:param>${conAudit.auditFor}</s:param>
                        <s:param>
-                            <s:if test="auditData.question.columnHeader.exists" >
-                                ${auditData.question.columnHeader.toString()}
+                            <s:if test="#auditData.question.columnHeader != null && !#auditData.question.columnHeader.equals('') && !#auditData.question.columnHeader.equals(#auditData.question.getI18nKey('columnHeader'))" >
+                                ${auditData.question.columnHeader}
                             </s:if>
                        </s:param>
                     </s:text>

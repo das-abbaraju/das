@@ -21,6 +21,7 @@ AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -38,6 +39,7 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAgreementDate
 ContractorAuditGUARD
@@ -45,7 +47,6 @@ ContractorAutoAddClientSite
 ContractorBalance
 ContractorContactCountByEmail
 ContractorContactCountByPhone
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -64,6 +65,7 @@ ContractorMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities
+ContractorPaymentExpires
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID
@@ -84,3 +86,6 @@ ContractorWelcomeCallCaoID
 ContractorWelcomeCallCaoStatus
 ContractorWelcomeCallID
 ContractorWelcomeCallTypeName
+DirectTradeName
+ReportingClient
+TradeName

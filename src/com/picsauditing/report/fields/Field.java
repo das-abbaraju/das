@@ -23,7 +23,6 @@ public class Field {
 	private FieldCategory category = FieldCategory.General;
 	private String categoryTranslation;
 	private String text;
-	private String suffix;
 	private String url;
 	private int width = Column.DEFAULT_WIDTH;
 	private String help;
@@ -37,6 +36,9 @@ public class Field {
 	private String postTranslation;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
+
+    private String prefixValue;
+    private String suffixValue;
 
 	public Field(ReportField annotation) {
 		type = annotation.type();
@@ -150,14 +152,6 @@ public class Field {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public String getSuffix() {
-		return suffix;
-	}
-
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
 	}
 
 	public String getDatabaseColumnName() {
@@ -284,11 +278,26 @@ public class Field {
 		this.importance = importance;
 	}
 
-	public Field clone() {
+    public String getPrefixValue() {
+        return prefixValue;
+    }
+
+    public void setPrefixValue(String prefixValue) {
+        this.prefixValue = prefixValue;
+    }
+
+    public String getSuffixValue() {
+        return suffixValue;
+    }
+
+    public void setSuffixValue(String suffixValue) {
+        this.suffixValue = suffixValue;
+    }
+
+    public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, type);
 		copiedField.category = category;
 		copiedField.text = text;
-		copiedField.suffix = suffix;
 		copiedField.url = url;
 		copiedField.width = width;
 		copiedField.help = help;
@@ -300,6 +309,9 @@ public class Field {
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
+        copiedField.prefixValue = prefixValue;
+        copiedField.suffixValue = suffixValue;
+
 		return copiedField;
 	}
 

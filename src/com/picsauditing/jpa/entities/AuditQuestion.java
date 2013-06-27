@@ -21,16 +21,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;
-import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.picsauditing.jpa.entities.builders.AuditQuestionBuilder;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -43,7 +44,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
 	static public final int MANUAL_PQF = 1331;
-    static public final int MANUAL_PQF_SIGNATURE = 10217;
+	static public final int MANUAL_PQF_SIGNATURE = 10217;
 	static public final int OQ_EMPLOYEES = 894;
 	static public final int COR = 2954;
 	static public final int IEC = 10330;
@@ -59,7 +60,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int UK_HSE_KEPT_ID = 9106;
 	static public final int EMR_KEPT_ID = 2033;
 	static public final int MEXICO_KEPT_ID = 15337;
-    static public final int AUSTRALIA_KEPT_ID = 15214;
+	static public final int AUSTRALIA_KEPT_ID = 15214;
 	static public final int IRELAND_KEPT_ID = 15660;
 	static public final int SOUTH_AFRICA_KEPT_ID = 16282;
 	static public final int SINGAPORE_MOM_KEPT_ID = 16590;
@@ -75,11 +76,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int HUNGARY_KEPT_ID = 17170;
 	static public final int GREECE_KEPT_ID = 17203;
 
-    public static final String TYPE_NUMBER = "Number";
-    public static final String TYPE_DATE = "Date";
-    public static final String TYPE_DECIMAL = "Decimal Number";
-    static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
-			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", "FileCertificate",
+	public static final String TYPE_NUMBER = "Number";
+	public static final String TYPE_DATE = "Date";
+	public static final String TYPE_DECIMAL = "Decimal Number";
+	public static final String TYPE_FILE_CERTIFICATE = "FileCertificate";
+	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
+			"Additional Insured", "AMBest", "Calculation", TYPE_DATE, TYPE_DECIMAL, "File", TYPE_FILE_CERTIFICATE,
 			"License", "Money", TYPE_NUMBER, "ESignature", "Tagit", "MultiSelect", "Percent" };
 
 	private int number;
@@ -90,17 +92,25 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private boolean showComment;
 	private String requiredAnswer;
 	private String visibleAnswer;
-	private TranslatableString name;
+
+	private String name;
+
 	private String questionType;
 	private AuditOptionGroup option;
 	private String okAnswer;
-	// TODO Convert this into a TranslatableString PICS-5137
-	private TranslatableString columnHeader;
+
+	private String columnHeader;
+
 	private String uniqueCode;
-	private TranslatableString title;
-	private TranslatableString requirement;
+
+	private String title;
+	private String requirement;
+
 	private String helpPage;
-	private TranslatableString helpText;
+
+	// private TranslatableString helpText;
+	private String helpText;
+
 	private String criteria;
 	private String criteriaAnswer;
 	private AuditQuestion requiredQuestion;
@@ -122,13 +132,13 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	private List<AuditTransformOption> transformOptions;
 
-    public AuditQuestion() {
+	public AuditQuestion() {
 
 	}
 
 	public AuditQuestion(AuditQuestion a, AuditCategory ac) {
 		this.number = a.number;
-		this.name = a.name;
+		this.name = a.getName();
 		this.questionType = a.questionType;
 		this.option = a.option;
 		this.hasRequirement = a.hasRequirement;
@@ -138,15 +148,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.requiredAnswer = a.requiredAnswer;
 		this.visibleQuestion = a.visibleQuestion;
 		this.visibleAnswer = a.visibleAnswer;
-		this.columnHeader = a.columnHeader;
+		this.columnHeader = a.getColumnHeader();
 		this.uniqueCode = a.uniqueCode;
-		this.title = a.title;
+		this.title = a.getTitle();
 		this.groupedWithPrevious = a.groupedWithPrevious;
 		this.showComment = a.showComment;
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
-		this.helpText = a.helpText;
-		this.requirement = a.requirement;
+		this.helpText = a.getHelpText();
+		this.requirement = a.getRequirement();
 		this.category = ac;
 		this.effectiveDate = a.effectiveDate;
 		this.expirationDate = a.expirationDate;
@@ -173,21 +183,26 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Transient
-	public TranslatableString getName() {
-		return this.name;
+	public String getName() {
+		if (name != null) {
+			return name;
+		}
+
+		return new TranslatableString(getI18nKey("name")).toTranslatedString();
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Transient
 	@Override
 	public String getI18nKey() {
-		if (Strings.isEmpty(uniqueCode))
+		if (Strings.isEmpty(uniqueCode)) {
 			return super.getI18nKey();
-		else
+		} else {
 			return "AuditQuestion." + uniqueCode;
+		}
 	}
 
 	@Column(nullable = false)
@@ -275,11 +290,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Transient
-	public TranslatableString getColumnHeader() {
-		return columnHeader;
+	public String getColumnHeader() {
+		if (columnHeader != null) {
+			return columnHeader;
+		}
+
+		return new TranslatableString(getI18nKey("columnHeader")).toTranslatedString();
 	}
 
-	public void setColumnHeader(TranslatableString columnHeader) {
+	public void setColumnHeader(String columnHeader) {
 		this.columnHeader = columnHeader;
 	}
 
@@ -293,11 +312,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Transient
-	public TranslatableString getTitle() {
-		return this.title;
+	public String getTitle() {
+		if (title != null) {
+			return title;
+		}
+
+		return new TranslatableString(getI18nKey("title")).toTranslatedString();
 	}
 
-	public void setTitle(TranslatableString title) {
+	public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -329,7 +352,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.riskLevel = risk;
 	}
 
-	// @Deprecated
 	@Column(length = 100)
 	public String getHelpPage() {
 		return helpPage;
@@ -340,21 +362,29 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	@Transient
-	public TranslatableString getHelpText() {
-		return helpText;
+	public String getHelpText() {
+		if (helpText != null) {
+			return helpText;
+		}
+
+		return new TranslatableString(getI18nKey("helpText")).toTranslatedString();
 	}
 
-	public void setHelpText(TranslatableString helpText) {
+	public void setHelpText(String helpText) {
 		this.helpText = helpText;
 	}
 
-	public void setRequirement(TranslatableString requirement) {
-		this.requirement = requirement;
+	@Transient
+	public String getRequirement() {
+		if (requirement != null) {
+			return requirement;
+		}
+
+		return new TranslatableString(getI18nKey("requirement")).toTranslatedString();
 	}
 
-	@Transient
-	public TranslatableString getRequirement() {
-		return requirement;
+	public void setRequirement(String requirement) {
+		this.requirement = requirement;
 	}
 
 	@Transient
@@ -421,8 +451,9 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public List<AuditQuestion> getDependentVisible(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (testVisibility(answer, visQ.getVisibleAnswer()))
+			if (testVisibility(answer, visQ.getVisibleAnswer())) {
 				dependentVisibleBasedOnAnswer.add(visQ);
+			}
 		}
 
 		return dependentVisibleBasedOnAnswer;
@@ -432,8 +463,9 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public List<AuditQuestion> getDependentVisibleHide(String answer) {
 		List<AuditQuestion> dependentVisibleBasedOnAnswer = new ArrayList<AuditQuestion>();
 		for (AuditQuestion visQ : dependentVisible) {
-			if (!testVisibility(answer, visQ.getVisibleAnswer()))
+			if (!testVisibility(answer, visQ.getVisibleAnswer())) {
 				dependentVisibleBasedOnAnswer.add(visQ);
+			}
 		}
 
 		return dependentVisibleBasedOnAnswer;
@@ -443,11 +475,11 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public Set<AuditQuestion> getDependentQuestions() {
 		if (dependentQuestions == null) {
 			dependentQuestions = new HashSet<AuditQuestion>();
-			for (AuditQuestion dependentQuestion:dependentRequired) {
+			for (AuditQuestion dependentQuestion : dependentRequired) {
 				dependentQuestions.add(dependentQuestion);
 				dependentQuestions.addAll(dependentQuestion.getDependentQuestions());
 			}
-			for (AuditQuestion visibleQuestion:dependentVisible) {
+			for (AuditQuestion visibleQuestion : dependentVisible) {
 				dependentQuestions.add(visibleQuestion);
 				dependentQuestions.addAll(visibleQuestion.getDependentQuestions());
 			}
@@ -478,10 +510,11 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * The list of {@link AuditQuestionFunction}s that apply to this {@link AuditQuestion}.
+	 * The list of {@link AuditQuestionFunction}s that apply to this
+	 * {@link AuditQuestion}.
 	 * 
-	 * Note: Only the first {@link AuditQuestionFunction} with a {@link QuestionFunctionType} of "Calculation" will take
-	 * effect.
+	 * Note: Only the first {@link AuditQuestionFunction} with a
+	 * {@link QuestionFunctionType} of "Calculation" will take effect.
 	 * 
 	 */
 	@OneToMany(mappedBy = "question")
@@ -494,8 +527,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * This is a reference to the {@link AuditQuestionFunction}s that this {@link AuditQuestion} is required for
-	 * calcualtion.
+	 * This is a reference to the {@link AuditQuestionFunction}s that this
+	 * {@link AuditQuestion} is required for calcualtion.
 	 * 
 	 */
 	@OneToMany(mappedBy = "question")
@@ -508,11 +541,13 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * This method runs all {@link AuditQuestionFunction} of a specific {@link QuestionFunctionType} "runType".
+	 * This method runs all {@link AuditQuestionFunction} of a specific
+	 * {@link QuestionFunctionType} "runType".
 	 * 
 	 * @param runType
 	 * @param answerMap
-	 * @return Multimap of the {@link AuditQuestion} => a collection of Function Results.
+	 * @return Multimap of the {@link AuditQuestion} => a collection of Function
+	 *         Results.
 	 */
 	@Transient
 	public Multimap<AuditQuestion, Object> runWatcherFunctions(QuestionFunctionType runType, AnswerMap answerMap) {
@@ -526,7 +561,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * This method runs all {@link AuditQuestionFunction} of a specific {@link QuestionFunctionType} "runType".
+	 * This method runs all {@link AuditQuestionFunction} of a specific
+	 * {@link QuestionFunctionType} "runType".
 	 * 
 	 * @param runType
 	 * @param answerMap
@@ -545,10 +581,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * This method is used to find a Set of {@link AuditQuestion}.id's that are needed by the
-	 * {@link AuditQuestionFunction}s of this {@link AuditQuestion}.
+	 * This method is used to find a Set of {@link AuditQuestion}.id's that are
+	 * needed by the {@link AuditQuestionFunction}s of this
+	 * {@link AuditQuestion}.
 	 * 
-	 * This is to help create an {@link AnswerMap} of the answers that are required for calculation.
+	 * This is to help create an {@link AnswerMap} of the answers that are
+	 * required for calculation.
 	 */
 	@Transient
 	public Collection<Integer> getSiblingQuestionWatchers() {
@@ -573,13 +611,15 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeaderOrQuestion() {
+		String columnHeader = getColumnHeader();
 		if (columnHeader != null && !Strings.isEmpty(columnHeader.toString())) {
 			return columnHeader.toString();
 		}
-			
-		if (getName() == null)
-			return "";
-		
+
+		if (getName() == null) {
+			return Strings.EMPTY_STRING;
+		}
+
 		return getName().toString();
 	}
 
@@ -600,20 +640,23 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 		int cmp = getCategory().compareTo(other.getCategory());
 
-		if (cmp != 0)
+		if (cmp != 0) {
 			return cmp;
+		}
 
 		int numberCmp = new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 
-		if (numberCmp != 0)
+		if (numberCmp != 0) {
 			return numberCmp;
+		}
 
 		return new Integer(id).compareTo(new Integer(other.getId()));
 	}
 
 	/**
-	 * Comparator for comparing AuditQuestions not based on natural ordering. Use compareTo if you want to order based
-	 * on the AuditQuestion's number and direct Category (it's natural order)
+	 * Comparator for comparing AuditQuestions not based on natural ordering.
+	 * Use compareTo if you want to order based on the AuditQuestion's number
+	 * and direct Category (it's natural order)
 	 * 
 	 * @return The comparator for full ordering of AuditQuestions
 	 */
@@ -623,14 +666,19 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 			public int compare(AuditQuestion o1, AuditQuestion o2) {
 				String[] o1a = o1.getExpandedNumber().split("\\.");
 				String[] o2a = o2.getExpandedNumber().split("\\.");
+
 				for (int i = 0; i < o1a.length; i++) {
-					if (i >= o2a.length)
+					if (i >= o2a.length) {
 						return -1;
-					if (o1a[i].equals(o2a[i]))
+					}
+
+					if (o1a[i].equals(o2a[i])) {
 						continue;
-					else
+					} else {
 						return Integer.valueOf(o1a[i]).compareTo(Integer.valueOf(o2a[i]));
+					}
 				}
+
 				return 0;
 			}
 		};
@@ -641,23 +689,25 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public JSONObject toJSON(boolean full) {
 		JSONObject j = super.toJSON(full);
 		j.put("category", category.toJSON());
-		j.put("name", name);
+		j.put("name", getName());
 
 		return j;
 	}
 
 	/**
-	 * Return true if there are category rules that require immediate recalculation when the answer to this question
-	 * changes
+	 * Return true if there are category rules that require immediate
+	 * recalculation when the answer to this question changes
 	 * 
 	 * @return
 	 */
 	@Transient
 	public boolean isRecalculateCategories() {
-		if (getAuditCategoryRules().size() > 0)
+		if (getAuditCategoryRules().size() > 0) {
 			return true;
-		if (getAuditTypeRules().size() > 0)
+		}
+		if (getAuditTypeRules().size() > 0) {
 			return true;
+		}
 		return false;
 	}
 
@@ -674,7 +724,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	/**
-	 * @return int showing the weight to adjust the score by for this question when scoring an audit
+	 * @return int showing the weight to adjust the score by for this question
+	 *         when scoring an audit
 	 */
 	public int getScoreWeight() {
 		return scoreWeight;
@@ -686,10 +737,11 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public boolean isValidQuestion(Date validDate) {
-		if (validDate.after(effectiveDate) && validDate.before(expirationDate))
+		if (validDate.after(effectiveDate) && validDate.before(expirationDate)) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	@Transient
@@ -697,12 +749,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		if (visibleQuestion != null) {
 			boolean questionIsVisible = isVisible(answerMap.get(visibleQuestion.getId()));
 			AuditQuestion q = visibleQuestion;
-			
+
 			while (q != null && questionIsVisible) {
 				if (q.getVisibleQuestion() != null) {
 					questionIsVisible = q.isVisible(answerMap.get(q.getVisibleQuestion().getId()));
 				}
-				
+
 				q = q.getVisibleQuestion();
 			}
 			return questionIsVisible;
@@ -714,30 +766,35 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public boolean isVisible(AuditData data) {
 		if (visibleQuestion != null && visibleAnswer != null) {
 			String answer = null;
-			if (data != null)
+			if (data != null) {
 				answer = data.getAnswer();
+			}
 			return testVisibility(answer, visibleAnswer);
 		}
 		return true;
 	}
 
 	private boolean testVisibility(String answer, String comparisonAnswer) {
-		if (comparisonAnswer.equals("NULL") && Strings.isEmpty(answer))
+		if (comparisonAnswer.equals("NULL") && Strings.isEmpty(answer)) {
 			return true;
-		if (comparisonAnswer.equals("NOTNULL") && !Strings.isEmpty(answer))
+		}
+		if (comparisonAnswer.equals("NOTNULL") && !Strings.isEmpty(answer)) {
 			return true;
-		if (comparisonAnswer.equals(answer))
+		}
+		if (comparisonAnswer.equals(answer)) {
 			return true;
+		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isVisibleInAudit(ContractorAudit audit) {
-		for (AuditCatData category:audit.getCategories()) {
-			if (category.getCategory().getId() == this.getCategory().getId())
+		for (AuditCatData category : audit.getCategories()) {
+			if (category.getCategory().getId() == this.getCategory().getId()) {
 				return category.isApplies();
+			}
 		}
-		
+
 		return false;
 	}
 
@@ -749,20 +806,21 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	@Override
 	public String getAutocompleteItem() {
-		return "[" + id + "] " + name;
+		return "[" + id + "] " + getName();
 	}
 
 	@Transient
 	@Override
 	public String getAutocompleteValue() {
-		return name.toString();
+		return getName();
 	}
 
 	/**
 	 * Is inline radio group
 	 * 
-	 * Boolean to check to see if a radio group's options should be displayed in one line or multiple lines. There is a
-	 * css class 'inline' that is togglable by this flag.
+	 * Boolean to check to see if a radio group's options should be displayed in
+	 * one line or multiple lines. There is a css class 'inline' that is
+	 * togglable by this flag.
 	 * 
 	 * @return
 	 */
@@ -787,7 +845,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		return getLanguages().isEmpty();
 	}
 
-    public static AuditQuestionBuilder builder() {
-        return new AuditQuestionBuilder();
-    }
+	public static AuditQuestionBuilder builder() {
+		return new AuditQuestionBuilder();
+	}
 }

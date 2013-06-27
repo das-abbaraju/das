@@ -1,31 +1,39 @@
 package com.picsauditing.actions.employees;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.report.RecordNotFoundException;
-import com.picsauditing.search.Database;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
-public class EmployeeDetailTest {
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Employee;
+import com.picsauditing.jpa.entities.EmployeeSite;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.report.RecordNotFoundException;
+
+public class EmployeeDetailTest extends PicsTranslationTest {
 	public static final int VISIBLE = 1;
 	public static final int NOT_VISIBLE = 123;
 	private EmployeeDetail employeeDetail;
@@ -34,8 +42,6 @@ public class EmployeeDetailTest {
 	private Account account;
 	@Mock
 	private ContractorOperatorDAO contractorOperatorDAO;
-	@Mock
-	private Database database;
 	@Mock
 	private Employee employee;
 	@Mock
@@ -46,7 +52,6 @@ public class EmployeeDetailTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		employeeDetail = new EmployeeDetail();
 		employeeDetail.setEmployee(employee);
@@ -58,11 +63,6 @@ public class EmployeeDetailTest {
 		when(account.getId()).thenReturn(VISIBLE);
 		when(employee.getAccount()).thenReturn(account);
 		when(employee.getId()).thenReturn(VISIBLE);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test(expected = RecordNotFoundException.class)

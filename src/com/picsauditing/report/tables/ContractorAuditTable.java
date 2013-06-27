@@ -18,6 +18,7 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
     public static final String Trir = "Trir";
+    public static final String PreviousAudit = "PreviousAudit";
 
 	/**
 	 * This is here ONLY for use when the audit type only has a single cao such
@@ -80,6 +81,11 @@ public class ContractorAuditTable extends AbstractTable {
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + AuditQuestion.MANUAL_PQF)));
         safetyManual.setCategory(FieldCategory.DocumentsAndAudits);
         safetyManual.setMinimumImportance(FieldImportance.Average);
+
+        ReportForeignKey previousAudit = addOptionalKey(new ReportForeignKey(PreviousAudit, new ContractorAuditTable(),
+                new ReportOnClause("previousAuditID", "id")));
+        previousAudit.setCategory(FieldCategory.DocumentsAndAudits);
+        previousAudit.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey fatalities = addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));

@@ -16,7 +16,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -33,17 +33,14 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.search.Database;
 
-public class RegistrationRequestEmailHelperTest {
+public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 	private RegistrationRequestEmailHelper emailHelper;
 
 	@Mock
 	private ContractorAccount contractor;
 	@Mock
 	private ContractorOperator relationship;
-	@Mock
-	private Database database;
 	@Mock
 	private EmailBuilder builder;
 	@Mock
@@ -64,7 +61,7 @@ public class RegistrationRequestEmailHelperTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
+		super.resetTranslationService();
 
 		emailHelper = new RegistrationRequestEmailHelper();
 
@@ -73,11 +70,6 @@ public class RegistrationRequestEmailHelperTest {
 
 		Whitebox.setInternalState(emailHelper, "builder", builder);
 		Whitebox.setInternalState(emailHelper, "sender", sender);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

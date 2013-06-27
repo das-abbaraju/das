@@ -1,6 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -55,11 +55,12 @@ import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionToViewContractor;
 
+@SuppressWarnings("deprecation")
 public class ContractorFacilitiesTest extends PicsActionTest {
 	private ContractorFacilities contractorFacilities;
 
-    @Mock
-    private BasicDynaBean basicDynaBean;
+	@Mock
+	private BasicDynaBean basicDynaBean;
 	@Mock
 	private BillingCalculatorSingle billingCalculatorSingle;
 	@Mock
@@ -238,18 +239,18 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 
 		contractorFacilities.setSearch("CountrySubdivision");
 
-        ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> sqlCaptor = ArgumentCaptor.forClass(String.class);
 
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
-        verify(database).select(sqlCaptor.capture(), anyBoolean());
+		verify(database).select(sqlCaptor.capture(), anyBoolean());
 		verify(entityManager).createQuery(anyString());
 		verify(entityManager, never()).merge(any(ContractorAccount.class));
-        verify(query).getResultList();
+		verify(query).getResultList();
 
-        assertTrue(sqlCaptor.getValue().contains("countrySubdivision LIKE '%CountrySubdivision%'"));
-        assertTrue(sqlCaptor.getValue().contains("msgValue LIKE '%CountrySubdivision%'"));
+		assertTrue(sqlCaptor.getValue().contains("countrySubdivision LIKE '%CountrySubdivision%'"));
+		assertTrue(sqlCaptor.getValue().contains("msgValue LIKE '%CountrySubdivision%'"));
 	}
 
 	@Test
@@ -291,33 +292,35 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		operators.add(operatorResult2);
 		operators.add(operatorResult3);
 
-        List<BasicDynaBean> basicDynaBeans = new ArrayList<>();
-        basicDynaBeans.add(basicDynaBean);
+		List<BasicDynaBean> basicDynaBeans = new ArrayList<>();
+		basicDynaBeans.add(basicDynaBean);
 
-        when(basicDynaBean.get("opID")).thenReturn(operatorResult3.getId());
-        when(basicDynaBean.get("name")).thenReturn(operatorResult3.getName());
-        when(basicDynaBean.get("status")).thenReturn(operatorResult3.getStatus());
-        when(basicDynaBean.get("onsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
-        when(basicDynaBean.get("offsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
-        when(basicDynaBean.get("materialSupplier")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
-        when(basicDynaBean.get("transportationServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
-        when(database.select(anyString(), anyBoolean())).thenReturn(basicDynaBeans);
+		when(basicDynaBean.get("opID")).thenReturn(operatorResult3.getId());
+		when(basicDynaBean.get("name")).thenReturn(operatorResult3.getName());
+		when(basicDynaBean.get("status")).thenReturn(operatorResult3.getStatus());
+		when(basicDynaBean.get("onsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+		when(basicDynaBean.get("offsiteServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+		when(basicDynaBean.get("materialSupplier")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+		when(basicDynaBean.get("transportationServices")).thenReturn(operatorResult3.isOnsiteServices() ? 1 : 0);
+		when(database.select(anyString(), anyBoolean())).thenReturn(basicDynaBeans);
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(contractorAccount.getOperators());
 
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
-        verify(entityManager).createQuery(anyString());
-        verify(query).getResultList();
+		verify(entityManager).createQuery(anyString());
+		verify(query).getResultList();
 	}
 
 	@Test
 	public void testSearch_NonCorporateOperatorsSizeZero_NoDataSetsActionMessageOnly() throws Exception {
 		String testMessage = "Test Message";
 		initializeContractor();
-		when(i18nCache.getText(eq("ContractorFacilities.message.FacilitiesBasedLocation"), eq(Locale.ENGLISH), any()))
-				.thenReturn(testMessage);
+		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+		when(
+				translationService.getText(eq("ContractorFacilities.message.FacilitiesBasedLocation"),
+						eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 
 		contractorFacilities.setOperator(new OperatorAccount());
 

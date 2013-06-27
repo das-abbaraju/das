@@ -360,7 +360,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
 			email.setToAddresses(Strings.implode(emails));
 			email.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
-			email.setViewableById(Account.PicsID);
+			email.setSubjectViewableById(Account.PicsID);
+			email.setBodyViewableById(Account.PicsID);
 			emailSender.send(email);
 		}
 	}
@@ -598,7 +599,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue email = emailBuilder.build();
-			email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
+			email.setSubjectViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
+			email.setBodyViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
 			emailSender.send(email);
 		}
 
@@ -615,7 +617,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue email = emailBuilder.build();
-			email.setViewableById(Account.PicsID);
+			email.setSubjectViewableById(Account.PicsID);
+			email.setBodyViewableById(Account.PicsID);
 			emailSender.send(email);
 		}
 

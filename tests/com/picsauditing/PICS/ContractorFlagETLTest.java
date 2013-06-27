@@ -50,7 +50,6 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.TranslatableString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ContractorFlagETL.class)
@@ -119,8 +118,6 @@ public class ContractorFlagETLTest {
 	}
 
 	private Set<FlagCriteria> mockFlagCriteriaQuestionsNotAnnualAddendumNoExcess(int numberToCreate) {
-		TranslatableString translatableString = mock(TranslatableString.class);
-		when(translatableString.toString()).thenReturn("test description");
 		Set<FlagCriteria> flagCriteriaSet = new HashSet<FlagCriteria>();
 		int questionId = 1;
 		for (int i = 0; i < numberToCreate; i++, questionId++) {
@@ -132,7 +129,7 @@ public class ContractorFlagETLTest {
 			FlagCriteria flagCriteria = mock(FlagCriteria.class);
 			when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
 			when(flagCriteria.getCategory()).thenReturn("test category");
-			when(flagCriteria.getDescription()).thenReturn(translatableString);
+			when(flagCriteria.getDescription()).thenReturn("test description");
 			when(flagCriteria.includeExcess()).thenReturn(null);
 
 			flagCriteriaSet.add(flagCriteria);
@@ -550,22 +547,22 @@ public class ContractorFlagETLTest {
 	}
 
 	@Test
-	public void testGetApplicableCategories_MultipleAudits() throws Exception{
+	public void testGetApplicableCategories_MultipleAudits() throws Exception {
 		when(auditQuestion.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
-		
+
 		when(audit1.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 		when(audit2.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
 		when(audit3.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
-		
+
 		List<ContractorAudit> list = new ArrayList<ContractorAudit>();
 		list.add(audit1);
 		list.add(audit2);
 		list.add(audit3);
 		when(contractor.getAudits()).thenReturn(list);
-		
+
 		AuditCategory cat = null;
 		Set<AuditCategory> visibleCategories = null;
-		
+
 		cat = EntityFactory.makeAuditCategory();
 		visibleCategories = new HashSet<AuditCategory>();
 		visibleCategories.add(auditCategory);
@@ -578,8 +575,9 @@ public class ContractorFlagETLTest {
 		visibleCategories = new HashSet<AuditCategory>();
 		visibleCategories.add(auditCategory);
 		when(audit3.getVisibleCategories()).thenReturn(visibleCategories);
-		
-		Set<AuditCategory> applicableCats = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories", auditQuestion, contractor);
-		assertTrue(applicableCats.size()==2);
+
+		Set<AuditCategory> applicableCats = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				auditQuestion, contractor);
+		assertTrue(applicableCats.size() == 2);
 	}
 }

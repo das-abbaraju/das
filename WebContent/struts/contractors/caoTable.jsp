@@ -73,7 +73,7 @@
     						</s:if>
                             
     						<!-- Operator Scope -->
-    						<td <s:if test="conAudit.auditType.classType.policy && #currentCao.status.incomplete">class="problemCao"</s:if> title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="operator.name"/></s:iterator>">
+    						<td <s:if test="(conAudit.auditType.annualAddendum || conAudit.auditType.classType.policy) && #currentCao.status.incomplete">class="problemCao"</s:if> title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="operator.name"/></s:iterator>">
     							<s:if test="systemEdit">
     								<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
     								<s:property value="operator.name" />

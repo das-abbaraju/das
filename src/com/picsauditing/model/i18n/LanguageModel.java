@@ -1,43 +1,67 @@
 package com.picsauditing.model.i18n;
 
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.system.PicsEnvironment;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.Language;
+import com.picsauditing.jpa.entities.LanguageStatus;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.system.PicsEnvironment;
 
 /**
  * Glossary:
  * <p/>
- * "Language Code" = ISO 639-1 Code is the 2-letter language code (e.g. en = English, fr = French).
+ * "Language Code" = ISO 639-1 Code is the 2-letter language code (e.g. en =
+ * English, fr = French).
  * <p/>
- * "Country Code" = ISO 3166-1 alpha-2 is the 2-letter country code (e.g. US = United States, GB = Great Britain).
+ * "Country Code" = ISO 3166-1 alpha-2 is the 2-letter country code (e.g. US =
+ * United States, GB = Great Britain).
  * <p/>
- * "Language Tag" = Internet Engineering Task Force (IETF) language tag = An IETF best practice,
- * currently specified by RFC 5646 and RFC 4647, for language tags easy to parse by computer.
- * The tag system is extensible to region, dialect, and private designations.
- * (e.g. en_US is the US dialect of English, and en_GB is the British dialect).
- * A valid language tag can be either just a 2-letter Language Code, or a 5-character LanguageCode + "_" + CountryCode
+ * "Language Tag" = Internet Engineering Task Force (IETF) language tag = An
+ * IETF best practice, currently specified by RFC 5646 and RFC 4647, for
+ * language tags easy to parse by computer. The tag system is extensible to
+ * region, dialect, and private designations. (e.g. en_US is the US dialect of
+ * English, and en_GB is the British dialect). A valid language tag can be
+ * either just a 2-letter Language Code, or a 5-character LanguageCode + "_" +
+ * CountryCode
  * <p/>
  * "Locale" = the Java Locale object that corresponds to a language tag
  * <p/>
- * "Languages" = is how we'll refer to a list of languages that distinguishes between the various dialects. For
- * English, that would be "en_US", "en_GB", etc. ("en" alone is specifically excluded)
- * For Finnish, it would be just "fi", which has no dialects.
- * (This is the default behavior, unless we specifically use one of the terms below.)
+ * "Languages" = is how we'll refer to a list of languages that distinguishes
+ * between the various dialects. For English, that would be "en_US", "en_GB",
+ * etc. ("en" alone is specifically excluded) For Finnish, it would be just
+ * "fi", which has no dialects. (This is the default behavior, unless we
+ * specifically use one of the terms below.)
  * <p/>
- * "Language Sans Dialect" = is how we'll refer to a language without concern for any particular dialect (either
- * because we are unconcerned about the dialect differences, or because there are no dialect differences) e.g. "en"
- * to refer to all dialects of English, and "fi" for Finnish, which has no dialects.
+ * "Language Sans Dialect" = is how we'll refer to a language without concern
+ * for any particular dialect (either because we are unconcerned about the
+ * dialect differences, or because there are no dialect differences) e.g. "en"
+ * to refer to all dialects of English, and "fi" for Finnish, which has no
+ * dialects.
  * <p/>
- * "Unified Language List" = is how we'll refer to a merged list of the previous 2.
+ * "Unified Language List" = is how we'll refer to a merged list of the previous
+ * 2.
  */
 public class LanguageModel {
 	public static final Locale ENGLISH = Locale.US;
@@ -75,7 +99,8 @@ public class LanguageModel {
 		}
 
 		if (Strings.isNotEmpty(languagesToEmailInvoicesViaBPROCSCSV)) {
-			languagesToEmailInvoicesInBPROCS = new HashSet<>(Arrays.asList(languagesToEmailInvoicesViaBPROCSCSV.split("\\s*,\\s*")));
+			languagesToEmailInvoicesInBPROCS = new HashSet<>(Arrays.asList(languagesToEmailInvoicesViaBPROCSCSV
+					.split("\\s*,\\s*")));
 		}
 	}
 
@@ -104,7 +129,7 @@ public class LanguageModel {
 		return false;
 	}
 
-	public List<KeyValue> getVisibleLanguagesSansDialect() {
+	public List<KeyValue<String, String>> getVisibleLanguagesSansDialect() {
 		List<String> supportedLanguageKeys = extractLanguageIsoCodesFrom(getVisibleLanguages());
 		setFirstLanguageAsEnglish(supportedLanguageKeys);
 
@@ -112,10 +137,11 @@ public class LanguageModel {
 	}
 
 	/**
-	 * A list of all languages that are stable, along with all of their variant dialects.
-	 * Note: The language code alone will not appear in the list unless the language has no dialects at all.
-	 * Note also that stability is a factor of the language alone.
-	 * The dialects always follow the language itself af far as being stable is concerned.
+	 * A list of all languages that are stable, along with all of their variant
+	 * dialects. Note: The language code alone will not appear in the list
+	 * unless the language has no dialects at all. Note also that stability is a
+	 * factor of the language alone. The dialects always follow the language
+	 * itself af far as being stable is concerned.
 	 */
 	public Set<Language> getVisibleLanguages() {
 		return getVisibleLanguages(picsEnvironment().isShowAlphaLanguages());
@@ -126,10 +152,10 @@ public class LanguageModel {
 			visibleLanguages = new TreeSet<>();
 
 			// Always add stable and beta languages
-			LanguageStatus[] statuses = {LanguageStatus.Stable, LanguageStatus.Beta};
+			LanguageStatus[] statuses = { LanguageStatus.Stable, LanguageStatus.Beta };
 
 			if (includeAlphaLanguages) {
-				statuses = new LanguageStatus[] {LanguageStatus.Stable, LanguageStatus.Beta, LanguageStatus.Alpha};
+				statuses = new LanguageStatus[] { LanguageStatus.Stable, LanguageStatus.Beta, LanguageStatus.Alpha };
 			}
 
 			List<Language> stableAndBetaLanguages = languageProvider.findByStatuses(statuses);
@@ -183,8 +209,7 @@ public class LanguageModel {
 	public Locale getClosestVisibleLocale(Locale locale, String country) {
 		Locale closestVisibleLocale = getMatchingVisibleLanguageLocale(locale);
 
-		if (closestVisibleLocale == null && Strings.isNotEmpty(country)
-				&& !country.equals(locale.getCountry())) {
+		if (closestVisibleLocale == null && Strings.isNotEmpty(country) && !country.equals(locale.getCountry())) {
 			Locale localeWithCountry = new Locale(locale.getLanguage(), country);
 			closestVisibleLocale = getMatchingVisibleLanguageLocale(localeWithCountry);
 		}
@@ -211,6 +236,18 @@ public class LanguageModel {
 		return countries;
 	}
 
+	public Map<String, String> getCountriesBasedOn(String language) {
+		List<Language> dialects = languageProvider.findDialectsByLanguage(language);
+		Map<String, String> countryDialects = new TreeMap<>();
+
+		for (Language dialectLanguage : dialects) {
+			Locale dialectLocale = dialectLanguage.getLocale();
+			countryDialects.put(dialectLanguage.getCountry(), dialectLocale.getDisplayCountry(dialectLocale));
+		}
+
+		return countryDialects;
+	}
+
 	private List<String> extractLanguageIsoCodesFrom(Collection<Language> visibleLanguages) {
 		List<String> supportedLanguageKeys = new ArrayList<>();
 
@@ -231,14 +268,14 @@ public class LanguageModel {
 		}
 	}
 
-	private List<KeyValue> languageAndDisplayAsKeyValues(List<String> supportedLanguageKeys) {
-		List<KeyValue> supportedLanguages = new ArrayList<>();
+	private List<KeyValue<String, String>> languageAndDisplayAsKeyValues(List<String> supportedLanguageKeys) {
+		List<KeyValue<String, String>> supportedLanguages = new ArrayList<>();
 
 		for (String languageKey : supportedLanguageKeys) {
 			Locale locale = new Locale(languageKey);
 			String displayLanguage = StringUtils.capitalize(locale.getDisplayLanguage(locale));
 
-			supportedLanguages.add(new KeyValue(languageKey, displayLanguage));
+			supportedLanguages.add(new KeyValue<String, String>(languageKey, displayLanguage));
 		}
 
 		return supportedLanguages;
@@ -257,8 +294,7 @@ public class LanguageModel {
 		Set<Locale> visibleLocales = getVisibleLocales();
 		for (Locale visibleLocale : visibleLocales) {
 			if (visibleLocale == null) {
-				logger.error("Null locale found in getVisibleLocales: "
-						+ Strings.implode(visibleLocales));
+				logger.error("Null locale found in getVisibleLocales: " + Strings.implode(visibleLocales));
 				continue;
 			}
 			if (visibleLocale.equals(locale)) {

@@ -14,14 +14,16 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.model.i18n.TranslatableString;
+
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Token extends BaseTranslatable {
+public class Token implements Translatable {
 	private int id;
 	private String name;
 	private ListType listType;
-	private TranslatableString velocityCode;
+	private String velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -44,11 +46,15 @@ public class Token extends BaseTranslatable {
 	}
 
 	@Transient
-	public TranslatableString getVelocityCode() {
-		return velocityCode;
+	public String getVelocityCode() {
+		if (velocityCode != null) {
+			return velocityCode;
+		}
+
+		return new TranslatableString(getI18nKey("velocityCode")).toTranslatedString();
 	}
 
-	public void setVelocityCode(TranslatableString velocityCode) {
+	public void setVelocityCode(String velocityCode) {
 		this.velocityCode = velocityCode;
 	}
 
@@ -71,16 +77,19 @@ public class Token extends BaseTranslatable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
+		}
 
 		try {
 			// Try to cast this to an account
 			final Token other = (Token) obj;
-			if (id == other.getId().intValue())
+			if (id == other.getId().intValue()) {
 				return true;
+			}
 			return false;
 		} catch (Exception e) {
 			// something went wrong so these must not be equal

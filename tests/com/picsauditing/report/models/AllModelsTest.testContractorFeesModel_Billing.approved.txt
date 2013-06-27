@@ -16,10 +16,9 @@ ContractorFeeCurrentAmount
 ContractorFeeFeeClass
 ContractorFeeNewAmount
 ContractorInsureGUARD
+ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
-ContractorPayingFacilities
-ContractorPaymentExpires
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk

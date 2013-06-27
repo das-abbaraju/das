@@ -1,6 +1,6 @@
 package com.picsauditing.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
@@ -31,7 +31,6 @@ public class PhysicalAddressUtilsTest {
 	@Test
 	public void testAssumptions() throws Exception {
 		assertEquals("CA", california.getIsoCode());
-		// assertEquals("CA", california.getI18nKey());
 		assertEquals("California, United States", california.getName());
 		assertEquals("California", california.getSimpleName());
 	}

@@ -94,7 +94,7 @@ public class ManageReportsServiceTest {
         set.add(1294);
 
         assertNotNull(reports);
-        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions, 0);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class ManageReportsServiceTest {
         set.add(1294);
 
         assertNotNull(reports);
-        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions, 0);
     }
 
     @Test

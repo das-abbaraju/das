@@ -18,7 +18,6 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
@@ -32,7 +31,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -100,7 +98,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -147,7 +144,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -232,7 +228,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -241,6 +236,12 @@ EmrAnswer
 FatalitiesAnswer
 PQFID
 PQFTypeName
+PreviousAuditAuditFor
+PreviousAuditEffectiveDate
+PreviousAuditExpiresDate
+PreviousAuditID
+PreviousAuditScore
+PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
 SafetyManualDateVerified
@@ -267,7 +268,6 @@ ContractorFeeFeeClass
 ContractorFeeNewAmount
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -337,7 +337,6 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
@@ -351,7 +350,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -371,7 +369,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -401,6 +398,8 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 AccountStatus
 AccountTimezone
@@ -418,13 +417,19 @@ ContractorOperatorForceEnd
 ContractorOperatorForceFlag
 ContractorOperatorLastStepToGreenDate
 ContractorOperatorNetworkLevel
+ContractorOperatorOperatorCity
+ContractorOperatorOperatorCountry
+ContractorOperatorOperatorCountrySubdivision
+ContractorOperatorOperatorCreationDate
 ContractorOperatorOperatorID
+ContractorOperatorOperatorLegalName
 ContractorOperatorOperatorName
+ContractorOperatorOperatorStatus
+ContractorOperatorOperatorTimezone
 ContractorOperatorOperatorType
 ContractorOperatorProcessCompletion
 ContractorOperatorWaitingOn
 ContractorOperatorWorkStatus
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTagTagID
@@ -453,12 +458,12 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
 AccountLastLoginLastLogin
 AccountLegalName
+AccountManager
 AccountMaterialSupplier
 AccountNaicsCode
 AccountNaicsDart
@@ -468,7 +473,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -476,9 +480,9 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
-ContractorContractorTradeTradeName
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserName
 ContractorDocuGUARD
@@ -490,7 +494,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorPQFID
 ContractorPQFTypeName
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorRecommendedCSRID
@@ -502,6 +505,9 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorWatchwatch
+DirectTradeName
+ReportingClient
+TradeName
 
 Model: ContractorSearch
 Permission: Permissions{permissions=[]}
@@ -517,7 +523,6 @@ ContractorInsureGUARD
 ContractorMembershipDate
 ContractorOperatorFlagColor
 ContractorOperatorNetworkLevel
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -546,7 +551,6 @@ AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
@@ -556,7 +560,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -576,7 +579,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -588,20 +590,50 @@ ContractorStatisticsStatisticFor
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 
+Model: ContractorTrades
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+ContractorTradeManufacture
+ContractorTradeSelfPerformed
+TradeName
+
 Model: EmployeeCompetencies
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-EmployeeCompetencyCompetencyLabel
-EmployeeCompetencyEmployeeAccountID
-EmployeeCompetencyEmployeeAccountName
-EmployeeCompetencyEmployeeFirstName
-EmployeeCompetencyEmployeeLastName
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+CompetencyLabel
 EmployeeCompetencySkilled
+EmployeeFirstName
+EmployeeLastName
+EmployeeName
+EmployeeStatus
+
+Model: FlagArchive
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
+FlagArchiveCreationDate
+FlagArchiveFlagColor
 
 Model: ForcedFlags
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 ContractorFlagForceBegin
 ContractorFlagForceEnd
@@ -609,6 +641,10 @@ ContractorFlagForceFlag
 ContractorFlagLabel
 ContractorOperatorForcedByUserID
 ContractorOperatorForcedByUserName
+ContractorOperatorOperatorID
+ContractorOperatorOperatorName
+ContractorOperatorOperatorType
+ForcedFlagPercentPercent
 
 Model: ForcedFlagPercents
 Permission: Permissions{permissions=[]}
@@ -642,7 +678,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -688,7 +723,6 @@ ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
@@ -713,7 +747,6 @@ AccountCity
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
-AccountDeactivationDate
 AccountFax
 AccountFullAddress
 AccountID
@@ -726,7 +759,6 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
-AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -794,6 +826,14 @@ GroupsLocale
 GroupsName
 GroupsPhone
 GroupsTimezone
+OperatorAutoApproveInsurance
+OperatorCanSeeInsurance
+OperatorDiscountExpiration
+OperatorDoContractorsPay
+OperatorIsUserManualUploaded
+OperatorPrimaryCorporate
+OperatorRequiredTags
+OperatorSalesForceID
 UserCreationDate
 UserDepartment
 UserEmail
@@ -932,7 +972,6 @@ ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
 ContractorMembershipDate
-ContractorPayingFacilities
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorSafetyRisk
@@ -972,6 +1011,8 @@ AccountCountrySubdivision
 AccountCreationDate
 AccountID
 AccountLegalName
+AccountManagerUserID
+AccountManagerUserName
 AccountName
 AccountStatus
 AccountTimezone

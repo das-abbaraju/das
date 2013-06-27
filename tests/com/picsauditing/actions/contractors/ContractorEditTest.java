@@ -81,9 +81,9 @@ public class ContractorEditTest extends PicsActionTest {
 		when(mockContractor.getCountry()).thenReturn(mockCountry);
 		when(mockContractor.getId()).thenReturn(TESTING_ACCOUNT_ID);
 
-		when(i18nCache.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-		when(i18nCache.getText(anyString(), any(Locale.class))).thenReturn("foo");
-		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
+		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+		when(translationService.getText(anyString(), any(Locale.class))).thenReturn("foo");
+		when(translationService.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
 	}
 
 	/**

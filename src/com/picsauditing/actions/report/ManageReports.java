@@ -664,4 +664,7 @@ public class ManageReports extends PicsActionSupport {
 		this.report = report;
 	}
 
+    public boolean isCanTransferOwnership() {
+        return isCurrentUserOwner || permissionService.isReportDevelopmentGroup(permissions);
+    }
 }

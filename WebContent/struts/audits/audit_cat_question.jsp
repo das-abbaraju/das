@@ -95,7 +95,7 @@
 		
 		<s:property value="getStrippedHref(#q.name)" escape="false"/>
 		
-		<s:if test="#q.helpText.exists">
+		<s:if test="#q.helpText != null && !#q.helpText.equals(#q.getI18nKey('helpText')) && !#q.helpText.equals('')">
 			<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
 				<img src="images/help-icon.png" />
 			</a>

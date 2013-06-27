@@ -71,7 +71,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID IN ("
 					+ Strings.implode(permissions.getVisibleAccounts())
 					+ ")"
-					+ "WHERE aq.questionType = 'FileCertificate' AND aq.columnHeader = 'Certificate' AND aq.number = 1 AND acr.opID = cao.opID)");
+					+ " WHERE aq.questionType = 'FileCertificate' AND aq.number = 1 AND acr.opID = cao.opID AND acr.effectiveDate < NOW() and acr.expirationDate > NOW())");
 
 			sql.addField("d.answer certID");
 

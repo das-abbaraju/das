@@ -50,19 +50,21 @@
 					<ol>
 						<li>
 							<label><s:text name="User.name"/>:</label>
-							<s:property value="contractorAccount.auditor.name"/>
+								${contractorAccount.currentCsr.name}
 						</li>
 						<li>
 							<label><s:text name="User.phone"/>:</label>
-							<s:property value="contractorAccount.auditor.phone"/>
+							<s:set var="contractor_current_csr_phone"
+							       value="getLocalizedPhoneNumberForUser(contractorAccount.currentCsr, contractorAccount.country)"/>
+								${contractor_current_csr_phone}
 						</li>
 						<li>
 							<label><s:text name="User.fax"/>:</label>
-							<s:property value="contractorAccount.auditor.fax"/>
+								${contractorAccount.currentCsr.fax}
 						</li>
 						<li>
 							<label><s:text name="User.email"/>:</label>
-							<s:property value="contractorAccount.auditor.email"/>
+								${contractorAccount.currentCsr.email}
 						</li>
 					</ol>
 				</s:if>
@@ -72,19 +74,21 @@
 					<ol>
 						<li>
 							<label><s:text name="User.name"/>:</label>
-							<s:property value="accountRepUser.name"/>
+								${accountRepUser.name}
 						</li>
 						<li>
 							<label><s:text name="User.phone"/>:</label>
-							<s:property value="accountRepUser.phone"/>
+							<s:set var="contractor_current_manager_phone"
+							       value="getLocalizedPhoneNumberForUser(accountRepUser)"/>
+								${contractor_current_manager_phone}
 						</li>
 						<li>
 							<label><s:text name="User.fax"/>:</label>
-							<s:property value="accountRepUser.fax"/>
+								${accountRepUser.fax}
 						</li>
 						<li>
 							<label><s:text name="User.email"/>:</label>
-							<s:property value="accountRepUser.email"/>
+								${accountRepUser.email}
 						</li>
 					</ol>
 				</s:elseif>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,8 +174,10 @@ public class ReportJoin {
 
 			for (Filter filter : report.getFilters()) {
 				String filterName = filter.getFieldNameWithoutMethod();
-				if (filterName.equalsIgnoreCase(fieldName))
-					return true;
+				if (filterName.equalsIgnoreCase(fieldName)) {
+                    if (!StringUtils.isEmpty(filter.getValue()) || !StringUtils.isEmpty(filter.getColumnCompare()))
+                        return true;
+                }
 			}
 
 			for (Filter filter : report.getFilters()) {

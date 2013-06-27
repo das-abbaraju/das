@@ -1,17 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.picsauditing.model.i18n.TranslatableString;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -33,16 +26,16 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	private String templateName = "";
 	private String subject;
 	private String body;
-	private TranslatableString translatedSubject;
-	private TranslatableString translatedBody;
+	private String translatedSubject;
+	private String translatedBody;
 	private String recipient;
 	private ListType listType;
 	private boolean allowsVelocity = false;
 	private boolean html = false;
 	private boolean translated = false;
 
-	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71,
-			85, 86)));
+	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = Collections
+			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(48, 51, 71, 85, 86)));
 
 	@Column(nullable = false)
 	public int getAccountID() {
@@ -71,24 +64,42 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 	}
 
 	@Transient
-	public TranslatableString getTranslatedSubject() {
-		return translatedSubject;
+	public String getTranslatedSubject() {
+		if (translatedSubject != null) {
+			return translatedSubject;
+		}
+
+		return new TranslatableString(getI18nKey("translatedSubject")).toTranslatedString();
 	}
 
-	public void setTranslatedSubject(TranslatableString translatedSubject) {
+	public void setTranslatedSubject(String translatedSubject) {
 		this.translatedSubject = translatedSubject;
 	}
 
-	@Transient
-	public TranslatableString getTranslatedBody() {
-		return translatedBody;
+    @Transient
+    public String getTranslatedSubject(Locale locale) {
+        return new TranslatableString(getI18nKey("translatedSubject")).toTranslatedString(locale);
+    }
+
+    @Transient
+	public String getTranslatedBody() {
+		if (translatedBody != null) {
+			return translatedBody;
+		}
+
+		return new TranslatableString(getI18nKey("translatedBody")).toTranslatedString();
 	}
 
-	public void setTranslatedBody(TranslatableString translatedBody) {
+	public void setTranslatedBody(String translatedBody) {
 		this.translatedBody = translatedBody;
 	}
 
-	public String getRecipient() {
+    @Transient
+    public String getTranslatedBody(Locale locale) {
+        return new TranslatableString(getI18nKey("translatedBody")).toTranslatedString(locale);
+    }
+
+    public String getRecipient() {
 		return recipient;
 	}
 

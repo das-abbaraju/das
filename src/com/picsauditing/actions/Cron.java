@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.dao.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -36,20 +37,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.EmailQueueDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditType;
@@ -117,6 +104,8 @@ public class Cron extends PicsActionSupport {
 	protected NoteDAO noteDAO;
 	@Autowired
 	protected UserDAO userDAO;
+    @Autowired
+    private ReportDAO reportDAO;
 
 	@Autowired
 	protected AuditBuilder auditBuilder;
@@ -311,6 +300,14 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
+        try {
+            startTask("Refresh Report Suggestions...");
+            reportDAO.updateReportSuggestions();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
 		try {
 			startTask("Emailing Flag Change Reports...");
 			sendFlagChangesEmails();
@@ -494,7 +491,8 @@ public class Cron extends PicsActionSupport {
 					emailBuilder.addToken("date", cal.getTime());
 
 					EmailQueue email = emailBuilder.build();
-					email.setViewableById(Account.EVERYONE);
+					email.setSubjectViewableById(Account.EVERYONE);
+					email.setBodyViewableById(Account.EVERYONE);
 					emailQueueDAO.save(email);
 
 					// update the contractor notes
@@ -531,7 +529,8 @@ public class Cron extends PicsActionSupport {
 				emailBuilder.setTemplate(EmailTemplate.FINAL_TO_OPERATORS_EMAIL_TEMPLATE);
 
 				EmailQueue email = emailBuilder.build();
-				email.setViewableById(Account.EVERYONE);
+				email.setSubjectViewableById(Account.EVERYONE);
+				email.setBodyViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
 
 				// update the notes
@@ -690,7 +689,8 @@ public class Cron extends PicsActionSupport {
 					}
 
 					EmailQueue email = emailBuilder.build();
-					email.setViewableById(Account.EVERYONE);
+					email.setSubjectViewableById(Account.EVERYONE);
+					email.setBodyViewableById(Account.EVERYONE);
 					emailQueueDAO.save(email);
 
 					// update the registration request
@@ -743,7 +743,8 @@ public class Cron extends PicsActionSupport {
 				emailBuilder.setTemplate(EmailTemplate.FINAL_TO_OPERATORS_EMAIL_TEMPLATE);
 
 				EmailQueue email = emailBuilder.build();
-				email.setViewableById(Account.EVERYONE);
+				email.setSubjectViewableById(Account.EVERYONE);
+				email.setBodyViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
 
 				stampNote(
@@ -771,7 +772,8 @@ public class Cron extends PicsActionSupport {
 
 			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
-			email.setViewableById(Account.EVERYONE);
+			email.setSubjectViewableById(Account.EVERYONE);
+			email.setBodyViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 			return true;
 		}
@@ -862,7 +864,8 @@ public class Cron extends PicsActionSupport {
 
 				EmailQueue email = emailBuilder.build();
 				email.setLowPriority();
-				email.setViewableById(Account.PicsID);
+				email.setSubjectViewableById(Account.PicsID);
+				email.setBodyViewableById(Account.PicsID);
 				emailQueueDAO.save(email);
 				stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
 						NoteCategory.Billing);
@@ -881,7 +884,8 @@ public class Cron extends PicsActionSupport {
 				+ "The system is unable to send automated emails to this account. "
 				+ "Attempted to send Overdue Invoice Email Reminder.");
 		email.setLowPriority();
-		email.setViewableById(Account.PicsID);
+		email.setSubjectViewableById(Account.PicsID);
+		email.setBodyViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
 		stampNote(email.getContractorAccount(), "Failed to send Deactivation Email because of no valid email address.",
 				NoteCategory.Billing);
@@ -948,7 +952,8 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
-			email.setViewableById(Account.EVERYONE);
+			email.setSubjectViewableById(Account.EVERYONE);
+			email.setBodyViewableById(Account.EVERYONE);
 			emailQueueDAO.save(email);
 
 			stampNote(cAccount, "No Action Email Notification sent to " + cAccount.getPrimaryContact().getEmail(),
@@ -1012,7 +1017,8 @@ public class Cron extends PicsActionSupport {
 		emailBuilder.setToAddresses(accountMgr);
 		EmailQueue email = emailBuilder.build();
 		email.setVeryHighPriority();
-		email.setViewableById(Account.PicsID);
+		email.setSubjectViewableById(Account.PicsID);
+		email.setBodyViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
 		emailBuilder.clear();
 	}

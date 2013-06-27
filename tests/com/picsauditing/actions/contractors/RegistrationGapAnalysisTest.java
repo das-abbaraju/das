@@ -19,17 +19,14 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
@@ -41,7 +38,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 
-public class RegistrationGapAnalysisTest {
+public class RegistrationGapAnalysisTest extends PicsTranslationTest {
 	private RegistrationGapAnalysis registrationGapAnalysis;
 	private static int counter;
 
@@ -52,18 +49,10 @@ public class RegistrationGapAnalysisTest {
 	@Mock
 	private Permissions permissions;
 
-	// Added this because when running tests testGetRecentlyRegistered() and testGetRequestedContractors()
-	// caused failures when run independently because the database in the I18nCache is the same as the
-	// mock in the Action class, which is being called two times instead of just once.
-
-	@BeforeClass
-	public static void classSetup() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", Mockito.mock(Database.class));
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		super.resetTranslationService();
 
 		counter = 1;
 
@@ -71,11 +60,6 @@ public class RegistrationGapAnalysisTest {
 		Whitebox.setInternalState(registrationGapAnalysis, "dao", dao);
 		Whitebox.setInternalState(registrationGapAnalysis, "database", database);
 		Whitebox.setInternalState(registrationGapAnalysis, "permissions", permissions);
-	}
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test

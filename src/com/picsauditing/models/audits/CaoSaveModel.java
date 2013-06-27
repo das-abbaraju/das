@@ -6,7 +6,6 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -15,18 +14,20 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.Strings;
 
 /**
  * This class acts as a service layer for CaoSave.java. All business logic for
  * that action class should be moved into here.
- *
+ * 
  */
 public class CaoSaveModel {
 	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
 
-	I18nCache i18nCache = I18nCache.getInstance();
+	TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	public String generateNote(List<AuditData> auditDataList) {
 		String note = "";
@@ -51,7 +52,7 @@ public class CaoSaveModel {
 		if (categoryId == AuditCategory.EMR) {
 			commentHeader = "EMR : ";
 		} else if (OshaAudit.isSafetyStatisticsCategory(categoryId) && oshaType != null) {
-			commentHeader = i18nCache.getText(oshaType.getI18nKey(), Locale.ENGLISH) + " : ";
+			commentHeader = translationService.getText(oshaType.getI18nKey(), Locale.ENGLISH) + " : ";
 		} else {
 			commentHeader = "Comment : ";
 		}
@@ -61,7 +62,7 @@ public class CaoSaveModel {
 
 	public void updatePqfOnIncomplete(ContractorAudit audit, AuditStatus newStatus) {
 		if (audit.getAuditType().isPicsPqf() && newStatus.isIncomplete()) {
-			for (AuditData data:audit.getData()) {
+			for (AuditData data : audit.getData()) {
 				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
 					data.setVerified(false);
 					data.setAuditor(null);

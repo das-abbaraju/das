@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -57,24 +58,22 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			if (Strings.isEmpty(criteria.getComparison())) {
 				criteria.setComparison("=");
 			}
-			
+
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
-			} else if (!"NOT EMPTY".equals(criteria.getComparison())){
+			} else if (!"NOT EMPTY".equals(criteria.getComparison())) {
 				if ("boolean".equals(criteria.getDataType())) {
-					if (!("true".equals(criteria.getDefaultValue())
-							|| "false".equals(criteria.getDefaultValue())
-							|| "".equals(criteria.getDefaultValue())))
+					if (!("true".equals(criteria.getDefaultValue()) || "false".equals(criteria.getDefaultValue()) || ""
+							.equals(criteria.getDefaultValue()))) {
 						addActionError("Default hurdle must be true, false, or empty");
+					}
 				}
 				if ("date".equals(criteria.getDataType()) && Strings.isEmpty(criteria.getDefaultValue())) {
 					addActionError("Default hurdle is a required field.");
 				}
-				if ("number".equals(criteria.getDataType())
-						&& criteria.getCategory().indexOf("AMB") == -1) {
+				if ("number".equals(criteria.getDataType()) && criteria.getCategory().indexOf("AMB") == -1) {
 					try {
-						BigDecimal number = new BigDecimal(
-								criteria.getDefaultValue().replaceAll(",", ""));
+						BigDecimal number = new BigDecimal(criteria.getDefaultValue().replaceAll(",", ""));
 					} catch (Exception e) {
 						addActionError("Default hurdle needs to be a valid number.");
 					}
@@ -94,24 +93,29 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				addActionError("Multi-Year Scope must be set.");
 			}
 
-			//if (criteria.getRequiredStatusComparison() != null && !criteria.getRequiredStatusComparison().equals("NOT EMPTY") && criteria.getRequiredStatus() != null && criteria.getAuditType() == null) {
-			//	addActionError("Audit Type must be set.");
-			//}
+			// if (criteria.getRequiredStatusComparison() != null &&
+			// !criteria.getRequiredStatusComparison().equals("NOT EMPTY") &&
+			// criteria.getRequiredStatus() != null && criteria.getAuditType()
+			// == null) {
+			// addActionError("Audit Type must be set.");
+			// }
 
 			if (criteria.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
 						+ "Make sure your flag criteria has at least one language.");
 			}
-			
+
 			if (hasActionErrors()) {
-				if (criteriaDAO.isContained(criteria))
+				if (criteriaDAO.isContained(criteria)) {
 					criteriaDAO.refresh(criteria);
+				}
 				return INPUT;
 			}
 
 			criteria.setAuditColumns(permissions);
 
 			criteriaDAO.save(criteria);
+			EntityTranslationHelper.saveRequiredTranslationsForFlagCriteria(criteria, permissions);
 			addActionMessage("Criteria saved successfully.");
 
 			return this.setUrlForRedirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
@@ -145,10 +149,12 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 		List<AuditType> auditTypes = auditTypeDAO.findAll();
 		Collections.sort(auditTypes, new Comparator<AuditType>() {
 			public int compare(AuditType o1, AuditType o2) {
-				if (o1.getName() == null || o1.getName().toString() == null)
+				if (o1.getName() == null || o1.getName().toString() == null) {
 					return -1;
-				if (o2.getName() == null || o2.getName().toString() == null)
+				}
+				if (o2.getName() == null || o2.getName().toString() == null) {
 					return 1;
+				}
 				return o1.getName().toString().compareTo(o2.getName().toString());
 			}
 		});
@@ -163,8 +169,9 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 		Map<AuditType, List<AuditQuestion>> questionMap = new TreeMap<AuditType, List<AuditQuestion>>();
 
 		for (AuditQuestion question : questionDAO.findFlaggableQuestions()) {
-			if (questionMap.get(question.getAuditType()) == null)
+			if (questionMap.get(question.getAuditType()) == null) {
 				questionMap.put(question.getAuditType(), new ArrayList<AuditQuestion>());
+			}
 
 			questionMap.get(question.getAuditType()).add(question);
 		}

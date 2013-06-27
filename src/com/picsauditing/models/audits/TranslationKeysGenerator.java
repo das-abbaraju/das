@@ -1,89 +1,71 @@
 package com.picsauditing.models.audits;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 
 public class TranslationKeysGenerator {
 
 	private Date today = new Date();
-	
-	private static final String DOT_NAME = ".name";
-	
+
 	public Set<String> generateCategoryKeys(AuditCategory category) {
-		TranslationKeySet  translationKeys = new TranslationKeySet();
-		
-		generateCategoryKeys(category, translationKeys);
-		
-		return translationKeys.getTranslationKeySet();
-	}
-	
-	private void generateCategoryKeys(AuditCategory category, TranslationKeySet translationKeys) {
-		translationKeys.addTranslatableString(category.getName());
-		
-		for (AuditQuestion question: category.getQuestions()) {
-             generateAuditQuestionTranslationKeys(question, translationKeys);
+		if (category == null) {
+			return Collections.emptySet();
 		}
-		
-		for (AuditCategory subCategory: category.getSubCategories()) {
+
+		Set<String> translationKeys = new HashSet<>();
+		generateCategoryKeys(category, translationKeys);
+		return translationKeys;
+	}
+
+	private void generateCategoryKeys(AuditCategory category, Set<String> translationKeys) {
+		translationKeys.add(category.getI18nKey("name"));
+
+		for (AuditQuestion question : category.getQuestions()) {
+			translationKeys.addAll(generateAuditQuestionTranslationKeys(question));
+		}
+
+		for (AuditCategory subCategory : category.getSubCategories()) {
 			generateCategoryKeys(subCategory, translationKeys);
 		}
 	}
 
 	public Set<String> generateAuditTypeKeys(AuditType auditType) {
-		TranslationKeySet translationKeys = new TranslationKeySet();
-		translationKeys.addTranslatableString(auditType.getName());
-		
-		for (AuditCategory category: auditType.getCategories()) {
-			translationKeys.addTranslatableString(category.getName());
-			for (AuditQuestion question: category.getQuestions()) {
-                generateAuditQuestionTranslationKeys(question, translationKeys);
+		if (auditType == null) {
+			return Collections.emptySet();
+		}
+
+		Set<String> translationKeys = new HashSet<>();
+		translationKeys.add(auditType.getI18nKey("name"));
+
+		for (AuditCategory category : auditType.getCategories()) {
+			translationKeys.add(category.getI18nKey("name"));
+			for (AuditQuestion question : category.getQuestions()) {
+				translationKeys.addAll(generateAuditQuestionTranslationKeys(question));
 			}
 		}
-		
-		return translationKeys.getTranslationKeySet();
+
+		return translationKeys;
 	}
 
-    public Set<String> generateAuditQuestionTranslationKeys(AuditQuestion question) {
-        TranslationKeySet translationKeySet = new TranslationKeySet();
-        generateAuditQuestionTranslationKeys(question, translationKeySet);
-        return  translationKeySet.getTranslationKeySet();
-    }
+	public Set<String> generateAuditQuestionTranslationKeys(AuditQuestion question) {
+		if (question == null || !question.isValidQuestion(today)) {
+			return Collections.emptySet();
+		}
 
-    private void generateAuditQuestionTranslationKeys(AuditQuestion question, TranslationKeySet translationKeys) {
-        if (question.isValidQuestion(today)) {
-            translationKeys.addTranslatableString(question.getName());
-            translationKeys.addTranslatableString(question.getTitle());
-            translationKeys.addTranslatableString(question.getRequirement());
-            translationKeys.addTranslatableString(question.getColumnHeader());
-            translationKeys.addTranslatableString(question.getHelpText());
-        }
-    }
+		Set<String> translationKeys = new HashSet<>();
+		translationKeys.add(question.getI18nKey("name"));
+		translationKeys.add(question.getI18nKey("title"));
+		translationKeys.add(question.getI18nKey("requirement"));
+		translationKeys.add(question.getI18nKey("columnHeader"));
+		translationKeys.add(question.getI18nKey("helpText"));
 
-    private class TranslationKeySet {
-        private Set<String> translationKeySet = new HashSet<String>();
+		return translationKeys;
+	}
 
-        public  TranslationKeySet() {
-            translationKeySet = new HashSet<String>();
-        }
-
-        public void addKey(String translationKey) {
-            translationKeySet.add(translationKey);
-        }
-
-        public void addTranslatableString(TranslatableString translatableString) {
-           String translationKey = translatableString != null ? translatableString.getKey() : null;
-           if (translationKey != null) {
-               translationKeySet.add(translationKey);
-           }
-        }
-
-        public Set<String> getTranslationKeySet() {
-            return translationKeySet;
-        }
-    }
 }
-
-

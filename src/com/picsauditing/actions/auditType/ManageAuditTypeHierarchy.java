@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.model.i18n.EntityTranslationHelper;
 
 @SuppressWarnings("serial")
 public class ManageAuditTypeHierarchy extends PicsActionSupport {
@@ -44,8 +45,9 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
+		if (!forceLogin()) {
 			return LOGIN;
+		}
 
 		auditType = auditTypeDAO.find(id);
 
@@ -139,14 +141,16 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 							question.setCategory(auditCategoryDAO.find(parentID));
 
 							auditQuestionDAO.save(question);
+							EntityTranslationHelper.saveRequiredTranslationsForAuditQuestion(question, permissions);
 						}
 					} else if (types[i].equals("category")) {
 						AuditCategory category = auditCategoryDAO.find(ids[i]);
 						category.setNumber(++categoryNumber);
-						if (category.getParent() != null)
+						if (category.getParent() != null) {
 							oldParentCategories.add(category.getParent());
-						else if (category.getAuditType() != null)
+						} else if (category.getAuditType() != null) {
 							oldParentAudits.add(category.getAuditType());
+						}
 
 						if ("category".equals(parentType)) {
 							AuditCategory parent = auditCategoryDAO.find(parentID);
@@ -157,7 +161,8 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 							category.setAuditType(auditTypeDAO.find(parentID));
 						}
 
-						auditCategoryDAO.save(category);
+						EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(
+								auditCategoryDAO.save(category), permissions);
 					}
 				}
 
@@ -186,6 +191,7 @@ public class ManageAuditTypeHierarchy extends PicsActionSupport {
 
 					category.recalculateQuestions();
 					auditCategoryDAO.save(category);
+					EntityTranslationHelper.saveRequiredTranslationsForAuditCategory(category, permissions);
 				}
 
 			} else {

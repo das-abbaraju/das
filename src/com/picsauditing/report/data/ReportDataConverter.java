@@ -6,6 +6,8 @@ import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;
 import org.slf4j.Logger;
@@ -115,7 +117,7 @@ public abstract class ReportDataConverter {
     protected String convertValueBasedOnType(Object value, FieldType type, TimeZone timezone) {
         String result = null;
 
-        Date date = null;
+		Date date = null;
 
         if (value instanceof Timestamp) {
             date = new Date(((Timestamp) value).getTime());

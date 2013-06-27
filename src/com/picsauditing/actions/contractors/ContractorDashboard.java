@@ -203,10 +203,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailQueue.setHighPriority();
 			emailQueue.setFromAddress(EmailAddressUtils
 					.getBillingEmail(contractor.getCurrency()));
-			if (permissions.isOperator())
-				emailQueue.setViewableById(permissions.getTopAccountID());
-			else
-				emailQueue.setViewableById(Account.EVERYONE);
+			if (permissions.isOperator()) {
+				emailQueue.setSubjectViewableById(permissions.getTopAccountID());
+				emailQueue.setBodyViewableById(permissions.getTopAccountID());
+			}
+			else {
+				emailQueue.setSubjectViewableById(Account.EVERYONE);
+				emailQueue.setBodyViewableById(Account.EVERYONE);
+			}
 			emailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {
@@ -501,7 +505,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private String getIncompleteAnnualUpdates(ContractorAccount con,
 			int operatorId) {
 		String years = "";
-		
+
 		ArrayList<String> forYears = new ArrayList<String>();
 		for (ContractorAudit audit : con.getCurrentAnnualUpdates()) {
 			for (ContractorAuditOperator cao : audit.getOperators()) {
@@ -890,6 +894,18 @@ public class ContractorDashboard extends ContractorActionSupport {
         stopwatch.stop();
         profiler.debug("ContractorDashboard.getOperatorUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
 		return visibleUsersWithPermissions;
+	}
+
+	// We want just sites with no duplicates
+	public Set<Account> getUnapprovedSites(OpPerms operatorPermission) {
+		List<User> usersWithPermission = getOperatorUsersWithPermission(operatorPermission);
+		Set<Account> unapprovedSites = new HashSet<>();
+
+		for (User user : usersWithPermission) {
+			unapprovedSites.add(user.getAccount());
+		}
+
+		return unapprovedSites;
 	}
 
     public List<User> getCorporateUsersWithPermission(OpPerms operatorPermission) {
