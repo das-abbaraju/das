@@ -16,6 +16,7 @@ public enum ModelType {
     ContractorStatistics,
     ContractorTrades,
     EmployeeCompetencies,
+    FlagArchive,
     ForcedFlags,
     ForcedFlagPercents,
     InvoiceItems,
