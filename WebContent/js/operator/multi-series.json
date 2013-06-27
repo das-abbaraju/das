@@ -1,5 +1,4 @@
 {
-  "style_type": "Flags",
   "data": {
     "cols": [
           {"id":"","label":"Category","pattern":"","type":"string"},

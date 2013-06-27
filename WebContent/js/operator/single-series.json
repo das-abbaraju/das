@@ -1,5 +1,4 @@
 {
-  "style_type": "Flags",
   "data": {
     "cols": [
           {"id":"","label":"Flag Color","pattern":"","type":"string"},
