@@ -2,14 +2,15 @@
 <%@page import="com.picsauditing.util.Strings"%>
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.util.Locale"%>
-<%@page import="com.picsauditing.PICS.I18nCache"%>
+<%@page import="com.picsauditing.service.i18n.TranslationService"%>
+<%@page import="com.picsauditing.service.i18n.TranslationServiceFactory"%>
 <%@page import="com.picsauditing.validator.InputValidator"%>
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>
 <!-- FIXME Clean up this validation, possibly moving it into a controller solely for AJAX validation -->
 <%
 	try {
 		String groupName = request.getParameter("groupName".trim());
-		I18nCache cache = I18nCache.getInstance();
+		TranslationService translationService = getTranslationService.getTranslationService();
 		Locale locale = Locale.getDefault();
 		
 		if (!Strings.isEmpty(groupName)) {
@@ -19,7 +20,7 @@
             if (inputValidator != null) {
                 String errorMessageKey = inputValidator.validateUsername(groupName);
                 if (Strings.isNotEmpty(errorMessageKey)) {
-                    message = cache.getText(errorMessageKey, locale);
+                    message = translationService.getText(errorMessageKey, locale);
                 }
             }
 
@@ -37,11 +38,11 @@
 				accountID = request.getParameter("accountId");
 				
 				if (ud.duplicateUsername("GROUP"+accountID+groupName, userID)) {
-					String msg = cache.getText("Status.GroupNameNotAvailable", locale, new Object[] {groupName});
+					String msg = translationService.getText("Status.GroupNameNotAvailable", locale, new Object[] {groupName});
 					%><img src="images/notOkCheck.gif" title="Group Name is NOT available" /> <%=msg%><%
 							
 				} else {
-					String msg = cache.getText("Status.GroupNameAvailable", locale, new Object[] {groupName});
+					String msg = translationService.getText("Status.GroupNameAvailable", locale, new Object[] {groupName});
 					%><img src="images/okCheck.gif" title="Group Name is available" /> <%=msg%><%
 							
 				}

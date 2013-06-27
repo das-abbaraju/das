@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
-<%@ page import="com.picsauditing.PICS.I18nCache" %>
+<%@page import="com.picsauditing.service.i18n.TranslationService"%>
+<%@page import="com.picsauditing.service.i18n.TranslationServiceFactory"%>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.access.*" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
@@ -20,7 +21,7 @@
 <%@ page import="java.util.Locale" %>
 
 <%
-	I18nCache i18nCache = I18nCache.getInstance();
+	TranslationService translationService = TranslationServiceFactory.getTranslationService();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
 	String version = AppVersion.current.getVersion();
 	MainPage mainPage = new MainPage(request, session);
@@ -241,7 +242,7 @@
 				<form action="Search.action" method="get">
 					<input type="hidden" value="search" name="button"/>
 					<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-					<input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button"
+					<input type="submit" value="<%=translationService.getText("Header.Search", locale)%>" id="search_button"
 					       onclick="getResult(null)"/>
 				</form>
 			</td>
@@ -251,31 +252,31 @@
 			<td id="sidebox">
 				<p>
 					<b class="head-phone"
-					   title="<%=Strings.isNotEmpty(mainPage.getCountryI18nKey()) ? i18nCache.getText(mainPage.getCountryI18nKey(), locale) : ""%>"><%=mainPage.getPhoneNumber()%>
+					   title="<%=Strings.isNotEmpty(mainPage.getCountryI18nKey()) ? translationService.getText(mainPage.getCountryI18nKey(), locale) : ""%>"><%=mainPage.getPhoneNumber()%>
 					</b>
 					<% if (permissions.isLoggedIn()) { %>
                                 <span id="name">
                                     <%
 	                                    if (permissions.hasPermission(OpPerms.EditProfile)) {
                                     %>
-                                        <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(),
+                                        <%=translationService.getText("Header.WelcomeLink", locale, permissions.getAccountName(),
 		                                        permissions.getName())%>
                                     <%
                                     } else {
                                     %>
-                                        <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName())%>
+                                        <%=translationService.getText("Header.WelcomeNoLink", locale, permissions.getName())%>
                                     <%
 	                                    }
                                     %>
                                 </span>
-					| <a href="<%=homePageUrl%>"><%=i18nCache.getText("global.Home", locale)%>
+					| <a href="<%=homePageUrl%>"><%=translationService.getText("global.Home", locale)%>
 				</a>
 					| <a href="http://www.picsauditing.com">PICS</a>
 					<pics:toggle name="<%=FeatureToggle.TOGGLE_V7MENUS%>">
 						| <a href="/ProfileEdit!version7Menu.action?u=<%=permissions.getUserId()%>"><s:text
 							name="Menu.SwitchToVersion7"/></a>
 					</pics:toggle>
-					| <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale)%>
+					| <a href="Login.action?button=logout"><%=translationService.getText("Header.Logout", locale)%>
 				</a>
 					<%
 						if (switchToUserIsSet) {
@@ -287,10 +288,10 @@
 					<%
 					} else {
 					%>
-					<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
-					| <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%>
+					<span id="name"><%=translationService.getText("Header.Welcome", locale)%></span>
+					| <a href="Login.action"><%=translationService.getText("Header.Login", locale)%>
 				</a>
-					| <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%>
+					| <a href="Registration.action"><%=translationService.getText("Header.Register", locale)%>
 				</a>
 					<%
 						}
@@ -375,7 +376,7 @@
 			%>
 
 			<div id="helpcenter" style="float:left;">
-				<a href="<%=helpUrl%>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale)%>
+				<a href="<%=helpUrl%>" target="_BLANK"><%=translationService.getText("Header.HelpCenter", locale)%>
 				</a>
 			</div>
 
@@ -383,14 +384,14 @@
 				<pics:toggle name="<%=FeatureToggle.TOGGLE_MIBEW_CHAT%>">
 					<a href="<%=MenuBuilder.getMibewURL(locale, permissions) %>"
 					   target="_blank"
-					   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('<%=MenuBuilder.getMibewURL(locale, permissions)%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=i18nCache.getText("Header.Chat", locale)%>
+					   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('<%=MenuBuilder.getMibewURL(locale, permissions)%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=translationService.getText("Header.Chat", locale)%>
 					</a>
 				</pics:toggle>
 				<pics:toggleElse>
 					<%
 						if (liveChatEnabled) {
 					%>
-					<a href="javascript:;" class="liveperson-chat-toggle"><%=i18nCache.getText("Header.Chat", locale)%>
+					<a href="javascript:;" class="liveperson-chat-toggle"><%=translationService.getText("Header.Chat", locale)%>
 					</a>
 
 					<a id="_lpChatBtn"
@@ -406,7 +407,7 @@
 						<%
 						} else {
 						%>
-						<%=i18nCache.getText("Header.Chat", locale)%>
+						<%=translationService.getText("Header.Chat", locale)%>
 						<%
 							}
 						%>
@@ -553,19 +554,19 @@
 			long totalTime = System.currentTimeMillis() - startDate.getTime();
 	%>
 	<div class="pageStats" title="Server: <%=java.net.InetAddress.getLocalHost().getHostName()%>">
-		<%=i18nCache.getText("Footer.Version", locale)%>: <%=version%><br/>
-		<%=i18nCache.getText("Footer.ProcessTime", locale)%>: <%=Math.round(totalTime / 10) / 100f%>s
+		<%=translationService.getText("Footer.Version", locale)%>: <%=version%><br/>
+		<%=translationService.getText("Footer.ProcessTime", locale)%>: <%=Math.round(totalTime / 10) / 100f%>s
 	</div>
 	<%
 		}
 	%>
 	<div id="footermain">
 		<div id="footercontent">
-			<a href="http://www.picsauditing.com/" class="footer"><%=i18nCache.getText("global.PICSCopyright", locale)%>
+			<a href="http://www.picsauditing.com/" class="footer"><%=translationService.getText("global.PICSCopyright", locale)%>
 			</a> |
-			<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale)%>
+			<a href="Contact.action" class="footer"><%=translationService.getText("Footer.Contact", locale)%>
 			</a> |
-			<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=i18nCache.getText("Footer.Privacy", locale)%>
+			<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=translationService.getText("Footer.Privacy", locale)%>
 			</a>
 		</div>
 	</div>
