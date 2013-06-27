@@ -3,6 +3,7 @@ package com.picsauditing.report.data;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.util.Strings;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,7 +42,15 @@ public class ChartWriter {
 
     private JSONObject createColumnJson(Column column) {
         JSONObject json = new JSONObject();
-        DisplayType displayType = column.getField().getType().getDisplayType();
+        DisplayType displayType = null;
+        SqlFunction sqlFunction = column.getSqlFunction();
+        if (sqlFunction == null) {
+            displayType = column.getField().getType().getDisplayType();
+        }
+        else {
+            displayType = sqlFunction.getDisplayType();
+        }
+
         if (!displayType.isNumber()) {
             displayType = DisplayType.String;
         }
