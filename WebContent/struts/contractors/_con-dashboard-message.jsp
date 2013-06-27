@@ -4,6 +4,7 @@
 <s:set name="result" value="dashboardMessageResult" />
 <s:set name="users_with_permissions" value="getOperatorUsersWithPermission('ContractorApproval')"/>
 <s:set name="corporate_users_with_permissions" value="getCorporateUsersWithPermission('ContractorApproval')"/>
+<s:set name="unapproved_sites" value="getUnapprovedSites('ContractorApproval')"/>
 
 <s:if test="#result.showButtons">
     <div class="alert">
@@ -84,16 +85,14 @@
 <s:elseif test="#result.contractorNotApprovedExpectSomeSites"> <!--Corporate Not Approved.  Child sites: Approved, Not Approved -->
     <div class="alert">
         <p>
-            <s:property value="contractor.name"/> <s:text
-                name="ContractorView.ContractorDashboard.AwaitingApproval"/>
+            <s:property value="contractor.name"/>
+			<s:text name="ContractorView.ContractorDashboard.AwaitingApproval"/>
         </p>
     </div>
     <ul class="users-with-permissions">
-        <s:iterator value="#users_with_permissions" status="loop_index">
+        <s:iterator value="#unapproved_sites" var="unapproved_site">
             <li>
-                <s:text name="ContractorView.ContractorDashboard.CorporateApprovedSites">
-                    <s:param><s:property value="name"/></s:param>
-                </s:text>
+                <s:property value="#unapproved_site.name"/>
             </li>
         </s:iterator>
     </ul>
