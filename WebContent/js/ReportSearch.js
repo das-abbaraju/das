@@ -1,7 +1,12 @@
 /** function with searching, sorting, and page changing **/
 function download(url) {
-	newurl = url + "CSV.action?button=download&" + $('#form1').serialize();
-	popupWin = window.open(newurl, url, '');
+	var $form = $('#form1'),
+		old_action = $form.attr('action'),
+		new_action = url + "CSV.action";
+
+	$form.attr('action', new_action);
+	$form.submit();
+	$form.attr('action', old_action);
 }
 
 function changePage( formid, pageNum ) {
