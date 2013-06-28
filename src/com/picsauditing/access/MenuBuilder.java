@@ -262,6 +262,11 @@ public final class MenuBuilder {
 			manageMenu.addChild(getText("menu.UserAccounts"), "UsersManage.action", "users_manage");
 		}
 
+        if (permissions.hasPermission(OpPerms.ManageCsrAssignment)) {
+            manageMenu.addChild("Recommended CSR Assignment", "ManageRecommendedCSRAssignment.action",
+                    "RecommendedCsrAssignment");
+        }
+
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
 					"auditor_assignment_matrix");
@@ -445,6 +450,9 @@ public final class MenuBuilder {
 			legacyMenu.addChild(getText("OperatorFlagMatrix.title"), "OperatorFlagMatrix.action", "OperatorFlagMatrix");
 		}
 
+        if (permissions.hasPermission(OpPerms.AuditVerification)) {
+            legacyMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending", "ReportCompletePQF");
+        }
 		if (permissions.hasPermission(OpPerms.InsuranceVerification)) {
 			legacyMenu.addChild(
 					getText("PolicyVerification.title"),
