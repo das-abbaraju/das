@@ -51,14 +51,7 @@ public class ChartWriter {
 
     private JSONObject createColumnJson(Column column) {
         JSONObject json = new JSONObject();
-        DisplayType displayType = null;
-        SqlFunction sqlFunction = column.getSqlFunction();
-        if (sqlFunction == null) {
-            displayType = column.getField().getType().getDisplayType();
-        }
-        else {
-            displayType = sqlFunction.getDisplayType();
-        }
+        DisplayType displayType = column.getDisplayType();
 
         if (!displayType.isNumber()) {
             displayType = DisplayType.String;

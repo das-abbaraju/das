@@ -10,10 +10,10 @@ public enum SqlFunction {
 	StdDev(DisplayType.Number, FilterType.Number, true),
 	Length(DisplayType.Number, FilterType.Number, false),
 	Year(DisplayType.Number, FilterType.Number, false),
-	YearMonth(DisplayType.Number, FilterType.Number, false),
 	WeekDay(DisplayType.Number, FilterType.Number, false),
 	Hour(DisplayType.Number, FilterType.Number, false),
 
+    YearMonth(DisplayType.String, FilterType.Date, false),
 	GroupConcat(DisplayType.String, FilterType.String, true),
 	Month(DisplayType.String, FilterType.String, false),
 	Date(DisplayType.String, FilterType.String, false),
