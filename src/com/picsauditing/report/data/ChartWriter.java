@@ -23,6 +23,8 @@ public class ChartWriter {
 
     private ReportResults reportResults;
 
+    private final int MAX_ROWS = 20;
+
     public ChartWriter(ReportResults reportResults, Locale locale) {
         this.reportResults = reportResults;
         this.locale = locale;
@@ -82,8 +84,12 @@ public class ChartWriter {
 
     private JSONArray createChartRows() {
         JSONArray rowsJson = new JSONArray();
+        int count = 0;
 
         for (ReportRow row : reportResults.getRows()) {
+            if (count > MAX_ROWS)
+                break;
+
             JSONArray cellsJson = new JSONArray();
             JSONObject styleJson = new JSONObject();
 
@@ -101,6 +107,7 @@ public class ChartWriter {
             rowJson.put("p", styleJson);
 
             rowsJson.add(rowJson);
+            count++;
         }
 
         return rowsJson;
@@ -114,10 +121,10 @@ public class ChartWriter {
                 break;
             default:
                 String text = cell.getValue().toString();
-                if (!prefix.isEmpty()) {
+                if (prefix != null && !prefix.isEmpty()) {
                     text = prefix + "." + text;
                 }
-                if (!suffix.isEmpty()) {
+                if (suffix != null && !suffix.isEmpty()) {
                     text = text + "." + suffix;
                 }
                 json.put("v", getText(text,locale));
