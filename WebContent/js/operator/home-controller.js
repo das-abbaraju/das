@@ -134,7 +134,7 @@
                     'red-flag': '#ac030c',
                     'amber-flag': '#e67e1c',
                     'green-flag': '#229322'
-                }
+                };
 
                 this.loadCharts();
             },
@@ -195,6 +195,29 @@
 
             isSingleSeries: function (data_table) {
                 return data_table.getNumberOfColumns() <= 2;
+            }
+        }
+    });
+}(jQuery));
+
+(function ($) {
+    PICS.define('widget.StackedFlagsChart', {
+        extend: 'widget.FlagsChart',
+
+        methods: {
+            init: function () {
+                this.style_type = 'StackedFlags';
+
+                this.loadCharts();
+            },
+
+            getChartOptions: function (data_table) {
+                var options = {};
+
+                options.colors = this.getColors(data_table, this.getTypeColorAssociations());
+                options.isStacked = true;
+
+                return options;
             }
         }
     });
