@@ -1,19 +1,30 @@
 (function ($) {
     PICS.define('widget.Chart', {
         methods: (function () {
-            function loadCharts() {
-                var that = this,
-                    widget_selector = getWidgetSelectorFromStyleType(that.style_type);
+            function init() {
+                // Cache all widget containers for type-specific filtering later.
+                this.$all_containers = getAllContainers();
+            }
 
-                $(widget_selector).each(function (key, value) {
+            function getAllContainers() {
+                return $('.panel_content[data-widget-type=GoogleChart]');
+            }
+
+            function loadCharts() {
+                var child = this,
+                    widget_selector = getWidgetSelectorFromStyleType(child.style_type);
+
+                $type_specific_containers = this.$all_containers.filter(widget_selector);
+
+                $type_specific_containers.each(function (key, value) {
                     var chart_container = this;
 
-                    loadChart.call(that, chart_container);
+                    loadChart.call(child, chart_container);
                 });
             }
 
             function getWidgetSelectorFromStyleType(style_type) {
-                return '.panel_content[data-widget-type=GoogleChart][data-style-type=' + style_type + ']';
+                return '[data-style-type=' + style_type + ']';
             }
 
             function getChartByType (chart_type, chart_container) {
@@ -73,6 +84,7 @@
             }
 
             return {
+                init: init,
                 loadCharts: loadCharts
             };
         }())
