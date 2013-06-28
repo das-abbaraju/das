@@ -6,31 +6,7 @@ import java.util.List;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
-public class AccountDeleter {
-	
-	String IDs;
-
-	public AccountDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs);
-	}
-	
-	public AccountDeleter(int ID) {
-		IDs = String.valueOf(ID);
-	}
-	
-	public AccountDeleter() {
-	}
-	
-	public AccountDeleter setAccountIDs(List<Integer> IDNumbers) {
-		this.IDs = Strings.implodeForDB(IDNumbers);
-		return this;
-	}
-	
-	public AccountDeleter setAccountID(int ID) {
-		IDs = String.valueOf(ID);
-		return this;
-	}
-	
+public class AccountDeleter extends Deleter {
 	public void execute() throws SQLException {
 		if (null == IDs || IDs.isEmpty()) return;
 		
