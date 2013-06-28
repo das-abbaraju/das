@@ -298,6 +298,7 @@ public class ReportService {
 	public JSONObject buildReportResultsForChart(Report report, ReportContext reportContext)
 			throws ReportValidationException, PicsSqlException {
         SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        sql.setLimit(10);
         List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 
         JSONObject responseJson = new JSONObject();

@@ -80,12 +80,12 @@
 }(jQuery));
 
 (function ($) {
-    PICS.define('widget.DefaultChart', {
+    PICS.define('widget.BasicChart', {
         extend: 'widget.Chart',
 
         methods: {
             init: function () {
-                this.style_type = 'Default';
+                this.style_type = 'Basic';
 
                 this.loadCharts();
             },

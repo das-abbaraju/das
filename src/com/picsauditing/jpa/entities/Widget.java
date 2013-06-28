@@ -39,7 +39,7 @@ public class Widget {
 	protected ChartType chartType = ChartType.Column2D;
 
     protected String googleChartType;
-    protected ChartStyle googleStyleType;
+    protected String googleStyleType;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -188,11 +188,11 @@ public class Widget {
         this.googleChartType = gChartType;
     }
 
-    public ChartStyle getGoogleStyleType() {
+    public String getGoogleStyleType() {
         return googleStyleType;
     }
 
-    public void setGoogleStyleType(ChartStyle googleStyleType) {
+    public void setGoogleStyleType(String googleStyleType) {
         this.googleStyleType = googleStyleType;
     }
 }
