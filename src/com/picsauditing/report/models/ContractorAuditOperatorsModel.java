@@ -50,6 +50,7 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec customerService = contractor.join(ContractorTable.CustomerService);
         customerService.alias = "CustomerService";
         customerService.category = FieldCategory.CustomerService;
+        customerService.minimumImportance = FieldImportance.Required;
 
         ModelSpec customerServiceUser = customerService.join(AccountUserTable.User);
         customerServiceUser.alias = "CustomerServiceUser";

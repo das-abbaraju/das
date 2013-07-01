@@ -48,11 +48,6 @@ ContractorRenew
 ContractorSafetyRisk
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
-CustomerServiceEndDate
-CustomerServiceOwnerPercent
-CustomerServiceRole
-CustomerServiceServiceLevel
-CustomerServiceStartDate
 CustomerServiceUserID
 CustomerServiceUserName
 EmrAnswer
