@@ -98,6 +98,7 @@ public class ReportDAO extends PicsDAO {
 		SelectSQL sql = new SelectSQL("report r");
 
         addFields(sql);
+        sql.addField("0 AS " + ReportInfoMapper.NUMBER_OF_TIMES_FAVORITED);
         sql.addField("1 AS " + ReportInfoMapper.EDITABLE_FIELD); // because if you own it, you can edit it
 
 		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = " + reportSearch.getPermissions().getUserId());
