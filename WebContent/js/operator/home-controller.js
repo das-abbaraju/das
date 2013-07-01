@@ -2,7 +2,6 @@
     PICS.define('widget.Chart', {
         methods: (function () {
             function init() {
-                // Cache all widget containers for type-specific filtering later.
                 this.$all_containers = getAllContainers();
             }
 
@@ -61,7 +60,7 @@
             }
 
             function loadChart(chart_container) {
-                var that = this,
+                var child = this,
                     $chart_container = $(chart_container),
                     url = $chart_container.data('url'),
                     chart_type = $chart_container.data('chart-type');
@@ -75,7 +74,10 @@
                             google_data = config.data,
                             chart = getChartByType(chart_type, chart_container),
                             data_table = new google.visualization.DataTable(google_data),
-                            type_specific_options = (typeof that.getChartOptions == 'function') ? that.getChartOptions(data_table) : {},
+                            parent = child.getParent(),
+                            type_specific_options_from_parent = (typeof parent.getChartOptions == 'function') ? parent.getChartOptions(data_table) : {},
+                            type_specific_options_from_child = (typeof child.getChartOptions == 'function') ? child.getChartOptions(data_table) : {},
+                            type_specific_options = $.extend({}, type_specific_options_from_parent, type_specific_options_from_child),
                             options = $.extend({}, getDefaultChartOptions(), type_specific_options);
 
                         chart.draw(data_table, options);
@@ -226,7 +228,6 @@
             getChartOptions: function (data_table) {
                 var options = {};
 
-                options.colors = this.getColors(data_table, this.getTypeColorAssociations());
                 options.isStacked = true;
 
                 return options;
