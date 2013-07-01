@@ -2,7 +2,7 @@
 function download(url) {
 	var $form = $('#form1'),
 		old_action = $form.attr('action'),
-		new_action = url + "CSV.action";
+		new_action = url + "CSV.action?button=download&";
 
 	$form.attr('action', new_action);
 	$form.submit();
