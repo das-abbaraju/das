@@ -195,13 +195,22 @@ public class ReportDAO extends PicsDAO {
         sql.addField("MAX(rgs.score) AS myScore");
 
         sql.addJoin("JOIN report_group_suggestion rgs ON rgs.groupID = c.groupID");
-        sql.addJoin("JOIN report r ON r.id = rgs.reportID AND r.deleted = 0 AND r.public = 1");
+        sql.addJoin("JOIN report r ON r.id = rgs.reportID AND r.deleted = 0");
         sql.addJoin("LEFT JOIN report_user ru ON rgs.reportID = ru.reportID AND ru.userID = c.userID");
         sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
         sql.addJoin("LEFT JOIN users u ON ru.userID = u.id");
 
         sql.addWhere("c.userID = " + permissions.getUserId());
         sql.addWhere("ru.favorite IS NULL OR (ru.favorite = 0)");
+
+        String permissionsUnion = getPermissionsUnion(permissions);
+
+        String ownerClause = "r.ownerID = " + permissions.getUserId();
+        String publicClause = "r.public = 1";
+        String permissionsClause = "r.id IN (" + permissionsUnion + ")";
+        String canViewClause = "(" + ownerClause + " OR " + publicClause + " OR " + permissionsClause + ")";
+
+        sql.addWhere(canViewClause);
 
         sql.addGroupBy("rgs.reportID");
         sql.addOrderBy("myScore DESC");
@@ -214,6 +223,19 @@ public class ReportDAO extends PicsDAO {
         }
 
         return Collections.EMPTY_LIST;
+    }
+
+    private static String getPermissionsUnion(Permissions permissions) {
+        Set<Integer> users = new HashSet<Integer>();
+        users.addAll(permissions.getAllInheritedGroupIds());
+        users.add(permissions.getUserId());
+
+        Set<Integer> accounts = new HashSet<Integer>();
+        accounts.addAll(permissions.getCorporateParent());
+        accounts.add(permissions.getAccountId());
+
+        return "SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(users) + ") UNION "
+                + " SELECT reportID FROM report_permission_account WHERE accountID IN (" + Strings.implode(accounts) + ")";
     }
 
 }
