@@ -330,8 +330,8 @@
 
 <%
 String mibew_href = MenuBuilder.getMibewURL(locale, permissions);
-String chat_link_text = i18nCache.getText("Header.Chat", locale);
-String help_link_text = i18nCache.getText("Header.HelpCenter", locale);
+String chat_link_text = translationService.getText("Header.Chat", locale);
+String help_link_text = translationService.getText("Header.HelpCenter", locale);
 String help_url = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
 
 if (permissions.isOperatorCorporate()) {
