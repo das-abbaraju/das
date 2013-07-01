@@ -167,6 +167,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
         Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebt);
         PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
+        payment.setStatus(TransactionStatus.BadDebt);
         payment.setAuditColumns(getUser());
         AccountingSystemSynchronization.setToSynchronize(payment);
         paymentDAO.save(payment);
