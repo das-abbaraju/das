@@ -170,7 +170,8 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                         var extended_class = Object.create(that.getClass(class_name));
                         
                         for (var i in cls) {
-                            extended_class[i] = cls[i]; 
+                            extended_class[i] = cls[i];
+                            extended_class.parent = that.getClass(class_name);
                         }
                         
                         cls = extended_class;
@@ -178,7 +179,30 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                     
                     return cls;
                 }
-                
+
+                function extendClass(child_class) {
+                    var parent_class_name = class_configuration.extend,
+                        parent_class, extended_class, i;
+
+                    if (parent_class_name != undefined) {
+                        parent_class = that.getClass(parent_class_name);
+                        extended_class = Object.create(parent_class);
+
+                        extended_class.parent = parent_class;
+                        extended_class.getParent = function () {
+                            return this.parent;
+                        };
+
+                        for (i in child_class) {
+                            extended_class[i] = child_class[i];
+                        }
+
+                        child_class = extended_class;
+                    }
+
+                    return child_class;
+                }
+
                 // add the initialize method if a class has defined an init() in its "methods"
                 // the init() will automatically be called when the document is loaded
                 function initClass(cls, class_path_string) {
