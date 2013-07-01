@@ -837,7 +837,7 @@ public class AuditDataSave extends AuditActionSupport {
 				enteredDate = df.parse(auditData.getAnswer());
 			} catch (Exception e) {
 				df = new SimpleDateFormat("yyyy-MM-dd");
-				df.setLenient(true);
+				df.setLenient(false);
 				try {
 					enteredDate = df.parse(auditData.getAnswer());
 				} catch (Exception second) {
