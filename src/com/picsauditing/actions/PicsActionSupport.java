@@ -1009,7 +1009,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		Date now = new Date();
 		sessionCookie.setUserID(permissions.getUserId());
 		sessionCookie.setCookieCreationTime(now);
-		if (switchToUser > 0) {
+		if (switchToUser > 0 && switchToUser != permissions.getUserId()) {
 			sessionCookie.putData("switchTo", switchToUser);
 		}
 		sessionCookie.putData("rememberMe", rememberMe);
