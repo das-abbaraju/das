@@ -2,6 +2,17 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
+<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
+
+<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href">
+	<s:param name="locale">${mibew_language_code}</s:param>
+	<s:param name="style">PICS</s:param>
+	<s:param name="name">${User.name}</s:param>
+	<s:param name="email">${User.email}</s:param>
+	<s:param name="url">${requestURL}</s:param>
+	<s:param name="referrer">${referer}</s:param>
+</s:url>
+
 <head>
 	<link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css?v=${version}" media="screen"/>
 	<title><s:text name="Contact.title"/></title>
@@ -106,17 +117,6 @@
 						<s:text name="Header.HelpCenter"/>
 					</a>
 				</li>
-
-				<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
-
-				<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href">
-					<s:param name="locale">${mibew_language_code}</s:param>
-					<s:param name="style">PICS</s:param>
-					<s:param name="name">${User.name}</s:param>
-					<s:param name="email">${User.email}</s:param>
-					<s:param name="url">${requestURL}</s:param>
-					<s:param name="referrer">${referer}</s:param>
-				</s:url>
 
 				<li>
 					<label><s:text name="Header.Chat"/>:</label>
