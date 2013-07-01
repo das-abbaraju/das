@@ -171,6 +171,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         payment.setAuditColumns(getUser());
         AccountingSystemSynchronization.setToSynchronize(payment);
         paymentDAO.save(payment);
+        invoice.setStatus(TransactionStatus.Paid);
+        invoiceDAO.save(invoice);
 //        contractor.syncBalance();
         contractor.setBalance(BigDecimal.ZERO);
         contractorAccountDao.save(contractor);
