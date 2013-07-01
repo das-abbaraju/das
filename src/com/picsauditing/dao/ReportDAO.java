@@ -201,7 +201,7 @@ public class ReportDAO extends PicsDAO {
         sql.addJoin("LEFT JOIN users u ON ru.userID = u.id");
 
         sql.addWhere("c.userID = " + permissions.getUserId());
-        sql.addWhere("ru.favorite IS NULL OR (ru.favorite = 0 AND ru.hidden = 0)");
+        sql.addWhere("ru.favorite IS NULL OR (ru.favorite = 0)");
 
         sql.addGroupBy("rgs.reportID");
         sql.addOrderBy("myScore DESC");
