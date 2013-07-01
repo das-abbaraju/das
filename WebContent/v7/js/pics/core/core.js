@@ -163,23 +163,6 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
                 }
                 
                 // create a child class  off an existing class based off the "extend" parameter of the class_configuration object
-                function extendClass(cls) {
-                    var class_name = class_configuration.extend;
-                    
-                    if (class_name != undefined) {
-                        var extended_class = Object.create(that.getClass(class_name));
-                        
-                        for (var i in cls) {
-                            extended_class[i] = cls[i];
-                            extended_class.parent = that.getClass(class_name);
-                        }
-                        
-                        cls = extended_class;
-                    }
-                    
-                    return cls;
-                }
-
                 function extendClass(child_class) {
                     var parent_class_name = class_configuration.extend,
                         parent_class, extended_class, i;
