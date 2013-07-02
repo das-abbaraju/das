@@ -49,8 +49,12 @@ public class ContractorDashboardApprovalMessage {
 				return Result.ShowNothing;
 			}
 		}
-		if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending) && permissions.isOperatorCorporate()) {
 
+		if ((contractorOperator.isWorkingStatus(ApprovalStatus.Pending) || contractorOperator.getOperatorAccount().getId() != permissions.getAccountId()) && permissions.isOperatorCorporate()) {
+
+			if (!contractorOperator.isWorkingStatus(ApprovalStatus.Pending)) {
+				return Result.ShowNothing;
+			}
 			if (canApproveContractors(permissions.isApprovesRelationships(), permissions.hasPermission(OpPerms.ContractorApproval))) {
 				return Result.ShowButtons;
 			} else {

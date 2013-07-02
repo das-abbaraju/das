@@ -197,6 +197,7 @@ public class ContractorOperatorDAO extends PicsDAO {
             Query query = em.createQuery(
                     "FROM ContractorOperator co " +
                     "WHERE co.contractorAccount.id = :conId " +
+		            "AND co.operatorAccount.inPicsConsortium = false " +
                     "AND co.workStatus IN (:statuses) "
             );
             query.setParameter("conId", contractorAccount.getId());
