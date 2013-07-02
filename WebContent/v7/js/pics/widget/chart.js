@@ -43,6 +43,10 @@
                         return new google.visualization.BarChart(chart_container);
                     case 'Column':
                         return new google.visualization.ColumnChart(chart_container);
+                    case 'Line':
+                        return new google.visualization.LineChart(chart_container);
+                    case 'Area':
+                        return new google.visualization.AreaChart(chart_container);
                     default:
                         $.error('Invalid chart type: ' + chart_type);
                 }
