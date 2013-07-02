@@ -44,15 +44,7 @@ public class FlagArchiveModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
-        super.getWhereClause(filters);
-
-        String where = permissionQueryBuilder.buildWhereClause();
-
-        if (!where.isEmpty()) {
-            where += " AND ";
-        }
-
-        where += "DAY(FlagArchive.creationDate) = 1";
+        String where = "DAY(FlagArchive.creationDate) = 1";
 
 		return where;
 	}
