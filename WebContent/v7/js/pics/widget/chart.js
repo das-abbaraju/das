@@ -1,3 +1,12 @@
+/**
+ * Chart
+ *
+ * Implements Google Charts: https://developers.google.com/chart/interactive/docs/reference
+ *
+ * @author: Jason Roos
+ * @date: 7-1-2013
+ * @version: 1
+ */
 (function ($) {
     PICS.define('widget.Chart', {
         methods: (function () {
