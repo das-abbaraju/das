@@ -47,6 +47,11 @@ public class ContractorOperatorsModel extends AbstractModel {
 
         contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
 
+        ModelSpec csr = contractor.join(ContractorTable.CustomerService);
+        csr.alias = "CustomerService";
+        ModelSpec csrUser = csr.join(AccountUserTable.User);
+        csrUser.alias = "CustomerServiceUser";
+
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
 		account.minimumImportance = FieldImportance.Average;

@@ -10,12 +10,15 @@ import static com.picsauditing.report.ReportJson.LEVEL_RESULTS;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.data.*;
+import com.picsauditing.report.models.ReportModelFactory;
+import com.picsauditing.util.PicsDateFormat;
+import com.picsauditing.util.TimeZoneUtil;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -25,15 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.PicsSqlException;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.report.ReportContext;
@@ -44,18 +42,13 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.converter.JsonReportBuilder;
 import com.picsauditing.report.converter.JsonReportElementsBuilder;
 import com.picsauditing.report.converter.ReportBuilder;
-import com.picsauditing.report.data.ReportDataConverter;
-import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.PicsDateFormat;
-import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 public class ReportService {
@@ -69,6 +62,7 @@ public class ReportService {
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
 
+	private I18nCache i18nCache;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
@@ -232,21 +226,21 @@ public class ReportService {
 	}
 
 	void validate(Report report) throws ReportValidationException {
-        if (report == null) {
-            throw new ReportValidationException("Report object is null. (Possible security concern.)");
-        }
+		if (report == null) {
+			throw new ReportValidationException("Report object is null. (Possible security concern.)");
+		}
 
-        if (report.hasNoOwner()) {
-            throw new ReportValidationException("Report " + report.getId() + " has no owner.");
-        }
+		if (report.hasNoOwner()) {
+			throw new ReportValidationException("Report " + report.getId() + " has no owner.");
+		}
 
-        if (report.hasNoModelType()) {
-            throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
-        }
+		if (report.hasNoModelType()) {
+			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
+		}
 
-        if (report.hasNoColumns()) {
-            throw new ReportValidationException("Report contained no columns");
-        }
+		if (report.hasNoColumns()) {
+			throw new ReportValidationException("Report contained no columns");
+		}
 	}
 
 	private boolean shouldLoadReportFromJson(JSONObject reportJson, boolean includeData) {
@@ -285,24 +279,39 @@ public class ReportService {
 
 	protected ReportResults buildReportResults(Report report, ReportContext reportContext,
 			List<BasicDynaBean> queryResults) {
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
-
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForExtJS(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-		converter.convertForExtJS(reportContext.user.getTimezone());
-		ReportResults reportResults = converter.getReportResults();
-
+		converter.convert(reportContext.user.getTimezone());
 		return reportResults;
 	}
 
 	public ReportResults prepareReportForPrinting(Report report, ReportContext reportContext,
 			List<BasicDynaBean> queryResults) {
-		ReportDataConverter converter = new ReportDataConverter(report.getColumns(), queryResults);
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForPrinting(reportResults);
 		converter.setLocale(reportContext.permissions.getLocale());
-		converter.convertForPrinting();
-		return converter.getReportResults();
+		converter.convert(reportContext.user.getTimezone());
+		return reportResults;
 	}
 
-	private boolean shouldIncludeSql(Permissions permissions) {
+	public JSONObject buildReportResultsForChart(Report report, ReportContext reportContext)
+			throws ReportValidationException, PicsSqlException {
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
+
+        JSONObject responseJson = new JSONObject();
+
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForCharts(reportResults);
+		converter.setLocale(reportContext.permissions.getLocale());
+        converter.convert(reportContext.user.getTimezone());
+        responseJson.put("data", new ChartWriter(reportResults,reportContext.permissions.getLocale()).toJson());
+
+		return responseJson;
+	}
+
+    private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}
 
@@ -379,7 +388,7 @@ public class ReportService {
 
 			json.put(ReportJson.SQL_FUNCTIONS_KEY, sqlFunction.name());
 			String key = ReportUtil.REPORT_FUNCTION_KEY_PREFIX + sqlFunction.name();
-			String translatedValue = TranslationServiceFactory.getTranslationService().getText(key, locale);
+			String translatedValue = getI18nCache().getText(key, locale);
 			json.put(ReportJson.SQL_FUNCTIONS_VALUE, translatedValue);
 
 			jsonArray.add(json);
@@ -388,6 +397,14 @@ public class ReportService {
 		sqlFunctionsJson.put(ReportJson.SQL_FUNCTIONS, jsonArray);
 
 		return sqlFunctionsJson;
+	}
+
+	private I18nCache getI18nCache() {
+		if (i18nCache == null) {
+			return I18nCache.getInstance();
+		}
+
+		return i18nCache;
 	}
 
 	public void publicizeReport(User user, Report report) throws ReportPermissionException {
@@ -418,34 +435,31 @@ public class ReportService {
 		reportDao.save(report);
 	}
 
-	public JSONObject buildJsonReportInfo(int reportId, TimeZone timezone) throws Exception {
-		Report report = reportDao.findById(reportId);
+    public JSONObject buildJsonReportInfo(int reportId, TimeZone timezone) throws Exception {
+        Report report = reportDao.findById(reportId);
 
-		JSONObject infoJson = new JSONObject();
-		infoJson.put("model", report.getModelType().toString());
+        JSONObject infoJson = new JSONObject();
+        infoJson.put("model", report.getModelType().toString());
 
 		int shares = report.getReportPermissionUsers().size() + report.getReportPermissionAccounts().size();
 		infoJson.put("shares", Integer.toString(shares));
 
-		int favorites = 0;
-		for (ReportUser user : report.getReportUsers()) {
-			if (user.isFavorite()) {
-				favorites++;
-			}
-		}
-		infoJson.put("favorites", Integer.toString(favorites));
+        int favorites = 0;
+        for (ReportUser user : report.getReportUsers()) {
+            if (user.isFavorite())
+                favorites++;
+        }
+        infoJson.put("favorites",Integer.toString(favorites));
 
-		String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone,
-				PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
+        String updateDate = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone, report.getUpdateDate());
 
-		infoJson.put("updated", updateDate);
+        infoJson.put("updated",updateDate);
 
-		User updatedBy = report.getUpdatedBy();
-		if (updatedBy != null) {
-			infoJson.put("updated_by", updatedBy.getName());
-		}
+        User updatedBy = report.getUpdatedBy();
+        if (updatedBy != null)
+            infoJson.put("updated_by", updatedBy.getName());
 
-		infoJson.put("owner", report.getOwner().getName());
+        infoJson.put("owner",report.getOwner().getName());
 
 		return infoJson;
 	}

@@ -38,6 +38,9 @@ public class Widget {
 
 	protected ChartType chartType = ChartType.Column2D;
 
+    protected String googleChartType;
+    protected String googleStyleType;
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "widgetID", nullable = false, updatable = false)
@@ -134,14 +137,22 @@ public class Widget {
 		if (widgetType == null)
 			return "widgetType is null";
 
+		// TODO: Remove this once all charts have been changed to Google Visualization.
 		if (widgetType.equals("Chart")) {
 			if (chartType == null)
 				return "chartType is null";
 			// FusionChart.createChartHTML("charts/"+chartType.toString()+".swf",
 			// dataURL, dataXML,
 			// chartId, chartWidth, chartHeight, debug);
-			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString() + "_" + widgetID, 400, 400, debug, false);
+			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString()
+					+ "_" + widgetID, 400, 400, debug, false);
 		}
+
+        if (widgetType.equals("GoogleChart")) {
+            if (googleChartType == null)
+                return "chartType is null";
+            return "";
+        }
 
 		if (widgetType.equals("Html") || widgetType.equals("Rss"))
 			return "<div class=\"inprogress\"></div><script>$('#panel" + widgetID + "_content').load('" + url
@@ -168,4 +179,20 @@ public class Widget {
 
 		return "";
 	}
+
+    public String getGoogleChartType() {
+        return googleChartType;
+    }
+
+    public void setGoogleChartType(String gChartType) {
+        this.googleChartType = gChartType;
+    }
+
+    public String getGoogleStyleType() {
+        return googleStyleType;
+    }
+
+    public void setGoogleStyleType(String googleStyleType) {
+        this.googleStyleType = googleStyleType;
+    }
 }

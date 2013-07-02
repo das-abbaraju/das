@@ -1,16 +1,6 @@
 package com.picsauditing.report.data;
 
-import java.sql.Timestamp;
-import java.text.DateFormatSymbols;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
@@ -20,183 +10,140 @@ import com.picsauditing.service.i18n.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.TimeZoneUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ReportDataConverter {
+import java.sql.Timestamp;
+import java.text.DateFormatSymbols;
+import java.util.*;
 
-	private Locale locale;
-	private final ReportResults reportResults;
+public abstract class ReportDataConverter {
 
-	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
-	private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
+    protected Locale locale;
+    protected final ReportResults reportResults;
 
-	public ReportDataConverter(List<Column> columns, List<BasicDynaBean> results) {
-		reportResults = ReportResultsFromDynaBean.build(columns, results);
-	}
+    private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
+    private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
-	public void convertForExtJS(TimeZone timezone) {
-		for (ReportCell cell : reportResults.getCells()) {
-			Object value = convertValueForJson(cell, timezone);
-			cell.setValue(value);
-		}
-	}
+    public ReportDataConverter(ReportResults reportResults) {
+        this.reportResults = reportResults;
+    }
 
-	public void convertForPrinting() {
-		for (ReportCell cell : reportResults.getCells()) {
-			Object value = convertValueForPrinting(cell);
-			cell.setValue(value);
-		}
-	}
+    public abstract void convert(TimeZone timezone);
 
-	private Object convertValueForJson(ReportCell cell, TimeZone timezone) {
-		Object value = cell.getValue();
-		if (value == null) {
-			return null;
-		}
+    protected Object convertValueBasedOnCellColumn(ReportCell cell, boolean forPrint) {
+        Column column = cell.getColumn();
+        Object value = cell.getValue();
+        Object result = null;
 
-		FieldType type = cell.getColumn().getField().getType();
+        if (column == null) {
+            return result;
+        }
 
-		Object result = convertValueBasedOnCellColumn(cell, false);
-		if (result == null) {
-			result = convertValueBasedOnType(value, type, timezone);
-			if (result == null) {
-				result = value.toString();
-			}
-		}
+        logger.info("Attempting to convert {}, value: {}", column.getName(), value);
 
-		return result;
-	}
+        SqlFunction sqlFunction = column.getSqlFunction();
+        if (sqlFunction != null && sqlFunction == SqlFunction.Month) {
+            result = convertValueAsMonth(value);
+        }
 
-	private Object convertValueForPrinting(ReportCell cell) {
-		Object value = cell.getValue();
-		if (value == null) {
-			return null;
-		}
+        if (column.getName().contains("StatusSubstatus")) {
+            result = convertValueAsTranslatedStatus((String) value);
+        }
 
-		Object result = convertValueBasedOnCellColumn(cell, true);
-		if (result == null) {
-			result = value;
-		}
+        Field field = column.getField();
+        if (field == null) {
+            result = column.getName() + ": Field not available";
+            return result;
+        }
 
-		return result;
-	}
+        if (field.isTranslated() && column.hasNoSqlFunction()) {
+            String key = field.getI18nKey(value.toString());
+            result = getText(key, locale);
+        }
 
-	private Object convertValueBasedOnCellColumn(ReportCell cell, boolean forPrint) {
-		Column column = cell.getColumn();
-		Object value = cell.getValue();
-		Object result = null;
+        DisplayType displayType = field.getType().getDisplayType();
+        if (displayType == DisplayType.Number) {
+            result = value;
+        }
 
-		if (column == null) {
-			return result;
-		}
+        if (displayType == DisplayType.Boolean) {
+            if (forPrint) {
+                long numericValue = safeConversionToLong(value);
+                if (numericValue == 1) {
+                    result = "Y";
+                } else {
+                    result = "N";
+                }
+            } else {
+                result = value;
+            }
+        }
 
-		logger.info("Attempting to convert {}, value: {}", column.getName(), value);
+        return result;
+    }
 
-		SqlFunction sqlFunction = column.getSqlFunction();
-		if (sqlFunction != null && sqlFunction == SqlFunction.Month) {
-			result = convertValueAsMonth(value);
-		}
+    private long safeConversionToLong(Object value) {
+        if (value instanceof Integer) {
+            return ((Integer) value).intValue();
+        } else if (value instanceof Long) {
+            return ((Long) value).longValue();
+        }
 
-		if (column.getName().contains("StatusSubstatus")) {
-			result = convertValueAsTranslatedStatus((String) value);
-		}
+        return 0;
+    }
 
-		Field field = column.getField();
-		if (field == null) {
-			result = column.getName() + ": Field not available";
-			return result;
-		}
+    private String convertValueAsMonth(Object value) {
+        int month = Integer.parseInt(value.toString());
+        return new DateFormatSymbols(locale).getMonths()[month - 1];
+    }
 
-		if (field.isTranslated() && column.hasNoSqlFunction()) {
-			String key = field.getI18nKey(value.toString());
-			result = getText(key, locale);
-		}
+    private String convertValueAsTranslatedStatus(String value) {
+        String[] valueString = value.split(":");
 
-		DisplayType displayType = field.getType().getDisplayType();
-		if (displayType == DisplayType.Number) {
-			result = value;
-		}
+        String statusI18nKey = "AuditStatus." + valueString[0];
+        String statusTranslation = getText(statusI18nKey, locale);
+        String valueTranslated = statusTranslation;
 
-		if (displayType == DisplayType.Boolean) {
-			if (forPrint) {
-				long numericValue = safeConversionToLong(value);
-				if (numericValue == 1) {
-					result = "Y";
-				} else {
-					result = "N";
-				}
-			} else {
-				result = value;
-			}
-		}
+        if (valueString.length > 1) {
+            String subStatusI18nKey = "AuditSubStatus." + valueString[1];
+            String subStatusTranslation = getText(subStatusI18nKey, locale);
+            valueTranslated += ": " + subStatusTranslation;
+        }
 
-		return result;
-	}
+        return valueTranslated;
+    }
 
-	private long safeConversionToLong(Object value) {
-		if (value instanceof Integer) {
-			return ((Integer) value).intValue();
-		} else if (value instanceof Long) {
-			return ((Long) value).longValue();
-		}
-
-		return 0;
-	}
-
-	private String convertValueAsMonth(Object value) {
-		int month = Integer.parseInt(value.toString());
-		return new DateFormatSymbols(locale).getMonths()[month - 1];
-	}
-
-	private String convertValueAsTranslatedStatus(String value) {
-		String[] valueString = value.split(":");
-
-		String statusI18nKey = "AuditStatus." + valueString[0];
-		String statusTranslation = getText(statusI18nKey, locale);
-		String valueTranslated = statusTranslation;
-
-		if (valueString.length > 1) {
-			String subStatusI18nKey = "AuditSubStatus." + valueString[1];
-			String subStatusTranslation = getText(subStatusI18nKey, locale);
-			valueTranslated += ": " + subStatusTranslation;
-		}
-
-		return valueTranslated;
-	}
-
-	private String convertValueBasedOnType(Object value, FieldType type, TimeZone timezone) {
-		String result = null;
+    protected String convertValueBasedOnType(Object value, FieldType type, TimeZone timezone) {
+        String result = null;
 
 		Date date = null;
 
-		if (value instanceof Timestamp) {
-			date = new Date(((Timestamp) value).getTime());
-		} else if (value instanceof java.sql.Date) {
-			date = new Date(((java.sql.Date) value).getTime());
-		} else {
-			return null;
-		}
+        if (value instanceof Timestamp) {
+            date = new Date(((Timestamp) value).getTime());
+        } else if (value instanceof java.sql.Date) {
+            date = new Date(((java.sql.Date) value).getTime());
+        } else {
+            return null;
+        }
 
-		if (type == FieldType.Date) {
-			result = PicsDateFormat.formatDateIsoOrBlank(date);
-		}
+        if (type == FieldType.Date) {
+            result = PicsDateFormat.formatDateIsoOrBlank(date);
+        }
 
-		if (type == FieldType.DateTime) {
-			result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone,
-					date);
-		}
+        if (type == FieldType.DateTime) {
+            result = TimeZoneUtil.getFormattedTimeStringWithNewTimeZone(timezone, PicsDateFormat.DateAndTimeNoTimezone,
+                    date);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	private static String getText(String key, Locale locale) {
-		return translationService.getText(key, locale);
-	}
+    protected static String getText(String key, Locale locale) {
+        return translationService.getText(key, locale);
+    }
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-
-	public ReportResults getReportResults() {
-		return reportResults;
-	}
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 }

@@ -436,6 +436,13 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTagTagID
 ContractorTransportationRisk
+CustomerServiceEndDate
+CustomerServiceOwnerPercent
+CustomerServiceRole
+CustomerServiceServiceLevel
+CustomerServiceStartDate
+CustomerServiceUserID
+CustomerServiceUserName
 ForcedFlagPercent
 ReportingClientID
 ReportingClientName
