@@ -81,7 +81,7 @@ public class SqlFunctionTest {
         assertEquals(FilterType.Number, SqlFunction.DaysFromNow.getFilterType(field));
 
 		assertEquals(FilterType.String, SqlFunction.GroupConcat.getFilterType(field));
-        assertEquals(FilterType.String, SqlFunction.YearMonth.getFilterType(field));
+        assertEquals(FilterType.Date, SqlFunction.YearMonth.getFilterType(field));
 		assertEquals(FilterType.String, SqlFunction.Month.getFilterType(field));
 		assertEquals(FilterType.String, SqlFunction.Date.getFilterType(field));
 	}
