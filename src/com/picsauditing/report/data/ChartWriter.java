@@ -58,7 +58,7 @@ public class ChartWriter {
         }
         json.put("id", column.getName());
         json.put("type", displayType.toString().toLowerCase());
-        String label = column.getField().getText();
+        String label = getText(applyPrefixSuffix(column.getField().getPreTranslation(),column.getField().getPostTranslation(),column.getField().getText()),locale);
         if (Strings.isEmpty(label)) {
             label = column.getName();
         }
@@ -114,17 +114,22 @@ public class ChartWriter {
                 break;
             default:
                 String text = cell.getValue().toString();
-                if (prefix != null && !prefix.isEmpty()) {
-                    text = prefix + "." + text;
-                }
-                if (suffix != null && !suffix.isEmpty()) {
-                    text = text + "." + suffix;
-                }
+                text = applyPrefixSuffix(prefix, suffix, text);
                 json.put("v", getText(text,locale));
         }
 
         return json;
 
+    }
+
+    private String applyPrefixSuffix(String prefix, String suffix, String text) {
+        if (prefix != null && !prefix.isEmpty()) {
+            text = prefix + "." + text;
+        }
+        if (suffix != null && !suffix.isEmpty()) {
+            text = text + "." + suffix;
+        }
+        return text;
     }
 
     protected static String getText(String key, Locale locale) {
