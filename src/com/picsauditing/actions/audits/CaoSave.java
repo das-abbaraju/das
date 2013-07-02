@@ -212,11 +212,13 @@ public class CaoSave extends AuditActionSupport {
 	}
 	
 	public String refresh() throws RecordNotFoundException, NoRightsException {
-		findConAudit();
-		auditBuilder.recalculateCategories(conAudit);
-		auditPercentCalculator.percentCalculateComplete(conAudit, false);
-		getValidSteps();
-		auditDao.save(conAudit);
+		if (auditID != 0) {
+			findConAudit();
+			auditBuilder.recalculateCategories(conAudit);
+			auditPercentCalculator.percentCalculateComplete(conAudit, false);
+			getValidSteps();
+			auditDao.save(conAudit);
+		}
 
 		return "refresh";
 	}
