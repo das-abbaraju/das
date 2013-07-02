@@ -15,6 +15,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <%-- DO NOT MODIFY --%>
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart.js?v=${version}"></script>
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
@@ -59,7 +60,6 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript"
         src="js/contractor/third-party-identifier/identifier-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/operator/define_competencies.js?v=${version}"></script>
-<script type="text/javascript" src="js/operator/home-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/request/registration_gap_analysis.js?v=${version}"></script>
 <script type="text/javascript" src="js/request/request_new_contractor.js?v=${version}"></script>
 
