@@ -220,11 +220,11 @@ public class ContractorFlagETL {
 		AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 
 		if (amBest != null) {
-			if (flagCriteria.getCategory().equals("Insurance AMB Rating")) {
+			if (flagCriteria.getCategory() == FlagCriteriaCategory.InsuranceAMBRating) {
 				fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
 			}
 
-			if (flagCriteria.getCategory().equals("Insurance AMB Class")) {
+			if (flagCriteria.getCategory() == FlagCriteriaCategory.InsuranceAMBClass) {
 				fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
 			}
 		}

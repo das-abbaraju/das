@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
@@ -32,7 +33,8 @@ import com.picsauditing.report.tables.FieldImportance;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteria extends BaseTableRequiringLanguages implements Comparable<FlagCriteria> {
 
-	private String category;
+	private String backwardCompatibleCategory;
+	private FlagCriteriaCategory category;
 	private int displayOrder = 999;
 	private AuditQuestion question;
 	private AuditType auditType;
@@ -61,14 +63,41 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 
+    @Enumerated(EnumType.STRING)
 	@ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
-	public String getCategory() {
+    @Column(name = "new_category")
+	public FlagCriteriaCategory getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(FlagCriteriaCategory category) {
 		this.category = category;
+        setBackwardCompatibleCategory(backwardCompatibleCategoryForEnum(category));
 	}
+
+    @Transient
+    public String backwardCompatibleCategoryForEnum(FlagCriteriaCategory category) {
+        if (category == null) {
+            return Strings.EMPTY_STRING;
+        } else if (category == FlagCriteriaCategory.InsuranceAMBClass) {
+            return "Insurance AMB Class";
+        } else if (category == FlagCriteriaCategory.InsuranceAMBRating) {
+            return "Insurance AMB Rating";
+        } else if (category == FlagCriteriaCategory.InsuranceCriteria) {
+            return "Insurance Criteria";
+        } else {
+            return category.toString();
+        }
+    }
+
+    @Column(name = "category")
+    public String getBackwardCompatibleCategory() {
+        return backwardCompatibleCategory;
+    }
+
+    public void setBackwardCompatibleCategory(String category) {
+        this.backwardCompatibleCategory = category;
+    }
 
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = true)

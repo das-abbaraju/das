@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,12 +21,6 @@ import com.opensymphony.xwork2.TextProvider;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class ContractorFlagAnswerDisplayTest extends PicsTest {
 
@@ -63,7 +58,7 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 
 	@Test
 	public void testGetContractorAnswer_AmbClass() throws Exception {
-		flagData.getCriteria().setCategory("Insurance AMB Class");
+		flagData.getCriteria().setCategory(FlagCriteriaCategory.InsuranceAMBClass);
 		flagCriteriaContractor.setAnswer("10");
 
 		assertEquals("X", contractorFlagAnswerDisplay.getContractorAnswer(flagCriteriaContractor, flagData, false));
@@ -71,7 +66,7 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 
 	@Test
 	public void testGetContractorAnswer_AmbRating() throws Exception {
-		flagData.getCriteria().setCategory("Insurance AMB Rating");
+		flagData.getCriteria().setCategory(FlagCriteriaCategory.InsuranceAMBRating);
 		flagCriteriaContractor.setAnswer("10");
 
 		assertEquals("A++", contractorFlagAnswerDisplay.getContractorAnswer(flagCriteriaContractor, flagData, false));

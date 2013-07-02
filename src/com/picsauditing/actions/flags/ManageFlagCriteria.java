@@ -2,25 +2,15 @@ package com.picsauditing.actions.flags;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.model.i18n.EntityTranslationHelper;
 import com.picsauditing.util.Strings;
 
@@ -43,7 +33,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 
 	public String save() throws IOException {
 		if (criteria != null) {
-			if (Strings.isEmpty(criteria.getCategory())) {
+			if (criteria.getCategory() == null) {
 				addActionError("Category is a required field.");
 			}
 			if (criteria.getDisplayOrder() < 0) {
@@ -71,7 +61,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				if ("date".equals(criteria.getDataType()) && Strings.isEmpty(criteria.getDefaultValue())) {
 					addActionError("Default hurdle is a required field.");
 				}
-				if ("number".equals(criteria.getDataType()) && criteria.getCategory().indexOf("AMB") == -1) {
+				if ("number".equals(criteria.getDataType()) && !criteria.getCategory().isAMBest()) {
 					try {
 						BigDecimal number = new BigDecimal(criteria.getDefaultValue().replaceAll(",", ""));
 					} catch (Exception e) {
@@ -186,9 +176,12 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 		return new String[] { FlagCriteria.BOOLEAN, FlagCriteria.DATE, FlagCriteria.NUMBER, FlagCriteria.STRING };
 	}
 
-	public String[] getCriteriaCategory() {
-		return new String[] { "Audits", "Insurance", "Insurance AMB Class", "Insurance AMB Rating",
-				"Insurance Criteria", "Paperwork", "Safety", "Statistics" };
+	public Map getCriteriaCategory() {
+        Map<String,String> flagCriteriaCategories = new HashMap<>();
+        for (FlagCriteriaCategory category : FlagCriteriaCategory.values()) {
+            flagCriteriaCategories.put(category.toString(), getText(category.getI18nKey()));
+        }
+        return flagCriteriaCategories;
 	}
 
 	public String[] getOptionCodeList() {

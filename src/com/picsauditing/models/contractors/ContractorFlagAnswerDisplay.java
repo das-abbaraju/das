@@ -1,22 +1,12 @@
 package com.picsauditing.models.contractors;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.NaicsDAO;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -50,9 +40,9 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
 
-		if (fc.getCategory().equals("Insurance AMB Class"))
+		if (fc.getCategory() == FlagCriteriaCategory.InsuranceAMBClass)
 			answer = getAmBestClass(answer);
-		else if (fc.getCategory().equals("Insurance AMB Rating"))
+		else if (fc.getCategory() == FlagCriteriaCategory.InsuranceAMBRating)
 			answer = getAmBestRating(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getId() == AuditQuestion.EMR) {
 			addLabel = false;

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,6 @@ import com.picsauditing.PICS.flags.MultiYearValueCalculator;
 import com.picsauditing.PICS.flags.OshaResult;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaRule;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -210,10 +197,10 @@ public class FlagCalculator {
 			if (amBest == null) {
 				return null;
 			}
-			if (criteria.getCategory().equals("Insurance AMB Rating")) {
+			if (criteria.getCategory() == FlagCriteriaCategory.InsuranceAMBRating) {
 				answer = Integer.toString(amBest.getRatingCode());
 			}
-			if (criteria.getCategory().equals("Insurance AMB Class")) {
+			if (criteria.getCategory() == FlagCriteriaCategory.InsuranceAMBClass) {
 				answer = Integer.toString(amBest.getFinancialCode());
 			}
 		} else {

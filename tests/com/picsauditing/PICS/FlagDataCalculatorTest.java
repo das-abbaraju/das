@@ -69,7 +69,7 @@ public class FlagDataCalculatorTest {
 
 		fc = new FlagCriteria();
 		fc.setId(1);
-		fc.setCategory("Safety");
+		fc.setCategory(FlagCriteriaCategory.Safety);
 		
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.getAuditType().setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
@@ -264,7 +264,7 @@ public class FlagDataCalculatorTest {
 		FlagCriteria fc = new FlagCriteria();
 		fc.setId(id);
 		fc.setMultiYearScope(scope);
-		fc.setCategory((scope != null)?scope.toString():"null");
+		fc.setCategory(null);
 		
 		return fc;
 	}
@@ -465,7 +465,7 @@ public class FlagDataCalculatorTest {
 	private FlagDataCalculator setupInsuranceCriteria() {
 		FlagCriteria fc = EntityFactory.makeFlagCriteriaAuditQuestion();
 		fc.setInsurance(true);
-		fc.setCategory("Insurance Criteria");
+		fc.setCategory(FlagCriteriaCategory.InsuranceCriteria);
 		fc.setComparison("<");
 		fc.setDataType("number");
 		fc.setAllowCustomValue(true);

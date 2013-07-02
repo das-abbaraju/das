@@ -69,13 +69,13 @@
     				</s:if>
     			</li>
     			<li>
-    				<s:select list="criteriaCategory" name="criteria.category" theme="formhelp" />
+    				<s:select list="criteriaCategory" name="criteria.category" theme="formhelp" headerValue="- Category -" label="Category"/>
     			</li>
     			<li>
     				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
     			</li>
     			<li>
-    				<s:textfield name="criteria.label" theme="formhelp" maxlength="30"/>
+    				<s:textfield name="criteria.label" value='%{(criteria.id > 0) ? criteria.label : ""}' theme="formhelp" maxlength="30"/>
                     
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.label</s:param>
@@ -83,8 +83,8 @@
                     </s:include>
     			</li>
     			<li>
-    				<s:textarea name="criteria.description" theme="formhelp" cols="30" rows="4" />
-                    
+                    <s:textarea name="criteria.description" value='%{(criteria.id > 0) ? criteria.description : ""}' theme="formhelp" cols="30" rows="4" />
+
                     <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                         <s:param name="translation_key">FlagCriteria.${criteria.id}.description</s:param>
                         <s:param name="include_locale_static">true</s:param>
