@@ -787,15 +787,8 @@ SalesRepUserName
 Model: OperatorAccountUsers
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-AccountCity
-AccountCountry
-AccountCountrySubdivision
-AccountCreationDate
 AccountID
-AccountLegalName
 AccountName
-AccountStatus
-AccountTimezone
 AccountType
 AccountUserEndDate
 AccountUserOwnerPercent
@@ -856,35 +849,31 @@ UserUsingVersion7Menus
 Model: PaymentCommissions
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-AccountCity
-AccountCountry
-AccountCountrySubdivision
-AccountCreationDate
 AccountID
-AccountLegalName
 AccountName
-AccountStatus
-AccountTimezone
-AccountUserEndDate
-AccountUserOwnerPercent
-AccountUserRole
-AccountUserServiceLevel
-AccountUserStartDate
-AccountUserUser
+CommissionUserEndDate
+CommissionUserOwnerPercent
+CommissionUserRole
+CommissionUserServiceLevel
+CommissionUserStartDate
+CommissionUserUserID
+CommissionUserUserName
 InvoiceAmountApplied
 InvoiceCurrency
 InvoiceDaysLeft
+InvoiceDueDate
 InvoiceInvoiceID
+InvoicePaidDate
 InvoiceStatus
 InvoiceTotalAmount
+OperatorID
+OperatorName
+PaymentAmountApplied
 PaymentCreationDate
-PaymentPaymentMethod
-UserDepartment
-UserFirstName
-UserID
-UserLastName
-UserLocale
-UserTimezone
+PaymentCurrency
+PaymentStatus
+PaymentTotalAmount
+Paymentid
 
 Model: Reports
 Permission: Permissions{permissions=[]}

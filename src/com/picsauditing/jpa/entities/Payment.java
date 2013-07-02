@@ -32,7 +32,7 @@ public class Payment extends Transaction {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.PaymentMethod, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.PaymentMethod)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
