@@ -76,6 +76,9 @@
 		<action name="QBSyncEdit" class="com.picsauditing.actions.QBSyncEdit">
 			<result>struts/reports/qb_sync_edit.jsp</result>
 		</action>
+        <action name="ProcessQBResponseXML" class="com.picsauditing.actions.ProcessQBResponseXML">
+            <result>struts/reports/process_qb_response_xml.jsp</result>
+        </action>
 		<action name="SAPSyncEdit" class="com.picsauditing.actions.SAPSyncEdit">
 			<result>struts/reports/sap_sync_edit.jsp</result>
 		</action>
