@@ -1,0 +1,24 @@
+{
+  "data": {
+    "cols": [
+          {"id":"","label":"Month","pattern":"","type":"string"},
+          {"id":"","label":"Green","pattern":"","type":"number","p":{"style_type":"green-flag"}},
+          {"id":"","label":"Amber","pattern":"","type":"number","p":{"style_type":"amber-flag"}},
+          {"id":"","label":"Red","pattern":"","type":"number","p":{"style_type":"red-flag"}}
+        ],
+    "rows": [
+          {"c":[{"v":"January"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"February"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"March"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"April"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"May"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"June"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"July"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"August"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"September"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"October"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"November"},{"v":300},{"v":200},{"v":100}]},
+          {"c":[{"v":"December"},{"v":300},{"v":200},{"v":100}]}
+        ]
+  }
+}
