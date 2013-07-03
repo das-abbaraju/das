@@ -25,6 +25,12 @@
 			<td>
 				<s:text name="RequestedContractorsAjax.header.LastContacted" />
 			</td>
+            <td>
+                <s:text name="RequestedContractorsAjax.header.Status" />
+            </td>
+            <td class="reason">
+                <s:text name="RequestedContractorsAjax.header.Reason" />
+            </td>
 		</tr>
 	</thead>
 	<s:if test="requestedContractors.size  == 0">
@@ -82,6 +88,16 @@
 						<s:date name="get('lastContactDate')" />
 					</nobr>
 				</td>
+                <td>
+                    <nobr>
+                        <s:property value="get('status')" />
+                    </nobr>
+                </td>
+                <td class="reason">
+                    <nobr>
+                        <s:property value="get('reason')" />
+                    </nobr>
+                </td>
 			</tr>
 		</s:iterator>
 	</s:else>
