@@ -4,6 +4,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -95,13 +96,132 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 				case "InvoiceAddRs":
 					processInvoiceAdd(node);
 					break;
+				case "CustomerAddRs":
+					processCustomerAdd(node);
+					break;
+				case "ReceivePaymentAddRs":
+					processPaymentAdd(node);
 				default:
 					addActionError("Need code to process node of type '"+node.getNodeName()+"'");
-					continue;
+					break;
 			}
+			continue;
 
 		}
 
+
+	}
+
+	private void processPaymentAdd(Node paymentRsNode) {
+		NamedNodeMap attributes = paymentRsNode.getAttributes();
+		Node statusMessage= attributes.getNamedItem("statusMessage");
+		if (statusMessage.getNodeValue().equals("Status OK")) {
+			NodeList childNodes = paymentRsNode.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); ++i) {
+				Node node = childNodes.item(i);
+				if (node.getNodeName().equals("ReceivePaymentRet")) {
+					processPaymentRetNode(node);
+				}
+			}
+		} else {
+			addActionError("Payment Add Request failed -- requestID "+attributes.getNamedItem("requestID").getNodeValue());
+			return;
+		}
+
+	}
+
+	private void processPaymentRetNode(Node paymentRet) {
+		NodeList paymentRetChildNodes = paymentRet.getChildNodes();
+		String qbListID = "";
+		String paymentID = "";
+		for (int j = 0; j < paymentRetChildNodes.getLength(); ++j) {
+			Node nodeInQuestion = paymentRetChildNodes.item(j);
+			switch (nodeInQuestion.getNodeName()) {
+				case "TxnID":
+					qbListID = nodeInQuestion.getTextContent();
+					break;
+				case "Memo":
+					paymentID = nodeInQuestion.getTextContent().replaceAll("[^0-9]","");
+					break;
+				default:
+					break;
+			}
+			if (!qbListID.isEmpty() && !paymentID.isEmpty()) {
+				updateInvoice(qbListID, paymentID);
+				return;
+			}
+		}
+		addActionError("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'");
+		return;
+	}
+
+	private void processCustomerAdd(Node customerRsNode) {
+		NamedNodeMap attributes = customerRsNode.getAttributes();
+		Node statusMessage= attributes.getNamedItem("statusMessage");
+		if (statusMessage.getNodeValue().equals("Status OK")) {
+			NodeList childNodes = customerRsNode.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); ++i) {
+				Node node = childNodes.item(i);
+				if (node.getNodeName().equals("CustomerRet")) {
+					processCustomerRetNode(node);
+				}
+			}
+		} else {
+			addActionError("Customer Add Request failed -- requestID "+attributes.getNamedItem("requestID").getNodeValue());
+			return;
+		}
+
+	}
+
+	private void processCustomerRetNode(Node customerRet) {
+		NodeList customerRetChildNodes = customerRet.getChildNodes();
+		String qbListID = "";
+		String contractorID = "";
+		for (int j = 0; j < customerRetChildNodes.getLength(); ++j) {
+			Node nodeInQuestion = customerRetChildNodes.item(j);
+			switch (nodeInQuestion.getNodeName()) {
+				case "ListID":
+					qbListID = nodeInQuestion.getTextContent();
+					break;
+				case "Name":
+					contractorID = nodeInQuestion.getTextContent();
+					break;
+				default:
+					break;
+			}
+			if (!qbListID.isEmpty() && !contractorID.isEmpty()) {
+				updateContractor(qbListID, contractorID);
+				return;
+			}
+		}
+		addActionError("Did not complete processing of contractor '"+contractorID+"' qbListID '"+qbListID+"'");
+		return;
+	}
+
+	private void updateContractor(String qbListID, String contractorID) {
+		ContractorAccount contractor = contractorAccountDAO.find(Integer.parseInt(contractorID));
+		String qbListIDColumnName = "";
+		switch (contractor.getCurrency()) {
+			 case USD:
+				 contractor.setQbListID(qbListID);
+				 qbListIDColumnName = "qbListID";
+				 break;
+			 case CAD:
+				 contractor.setQbListCAID(qbListID);
+				 qbListIDColumnName = "qbListCAID";
+				 break;
+			 case EUR:
+				 contractor.setQbListEUID(qbListID);
+				 qbListIDColumnName = "qbListEUID";
+				 break;
+			case GBP:
+				contractor.setQbListUKID(qbListID);
+				qbListIDColumnName = "qbListUKID";
+				break;
+		}
+		contractor.setQbSync(false);
+		addActionMessage("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "', qbSync = 0 where id = " + contractorID + ";");
+		contractorAccountDAO.save(contractor);
 
 	}
 
@@ -111,94 +231,53 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 		if (statusMessage.getNodeValue().equals("Status OK")) {
 			NodeList childNodes = invoiceRsNode.getChildNodes();
 			for (int i = 0; i < childNodes.getLength(); ++i) {
-			  if (childNodes.item(i).getNodeName().equals("InvoiceRet")) {
-				  Node invoiceRet = childNodes.item(i);
-				  NodeList invoiceRetChildren = invoiceRet.getChildNodes();
-				  String qbListID = "";
-				  String invoiceID = "";
-				  for (int j = 0; j < invoiceRetChildren.getLength(); ++j) {
-					  Node nodeInQuestion = invoiceRetChildren.item(j);
-					  switch (nodeInQuestion.getNodeName()) {
-						  case "TxnID":
-							  qbListID = nodeInQuestion.getTextContent();
-							  break;
-						  case "RefNumber":
-							  invoiceID = nodeInQuestion.getTextContent();
-							  break;
-						  default:
-							  break;
-					  }
-					  if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
-						  addActionMessage("Executing: UPDATE invoice SET qbListID = '"+qbListID+"',qbSync = 0 where id = "+invoiceID+";");
-						  Invoice invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
-						  invoice.setQbSync(false);
-						  invoice.setQbListID(qbListID);
-						  invoiceDAO.save(invoice);
-						  return;
-					  }
-				  }
+				Node node = childNodes.item(i);
+			  if (node.getNodeName().equals("InvoiceRet")) {
+				  processInvoiceRetNode(node);
 			  }
 			}
 		} else {
+			addActionError("Invoice Add Request failed -- requestID "+attributes.getNamedItem("requestID").getNodeValue());
 			return;
 		}
 
 
 	}
 
-	/*
-	private void saveContractor(String[] idList) {
-		List<ContractorAccount> contractors = contractorAccountDAO.findWhere(ContractorAccount.class, "t.id IN (" + ids
-				+ ")");
-
-		if (contractors.isEmpty())
-			addActionError("We could not find any account you were looking for");
-		else if (contractors.size() != idList.length)
-			addActionError("We could not find all of the accounts you were looking for");
-
-		if (!hasActionErrors()) {
-			for (ContractorAccount contractor : contractors) {
-				editContractor(contractor);
-				addActionMessage(getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
+	private void processInvoiceRetNode(Node invoiceRet) {
+		NodeList invoiceRetChildNodes = invoiceRet.getChildNodes();
+		String qbListID = "";
+		String invoiceID = "";
+		for (int j = 0; j < invoiceRetChildNodes.getLength(); ++j) {
+			Node nodeInQuestion = invoiceRetChildNodes.item(j);
+			switch (nodeInQuestion.getNodeName()) {
+				case "TxnID":
+					qbListID = nodeInQuestion.getTextContent();
+					break;
+				case "RefNumber":
+					invoiceID = nodeInQuestion.getTextContent();
+					break;
+				default:
+					break;
+			}
+			if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
+				updateInvoice(qbListID, invoiceID);
+				return;
 			}
 		}
+		addActionError("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'");
+		return;
 	}
 
-	private void editContractor(ContractorAccount contractor) {
-		contractor.setQbSync(needSync);
-		if (clearListID) {
-			contractor.setQbListID(null);
-			contractor.setQbListCAID(null);
-			contractor.setQbListUKID(null);
-			contractor.setQbListEUID(null);
-		}
-		contractorAccountDAO.save(contractor);
+	private void updateInvoice(String qbListID, String invoiceID) {
+		addActionMessage("Executing: UPDATE invoice SET qbListID = '"+qbListID+"',qbSync = 0 where id = "+invoiceID+";");
+		Invoice invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
+		invoice.setQbSync(false);
+		invoice.setQbListID(qbListID);
+		invoiceDAO.save(invoice);
 	}
 
-	private void saveTransaction(String[] idList) {
-		List<Transaction> transactions = invoiceDAO.findWhere(Transaction.class, "t.id IN (" + ids + ")");
 
-		if (transactions.isEmpty())
-			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
-		else if (transactions.size() != idList.length)
-			addActionError("We could not find all of the invoice you were looking for");
-
-		if (!hasActionErrors()) {
-			for (Transaction transaction : transactions) {
-				editTranaction(transaction);
-				addActionMessage(getText("InvoiceDetail.message.SavedInvoice") + " #" + transaction.getId());
-			}
-		}
-	}
-
-	private void editTranaction(Transaction transaction) {
-		transaction.setQbSync(needSync);
-		if (clearListID) {
-			transaction.setQbListID(null);
-		}
-		invoiceDAO.save(transaction);
-	}
-       */
 	public String getQbresponsexml() {
 		return qbresponsexml;
 	}
