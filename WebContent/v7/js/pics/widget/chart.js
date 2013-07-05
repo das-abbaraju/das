@@ -72,14 +72,26 @@
                 };
             }
 
-            function getCombinedOptions(child, data_table) {
+            function getUniversalChartOptions(data_table) {
+                return {
+                    vAxis: {
+                        title: data_table.getTableProperty('v_axis_title')
+                    },
+                    hAxis: {
+                        title: data_table.getTableProperty('h_axis_title')
+                    }
+                };
+            }
+
+            function getAllOptions(child, data_table) {
                 var parent = child.getParent(),
                     type_specific_options_from_parent = (typeof parent.getChartOptions == 'function') ? parent.getChartOptions(data_table) : {},
                     type_specific_options_from_child = (typeof child.getChartOptions == 'function') ? child.getChartOptions(data_table) : {},
-                    type_specific_options = $.extend({}, type_specific_options_from_parent, type_specific_options_from_child),
-                    options = $.extend({}, getDefaultChartOptions(), type_specific_options);
+                    all_options = $.extend({}, type_specific_options_from_parent, type_specific_options_from_child),
+                    all_options = $.extend({}, getUniversalChartOptions(data_table), all_options),
+                    all_options = $.extend({}, getDefaultChartOptions(), all_options);
 
-                return options;
+                return all_options;
             }
 
             function loadChart(chart_container) {
@@ -97,7 +109,7 @@
                             google_data = config.data,
                             chart = getChartByType(chart_type, chart_container),
                             data_table = new google.visualization.DataTable(google_data),
-                            options = getCombinedOptions(child, data_table);
+                            options = getAllOptions(child, data_table);
 
                         chart.draw(data_table, options);
                     }
