@@ -11,6 +11,8 @@ public class ContractorWatchTable extends AbstractTable {
         Field watch = new Field("watch", "id IS NOT NULL", FieldType.Boolean);
         watch.setImportance(FieldImportance.Average);
         addField(watch);
+
+        addCreationDate();
 	}
 
 	protected void addJoins() {
