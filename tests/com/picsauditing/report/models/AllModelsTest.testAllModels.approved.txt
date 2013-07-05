@@ -64,6 +64,16 @@ Model: ContractorAudits
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate

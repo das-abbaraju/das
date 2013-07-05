@@ -4,10 +4,7 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.ContractorAuditTable;
-import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.*;
 
 public class ContractorAuditsModel extends AbstractModel {
 	public ContractorAuditsModel(Permissions permissions) {
@@ -19,18 +16,15 @@ public class ContractorAuditsModel extends AbstractModel {
 
 		ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
 		contractor.alias = "Contractor";
-		// We may not need this either if the Entity Fields are set
-		// correctly
-		// contractor.category = FieldCategory.AccountInformation;
 
 		ModelSpec account = contractor.join(ContractorTable.Account);
 		account.alias = "Account";
 		account.minimumImportance = FieldImportance.Average;
-		// We may not need this either if the Entity Fields are set
-		// correctly
-		// account.category = FieldCategory.AccountInformation;
 
-		if (permissions.isOperatorCorporate()) {
+        ModelSpec contact = account.join(AccountTable.Contact);
+        contact.minimumImportance = FieldImportance.Average;
+
+        if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.alias = "ContractorOperator";
 			flag.minimumImportance = FieldImportance.Average;
