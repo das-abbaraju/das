@@ -638,6 +638,7 @@ public class BillingCalculatorSingle {
 	}
 
 	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
+        if (!contractor.getFees().containsKey(FeeClass.AuditGUARD)) return false;
 		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF,
 				RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
 		List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP,
