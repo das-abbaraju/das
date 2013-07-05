@@ -836,6 +836,7 @@ OperatorIsUserManualUploaded
 OperatorPrimaryCorporate
 OperatorRequiredTags
 OperatorSalesForceID
+UserAssignmentCapacity
 UserCreationDate
 UserDepartment
 UserEmail
@@ -1017,6 +1018,7 @@ AccountTimezone
 AccountType
 ReportingClientID
 ReportingClientName
+UserAssignmentCapacity
 UserCreationDate
 UserDepartment
 UserEmail
