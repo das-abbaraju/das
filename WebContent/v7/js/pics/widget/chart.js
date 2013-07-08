@@ -31,6 +31,10 @@
                 });
             }
 
+            function isSingleSeries(data_table) {
+                return data_table.getNumberOfColumns() <= 2;
+            }
+
             function getWidgetSelectorFromStyleType(style_type) {
                 return '[data-style-type=' + style_type + ']';
             }
@@ -73,7 +77,7 @@
             }
 
             function getUniversalChartOptions(data_table) {
-                return {
+                var options = {
                     vAxis: {
                         title: data_table.getTableProperty('v_axis_title')
                     },
@@ -81,6 +85,15 @@
                         title: data_table.getTableProperty('h_axis_title')
                     }
                 };
+
+                // Single-series charts with their vertical and horizontal axes labeled do not need a legend.
+                if (options.vAxis.title && options.hAxis.title && isSingleSeries(data_table)) {
+                    options.legend = {
+                        position: 'none'
+                    };
+                }
+
+                return options;
             }
 
             function getAllOptions(child, data_table) {
@@ -118,7 +131,8 @@
 
             return {
                 init: init,
-                loadCharts: loadCharts
+                loadCharts: loadCharts,
+                isSingleSeries: isSingleSeries
             };
         }())
     });
@@ -236,10 +250,6 @@
                 }
 
                 return colors;
-            },
-
-            isSingleSeries: function (data_table) {
-                return data_table.getNumberOfColumns() <= 2;
             }
         }
     });
