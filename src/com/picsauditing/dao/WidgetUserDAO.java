@@ -6,6 +6,7 @@ import javax.persistence.Query;
 
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,9 @@ public class WidgetUserDAO extends PicsDAO {
     protected static final int ONLY_AUDITOR_WIDGETS_TO_INHERIT = 910;
     protected static final int OPERATOR_WIDGETS_TO_INHERIT = 616;
     protected static final int CORPORATE_WIDGETS_TO_INHERIT = 646;
+
+    @Autowired
+    private FeatureToggle featureToggleChecker;
 
     @Transactional(propagation = Propagation.NESTED)
 	public WidgetUser save(WidgetUser o) {
@@ -63,7 +67,6 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, ONLY_AUDITOR_WIDGETS_TO_INHERIT); // ddooly
         }
 
-        FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
         if (permissions.isOperator() && featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS)) {
             query.setParameter(1, 618); // george.orlando
         }
