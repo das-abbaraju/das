@@ -183,8 +183,8 @@ public class ReportDAO extends PicsDAO {
 
     public void updateReportSuggestions() throws SQLException {
         Database database = new Database();
-        database.select("CALL dw_calc_inherited_user_groups();", true);
-        database.select("CALL dw_calc_report_suggestions();", true);
+        database.executeUpdate("CALL dw_calc_inherited_user_groups();");
+        database.executeUpdate("CALL dw_calc_report_suggestions();");
     }
 
     public List<ReportInfo> findReportSuggestions(Permissions permissions) {
