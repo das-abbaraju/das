@@ -74,7 +74,11 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, OPERATOR_WIDGETS_TO_INHERIT); // kevin.dyer
         }
 
-        if (permissions.isCorporate()) {
+
+        if (permissions.isCorporate() && featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7CHARTS)) {
+            query.setParameter(1, 1728); // corporate.demo
+        }
+        else if (permissions.isCorporate()) {
 			query.setParameter(1, CORPORATE_WIDGETS_TO_INHERIT); // shellcorporate
         }
         // TODO: I think this can be removed as Contractors go to ContractorView and don't come through here
