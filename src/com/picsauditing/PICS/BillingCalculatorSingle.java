@@ -504,23 +504,27 @@ public class BillingCalculatorSingle {
 		}
 
 		addActivationFeeIfApplies(contractor, billingStatus, items);
-
-		if (billingStatus.isActivation() || billingStatus.isReactivation() || billingStatus.isCancelled()) {
-			addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12), billingStatus);
-		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
-			addYearlyItems(items, contractor, getRenewalDate(contractor), billingStatus);
-		} else if (billingStatus.isUpgrade()) {
-			List<ContractorFee> upgrades = getUpgradedFees(contractor);
-
-			if (!upgrades.isEmpty()) {
-				addProratedUpgradeItems(contractor, items, upgrades, user);
-			}
-		}
+        addProductItems(contractor, billingStatus, user, items);
+        addSSIPDiscountIfApplies(contractor, items);
 
 		return items;
 	}
 
-	/**
+    private void addProductItems(ContractorAccount contractor, BillingStatus billingStatus, User user, List<InvoiceItem> items) {
+        if (billingStatus.isActivation() || billingStatus.isReactivation() || billingStatus.isCancelled()) {
+            addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12), billingStatus);
+        } else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
+            addYearlyItems(items, contractor, getRenewalDate(contractor), billingStatus);
+        } else if (billingStatus.isUpgrade()) {
+            List<ContractorFee> upgrades = getUpgradedFees(contractor);
+
+            if (!upgrades.isEmpty()) {
+                addProratedUpgradeItems(contractor, items, upgrades, user);
+            }
+        }
+    }
+
+    /**
 	 * Calculate a prorated amount depending on when the upgrade happens and
 	 * when the membership expires.
 	 * 
@@ -624,12 +628,6 @@ public class BillingCalculatorSingle {
 				InvoiceItem activation = createLineItem(contractor, FeeClass.Activation, 1);
 				items.add(activation);
 
-				if (contractorDeservesSSIPDiscount(contractor)) {
-					InvoiceItem lineItem = createLineItem(contractor, FeeClass.SSIPDiscountFee, 1);
-					lineItem.setAmount(activation.getAmount().multiply(BigDecimal.valueOf(-1)));
-					items.add(lineItem);
-				}
-
 				// For Reactivation Fee and Reactivating Membership
 			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
 				items.add(createLineItem(contractor, FeeClass.Reactivation, contractor.getPayingFacilities()));
@@ -637,8 +635,31 @@ public class BillingCalculatorSingle {
 		}
 	}
 
+
+    private void addSSIPDiscountIfApplies(ContractorAccount contractor, List<InvoiceItem> items) {
+        if (containsActivation(items) && containsAuditGuard(items) &&  contractorDeservesSSIPDiscount(contractor)) {
+            InvoiceItem activation = findIn(FeeClass.Activation, items);
+            InvoiceItem lineItem = createLineItem(contractor, FeeClass.SSIPDiscountFee, 1);
+            lineItem.setAmount(activation.getAmount().multiply(BigDecimal.valueOf(-1)));
+            items.add(lineItem);
+        }
+    }
+
+    private boolean containsActivation(List<InvoiceItem> items) {
+        return findIn(FeeClass.Activation, items) != null;
+    }
+
+    private boolean containsAuditGuard(List<InvoiceItem> items) {
+        return findIn(FeeClass.AuditGUARD, items) != null;
+    }
+
+    private InvoiceItem findIn(FeeClass fee, List<InvoiceItem> items) {
+        for (InvoiceItem item : items)
+            if (item.getInvoiceFee().getFeeClass() == fee) return item;
+        return null;
+    }
+
 	private boolean contractorDeservesSSIPDiscount(ContractorAccount contractor) {
-        if (!contractor.getFees().containsKey(FeeClass.AuditGUARD)) return false;
 		List<AuditData> ssipRegistrations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.PQF,
 				RegistrationServiceEvaluation.QUESTION_ID_REGISTERED_WITH_SSIP);
 		List<AuditData> ssipExpirations = auditDataDAO.findContractorAuditAnswers(contractor.getId(), AuditType.SSIP,
