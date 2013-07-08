@@ -6,7 +6,7 @@ UPDATE
     JOIN audit_type typ ON typ.id = ca.auditTypeID
 SET pd.answer = DATE_FORMAT(STR_TO_DATE(pd.answer, '%d/%m/%Y'), '%Y-%m-%d')
 WHERE 1
-      AND pd.answer = '29/06/2013'
+      AND (pd.answer = '29/06/2013' OR pd.answer = '31/07/2013')
       AND cao.status IN ('Incomplete', 'Submitted', 'Complete', 'Approved')
       AND cao.visible=1
       AND typ.id=23
