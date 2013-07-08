@@ -56,7 +56,7 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
-				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");
+				sql.addWhere("atype.classType in ( 'Audit', 'Review', 'IM', 'PQF' ) ");
 			} else {
 				sql.addWhere("atype.classType = '" + auditTypeClass.toString() + "'");
 			}
