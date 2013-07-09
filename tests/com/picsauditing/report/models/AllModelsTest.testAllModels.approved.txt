@@ -703,7 +703,6 @@ ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceItemAmount
@@ -748,7 +747,6 @@ ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceNotes
@@ -879,7 +877,6 @@ CommissionUserUserID
 CommissionUserUserName
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoicePaidDate
@@ -892,6 +889,48 @@ PaymentCreationDate
 PaymentCurrency
 PaymentStatus
 PaymentTotalAmount
+Paymentid
+
+Model: Payments
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorSafetyRisk
+ContractorTransportationRisk
+PaymentAmountApplied
+PaymentCcNumber
+PaymentCheckNumber
+PaymentCreationDate
+PaymentCurrency
+PaymentPaymentMethod
+PaymentStatus
+PaymentTotalAmount
+PaymentTransactionID
 Paymentid
 
 Model: Reports
@@ -994,7 +1033,6 @@ FeeMaxFacilities
 FeeName
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceItemAmount

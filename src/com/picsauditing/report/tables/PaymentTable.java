@@ -5,7 +5,11 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
 public class PaymentTable extends AbstractTable {
-	public PaymentTable() {
+
+    public static final String Account = "Account";
+    public static final String Item = "Item";
+
+    public PaymentTable() {
 		super("invoice");
 		addFields(Payment.class);
         addCurrency();
@@ -44,5 +48,9 @@ public class PaymentTable extends AbstractTable {
     }
 
     protected void addJoins() {
-	}
+        ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(),
+                new ReportOnClause("accountID"));
+        addRequiredKey(accountJoin);
+        accountJoin.setMinimumImportance(FieldImportance.Average);
+    }
 }

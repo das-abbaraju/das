@@ -25,6 +25,7 @@ public enum ModelType {
     OperatorAccountUsers,
     OperatorUsers,
     PaymentCommissions,
+    Payments,
     Reports,
     ReportColumns,
     ReportFilters,

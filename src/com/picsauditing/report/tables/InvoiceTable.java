@@ -31,13 +31,6 @@ public class InvoiceTable extends AbstractTable {
 		invoiceAmountApplied.setWidth(100);
         invoiceAmountApplied.setImportance(FieldImportance.Average);
 		addField(invoiceAmountApplied);
-
-		Field daysLeft = new Field("DaysLeft", "DATEDIFF(ADDDATE(" + ReportOnClause.ToAlias + ".dueDate, 90),NOW())",
-				FieldType.Integer);
-		daysLeft.setCategory(FieldCategory.Invoicing);
-		daysLeft.setWidth(100);
-        daysLeft.setImportance(FieldImportance.Average);
-		addField(daysLeft);
 	}
 
 	private void addCurrency() {
