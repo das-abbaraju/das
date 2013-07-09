@@ -24,19 +24,19 @@ INSERT IGNORE INTO widget_user (widgetID, userID, expanded, `COLUMN`, sortOrder)
 SELECT widgetID, 618, expanded, `COLUMN`, sortOrder FROM widget_user WHERE userID = 616;
 
 -- change over all that different user charts to the google charts we have
-UPDATE widget_user
+UPDATE IGNORE widget_user
 SET widgetID = 38
 WHERE widgetID = 1 AND userID = 618;
 
-UPDATE widget_user
+UPDATE IGNORE widget_user
 SET widgetID = 39
 WHERE widgetID = 5 AND userID = 618;
 
-UPDATE widget_user
+UPDATE IGNORE widget_user
 SET widgetID = 40
 WHERE widgetID = 37 AND userID = 618;
 
 -- update pics CSRs to use google chart
-UPDATE widget_user
+UPDATE IGNORE widget_user
 SET widgetID = 41
 WHERE id = 48;
