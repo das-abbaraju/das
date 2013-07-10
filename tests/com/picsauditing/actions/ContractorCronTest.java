@@ -42,6 +42,16 @@ public class ContractorCronTest extends PicsActionTest {
 	private ContractorAccount contractor;
 	@Mock
 	private ContractorAuditDAO contractorAuditDAO;
+	@Mock
+	private ContractorOperator contractorOperator;
+	@Mock
+	private OperatorAccount operator;
+	@Mock
+	private FlagDataOverride flagOverride;
+	@Mock
+	private FlagCriteria criteria;
+	@Mock
+	private OshaAudit oshaAudit;
 
 	@Before
 	public void setUp() throws Exception {
@@ -936,4 +946,53 @@ public class ContractorCronTest extends PicsActionTest {
 	    when(deletedChildOperatorWithRedFlag.getStatus()).thenReturn(AccountStatus.Demo);
 	    assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
     }
+
+	@Test
+	public void testOverrideStillApplicable() throws Exception {
+		Boolean result;
+
+		List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
+		criteriaList.add(createFlagCriteriaOperator(operator, 1));
+
+		FlagCriteria unused = new FlagCriteria();
+		unused.setId(2);
+
+		List<OshaAudit> oshaAuditList = new ArrayList<>();
+		oshaAuditList.add(oshaAudit);
+
+		when(flagOverride.getContractor()).thenReturn(contractor);
+		when(flagOverride.getOperator()).thenReturn(operator);
+		when(flagOverride.getYear()).thenReturn("2009");
+		when(operator.getFlagCriteriaInherited()).thenReturn(criteriaList);
+		when(contractor.getOshaAudits()).thenReturn(oshaAuditList);
+
+		// valid
+		when(flagOverride.getCriteria()).thenReturn(criteriaList.get(0).getCriteria());
+		when(oshaAudit.getAuditFor()).thenReturn("2009");
+		result = Whitebox.invokeMethod(contractorCron, "isOverrideApplicableToOperator", flagOverride);
+		assertTrue(result);
+
+		// invalid audit is expired
+		when(flagOverride.getCriteria()).thenReturn(criteriaList.get(0).getCriteria());
+		when(oshaAudit.getAuditFor()).thenReturn("2010");
+		result = Whitebox.invokeMethod(contractorCron, "isOverrideApplicableToOperator", flagOverride);
+		assertFalse(result);
+
+		// invalid no longer used
+		when(flagOverride.getCriteria()).thenReturn(unused);
+		when(oshaAudit.getAuditFor()).thenReturn("2009");
+		result = Whitebox.invokeMethod(contractorCron, "isOverrideApplicableToOperator", flagOverride);
+		assertFalse(result);
+
+	}
+
+	private FlagCriteriaOperator createFlagCriteriaOperator(OperatorAccount operator, int criteriaId) {
+		FlagCriteria criteria = new FlagCriteria();
+		criteria.setId(criteriaId);
+
+		FlagCriteriaOperator fco = new FlagCriteriaOperator();
+		fco.setCriteria(criteria);
+		fco.setOperator(operator);
+		return fco;  //To change body of created methods use File | Settings | File Templates.
+	}
 }

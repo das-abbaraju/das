@@ -1049,7 +1049,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		Date now = new Date();
 		for (FlagDataOverride fdo : co.getOverrides()) {
-			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now)) {
+			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now) && !fdo.getCriteria().isInsurance()) {
 				individualFlagOverrideCount++;
 				if (earliestIndividualFlagOverride == null
 						|| fdo.getForceEnd().before(
