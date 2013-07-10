@@ -45,6 +45,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public static final String UAE_ISO_CODE = "AE";
 	public static final String CANADA_ISO_CODE = "CA";
 	public static final String US_ISO_CODE = "US";
+	public static final String CHINA_ISO_CODE = "CN";
 
 	public static final List<String> COUNTRIES_WITH_SUBDIVISIONS = Collections.unmodifiableList(new ArrayList<>(Arrays
 			.asList(US_ISO_CODE, CANADA_ISO_CODE)));

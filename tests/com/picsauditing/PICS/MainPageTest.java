@@ -13,6 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.PicsTranslationTest;
+import com.picsauditing.actions.TranslationActionSupport;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Country;
 
-public class MainPageTest {
+public class MainPageTest extends PicsTranslationTest {
 	private MainPage mainPage;
 
 	private final String SYSTEM_MESSAGE_KEY = "SYSTEM.message.en";
@@ -333,4 +335,69 @@ public class MainPageTest {
 
 		assertEquals(permissionsCountryPhoneNumber, phoneNumber);
 	}
+
+    @Test
+    public void testInsertI18nPhoneDescriptionsForMultiplePhoneNumbers_NullCountryReturnsSamePhone()
+            throws Exception {
+        String adjustedPhoneDescription = Whitebox.invokeMethod(
+                mainPage,
+                "insertI18nPhoneDescriptionsForMultiplePhoneNumbers",
+                (String)null,
+                MainPage.PICS_PHONE_NUMBER);
+        assertEquals(MainPage.PICS_PHONE_NUMBER, adjustedPhoneDescription);
+    }
+
+    @Test
+    public void testInsertI18nPhoneDescriptionsForMultiplePhoneNumbers_NullPhoneReturnsNull()
+            throws Exception {
+        String adjustedPhoneDescription = Whitebox.invokeMethod(
+                mainPage,
+                "insertI18nPhoneDescriptionsForMultiplePhoneNumbers",
+                (String)null,
+                (String)null);
+        assertNull(adjustedPhoneDescription);
+    }
+
+    @Test
+    public void testInsertI18nPhoneDescriptionsForMultiplePhoneNumbers_CountryWithOneNumberIsSamePhoneNumber()
+            throws Exception {
+        String adjustedPhoneDescription = Whitebox.invokeMethod(
+                mainPage,
+                "insertI18nPhoneDescriptionsForMultiplePhoneNumbers",
+                Country.US_ISO_CODE,
+                MainPage.PICS_PHONE_NUMBER);
+        assertEquals(MainPage.PICS_PHONE_NUMBER, adjustedPhoneDescription);
+    }
+
+    @Test
+    public void testInsertI18nPhoneDescriptionsForMultiplePhoneNumbers_ChinaAdjustsNumber() throws Exception {
+        String chinaPhone = "10800-1301-799 10800-713-1837";
+        String chinaPhoneAdjusted = "China (North): 10800-1301-799 | China (South): 10800-713-1837";
+        when(translationService.getText("Main.Phone.China.Label1", TranslationActionSupport.getLocaleStatic())).
+                thenReturn("China (North)");
+        when(translationService.getText("Main.Phone.China.Label2", TranslationActionSupport.getLocaleStatic())).
+                thenReturn("China (South)");
+
+        String adjustedPhoneDescription = Whitebox.invokeMethod(
+                mainPage,
+                "insertI18nPhoneDescriptionsForMultiplePhoneNumbers",
+                Country.CHINA_ISO_CODE,
+                chinaPhone);
+
+        assertEquals(chinaPhoneAdjusted, adjustedPhoneDescription);
+    }
+
+    @Test
+    public void testInsertI18nPhoneDescriptionsForMultiplePhoneNumbers_ChinaButPhoneNumberHasChangedFormatReturnsPhoneGiven() throws Exception {
+        String chinaPhone = "10800-1301-799 10800-713-1837 10800-713-1837";
+
+        String adjustedPhoneDescription = Whitebox.invokeMethod(
+                mainPage,
+                "insertI18nPhoneDescriptionsForMultiplePhoneNumbers",
+                Country.CHINA_ISO_CODE,
+                chinaPhone);
+
+        assertEquals(chinaPhone, adjustedPhoneDescription);
+    }
+
 }

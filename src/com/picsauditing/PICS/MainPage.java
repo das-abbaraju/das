@@ -4,6 +4,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.service.i18n.TranslationService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,8 @@ public class MainPage {
 	public static final String PICS_FAX_NUMBER = "949-269-9177";
 
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
+    private static String ERROR_FINDING = "Error finding {} for country {}\n{}";
+    private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
 	private AppPropertyDAO appPropertyDAO;
 	private CountryDAO countryDAO;
@@ -65,7 +70,7 @@ public class MainPage {
 	}
 
 	public boolean isDisplaySystemMessage() {
-		return "1".equals(getAppPropertyDAO().getProperty(AppProperty.SYSTEM_MESSAGE));
+		return "1".equals(appPropertyDAO().getProperty(AppProperty.SYSTEM_MESSAGE));
 	}
 
 	public Permissions getPermissions() {
@@ -93,13 +98,13 @@ public class MainPage {
 	}
 
 	public String getPhoneNumber(String country) {
-		String phoneNumber = getPhoneNumberByCountry(country);
+		String phoneNumber = phoneNumberByCountry(country);
 		if (Strings.isNotEmpty(phoneNumber)) {
 			return phoneNumber;
 		}
 
 		Permissions permissions = getPermissions();
-		phoneNumber = getPhoneNumberByCountry(permissions.getCountry());
+		phoneNumber = phoneNumberByCountry(permissions.getCountry());
 		if (Strings.isNotEmpty(phoneNumber)) {
 			return phoneNumber;
 		}
@@ -114,13 +119,13 @@ public class MainPage {
 	public String getSalesPhoneNumber(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String salesPhoneNumber = getCountryDAO().find(country).getSalesPhone();
+				String salesPhoneNumber = countryDAO().find(country).getSalesPhone();
 
 				if (Strings.isNotEmpty(salesPhoneNumber)) {
 					return salesPhoneNumber;
 				}
 			} catch (Exception e) {
-				logger.error("Error finding sales phone for country {}\n{}", country, e);
+				logger.error(ERROR_FINDING, new Object[] {"sales phone", country, e});
 			}
 		}
 
@@ -134,13 +139,13 @@ public class MainPage {
 	public String getFaxNumber(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String faxNumber = getCountryDAO().find(country).getFax();
+				String faxNumber = countryDAO().find(country).getFax();
 
 				if (Strings.isNotEmpty(faxNumber)) {
 					return faxNumber;
 				}
 			} catch (Exception e) {
-				logger.error("Error finding fax number for country {}\n{}", country, e);
+                logger.error(ERROR_FINDING, new Object[] {"fax number", country, e});
 			}
 		}
 
@@ -160,7 +165,7 @@ public class MainPage {
 			return null;
 		}
 
-		Country country = getCountryDAO().find(isoCode);
+		Country country = countryDAO().find(isoCode);
 		if (country != null) {
 			return country.getI18nKey();
 		}
@@ -176,35 +181,71 @@ public class MainPage {
 		this.permissions = permissions;
 	}
 
-	private AppPropertyDAO getAppPropertyDAO() {
+	private AppPropertyDAO appPropertyDAO() {
 		if (appPropertyDAO == null) {
-			appPropertyDAO = SpringUtils.getBean("AppPropertyDAO");
+			appPropertyDAO = SpringUtils.getBean(SpringUtils.APP_PROPERTY_DAO);
 		}
 
 		return appPropertyDAO;
 	}
 
-	private CountryDAO getCountryDAO() {
+	private CountryDAO countryDAO() {
 		if (countryDAO == null) {
-			countryDAO = SpringUtils.getBean("CountryDAO");
+			countryDAO = SpringUtils.getBean(SpringUtils.COUNTRY_DAO);
 		}
 
 		return countryDAO;
 	}
 
-	private String getPhoneNumberByCountry(String country) {
+	private String phoneNumberByCountry(String country) {
 		if (Strings.isNotEmpty(country)) {
 			try {
-				String phoneNumber = getCountryDAO().find(country).getPhone();
-
+				String phoneNumber = countryDAO().find(country).getPhone();
 				if (Strings.isNotEmpty(phoneNumber)) {
-					return phoneNumber;
+                    return insertI18nPhoneDescriptionsForMultiplePhoneNumbers(country, phoneNumber);
 				}
 			} catch (Exception e) {
-				logger.error("Error finding phone for country {}\n{}", country, e);
+                logger.error(ERROR_FINDING, new Object[] {"phone", country, e});
 			}
 		}
-
 		return null;
 	}
+
+    /*
+        See PICS-11790. This is a temporary work-around to deal with the fact that China has two phone numbers
+        that need to be differentiated on the UI for the user and that the differentiating labels need to be
+        translatable. We want to delay a larger, more robust solution until we have 2 more examples of countries
+        with multiple phone numbers at which point the "rule of three" will kick in and we will design something
+        more suitable given more full information.
+
+        Please do not be the developer who adds a third one in this method/class/project to deal with another
+        countries with more than one phone number. But you can be the second (add to this comment, too).
+     */
+    private String insertI18nPhoneDescriptionsForMultiplePhoneNumbers(String country, String phoneNumber) {
+        if (country == null || phoneNumber == null) {
+            return phoneNumber;
+        } else if (country.equals(Country.CHINA_ISO_CODE)) {
+            String[] twoPhoneNumbers = phoneNumber.split(" ");
+            if (twoPhoneNumbers == null || twoPhoneNumbers.length != 2) {
+                // something has changed with the China phone value. Since this is a hack, I'm not going to try
+                // to recover. Whatever that new value is, that's what the UI gets and we'll likely see a JIRA
+                // for it
+                return phoneNumber;
+            }
+            return formatTwoPhoneNumbersWithLabels("Main.Phone.China.Label1", "Main.Phone.China.Label2", twoPhoneNumbers);
+        }
+        return phoneNumber;
+    }
+
+    private String formatTwoPhoneNumbersWithLabels(String label1, String label2, String[] twoPhoneNumbers) {
+        StringBuffer adjustedPhone = new StringBuffer();
+        adjustedPhone.append(translationService.getText(label1, TranslationActionSupport.getLocaleStatic()));
+        adjustedPhone.append(": ");
+        adjustedPhone.append(twoPhoneNumbers[0]);
+        adjustedPhone.append(" | ");
+        adjustedPhone.append(translationService.getText(label2, TranslationActionSupport.getLocaleStatic()));
+        adjustedPhone.append(": ");
+        adjustedPhone.append(twoPhoneNumbers[1]);
+        return adjustedPhone.toString();
+    }
 }
