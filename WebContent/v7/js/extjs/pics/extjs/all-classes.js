@@ -66285,7 +66285,7 @@ Ext.define('PICS.data.ServerCommunication', {
             exportReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getExportReportUrl();
 
-                this.sendReportViaForm(url, '_self');
+                this.sendReportViaForm(url, '_blank');
             },
 
             favoriteReport: function () {
