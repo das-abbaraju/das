@@ -1,0 +1,1276 @@
+<?xml version="1.0" ?>
+<QBXML>
+    <QBXMLMsgsRs>
+        <InvoiceAddRs requestID="insert_invoice_220032" statusCode="0" statusSeverity="Info" statusMessage="Failure">
+            <InvoiceRet>
+                <TxnID>4D88B-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34123</TxnNumber>
+                <CustomerRef>
+                    <ListID>8000252F-1372697838</ListID>
+                    <FullName>48158</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-06-28</TxnDate>
+                <RefNumber>220032</RefNumber>
+                <BillAddress>
+                    <Addr1>1755989 ALBERTA LTD.</Addr1>
+                    <Addr2>Brett Loehr</Addr2>
+                    <Addr3>#45 2115 118st. n.w.</Addr3>
+                    <City>Edmonton</City>
+                    <State>AB</State>
+                    <PostalCode>T6J 5N1</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>1755989 ALBERTA LTD.</Addr1>
+                    <Addr2>Brett Loehr</Addr2>
+                    <Addr3>#45 2115 118st. n.w.</Addr3>
+                    <Addr4>Edmonton, AB T6J 5N1</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-06-28</DueDate>
+                <ShipDate>2013-06-28</ShipDate>
+                <Subtotal>312.90</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>312.90</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>312.90</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D88D-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>14.9</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>14.90</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D88E-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000073-1307723401</ListID>
+                        <FullName>DGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D88F-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000088-1307724906</ListID>
+                        <FullName>FVEN10</FullName>
+                    </ItemRef>
+                    <Desc>Activation Fee</Desc>
+                    <Rate>199</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>199.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220132" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D890-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34124</TxnNumber>
+                <CustomerRef>
+                    <ListID>80000443-1311709733</ListID>
+                    <FullName>18339</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220132</RefNumber>
+                <BillAddress>
+                    <Addr1>Marubeni-Itochu Tubulars Canada Ltd.</Addr1>
+                    <Addr2>Kent Shiomi</Addr2>
+                    <Addr3>Jamieson Place, Suite 400 308 &#150; 4th Avenu</Addr3>
+                    <City>Calgary</City>
+                    <State>AB</State>
+                    <PostalCode>T2P 0H7</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Marubeni-Itochu Tubulars Canada Ltd.</Addr1>
+                    <Addr2>Kent Shiomi</Addr2>
+                    <Addr3>Jamieson Place, Suite 400 308 &#150; 4th Avenu</Addr3>
+                    <Addr4>Calgary, AB T2P 0H7</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-28</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>155.40</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>155.40</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>155.40</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D892-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>7.4</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>7.40</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D893-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000073-1307723401</ListID>
+                        <FullName>DGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D894-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000065-1307722819</ListID>
+                        <FullName>IGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>49</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>49.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220240" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D895-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34125</TxnNumber>
+                <CustomerRef>
+                    <ListID>80000514-1311886012</ListID>
+                    <FullName>18643</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220240</RefNumber>
+                <BillAddress>
+                    <Addr1>Mastel Associates Ltd.</Addr1>
+                    <Addr2>c/o Richard Mastel</Addr2>
+                    <Addr3>1642 - 10th Avenue SW</Addr3>
+                    <City>Calgary</City>
+                    <PostalCode>T3C 0J5</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Mastel Associates Ltd.</Addr1>
+                    <Addr2>c/o Richard Mastel</Addr2>
+                    <Addr3>1642 - 10th Avenue SW</Addr3>
+                    <Addr4>Calgary T3C 0J5</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-28</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>26.25</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>26.25</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>26.25</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D897-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>1.25</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>1.25</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D898-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000064-1307722561</ListID>
+                        <FullName>LTVEN25</FullName>
+                    </ItemRef>
+                    <Desc>List Only. Includes a directory name listing in the PICS Organizer</Desc>
+                    <Rate>25.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>25.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220276" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D899-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34126</TxnNumber>
+                <CustomerRef>
+                    <ListID>800001A8-1295459037</ListID>
+                    <FullName>12598</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220276</RefNumber>
+                <BillAddress>
+                    <Addr1>Endress+Hauser Canada Ltd</Addr1>
+                    <Addr2>Kori Bailey</Addr2>
+                    <Addr3>1075 Sutton Dr</Addr3>
+                    <City>Burlington</City>
+                    <State>ON</State>
+                    <PostalCode>L7L 5Z8</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Endress+Hauser Canada Ltd</Addr1>
+                    <Addr2>Kori Bailey</Addr2>
+                    <Addr3>1075 Sutton Dr</Addr3>
+                    <Addr4>Burlington, ON L7L 5Z8</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>2595.61</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>2595.61</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>2595.61</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D89B-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>800000A8-1359140542</ListID>
+                        <FullName>HST</FullName>
+                    </ItemRef>
+                    <Desc>HST</Desc>
+                    <Rate>298.61</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>298.61</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D89C-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000074-1307723430</ListID>
+                        <FullName>DGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D89D-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000066-1307722842</ListID>
+                        <FullName>IGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>199</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>199.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D89E-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>8000007B-1307723779</ListID>
+                        <FullName>AGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>AuditGUARD. Includes performance of all applicable audits for your list of operators as well as assigned safety professional for each audit.</Desc>
+                    <Rate>1999</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>1999.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220280" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D89F-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34127</TxnNumber>
+                <CustomerRef>
+                    <ListID>800001AB-1295459037</ListID>
+                    <FullName>12605</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220280</RefNumber>
+                <BillAddress>
+                    <Addr1>GENIVAR</Addr1>
+                    <Addr2>Shane Flanagan</Addr2>
+                    <Addr3>60 Bishop Drive</Addr3>
+                    <City>Fredericton</City>
+                    <State>NB</State>
+                    <PostalCode>E1C 1B2</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>GENIVAR</Addr1>
+                    <Addr2>Shane Flanagan</Addr2>
+                    <Addr3>60 Bishop Drive</Addr3>
+                    <Addr4>Fredericton, NB E1C 1B2</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>167.24</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>167.24</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>167.24</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A1-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>800000A8-1359140542</ListID>
+                        <FullName>HST</FullName>
+                    </ItemRef>
+                    <Desc>HST</Desc>
+                    <Rate>19.24</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>19.24</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A2-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000073-1307723401</ListID>
+                        <FullName>DGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A3-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000065-1307722819</ListID>
+                        <FullName>IGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>49</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>49.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220281" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D8A4-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34128</TxnNumber>
+                <CustomerRef>
+                    <ListID>800002BA-1310397343</ListID>
+                    <FullName>17725</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220281</RefNumber>
+                <BillAddress>
+                    <Addr1>CONVERGINT TECHNOLOGIES LTD</Addr1>
+                    <Addr2>MATT MCFEE</Addr2>
+                    <Addr3>BAY #2, 6020 - 11TH STREET SE</Addr3>
+                    <City>CALGARY</City>
+                    <State>AB</State>
+                    <PostalCode>T2H-2L7</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>CONVERGINT TECHNOLOGIES LTD</Addr1>
+                    <Addr2>MATT MCFEE</Addr2>
+                    <Addr3>BAY #2, 6020 - 11TH STREET SE</Addr3>
+                    <Addr4>CALGARY, AB T2H-2L7</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>2411.85</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>2411.85</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>2411.85</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A6-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>114.85</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>114.85</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A7-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000074-1307723430</ListID>
+                        <FullName>DGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A8-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000066-1307722842</ListID>
+                        <FullName>IGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>199</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>199.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8A9-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>8000007B-1307723779</ListID>
+                        <FullName>AGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>AuditGUARD. Includes performance of all applicable audits for your list of operators as well as assigned safety professional for each audit.</Desc>
+                    <Rate>1999</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>1999.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220282" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D8AA-1372812890</TxnID>
+                <TimeCreated>2013-07-02T17:54:50-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:50-08:00</TimeModified>
+                <EditSequence>1372812890</EditSequence>
+                <TxnNumber>34129</TxnNumber>
+                <CustomerRef>
+                    <ListID>80000352-1311257782</ListID>
+                    <FullName>18039</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220282</RefNumber>
+                <BillAddress>
+                    <Addr1>Tetra Tech Industries</Addr1>
+                    <Addr2>c/o Josee Alarie</Addr2>
+                    <Addr3>5100 rue Sherbrooke Est</Addr3>
+                    <City>Montreal</City>
+                    <State>QC</State>
+                    <PostalCode>h1v3r9</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Tetra Tech Industries</Addr1>
+                    <Addr2>c/o Josee Alarie</Addr2>
+                    <Addr3>5100 rue Sherbrooke Est</Addr3>
+                    <Addr4>Montreal, QC h1v3r9</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>628.92</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>628.92</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>628.92</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8AC-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>800000A9-1359140568</ListID>
+                        <FullName>GST Plus QST</FullName>
+                    </ItemRef>
+                    <Desc>GST Plus QST</Desc>
+                    <Rate>81.92</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>81.92</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8AD-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000073-1307723401</ListID>
+                        <FullName>DGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8AE-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000065-1307722819</ListID>
+                        <FullName>IGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>49</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>49.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8AF-1372812890</TxnLineID>
+                    <ItemRef>
+                        <ListID>8000007A-1307723738</ListID>
+                        <FullName>AGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>AuditGUARD. Includes performance of all applicable audits for your list of operators as well as assigned safety professional for each audit.</Desc>
+                    <Rate>399.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>399.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220283" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D8B0-1372812891</TxnID>
+                <TimeCreated>2013-07-02T17:54:51-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:51-08:00</TimeModified>
+                <EditSequence>1372812891</EditSequence>
+                <TxnNumber>34130</TxnNumber>
+                <CustomerRef>
+                    <ListID>80000380-1311282987</ListID>
+                    <FullName>18093</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220283</RefNumber>
+                <BillAddress>
+                    <Addr1>Pe Ben Oilfield Services LP</Addr1>
+                    <Addr2>Peter J Krenz</Addr2>
+                    <Addr3>605 - 17th ave</Addr3>
+                    <City>Nisku</City>
+                    <State>AB</State>
+                    <PostalCode>T9E 7T2</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Pe Ben Oilfield Services LP</Addr1>
+                    <Addr2>Peter J Krenz</Addr2>
+                    <Addr3>605 - 17th ave</Addr3>
+                    <Addr4>Nisku, AB T9E 7T2</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>1015.35</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>1015.35</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>1015.35</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B2-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>48.35</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>48.35</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B3-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000075-1307723448</ListID>
+                        <FullName>DGVEN2</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B4-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000067-1307722907</ListID>
+                        <FullName>IGVEN2</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>69</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>69.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B5-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>8000007C-1307723823</ListID>
+                        <FullName>AGVEN2</FullName>
+                    </ItemRef>
+                    <Desc>AuditGUARD. Includes performance of all applicable audits for your list of operators as well as assigned safety professional for each audit.</Desc>
+                    <Rate>799.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>799.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220284" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D8B6-1372812891</TxnID>
+                <TimeCreated>2013-07-02T17:54:51-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:51-08:00</TimeModified>
+                <EditSequence>1372812891</EditSequence>
+                <TxnNumber>34131</TxnNumber>
+                <CustomerRef>
+                    <ListID>8000047A-1311716812</ListID>
+                    <FullName>18415</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220284</RefNumber>
+                <BillAddress>
+                    <Addr1>Plains Midstream Canada ULC</Addr1>
+                    <Addr2>Florrie Drake</Addr2>
+                    <Addr3>Suite 1400, 607 8th Avenue SW</Addr3>
+                    <City>Calgary</City>
+                    <State>BC</State>
+                    <PostalCode>T2P 0A7</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Plains Midstream Canada ULC</Addr1>
+                    <Addr2>Florrie Drake</Addr2>
+                    <Addr3>Suite 1400, 607 8th Avenue SW</Addr3>
+                    <Addr4>Calgary, BC T2P 0A7</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>612.64</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>612.64</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>612.64</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B8-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>800000AA-1359140600</ListID>
+                        <FullName>GST Plus PST</FullName>
+                    </ItemRef>
+                    <Desc>GST Plus PST</Desc>
+                    <Rate>65.64</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>65.64</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8B9-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000073-1307723401</ListID>
+                        <FullName>DGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8BA-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000065-1307722819</ListID>
+                        <FullName>IGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>49</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>49.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8BB-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>8000007A-1307723738</ListID>
+                        <FullName>AGVEN1</FullName>
+                    </ItemRef>
+                    <Desc>AuditGUARD. Includes performance of all applicable audits for your list of operators as well as assigned safety professional for each audit.</Desc>
+                    <Rate>399.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>399.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+        <InvoiceAddRs requestID="insert_invoice_220359" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+            <InvoiceRet>
+                <TxnID>4D8BC-1372812891</TxnID>
+                <TimeCreated>2013-07-02T17:54:51-08:00</TimeCreated>
+                <TimeModified>2013-07-02T17:54:51-08:00</TimeModified>
+                <EditSequence>1372812891</EditSequence>
+                <TxnNumber>34132</TxnNumber>
+                <CustomerRef>
+                    <ListID>80000527-1311947211</ListID>
+                    <FullName>18674</FullName>
+                </CustomerRef>
+                <ClassRef>
+                    <ListID>80000004-1294955516</ListID>
+                    <FullName>Contractors</FullName>
+                </ClassRef>
+                <ARAccountRef>
+                    <ListID>80000034-1294788868</ListID>
+                    <FullName>Accounts Receivable</FullName>
+                </ARAccountRef>
+                <TemplateRef>
+                    <ListID>80000009-1294956467</ListID>
+                    <FullName>PICS Contractor Membership</FullName>
+                </TemplateRef>
+                <TxnDate>2013-07-01</TxnDate>
+                <RefNumber>220359</RefNumber>
+                <BillAddress>
+                    <Addr1>Gescan Division of Sonepar Canada Inc</Addr1>
+                    <Addr2>Scott Skelton</Addr2>
+                    <Addr3>15103 121A Ave</Addr3>
+                    <City>Edmonton</City>
+                    <State>AB</State>
+                    <PostalCode>T5V 1V1</PostalCode>
+                    <Note>CA</Note>
+                </BillAddress>
+                <BillAddressBlock>
+                    <Addr1>Gescan Division of Sonepar Canada Inc</Addr1>
+                    <Addr2>Scott Skelton</Addr2>
+                    <Addr3>15103 121A Ave</Addr3>
+                    <Addr4>Edmonton, AB T5V 1V1</Addr4>
+                    <Addr5>CA</Addr5>
+                </BillAddressBlock>
+                <IsPending>false</IsPending>
+                <IsFinanceCharge>false</IsFinanceCharge>
+                <TermsRef>
+                    <ListID>80000006-1294785186</ListID>
+                    <FullName>Net 30</FullName>
+                </TermsRef>
+                <DueDate>2013-07-29</DueDate>
+                <ShipDate>2013-07-01</ShipDate>
+                <Subtotal>312.90</Subtotal>
+                <SalesTaxPercentage>0.00</SalesTaxPercentage>
+                <SalesTaxTotal>0.00</SalesTaxTotal>
+                <AppliedAmount>0.00</AppliedAmount>
+                <BalanceRemaining>312.90</BalanceRemaining>
+                <CurrencyRef>
+                    <ListID>8000001B-1294784108</ListID>
+                    <FullName>Canadian Dollar</FullName>
+                </CurrencyRef>
+                <ExchangeRate>1</ExchangeRate>
+                <BalanceRemainingInHomeCurrency>312.90</BalanceRemainingInHomeCurrency>
+                <IsPaid>false</IsPaid>
+                <CustomerMsgRef>
+                    <ListID>80000002-1294785186</ListID>
+                    <FullName>Thank you for your business.</FullName>
+                </CustomerMsgRef>
+                <IsToBePrinted>false</IsToBePrinted>
+                <IsToBeEmailed>false</IsToBeEmailed>
+                <IsTaxIncluded>false</IsTaxIncluded>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8BE-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000001-1294785186</ListID>
+                        <FullName>GST</FullName>
+                    </ItemRef>
+                    <Desc>Goods &amp; Services Tax (GST#84887 4913)</Desc>
+                    <Rate>14.9</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>14.90</Amount>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8BF-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000074-1307723430</ListID>
+                        <FullName>DGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>DocuGUARD. Includes access to Prequalification forms, Annual Updates, PICS Organizer and other Document Management services. Includes verification of applicable data.</Desc>
+                    <Rate>99.00</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>99.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+                <InvoiceLineRet>
+                    <TxnLineID>4D8C0-1372812891</TxnLineID>
+                    <ItemRef>
+                        <ListID>80000066-1307722842</ListID>
+                        <FullName>IGVEN13</FullName>
+                    </ItemRef>
+                    <Desc>InsureGUARD. Includes access to Insurance Certificate Management on PICS Organizer. Includes verification of insurance certificates. No Additional Fee.</Desc>
+                    <Rate>199</Rate>
+                    <ClassRef>
+                        <ListID>80000004-1294955516</ListID>
+                        <FullName>Contractors</FullName>
+                    </ClassRef>
+                    <Amount>199.00</Amount>
+                    <SalesTaxCodeRef>
+                        <ListID>80000002-1294785186</ListID>
+                        <FullName>E</FullName>
+                    </SalesTaxCodeRef>
+                </InvoiceLineRet>
+            </InvoiceRet>
+        </InvoiceAddRs>
+    </QBXMLMsgsRs>
+</QBXML>

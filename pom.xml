@@ -67,6 +67,11 @@
     <build>
         <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>tests</testSourceDirectory>
+        <testResources>
+            <testResource>
+                <directory>resources/test</directory>
+            </testResource>
+        </testResources>
         <outputDirectory>target/classes</outputDirectory>
         <testOutputDirectory>target/test-classes</testOutputDirectory>
         <resources>
