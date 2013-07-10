@@ -3,20 +3,13 @@ package com.picsauditing.billing;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: PSchlesinger
- * Date: 7/8/13
- * Time: 10:08 AM
- * To change this template use File | Settings | File Templates.
- */
 public class ProcessQBResponseXMLInvoice extends ProcessQBResponseXMLStrategy  {
 
 	public static final String DETAIL_NODE_NAME = "InvoiceRet";
 	public static final String REQUEST_TYPE = "Invoice Add";
 
 	@Override
-	public void processDetailNode(Node detailNode) {
+	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages) {
 		NodeList invoiceRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String invoiceID = "";
@@ -33,11 +26,11 @@ public class ProcessQBResponseXMLInvoice extends ProcessQBResponseXMLStrategy  {
 					break;
 			}
 			if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
-				updateInvoice(qbListID, invoiceID);
+				updateInvoice(qbListID, invoiceID,actionMessages);
 				return;
 			}
 		}
-		addActionError("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'");
 		return;
 	}
 

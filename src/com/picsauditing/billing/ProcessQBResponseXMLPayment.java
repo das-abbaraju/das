@@ -17,7 +17,7 @@ public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
 
 
 	@Override
-	public void processDetailNode(Node detailNode) {
+	public void processDetailNode(Node detailNode,StringBuilder actionMessages, StringBuilder errorMessages) {
 		NodeList paymentRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String paymentID = "";
@@ -34,11 +34,11 @@ public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
 					break;
 			}
 			if (!qbListID.isEmpty() && !paymentID.isEmpty()) {
-				updateInvoice(qbListID, paymentID);
+				updateInvoice(qbListID, paymentID,actionMessages);
 				return;
 			}
 		}
-		addActionError("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'");
 		return;
 	}
 }

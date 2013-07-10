@@ -2,12 +2,12 @@ package com.picsauditing.billing;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 
 
@@ -20,13 +20,13 @@ import java.net.URL;
  */
 public class ProcessQBResponseXMLStrategyTest extends TestCase {
 
-	private Document goodXmlObject;
-	private Document badXmlObject;
+	private NodeList goodXmlChildNodes;
+	private NodeList badXmlChildNodes;
 
 
 	@Test
 	public void testProcessParentNodeTestFailure() throws Exception {
-		System.out.println(goodXmlObject.getDocumentElement().getNodeName());
+		  Node badXml = badXmlChildNodes.item(1);
 
 	}
 
@@ -42,27 +42,30 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 
 	@Test
 	public void testGetNodeRequestIDAttribute() throws Exception {
-
+		     assertEquals(ProcessQBResponseXMLStrategy.getNodeRequestIDAttribute(goodXmlChildNodes.item(1)),"insert_invoice_220032");
 	}
 
 	@Test
 	public void testIsStatusMessageOk() throws Exception {
-
+		 assertFalse(ProcessQBResponseXMLStrategy.isStatusMessageOk(badXmlChildNodes.item(1)));
+		assertTrue(ProcessQBResponseXMLStrategy.isStatusMessageOk(goodXmlChildNodes.item(1)));
 	}
 
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
 
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-
 		URL goodXmlUrl = Thread.currentThread().getContextClassLoader().getResource("com/picsauditing/billing/processQbResponseXmlGood.xml");
 		File goodXmlFile = new File(goodXmlUrl.getPath());
-		goodXmlObject = docBuilder.parse(new FileInputStream(goodXmlFile));
+		InputStream goodXmlInputStream = new FileInputStream(goodXmlFile);
+		StringBuilder goodXmlActionMessages = new StringBuilder(), goodXmlErrorMessages = new StringBuilder();
+		goodXmlChildNodes = ProcessQBResponseXMLStrategy.findQBXMLMsgsRsChildNodes(goodXmlInputStream,goodXmlActionMessages,goodXmlErrorMessages);
 
 		URL badXmlUrl = Thread.currentThread().getContextClassLoader().getResource("com/picsauditing/billing/processQbResponseXmlBad.xml");
 		File badXmlFile = new File(badXmlUrl.getPath());
-		badXmlObject = docBuilder.parse(new FileInputStream(badXmlFile));
+		InputStream badXmlInputStream = new FileInputStream(badXmlFile);
+		StringBuilder badXmlActionMessages = new StringBuilder(), badXmlErrorMessages = new StringBuilder();
+		badXmlChildNodes = ProcessQBResponseXMLStrategy.findQBXMLMsgsRsChildNodes(badXmlInputStream,badXmlActionMessages,badXmlErrorMessages);
+
 	}
 }

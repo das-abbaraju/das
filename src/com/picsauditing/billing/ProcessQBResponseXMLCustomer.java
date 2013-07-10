@@ -17,7 +17,7 @@ public class ProcessQBResponseXMLCustomer extends ProcessQBResponseXMLStrategy  
 
 
 	@Override
-	public void processDetailNode(Node detailNode) {
+	public void processDetailNode(Node detailNode,StringBuilder actionMessages, StringBuilder errorMessages) {
 		NodeList customerRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String contractorID = "";
@@ -34,11 +34,11 @@ public class ProcessQBResponseXMLCustomer extends ProcessQBResponseXMLStrategy  
 					break;
 			}
 			if (!qbListID.isEmpty() && !contractorID.isEmpty()) {
-				updateContractor(qbListID, contractorID);
+				updateContractor(qbListID, contractorID,actionMessages);
 				return;
 			}
 		}
-		addActionError("Did not complete processing of contractor '"+contractorID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of contractor '"+contractorID+"' qbListID '"+qbListID+"'");
 		return;
 	}
 }

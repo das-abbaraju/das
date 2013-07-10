@@ -1,13 +1,21 @@
 package com.picsauditing.billing;
 
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.service.XmlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -17,7 +25,7 @@ import org.w3c.dom.*;
  * Time: 10:04 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ProcessQBResponseXMLStrategy extends PicsActionSupport {
+public abstract class ProcessQBResponseXMLStrategy {
 
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
@@ -25,33 +33,33 @@ public abstract class ProcessQBResponseXMLStrategy extends PicsActionSupport {
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 
-	public abstract void processDetailNode(Node detailNode);
+	public abstract void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessagses);
 
-	public void processParentNode(Node parentNode, String detailNodeName, String requestType) {
+	protected void processParentNode(Node parentNode, String detailNodeName, String requestType, StringBuilder actionMessages, StringBuilder errorMessages) {
 		if (isStatusMessageOk(parentNode)) {
 			NodeList childNodes = parentNode.getChildNodes();
 			int numChildNodes = childNodes.getLength();
 			for (int i = 0; i < numChildNodes; ++i) {
 				Node node = childNodes.item(i);
 				if (node.getNodeName().equals(detailNodeName)) {
-					processDetailNode(node);
+					processDetailNode(node,actionMessages,errorMessages);
 				}
 			}
 		} else {
-			addActionError(requestType+" Request failed -- requestID "+ getNodeRequestIDAttribute(parentNode));
+			errorMessages.append(requestType + " Request failed -- requestID " + getNodeRequestIDAttribute(parentNode));
 			return;
 		}
 	}
 
-	protected void updateInvoice(String qbListID, String invoiceID) {
-		addActionMessage("Executing: UPDATE invoice SET qbListID = '"+qbListID+"',qbSync = 0 where id = "+invoiceID+";");
+	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages) {
+		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + invoiceID + ";");
 		Invoice invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
 		invoice.setQbSync(false);
 		invoice.setQbListID(qbListID);
 		invoiceDAO.save(invoice);
 	}
 
-	protected void updateContractor(String qbListID, String contractorID) {
+	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages) {
 		ContractorAccount contractor = contractorAccountDAO.find(Integer.parseInt(contractorID));
 		String qbListIDColumnName = "";
 		switch (contractor.getCurrency()) {
@@ -73,20 +81,81 @@ public abstract class ProcessQBResponseXMLStrategy extends PicsActionSupport {
 				break;
 		}
 		contractor.setQbSync(false);
-		addActionMessage("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "', qbSync = 0 where id = " + contractorID + ";");
+		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "', qbSync = 0 where id = " + contractorID + ";");
 		contractorAccountDAO.save(contractor);
 	}
 
 
-	protected String getNodeRequestIDAttribute(Node parentNode) {
+	protected static String getNodeRequestIDAttribute(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
 		Node statusMessage= attributes.getNamedItem("statusMessage");
 		return attributes.getNamedItem("requestID").getNodeValue();
 	}
 
-	protected boolean isStatusMessageOk(Node parentNode) {
+	protected static boolean isStatusMessageOk(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
 		Node statusMessage= attributes.getNamedItem("statusMessage");
 		return statusMessage.getNodeValue().equals("Status OK");
+	}
+
+	public static NodeList findQBXMLMsgsRsChildNodes(InputStream inputStream, StringBuilder actionMessages, StringBuilder errorMessages) throws IOException, SAXException, ParserConfigurationException {
+
+		Element rootElement = XmlService.getRootElementFromInputStream(inputStream);
+
+		String seeking = "QBXML";
+		if (!(rootElement.getNodeName()).equals(seeking))   {
+			errorMessages.append("Didn't find '"+seeking+"' as root element; ");
+			return null;
+		}
+
+		actionMessages.append("Root element of the doc is '" + seeking + "'; ");
+
+		seeking = "QBXMLMsgsRs";
+		NodeList childNodes = rootElement.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); ++i) {
+			Node childNode = childNodes.item(i);
+
+			if (childNode.getNodeName().equals(seeking)) {
+				actionMessages.append("Processing '"+seeking+"' child node; ");
+				return childNode.getChildNodes();
+			}
+
+		}
+		errorMessages.append("Didn't find '"+seeking+"' node; ");
+		return null;
+	}
+
+	public static void processQBXMLMsgsRs(NodeList nodeList,StringBuilder actionMessages,StringBuilder errorMessages) {
+
+		for (int i = 0; i < nodeList.getLength(); ++i) {
+			Node node = nodeList.item(i);
+
+			if (node.getNodeName().equals("#text")) {
+				continue;
+			}
+
+			actionMessages.append("Processing node of type '" + node.getNodeName() + "'; ");
+
+			ProcessQBResponseXMLStrategy processor = null;
+
+			switch (node.getNodeName()) {
+				case "InvoiceAddRs":
+					processor = new ProcessQBResponseXMLInvoice();
+					processor.processParentNode(node,ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME,ProcessQBResponseXMLInvoice.REQUEST_TYPE,actionMessages,errorMessages);
+					break;
+				case "CustomerAddRs":
+					processor = new ProcessQBResponseXMLCustomer();
+					processor.processParentNode(node,ProcessQBResponseXMLCustomer.DETAIL_NODE_NAME,ProcessQBResponseXMLCustomer.REQUEST_TYPE,actionMessages,errorMessages);
+					break;
+				case "ReceivePaymentAddRs":
+					processor = new ProcessQBResponseXMLPayment();
+					processor.processParentNode(node,ProcessQBResponseXMLPayment.DETAIL_NODE_NAME,ProcessQBResponseXMLPayment.REQUEST_TYPE,actionMessages,errorMessages);
+				default:
+					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'; ");
+					break;
+			}
+			continue;
+
+		}
 	}
 }
