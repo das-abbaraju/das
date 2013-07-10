@@ -21,7 +21,7 @@ import com.picsauditing.util.Strings;
 public class MainPage {
 	public static final String DEBUG_COOKIE_NAME = "debugging";
 	public static final String PICS_PHONE_NUMBER = "+1-949-936-4500";
-	public static final String PICS_SALES_NUMBER = "800-506-PICS (7427)";
+	public static final String PICS_SALES_NUMBER = "1-877-725-3022";
 	public static final String PICS_FAX_NUMBER = "949-269-9177";
 
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);

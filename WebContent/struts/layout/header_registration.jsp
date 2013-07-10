@@ -21,7 +21,7 @@
 		<span class="welcome-message"><s:text name="Header.Welcome" />, ${permissions.name}</span>
 	</s:if>
 	
-	<span id="pics_phone_number" class="phone" title="${phone_country}">${picsPhoneNumber}</span>
+	<span id="pics_phone_number" class="phone" title="${phone_country}">${salesPhoneNumber}</span>
 	
 	<s:include value="/struts/layout/chat.jsp" />
 </header>
