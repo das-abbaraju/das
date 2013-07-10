@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.picsauditing.report.fields.QueryFilterOperator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +176,7 @@ public class ReportJoin {
 			for (Filter filter : report.getFilters()) {
 				String filterName = filter.getFieldNameWithoutMethod();
 				if (filterName.equalsIgnoreCase(fieldName)) {
-                    if (!StringUtils.isEmpty(filter.getValue()) || !StringUtils.isEmpty(filter.getColumnCompare()))
+                    if (isFilterUsed(filter))
                         return true;
                 }
 			}
@@ -199,7 +200,12 @@ public class ReportJoin {
 		return false;
 	}
 
-	public String getTableClause() {
+    private boolean isFilterUsed(Filter filter) {
+        return !StringUtils.isEmpty(filter.getValue()) || !StringUtils.isEmpty(filter.getColumnCompare())
+                || filter.getOperator() == QueryFilterOperator.Empty || filter.getOperator() == QueryFilterOperator.NotEmpty;
+    }
+
+    public String getTableClause() {
 		if (isAliasDifferent())
 			return toTable.toString() + " AS " + alias;
 

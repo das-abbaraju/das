@@ -6,30 +6,7 @@ import java.util.List;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
-public class EmployeeDeleter {
-	String IDs;
-	
-	public EmployeeDeleter(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs);
-	}
-	
-	public EmployeeDeleter(int ID) {
-		IDs = String.valueOf(ID);
-	}
-	
-	public EmployeeDeleter() {
-	}
-	
-	public EmployeeDeleter setEmployeeIDs(List<Integer> IDs) {
-		this.IDs = Strings.implodeForDB(IDs);
-		return this;
-	}
-	
-	public EmployeeDeleter setEmployeeID(int ID) {
-		IDs = String.valueOf(ID);
-		return this;
-	}
-
+public class EmployeeDeleter extends Deleter {
 	public void execute() throws SQLException {
 		if (null == IDs || IDs.isEmpty()) return;
 

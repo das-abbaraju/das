@@ -1,6 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')"/>
+
+<s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href">
+    <s:param name="locale">${mibew_language_code}</s:param>
+    <s:param name="style">PICS</s:param>
+    <s:param name="name">${User.name}</s:param>
+    <s:param name="email">${User.email}</s:param>
+    <s:param name="url">${requestURL}</s:param>
+    <s:param name="referrer">${referer}</s:param>
+</s:url>
+
+
 <title><s:text name="ContractorRegistration.title" /></title>
 
 <%-- toggle display flags for form display --%>
@@ -150,9 +162,7 @@
                     			<ul>
                     				<li><s:text name="Registration.Error.CallUs" /></li>
                     				<li>
-                    					<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-                    					   <s:text name="Registration.Error.LiveChat" />
-                                        </a>
+                                        <a class="chat-link" href="${mibew_href}" target="_blank"><s:text name="Header.Chat" /></a>
                                         <s:text name="Registration.Error.PicsRep" />
                                     </li>
                     			</ul>

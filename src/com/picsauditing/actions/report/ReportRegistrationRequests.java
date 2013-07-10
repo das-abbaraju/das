@@ -48,6 +48,8 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		sql.addField("c.id");
 		sql.addField("a.name");
+		sql.addField("a.status");
+		sql.addField("a.reason");
 		sql.addField("contact.name AS Contact");
 		sql.addField("contact.phone AS Phone");
 		sql.addField("contact.email AS Email");

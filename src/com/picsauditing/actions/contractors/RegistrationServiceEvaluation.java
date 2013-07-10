@@ -171,7 +171,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		loadSsipAudit();
 
 		if (!validatePqfAuditAnswers() || !validateSsipAuditAnswers()) {
-			addActionError("All Questions Must Be Answered.");
+			addActionError(getText("RegistrationServiceEvaluation.MustAnswerAllQuestions"));
 			return SUCCESS;
 		}
 

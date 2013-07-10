@@ -48,6 +48,8 @@ ContractorRenew
 ContractorSafetyRisk
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
+CustomerServiceUserID
+CustomerServiceUserName
 EmrAnswer
 FatalitiesAnswer
 PQFID

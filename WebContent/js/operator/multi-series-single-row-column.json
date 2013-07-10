@@ -1,0 +1,14 @@
+{
+  "data": {
+    "cols": [
+          {"id":"","label":"Category","pattern":"","type":"string"},
+          {"id":"","label":"Green","pattern":"","type":"number","p":{"style_type":"green-flag"}},
+          {"id":"","label":"Amber","pattern":"","type":"number","p":{"style_type":"amber-flag"}},
+          {"id":"","label":"Red","pattern":"","type":"number","p":{"style_type":"red-flag"}}
+        ],
+    "rows": [
+          {"c":[{"v":""},{"v":300},{"v":200},{"v":100}]}
+        ],
+    "p":{"v_axis_title":"Number of Contractors","h_axis_title":"Flag Color"}
+  }
+}

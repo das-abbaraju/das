@@ -6,6 +6,12 @@ import com.picsauditing.billing.ProcessQBResponseXMLCustomer;
 import com.picsauditing.billing.ProcessQBResponseXMLInvoice;
 import com.picsauditing.billing.ProcessQBResponseXMLPayment;
 import com.picsauditing.billing.ProcessQBResponseXMLStrategy;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Invoice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -17,12 +23,6 @@ import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class ProcessQBResponseXML extends PicsActionSupport {
-
-	private static final String ACCOUNT = "Account";
-	private static final String INVOICE = "Invoice";
-
-
-
 
 	private String qbresponsexml = null;
 

@@ -15,6 +15,8 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <%-- DO NOT MODIFY --%>
 <script type="text/javascript" src="v7/js/pics/core/core.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/widget/modal.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/mibew.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart.js?v=${version}"></script>
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
@@ -68,5 +70,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 
 <script src="v7/js/vendor/select2.js?v=${version}"></script>
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js?v=${version}"></script><![endif]-->
 <!--[if IE 6]><script>$('body').supersleight({shim: 'images/x.gif'});</script><![endif]-->

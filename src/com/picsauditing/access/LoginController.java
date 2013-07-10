@@ -221,7 +221,9 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
-			permissions.setSwitchedToUserName(user.getName());
+            if (adminID != userID) {
+			    permissions.setSwitchedToUserName(user.getName());
+            }
 
 			if (adminIsTranslator) {
 				permissions.setTranslatorOn();

@@ -81,6 +81,7 @@ ContractorTradesUpdated
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorViewedFacilities
+ContractorWatchCreationDate
 ContractorWatchwatch
 ContractorWelcomeCallCaoID
 ContractorWelcomeCallCaoStatus

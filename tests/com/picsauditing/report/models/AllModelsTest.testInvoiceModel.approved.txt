@@ -30,7 +30,6 @@ ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceNotes

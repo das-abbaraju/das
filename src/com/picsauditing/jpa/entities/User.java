@@ -412,6 +412,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return result;
 	}
 
+    @ReportField(type = FieldType.Integer)
 	public int getAssignmentCapacity() {
 		return assignmentCapacity;
 	}

@@ -92568,7 +92568,8 @@ Ext.define('PICS.view.layout.Menu', {
     id: 'site_menu',
     padding: 0,
 
-    autoLoad: {
+    loader: {
+        autoLoad: true,
         url: '/Menu.action',
 
         renderer: function (loader, response, active) {
@@ -95894,6 +95895,7 @@ Ext.define('PICS.view.report.data-table.DataTable', {
         var grid_columns = [{
             xtype: 'rownumberer',
             height: 23,
+            resizable: true,
             width: 50
         }];
         
@@ -98055,9 +98057,13 @@ Ext.define('PICS.controller.report.DataTable', {
     
     resizeColumn: function (ct, column, width, eOpts) {
         var report_store = this.getReportReportsStore(),
-            report = report_store.first();
+            report = report_store.first(),
+            column = column.column;
 
-        column.column.set('width', width);
+        // rownumberer does not return a column.
+        if (column) {
+            column.set('width', width);
+        }
 
         report.setHasUnsavedChanges(true);
     },

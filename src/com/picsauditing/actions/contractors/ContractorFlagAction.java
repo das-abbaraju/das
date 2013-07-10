@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -30,25 +31,6 @@ import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.FlagOverrideHistory;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.contractors.ContractorFlagAnswerDisplay;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PicsDateFormat;
@@ -86,7 +68,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected String forceNote;
 	protected boolean overrideAll = false;
 	protected int dataID;
-	protected Map<String, List<FlagData>> flagDataMap;
+	protected Map<FlagCriteriaCategory, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, List<FlagDataOverride>> flagDataOverride;
 	protected ArrayListMultimap<AuditType, ContractorAuditOperator> missingAudits = null;
 	private Map<FlagColor, Integer> flagCounts;
@@ -492,9 +474,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
-	public Map<String, List<FlagData>> getFlagDataMap() {
+	public Map<FlagCriteriaCategory, List<FlagData>> getFlagDataMap() {
 		if (flagDataMap == null) {
-			flagDataMap = new TreeMap<String, List<FlagData>>();
+			flagDataMap = new TreeMap<>();
 			Set<FlagData> flagData = co.getFlagDatas();
 
 			List<FlagData> flagDataList = new ArrayList<FlagData>(flagData);
@@ -508,7 +490,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Collections.sort(flagDataList, new ByOrderCategoryLabel());
 
 			for (FlagData flagData2 : flagDataList) {
-				if (!flagData2.getCriteria().getCategory().equals("Insurance Criteria")) {
+				if (flagData2.getCriteria().getCategory() != FlagCriteriaCategory.InsuranceCriteria) {
 					if (flagDataMap.get(flagData2.getCriteria().getCategory()) == null)
 						flagDataMap.put(flagData2.getCriteria().getCategory(), new ArrayList<FlagData>());
 					flagDataMap.get(flagData2.getCriteria().getCategory()).add(flagData2);
@@ -563,7 +545,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public boolean isDisplayTable() {
 		if (getFlagDataMap() != null) {
-			for (String category : flagDataMap.keySet()) {
+			for (FlagCriteriaCategory category : flagDataMap.keySet()) {
 				for (FlagData flagData : flagDataMap.get(category)) {
 					if (flagData.getFlag().equals(FlagColor.Red) || flagData.getFlag().equals(FlagColor.Amber)
 							|| isFlagDataOverride(flagData, null) != null) {

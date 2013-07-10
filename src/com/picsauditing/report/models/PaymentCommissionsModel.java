@@ -27,53 +27,31 @@ public class PaymentCommissionsModel extends AbstractModel {
 	public ModelSpec getJoinSpec() {
 		ModelSpec paymentCommission = new ModelSpec(null, "PaymentCommission");
 
-		ModelSpec invoiceCommission = joinToInvoiceCommission(paymentCommission);
-		ModelSpec invoice = joinToInvoice(invoiceCommission);
+        ModelSpec invoiceCommission = paymentCommission.join(PaymentCommissionTable.Commission);
+        invoiceCommission.alias = "InvoiceCommission";
 
-		joinToAccount(invoice);
-		joinToPayment(paymentCommission);
+        ModelSpec invoice = invoiceCommission.join(InvoiceCommissionTable.Invoice);
+        invoice.alias = "Invoice";
 
-		ModelSpec accountUser = joinToAccountUser(invoiceCommission);
-		joinToUser(accountUser);
+        ModelSpec account = invoice.join(InvoiceTable.Account);
+        account.alias = "Account";
+        account.minimumImportance = FieldImportance.Required;
+
+        ModelSpec payment = paymentCommission.join(PaymentCommissionTable.Payment);
+        payment.alias = "Payment";
+
+        ModelSpec accountUser = invoiceCommission.join(InvoiceCommissionTable.AccountUser);
+        accountUser.alias = "CommissionUser";
+        accountUser.category = FieldCategory.Commission;
+
+        ModelSpec opAccount = accountUser.join(AccountUserTable.Account);
+        opAccount.alias = "Operator";
+
+        ModelSpec user = accountUser.join(AccountUserTable.User);
+        user.alias = "CommissionUserUser";
+        user.category = FieldCategory.Commission;
 
 		return paymentCommission;
-	}
-
-	private ModelSpec joinToInvoiceCommission(ModelSpec paymentCommission) {
-		ModelSpec invoiceCommission = paymentCommission.join(PaymentCommissionTable.Commission);
-		invoiceCommission.alias = "InvoiceCommission";
-		return invoiceCommission;
-	}
-
-	private ModelSpec joinToPayment(ModelSpec paymentCommission) {
-		ModelSpec payment = paymentCommission.join(PaymentCommissionTable.Payment);
-		payment.alias = "Payment";
-		return payment;
-	}
-
-	private ModelSpec joinToInvoice(ModelSpec invoiceCommission) {
-		ModelSpec invoice = invoiceCommission.join(InvoiceCommissionTable.Invoice);
-		invoice.alias = "Invoice";
-		return invoice;
-	}
-
-	private ModelSpec joinToAccountUser(ModelSpec invoiceCommission) {
-		ModelSpec accountUser = invoiceCommission.join(InvoiceCommissionTable.AccountUser);
-		accountUser.alias = "AccountUser";
-		return accountUser;
-	}
-
-	private ModelSpec joinToAccount(ModelSpec invoice) {
-		ModelSpec account = invoice.join(InvoiceTable.Account);
-		account.alias = "Account";
-		return account;
-	}
-
-	private ModelSpec joinToUser(ModelSpec accountUser) {
-		ModelSpec user = accountUser.join(AccountUserTable.User);
-		user.alias = "User";
-        user.minimumImportance = FieldImportance.Average;
-		return user;
 	}
 
 	@Override
@@ -81,21 +59,8 @@ public class PaymentCommissionsModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
+        setUrlForField(fields, "OperatorName", "FacilitiesEdit.action?id={OperatorID}");
 		formatActivationPoints(fields);
-
-		Field commissionUser = fields.get("UserName".toUpperCase());
-		if (commissionUser != null) {
-			commissionUser.setDatabaseColumnName("user.name");
-			commissionUser.setName("AccountUserUser");
-			commissionUser.setCategory(FieldCategory.Commission);
-			commissionUser.setImportance(FieldImportance.Required);
-			commissionUser.setType(FieldType.AccountUser);
-		}
-
-		fields.put("ACCOUNTUSERUSER", commissionUser);
-		fields.remove("USERNAME");
-
-		removeUnnecessaryFields(fields);
 
 		return fields;
 	}
@@ -118,22 +83,6 @@ public class PaymentCommissionsModel extends AbstractModel {
 		}
 
 		field.setUrl(url);
-	}
-
-	private void removeUnnecessaryFields(Map<String, Field> availableFields) {
-		availableFields.remove("USEREMAIL");
-		availableFields.remove("USERISACTIVE");
-		availableFields.remove("USERPHONE");
-		availableFields.remove("INVOICENOTES");
-		availableFields.remove("USERCREATIONDATE");
-		availableFields.remove("USERLASTLOGIN");
-		availableFields.remove("USERISGROUP");
-		availableFields.remove("USERUSERNAME");
-		availableFields.remove("USERFAX");
-		availableFields.remove("INVOICEDUEDATE");
-		availableFields.remove("INVOICEPONUMBER");
-		availableFields.remove("INVOICEPAIDDATE");
-		availableFields.remove("INVOICECOMMISSIONREVENUEPERCENT");
 	}
 
 	@Override

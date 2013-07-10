@@ -74,6 +74,7 @@ ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
 ContractorVatId
+ContractorWatchCreationDate
 ContractorWatchwatch
 DirectTradeName
 ReportingClient

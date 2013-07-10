@@ -43,7 +43,7 @@
 				<tfoot>
 					<tr>
 						<td colspan="2">
-							<span class="total"><s:text name="RegistrationMakePayment.Total" />:</span> <s:property value="invoice.currency.symbol"/><s:property value="invoice.totalAmount" /> 
+							<span class="total"><s:text name="RegistrationMakePayment.Total" />:</span> <s:property value="invoice.totalAmount" /> <s:property value="invoice.currency.display"/>
 						</td>
 					</tr>
 				</tfoot>
@@ -63,7 +63,7 @@
 									><img src="images/help-icon.png" /></a>
 								</td>
 								<td class="price">
-									<s:property value="invoice.currency.symbol"/><s:property value="amount" />
+									<s:property value="amount" /> <s:property value="invoice.currency.display"/>
 								</td>
 							</tr>
 						</s:if>
@@ -97,7 +97,7 @@
 									</s:if>
 								</td>
 								<td class="price">
-									<s:property value="invoice.currency.symbol"/><s:property value="amount" />
+									<s:property value="amount" /> <s:property value="invoice.currency.display"/>
 								</td>
 							</tr>
 						</s:if>

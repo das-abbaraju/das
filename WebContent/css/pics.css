@@ -932,16 +932,6 @@ span.block:hover .hoverhelp {
 	zoom: 1;
 }
 
-#helpbox a.liveperson-chat
-{
-	background: none;
-	clear: both;
-	display: none;
-	height: 77px;
-	margin: 5px 0px 0px;
-	padding: 0px;
-}
-
 #content div.helpOnRight {
 	border-top: 2px solid #b7d2f2;
 	border-bottom: 2px solid #b7d2f2;

@@ -254,6 +254,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			}
 		}
 
+		featureToggleChecker.addToggleVariable("contractor", contractor);
 		if (contractor.getCountry().getIsoCode().equals("CA")
 				&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);

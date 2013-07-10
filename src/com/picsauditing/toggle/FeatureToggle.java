@@ -2,10 +2,9 @@ package com.picsauditing.toggle;
 
 public interface FeatureToggle {
 	String TOGGLE_BADGE = "Toggle.Badge_v2";
+    String TOGGLE_V7CHARTS = "Toggle.ShowGoogleCharts";
 	String TOGGLE_V7MENUS = "Toggle.v7Menus";
 	String TOGGLE_LCCOR = "Toggle.LcCor_v2";
-	String TOGGLE_MIBEW_CHAT = "Toggle.MibewChat";
-	String TOGGLE_MIBEW_ON_REGISTRATION = "Toggle.MibewOnRegistration";
 	String TOGGLE_SWITCHUSERSERVER = "Toggle.SwitchUserServer_v2";
 	String TOGGLE_AUDITREJECTION = "Toggle.AuditRejection_v2";
 	String TOGGLE_BASFDYNAMICREPORTSPREVIEW = "Toggle.BASFDynamicReportsPreview";

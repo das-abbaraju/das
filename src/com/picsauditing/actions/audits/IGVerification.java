@@ -1,10 +1,8 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.interceptor.annotations.Before;
@@ -13,13 +11,6 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.DoubleMap;
@@ -64,11 +55,13 @@ public class IGVerification extends ContractorActionSupport {
 
 		caowList = new ArrayList<ContractorAuditOperatorWorkflow>();
 
-		Set<OperatorAccount> operators = new TreeSet<OperatorAccount>();
-		Set<AuditType> auditTypes = new TreeSet<AuditType>();
+		Set<OperatorAccount> operators = new HashSet<>();
+		Set<ContractorAudit> audits = new HashSet<ContractorAudit>();
+		Set<AuditType> auditTypes = new HashSet<AuditType>();
 		for (ContractorAuditOperator cao : caos) {
 			operators.add(cao.getOperator());
 			auditTypes.add(cao.getAudit().getAuditType());
+			audits.add(cao.getAudit());
 		}
 
 		DoubleMap<AuditType, OperatorAccount, ContractorAuditOperatorWorkflow> recent = new DoubleMap<AuditType, OperatorAccount, ContractorAuditOperatorWorkflow>();
@@ -89,11 +82,15 @@ public class IGVerification extends ContractorActionSupport {
 
 		for (AuditType auditType : auditTypes) {
 			for (OperatorAccount operator : operators) {
-				caowList.add(recent.get(auditType, operator));
+				if (recent.get(auditType, operator) != null)
+					caowList.add(recent.get(auditType, operator));
 			}
 		}
-		
+		List<ContractorAudit> policies = new ArrayList<ContractorAudit>();
+		policies.addAll(audits);
+
 		emailBuilder.setTemplate(template);
+		emailBuilder.addToken("auditList", policies);
 		emailBuilder.addToken("caowList", caowList);
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");

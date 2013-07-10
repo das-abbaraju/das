@@ -510,6 +510,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	private void checkLcCor(ContractorAccount contractor) {
+		featureToggleChecker.addToggleVariable("contractor", contractor);
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			return;
 		}

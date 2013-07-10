@@ -5,19 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.*;
 
 public class ContractorFlagCriteriaList {
 
-	private List<String> categories = new ArrayList<String>();
-	private Map<String, List<FlagCriteria>> categoryMap = new HashMap<String, List<FlagCriteria>>();
-	private Map<FlagCriteria, List<FlagData>> criteriaMap = new HashMap<FlagCriteria, List<FlagData>>();
+	private List<FlagCriteriaCategory> categories = new ArrayList<>();
+	private Map<FlagCriteriaCategory, List<FlagCriteria>> categoryMap = new HashMap<>();
+	private Map<FlagCriteria, List<FlagData>> criteriaMap = new HashMap<>();
 
 	public ContractorFlagCriteriaList(List<FlagData> list) {
 		for (FlagData flagData : list) {
-			String category = flagData.getCriteria().getCategory();
+            FlagCriteriaCategory category = flagData.getCriteria().getCategory();
 			if (!categoryMap.containsKey(category)) {
 				categoryMap.put(category, new ArrayList<FlagCriteria>());
 				categories.add(category);
@@ -32,7 +30,7 @@ public class ContractorFlagCriteriaList {
 		}
 	}
 
-	public List<String> getCategories() {
+	public List<FlagCriteriaCategory> getCategories() {
 		return categories;
 	}
 

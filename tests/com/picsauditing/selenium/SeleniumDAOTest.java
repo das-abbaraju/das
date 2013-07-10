@@ -1,3 +1,4 @@
+
 package com.picsauditing.selenium;
 
 import static org.junit.Assert.*;
@@ -21,9 +22,11 @@ public class SeleniumDAOTest {
 	private SeleniumDeletable Doc, Dopey, Bashful, Sneezy, Sleepy, Grumpy, Happy;
 	private List<SeleniumDeletable> theDwarves;
 	
-	@Mock AccountDeleter AD;
-	@Mock UserDeleter UD;
-	@Mock EmployeeDeleter ED;
+	@Mock AccountDeleter accountDeleter;
+	@Mock UserDeleter userDeleter;
+	@Mock EmployeeDeleter employeeDeleter;
+    @Mock AuditCategoryRuleDeleter auditCategoryRuleDeleter;
+    @Mock AuditTypeRuleDeleter auditTypeRuleDeleter;
 	
 	@Spy SeleniumDAO classUnderTest;
 	
@@ -72,7 +75,7 @@ public class SeleniumDAOTest {
 		when(Happy.isAnEmployee()).thenReturn(true);
 		when(Happy.isUser()).thenReturn(true);
 		
-		theDwarves = new ArrayList<SeleniumDeletable>();
+		theDwarves = new ArrayList<>();
 		theDwarves.add(Dopey);
 		theDwarves.add(Sleepy);
 		theDwarves.add(Sneezy);
@@ -82,12 +85,17 @@ public class SeleniumDAOTest {
 		theDwarves.add(Happy);
 		
 		MockitoAnnotations.initMocks(this);
-		setInternalState(classUnderTest, "ED", ED);
-		setInternalState(classUnderTest, "UD", UD);
-		setInternalState(classUnderTest, "AD", AD);
-		when(AD.setAccountIDs((List<Integer>) any())).thenReturn(AD);
-		when(UD.setUserIDs((List<Integer>) any())).thenReturn(UD);
-		when(ED.setEmployeeIDs((List<Integer>) any())).thenReturn(ED);
+		setInternalState(classUnderTest, "employeeDeleter", employeeDeleter);
+		setInternalState(classUnderTest, "userDeleter", userDeleter);
+		setInternalState(classUnderTest, "accountDeleter", accountDeleter);
+        setInternalState(classUnderTest, "auditCategoryRuleDeleter", auditCategoryRuleDeleter);
+        setInternalState(classUnderTest, "auditTypeRuleDeleter", auditTypeRuleDeleter);
+		when(accountDeleter.setIds((List<Integer>) any())).thenReturn(accountDeleter);
+		when(userDeleter.setIds((List<Integer>) any())).thenReturn(userDeleter);
+		when(employeeDeleter.setIds((List<Integer>) any())).thenReturn(employeeDeleter);
+        when(auditCategoryRuleDeleter.setIds((List<Integer>) any())).thenReturn(auditCategoryRuleDeleter);
+        when(auditTypeRuleDeleter.setIds((List<Integer>) any())).thenReturn(auditTypeRuleDeleter);
+
 	}
 	
 	@Test
@@ -138,20 +146,20 @@ public class SeleniumDAOTest {
 	@Test
 	public void delete_emptyList () throws Exception {
 		classUnderTest.delete(new ArrayList<SeleniumDeletable>());
-		verify(AD, never()).execute();
-		verify(ED, never()).execute();
-		verify(UD, never()).execute();
+		verify(accountDeleter, never()).execute();
+		verify(employeeDeleter, never()).execute();
+		verify(userDeleter, never()).execute();
 	}
 	
 	@Test
 	public void delete_testList() throws Exception {
 		classUnderTest.delete(theDwarves);
-		verify(AD).execute();
-		verify(AD, atMost(1)).execute();
-		verify(ED).execute();
-		verify(ED, atMost(1)).execute();
-		verify(UD).execute();
-		verify(UD, atMost(1)).execute();
+		verify(accountDeleter).execute();
+		verify(accountDeleter, atMost(1)).execute();
+		verify(employeeDeleter).execute();
+		verify(employeeDeleter, atMost(1)).execute();
+		verify(userDeleter).execute();
+		verify(userDeleter, atMost(1)).execute();
 	}
 	
 	@Ignore
@@ -171,7 +179,7 @@ public class SeleniumDAOTest {
 		when(two.get("lastname")).thenReturn("");
 		when(two.get("type")).thenReturn("Contractor");
 		
-		List<DynaBean> theTestList = new ArrayList<DynaBean>();
+		List<DynaBean> theTestList = new ArrayList<>();
 		theTestList.add(one);
 		theTestList.add(two);
 		

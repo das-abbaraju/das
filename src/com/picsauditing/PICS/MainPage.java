@@ -1,5 +1,12 @@
 package com.picsauditing.PICS;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -7,12 +14,6 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 public class MainPage {
 	public static final String DEBUG_COOKIE_NAME = "debugging";
@@ -49,10 +50,6 @@ public class MainPage {
 		}
 
 		return false;
-	}
-
-	public boolean isLiveChatEnabled() {
-		return "1".equals(getAppPropertyDAO().getProperty(AppProperty.LIVECHAT));
 	}
 
 	public boolean isDebugMode() {

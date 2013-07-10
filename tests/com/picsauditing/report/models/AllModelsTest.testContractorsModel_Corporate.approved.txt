@@ -82,6 +82,7 @@ ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+ContractorWatchCreationDate
 ContractorWatchwatch
 DirectTradeName
 ReportingClient

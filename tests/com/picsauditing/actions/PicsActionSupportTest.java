@@ -1,18 +1,24 @@
 package com.picsauditing.actions;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.MainPage;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -22,19 +28,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Mockito.*;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PICS.MainPage;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -97,7 +103,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(propertyDAO.getProperty("PICS.config")).thenReturn("0").thenReturn("1");
 
 		assertFalse("Config should be false", picsActionSupport.isConfigEnvironment());
-		assertFalse("Config should still be false despite second thenReturn (static variable)", picsActionSupport.isConfigEnvironment());
+		assertFalse("Config should still be false despite second thenReturn (static variable)",
+				picsActionSupport.isConfigEnvironment());
 	}
 
 	@Test
@@ -192,7 +199,9 @@ public class PicsActionSupportTest extends PicsActionTest {
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
 		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		// Confirming intention: "qa-beta" is NOT considered "beta" (as far as the environment bar being colorized light blue for beta is concerned).
+		// Confirming intention: "qa-beta" is NOT considered "beta" (as far as
+		// the environment bar being colorized light blue for beta is
+		// concerned).
 		assertFalse(picsActionSupport.isBetaEnvironment());
 	}
 
@@ -204,7 +213,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
 		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertTrue("URL is not explicitly beta, but version number is higher than app_properties", picsActionSupport.isBetaEnvironment());
+		assertTrue("URL is not explicitly beta, but version number is higher than app_properties",
+				picsActionSupport.isBetaEnvironment());
 	}
 
 	@Test
@@ -215,7 +225,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
 		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertFalse("URL is not explicitly beta, but version number is lower than app_properties", picsActionSupport.isBetaEnvironment());
+		assertFalse("URL is not explicitly beta, but version number is lower than app_properties",
+				picsActionSupport.isBetaEnvironment());
 	}
 
 	@Test
@@ -274,7 +285,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
 		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertFalse("URL is not explicitly stable, but version number is higher than app_properties", picsActionSupport.isLiveEnvironment());
+		assertFalse("URL is not explicitly stable, but version number is higher than app_properties",
+				picsActionSupport.isLiveEnvironment());
 	}
 
 	@Test
@@ -285,7 +297,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
 		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertTrue("URL is not explicitly stable, but version number is lower than app_properties", picsActionSupport.isLiveEnvironment());
+		assertTrue("URL is not explicitly stable, but version number is lower than app_properties",
+				picsActionSupport.isLiveEnvironment());
 	}
 
 	@Test
@@ -356,15 +369,6 @@ public class PicsActionSupportTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testGetChatUrl() throws Exception {
-		when(request.getScheme()).thenReturn("http");
-
-		picsActionSupport.getChatUrl();
-
-		verify(request).getScheme();
-	}
-
-	@Test
 	public void testGetJsonFromRequestPayload_NullReaderReturnsEmptyJSON() throws Exception {
 		when(request.getReader()).thenReturn(null);
 
@@ -401,18 +405,15 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@Test
 	public void testGetLocalizedPhoneNumberForUser_FeatureToggleNotEnabled() {
 		/*
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_COUNTRY_PHONE_NUMBER)
-				&& user.getPhone().length() <= 4) {
-			String format = "%s x%s";
-
-			if (country != null) {
-				return String.format(format, country.getPhone(), user.getPhone());
-			} else {
-				return String.format(format, getPicsPhoneNumber(), user.getPhone());
-			}
-		}
-
-		return user.getPhone();
+		 * if (featureToggleChecker.isFeatureEnabled(FeatureToggle.
+		 * TOGGLE_COUNTRY_PHONE_NUMBER) && user.getPhone().length() <= 4) {
+		 * String format = "%s x%s";
+		 * 
+		 * if (country != null) { return String.format(format,
+		 * country.getPhone(), user.getPhone()); } else { return
+		 * String.format(format, getPicsPhoneNumber(), user.getPhone()); } }
+		 * 
+		 * return user.getPhone();
 		 */
 		User user = mock(User.class);
 		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(false);

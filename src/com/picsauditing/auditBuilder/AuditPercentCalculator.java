@@ -490,7 +490,6 @@ public class AuditPercentCalculator {
 				caoDAO.save(caoW);
 
 				cao.changeStatus(caoWithStatus.getStatus(), null);
-				cao.setStatusChangedDate(caoWithStatus.getStatusChangedDate());
 			}
 		}
 

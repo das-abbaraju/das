@@ -64,6 +64,16 @@ Model: ContractorAudits
 Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
@@ -232,6 +242,8 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
 ContractorsRequiringAnnualUpdateEmail
+CustomerServiceUserID
+CustomerServiceUserName
 EmrAnswer
 FatalitiesAnswer
 PQFID
@@ -434,6 +446,13 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTagTagID
 ContractorTransportationRisk
+CustomerServiceEndDate
+CustomerServiceOwnerPercent
+CustomerServiceRole
+CustomerServiceServiceLevel
+CustomerServiceStartDate
+CustomerServiceUserID
+CustomerServiceUserName
 ForcedFlagPercent
 ReportingClientID
 ReportingClientName
@@ -504,6 +523,7 @@ ContractorSoleProprietor
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
+ContractorWatchCreationDate
 ContractorWatchwatch
 DirectTradeName
 ReportingClient
@@ -683,7 +703,6 @@ ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceItemAmount
@@ -728,7 +747,6 @@ ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceNotes
@@ -785,15 +803,8 @@ SalesRepUserName
 Model: OperatorAccountUsers
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-AccountCity
-AccountCountry
-AccountCountrySubdivision
-AccountCreationDate
 AccountID
-AccountLegalName
 AccountName
-AccountStatus
-AccountTimezone
 AccountType
 AccountUserEndDate
 AccountUserOwnerPercent
@@ -834,6 +845,7 @@ OperatorIsUserManualUploaded
 OperatorPrimaryCorporate
 OperatorRequiredTags
 OperatorSalesForceID
+UserAssignmentCapacity
 UserCreationDate
 UserDepartment
 UserEmail
@@ -854,7 +866,45 @@ UserUsingVersion7Menus
 Model: PaymentCommissions
 Permission: Permissions{permissions=[]}
 ----------------------------------------
+AccountID
+AccountName
+CommissionUserEndDate
+CommissionUserOwnerPercent
+CommissionUserRole
+CommissionUserServiceLevel
+CommissionUserStartDate
+CommissionUserUserID
+CommissionUserUserName
+InvoiceAmountApplied
+InvoiceCurrency
+InvoiceDueDate
+InvoiceInvoiceID
+InvoicePaidDate
+InvoiceStatus
+InvoiceTotalAmount
+OperatorID
+OperatorName
+PaymentAmountApplied
+PaymentCreationDate
+PaymentCurrency
+PaymentStatus
+PaymentTotalAmount
+Paymentid
+
+Model: Payments
+Permission: Permissions{permissions=[]}
+----------------------------------------
 AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
 AccountCountry
 AccountCountrySubdivision
 AccountCreationDate
@@ -863,26 +913,25 @@ AccountLegalName
 AccountName
 AccountStatus
 AccountTimezone
-AccountUserEndDate
-AccountUserOwnerPercent
-AccountUserRole
-AccountUserServiceLevel
-AccountUserStartDate
-AccountUserUser
-InvoiceAmountApplied
-InvoiceCurrency
-InvoiceDaysLeft
-InvoiceInvoiceID
-InvoiceStatus
-InvoiceTotalAmount
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorSafetyRisk
+ContractorTransportationRisk
+PaymentAmountApplied
+PaymentCcNumber
+PaymentCheckNumber
 PaymentCreationDate
+PaymentCurrency
 PaymentPaymentMethod
-UserDepartment
-UserFirstName
-UserID
-UserLastName
-UserLocale
-UserTimezone
+PaymentStatus
+PaymentTotalAmount
+PaymentTransactionID
+Paymentid
 
 Model: Reports
 Permission: Permissions{permissions=[]}
@@ -984,7 +1033,6 @@ FeeMaxFacilities
 FeeName
 InvoiceAmountApplied
 InvoiceCurrency
-InvoiceDaysLeft
 InvoiceDueDate
 InvoiceInvoiceID
 InvoiceItemAmount
@@ -1019,6 +1067,7 @@ AccountTimezone
 AccountType
 ReportingClientID
 ReportingClientName
+UserAssignmentCapacity
 UserCreationDate
 UserDepartment
 UserEmail

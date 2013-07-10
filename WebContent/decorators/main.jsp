@@ -30,7 +30,6 @@
 	Permissions permissions = mainPage.getPermissions();
 
 	boolean switchToUserIsSet = SessionSecurity.switchToUserIsSet(request);
-	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useVersion7Menus = false;
 
@@ -329,93 +328,32 @@
 	}
 %>
 
+<%
+String mibew_href = MenuBuilder.getMibewURL(locale, permissions);
+String chat_link_text = translationService.getText("Header.Chat", locale);
+String help_link_text = translationService.getText("Header.HelpCenter", locale);
+String help_url = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
+
+if (permissions.isOperatorCorporate()) {
+	help_url += "os_username=operator&os_password=oper456ator";
+} else if (permissions.isContractor()) {
+	help_url += "os_username=contractor&os_password=con123tractor";
+} else {
+	help_url += "os_username=admin&os_password=ad9870mins";
+}
+%>
+
 <div id="main">
 	<div id="bodyholder">
 		<div id="notify"></div>
 
 		<div id="helpbox">
-			<%--
-				http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
-
-				Locales:
-
-				- English (e.g. https://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a)
-				- French
-				- German
-				- Hebrew
-				- Portuguese
-				- Spanish
-			--%>
-
-			<%
-				String chatIcon = protocol + "://server.iad.liveperson.net/hc/90511184/?" +
-						"cmd=repstate" +
-						"&amp;site=90511184" +
-						"&amp;channel=web" +
-						"&amp;ver=1" +
-						"&amp;imageUrl=" +
-						protocol +
-						"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-						languageModel.getClosestVisibleLocale(locale).getDisplayLanguage() +
-						"/General/3a";
-
-				if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
-					chatIcon = "";
-				}
-
-				String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-				if (permissions.isOperatorCorporate()) {
-					helpUrl += "os_username=operator&os_password=oper456ator";
-				} else if (permissions.isContractor()) {
-					helpUrl += "os_username=contractor&os_password=con123tractor";
-				} else {
-					helpUrl += "os_username=admin&os_password=ad9870mins";
-				}
-
-			%>
-
 			<div id="helpcenter" style="float:left;">
-				<a href="<%=helpUrl%>" target="_BLANK"><%=translationService.getText("Header.HelpCenter", locale)%>
-				</a>
+				<a href="<%= help_url %>" target="_BLANK"><%= help_link_text %></a>
 			</div>
 
 			<div id="helpchat" style="float:left;">
-				<pics:toggle name="<%=FeatureToggle.TOGGLE_MIBEW_CHAT%>">
-					<a href="<%=MenuBuilder.getMibewURL(locale, permissions) %>"
-					   target="_blank"
-					   onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('<%=MenuBuilder.getMibewURL(locale, permissions)%>&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%=translationService.getText("Header.Chat", locale)%>
-					</a>
-				</pics:toggle>
-				<pics:toggleElse>
-					<%
-						if (liveChatEnabled) {
-					%>
-					<a href="javascript:;" class="liveperson-chat-toggle"><%=translationService.getText("Header.Chat", locale)%>
-					</a>
-
-					<a id="_lpChatBtn"
-					   class="liveperson-chat"
-					   href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getClosestVisibleLocale(locale).getDisplayLanguage() %>/General/3a"
-					   target="chat90511184"
-					   onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getClosestVisibleLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-
-						<%
-							if (!Strings.isEmpty(chatIcon)) {
-						%>
-						<img src="<%=chatIcon%>"/>
-						<%
-						} else {
-						%>
-						<%=translationService.getText("Header.Chat", locale)%>
-						<%
-							}
-						%>
-					</a>
-					<%
-						}
-					%>
-				</pics:toggleElse>
+				<a class="chat-link" href="<%= mibew_href %>" target="_blank"><%= chat_link_text %></a>
 			</div>
 		</div>
 
@@ -437,101 +375,73 @@
 
 <%
 	if (!useVersion7Menus) {
-%>
-<!-- !begin subnavigation -->
-<%
-	for (MenuComponent submenu : menu.getChildren()) {
-%>
-<div id="menu<%=submenu.getId()%>" class="dropmenudiv">
-	<ul>
-		<%
-			for (MenuComponent item : submenu.getChildren()) {
-				if (item.visible()) {
-		%>
-		<li>
+	%>
+	<!-- !begin subnavigation -->
+	<%
+		for (MenuComponent submenu : menu.getChildren()) {
+	%>
+	<div id="menu<%=submenu.getId()%>" class="dropmenudiv">
+		<ul>
 			<%
-				if (item.getName().equals("Online Chat")) {
-					if (liveChatEnabled) {
+				for (MenuComponent item : submenu.getChildren()) {
+					if (item.visible()) {
 			%>
-			<a id="_lpChatBtn"
-			   href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getClosestVisibleLocale(locale).getDisplayLanguage() %>/General/3a'
-			   target='chat90511184'
-			   onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= languageModel.getClosestVisibleLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;"><span><%=item.getName()%></span></a>
-			<% }
-			} else {
-				String dataFields = "";
-				for (String dataKey : item.getDataFields().keySet()) {
-					dataFields += "data-" + dataKey + "=\"" + item.getDataFields().get(dataKey) + "\" ";
-				} %>
+						<li>
+						<%
+							if (item.getName().equals("Online Chat")) {
+						%>
+								<a href="<%= mibew_href %>" target="_blank"><%= chat_link_text %></a>
+						<%
+							} else {
+								String dataFields = "";
 
-			<a
-					<%=item.hasUrl() ? ("href=\"" + item.getUrl() + "\"") : ""%>
-					<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : ""%>
-					<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"")
-							: ""%>
-					<%=dataFields%>
-					>
-				<span><%=item.getName()%></span>
-			</a>
-			<%
+								for (String dataKey : item.getDataFields().keySet()) {
+									dataFields += "data-" + dataKey + "=\"" + item.getDataFields().get(dataKey) + "\" ";
+								}
+						%>
+								<a
+									<%=item.hasUrl() ? ("href=\"" + item.getUrl() + "\"") : ""%>
+									<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : ""%>
+									<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"") : ""%>
+									<%=dataFields%>
+									>
+									<span><%=item.getName()%></span>
+								</a>
+						<%
+							}
+						%>
+						</li>
+						<%
+					}
 				}
 			%>
-		</li>
-		<%
-				}
-			}
-		%>
-	</ul>
-</div>
-<%
-	}
-%>
-<!-- !end subnavigation -->
+		</ul>
+	</div>
+	<%
+		}
+	%>
+	<!-- !end subnavigation -->
 <%
 	}
 %>
 
 <%
 	if (!"1".equals(System.getProperty("pics.debug"))) {
-		if (liveChatEnabled) {
 %>
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-2785572-4']);
+			_gaq.push(['_trackPageview']);
 
-<!-- BEGIN LivePerson -->
-<script type="text/javascript">
-	var lpPosY = 100;
-	var lpPosX = 100;
-
-	if (typeof tagVars == "undefined") tagVars = "";
-	<%if (permissions.isLoggedIn()) {%>
-	tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
-	<%}%>
-</script>
-<!-- End Monitor Tracking Variables  -->
-
-<script
-		type="text/javascript"
-		src='<%=protocol%>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%=protocol%>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage()%>/General/3a'>
-</script>
-<!-- END LivePerson -->
-<%
-	}
-%>
-
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-2785572-4']);
-	_gaq.push(['_trackPageview']);
-
-	(function () {
-		var ga = document.createElement('script');
-		ga.type = 'text/javascript';
-		ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0];
-		s.parentNode.insertBefore(ga, s);
-	})();
-</script>
-
+			(function () {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
 <%
 	}
 %>

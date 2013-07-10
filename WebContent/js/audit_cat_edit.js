@@ -99,7 +99,7 @@ function saveAnswerComment(divId, answerElm, commentElm) {
 	for (x=1; x < depends.length; x++) {
 		startThinking({
             div:'thinking_' + depends[x],
-            translate('JS.Audit.RecalculatingRequirement')
+            message: translate('JS.Audit.RecalculatingRequirement')
         });
 		$('#node_'+depends[x]).find(":input").attr("disabled", true);
 	}

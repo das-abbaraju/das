@@ -2,6 +2,7 @@ package com.picsauditing.actions.flags;
 
 import static org.junit.Assert.assertTrue;
 
+import com.picsauditing.jpa.entities.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +11,6 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.test.TranslatorFactorySetup;
 
@@ -44,7 +43,7 @@ public class ManageFlagCriteriaTest extends PicsTest {
 
 		flagCriteria.setLabel(TEST_TRANSLATION);
 		flagCriteria.setDescription(TEST_TRANSLATION);
-		flagCriteria.setCategory("Audits");
+		flagCriteria.setCategory(FlagCriteriaCategory.Audits);
 		flagCriteria.setRequiredLanguages("[\"en\"]");
 		flagCriteria.setDefaultValue("test");
 		manageFlagCriteria.setCriteria(flagCriteria);
@@ -54,10 +53,10 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(!manageFlagCriteria.hasActionErrors());
 
 		// no category
-		flagCriteria.setCategory(EMPTY_TRANSLATION);
+		flagCriteria.setCategory(null);
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setCategory("Audits");
+		flagCriteria.setCategory(FlagCriteriaCategory.Audits);
 
 		// bad display order
 		flagCriteria.setDisplayOrder(-1);

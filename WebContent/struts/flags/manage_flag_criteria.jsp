@@ -63,10 +63,11 @@
     		</tr>
     	</thead>
         
-    	<s:iterator value="criteriaList">
+    	<s:iterator value="criteriaList" var="criteria">
     		<tr>
     			<td>
-                    <s:property value="category"/>
+                    <s:text name="%{#criteria.category.i18nKey}"/>
+                    <%--<s:text name="FlagCriteria.Category.Audits"/>--%>
                 </td>
     			<td>
                     <s:property value="displayOrder"/>

@@ -1,10 +1,18 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.Country;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +21,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Locale;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.Country;
 
 public class MainPageTest {
 	private MainPage mainPage;
@@ -136,47 +141,10 @@ public class MainPageTest {
 	}
 
 	@Test
-	public void testIsLiveChatEnabled_Enabled() throws Exception {
-		AppProperty appProperty = new AppProperty();
-		appProperty.setValue("1");
-
-		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
-
-		assertTrue(mainPage.isLiveChatEnabled());
-	}
-
-	@Test
-	public void testIsLiveChatEnabled_SetTo0() throws Exception {
-		AppProperty appProperty = new AppProperty();
-		appProperty.setValue("0");
-
-		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
-
-		assertFalse(mainPage.isLiveChatEnabled());
-	}
-
-	@Test
-	public void testIsLiveChatEnabled_SetToRandom() throws Exception {
-		AppProperty appProperty = new AppProperty();
-		appProperty.setValue("Hello World");
-
-		doReturn(appProperty).when(appPropertyDAO).find(AppProperty.LIVECHAT);
-
-		assertFalse(mainPage.isLiveChatEnabled());
-	}
-
-	@Test
-	public void testIsLiveChatEnabled_Null() throws Exception {
-		doReturn(null).when(appPropertyDAO).find(AppProperty.LIVECHAT);
-
-		assertFalse(mainPage.isLiveChatEnabled());
-	}
-
-	@Test
 	public void testIsDebugMode_CookieSetTrue() {
 		Cookie debuggingCookie = new Cookie("debugging", "true");
 
-		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
+		when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
 
 		assertTrue(mainPage.isDebugMode());
 	}
@@ -185,7 +153,7 @@ public class MainPageTest {
 	public void testIsDebugMode_CookieSetOne() {
 		Cookie debuggingCookie = new Cookie("debugging", "1");
 
-		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
+		when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -194,7 +162,7 @@ public class MainPageTest {
 	public void testIsDebugMode_CookieSetNull() {
 		Cookie debuggingCookie = new Cookie("debugging", null);
 
-		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
+		when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -203,7 +171,7 @@ public class MainPageTest {
 	public void testIsDebugMode_CookieSetFalse() {
 		Cookie debuggingCookie = new Cookie("debugging", "false");
 
-		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
+		when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -212,14 +180,14 @@ public class MainPageTest {
 	public void testIsDebugMode_CookieRandom() {
 		Cookie debuggingCookie = new Cookie("debugging", "Hello World");
 
-		when(request.getCookies()).thenReturn(new Cookie[]{debuggingCookie});
+		when(request.getCookies()).thenReturn(new Cookie[] { debuggingCookie });
 
 		assertFalse(mainPage.isDebugMode());
 	}
 
 	@Test
 	public void testIsDebugMode_CookieMissing() {
-		when(request.getCookies()).thenReturn(new Cookie[]{});
+		when(request.getCookies()).thenReturn(new Cookie[] {});
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -233,7 +201,7 @@ public class MainPageTest {
 
 	@Test
 	public void testIsDebugMode_CookieNotDebugging() {
-		when(request.getCookies()).thenReturn(new Cookie[]{new Cookie("Test", "cookie")});
+		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("Test", "cookie") });
 
 		assertFalse(mainPage.isDebugMode());
 	}
@@ -295,7 +263,8 @@ public class MainPageTest {
 
 	@Test
 	public void testGetPhoneNumber_CountryFromPermissions() {
-		// Get phone number from country object based on isocode passed in (from permissions)
+		// Get phone number from country object based on isocode passed in (from
+		// permissions)
 		when(permissions.getCountry()).thenReturn("US");
 
 		String permissionsCountryPhoneNumber = "Phone Number";

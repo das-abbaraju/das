@@ -10,10 +10,10 @@ public enum SqlFunction {
 	StdDev(DisplayType.Number, FilterType.Number, true),
 	Length(DisplayType.Number, FilterType.Number, false),
 	Year(DisplayType.Number, FilterType.Number, false),
-	YearMonth(DisplayType.Number, FilterType.Number, false),
 	WeekDay(DisplayType.Number, FilterType.Number, false),
 	Hour(DisplayType.Number, FilterType.Number, false),
 
+    YearMonth(DisplayType.String, FilterType.Date, false),
 	GroupConcat(DisplayType.String, FilterType.String, true),
 	Month(DisplayType.String, FilterType.String, false),
 	Date(DisplayType.String, FilterType.String, false),
@@ -25,7 +25,7 @@ public enum SqlFunction {
 	LowerCase(null, null, false),
 	UpperCase(null, null, false);
 
-	private DisplayType displayType;
+    private DisplayType displayType;
 	private FilterType filterType;
 	private boolean aggregate;
 
@@ -42,7 +42,15 @@ public enum SqlFunction {
 		return displayType;
 	}
 
-	public FilterType getFilterType(Field field) {
+    public DisplayType getDisplayType() {
+        return displayType;
+    }
+
+    public FilterType getFilterType() {
+        return filterType;
+    }
+
+    public FilterType getFilterType(Field field) {
 		if (filterType == null) {
 			return field.getType().getFilterType();
 		}
