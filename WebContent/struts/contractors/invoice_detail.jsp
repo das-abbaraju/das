@@ -167,6 +167,11 @@
                                                         </li>
 													</pics:permission>
 													<pics:permission perm="InvoiceEdit">
+                                                        <li>
+                                                            <a class="refund" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=refund">
+                                                                <s:text name="button.Refund" />
+                                                            </a>
+                                                        </li>
 														<li>
 															<a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">
 																<s:text name="button.SysEdit" />
