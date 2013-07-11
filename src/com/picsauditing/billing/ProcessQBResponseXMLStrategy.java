@@ -29,6 +29,15 @@ public abstract class ProcessQBResponseXMLStrategy {
 
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
+
+	public void setInvoiceDAO(InvoiceDAO invoiceDAO) {
+		this.invoiceDAO = invoiceDAO;
+	}
+
+	public void setContractorAccountDAO(ContractorAccountDAO contractorAccountDAO) {
+		this.contractorAccountDAO = contractorAccountDAO;
+	}
+
 	@Qualifier("InvoiceDAO")
 	@Autowired
 	private InvoiceDAO invoiceDAO;

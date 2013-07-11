@@ -37,9 +37,16 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 
 		NodeList qbXmlMsgsRsChildNodes = ProcessQBResponseXMLStrategy.findQBXMLMsgsRsChildNodes(inputStream, actionMessages, errorMessages);
 
+		if (errorMessages.length() > 0) {
+			addActionMessage(actionMessages.toString());
+			addActionError(errorMessages.toString());
+			return ERROR;
+		}
+
+		ProcessQBResponseXMLStrategy.processQBXMLMsgsRs(qbXmlMsgsRsChildNodes, actionMessages, errorMessages);
+
 		if (actionMessages.length() > 0) {
 			addActionMessage(actionMessages.toString());
-			actionMessages.setLength(0);
 		}
 
 		if (errorMessages.length() > 0) {
@@ -47,7 +54,7 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 			return ERROR;
 		}
 
-		ProcessQBResponseXMLStrategy.processQBXMLMsgsRs(qbXmlMsgsRsChildNodes, actionMessages, errorMessages);
+
 		return SUCCESS;
 	}
 
