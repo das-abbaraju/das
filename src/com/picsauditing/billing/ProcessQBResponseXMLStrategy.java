@@ -21,9 +21,12 @@ import java.io.InputStream;
  */
 public abstract class ProcessQBResponseXMLStrategy {
 
+	private String PARENT_NODE_NAME_ADD_RESULT;
+	private String PARENT_NODE_NAME_QUERY_RESULT;
+	private String DETAIL_NODE_NAME;
+	private String REQUEST_TYPE;
 
-
-	public abstract void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessagses);
+	public abstract void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessagses, String nodeName);
 
 	protected void processParentNode(Node parentNode, String detailNodeName, String requestType, StringBuilder actionMessages, StringBuilder errorMessages) {
 		if (isStatusMessageOk(parentNode)) {
@@ -32,7 +35,7 @@ public abstract class ProcessQBResponseXMLStrategy {
 			for (int i = 0; i < numChildNodes; ++i) {
 				Node node = childNodes.item(i);
 				if (node.getNodeName().equals(detailNodeName)) {
-					processDetailNode(node, actionMessages, errorMessages);
+					processDetailNode(node, actionMessages, errorMessages,parentNode.getNodeName());
 				}
 			}
 		} else {
@@ -44,14 +47,16 @@ public abstract class ProcessQBResponseXMLStrategy {
 
 	protected static String getNodeRequestIDAttribute(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
-		Node statusMessage = attributes.getNamedItem("statusMessage");
 		return attributes.getNamedItem("requestID").getNodeValue();
 	}
 
 	protected static boolean isStatusMessageOk(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
-		Node statusMessage = attributes.getNamedItem("statusMessage");
-		return statusMessage.getNodeValue().equals("Status OK");
+		return attributes.getNamedItem("statusMessage").getNodeValue().equals("Status OK");
+	}
+
+	protected Boolean isAddNotJustQuerySoSetQbSyncToFalse(String parentNodeName) {
+		return (parentNodeName.equals(getPARENT_NODE_NAME_ADD_RESULT()) ? true : false);
 	}
 
 	public static NodeList findQBXMLMsgsRsChildNodes(InputStream inputStream, StringBuilder actionMessages, StringBuilder errorMessages) throws IOException, SAXException, ParserConfigurationException {
@@ -99,17 +104,19 @@ public abstract class ProcessQBResponseXMLStrategy {
 			ProcessQBResponseXMLStrategy processor = null;
 
 			switch (node.getNodeName()) {
-				case "InvoiceAddRs":
-					processor = new ProcessQBResponseXMLInvoiceAdd();
-					processor.processParentNode(node, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
+				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
+				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
+					processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
+					processor.processParentNode(node, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
-				case "CustomerAddRs":
-					processor = new ProcessQBResponseXMLCustomerAdd();
-					processor.processParentNode(node, ProcessQBResponseXMLCustomerAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomerAdd.REQUEST_TYPE, actionMessages, errorMessages);
+				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
+				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
+					processor = new ProcessQBResponseXMLCustomerAddOrUpdate();
+					processor.processParentNode(node, ProcessQBResponseXMLCustomerAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomerAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
-				case "ReceivePaymentAddRs":
-					processor = new ProcessQBResponseXMLPaymentAdd();
-					processor.processParentNode(node, ProcessQBResponseXMLPaymentAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLPaymentAdd.REQUEST_TYPE, actionMessages, errorMessages);
+				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
+					processor = new ProcessQBResponseXMLPaymentAddOrUpdate();
+					processor.processParentNode(node, ProcessQBResponseXMLPaymentAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLPaymentAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				default:
 					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");
@@ -118,6 +125,40 @@ public abstract class ProcessQBResponseXMLStrategy {
 			continue;
 
 		}
+	}
+
+
+
+	public String getPARENT_NODE_NAME_ADD_RESULT() {
+		return PARENT_NODE_NAME_ADD_RESULT;
+	}
+
+	public void setPARENT_NODE_NAME_ADD_RESULT(String PARENT_NODE_NAME_ADD_RESULT) {
+		this.PARENT_NODE_NAME_ADD_RESULT = PARENT_NODE_NAME_ADD_RESULT;
+	}
+
+	public String getPARENT_NODE_NAME_QUERY_RESULT() {
+		return PARENT_NODE_NAME_QUERY_RESULT;
+	}
+
+	public void setPARENT_NODE_NAME_QUERY_RESULT(String PARENT_NODE_NAME_QUERY_RESULT) {
+		this.PARENT_NODE_NAME_QUERY_RESULT = PARENT_NODE_NAME_QUERY_RESULT;
+	}
+
+	public String getDETAIL_NODE_NAME() {
+		return DETAIL_NODE_NAME;
+	}
+
+	public void setDETAIL_NODE_NAME(String DETAIL_NODE_NAME) {
+		this.DETAIL_NODE_NAME = DETAIL_NODE_NAME;
+	}
+
+	public String getREQUEST_TYPE() {
+		return REQUEST_TYPE;
+	}
+
+	public void setREQUEST_TYPE(String REQUEST_TYPE) {
+		this.REQUEST_TYPE = REQUEST_TYPE;
 	}
 
 

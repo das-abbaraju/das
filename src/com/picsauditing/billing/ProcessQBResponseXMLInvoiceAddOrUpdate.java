@@ -9,17 +9,27 @@ import org.w3c.dom.NodeList;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ProcessQBResponseXMLInvoiceAdd extends ProcessQBResponseXMLStrategy  {
+public class ProcessQBResponseXMLInvoiceAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 
+	public static final String PARENT_NODE_NAME_ADD_RESULT = "InvoiceAddRs";
+	public static final String PARENT_NODE_NAME_QUERY_RESULT = "InvoiceQueryRs";
 	public static final String DETAIL_NODE_NAME = "InvoiceRet";
 	public static final String REQUEST_TYPE = "Invoice Add";
+
 	private InvoiceDAO invoiceDAO = null;
+
+	public ProcessQBResponseXMLInvoiceAddOrUpdate() {
+		setPARENT_NODE_NAME_ADD_RESULT(PARENT_NODE_NAME_ADD_RESULT);
+		setPARENT_NODE_NAME_QUERY_RESULT(PARENT_NODE_NAME_QUERY_RESULT);
+		setDETAIL_NODE_NAME(DETAIL_NODE_NAME);
+		setREQUEST_TYPE(REQUEST_TYPE);
+	}
 
 	public void setInvoiceDAO(InvoiceDAO invoiceDAO) {
 		this.invoiceDAO = invoiceDAO;
 	}
 
-	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages, StringBuilder errorMessages) {
+	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages, StringBuilder errorMessages, Boolean setQBSyncToFalse) {
 		if (invoiceDAO == null) {
 			invoiceDAO = SpringUtils.getBean("InvoiceDAO");
 		}
@@ -38,16 +48,21 @@ public class ProcessQBResponseXMLInvoiceAdd extends ProcessQBResponseXMLStrategy
 			errorMessages.append("Invoice ID '" + invoiceID + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
 			return;
 		}
-		invoice.setQbSync(false);
 		invoice.setQbListID(qbListID);
-		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + invoiceID + ";<br/>");
+		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "'");
+
+		if (setQBSyncToFalse) {
+			invoice.setQbSync(false);
+			actionMessages.append(",qbSync = 0 ");
+		}
+		actionMessages.append("where id = " + invoiceID + ";<br/>");
 		invoiceDAO.save(invoice);
 	}
 
 
 
 	@Override
-	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages) {
+	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages, String parentNodeName) {
 		NodeList invoiceRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String invoiceID = "";
@@ -64,7 +79,8 @@ public class ProcessQBResponseXMLInvoiceAdd extends ProcessQBResponseXMLStrategy
 					break;
 			}
 			if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
-				updateInvoice(qbListID, invoiceID,actionMessages, errorMessages);
+				Boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddNotJustQuerySoSetQbSyncToFalse(parentNodeName);
+				updateInvoice(qbListID, invoiceID,actionMessages, errorMessages, isAddNotJustQuerySoSetQbSyncToFalse);
 				return;
 			}
 		}

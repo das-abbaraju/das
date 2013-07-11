@@ -34,19 +34,19 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 	@Test
 	public void testProcessParentNode() throws Exception {
 
-		ProcessQBResponseXMLInvoiceAdd processor = new ProcessQBResponseXMLInvoiceAdd();
+		ProcessQBResponseXMLInvoiceAddOrUpdate processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
 		processor.setInvoiceDAO(invoiceDAO);
 		when(invoiceDAO.find(anyInt())).thenReturn(invoice);
 		when(invoiceDAO.save(invoice)).thenReturn(invoice);
 		Node badXml = badXmlChildNodes.item(1);
 		StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
-		processor.processParentNode(badXml, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
+		processor.processParentNode(badXml, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
 		assertNotSame(errorMessages.length(), 0);
 
 		Node goodXml = goodXmlChildNodes.item(1);
 		actionMessages = new StringBuilder();
 		errorMessages = new StringBuilder();
-		processor.processParentNode(goodXml, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
+		processor.processParentNode(goodXml, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
 		assertEquals(errorMessages.length(), 0);
 		assertNotSame(actionMessages.length(), 0);
 
@@ -58,7 +58,7 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 		String qbListID = "afijaweoifjawoeifjaoiwejfoawej";
 		String invoiceID = "12345";
 		StringBuilder actionMessages = new StringBuilder();
-		ProcessQBResponseXMLStrategy processor = new ProcessQBResponseXMLInvoiceAdd();
+		ProcessQBResponseXMLStrategy processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
 		processor.setInvoiceDAO(invoiceDAO);
 		processor.setContractorAccountDAO(contractorAccountDAO);
 		when(invoiceDAO.find(anyInt())).thenReturn(invoice);

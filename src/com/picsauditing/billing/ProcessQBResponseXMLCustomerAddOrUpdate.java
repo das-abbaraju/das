@@ -16,25 +16,34 @@ import java.io.StringWriter;
  * Time: 10:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessQBResponseXMLCustomerAdd extends ProcessQBResponseXMLStrategy  {
-
+public class ProcessQBResponseXMLCustomerAddOrUpdate extends ProcessQBResponseXMLStrategy  {
+	public static final String PARENT_NODE_NAME_ADD_RESULT = "CustomerAddRs";
+	public static final String PARENT_NODE_NAME_QUERY_RESULT = "CustomerQueryRs";
 	public static final String DETAIL_NODE_NAME = "CustomerRet";
 	public static final String REQUEST_TYPE = "Customer Add";
+
 	private ContractorAccountDAO contractorAccountDAO = null;
+
+	public ProcessQBResponseXMLCustomerAddOrUpdate() {
+		setPARENT_NODE_NAME_ADD_RESULT(PARENT_NODE_NAME_ADD_RESULT);
+		setPARENT_NODE_NAME_QUERY_RESULT(PARENT_NODE_NAME_QUERY_RESULT);
+		setDETAIL_NODE_NAME(DETAIL_NODE_NAME);
+		setREQUEST_TYPE(REQUEST_TYPE);
+	}
 
 	public void setContractorAccountDAO(ContractorAccountDAO contractorAccountDAO) {
 		this.contractorAccountDAO = contractorAccountDAO;
 	}
 
-	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages, StringBuilder errorMessages) {
+	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages, StringBuilder errorMessages, Boolean setQbSyncToFalse) {
 		if (contractorAccountDAO == null) {
 			contractorAccountDAO = SpringUtils.getBean("ContractorAccountDAO");
 		}
 
-		String contractorIDnumsOnly = contractorID.replaceAll("[^0-9]","");
+		String contractorIDNumsOnly = contractorID.replaceAll("[^0-9]","");
 		ContractorAccount contractor = null;
 		try {
-			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDnumsOnly));
+			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDNumsOnly));
 			if (contractor == null) {
 				errorMessages.append("Contractor ID '" + contractorID + "' not found<br/>");
 				return;
@@ -67,14 +76,18 @@ public class ProcessQBResponseXMLCustomerAdd extends ProcessQBResponseXMLStrateg
 				qbListIDColumnName = "qbListUKID";
 				break;
 		}
-		contractor.setQbSync(false);
-		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "', qbSync = 0 where id = " + contractorID + ";<br/>");
+		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "'");
+		if (setQbSyncToFalse) {
+			contractor.setQbSync(false);
+			actionMessages.append(", qbSync = 0 ");
+		}
+		actionMessages.append("where id = " + contractorID + ";<br/>");
 		contractorAccountDAO.save(contractor);
 	}
 
 
 	@Override
-	public void processDetailNode(Node detailNode,StringBuilder actionMessages, StringBuilder errorMessages) {
+	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages, String parentNodeName) {
 		NodeList customerRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String contractorID = "";
@@ -91,7 +104,8 @@ public class ProcessQBResponseXMLCustomerAdd extends ProcessQBResponseXMLStrateg
 					break;
 			}
 			if (!qbListID.isEmpty() && !contractorID.isEmpty()) {
-				updateContractor(qbListID, contractorID,actionMessages,errorMessages);
+				Boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddNotJustQuerySoSetQbSyncToFalse(parentNodeName);
+				updateContractor(qbListID, contractorID,actionMessages,errorMessages,isAddNotJustQuerySoSetQbSyncToFalse);
 				return;
 			}
 		}

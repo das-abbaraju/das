@@ -16,18 +16,25 @@ import java.io.StringWriter;
  * Time: 10:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessQBResponseXMLPaymentAdd extends ProcessQBResponseXMLStrategy  {
+public class ProcessQBResponseXMLPaymentAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 
-	public static final String DETAIL_NODE_NAME = "ReceivePaymentRet";
-	public static final String REQUEST_TYPE = "Payment Add";
+	public static final String PARENT_NODE_NAME_ADD_RESULT = "ReceivePaymentAddRs";
+	public static final String DETAIL_NODE_NAME = "InvoiceRet";
+	public static final String REQUEST_TYPE = "Invoice List ID Update";
 	private PaymentDAO paymentDAO = null;
+
+	public ProcessQBResponseXMLPaymentAddOrUpdate() {
+		setPARENT_NODE_NAME_ADD_RESULT(PARENT_NODE_NAME_ADD_RESULT);
+		setDETAIL_NODE_NAME(DETAIL_NODE_NAME);
+		setREQUEST_TYPE(REQUEST_TYPE);
+	}
 
 	public void setPaymentDAO(PaymentDAO paymentDAO) {
 		this.paymentDAO = paymentDAO;
 	}
 
 	@Override
-	public void processDetailNode(Node detailNode,StringBuilder actionMessages, StringBuilder errorMessages) {
+	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages, String parentNodeName) {
 		NodeList paymentRetChildNodes = detailNode.getChildNodes();
 		String qbListID = "";
 		String paymentID = "";
@@ -44,7 +51,8 @@ public class ProcessQBResponseXMLPaymentAdd extends ProcessQBResponseXMLStrategy
 					break;
 			}
 			if (!qbListID.isEmpty() && !paymentID.isEmpty()) {
-				updatePayment(qbListID, paymentID, actionMessages, errorMessages);
+				Boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddNotJustQuerySoSetQbSyncToFalse(parentNodeName);
+				updatePayment(qbListID, paymentID, actionMessages, errorMessages, isAddNotJustQuerySoSetQbSyncToFalse);
 				return;
 			}
 		}
@@ -52,7 +60,7 @@ public class ProcessQBResponseXMLPaymentAdd extends ProcessQBResponseXMLStrategy
 		return;
 	}
 
-	protected void updatePayment(String qbListID, String paymentID, StringBuilder actionMessages, StringBuilder errorMessages) {
+	protected void updatePayment(String qbListID, String paymentID, StringBuilder actionMessages, StringBuilder errorMessages, Boolean setQbSyncToFalse) {
 		if (paymentDAO == null) {
 			paymentDAO = SpringUtils.getBean("PaymentDAO");
 		}
@@ -71,9 +79,13 @@ public class ProcessQBResponseXMLPaymentAdd extends ProcessQBResponseXMLStrategy
 			errorMessages.append("Payment ID '" + paymentID + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
 			return;
 		}
-		payment.setQbSync(false);
 		payment.setQbListID(qbListID);
-		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + paymentID + ";<br/>");
+		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "'");
+		if (setQbSyncToFalse) {
+			payment.setQbSync(false);
+			actionMessages.append(", qbSync = 0 ");
+		}
+		actionMessages.append("where id = " + paymentID + ";<br/>");
 		paymentDAO.save(payment);
 	}
 }
