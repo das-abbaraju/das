@@ -9,7 +9,11 @@ public class PrivacyPolicy extends PicsActionSupport {
 	@Override
 	@Anonymous
 	public String execute() {
-		if (AjaxUtils.isAjax(getRequest())) {
+        if (permissions == null) {
+            loadPermissions();
+        }
+
+        if (AjaxUtils.isAjax(getRequest())) {
 			return "privacy-policy";
 		}
 

@@ -287,6 +287,57 @@ FeeFeeClass
 FeeMaxFacilities
 FeeName
 
+Model: ContractorFlagCriteriaDatas
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+ContractorFlagFlagColor
+ContractorFlagNetworkLevel
+ContractorFlagWaitingOn
+ContractorFlagWorkStatus
+ContractorOperatorOperatorCity
+ContractorOperatorOperatorCountry
+ContractorOperatorOperatorCountrySubdivision
+ContractorOperatorOperatorCreationDate
+ContractorOperatorOperatorID
+ContractorOperatorOperatorLegalName
+ContractorOperatorOperatorName
+ContractorOperatorOperatorStatus
+ContractorOperatorOperatorTimezone
+CustomerServiceUserID
+CustomerServiceUserName
+FlagCriteriaAllowCustomValue
+FlagCriteriaCategory
+FlagCriteriaComparison
+FlagCriteriaDataType
+FlagCriteriaDefaultValue
+FlagCriteriaDescription
+FlagCriteriaDisplayOrder
+FlagCriteriaFlaggableWhenMissing
+FlagCriteriaInsurance
+FlagCriteriaLabel
+FlagCriteriaMultiYearScope
+FlagCriteriaOptionCode
+FlagCriteriaOshaRateType
+FlagCriteriaOshaType
+FlagCriteriaRequiredStatus
+FlagCriteriaRequiredStatusComparison
+FlagDataBaselineFlag
+FlagDataFlag
+FlagDataOverrideCreatedBy
+FlagDataOverrideCreationDate
+FlagDataOverrideForceEnd
+FlagDataOverrideForceflag
+FlagDataUpdateDate
+
 Model: ContractorFlagDatas
 Permission: Permissions{permissions=[]}
 ----------------------------------------

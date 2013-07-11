@@ -8,6 +8,7 @@ public enum ModelType {
     ContractorAuditFiles,
     ContractorAuditOperators,
     ContractorFees,
+    ContractorFlagCriteriaDatas,
     ContractorFlagDatas,
     ContractorNumbers,
     ContractorOperators,
