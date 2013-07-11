@@ -28,6 +28,7 @@
 		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
 		<class>com.picsauditing.jpa.entities.Country</class>
 		<class>com.picsauditing.jpa.entities.CountrySubdivision</class>
+        <class>com.picsauditing.jpa.entities.CreditMemoAppliedToInvoice</class>
 		<class>com.picsauditing.jpa.entities.EmailAttachment</class>
 		<class>com.picsauditing.jpa.entities.EmailQueue</class>
 		<class>com.picsauditing.jpa.entities.EmailStatus</class>
@@ -41,6 +42,7 @@
 		<class>com.picsauditing.jpa.entities.Facility</class>
 		<class>com.picsauditing.jpa.entities.FlagColor</class>
 		<class>com.picsauditing.jpa.entities.Invoice</class>
+        <class>com.picsauditing.jpa.entities.InvoiceCreditMemo</class>
 		<class>com.picsauditing.jpa.entities.InvoiceItem</class>
 		<class>com.picsauditing.jpa.entities.JobCompetency</class>
 		<class>com.picsauditing.jpa.entities.JobCompetencyStats</class>
@@ -61,6 +63,7 @@
 		<class>com.picsauditing.jpa.entities.OshaAudit</class>
 		<class>com.picsauditing.jpa.entities.OshaType</class>
 		<class>com.picsauditing.jpa.entities.RulesRow</class>
+        <class>com.picsauditing.jpa.entities.RefundItem</class>
 		<class>com.picsauditing.jpa.entities.Token</class>
 		<class>com.picsauditing.jpa.entities.User</class>
 		<class>com.picsauditing.jpa.entities.UserAccess</class>

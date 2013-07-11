@@ -37,7 +37,6 @@ public class TransactionItem extends BaseTable{
 		this.amount = amount;
 	}
 
-	@Column(length = 100)
     @ReportField(category = FieldCategory.Invoicing, importance = FieldImportance.Average)
 	public String getDescription() {
 		return description;

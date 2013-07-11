@@ -1,10 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.report.tables.FieldImportance;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -71,7 +66,6 @@ public class InvoiceItem extends TransactionItem {
 		this.refunded = refunded;
 	}
 
-	@Column(length = 25)
 	public String getQbRefundID() {
 		return qbRefundID;
 	}
