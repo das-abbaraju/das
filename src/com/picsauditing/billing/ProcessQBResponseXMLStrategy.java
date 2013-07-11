@@ -79,9 +79,10 @@ public abstract class ProcessQBResponseXMLStrategy {
 	}
 
 	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages, StringBuilder errorMessages) {
+		String contractorIDnumsOnly = contractorID.replaceAll("[^0-9]","");
 		ContractorAccount contractor = null;
 		try {
-			contractor = contractorAccountDAO.find(Integer.parseInt(contractorID));
+			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDnumsOnly));
 			if (contractor == null) {
 				errorMessages.append("Contractor ID '" + contractorID + "' not found; ");
 				return;
