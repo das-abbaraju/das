@@ -51,7 +51,7 @@ public abstract class ProcessQBResponseXMLStrategy {
 			for (int i = 0; i < numChildNodes; ++i) {
 				Node node = childNodes.item(i);
 				if (node.getNodeName().equals(detailNodeName)) {
-					processDetailNode(node,actionMessages,errorMessages);
+					processDetailNode(node, actionMessages, errorMessages);
 				}
 			}
 		} else {
@@ -60,16 +60,37 @@ public abstract class ProcessQBResponseXMLStrategy {
 		}
 	}
 
-	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages) {
-		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + invoiceID + ";");
-		Invoice invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
+	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages, StringBuilder errorMessages) {
+		Invoice invoice = null;
+		try {
+			invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
+			if (invoice == null) {
+				errorMessages.append("Invoice ID '" + invoiceID + "' not found; ");
+				return;
+			}
+		} catch (Exception e) {
+			errorMessages.append("Invoice ID '" + invoiceID + "' not found; ");
+			return;
+		}
 		invoice.setQbSync(false);
 		invoice.setQbListID(qbListID);
+		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + invoiceID + ";");
 		invoiceDAO.save(invoice);
 	}
 
-	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages) {
-		ContractorAccount contractor = contractorAccountDAO.find(Integer.parseInt(contractorID));
+	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages, StringBuilder errorMessages) {
+		ContractorAccount contractor = null;
+		try {
+			contractor = contractorAccountDAO.find(Integer.parseInt(contractorID));
+			if (contractor == null) {
+				errorMessages.append("Contractor ID '" + contractorID + "' not found; ");
+				return;
+			}
+		} catch (Exception e) {
+			errorMessages.append("Contractor ID '" + contractorID + "' not found; ");
+			return;
+		}
+
 		String qbListIDColumnName = "";
 		switch (contractor.getCurrency()) {
 			case USD:
@@ -97,13 +118,13 @@ public abstract class ProcessQBResponseXMLStrategy {
 
 	protected static String getNodeRequestIDAttribute(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
-		Node statusMessage= attributes.getNamedItem("statusMessage");
+		Node statusMessage = attributes.getNamedItem("statusMessage");
 		return attributes.getNamedItem("requestID").getNodeValue();
 	}
 
 	protected static boolean isStatusMessageOk(Node parentNode) {
 		NamedNodeMap attributes = parentNode.getAttributes();
-		Node statusMessage= attributes.getNamedItem("statusMessage");
+		Node statusMessage = attributes.getNamedItem("statusMessage");
 		return statusMessage.getNodeValue().equals("Status OK");
 	}
 
@@ -112,8 +133,8 @@ public abstract class ProcessQBResponseXMLStrategy {
 		Element rootElement = XmlService.getRootElementFromInputStream(inputStream);
 
 		String seeking = "QBXML";
-		if (!(rootElement.getNodeName()).equals(seeking))   {
-			errorMessages.append("Didn't find '"+seeking+"' as root element; ");
+		if (!(rootElement.getNodeName()).equals(seeking)) {
+			errorMessages.append("Didn't find '" + seeking + "' as root element; ");
 			return null;
 		}
 
@@ -125,16 +146,16 @@ public abstract class ProcessQBResponseXMLStrategy {
 			Node childNode = childNodes.item(i);
 
 			if (childNode.getNodeName().equals(seeking)) {
-				actionMessages.append("Processing '"+seeking+"' child node; ");
+				actionMessages.append("Processing '" + seeking + "' child node; ");
 				return childNode.getChildNodes();
 			}
 
 		}
-		errorMessages.append("Didn't find '"+seeking+"' node; ");
+		errorMessages.append("Didn't find '" + seeking + "' node; ");
 		return null;
 	}
 
-	public static void processQBXMLMsgsRs(NodeList nodeList,StringBuilder actionMessages,StringBuilder errorMessages) {
+	public static void processQBXMLMsgsRs(NodeList nodeList, StringBuilder actionMessages, StringBuilder errorMessages) {
 
 		for (int i = 0; i < nodeList.getLength(); ++i) {
 			Node node = nodeList.item(i);
@@ -150,15 +171,15 @@ public abstract class ProcessQBResponseXMLStrategy {
 			switch (node.getNodeName()) {
 				case "InvoiceAddRs":
 					processor = new ProcessQBResponseXMLInvoice();
-					processor.processParentNode(node,ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME,ProcessQBResponseXMLInvoice.REQUEST_TYPE,actionMessages,errorMessages);
+					processor.processParentNode(node, ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoice.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				case "CustomerAddRs":
 					processor = new ProcessQBResponseXMLCustomer();
-					processor.processParentNode(node,ProcessQBResponseXMLCustomer.DETAIL_NODE_NAME,ProcessQBResponseXMLCustomer.REQUEST_TYPE,actionMessages,errorMessages);
+					processor.processParentNode(node, ProcessQBResponseXMLCustomer.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomer.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				case "ReceivePaymentAddRs":
 					processor = new ProcessQBResponseXMLPayment();
-					processor.processParentNode(node,ProcessQBResponseXMLPayment.DETAIL_NODE_NAME,ProcessQBResponseXMLPayment.REQUEST_TYPE,actionMessages,errorMessages);
+					processor.processParentNode(node, ProcessQBResponseXMLPayment.DETAIL_NODE_NAME, ProcessQBResponseXMLPayment.REQUEST_TYPE, actionMessages, errorMessages);
 				default:
 					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'; ");
 					break;

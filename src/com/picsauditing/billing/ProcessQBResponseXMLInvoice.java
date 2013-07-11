@@ -26,11 +26,11 @@ public class ProcessQBResponseXMLInvoice extends ProcessQBResponseXMLStrategy  {
 					break;
 			}
 			if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
-				updateInvoice(qbListID, invoiceID,actionMessages);
+				updateInvoice(qbListID, invoiceID,actionMessages, errorMessages);
 				return;
 			}
 		}
-		errorMessages.append("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'; ");
 		return;
 	}
 

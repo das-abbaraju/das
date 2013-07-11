@@ -34,11 +34,11 @@ public class ProcessQBResponseXMLCustomer extends ProcessQBResponseXMLStrategy  
 					break;
 			}
 			if (!qbListID.isEmpty() && !contractorID.isEmpty()) {
-				updateContractor(qbListID, contractorID,actionMessages);
+				updateContractor(qbListID, contractorID,actionMessages,errorMessages);
 				return;
 			}
 		}
-		errorMessages.append("Did not complete processing of contractor '"+contractorID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of contractor '"+contractorID+"' qbListID '"+qbListID+"'; ");
 		return;
 	}
 }

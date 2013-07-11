@@ -34,11 +34,11 @@ public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
 					break;
 			}
 			if (!qbListID.isEmpty() && !paymentID.isEmpty()) {
-				updateInvoice(qbListID, paymentID,actionMessages);
+				updateInvoice(qbListID, paymentID,actionMessages,errorMessages);
 				return;
 			}
 		}
-		errorMessages.append("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'");
+		errorMessages.append("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'; ");
 		return;
 	}
 }
