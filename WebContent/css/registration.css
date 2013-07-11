@@ -1273,3 +1273,10 @@ footer .footer-menu a {
 {
 	margin-top: 10px; 
 }
+
+.RegistrationMakePayment-page .phone
+{
+    color: #5d5d5d;
+    font-size: 13px;
+    margin: 10px 0px;
+}
