@@ -83,9 +83,9 @@ public class ProcessQBResponseXMLPaymentAddOrUpdate extends ProcessQBResponseXML
 		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "'");
 		if (setQbSyncToFalse) {
 			payment.setQbSync(false);
-			actionMessages.append(", qbSync = 0 ");
+			actionMessages.append(", qbSync = 0");
 		}
-		actionMessages.append("where id = " + paymentID + ";<br/>");
+		actionMessages.append(" where id = " + paymentID + ";<br/>");
 		paymentDAO.save(payment);
 	}
 }

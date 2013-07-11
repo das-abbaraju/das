@@ -53,9 +53,9 @@ public class ProcessQBResponseXMLInvoiceAddOrUpdate extends ProcessQBResponseXML
 
 		if (setQBSyncToFalse) {
 			invoice.setQbSync(false);
-			actionMessages.append(",qbSync = 0 ");
+			actionMessages.append(", qbSync = 0");
 		}
-		actionMessages.append("where id = " + invoiceID + ";<br/>");
+		actionMessages.append(" where id = " + invoiceID + ";<br/>");
 		invoiceDAO.save(invoice);
 	}
 

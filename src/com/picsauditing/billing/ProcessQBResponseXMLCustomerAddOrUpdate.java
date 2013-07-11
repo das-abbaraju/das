@@ -79,9 +79,9 @@ public class ProcessQBResponseXMLCustomerAddOrUpdate extends ProcessQBResponseXM
 		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "'");
 		if (setQbSyncToFalse) {
 			contractor.setQbSync(false);
-			actionMessages.append(", qbSync = 0 ");
+			actionMessages.append(", qbSync = 0");
 		}
-		actionMessages.append("where id = " + contractorID + ";<br/>");
+		actionMessages.append(" where id = " + contractorID + ";<br/>");
 		contractorAccountDAO.save(contractor);
 	}
 
