@@ -17,14 +17,14 @@
     </small>
 </div>
 
-<pics:toggle name="<%= FeatureToggle.TOGGLE_SESSION_COOKIE %>">
-    <div id="remember_me" class="form-inline">
-        <label class="checkbox">
-            <s:checkbox name="rememberMe" value="false" tabindex="5" />
-            <s:text name="Login.RememberMe" />
-        </label>
-    </div>
-</pics:toggle>
+
+<div id="remember_me" class="form-inline">
+    <label class="checkbox">
+        <s:checkbox name="rememberMe" value="false" tabindex="5" />
+        <s:text name="Login.RememberMe" />
+    </label>
+</div>
+
 
 <div class="form-actions">
     <button type="submit" class="btn btn-primary" tabindex="6"><s:text name="global.Login" /></button>
