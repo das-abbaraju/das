@@ -8,23 +8,14 @@ import com.picsauditing.report.tables.FieldImportance;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "invoice_item")
-public class InvoiceItem extends BaseTable {
+@DiscriminatorValue("I")
+public class InvoiceItem extends TransactionItem {
 
 	private Invoice invoice;
-	private InvoiceFee invoiceFee;
-	private BigDecimal amount = BigDecimal.ZERO;
-	private String description;
 	private Date paymentExpires;
 	private boolean refunded = false;
 	private String qbRefundID;
@@ -55,34 +46,7 @@ public class InvoiceItem extends BaseTable {
 		this.invoice = invoice;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "feeID")
-	public InvoiceFee getInvoiceFee() {
-		return invoiceFee;
-	}
 
-	public void setInvoiceFee(InvoiceFee invoiceFee) {
-		this.invoiceFee = invoiceFee;
-	}
-
-    @ReportField(type = FieldType.Float, category = FieldCategory.Invoicing, importance = FieldImportance.Required)
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	@Column(length = 100)
-    @ReportField(category = FieldCategory.Invoicing, importance = FieldImportance.Average)
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	/**
 	 * If the fee is for a contractor membership, the date the membership is

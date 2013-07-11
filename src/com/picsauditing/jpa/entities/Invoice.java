@@ -45,6 +45,7 @@ public class Invoice extends Transaction {
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
+    private List<CreditMemoAppliedToInvoice> creditMemos = new ArrayList<>();
 
 	@Transient
 	public boolean hasTax() {
@@ -160,7 +161,16 @@ public class Invoice extends Transaction {
 		this.payments = payments;
 	}
 
-	@Transient
+    @OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
+    public List<CreditMemoAppliedToInvoice> getCreditMemos() {
+        return creditMemos;
+    }
+
+    public void setCreditMemos(List<CreditMemoAppliedToInvoice> creditMemos) {
+        this.creditMemos = creditMemos;
+    }
+
+    @Transient
 	public void markPaid(User u) {
 		setStatus(TransactionStatus.Paid);
 		this.setPaidDate(new Date());

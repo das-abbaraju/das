@@ -12,12 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "invoice_payment")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "paymentType", discriminatorType = DiscriminatorType.STRING)
-public abstract class PaymentApplied extends BaseTable {
+public abstract class PaymentApplied extends TransactionApplied {
 	private Payment payment;
-	private BigDecimal amount = BigDecimal.ZERO;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "paymentID")
@@ -27,14 +23,6 @@ public abstract class PaymentApplied extends BaseTable {
 
 	public void setPayment(Payment payment) {
 		this.payment = payment;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 }
