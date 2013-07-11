@@ -181,6 +181,7 @@ public abstract class ProcessQBResponseXMLStrategy {
 				case "ReceivePaymentAddRs":
 					processor = new ProcessQBResponseXMLPayment();
 					processor.processParentNode(node, ProcessQBResponseXMLPayment.DETAIL_NODE_NAME, ProcessQBResponseXMLPayment.REQUEST_TYPE, actionMessages, errorMessages);
+					break;
 				default:
 					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'; ");
 					break;
