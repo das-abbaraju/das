@@ -33,7 +33,7 @@ public class ProcessQBResponseXML extends PicsActionSupport {
 		StringBuilder actionMessages = new StringBuilder();
 		StringBuilder errorMessages = new StringBuilder();
 
-		InputStream inputStream = new ByteArrayInputStream(this.getQbresponsexml().getBytes());
+		InputStream inputStream = new ByteArrayInputStream(this.getQbresponsexml().getBytes("UTF-8"));
 
 		NodeList qbXmlMsgsRsChildNodes = ProcessQBResponseXMLStrategy.findQBXMLMsgsRsChildNodes(inputStream, actionMessages, errorMessages);
 

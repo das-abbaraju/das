@@ -1,12 +1,6 @@
 package com.picsauditing.billing;
 
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.service.XmlService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -27,20 +21,7 @@ import java.io.InputStream;
  */
 public abstract class ProcessQBResponseXMLStrategy {
 
-	@Autowired
-	private ContractorAccountDAO contractorAccountDAO;
 
-	public void setInvoiceDAO(InvoiceDAO invoiceDAO) {
-		this.invoiceDAO = invoiceDAO;
-	}
-
-	public void setContractorAccountDAO(ContractorAccountDAO contractorAccountDAO) {
-		this.contractorAccountDAO = contractorAccountDAO;
-	}
-
-	@Qualifier("InvoiceDAO")
-	@Autowired
-	private InvoiceDAO invoiceDAO;
 
 	public abstract void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessagses);
 
@@ -55,65 +36,9 @@ public abstract class ProcessQBResponseXMLStrategy {
 				}
 			}
 		} else {
-			errorMessages.append(requestType + " Request failed -- requestID " + getNodeRequestIDAttribute(parentNode));
+			errorMessages.append(requestType + " Request failed -- requestID " + getNodeRequestIDAttribute(parentNode)+"<br/>");
 			return;
 		}
-	}
-
-	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages, StringBuilder errorMessages) {
-		Invoice invoice = null;
-		try {
-			invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
-			if (invoice == null) {
-				errorMessages.append("Invoice ID '" + invoiceID + "' not found; ");
-				return;
-			}
-		} catch (Exception e) {
-			errorMessages.append("Invoice ID '" + invoiceID + "' not found; ");
-			return;
-		}
-		invoice.setQbSync(false);
-		invoice.setQbListID(qbListID);
-		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + invoiceID + ";");
-		invoiceDAO.save(invoice);
-	}
-
-	protected void updateContractor(String qbListID, String contractorID, StringBuilder actionMessages, StringBuilder errorMessages) {
-		String contractorIDnumsOnly = contractorID.replaceAll("[^0-9]","");
-		ContractorAccount contractor = null;
-		try {
-			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDnumsOnly));
-			if (contractor == null) {
-				errorMessages.append("Contractor ID '" + contractorID + "' not found; ");
-				return;
-			}
-		} catch (Exception e) {
-			errorMessages.append("Contractor ID '" + contractorID + "' not found; ");
-			return;
-		}
-
-		String qbListIDColumnName = "";
-		switch (contractor.getCurrency()) {
-			case USD:
-				contractor.setQbListID(qbListID);
-				qbListIDColumnName = "qbListID";
-				break;
-			case CAD:
-				contractor.setQbListCAID(qbListID);
-				qbListIDColumnName = "qbListCAID";
-				break;
-			case EUR:
-				contractor.setQbListEUID(qbListID);
-				qbListIDColumnName = "qbListEUID";
-				break;
-			case GBP:
-				contractor.setQbListUKID(qbListID);
-				qbListIDColumnName = "qbListUKID";
-				break;
-		}
-		contractor.setQbSync(false);
-		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "', qbSync = 0 where id = " + contractorID + ";");
-		contractorAccountDAO.save(contractor);
 	}
 
 
@@ -135,24 +60,28 @@ public abstract class ProcessQBResponseXMLStrategy {
 
 		String seeking = "QBXML";
 		if (!(rootElement.getNodeName()).equals(seeking)) {
-			errorMessages.append("Didn't find '" + seeking + "' as root element; ");
+			errorMessages.append("Didn't find '" + seeking + "' as root element<br/>");
 			return null;
 		}
 
-		actionMessages.append("Root element of the doc is '" + seeking + "'; ");
+		actionMessages.append("Root element of the doc is '" + seeking + "'<br/>");
 
 		seeking = "QBXMLMsgsRs";
 		NodeList childNodes = rootElement.getChildNodes();
+		StringBuilder nodesFound = new StringBuilder();
 		for (int i = 0; i < childNodes.getLength(); ++i) {
 			Node childNode = childNodes.item(i);
 
 			if (childNode.getNodeName().equals(seeking)) {
-				actionMessages.append("Processing '" + seeking + "' child node; ");
+				actionMessages.append("Processing '" + seeking + "' child node<br/>");
 				return childNode.getChildNodes();
+			} else if (!childNode.getNodeName().equals("#text")){
+				nodesFound.append(childNode.getNodeName()+"; ");
 			}
 
 		}
-		errorMessages.append("Didn't find '" + seeking + "' node; ");
+		errorMessages.append("Didn't find '" + seeking + "' node -- instead found '"+nodesFound+"'<br/>");
+
 		return null;
 	}
 
@@ -165,7 +94,7 @@ public abstract class ProcessQBResponseXMLStrategy {
 				continue;
 			}
 
-			actionMessages.append("Processing node of type '" + node.getNodeName() + "'; ");
+			actionMessages.append("Processing node of type '" + node.getNodeName() + "'<br/>");
 
 			ProcessQBResponseXMLStrategy processor = null;
 
@@ -183,11 +112,13 @@ public abstract class ProcessQBResponseXMLStrategy {
 					processor.processParentNode(node, ProcessQBResponseXMLPayment.DETAIL_NODE_NAME, ProcessQBResponseXMLPayment.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				default:
-					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'; ");
+					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");
 					break;
 			}
 			continue;
 
 		}
 	}
+
+
 }

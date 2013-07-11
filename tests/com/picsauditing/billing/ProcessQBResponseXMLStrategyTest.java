@@ -36,7 +36,6 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 
 		ProcessQBResponseXMLInvoice processor = new ProcessQBResponseXMLInvoice();
 		processor.setInvoiceDAO(invoiceDAO);
-		processor.setContractorAccountDAO(contractorAccountDAO);
 		when(invoiceDAO.find(anyInt())).thenReturn(invoice);
 		when(invoiceDAO.save(invoice)).thenReturn(invoice);
 		Node badXml = badXmlChildNodes.item(1);

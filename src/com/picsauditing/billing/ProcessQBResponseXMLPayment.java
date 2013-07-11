@@ -1,7 +1,13 @@
 package com.picsauditing.billing;
 
+import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.util.SpringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +20,11 @@ public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
 
 	public static final String DETAIL_NODE_NAME = "ReceivePaymentRet";
 	public static final String REQUEST_TYPE = "Payment Add";
+	private PaymentDAO paymentDAO = null;
 
+	public void setPaymentDAO(PaymentDAO paymentDAO) {
+		this.paymentDAO = paymentDAO;
+	}
 
 	@Override
 	public void processDetailNode(Node detailNode,StringBuilder actionMessages, StringBuilder errorMessages) {
@@ -34,11 +44,36 @@ public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
 					break;
 			}
 			if (!qbListID.isEmpty() && !paymentID.isEmpty()) {
-				updateInvoice(qbListID, paymentID,actionMessages,errorMessages);
+				updatePayment(qbListID, paymentID, actionMessages, errorMessages);
 				return;
 			}
 		}
-		errorMessages.append("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'; ");
+		errorMessages.append("Did not complete processing of payment '"+paymentID+"' qbListID '"+qbListID+"'<br/>");
 		return;
+	}
+
+	protected void updatePayment(String qbListID, String paymentID, StringBuilder actionMessages, StringBuilder errorMessages) {
+		if (paymentDAO == null) {
+			paymentDAO = SpringUtils.getBean("PaymentDAO");
+		}
+		Payment payment = null;
+		try {
+			payment = paymentDAO.find(Integer.parseInt(paymentID));
+			if (payment == null) {
+				errorMessages.append("Payment ID '" + paymentID + "' not found; ");
+				return;
+			}
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			String stacktrace = sw.toString();
+
+			errorMessages.append("Payment ID '" + paymentID + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
+			return;
+		}
+		payment.setQbSync(false);
+		payment.setQbListID(qbListID);
+		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "',qbSync = 0 where id = " + paymentID + ";<br/>");
+		paymentDAO.save(payment);
 	}
 }
