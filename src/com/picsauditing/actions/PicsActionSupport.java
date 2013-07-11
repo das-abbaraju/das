@@ -885,9 +885,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	@Override
 	public boolean sessionCookieIsValidAndNotExpired() {
-		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			return true;
-		}
 		String sessionCookieValue = clientSessionCookieValue();
 		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			return false;
@@ -993,18 +990,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		doSetCookie(sessionCookieContent, maxAge);
 	}
 
-	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
-			cookie.setMaxAge(maxAge);
-			if (!isLocalhostEnvironment()) {
-				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-			}
-			ServletActionContext.getResponse().addCookie(cookie);
-		}
-	}
+    private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
+        Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
+        cookie.setMaxAge(maxAge);
+        if (!isLocalhostEnvironment()) {
+            cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+        }
+        ServletActionContext.getResponse().addCookie(cookie);
+    }
 
-	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+    private String sessionCookieContent(boolean rememberMe, int switchToUser) {
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
 		sessionCookie.setUserID(permissions.getUserId());

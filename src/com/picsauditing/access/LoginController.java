@@ -71,22 +71,20 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-				if (sessionCookieIsValidAndNotExpired()) {
-					switchToUser = getClientSessionUserID();
-					return switchTo();
-				} else {
-					clearPicsOrgCookie();
-				}
-			}
+            if (sessionCookieIsValidAndNotExpired()) {
+                switchToUser = getClientSessionUserID();
+                return switchTo();
+            } else {
+                clearPicsOrgCookie();
 
-			if (ActionContext.getContext().getLocale() == null) {
-				ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-						.getVisibleLanguages());
-				ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
-			}
+                if (ActionContext.getContext().getLocale() == null) {
+                    ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+                            .getVisibleLanguages());
+                    ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
+                }
 
-			return SUCCESS;
+                return SUCCESS;
+            }
 		} else if ("confirm".equals(button)) {
 			return confirm();
 		} else if ("logout".equals(button)) {

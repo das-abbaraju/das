@@ -4,6 +4,7 @@ import com.picsauditing.PICS.*;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
+import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.billing.BrainTree;
@@ -197,6 +198,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 						// Activate the contractor
 						billingService.activateContractor(contractor, invoice);
 						contractorAccountDao.save(contractor);
+
+                        notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.SAVE));
 
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
 								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,
