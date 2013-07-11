@@ -16,7 +16,7 @@ import java.io.StringWriter;
  * Time: 10:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ProcessQBResponseXMLPayment extends ProcessQBResponseXMLStrategy  {
+public class ProcessQBResponseXMLPaymentAdd extends ProcessQBResponseXMLStrategy  {
 
 	public static final String DETAIL_NODE_NAME = "ReceivePaymentRet";
 	public static final String REQUEST_TYPE = "Payment Add";

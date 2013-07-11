@@ -34,19 +34,19 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 	@Test
 	public void testProcessParentNode() throws Exception {
 
-		ProcessQBResponseXMLInvoice processor = new ProcessQBResponseXMLInvoice();
+		ProcessQBResponseXMLInvoiceAdd processor = new ProcessQBResponseXMLInvoiceAdd();
 		processor.setInvoiceDAO(invoiceDAO);
 		when(invoiceDAO.find(anyInt())).thenReturn(invoice);
 		when(invoiceDAO.save(invoice)).thenReturn(invoice);
 		Node badXml = badXmlChildNodes.item(1);
 		StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
-		processor.processParentNode(badXml, ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoice.REQUEST_TYPE, actionMessages, errorMessages);
+		processor.processParentNode(badXml, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
 		assertNotSame(errorMessages.length(), 0);
 
 		Node goodXml = goodXmlChildNodes.item(1);
 		actionMessages = new StringBuilder();
 		errorMessages = new StringBuilder();
-		processor.processParentNode(goodXml, ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoice.REQUEST_TYPE, actionMessages, errorMessages);
+		processor.processParentNode(goodXml, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
 		assertEquals(errorMessages.length(), 0);
 		assertNotSame(actionMessages.length(), 0);
 
@@ -58,7 +58,7 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 		String qbListID = "afijaweoifjawoeifjaoiwejfoawej";
 		String invoiceID = "12345";
 		StringBuilder actionMessages = new StringBuilder();
-		ProcessQBResponseXMLStrategy processor = new ProcessQBResponseXMLInvoice();
+		ProcessQBResponseXMLStrategy processor = new ProcessQBResponseXMLInvoiceAdd();
 		processor.setInvoiceDAO(invoiceDAO);
 		processor.setContractorAccountDAO(contractorAccountDAO);
 		when(invoiceDAO.find(anyInt())).thenReturn(invoice);

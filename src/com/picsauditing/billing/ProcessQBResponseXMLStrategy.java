@@ -100,16 +100,16 @@ public abstract class ProcessQBResponseXMLStrategy {
 
 			switch (node.getNodeName()) {
 				case "InvoiceAddRs":
-					processor = new ProcessQBResponseXMLInvoice();
-					processor.processParentNode(node, ProcessQBResponseXMLInvoice.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoice.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = new ProcessQBResponseXMLInvoiceAdd();
+					processor.processParentNode(node, ProcessQBResponseXMLInvoiceAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAdd.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				case "CustomerAddRs":
-					processor = new ProcessQBResponseXMLCustomer();
-					processor.processParentNode(node, ProcessQBResponseXMLCustomer.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomer.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = new ProcessQBResponseXMLCustomerAdd();
+					processor.processParentNode(node, ProcessQBResponseXMLCustomerAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomerAdd.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				case "ReceivePaymentAddRs":
-					processor = new ProcessQBResponseXMLPayment();
-					processor.processParentNode(node, ProcessQBResponseXMLPayment.DETAIL_NODE_NAME, ProcessQBResponseXMLPayment.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = new ProcessQBResponseXMLPaymentAdd();
+					processor.processParentNode(node, ProcessQBResponseXMLPaymentAdd.DETAIL_NODE_NAME, ProcessQBResponseXMLPaymentAdd.REQUEST_TYPE, actionMessages, errorMessages);
 					break;
 				default:
 					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");

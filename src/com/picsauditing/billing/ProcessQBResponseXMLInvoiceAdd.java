@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ProcessQBResponseXMLInvoice extends ProcessQBResponseXMLStrategy  {
+public class ProcessQBResponseXMLInvoiceAdd extends ProcessQBResponseXMLStrategy  {
 
 	public static final String DETAIL_NODE_NAME = "InvoiceRet";
 	public static final String REQUEST_TYPE = "Invoice Add";
