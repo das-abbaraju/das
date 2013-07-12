@@ -36,7 +36,4 @@ public class InvoiceCreditMemo extends Transaction {
         refundItems = items;
 	}
 
-    public static InvoiceCreditMemo linkedTo(Invoice invoice) {
-
-    }
 }
