@@ -2,9 +2,11 @@
     PICS.define('report.Print', {
         methods: {
             init: function () {
-                $('.print-date p').html(this.getDateString());
+                if ($('#ReportApi_print_page').length) {
+                    $('.print-date p').html(this.getDateString());
 
-                window.print();
+                    window.print();
+                }
             },
 
             getDateString: function () {
@@ -16,6 +18,6 @@
 
                 return date.getFullYear() + '-' + month_string + '-' + date.getDate() + ' @ ' + date.getHours() + ':' + minutes_string;
             }
-        }
+    }
     });
 }(jQuery));
