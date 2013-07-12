@@ -191,6 +191,10 @@ public class Invoice extends Transaction {
 		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
+
+        for (CreditMemoAppliedToInvoice memo : creditMemos)
+            amountApplied.add(memo.getAmount());
+
 		super.updateAmountApplied();
 	}
 

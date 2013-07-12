@@ -88,6 +88,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<Invoice> invoices = new ArrayList<Invoice>();
 	private List<Payment> payments = new ArrayList<Payment>();
 	private List<Refund> refunds = new ArrayList<Refund>();
+    private List<InvoiceCreditMemo> creditMemos = new ArrayList<>();
 	private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
 	private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 
@@ -1095,6 +1096,11 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 
+        for (InvoiceCreditMemo creditMemo : getCreditMemos()) {
+            if (!creditMemo.getStatus().isVoid())
+                balance = balance.add(creditMemo.getTotalAmount());
+        }
+
 		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
@@ -1431,6 +1437,16 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setInvoices(List<Invoice> invoices) {
 		this.invoices = invoices;
 	}
+
+    @OneToMany(mappedBy = "account", targetEntity = Transaction.class)
+    @Where(clause = "tableType='C'")
+    public List<InvoiceCreditMemo> getCreditMemos() {
+        return creditMemos;
+    }
+
+    public void setCreditMemos(List<InvoiceCreditMemo> creditMemos) {
+        this.creditMemos = creditMemos;
+    }
 
 	@OneToMany(mappedBy = "account", targetEntity = Transaction.class)
 	@Where(clause = "tableType='P'")

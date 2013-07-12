@@ -21,7 +21,7 @@ public class InvoiceCreditMemo extends Transaction {
         this.paymentMethod = paymentMethod;
     }
 
-	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "creditMemo", cascade = { CascadeType.ALL })
 	public List<RefundItem> getItems() {
 		Collections.sort(refundItems, new Comparator<RefundItem>() {
             @Override
@@ -35,4 +35,8 @@ public class InvoiceCreditMemo extends Transaction {
 	public void setItems(List<RefundItem> items) {
         refundItems = items;
 	}
+
+    public static InvoiceCreditMemo linkedTo(Invoice invoice) {
+
+    }
 }
