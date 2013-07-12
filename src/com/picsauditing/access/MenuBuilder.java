@@ -338,7 +338,7 @@ public final class MenuBuilder {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
         if (favoriteReports.isEmpty()) {
-            reportsMenu.addChild(getText("menu.ReportsManager.GettingStarted"), "Reference!reportsManager.action?from=ReportsMenu", "reports_manager");
+            reportsMenu.addChild(getText("menu.ReportsManager.GettingStarted"), "Reference!reportsManager.action?from=ReportsMenu", "getting_started");
         }
         else {
             reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
