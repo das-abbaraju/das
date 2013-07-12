@@ -1,13 +1,8 @@
 package com.picsauditing.billing;
 
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.util.SpringUtils;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public class ProcessQBResponseXMLInvoiceAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 
@@ -16,76 +11,27 @@ public class ProcessQBResponseXMLInvoiceAddOrUpdate extends ProcessQBResponseXML
 	public static final String DETAIL_NODE_NAME = "InvoiceRet";
 	public static final String REQUEST_TYPE = "Invoice Add";
 
-	private InvoiceDAO invoiceDAO = null;
+	public static final String DAO_TYPE = "InvoiceDAO";
+	public static final String TABLE_NAME = "invoice";
+	public static final String QBXML_LISTID_NODE_NAME = "TxnID";
+	public static final String QBXML_TABLEPK_NODE_NAME = "RefNumber";
 
-	public ProcessQBResponseXMLInvoiceAddOrUpdate() {
-		setPARENT_NODE_NAME_ADD_RESULT(PARENT_NODE_NAME_ADD_RESULT);
-		setPARENT_NODE_NAME_QUERY_RESULT(PARENT_NODE_NAME_QUERY_RESULT);
-		setDETAIL_NODE_NAME(DETAIL_NODE_NAME);
-		setREQUEST_TYPE(REQUEST_TYPE);
+	public ProcessQBResponseXMLInvoiceAddOrUpdate(StringBuilder actionMessages, StringBuilder errorMessages) {
+		super(actionMessages,errorMessages);
 	}
 
-	public void setInvoiceDAO(InvoiceDAO invoiceDAO) {
-		this.invoiceDAO = invoiceDAO;
+	public static ProcessQBResponseXMLInvoiceAddOrUpdate factory (StringBuilder actionMessages, StringBuilder errorMessages,PicsDAO dao) {
+		ProcessQBResponseXMLInvoiceAddOrUpdate object = new ProcessQBResponseXMLInvoiceAddOrUpdate(actionMessages, errorMessages);
+		object.setParentNodeNameAddResult(PARENT_NODE_NAME_ADD_RESULT);
+		object.setParentNodeNameQueryResult(PARENT_NODE_NAME_QUERY_RESULT);
+		object.setDetailNodeName(DETAIL_NODE_NAME);
+		object.setRequestType(REQUEST_TYPE);
+		object.setDao(dao != null ? dao :(InvoiceDAO)SpringUtils.getBean(DAO_TYPE));
+		object.setTableName(TABLE_NAME);
+		object.setQbXMLListIDNodeName(QBXML_LISTID_NODE_NAME);
+		object.setQbXMLTablePKNodeName(QBXML_TABLEPK_NODE_NAME);
+
+		return object;
+
 	}
-
-	protected void updateInvoice(String qbListID, String invoiceID, StringBuilder actionMessages, StringBuilder errorMessages, Boolean setQBSyncToFalse) {
-		if (invoiceDAO == null) {
-			invoiceDAO = SpringUtils.getBean("InvoiceDAO");
-		}
-		Invoice invoice = null;
-		try {
-			invoice = invoiceDAO.find(Integer.parseInt(invoiceID));
-			if (invoice == null) {
-				errorMessages.append("Invoice ID '" + invoiceID + "' not found<br/>");
-				return;
-			}
-		} catch (Exception e) {
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw));
-			String stacktrace = sw.toString();
-
-			errorMessages.append("Invoice ID '" + invoiceID + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
-			return;
-		}
-		invoice.setQbListID(qbListID);
-		actionMessages.append("Executing: UPDATE invoice SET qbListID = '" + qbListID + "'");
-
-		if (setQBSyncToFalse) {
-			invoice.setQbSync(false);
-			actionMessages.append(", qbSync = 0");
-		}
-		actionMessages.append(" where id = " + invoiceID + ";<br/>");
-		invoiceDAO.save(invoice);
-	}
-
-
-
-	@Override
-	public void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessages, String parentNodeName) {
-		NodeList invoiceRetChildNodes = detailNode.getChildNodes();
-		String qbListID = "";
-		String invoiceID = "";
-		for (int j = 0; j < invoiceRetChildNodes.getLength(); ++j) {
-			Node nodeInQuestion = invoiceRetChildNodes.item(j);
-			switch (nodeInQuestion.getNodeName()) {
-				case "TxnID":
-					qbListID = nodeInQuestion.getTextContent();
-					break;
-				case "RefNumber":
-					invoiceID = nodeInQuestion.getTextContent();
-					break;
-				default:
-					break;
-			}
-			if (!qbListID.isEmpty() && !invoiceID.isEmpty()) {
-				Boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddNotJustQuerySoSetQbSyncToFalse(parentNodeName);
-				updateInvoice(qbListID, invoiceID,actionMessages, errorMessages, isAddNotJustQuerySoSetQbSyncToFalse);
-				return;
-			}
-		}
-		errorMessages.append("Did not complete processing of invoice '"+invoiceID+"' qbListID '"+qbListID+"'<br/>");
-		return;
-	}
-
 }

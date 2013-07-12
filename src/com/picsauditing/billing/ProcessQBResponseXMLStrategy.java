@@ -1,6 +1,11 @@
 package com.picsauditing.billing;
 
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.PicsDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.service.XmlService;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -10,6 +15,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 
 /**
@@ -19,27 +26,44 @@ import java.io.InputStream;
  * Time: 10:04 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class ProcessQBResponseXMLStrategy {
+public class ProcessQBResponseXMLStrategy {
 
-	private String PARENT_NODE_NAME_ADD_RESULT;
-	private String PARENT_NODE_NAME_QUERY_RESULT;
-	private String DETAIL_NODE_NAME;
-	private String REQUEST_TYPE;
+	private String parentNodeNameAddResult;
+	private String parentNodeNameQueryResult;
+	private String detailNodeName;
+	private String requestType;
+	private PicsDAO dao;
+	private String tableName;
+	private String qbXMLListIDNodeName;
+	private String qbXMLTablePKNodeName;
+	private StringBuilder actionMessages;
+	private StringBuilder errorMessages;
 
-	public abstract void processDetailNode(Node detailNode, StringBuilder actionMessages, StringBuilder errorMessagses, String nodeName);
+	private ContractorAccountDAO contractorAccountDAO = null;
 
-	protected void processParentNode(Node parentNode, String detailNodeName, String requestType, StringBuilder actionMessages, StringBuilder errorMessages) {
+	public ProcessQBResponseXMLStrategy(StringBuilder actionMessages, StringBuilder errorMessages) {
+		this.actionMessages = actionMessages;
+		this.errorMessages = errorMessages;
+	}
+
+
+	protected void processParentNode(Node parentNode) {
+
 		if (isStatusMessageOk(parentNode)) {
 			NodeList childNodes = parentNode.getChildNodes();
 			int numChildNodes = childNodes.getLength();
 			for (int i = 0; i < numChildNodes; ++i) {
 				Node node = childNodes.item(i);
-				if (node.getNodeName().equals(detailNodeName)) {
-					processDetailNode(node, actionMessages, errorMessages,parentNode.getNodeName());
+				if (node.getNodeName().equals(getDetailNodeName())) {
+					processDetailNode(node, parentNode.getNodeName());
 				}
 			}
 		} else {
-			errorMessages.append(requestType + " Request failed -- requestID " + getNodeRequestIDAttribute(parentNode)+"<br/>");
+			errorMessages.append(getRequestType() + " Request failed");
+			if (isAddRequest(parentNode.getNodeName())) {
+				errorMessages.append("requestID " + getNodeRequestIDAttribute(parentNode));
+			}
+			errorMessages.append("<br/>");
 			return;
 		}
 	}
@@ -55,8 +79,8 @@ public abstract class ProcessQBResponseXMLStrategy {
 		return attributes.getNamedItem("statusMessage").getNodeValue().equals("Status OK");
 	}
 
-	protected Boolean isAddNotJustQuerySoSetQbSyncToFalse(String parentNodeName) {
-		return (parentNodeName.equals(getPARENT_NODE_NAME_ADD_RESULT()) ? true : false);
+	protected Boolean isAddRequest(String parentNodeName) {
+		return (parentNodeName.equals(getParentNodeNameAddResult()) ? true : false);
 	}
 
 	public static NodeList findQBXMLMsgsRsChildNodes(InputStream inputStream, StringBuilder actionMessages, StringBuilder errorMessages) throws IOException, SAXException, ParserConfigurationException {
@@ -102,64 +126,228 @@ public abstract class ProcessQBResponseXMLStrategy {
 			actionMessages.append("Processing node of type '" + node.getNodeName() + "'<br/>");
 
 			ProcessQBResponseXMLStrategy processor = null;
+			PicsDAO nullDao = null;
 
 			switch (node.getNodeName()) {
 				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
-					processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
-					processor.processParentNode(node, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = ProcessQBResponseXMLInvoiceAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
-					processor = new ProcessQBResponseXMLCustomerAddOrUpdate();
-					processor.processParentNode(node, ProcessQBResponseXMLCustomerAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLCustomerAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = ProcessQBResponseXMLCustomerAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
-					processor = new ProcessQBResponseXMLPaymentAddOrUpdate();
-					processor.processParentNode(node, ProcessQBResponseXMLPaymentAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLPaymentAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
+					processor = ProcessQBResponseXMLPaymentAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				default:
 					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");
 					break;
+			}
+			if (processor != null) {
+				processor.processParentNode(node);
 			}
 			continue;
 
 		}
 	}
 
+	public void processDetailNode(Node detailNode, String parentNodeName) {
+		NodeList childNodes = detailNode.getChildNodes();
+		String qbListID = "";
+		String tablePK = "";
+		for (int j = 0; j < childNodes.getLength(); ++j) {
+			Node nodeInQuestion = childNodes.item(j);
 
-
-	public String getPARENT_NODE_NAME_ADD_RESULT() {
-		return PARENT_NODE_NAME_ADD_RESULT;
+			if (nodeInQuestion.getNodeName().equals(getQbXMLListIDNodeName())) {
+				qbListID = nodeInQuestion.getTextContent();
+			} else if (nodeInQuestion.getNodeName().equals(getQbXMLTablePKNodeName())) {
+				tablePK = nodeInQuestion.getTextContent().replaceAll("[^0-9]", "");
+			}
+			if (!qbListID.isEmpty() && !tablePK.isEmpty()) {
+				boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddRequest(parentNodeName);
+				updateDatabaseTable(qbListID, tablePK, isAddNotJustQuerySoSetQbSyncToFalse);
+				return;
+			}
+		}
+		errorMessages.append("Did not complete processing of "+getTableName()+" '"+tablePK+"' qbListID '"+qbListID+"'<br/>");
+		return;
 	}
 
-	public void setPARENT_NODE_NAME_ADD_RESULT(String PARENT_NODE_NAME_ADD_RESULT) {
-		this.PARENT_NODE_NAME_ADD_RESULT = PARENT_NODE_NAME_ADD_RESULT;
+	protected void updateDatabaseTable(String qbListID, String tablePK, boolean setQBSyncToFalse) {
+		switch (getTableName()) {
+			case ProcessQBResponseXMLCustomerAddOrUpdate.TABLE_NAME:
+				updateDatabaseTableContractor(qbListID, tablePK, setQBSyncToFalse);
+				break;
+			case ProcessQBResponseXMLInvoiceAddOrUpdate.TABLE_NAME:
+			// case ProcessQBResponseXMLPaymentAddOrUpdate.TABLE_NAME: // same as invoice right now
+				updateDatabaseTableTransaction(qbListID, tablePK, setQBSyncToFalse);
+				break;
+			default:
+				break;
+		}
+
 	}
 
-	public String getPARENT_NODE_NAME_QUERY_RESULT() {
-		return PARENT_NODE_NAME_QUERY_RESULT;
+	private void updateDatabaseTableContractor(String qbListID, String tablePK, boolean setQbSyncToFalse) {
+
+		String contractorIDNumsOnly = tablePK.replaceAll("[^0-9]","");
+		ContractorAccount contractor = null;
+		try {
+			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDNumsOnly));
+			if (contractor == null) {
+				errorMessages.append(StringUtils.capitalize(getTableName())+" ID '" + tablePK + "' not found<br/>");
+				return;
+			}
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			String stacktrace = sw.toString();
+
+			errorMessages.append(StringUtils.capitalize(getTableName())+" ID '" + tablePK + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
+			return;
+		}
+
+		String qbListIDColumnName = "";
+		switch (contractor.getCurrency()) {
+			case USD:
+				contractor.setQbListID(qbListID);
+				qbListIDColumnName = "qbListID";
+				break;
+			case CAD:
+				contractor.setQbListCAID(qbListID);
+				qbListIDColumnName = "qbListCAID";
+				break;
+			case EUR:
+				contractor.setQbListEUID(qbListID);
+				qbListIDColumnName = "qbListEUID";
+				break;
+			case GBP:
+				contractor.setQbListUKID(qbListID);
+				qbListIDColumnName = "qbListUKID";
+				break;
+		}
+		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "'");
+		if (setQbSyncToFalse) {
+			contractor.setQbSync(false);
+			actionMessages.append(", qbSync = 0");
+		}
+		actionMessages.append(" where id = " + tablePK + ";<br/>");
+		contractorAccountDAO.save(contractor);
 	}
 
-	public void setPARENT_NODE_NAME_QUERY_RESULT(String PARENT_NODE_NAME_QUERY_RESULT) {
-		this.PARENT_NODE_NAME_QUERY_RESULT = PARENT_NODE_NAME_QUERY_RESULT;
+	private void updateDatabaseTableTransaction(String qbListID, String tablePK, boolean setQBSyncToFalse) {
+		Transaction transactionObject = null;
+		try {
+			transactionObject = getDao().find(Transaction.class,Integer.parseInt(tablePK));
+			if (transactionObject == null) {
+				errorMessages.append(StringUtils.capitalize(getTableName())+" ID '" + tablePK + "' not found<br/>");
+				return;
+			}
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			String stacktrace = sw.toString();
+
+			errorMessages.append(StringUtils.capitalize(getTableName())+" ID '" + tablePK + "' not found; exception: "+e.getMessage()+" "+stacktrace+"<br/>");
+			return;
+		}
+		transactionObject.setQbListID(qbListID);
+		actionMessages.append("Executing: UPDATE "+getTableName()+" SET qbListID = '" + qbListID + "'");
+
+		if (setQBSyncToFalse) {
+			transactionObject.setQbSync(false);
+			actionMessages.append(", qbSync = 0");
+		}
+		actionMessages.append(" where id = " + tablePK + ";<br/>");
+		getDao().save(transactionObject);
 	}
 
-	public String getDETAIL_NODE_NAME() {
-		return DETAIL_NODE_NAME;
+	public String getParentNodeNameAddResult() {
+		return parentNodeNameAddResult;
 	}
 
-	public void setDETAIL_NODE_NAME(String DETAIL_NODE_NAME) {
-		this.DETAIL_NODE_NAME = DETAIL_NODE_NAME;
+	public void setParentNodeNameAddResult(String parentNodeNameAddResult) {
+		this.parentNodeNameAddResult = parentNodeNameAddResult;
 	}
 
-	public String getREQUEST_TYPE() {
-		return REQUEST_TYPE;
+	public String getParentNodeNameQueryResult() {
+		return parentNodeNameQueryResult;
 	}
 
-	public void setREQUEST_TYPE(String REQUEST_TYPE) {
-		this.REQUEST_TYPE = REQUEST_TYPE;
+	public void setParentNodeNameQueryResult(String parentNodeNameQueryResult) {
+		this.parentNodeNameQueryResult = parentNodeNameQueryResult;
 	}
 
+	public String getDetailNodeName() {
+		return detailNodeName;
+	}
 
+	public void setDetailNodeName(String detailNodeName) {
+		this.detailNodeName = detailNodeName;
+	}
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
+	}
+
+	public StringBuilder getActionMessages() {
+		return actionMessages;
+	}
+
+	public void setActionMessages(StringBuilder actionMessages) {
+		this.actionMessages = actionMessages;
+	}
+
+	public StringBuilder getErrorMessages() {
+		return errorMessages;
+	}
+
+	public void setErrorMessages(StringBuilder errorMessages) {
+		this.errorMessages = errorMessages;
+	}
+
+	public PicsDAO getDao() {
+		return dao;
+	}
+
+	public void setDao(PicsDAO dao) {
+		this.dao = dao;
+	}
+
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
+	public String getQbXMLListIDNodeName() {
+		return qbXMLListIDNodeName;
+	}
+
+	public void setQbXMLListIDNodeName(String qbXMLListIDNodeName) {
+		this.qbXMLListIDNodeName = qbXMLListIDNodeName;
+	}
+
+	public String getQbXMLTablePKNodeName() {
+		return qbXMLTablePKNodeName;
+	}
+
+	public void setQbXMLTablePKNodeName(String qbXMLTablePKNodeName) {
+		this.qbXMLTablePKNodeName = qbXMLTablePKNodeName;
+	}
+
+	public void setContractorAccountDAO(ContractorAccountDAO contractorAccountDAO) {
+		this.contractorAccountDAO = contractorAccountDAO;
+	}
+
+	public ContractorAccountDAO getContractorAccountDAO() {
+		return contractorAccountDAO;
+	}
 }

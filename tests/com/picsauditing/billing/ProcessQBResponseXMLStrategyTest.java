@@ -3,6 +3,7 @@ package com.picsauditing.billing;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.Transaction;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -32,48 +34,32 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 
 
 	@Test
-	public void testProcessParentNode() throws Exception {
+	public void testProcessParentNodeBadXML() throws Exception {
 
-		ProcessQBResponseXMLInvoiceAddOrUpdate processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
-		processor.setInvoiceDAO(invoiceDAO);
-		when(invoiceDAO.find(anyInt())).thenReturn(invoice);
-		when(invoiceDAO.save(invoice)).thenReturn(invoice);
-		Node badXml = badXmlChildNodes.item(1);
 		StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
-		processor.processParentNode(badXml, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
+
+		ProcessQBResponseXMLInvoiceAddOrUpdate processor = ProcessQBResponseXMLInvoiceAddOrUpdate.factory(actionMessages,errorMessages,invoiceDAO);
+		Node badXml = badXmlChildNodes.item(1);
+		processor.processParentNode(badXml);
 		assertNotSame(errorMessages.length(), 0);
 
+	}
+
+	@Test
+	public void testProcessParentNodeGoodXML() throws Exception {
+
+		StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
+
 		Node goodXml = goodXmlChildNodes.item(1);
-		actionMessages = new StringBuilder();
-		errorMessages = new StringBuilder();
-		processor.processParentNode(goodXml, ProcessQBResponseXMLInvoiceAddOrUpdate.DETAIL_NODE_NAME, ProcessQBResponseXMLInvoiceAddOrUpdate.REQUEST_TYPE, actionMessages, errorMessages);
-		assertEquals(errorMessages.length(), 0);
+		ProcessQBResponseXMLInvoiceAddOrUpdate processor = ProcessQBResponseXMLInvoiceAddOrUpdate.factory(actionMessages,errorMessages,invoiceDAO);
+		when(invoiceDAO.find(eq(Transaction.class),anyInt())).thenReturn(invoice);
+		when(invoiceDAO.save(invoice)).thenReturn(invoice);
+		processor.processParentNode(goodXml);
+		assertEquals("Got the following error messages: "+errorMessages.toString(), 0, errorMessages.length());
 		assertNotSame(actionMessages.length(), 0);
 
 	}
 
-	/*
-	@Test
-	public void testUpdateInvoice() throws Exception {
-		String qbListID = "afijaweoifjawoeifjaoiwejfoawej";
-		String invoiceID = "12345";
-		StringBuilder actionMessages = new StringBuilder();
-		ProcessQBResponseXMLStrategy processor = new ProcessQBResponseXMLInvoiceAddOrUpdate();
-		processor.setInvoiceDAO(invoiceDAO);
-		processor.setContractorAccountDAO(contractorAccountDAO);
-		when(invoiceDAO.find(anyInt())).thenReturn(invoice);
-		when(invoiceDAO.save(invoice)).thenReturn(invoice);
-		processor.updateInvoice(qbListID,invoiceID,actionMessages);
-		assertEquals(qbListID,invoice.getQbListID());
-		assertEquals(invoiceID,invoice.getId());
-		assertNotSame(actionMessages.length(),0);
-	}
-
-	@Test
-	public void testUpdateContractor() throws Exception {
-
-	}
-      */
 
 	@Test
 	public void testGetNodeRequestIDAttribute() throws Exception {
