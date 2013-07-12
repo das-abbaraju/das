@@ -429,9 +429,11 @@ public class EntityFactory {
 		return flagCriteria;
 	}
 
-	public static FlagCriteria makeFlagCriteriaAuditQuestion() {
+    public static FlagCriteria makeFlagCriteriaAuditQuestion(AuditType auditType) {
 		FlagCriteria flagCriteria = makeFlagCriteria();
-		flagCriteria.setQuestion(EntityFactory.makeAuditQuestion());
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        question.getCategory().setAuditType(auditType);
+        flagCriteria.setQuestion(question);
 		flagCriteria.setComparison("=");
 		flagCriteria.setDataType(FlagCriteria.STRING);
 		flagCriteria.setDefaultValue("Yes");

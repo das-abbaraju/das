@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.jpa.entities.builders.AuditCategoryBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
@@ -512,4 +513,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		}
 		return false;
 	}
+
+    public static AuditCategoryBuilder builder() {
+        return new AuditCategoryBuilder();
+    }
 }

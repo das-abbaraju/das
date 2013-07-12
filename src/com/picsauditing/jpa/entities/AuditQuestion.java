@@ -848,4 +848,5 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public static AuditQuestionBuilder builder() {
 		return new AuditQuestionBuilder();
 	}
+
 }

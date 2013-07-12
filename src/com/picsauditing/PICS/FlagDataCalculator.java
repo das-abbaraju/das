@@ -326,8 +326,10 @@ public class FlagDataCalculator {
 			return null;
 
 		} else {
-
-			if (criteria.getRequiredStatus() != null) {
+            if (!auditIsApplicableForThisOperator(opCriteria, criteria, con)) {
+                return null;
+            }
+            if (criteria.getRequiredStatus() != null) {
 				if (criteria.getRequiredStatus().after(AuditStatus.Submitted) && !conCriteria.isVerified()
 						&& criteria.getQuestion() != null && criteria.getQuestion().getAuditType() != null
 						&& criteria.getQuestion().getAuditType().getWorkFlow().isHasSubmittedStep()) {
@@ -463,7 +465,20 @@ public class FlagDataCalculator {
 		}
 	}
 
-	private boolean isStatisticValidForOperator(OperatorAccount operator, ContractorAccount con) {
+    private boolean auditIsApplicableForThisOperator(FlagCriteriaOperator opCriteria, FlagCriteria criteria, ContractorAccount con) {
+        for (ContractorAudit ca : con.getAudits()) {
+            if (criteria.getQuestion() != null && ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
+                for (ContractorAuditOperator cao: ca.getOperators()) {
+                    if (opCriteria.getOperator().isOrIsDescendantOf(cao.getOperator().getId()) && cao.isVisible()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isStatisticValidForOperator(OperatorAccount operator, ContractorAccount con) {
 		for (ContractorAudit audit : con.getCurrentAnnualUpdates()) {
 			for (ContractorAuditOperator cao : audit.getOperatorsVisible()) {
 				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
@@ -646,7 +661,7 @@ public class FlagDataCalculator {
 	}
 
 	private void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
-		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
+		contractorCriteria = new HashMap<>();
 		for (FlagCriteriaContractor value : list) {
 			contractorCriteria.put(value.getCriteria(), value);
 		}

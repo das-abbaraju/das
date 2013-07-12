@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.jpa.entities.builders.ContractorAuditOperatorPermissionBuilder;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
@@ -63,4 +65,8 @@ public class ContractorAuditOperatorPermission implements Serializable {
 	public void setPreviousCao(ContractorAuditOperator previousCao) {
 		this.previousCao = previousCao;
 	}
+
+    public static ContractorAuditOperatorPermissionBuilder builder() {
+        return new ContractorAuditOperatorPermissionBuilder();
+    }
 }
