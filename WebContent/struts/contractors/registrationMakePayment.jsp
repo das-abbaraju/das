@@ -144,8 +144,12 @@
 		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
 		 			</li>
 		 		</ul>
+                <p class="phone">
+                    <s:text name="ContractorRegistration.title" />:
+                    ${contractor.country.salesPhone}
+                </p>
 	 		</div>
-	 		
+
 	 		<div class="modal hide fade">
 				<div class="modal-header">
 					<a href="#" class="close">×</a>

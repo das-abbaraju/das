@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.report.models.ModelType;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,11 @@ public class ReportDAO extends PicsDAO {
 		return find(Report.class, reportId);
 	}
 
-	public void detach(Report newReport) {
+    public List<Report> findByModel(ModelType modelType) {
+        return findWhere(Report.class, "t.modelType = '" + modelType.toString() + "'");
+    }
+
+    public void detach(Report newReport) {
 		em.detach(newReport);
 	}
 

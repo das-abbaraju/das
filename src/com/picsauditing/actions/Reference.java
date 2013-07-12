@@ -16,6 +16,8 @@ public class Reference extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggle;
 
+    String from;
+
 	public String navigationMenu() throws Exception {
 		loadPermissions(false);
 
@@ -38,11 +40,13 @@ public class Reference extends PicsActionSupport {
 	public String reportsManager() throws Exception {
 		loadPermissions(false);
 
-		if (isFirstTimeReportsManagerUser()) {
+        if (!isFirstTimeReportsManagerUser() && from != null && from.equals("ReportsMenu")) {
+            setUrlForRedirect("ManageReports!search.action");
+            return REDIRECT;
+        } else {
 			setReportsManagerTutorialDate();
+            return "manage-reports";
 		}
-
-		return "manage-reports";
 	}
 
 	/**

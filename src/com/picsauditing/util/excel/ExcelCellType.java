@@ -3,7 +3,7 @@ package com.picsauditing.util.excel;
 import com.picsauditing.report.fields.Field;
 
 public enum ExcelCellType {
-	String, Integer("0"), Double("#,##0.00"), Money("($#,##0_);($#,##0)"), Date("yyyy-mm-dd"), Enum, Translated;
+	String, Integer("0"), Double("#,##0.00"), Money("($#,##0_);($#,##0)"), Date("yyyy-mm-dd"), DateTime("yyyy-mm-dd hh:mm:ss"), Enum, Translated;
 
 	private String format = "@";
 
@@ -30,14 +30,19 @@ public enum ExcelCellType {
 
 	public static ExcelCellType convert(Field field) {
 		switch (field.getType()) {
-		case Date:
-			return Date;
-		case Integer:
-			return Integer;
-		case Float:
-			return Double;
-		default:
-			return String;
+            case Date:
+                return Date;
+            case DateTime:
+                return DateTime;
+            case AccountID:
+            case Integer:
+            case UserID:
+                return Integer;
+            case Float:
+            case Number:
+                return Double;
+            default:
+                return String;
 		}
 	}
 }

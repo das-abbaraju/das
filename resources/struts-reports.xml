@@ -15,6 +15,7 @@
 			class="com.picsauditing.actions.report.ReportTester">
 			<result>struts/report/report-tester.jsp</result>
 			<result name="single">struts/report/report-tester-single.jsp</result>
+            <result name="model">struts/report/report-tester-model.jsp</result>
 		</action>
 		
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">

@@ -3,19 +3,26 @@ package com.picsauditing.actions.report;
 import java.util.*;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Column;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportElement;
 import com.picsauditing.report.ReportUtil;
+import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.report.models.ModelType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 public class ReportTester extends PicsActionSupport {
 
+    @Autowired
+    private ReportDAO reportDAO;
+
+    ModelType modelType;
 	int reportID;
 
 	Report report;
@@ -25,38 +32,54 @@ public class ReportTester extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (reportID > 0) {
-			report = dao.find(Report.class, reportID);
-
-			SqlBuilder sqlBuilder = new SqlBuilder();
-			report.setSql(sqlBuilder.initializeReportAndBuildSql(report, permissions).toString());
-
-			ReportUtil.addTranslatedLabelsToReport(report, permissions.getLocale());
-
-			reportElements = new ArrayList<ReportElement>();
-			reportElements.add(new Column("COLUMNS"));
-			reportElements.addAll(report.getColumns());
-			reportElements.add(new Column("--------------"));
-			reportElements.add(new Column("FILTERS"));
-			reportElements.addAll(report.getFilters());
-			reportElements.add(new Column("--------------"));
-			reportElements.add(new Column("SORTS"));
-			reportElements.addAll(report.getSorts());
-
-			ModelType modelType = report.getModelType();
-
-			AbstractModel model = ReportModelFactory.build(modelType, permissions);
-
-			availableFields = model.getAvailableFields();
-
-			return "single";
+        if (modelType != null) {
+            return showModelFocus();
+        }
+		else if (reportID > 0) {
+            return showReportFocus();
 		}
 
+        // Report Focus, Show Sql, Show Columns, Show Filters, Show Sorts. Maybe add functions to add remove filters, columns, sorts. Add functions to do model stuff.
 		return SUCCESS;
 	}
 
-	public List<Report> getReports() {
-		return dao.findAll(Report.class);
+    private String showModelFocus() throws ReportValidationException {
+        AbstractModel model = ReportModelFactory.build(modelType, permissions);
+
+        availableFields = model.getAvailableFields();
+
+        return "model";
+    }
+
+    private String showReportFocus() throws ReportValidationException {
+        report = dao.find(Report.class, reportID);
+
+        SqlBuilder sqlBuilder = new SqlBuilder();
+        report.setSql(sqlBuilder.initializeReportAndBuildSql(report, permissions).toString());
+
+        ReportUtil.addTranslatedLabelsToReport(report, permissions.getLocale());
+
+        reportElements = new ArrayList<ReportElement>();
+        reportElements.add(new Column("COLUMNS"));
+        reportElements.addAll(report.getColumns());
+        reportElements.add(new Column("--------------"));
+        reportElements.add(new Column("FILTERS"));
+        reportElements.addAll(report.getFilters());
+        reportElements.add(new Column("--------------"));
+        reportElements.add(new Column("SORTS"));
+        reportElements.addAll(report.getSorts());
+
+        ModelType modelType = report.getModelType();
+
+        AbstractModel model = ReportModelFactory.build(modelType, permissions);
+
+        availableFields = model.getAvailableFields();
+
+        return "single";
+    }
+
+    public List<Report> getReports() {
+		return reportDAO.findByModel(modelType);
 	}
 
 	public Report getReport() {
@@ -67,7 +90,15 @@ public class ReportTester extends PicsActionSupport {
 		this.reportID = reportID;
 	}
 
-	public List<ReportElement> getReportElements() {
+    public ModelType getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(ModelType modelType) {
+        this.modelType = modelType;
+    }
+
+    public List<ReportElement> getReportElements() {
 		return reportElements;
 	}
 
