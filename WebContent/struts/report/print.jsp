@@ -75,7 +75,6 @@
         </div>
 
         <script src="v7/js/script.js?v=${version}"></script>
-        <script src="v7/js/pics/report/print.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
