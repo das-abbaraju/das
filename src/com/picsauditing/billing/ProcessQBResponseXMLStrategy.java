@@ -139,6 +139,7 @@ public class ProcessQBResponseXMLStrategy {
 					processor = ProcessQBResponseXMLCustomerAddOrUpdate.factory(actionMessages,errorMessages,caDao);
 					break;
 				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
+				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
 					processor = ProcessQBResponseXMLPaymentAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				default:
