@@ -9,8 +9,8 @@
 
             getDateString: function () {
                 var date = new Date(),
-                    month = date.getMonth(),
-                    month_string = month < 10 ? '0' + month : month + 1,
+                    month = date.getMonth() + 1,
+                    month_string = month < 10 ? '0' + month : month,
                     minutes = date.getMinutes(),
                     minutes_string = minutes < 10 ? '0' + minutes : minutes;
 

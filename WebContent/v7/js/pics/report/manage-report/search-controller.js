@@ -3,7 +3,8 @@ PICS.define('report.manage-report.SearchController', {
         init: function () {
             if ($('#ManageReports_search_page').length > 0) {
                 $('#report_search_form input[type=text]')
-                    .on('keyup', PICS.debounce(this.search, 250));
+                    .on('keyup', PICS.debounce(this.search, 250))
+                    .focus();
                 
                 $('#search_reports_container')
                     .on('click', '.report > .favorite', this.unfavoriteReport)
