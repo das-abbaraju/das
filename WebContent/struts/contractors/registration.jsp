@@ -52,9 +52,9 @@
 </div>
 					
 <div class="registration">
-    <%--<s:if test="!isLiveEnvironment()" >--%>
-        <%--<a class="btn" id="autofill">Autofill</a>--%>
-    <%--</s:if>--%>
+    <s:if test="isLocalhostEnvironment() || isAlphaEnvironment()">
+        <a class="btn" id="autofill">Autofill</a>
+    </s:if>
 	<aside class="registration-side-bar">
 		<div class="info-join">
 			<section>
