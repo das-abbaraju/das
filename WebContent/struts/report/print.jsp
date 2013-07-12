@@ -4,7 +4,6 @@
 
 <s:set name="title"><s:property value="report.name"/></s:set>
 <s:set name="description"><s:property value="report.description"/></s:set>
-<s:set name="columns_size"><s:property value="%{report.columns.size()}"/></s:set>
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -31,8 +30,9 @@
                         <h1>${title}</h1>
                         <h2>${description}</h2>
                     </div>
-                    <div class="print-date">
-                        <p></p>
+                    <div class="print-info">
+                        <p>picsorganizer.com</p>
+                        <p class="print-date"></p>
                     </div>
                 </caption>
                 <thead>
@@ -64,13 +64,6 @@
                         </tr>
                     </s:iterator>
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="${columns_size}">
-                            PICSorganizer.com
-                        </td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
 

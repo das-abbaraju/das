@@ -3,7 +3,7 @@
         methods: {
             init: function () {
                 if ($('#ReportApi_print_page').length) {
-                    $('.print-date p').html(this.getDateString());
+                    $('.print-date').html(this.getDateString());
 
                     window.print();
                 }

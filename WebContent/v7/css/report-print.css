@@ -23,22 +23,24 @@ tbody > tr:nth-child(odd) > td
     background: #f1f1f2;
 }
 
+
 caption
 {
     height: 45px;
-    text-align: left;
 }
 
 .report-info
 {
     float: left;
+    text-align: left;
 }
 
-.print-date
+.print-info
 {
     float: right;
     font-size: 13px;
-    margin-top: 25px;
+    margin-top: 8px;
+    text-align: right;
 }
 
 h1
@@ -47,7 +49,7 @@ h1
 }
 
 h2,
-.print-time
+.print-date
 {
     font-size: inherit;
 }
