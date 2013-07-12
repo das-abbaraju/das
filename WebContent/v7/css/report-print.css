@@ -1,0 +1,124 @@
+.wrapper
+{
+    padding: 10px;
+}
+
+body
+{
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    padding-top: 0;
+}
+
+table
+{
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 13px;
+    width: 100%;
+}
+
+tbody > tr:nth-child(odd) > td
+{
+    background: #f1f1f2;
+}
+
+caption
+{
+    height: 45px;
+    text-align: left;
+}
+
+.report-info
+{
+    float: left;
+}
+
+.print-date
+{
+    float: right;
+    font-size: 13px;
+    margin-top: 25px;
+}
+
+h1
+{
+    font-size: 20px;
+}
+
+h2,
+.print-time
+{
+    font-size: inherit;
+}
+
+h1,
+h2,
+p
+{
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+th
+{
+    font-weight: bold;
+}
+
+th,
+td
+{
+    border: 1px solid #ccc;
+    padding: 2px;
+}
+
+tfoot td
+{
+    border: none;
+}
+
+.number,
+tfoot td
+{
+    text-align: right;
+}
+
+.string
+{
+    text-align: left;
+}
+
+body,
+span,
+div,
+table,
+tr,
+tbody,
+tfoot,
+td,
+hr
+{
+    page-break-inside: avoid !important;
+    -webkit-print-color-adjust: exact;
+}
+
+@page
+{
+    size: landscape;
+}
+
+thead
+{
+    display: table-header-group;
+}
+
+tfoot
+{
+    display: table-footer-group;
+}
+
+.no-page-break
+{
+    page-break-inside:avoid;
+}

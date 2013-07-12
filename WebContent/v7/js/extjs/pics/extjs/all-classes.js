@@ -83305,14 +83305,33 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     id: 'report_export',
     items: [{
         xtype: 'button',
+        action: 'print-preview',
+        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
+        cls: 'default print',
+        id: 'print-button',
+        tooltip: PICS.text('Report.execute.exportSetting.tooltipPreview'),
+        height: 28,
+        margin: '47 0 0 0',
+        width: 200
+    }, {
+        xtype: 'button',
         action: 'export',
-        text : '<i class="icon-table icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonExport') + '</span>',
+        text : '<i class="icon-table icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonSpreadsheet') + '</span>',
         cls: 'default export',
         id: 'export-button',
         tooltip: PICS.text('Report.execute.exportSetting.tooltipExport'),
         height: 28,
-        margin: '100 0 0 0',
+        margin: '10 0 0 0',
         width: 200
+    }, {
+        xtype: 'component',
+        id: 'message',
+        tpl: new Ext.XTemplate([
+            '<p class="export-message">',
+                'All {record_count} rows will be exported.',
+            '</p>'
+        ]),
+        margin: '20 0 0 0'
     }],
     layout: {
         type: 'vbox',
@@ -83320,32 +83339,11 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     },
     // custom config
     modal_title: PICS.text('Report.execute.exportSetting.title'),
-    title: '<i class="icon-eject icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName')
-});
-Ext.define('PICS.view.report.settings.PrintSetting', {
-    extend: 'Ext.form.Panel',
-    alias: 'widget.reportprintsetting',
+    title: '<i class="icon-download icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName'),
 
-    border: 0,
-    id: 'report_print',
-    items: [{
-        xtype: 'button',
-        action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.printSetting.buttonPreview') + '</span>',
-        cls: 'default print',
-        id: 'print-button',
-        tooltip: PICS.text('Report.execute.printSetting.tooltipPreview'),
-        height: 28,
-        margin: '100 0 0 0',
-        width: 200
-    }],
-    layout: {
-        type: 'vbox',
-        align: 'center'
-    },
-    // custom config
-    modal_title: PICS.text('Report.execute.printSetting.title'),
-    title: '<i class="icon-print icon-large"></i>' + PICS.text('Report.execute.printSetting.tabName')
+    update: function (values) {
+        this.items.get('message').update(values);
+    }
 });
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
@@ -92981,7 +92979,6 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         'PICS.view.report.settings.CopySetting',
         'PICS.view.report.settings.EditSetting',
         'PICS.view.report.settings.ExportSetting',
-        'PICS.view.report.settings.PrintSetting',
         'PICS.view.report.settings.share.ShareSetting'
     ],
 
@@ -92994,8 +92991,6 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         xtype: 'reportsharesetting'
     }, {
         xtype: 'reportexportsetting'
-    }, {
-        xtype: 'reportprintsetting'
     }],
     tabBar: {
         border: false,
@@ -98738,6 +98733,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 afterrender: this.afterEditSettingRender
             },
 
+            'reportsettingsmodal reportexportsetting': {
+                afterrender: this.afterExportSettingRender
+            },
+
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
                 click: this.editReport
             },
@@ -98755,7 +98754,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 click: this.exportReport
             },
 
-            'reportsettingsmodal reportprintsetting button[action=print-preview]':  {
+            'reportsettingsmodal reportexportsetting button[action=print-preview]':  {
                 click: this.printReport
             },
 
@@ -98795,6 +98794,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (is_favorite) {
             edit_favorite_toggle.toggleFavorite();
         }
+    },
+
+    afterExportSettingRender: function (cmp, eOpts) {
+        cmp.update({
+            record_count: this.getFormattedRecordCount(),
+            page_count: '50'
+        });
     },
 
     beforeSettingsModalRender: function (cmp, eOpts) {
@@ -98904,6 +98910,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (edit_setting_view.isVisible()) {
             PICS.data.ServerCommunication.favoriteReport();
         }
+    },
+
+    getFormattedRecordCount: function () {
+        var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
+            data_table_store = data_table_view.getStore(),
+            record_count = data_table_store.getTotalCount();
+
+        return Ext.util.Format.number(record_count, '0,000');
     },
 
     openSettingsModal: function (action) {

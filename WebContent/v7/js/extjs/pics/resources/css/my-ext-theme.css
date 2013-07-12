@@ -9221,18 +9221,20 @@ textarea.x-form-invalid-field {
   display: block;
   font-size: 17px; }
 
-/* line 426, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_export .x-btn i,
-#report_print .x-btn i {
+/* line 425, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_export .x-btn i {
   position: relative;
   top: 2px; }
 
-/* line 433, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_export .x-btn-inner span,
-#report_print .x-btn-inner span {
+/* line 431, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_export .x-btn-inner span {
   margin-left: 10px; }
 
-/* line 438, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 436, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_export .export-message {
+  color: #d14; }
+
+/* line 441, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 .report-info {
   background: #EAEAEA;
   height: 100%;
@@ -9241,21 +9243,21 @@ textarea.x-form-invalid-field {
   top: 0;
   width: 100%;
   z-index: 9999; }
-  /* line 448, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 451, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info ul {
     padding: 15px; }
-  /* line 453, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 456, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info li {
     margin-bottom: 10px; }
-  /* line 458, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 461, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info label {
     color: #999;
     font-weight: bold;
     margin-right: 5px; }
-  /* line 467, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 470, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info label {
     float: left; }
-  /* line 472, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  /* line 475, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
   .report-info .update-info span {
     display: inline-block; }
 

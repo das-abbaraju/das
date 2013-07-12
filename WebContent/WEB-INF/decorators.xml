@@ -49,6 +49,7 @@
         <pattern>/pricing_matrix.jsp</pattern>
     </decorator>
     <decorator name="ignoreMe">
+        <pattern>/ReportApi!print.action</pattern>
         <pattern>/*Ajax.action</pattern>
         <pattern>/*Ajax!*.action</pattern>
         <pattern>/PyCron.action</pattern>

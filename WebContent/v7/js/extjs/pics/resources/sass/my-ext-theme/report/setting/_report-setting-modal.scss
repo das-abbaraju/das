@@ -421,17 +421,20 @@
 	font-size: 17px;
 }
 
-#report_export .x-btn i,
-#report_print .x-btn i
+#report_export .x-btn i
 {
 	position: relative;
 	top: 2px;
 }
 
-#report_export .x-btn-inner span,
-#report_print .x-btn-inner span
+#report_export .x-btn-inner span
 {
 	margin-left: 10px;
+}
+
+#report_export .export-message
+{
+	color: #d14;
 }
 
 .report-info

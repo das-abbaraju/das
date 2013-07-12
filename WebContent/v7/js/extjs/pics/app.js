@@ -44,9 +44,27 @@ Ext.application({
         });
         
         PICS.data.ServerCommunication.loadAll({
-            success_callback: this.createViewport,
+            success_callback: function () {
+                this.createViewport();
+                this.applyKeyBindings();
+            },
             scope: this
         });
+    },
+
+    applyKeyBindings: function () {
+        new Ext.util.KeyMap({
+            target: document,
+            key: 'p',
+            ctrl: true,
+            fn: function (key, e) {
+                e.stopEvent();
+
+                PICS.data.ServerCommunication.printReport();
+
+                return false;
+            }
+        }).enable();
     },
 
     createViewport: function () {

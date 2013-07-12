@@ -60,6 +60,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 afterrender: this.afterEditSettingRender
             },
 
+            'reportsettingsmodal reportexportsetting': {
+                afterrender: this.afterExportSettingRender
+            },
+
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
                 click: this.editReport
             },
@@ -77,7 +81,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 click: this.exportReport
             },
 
-            'reportsettingsmodal reportprintsetting button[action=print-preview]':  {
+            'reportsettingsmodal reportexportsetting button[action=print-preview]':  {
                 click: this.printReport
             },
 
@@ -117,6 +121,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (is_favorite) {
             edit_favorite_toggle.toggleFavorite();
         }
+    },
+
+    afterExportSettingRender: function (cmp, eOpts) {
+        cmp.update({
+            record_count: this.getFormattedRecordCount(),
+            page_count: '50'
+        });
     },
 
     beforeSettingsModalRender: function (cmp, eOpts) {
@@ -226,6 +237,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         if (edit_setting_view.isVisible()) {
             PICS.data.ServerCommunication.favoriteReport();
         }
+    },
+
+    getFormattedRecordCount: function () {
+        var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
+            data_table_store = data_table_view.getStore(),
+            record_count = data_table_store.getTotalCount();
+
+        return Ext.util.Format.number(record_count, '0,000');
     },
 
     openSettingsModal: function (action) {
