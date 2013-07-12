@@ -1,7 +1,6 @@
 package com.picsauditing.billing;
 
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.util.SpringUtils;
 
 /**
@@ -25,13 +24,13 @@ public class ProcessQBResponseXMLCustomerAddOrUpdate extends ProcessQBResponseXM
 		super(actionMessages,errorMessages);
 	}
 
-	public static ProcessQBResponseXMLCustomerAddOrUpdate factory (StringBuilder actionMessages, StringBuilder errorMessages, PicsDAO dao) {
+	public static ProcessQBResponseXMLCustomerAddOrUpdate factory (StringBuilder actionMessages, StringBuilder errorMessages, ContractorAccountDAO dao) {
 		ProcessQBResponseXMLCustomerAddOrUpdate object = new ProcessQBResponseXMLCustomerAddOrUpdate(actionMessages,errorMessages);
 		object.setParentNodeNameAddResult(PARENT_NODE_NAME_ADD_RESULT);
 		object.setParentNodeNameQueryResult(PARENT_NODE_NAME_QUERY_RESULT);
 		object.setDetailNodeName(DETAIL_NODE_NAME);
 		object.setRequestType(REQUEST_TYPE);
-		object.setDao(dao != null ? dao :(ContractorAccountDAO)SpringUtils.getBean(DAO_TYPE));
+		object.setContractorAccountDAO(dao != null ? dao :(ContractorAccountDAO)SpringUtils.getBean(DAO_TYPE));
 		object.setTableName(TABLE_NAME);
 		object.setQbXMLListIDNodeName(QBXML_LISTID_NODE_NAME);
 		object.setQbXMLTablePKNodeName(QBXML_TABLEPK_NODE_NAME);

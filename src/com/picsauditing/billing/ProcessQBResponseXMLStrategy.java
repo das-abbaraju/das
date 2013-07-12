@@ -127,6 +127,7 @@ public class ProcessQBResponseXMLStrategy {
 
 			ProcessQBResponseXMLStrategy processor = null;
 			PicsDAO nullDao = null;
+			ContractorAccountDAO caDao = null;
 
 			switch (node.getNodeName()) {
 				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
@@ -135,7 +136,7 @@ public class ProcessQBResponseXMLStrategy {
 					break;
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
-					processor = ProcessQBResponseXMLCustomerAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
+					processor = ProcessQBResponseXMLCustomerAddOrUpdate.factory(actionMessages,errorMessages,caDao);
 					break;
 				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 					processor = ProcessQBResponseXMLPaymentAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
@@ -191,10 +192,10 @@ public class ProcessQBResponseXMLStrategy {
 
 	private void updateDatabaseTableContractor(String qbListID, String tablePK, boolean setQbSyncToFalse) {
 
-		String contractorIDNumsOnly = tablePK.replaceAll("[^0-9]","");
+		int contractorIDNumsOnly = Integer.parseInt(tablePK.replaceAll("[^0-9]",""));
 		ContractorAccount contractor = null;
 		try {
-			contractor = contractorAccountDAO.find(Integer.parseInt(contractorIDNumsOnly));
+			contractor = contractorAccountDAO.find(contractorIDNumsOnly);
 			if (contractor == null) {
 				errorMessages.append(StringUtils.capitalize(getTableName())+" ID '" + tablePK + "' not found<br/>");
 				return;
