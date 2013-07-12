@@ -14,8 +14,8 @@ import com.picsauditing.util.SpringUtils;
 public class ProcessQBResponseXMLPaymentAddOrUpdate extends ProcessQBResponseXMLStrategy  {
 
 	public static final String PARENT_NODE_NAME_ADD_RESULT = "ReceivePaymentAddRs";
-	public static final String DETAIL_NODE_NAME = "InvoiceRet";
-	public static final String REQUEST_TYPE = "Invoice List ID Update";
+	public static final String DETAIL_NODE_NAME = "ReceivePaymentRet";
+	public static final String REQUEST_TYPE = "Payment List ID Update";
 
 	public static final String DAO_TYPE = "PaymentDAO";
 	public static final String TABLE_NAME = "invoice";

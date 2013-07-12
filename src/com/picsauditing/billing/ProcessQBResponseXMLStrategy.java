@@ -142,11 +142,12 @@ public class ProcessQBResponseXMLStrategy {
 					processor = ProcessQBResponseXMLPaymentAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				default:
-					errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");
 					break;
 			}
 			if (processor != null) {
 				processor.processParentNode(node);
+			}  else {
+				errorMessages.append("Need code to process node of type '" + node.getNodeName() + "'<br/>");
 			}
 			continue;
 
