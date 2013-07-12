@@ -337,30 +337,35 @@ public final class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+        if (favoriteReports.isEmpty()) {
+            reportsMenu.addChild(getText("menu.ReportsManager.GettingStarted"), "Reference!reportsManager.action?from=ReportsMenu", "reports_manager");
+        }
+        else {
+            reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-		if (permissions.getAccountStatus() != AccountStatus.Demo)
-			addLegacyReports(permissions, reportsMenu);
+            if (permissions.getAccountStatus() != AccountStatus.Demo)
+                addLegacyReports(permissions, reportsMenu);
 
-		if (permissions.has(OpPerms.Report)) {
-			MenuComponent adminMenu = reportsMenu.addChild("Administration");
-			adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
-			adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
-		}
+            if (permissions.has(OpPerms.Report)) {
+                MenuComponent adminMenu = reportsMenu.addChild("Administration");
+                adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
+                adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
+            }
 
-		FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (CollectionUtils.isNotEmpty(favoriteReports)) {
-			reportsMenu.addChild("separator", null);
-			MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+            FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+            if (CollectionUtils.isNotEmpty(favoriteReports)) {
+                reportsMenu.addChild("separator", null);
+                MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
 
-			reportsMenu.addChild(favoriteLabel);
-		}
+                reportsMenu.addChild(favoriteLabel);
+            }
 
-		for (ReportUser reportUser : favoriteReports) {
-			Report report = reportUser.getReport();
-			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-					"report_" + report.getId());
-		}
+            for (ReportUser reportUser : favoriteReports) {
+                Report report = reportUser.getReport();
+                reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+                        "report_" + report.getId());
+            }
+        }
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:url action="ManageReports.action" var="reports_manager_url" />
+<s:url action="ManageReports!search.action" var="reports_manager_url" />
 
 <title>Reports Manager</title>
 
