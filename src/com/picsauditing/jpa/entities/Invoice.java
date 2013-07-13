@@ -17,14 +17,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.tables.FieldImportance;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
 import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.TaxService;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.PicsDateFormat;
 
 @SuppressWarnings("serial")
@@ -43,6 +44,11 @@ public class Invoice extends Transaction {
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
+
+	@Transient
+	public boolean hasTax() {
+		return TaxService.invoiceHasTax(this);
+	}
 
 	@Transient
 	public boolean isOverdue() {
@@ -125,7 +131,7 @@ public class Invoice extends Transaction {
 	/**
 	 * This is used by the QBWebConnector Adaptor to ensure that all Tax items
 	 * come before any other Fee item in an invoice for proper tax handling.
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient

@@ -1,6 +1,21 @@
 package com.picsauditing.actions.contractors;
 
-import com.picsauditing.PICS.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.InvoiceService;
+import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
@@ -9,12 +24,29 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.billing.BrainTree;
 import com.picsauditing.braintree.BrainTreeHash;
+import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LcCorPhase;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -23,20 +55,7 @@ import com.picsauditing.model.billing.BillingNoteModel;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
-import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.validator.ContractorValidator;
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends RegistrationAction {
@@ -199,12 +218,13 @@ public class RegistrationMakePayment extends RegistrationAction {
 						billingService.activateContractor(contractor, invoice);
 						contractorAccountDao.save(contractor);
 
-                        notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.SAVE));
+						notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.SAVE));
 
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
 								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,
 								LowMedHigh.High, true, Account.EVERYONE,
 								billingNoteModel.findUserForPaymentNote(permissions), null);
+
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -229,7 +249,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 						} catch (Exception e) {
 							logger.error("Cannot send email error message or "
 									+ "determine credit processing status for contractor {} ({}) for invoice {}",
-									new Object[]{contractor.getName(), contractor.getId(), invoice.getId()});
+									new Object[] { contractor.getName(), contractor.getId(), invoice.getId() });
 						}
 
 						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
@@ -336,9 +356,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 		// A response was received
 
-        if (response_code != null) {
-			String newHash = BrainTreeHash.buildHash(orderid, amount, response, transactionid, avsresponse, cvvresponse,
-                    customer_vault_id, time, key);
+		if (response_code != null) {
+			String newHash = BrainTreeHash.buildHash(orderid, amount, response, transactionid, avsresponse,
+					cvvresponse, customer_vault_id, time, key);
 
 			if (response.equals("3")) {
 				Marker ccHashErrors = MarkerFactory.getMarker("CC Hash Errors");
@@ -386,7 +406,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			} catch (Exception x) {
 				// TODO: Test
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[]{getPicsPhoneNumber()}));
+						new Object[] { getPicsPhoneNumber() }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -415,7 +435,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		if (retries >= quit) {
 			// TODO: Test
 			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[]{getPicsPhoneNumber()}));
+					new Object[] { getPicsPhoneNumber() }));
 			braintreeCommunicationError = true;
 			return;
 		}
@@ -592,7 +612,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 *
+	 * 
 	 * @throws Exception
 	 */
 

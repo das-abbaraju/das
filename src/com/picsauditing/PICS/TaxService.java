@@ -1,14 +1,21 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.billing.AccountingSystemSynchronization;
-import com.picsauditing.toggle.FeatureToggle;
+import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.InvoiceFeeCountry;
+import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.billing.AccountingSystemSynchronization;
+import com.picsauditing.toggle.FeatureToggle;
 
 @SuppressWarnings("serial")
 public class TaxService {
@@ -66,7 +73,7 @@ public class TaxService {
 			} else {
 				return createLegacyCanadianTaxInvoiceFee(invoice);
 			}
-		} else if(currency.isGBP()){
+		} else if (currency.isGBP()) {
 			return createVatTaxInvoiceFee();
 		} else {
 			return null;
@@ -94,7 +101,6 @@ public class TaxService {
 			throw new Exception("Unable to create an Canadian tax invoiceFee for invoice id: " + invoice.getId(), e);
 		}
 	}
-
 
 	private void applyTaxInvoiceFeeToInvoice(Invoice invoice, InvoiceFee taxInvoiceFee) {
 		if (!shouldApplyTaxInvoiceFee(taxInvoiceFee)) {
@@ -184,7 +190,7 @@ public class TaxService {
 		return amount;
 	}
 
-	InvoiceItem findTaxInvoiceItem(Invoice invoice) {
+	static InvoiceItem findTaxInvoiceItem(Invoice invoice) {
 		for (InvoiceItem item : invoice.getItems()) {
 			InvoiceFee invoiceFee = item.getInvoiceFee();
 			if (invoiceFee == null) {
@@ -197,5 +203,9 @@ public class TaxService {
 		}
 
 		return null;
+	}
+
+	public static boolean invoiceHasTax(Invoice invoice) {
+		return (findTaxInvoiceItem(invoice) != null);
 	}
 }

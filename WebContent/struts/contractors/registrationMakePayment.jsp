@@ -49,7 +49,8 @@
 				</tfoot>
 				<tbody>
 				
-					<%-- Displaying Membership Fees First --%>					
+					<%-- Membership Fees --%>
+
 					<s:iterator value="invoice.items" status="stat">
 						<s:if test="invoiceFee.membership">
 							<tr>
@@ -68,17 +69,17 @@
 							</tr>
 						</s:if>
 					</s:iterator>
+
+					<%-- One Time Fees --%>
 					
-					<%-- Displaying Non-Memberships Fees Seperately --%>		
 					<tr>
 						<th colspan="2">
 							<s:text name="RegistrationMakePayment.OneTimeFees" />
 						</th>
 					</tr>
 					
-					<%-- one time fees --%>
 					<s:iterator value="invoice.items" status="stat">
-						<s:if test="!invoiceFee.membership">
+						<s:if test="!invoiceFee.membership && !invoiceFee.tax">
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
@@ -102,7 +103,41 @@
 							</tr>
 						</s:if>
 					</s:iterator>
-					
+
+					<%-- Taxes --%>
+
+					<s:if test="invoice.hasTax()">
+						<tr>
+							<th colspan="2">
+								<s:text name="RegistrationMakePayment.Taxes" />
+							</th>
+						</tr>
+
+						<s:iterator value="invoice.items" status="stat">
+							<s:if test="invoiceFee.isTax()">
+
+								<s:set name="fee" value="invoiceFee.fee" />
+								<s:set name="amount" value="amount" />
+								<s:set name="currency" value="invoice.currency.display" />
+
+								<tr>
+									<td>
+										${fee}
+										<a
+											href="javascript:;"
+											class="help"
+											data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />"
+											data-content="<s:text name="%{invoiceFee.feeClass.getI18nKey('help')}" />"
+										><img src="images/help-icon.png" /></a>
+									</td>
+									<td class="price">
+										${amount} ${currency}
+									</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+					</s:if>
+
 					<%-- Import Fee being hard coded to toggle on/off --%>
 					<s:if test="contractor.eligibleForImportPQF 
 									&& (!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free)">
