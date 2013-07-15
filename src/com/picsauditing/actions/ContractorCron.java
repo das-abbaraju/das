@@ -701,7 +701,7 @@ public class ContractorCron extends PicsActionSupport {
 		JSONObject flagJson = new JSONObject();
 		for (FlagData data : changes) {
 			JSONObject flag = new JSONObject();
-			flag.put("category", data.getCriteria().getCategory().toString());
+			flag.put("category", data.getCriteria().getCategory().toString() );
 			flag.put("label", data.getCriteria().getLabel().toString());
 			flag.put("flag", data.getFlag().toString());
 
