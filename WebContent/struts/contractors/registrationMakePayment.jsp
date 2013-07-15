@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:set name="currency"><s:property value="invoice.currency.display"/></s:set>
+
 <div class="registration-header">
 	<section>
 		<s:include value="/struts/contractors/registrationStep.jsp">
@@ -40,15 +42,8 @@
 						</th>
 					</tr>
 				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<span class="total"><s:text name="RegistrationMakePayment.Total" />:</span> <s:property value="invoice.totalAmount" /> <s:property value="invoice.currency.display"/>
-						</td>
-					</tr>
-				</tfoot>
+
 				<tbody>
-				
 					<%-- Membership Fees --%>
 
 					<s:iterator value="invoice.items" status="stat">
@@ -64,7 +59,7 @@
 									><img src="images/help-icon.png" /></a>
 								</td>
 								<td class="price">
-									<s:property value="amount" /> <s:property value="invoice.currency.display"/>
+									<s:property value="amount" /> ${currency}
 								</td>
 							</tr>
 						</s:if>
@@ -98,7 +93,7 @@
 									</s:if>
 								</td>
 								<td class="price">
-									<s:property value="amount" /> <s:property value="invoice.currency.display"/>
+									<s:property value="amount" /> ${currency}
 								</td>
 							</tr>
 						</s:if>
@@ -107,22 +102,35 @@
 					<%-- Taxes --%>
 
 					<s:if test="invoice.hasTax()">
+
+						<%-- Subtotal (i.e., pre-tax total) --%>
+						<s:set name="subtotal_label"><s:text name="RegistrationMakePayment.SubTotal" /></s:set>
+						<s:set name="subtotal_amount" value="invoice.totalWithoutTaxes" />
+						<s:set name="taxes_label"><s:text name="RegistrationMakePayment.Taxes" /></s:set>
+
+						<tr class="total">
+							<td colspan="2">
+								<span class="total">${subtotal_label}:</span> ${subtotal_amount} ${currency}
+							</td>
+						</tr>
+
+						<%-- List of Tax Items --%>
+
 						<tr>
 							<th colspan="2">
-								<s:text name="RegistrationMakePayment.Taxes" />
+								${taxes_label}
 							</th>
 						</tr>
 
 						<s:iterator value="invoice.items" status="stat">
 							<s:if test="invoiceFee.isTax()">
 
-								<s:set name="fee" value="invoiceFee.fee" />
-								<s:set name="amount" value="amount" />
-								<s:set name="currency" value="invoice.currency.display" />
+								<s:set name="fee_name" value="invoiceFee.fee" />
+								<s:set name="fee_amount" value="amount" />
 
 								<tr>
 									<td>
-										${fee}
+										${fee_name}
 										<a
 											href="javascript:;"
 											class="help"
@@ -131,7 +139,7 @@
 										><img src="images/help-icon.png" /></a>
 									</td>
 									<td class="price">
-										${amount} ${currency}
+										${fee_amount} ${currency}
 									</td>
 								</tr>
 							</s:if>
@@ -162,6 +170,17 @@
 						</tr>
 					</s:if>
 				</tbody>
+
+				<%-- Grand Total --%>
+
+				<s:set name="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
+				<s:set name="total_amount"><s:property value="invoice.totalAmount" /></s:set>
+
+				<tr class="total">
+					<td colspan="2">
+						<span class="total">${total_label}:</span> ${total_amount} ${currency}
+					</td>
+				</tr>
 	 		</table>
 	 		
 	 		<div class="policy">

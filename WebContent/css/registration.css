@@ -907,7 +907,7 @@ footer .footer-menu a {
 	left: 3px;
 }
 
-.make-payment .invoice tfoot td {
+.make-payment .invoice tr.total td {
 	background: #c8e0f0;
 	color: #70a7cb;
 	font-size: 24px;
@@ -916,7 +916,7 @@ footer .footer-menu a {
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment .invoice tfoot td span {
+.make-payment .invoice tr.total td span {
 	color: #5d5d5d;
 	font-size: 18px;
 	margin-right: 10px;
