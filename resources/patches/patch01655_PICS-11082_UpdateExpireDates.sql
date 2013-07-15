@@ -1,4 +1,9 @@
 -- update expiration dates
+UPDATE pqfdata pd
+SET pd.answer = '2014-06-30'
+WHERE 1
+      AND pd.answer = '2014-06-31';
+
 UPDATE
     contractor_audit ca
     JOIN contractor_audit_operator cao ON ca.id = cao.auditID
