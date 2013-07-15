@@ -311,6 +311,21 @@ public class ReportService {
 		return responseJson;
 	}
 
+    public String buildReportResultsForHtml(ReportContext reportContext, Report report) throws ReportValidationException, PicsSqlException {
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
+
+        JSONObject responseJson = new JSONObject();
+
+        ReportResults reportResults = ReportResultsFromDynaBean.build(report.getColumns(), queryResults);
+        ReportDataConverter converter = new ReportDataConverterForPrinting(reportResults);
+        converter.setLocale(reportContext.permissions.getLocale());
+        converter.convert(reportContext.user.getTimezone());
+        String html = new HtmlWriter(reportResults,reportContext.permissions.getLocale()).toString();
+
+        return html;
+    }
+
     private boolean shouldIncludeSql(Permissions permissions) {
 		return (permissions.isAdmin() || permissions.getAdminID() > 0);
 	}

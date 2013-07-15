@@ -177,6 +177,19 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
+    public String html() {
+        ReportContext reportContext = buildReportContext(null);
+
+        try {
+            report = reportDao.findById(reportId);
+            output = reportService.buildReportResultsForHtml(reportContext,report);
+        } catch (Exception e) {
+            logger.error("Error while downloading report", e);
+        }
+
+        return PLAIN_TEXT;
+    }
+
     public String info() {
         try {
             json = reportService.buildJsonReportInfo(reportId, permissions.getTimezone());
