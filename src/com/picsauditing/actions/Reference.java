@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.Date;
 
+import com.opensymphony.xwork2.ActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.UserDAO;
@@ -16,7 +17,7 @@ public class Reference extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggle;
 
-    String from;
+    protected String from;
 
 	public String navigationMenu() throws Exception {
 		loadPermissions(false);
@@ -40,7 +41,13 @@ public class Reference extends PicsActionSupport {
 	public String reportsManager() throws Exception {
 		loadPermissions(false);
 
-        if (!isFirstTimeReportsManagerUser() && from != null && from.equals("ReportsMenu")) {
+        if (from == null) {
+            from = ((String[]) ActionContext.getContext().getParameters().get("from"))[0];
+        }
+
+        boolean isFromReportsMenu = from != null && from.equals("ReportsMenu");
+
+        if (!isFirstTimeReportsManagerUser() && isFromReportsMenu) {
             setUrlForRedirect("ManageReports!search.action");
             return REDIRECT;
         } else {
@@ -88,4 +95,11 @@ public class Reference extends PicsActionSupport {
 		userDAO.save(user);
 	}
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 }
