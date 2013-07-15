@@ -612,8 +612,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	public String getColumnHeaderOrQuestion() {
 		String columnHeader = getColumnHeader();
-		if (columnHeader != null && !Strings.isEmpty(columnHeader.toString())) {
-			return columnHeader.toString();
+		if (columnHeader != null && !Strings.isEmpty(columnHeader) && !columnHeader.equals(getI18nKey("columnHeader"))) {
+			return columnHeader;
 		}
 
 		if (getName() == null) {
