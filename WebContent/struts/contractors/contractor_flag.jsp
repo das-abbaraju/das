@@ -10,17 +10,17 @@
 			</s:param>
 		</s:text>
 	</title>
-	
+
 	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
-	
+
 	<link rel="stylesheet" type="text/css" media="screen" href="css/contractor_flag.css?v=${version}" />
 </head>
 <body>
 	<s:include value="conHeader.jsp" />
-	
+
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<!-- OVERALL FLAG -->
 		<div id="cluetip2">
@@ -37,7 +37,7 @@
 						<s:form>
 							<s:hidden name="id" />
 							<s:hidden name="opID" />
-	
+
 							<s:text name="ContractorFlag.FlagRecentlyChanged">
 								<s:param>
 									<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.baselineFlag)" escape="false" />
@@ -52,7 +52,7 @@
 									<s:property value="co.flagColor" escape="false" />
 								</s:param>
 							</s:text>
-	
+
 							<s:submit
 								type="button"
 								method="approveFlag"
@@ -67,7 +67,7 @@
 				<s:form>
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-	
+
 					<s:if test="contractor.lastRecalculation != null">
 						<s:if test="permissions.admin || permissions.operatorCorporate">
 							<s:text name="ContractorFlag.ContractorLastCalculated">
@@ -87,7 +87,7 @@
 					<s:else>
 						<s:text name="ContractorFlag.NotCalculated"></s:text>
 					</s:else>
-	
+
 					<s:submit
 						type="button"
 						name="button"
@@ -98,7 +98,7 @@
 				</s:form>
 			</div>
 		</div>
-	
+
 		<div style="width: 50%">
 			<div class="panel_placeholder">
 				<div class="panel">
@@ -142,9 +142,9 @@
 								<p>
 									<s:text name="global.Locations" />:
 									<s:property value="activeOperators.size()"/>
-									
+
 									<s:if test="flagCounts.size() > 0">
-										(<s:iterator value="flagCounts" status="stat">	
+										(<s:iterator value="flagCounts" status="stat">
 											<s:property value="value"/>
 											<s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if>
 										</s:iterator>)
@@ -191,7 +191,7 @@
 											</s:param>
 										</s:text>
 									</s:if>
-									
+
 									<s:if test="displayCorporate" >
 										<s:iterator value="corporateOverrides" var="currentOp">
 											<s:if test="#currentOp.forceOverallFlag != null" >
@@ -217,13 +217,13 @@
 											</s:if>
 										</s:iterator>
 									</s:if>
-	
+
 									<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0 && !displayCorporate">
 										<s:iterator id="key" value="flagDataMap.keySet()">
 											<s:iterator id="data" value="flagDataMap.get(#key)">
 												<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
 													<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
-	
+
 													<s:if test="#flagoverride != null">
 														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo3">
 															<s:param>
@@ -265,7 +265,7 @@
 											<s:iterator id="data" value="flagDataMap.get(#key)">
 												<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
 													<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
-	
+
 													<s:if test="#flagoverride != null">
 														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo2">
 															<s:param>
@@ -308,7 +308,7 @@
 								</s:form>
 							</s:if>
 							<br />
-	
+
 							<pics:permission perm="EditForcedFlags">
 								<s:if test="canForceOverallFlag(co.forceOverallFlag)">
 									<s:form
@@ -316,18 +316,18 @@
 										<br />
 										<s:hidden name="id" />
 										<s:hidden name="opID" />
-	
+
 										<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'">
 											<s:hidden name="overrideAll" value="true" />
 											<label><s:text name="ContractorFlag.CancelOverride"></s:text>
 											</label>
 											<br />
 										</s:if>
-	
+
 										<s:text name="ContractorFlag.Reason"></s:text>:
 											<br />
 										<s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
-	
+
 										<div>
 											<s:submit
 												type="button"
@@ -344,19 +344,26 @@
 											<s:hidden name="id" />
 											<s:hidden name="opID" />
 											<fieldset class="form">
-	
+
 												<ol>
 													<li>
 														<span class="label-txt">
 															<s:text name="ContractorFlag.ForceFlagTo"></s:text>
 														</span>
-														<s:radio
-															id="forceFlag"
-															list="unusedCoFlag"
-															name="forceFlag"
-															theme="pics"
-															cssClass="inline"
-														/>
+
+
+														<ul class="radio inline">
+															<s:iterator value="unusedCoFlag" var="flag">
+																<s:set name="flagcolor" value="#flag.toLowerCase()" />
+
+																<li>
+																	<input type="radio" name="forceFlag" id="forceFlag${flag}" value="${flag}" />
+																	<label for="forceFlag${flag}">
+																		<img src= "images/icon_${flagcolor}FlagBig.gif" />
+																	</label>
+																</li>
+															</s:iterator>
+														</ul>
 													</li>
 													<li>
 														<span class="label-txt">
@@ -418,12 +425,12 @@
 												</ol>
 											</fieldset>
 										</s:form>
-	
+
 										<a href="javascript:;" class="toggle-override">
 											<s:text name="ContractorFlag.Nevermind"></s:text>
 										</a>
 									</div>
-	
+
 									<s:if test="permittedToForceFlags" >
 										<a id="override_link" class="override_wrench toggle-override" href="javascript:;">
 											<s:text name="ContractorFlag.ForceOverallFlagColor" />
@@ -437,7 +444,7 @@
 				</div>
 			</div>
 		</div>
-	
+
 		<s:if test="co.flagColor.toString() == 'Green' && co.forceOverallFlag == null && flagDataOverrides.keySet().size() == 0">
 			<div class="info" style="width: 50%; text-align: left">
 				<s:text name="ContractorFlag.Congratulations">
@@ -447,11 +454,11 @@
 				</s:text>
 			</div>
 		</s:if>
-	
+
 		<span id="thinking"></span>
-	
+
 		<div class="clear"></div>
-	
+
 		<!-- Putting Tabs Here -->
 		<div id="tabs">
 			<ul>
@@ -471,7 +478,7 @@
 					</a>
 				</li>
 			</ul>
-	
+
 			<div id="tabs-1">
 				<!-- OVERRIDES -->
 				<s:include value="_contractorFlagOverride.jsp" />
