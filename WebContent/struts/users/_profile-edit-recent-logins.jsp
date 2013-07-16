@@ -52,7 +52,7 @@
 
                 <td>
                     <s:if test="loginMethod != null">
-                        <s:text name="loginMethod.i18nKey"/>
+                        <s:text name="%{loginMethod.i18nKey}"/>
                     </s:if>
                 </td>
             </tr>
