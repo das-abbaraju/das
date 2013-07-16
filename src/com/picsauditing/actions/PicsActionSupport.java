@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -15,16 +14,20 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.picsauditing.access.*;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -39,24 +42,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.inject.Inject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.MainPage;
-import com.picsauditing.access.AjaxNotLoggedInException;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.SecurityAware;
 import com.picsauditing.actions.users.ChangePassword;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
@@ -77,7 +63,10 @@ import com.picsauditing.util.system.PicsEnvironment;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
 
-	protected static final int DELETE_COOKIE_AGE = 0;
+    private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
+            + CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
+
+    protected static final int DELETE_COOKIE_AGE = 0;
 	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
@@ -106,7 +95,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected UserDAO userDAO;
 	@Autowired
 	protected FeatureToggle featureToggleChecker;
-	@Autowired
+    @Autowired
+    protected UserLoginLogDAO loginLogDAO;
+    @Autowired
 	private PermissionBuilder permissionBuilder;
 
 	protected Collection<String> alertMessages;
@@ -234,7 +225,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return getEnvironmentDeterminer().isConfiguration();
 	}
 
-	public boolean isLiveEnvironment() throws UnknownHostException {
+	public boolean isLiveEnvironment() {
 		return getEnvironmentDeterminer().isStable();
 	}
 
@@ -293,6 +284,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return;
 		}
 
+        // This happens when the server has been restarted and their HttpSession is gone, or they've moved between
+        // servers in a server cookie cluster and the session was not clustered, possibly because of being completely
+        // different application instances. We will still honor the cookie in these cases. We do not want to log
+        // this case in loginlog. See PICS-11696
 		int clientSessionUserID = getClientSessionUserID();
 		if (clientSessionUserID > 0) {
 			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
@@ -862,7 +857,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean isRememberMeSetInCookie() {
-		SessionCookie sessionCookie = validSessionCookie();
+        return isRememberMeSetInCookie(validSessionCookie());
+    }
+
+    private boolean isRememberMeSetInCookie(SessionCookie sessionCookie) {
 		if (sessionCookie == null) {
 			return false;
 		}
@@ -885,22 +883,32 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	@Override
 	public boolean sessionCookieIsValidAndNotExpired() {
-		String sessionCookieValue = clientSessionCookieValue();
-		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
+        SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
 			return false;
-		} else if (isRememberMeSetInCookie()) {
-			return true;
 		} else {
-			loadPermissions();
-			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
-			long nowInSeconds = new Date().getTime() / 1000;
-			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
-			return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
-					.getSessionCookieTimeoutInSeconds());
-		}
+            boolean cookieIsTimedOut = !cookieIsNotTimedOut(sessionCookie);
+            if (isRememberMeSetInCookie(sessionCookie)) {
+                if (cookieIsTimedOut) {
+                    logRememberMeLogin(getUser());
+                }
+                return true;
+            } else {
+                return !cookieIsTimedOut;
+            }
+        }
 	}
 
-	private SessionCookie validSessionCookie() {
+    private boolean cookieIsNotTimedOut(SessionCookie sessionCookie) {
+        // in case the http session was reset
+        loadPermissions();
+        long nowInSeconds = new Date().getTime() / 1000;
+        long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+        return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
+                .getSessionCookieTimeoutInSeconds());
+    }
+
+    private SessionCookie validSessionCookie() {
 		String sessionCookieValue = clientSessionCookieValue();
 		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			clearPicsOrgCookie();
@@ -1191,7 +1199,77 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return number;
 	}
 
-	private enum PhoneNumberType {
+    protected void logSwitchToAttempt(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.SwitchTo);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    protected void logCredentialLoginAttempt(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.Credentials);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    protected void logRememberMeLogin(User user) {
+        UserLoginLog loginLog = new UserLoginLog();
+        loginLog.setLoginMethod(LoginMethod.RememberMeCookie);
+        loginLog.setUser(user);
+        logLoginAttempt(loginLog);
+    }
+
+    private void logLoginAttempt(UserLoginLog loginLog) {
+        if (loginLog.getUser() == null) {
+            return;
+        }
+
+        loginLog.setLoginDate(new Date());
+        loginLog.setRemoteAddress(getRequest().getRemoteAddr());
+        String serverName = getRequest().getLocalName();
+        UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
+        loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
+        loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
+        if (isLiveEnvironment() || isBetaEnvironment()) {
+            // Need computer name instead of www
+            try {
+                serverName = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                logger.error("Error determining host: {}", e);
+                serverName = "Live or Beta";
+            }
+        }
+
+        loginLog.setServerAddress(serverName);
+
+
+        String targetIp = extractTargetIpFromCookie();
+        if (!Strings.isEmpty(targetIp)) {
+            loginLog.setTargetIP(targetIp);
+        }
+
+        loginLog.setSuccessful((permissions == null) ? false : permissions.isLoggedIn());
+        if (permissions != null && permissions.getAdminID() > 0) {
+            loginLog.setAdmin(new User(permissions.getAdminID()));
+        }
+
+        loginLogDAO.save(loginLog);
+    }
+
+    private String extractTargetIpFromCookie() {
+        List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
+                CookieSupport.TARGET_IP_COOKIE_NAME);
+        for (Cookie cookie : matchingCookies) {
+            Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
+        }
+        return "";
+    }
+
+    private enum PhoneNumberType {
 		FAX, MAIN, SALES
 	}
 

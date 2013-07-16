@@ -5,18 +5,23 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import com.picsauditing.util.system.PicsEnvironment;
 import org.json.simple.JSONObject;
 import org.junit.*;
 import org.mockito.*;
 import org.powermock.reflect.Whitebox;
 
+import javax.servlet.http.Cookie;
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.net.URLEncoder;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -34,7 +39,13 @@ public class PicsActionSupportTest extends PicsActionTest {
     @Mock
     private BufferedReader bufferedReader;
     @Mock
-    protected UserDAO userDAO;
+    private UserDAO userDAO;
+    @Mock
+    private Cookie cookie;
+    @Mock
+    private UserLoginLogDAO loginLogDAO;
+    @Mock
+    private User user;
 
     @Before
     public void setUp() throws Exception {
@@ -390,7 +401,6 @@ public class PicsActionSupportTest extends PicsActionTest {
 		 * 
 		 * return user.getPhone();
 		 */
-        User user = mock(User.class);
         when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(false);
         when(user.getPhone()).thenReturn("Phone");
 
@@ -399,7 +409,6 @@ public class PicsActionSupportTest extends PicsActionTest {
 
     @Test
     public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthGreaterThan4() {
-        User user = mock(User.class);
         when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
         when(user.getPhone()).thenReturn("Phone");
 
@@ -409,7 +418,6 @@ public class PicsActionSupportTest extends PicsActionTest {
     @Test
     public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthEqualTo4() {
         CountryDAO countryDAO = mock(CountryDAO.class);
-        User user = mock(User.class);
 
         when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
         when(user.getPhone()).thenReturn("1234");
@@ -422,7 +430,6 @@ public class PicsActionSupportTest extends PicsActionTest {
     @Test
     public void testGetLocalizedPhoneNumberForUser_FeatureToggleEnabledAndUserPhoneLengthEqualTo4AndCountryProvided() {
         Country country = mock(Country.class);
-        User user = mock(User.class);
 
         when(country.getPhone()).thenReturn("Country Phone");
         when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
@@ -461,5 +468,143 @@ public class PicsActionSupportTest extends PicsActionTest {
         picsActionSupport.getSafetyList();
 
         verify(userDAO).findCorporateAuditors(12345);
+    }
+
+    @Test
+    public void testSessionCookieIsValidAndNotExpired_Happy() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+
+        setupValidSessionCookie(false, false);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testSessionCookieIsNotValidAndNotExpired() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+        setupInvalidSessionCookie(false, false);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void testSessionCookieIsNotValidAndExpired() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+        setupInvalidSessionCookie(false, true);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void testSessionCookieIsValidAndExpired() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+        setupValidSessionCookie(false, true);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    public void testSessionCookieIsValidAndExpiredAndRememberMe_TrueEvenThoughExpired() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+        setupValidSessionCookie(true, true);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void testSessionCookieIsValidAndNotExpiredAndRememberMe() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Whitebox.setInternalState(picsActionSupport, "picsEnvironment", new PicsEnvironment("6", "2"));
+        setupValidSessionCookie(true, false);
+
+        boolean isValid = picsActionSupport.sessionCookieIsValidAndNotExpired();
+
+        assertTrue(isValid);
+    }
+
+    private void setupValidSessionCookie(boolean rememberMe, boolean expired) throws Exception {
+        String sessionCookieContent = sessionCookieContent(rememberMe);
+        setupCookie(sessionCookieContent, expired);
+    }
+
+    private void setupInvalidSessionCookie(boolean rememberMe, boolean expired) throws Exception {
+        String sessionCookieContent = sessionCookieContent(rememberMe);
+        sessionCookieContent = sessionCookieContent.replace("123", "567");
+        setupCookie(sessionCookieContent, expired);    }
+
+    private void setupCookie(String sessionCookieContent, boolean expired) {
+        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+        when(cookie.getName()).thenReturn(CookieSupport.SESSION_COOKIE_NAME);
+        when(cookie.getValue()).thenReturn(sessionCookieContent);
+        if (expired) {
+            when(permissions.getSessionCookieTimeoutInSeconds()).thenReturn(-60L);
+        } else {
+            when(permissions.getSessionCookieTimeoutInSeconds()).thenReturn(60L);
+        }
+
+    }
+    private String sessionCookieContent(boolean rememberMe) throws Exception {
+        when(permissions.getUserId()).thenReturn(123);
+        String sk = "DePmxuT68l/bBqIeZzktCX/uvjmc7ALtVxaKJRCjuBU7DGiay6D7zIDDhGLE7LjY0Su/z865SKv4";
+        System.setProperty("sk", sk);
+        String cookieContent = Whitebox.invokeMethod(picsActionSupport, "sessionCookieContent", rememberMe, 0);
+        return URLEncoder.encode(cookieContent, "US-ASCII");
+    }
+
+    @Test
+    public void testLogAttempt_NullUserDoesNotPersistLog() throws Exception {
+        Whitebox.invokeMethod(picsActionSupport, "logCredentialLoginAttempt", (User) null);
+
+        verify(loginLogDAO, never()).save((UserLoginLog) any());
+    }
+
+    @Test
+    public void testLogAttempt_BigIpCookieIpGetsPersisted() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Cookie cookie1 = mock(Cookie.class);
+        when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+        when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+        when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
+
+        Whitebox.invokeMethod(picsActionSupport, "logCredentialLoginAttempt", user);
+        ArgumentCaptor<UserLoginLog> captor = ArgumentCaptor.forClass(UserLoginLog.class);
+
+        verify(loginLogDAO).save(captor.capture());
+
+        UserLoginLog log = captor.getValue();
+
+        assertThat(log.getTargetIP(), is(equalTo("74.205.45.70")));
+    }
+
+    @Test
+    public void testExtractTargetIpFromCookie() throws Exception {
+        System.setProperty("pics.env", "localhost");
+        Cookie cookie1 = mock(Cookie.class);
+        when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+        when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+        Cookie cookie2 = mock(Cookie.class);
+        when(cookie2.getName()).thenReturn("from");
+        when(cookie2.getValue()).thenReturn("/Home.action");
+
+        when(request.getCookies()).thenReturn(new Cookie[] { cookie1, cookie2 });
+
+        String targetIp = Whitebox.invokeMethod(picsActionSupport, "extractTargetIpFromCookie");
+
+        assertTrue("74.205.45.70".equals(targetIp));
     }
 }

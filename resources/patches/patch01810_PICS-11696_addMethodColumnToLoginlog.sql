@@ -1,0 +1,1 @@
+alter table loginlog add column loginMethod varchar(100) null;

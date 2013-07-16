@@ -2,15 +2,10 @@ package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -20,19 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.security.auth.login.AccountLockedException;
-import javax.security.auth.login.AccountNotFoundException;
-import javax.security.auth.login.FailedLoginException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.security.auth.login.*;
+import javax.servlet.http.*;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -41,20 +28,15 @@ import java.util.regex.Pattern;
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
 	private static final int ONE_SECOND = 1;
-	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
-			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
 
 	@Autowired
 	private LoginService loginService;
-	@Autowired
-	protected UserLoginLogDAO loginLogDAO;
-	@Autowired
+    @Autowired
 	protected PermissionBuilder permissionBuilder;
 
-	// used to inject mock permissions for testing
 	private User user;
 	private String email;
 	private String username;
@@ -65,7 +47,6 @@ public class LoginController extends PicsActionSupport {
 	private int sessionTimeout;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-	private static final int MAX_FAILED_ATTEMPTS = 6;
 
 	@Anonymous
 	@Override
@@ -196,7 +177,7 @@ public class LoginController extends PicsActionSupport {
 				// We're trying to login as another PICS user
 				// Double check they also have the Dev permission too
 				if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
-					logAttempt();
+					logSwitchToAttempt(user);
 					addActionError("You must be a PICS Software Developer to switch to another PICS user.");
 					return SUCCESS;
 				}
@@ -205,7 +186,7 @@ public class LoginController extends PicsActionSupport {
 
 		doSwitchToUser(switchToUser);
 		username = permissions.getUsername();
-		logAttempt();
+        logSwitchToAttempt(user);
 		return REDIRECT;
 	}
 
@@ -331,7 +312,7 @@ public class LoginController extends PicsActionSupport {
 		updateUserForSuccessfulLogin();
 
 		setBetaTestingCookie();
-		logAttempt();
+        logCredentialLoginAttempt(user);
 
 		if (permissions.belongsToGroups() || permissions.isContractor()) {
 			return setRedirectUrlPostLogin();
@@ -343,7 +324,7 @@ public class LoginController extends PicsActionSupport {
 
 	private boolean logAndMessageError(String error) throws Exception {
 		if (StringUtils.isNotEmpty(error)) {
-			logAttempt();
+            logCredentialLoginAttempt(user);
 			addActionError(error);
 			ActionContext.getContext().getSession().clear();
 			return true;
@@ -443,54 +424,7 @@ public class LoginController extends PicsActionSupport {
 		return userBetaTester;
 	}
 
-	private void logAttempt() throws Exception {
-		if (user == null) {
-			return;
-		}
-
-		UserLoginLog loginLog = new UserLoginLog();
-		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-		String serverName = getRequest().getLocalName();
-		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
-		loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
-		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
-		if (isLiveEnvironment() || isBetaEnvironment()) {
-			// Need computer name instead of www
-			serverName = InetAddress.getLocalHost().getHostName();
-		}
-
-		loginLog.setServerAddress(serverName);
-		loginLog.setUser(user);
-
-		String targetIp = extractTargetIpFromCookie();
-		if (!Strings.isEmpty(targetIp)) {
-			loginLog.setTargetIP(targetIp);
-		}
-
-		Permissions permissions = permissions();
-		loginLog.setSuccessful(permissions.isLoggedIn());
-		if (permissions.getAdminID() > 0) {
-			loginLog.setAdmin(new User(permissions.getAdminID()));
-		}
-
-		loginLogDAO.save(loginLog);
-	}
-
-	private String extractTargetIpFromCookie() {
-		List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
-				CookieSupport.TARGET_IP_COOKIE_NAME);
-		for (Cookie cookie : matchingCookies) {
-			Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
-			if (matcher.matches()) {
-				return matcher.group(1);
-			}
-		}
-		return "";
-	}
-
-
-	/* GETTER & SETTERS */
+    /* GETTER & SETTERS */
 	private HttpServletResponse getResponse() {
 		return ServletActionContext.getResponse();
 	}

@@ -619,6 +619,7 @@
 								</s:if>
 								<th><s:text name="global.Browser" /></th>
 								<th><s:text name="global.Notes" /></th>
+                                <th><s:text name="Login.Method" /></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -647,7 +648,12 @@
 											<s:text name="ProfileEdit.message.IncorrectPasswordAttempt" />
 										</s:if>
 									</td>
-								</tr>
+                                    <td>
+                                        <s:if test="loginMethod != null">
+                                            <s:text name="loginMethod.i18nKey"/>
+                                        </s:if>
+                                    </td>
+                                </tr>
 							</s:iterator>
 						</tbody>
 					</table>
