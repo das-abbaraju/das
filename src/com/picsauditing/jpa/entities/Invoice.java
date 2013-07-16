@@ -241,4 +241,11 @@ public class Invoice extends Transaction {
 		return this.totalCommissionEligibleFees;
 	}
 
+    @Transient
+    public BigDecimal getTaxlessSubTotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (InvoiceItem item : items)
+            if (!item.getInvoiceFee().isTax()) subtotal.add(item.getAmount());
+        return subtotal;
+    }
 }
