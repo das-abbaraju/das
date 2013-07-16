@@ -32,7 +32,9 @@
 	<div class="membership">
 		<section>
 			<table class="invoice" cellpadding="0" cellspacing="0" border="0">
-				<thead>
+				<tbody>
+					<%-- Membership Fees --%>
+
 					<tr>
 						<th class="annual-membership">
 							<s:text name="RegistrationMakePayment.AnnualMembership" />
@@ -41,17 +43,13 @@
 							<s:text name="RegistrationMakePayment.Price" />
 						</th>
 					</tr>
-				</thead>
-
-				<tbody>
-					<%-- Membership Fees --%>
 
 					<s:iterator value="invoice.items" status="stat">
 						<s:if test="invoiceFee.membership">
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
-									<a 
+									<a
 										href="javascript:;" 
 										class="help" 
 										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
@@ -78,7 +76,7 @@
 							<tr>
 								<td>
 									<s:property	value="invoiceFee.fee" />
-									<a 
+									<a
 										href="javascript:;" 
 										class="help" 
 										data-title="<s:text	name="%{invoiceFee.feeClass.i18nKey}" />" 
@@ -99,13 +97,37 @@
 						</s:if>
 					</s:iterator>
 
+					<%-- Import Fee being hard coded to toggle on/off --%>
+					<s:if test="contractor.eligibleForImportPQF
+									&& (!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free)">
+						<tr>
+							<td>
+								<s:property	value="importFee.fee" />
+								<a
+									href="javascript:;"
+									class="help"
+									data-title="<s:text	name="%{importFee.feeClass.i18nKey}" />"
+									data-content="<s:text name="%{importFee.feeClass.getI18nKey('help')}" />"
+								><img src="images/help-icon.png" /></a>
+
+								<%-- add import fee --%>
+								<s:form cssClass="data-import-form">
+									<s:submit method="addImportFee" cssClass="btn success" value="%{getText('button.Add')}" />
+								</s:form>
+							</td>
+							<td>
+								&nbsp;
+							</td>
+						</tr>
+					</s:if>
+
 					<%-- Taxes --%>
 
 					<s:if test="invoice.hasTax()">
 
 						<%-- Subtotal (i.e., pre-tax total) --%>
-						<s:set name="subtotal_label"><s:text name="RegistrationMakePayment.SubTotal" /></s:set>
-						<s:set name="subtotal_amount" value="invoice.totalWithoutTaxes" />
+						<s:set name="subtotal_label"><s:text name="RegistrationMakePayment.Subtotal" /></s:set>
+						<s:set name="subtotal_amount" value="invoice.taxlessSubtotal" />
 						<s:set name="taxes_label"><s:text name="RegistrationMakePayment.Taxes" /></s:set>
 
 						<tr class="total">
@@ -146,41 +168,17 @@
 						</s:iterator>
 					</s:if>
 
-					<%-- Import Fee being hard coded to toggle on/off --%>
-					<s:if test="contractor.eligibleForImportPQF 
-									&& (!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free)">
-						<tr>
-							<td>
-								<s:property	value="importFee.fee" />
-								<a 
-									href="javascript:;" 
-									class="help" 
-									data-title="<s:text	name="%{importFee.feeClass.i18nKey}" />" 
-									data-content="<s:text name="%{importFee.feeClass.getI18nKey('help')}" />"
-								><img src="images/help-icon.png" /></a>
-								
-								<%-- add import fee --%>
-								<s:form cssClass="data-import-form">
-									<s:submit method="addImportFee" cssClass="btn success" value="%{getText('button.Add')}" />
-								</s:form>
-							</td>
-							<td>
-								&nbsp;
-							</td>
-						</tr>
-					</s:if>
+					<%-- Grand Total --%>
+
+					<s:set name="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
+					<s:set name="total_amount"><s:property value="invoice.totalAmount" /></s:set>
+
+					<tr class="total">
+						<td colspan="2">
+							<span class="total">${total_label}:</span> ${total_amount} ${currency}
+						</td>
+					</tr>
 				</tbody>
-
-				<%-- Grand Total --%>
-
-				<s:set name="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
-				<s:set name="total_amount"><s:property value="invoice.totalAmount" /></s:set>
-
-				<tr class="total">
-					<td colspan="2">
-						<span class="total">${total_label}:</span> ${total_amount} ${currency}
-					</td>
-				</tr>
 	 		</table>
 	 		
 	 		<div class="policy">

@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -247,11 +248,13 @@ public class Invoice extends Transaction {
 		return this.totalCommissionEligibleFees;
 	}
 
-    @Transient
-    public BigDecimal getTaxlessSubTotal() {
-        BigDecimal subtotal = BigDecimal.ZERO;
-        for (InvoiceItem item : items)
-            if (!item.getInvoiceFee().isTax()) subtotal.add(item.getAmount());
-        return subtotal;
-    }
+	@Transient
+	public BigDecimal getTaxlessSubtotal() {
+		BigDecimal subtotal = BigDecimal.ZERO.setScale(2, RoundingMode.UP);
+		for (InvoiceItem item : items)
+			if (!item.getInvoiceFee().isTax()) {
+				subtotal = subtotal.add(item.getAmount());
+			}
+		return subtotal;
+	}
 }
