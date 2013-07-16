@@ -5,6 +5,7 @@ import static org.mockito.Matchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import java.util.TimeZone;
 import com.picsauditing.PICS.InvoiceService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -25,16 +27,6 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.PicsDateFormat;
 
@@ -94,6 +86,25 @@ public class ScheduleAuditTest extends PicsActionTest {
 
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0)).thenReturn(rescheduling);
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0)).thenReturn(expedite);
+	}
+
+	@Test
+	public void testCancelAudit() throws Exception {
+		when(conAudit.getScheduledDate()).thenReturn(new Date()); // within 48 hours
+		when(permissions.getTimezone()).thenReturn(TimeZone.getDefault());
+		when(permissions.getUserId()).thenReturn(941);
+		when(conAudit.getAuditor()).thenReturn(new User(941));
+		when(conAudit.getAuditType()).thenReturn(auditType);
+		when(auditType.getI18nKey(anyString())).thenReturn("ImplementationAudit");
+		when(contractor.getCountry()).thenReturn(country);
+		when(country.getCurrency()).thenReturn(Currency.USD);
+		when(country.getAmount(rescheduling)).thenReturn(new BigDecimal("199"));
+		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
+		when(invoiceService.saveInvoice(org.mockito.Matchers.any(Invoice.class))).thenReturn(new Invoice());
+
+		String strutsAction = scheduleAudit.cancelAudit();
+
+		assertThat(strutsAction, is(equalTo("edit")));
 	}
 
 	@Test(expected = NoRightsException.class)

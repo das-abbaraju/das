@@ -33,7 +33,16 @@
                 <s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param>
             </s:text>
         </h2>
-        
+
+        <s:if test="needsReschedulingFee">
+        <div class="alert">
+            <s:text name="ScheduleAudit.message.ReschedulingWarning">
+                <s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
+                <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
+            </s:text>
+        </div>
+        </s:if>
+
         <s:form cssClass="schedule-audit-form schedule-audit-edit-form %{#reschedule_fee_class}">
         	<br />
 	        <div>
