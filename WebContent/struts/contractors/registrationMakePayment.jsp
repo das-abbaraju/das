@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:set name="currency"><s:property value="invoice.currency.display"/></s:set>
+<s:set var="currency"><s:property value="invoice.currency.display"/></s:set>
 
 <div class="registration-header">
 	<section>
@@ -126,9 +126,9 @@
 					<s:if test="invoice.hasTax()">
 
 						<%-- Subtotal (i.e., pre-tax total) --%>
-						<s:set name="subtotal_label"><s:text name="RegistrationMakePayment.Subtotal" /></s:set>
-						<s:set name="subtotal_amount" value="invoice.taxlessSubtotal" />
-						<s:set name="taxes_label"><s:text name="RegistrationMakePayment.Taxes" /></s:set>
+						<s:set var="subtotal_label"><s:text name="RegistrationMakePayment.Subtotal" /></s:set>
+						<s:set var="subtotal_amount" value="invoice.taxlessSubtotal" />
+						<s:set var="taxes_label"><s:text name="RegistrationMakePayment.Taxes" /></s:set>
 
 						<tr class="total">
 							<td colspan="2">
@@ -147,8 +147,8 @@
 						<s:iterator value="invoice.items" status="stat">
 							<s:if test="invoiceFee.isTax()">
 
-								<s:set name="fee_name" value="invoiceFee.fee" />
-								<s:set name="fee_amount" value="amount" />
+								<s:set var="fee_name" value="invoiceFee.fee" />
+								<s:set var="fee_amount" value="amount" />
 
 								<tr>
 									<td>
@@ -170,8 +170,8 @@
 
 					<%-- Grand Total --%>
 
-					<s:set name="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
-					<s:set name="total_amount"><s:property value="invoice.totalAmount" /></s:set>
+					<s:set var="total_label"><s:text name="RegistrationMakePayment.Total" /></s:set>
+					<s:set var="total_amount"><s:property value="invoice.totalAmount" /></s:set>
 
 					<tr class="total">
 						<td colspan="2">
