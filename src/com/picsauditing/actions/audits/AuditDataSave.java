@@ -82,6 +82,11 @@ public class AuditDataSave extends AuditActionSupport {
 			auditID = auditData.getAudit().getId();
 			// question might not be fully reloaded with related records
 			auditData.setQuestion(questionDao.find(auditData.getQuestion().getId()));
+
+			if (conAudit == null) {
+				findConAudit();
+			}
+
 			/*
 			 * If we are reloading the question, we need to exit early to
 			 * prevent the object from saving.
@@ -154,17 +159,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditDataDAO.save(auditData);
 			auditDataDAO.refresh(auditData); // needed for PICS-11673
-
-			if (conAudit == null) {
-				findConAudit();
-			}
-
-			// TODO IS THIS NEEDED?
-			if (conAudit == null) {
-				addActionError(getText("Audit.error.AuditNotFound"));
-				return SUCCESS;
-			}
-			// END TODO
 
 			checkUniqueCode(conAudit);
 

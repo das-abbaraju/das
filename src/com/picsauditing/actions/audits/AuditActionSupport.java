@@ -62,6 +62,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected boolean showVerified = false;
 	protected boolean showCaoTable = true;
 	protected boolean showUploadRequirementsBanner = false;
+	private boolean refreshAudit = false;
 
 	protected ContractorAudit conAudit;
 
@@ -105,6 +106,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		else
 			professionalLabel = getText("Assignee." + conAudit.getAuditType().getAssigneeLabel());
 
+		calculateRefreshAudit();
+
 		setUploadRequirements();
 
 	}
@@ -116,6 +119,21 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (list.contains(conAudit.getAuditType().getId())) {
 			showUploadRequirementsBanner = true;
 		}
+	}
+
+	private void calculateRefreshAudit() {
+		if (conAudit.getAuditType().getWorkFlow().isUseStateForEdit())
+			refreshAudit = true;
+		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
+			refreshAudit = true;
+	}
+
+	public boolean isRefreshAudit() {
+		return refreshAudit;
+	}
+
+	public void setRefreshAudit(boolean refreshAudit) {
+		this.refreshAudit = refreshAudit;
 	}
 
 	public boolean isShowUploadRequirementsBanner() {

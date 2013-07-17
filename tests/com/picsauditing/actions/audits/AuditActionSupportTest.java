@@ -51,6 +51,12 @@ public class AuditActionSupportTest extends PicsTest {
 	Permissions permissions;
 	@Mock
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Mock
+	protected ContractorAudit conAudit;
+	@Mock
+	protected AuditType auditType;
+	@Mock
+	protected Workflow workflow;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,6 +79,45 @@ public class AuditActionSupportTest extends PicsTest {
 
 		PicsTestUtil.forceSetPrivateField(test, "auditEditModel", new AuditEditModel());
 
+	}
+
+	@Test
+	public void testCalculateRefreshAudit() throws Exception {
+		PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+		when(conAudit.getAuditType()).thenReturn(auditType);
+		when(auditType.getWorkFlow()).thenReturn(workflow);
+
+		// normal audit
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertFalse(test.isRefreshAudit());
+
+		// work state audit
+		when(workflow.isUseStateForEdit()).thenReturn(true);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertTrue(test.isRefreshAudit());
+
+		// policy nobody submitted
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(false);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertTrue(test.isRefreshAudit());
+
+		// policy someone submitted
+		when(workflow.isUseStateForEdit()).thenReturn(false);
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+		when(conAudit.hasCaoStatusAfter(AuditStatus.Incomplete)).thenReturn(true);
+		test.setRefreshAudit(false);
+		Whitebox.invokeMethod(test, "calculateRefreshAudit");
+		assertFalse(test.isRefreshAudit());
 	}
 
 	@Test
