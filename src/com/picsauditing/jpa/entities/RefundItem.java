@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 @Entity
 @DiscriminatorValue("C")
-public abstract class RefundItem extends TransactionItem {
+public class RefundItem extends TransactionItem {
 
     private InvoiceCreditMemo creditMemo;
     private InvoiceItem refundedItem;
