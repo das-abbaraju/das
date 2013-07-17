@@ -27,15 +27,20 @@ public class HtmlWriter {
             "<tr><td>";
     private final String HTML_FOOTER = "</table></td></tr></table></body></html>";
     private final String TABLE_STYLE = "border-spacing: 0; border-collapse: collapse; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px;";
-    private final String TH_STYLE = "background: #454545; border: #333; color: #ccc; font-weight: bold; padding: 4px 6px;";
+    private final String TH_STYLE = "background-color: #454545; border: 1px solid #454545; color: #ccc; font-weight: bold; padding: 4 0 0 5;";
 
-    private final String TD_BORDER_STYLE = "border: 1px solid #ccc; padding: 4px 6px; ";
+    private final String TD_BORDER_STYLE = "border: 1px solid #808080; color: #333; padding: 4 6; ";
     private final String TD_NO_TOP_BORDER_STYLE = "border-top: none; ";
     private final String TD_NO_BOTTOM_BORDER_STYLE = "border-bottom: none; ";
-    private final String TD_COMMON_BORDER_STYLE = TD_BORDER_STYLE + TD_NO_TOP_BORDER_STYLE + TD_NO_BOTTOM_BORDER_STYLE;
-    private final String TD_BACKGROUND_STYLE = "background: #f1f1f2; ";
+    private final String TD_BACKGROUND_STYLE = "background-color: #f1f1f2; ";
+    private final String TD_END_ROW_BACKGROUND_STYLE = "background-color: #eaeaea; ";
     private final String TD_TEXT_ALIGN_RIGHT_STYLE = "text-align: right; ";
     private final String TD_TEXT_ALIGN_CENTER_STYLE = "text-align: center; ";
+    private final String TD_COMMON_BORDER_STYLE = TD_BORDER_STYLE + TD_NO_TOP_BORDER_STYLE + TD_NO_BOTTOM_BORDER_STYLE;
+    private final String TD_END_STYLE = TD_BORDER_STYLE + TD_NO_TOP_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
+    private final String TD_END_ROW_STYLE = TD_END_STYLE + TD_END_ROW_BACKGROUND_STYLE;
+    private final String TD_END_COLUMN_STYLE = TD_END_STYLE + TD_NO_BOTTOM_BORDER_STYLE + TD_BACKGROUND_STYLE;
+    private final String TD_END_ROW_COLUMN_STYLE = TD_END_STYLE + TD_BACKGROUND_STYLE;
 
     private final int MAX_COLUMNS = 5;
     private final int MAX_ROWS = 100;
@@ -57,16 +62,22 @@ public class HtmlWriter {
     }
 
     private void createColumnHeader() {
+        String style = TH_STYLE;
         int countColumns = 0;
 
         html.append("<thead><tr>");
 
         // row number header is blank
-        addTH("");
+        addTH("", style);
 
         for (Column column : reportResults.getColumns()) {
+            style = TH_STYLE;
+            if (column.getDisplayType() == DisplayType.Number) {
+                style += TD_TEXT_ALIGN_RIGHT_STYLE;
+            }
+
             if (countColumns == MAX_COLUMNS) {
-                addTH("...");
+                addTH("...", style);
                 break;
             }
 
@@ -74,7 +85,7 @@ public class HtmlWriter {
             if (Strings.isEmpty(label)) {
                 label = column.getName();
             }
-            addTH(label);
+            addTH(label, style);
 
             countColumns++;
         }
@@ -87,14 +98,14 @@ public class HtmlWriter {
 
         for (ReportRow row : reportResults.getRows()) {
             boolean isOddRow = (countRows) % 2 == 0;
-            String endRowStyle = getEndRowStyle(reportResults.getRows().size());
             Integer columnSpan = createColumnSpan(row.getCells().size());
 
             if (countRows == MAX_ROWS) {
-                endRowStyle = StringUtils.remove(endRowStyle,TD_NO_BOTTOM_BORDER_STYLE);
                 html.append("<tr>");
-                addTD(endRowStyle,columnSpan.toString(),"...");
-                addTD(endRowStyle, "");
+
+                addTD(TD_END_ROW_STYLE,columnSpan.toString(),"...");
+                addTD(TD_END_ROW_COLUMN_STYLE, "");
+
                 html.append("</tr>");
                 break;
             }
@@ -107,7 +118,7 @@ public class HtmlWriter {
 
             for (Column column : reportResults.getColumns()) {
                 if (countColumns == MAX_COLUMNS) {
-                    addTD(getEndColumnStyle(endRowStyle),"");
+                    addTD(TD_END_COLUMN_STYLE,"");
                     break;
                 }
 
@@ -138,30 +149,10 @@ public class HtmlWriter {
         return style;
     }
 
-    private String getEndColumnStyle(String endRowStyle) {
-        if (endRowStyle != null)
-            return endRowStyle;
-        else
-            return TD_COMMON_BORDER_STYLE + TD_BACKGROUND_STYLE;
-    }
-
-    private String getEndRowStyle(int numberOfRows) {
-        String endRowStyle = null;
-
-        if (MAX_ROWS < numberOfRows) {
-            endRowStyle = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
-
-            boolean oddEndRow = (MAX_ROWS) % 2 == 0;
-            if (!oddEndRow)
-                endRowStyle += TD_BACKGROUND_STYLE;
-        }
-        return endRowStyle;
-    }
-
     private void addRowNumber(int currentRow) {
         boolean isOddRow = (currentRow) % 2 == 0;
 
-        String style = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_RIGHT_STYLE;
+        String style = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
         if (!isOddRow) {
             style += TD_BACKGROUND_STYLE;
         }
@@ -181,9 +172,9 @@ public class HtmlWriter {
         }
     }
 
-    private void addTH(String text) {
-        html.append("<th ");
-        html.append(addStyle(TH_STYLE) + ">");
+    private void addTH(String text, String style) {
+        html.append("<th  ");
+        html.append(addStyle(style) + ">");
         html.append(text);
         html.append("</th>");
     }
