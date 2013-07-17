@@ -59,7 +59,7 @@ public class CountrySubdivision implements Comparable<CountrySubdivision>, Seria
 
 	@Transient
 	public String getTwoLetterIsoCode() {
-		if (!StringUtils.isEmpty(getIsoCode()) && getIsoCode().charAt(2) == '-' && getIsoCode().length() == 5) {
+		if (!StringUtils.isEmpty(getIsoCode()) && getIsoCode().length() == 5 && getIsoCode().charAt(2) == '-') {
 			return getIsoCode().substring(3,5);
 		} else {
 			return getIsoCode();
