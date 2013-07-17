@@ -232,7 +232,7 @@
 										<s:property value="contractor.address" />
 										<br />
 										<s:property value="contractor.city" />,
-										<s:property value="contractor.countrySubdivision.isoCode" />
+										<s:property value="%{contractor.countrySubdivision.getTwoLetterIsoCode()}" />
 										<s:property	value="contractor.zip" />
 									</s:else>
                                     <s:if test="%{@com.picsauditing.util.Strings@isNotEmpty(contractor.vatId)}">

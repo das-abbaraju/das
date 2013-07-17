@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
@@ -54,6 +55,15 @@ public class CountrySubdivision implements Comparable<CountrySubdivision>, Seria
 
 	public void setIsoCode(String isoCode) {
 		this.isoCode = isoCode;
+	}
+
+	@Transient
+	public String getTwoLetterIsoCode() {
+		if (!StringUtils.isEmpty(getIsoCode()) && getIsoCode().charAt(2) == '-' && getIsoCode().length() == 5) {
+			return getIsoCode().substring(3,5);
+		} else {
+			return getIsoCode();
+		}
 	}
 
 	public String getEnglish() {
