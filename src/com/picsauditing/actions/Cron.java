@@ -20,6 +20,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -37,28 +38,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.FlagOverrideHistory;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
@@ -895,52 +874,59 @@ public class Cron extends PicsActionSupport {
 		// Get delinquent Invoices missing Late Fees
 		List<Invoice> invoicesMissingLateFees = invoiceDAO.findDelinquentInvoicesMissingLateFees();
 
+//        invoiceLoop:
 		for (Invoice i : invoicesMissingLateFees) {
-			boolean hasReactivation = false;
 
-			// Skip Reactivations
-			for (InvoiceItem ii : i.getItems()) {
-				if (ii.getInvoiceFee().isReactivation()) {
-					hasReactivation = true;
-				}
-			}
+//            for (CreditMemoAppliedToInvoice creditMemo : i.getCreditMemos())
+//                for (RefundItem item : creditMemo.getCreditMemo().getItems())
+//                    if (item.getInvoiceFee().getFeeClass().equals(FeeClass.LateFee))
+//                        continue invoiceLoop;
 
-			if (!hasReactivation) {
-				// Calculate Late Fee
-				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
-						.setScale(0, BigDecimal.ROUND_HALF_UP);
-				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1) {
-					lateFee = BigDecimal.valueOf(20);
-				}
+            if (invoiceHasReactivation(i)) continue;
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-						((ContractorAccount) i.getAccount()).getPayingFacilities());
-				InvoiceItem lateFeeItem = new InvoiceItem(fee);
-				lateFeeItem.setAmount(lateFee);
-				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
-				lateFeeItem.setInvoice(i);
-				lateFeeItem.setDescription("Assessed "
-						+ new SimpleDateFormat(PicsDateFormat.American).format(new Date())
-						+ " due to delinquent payment.");
+            // Calculate Late Fee
+            BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
+                    .setScale(0, BigDecimal.ROUND_HALF_UP);
+            if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1) {
+                lateFee = BigDecimal.valueOf(20);
+            }
 
-				// Add Late Fee to Invoice
-				i.getItems().add(lateFeeItem);
-				i.updateAmount();
-				i.updateAmountApplied();
-				AccountingSystemSynchronization.setToSynchronize(i);
+            InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
+                    ((ContractorAccount) i.getAccount()).getPayingFacilities());
+            InvoiceItem lateFeeItem = new InvoiceItem(fee);
+            lateFeeItem.setAmount(lateFee);
+            lateFeeItem.setAuditColumns(new User(User.SYSTEM));
+            lateFeeItem.setInvoice(i);
+            lateFeeItem.setDescription("Assessed "
+                    + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
+                    + " due to delinquent payment.");
 
-				i.setAuditColumns(new User(User.SYSTEM));
-				if (i.getAccount() instanceof ContractorAccount) {
-					((ContractorAccount) i.getAccount()).syncBalance();
-					invoiceItemDAO.save(i.getAccount());
-				}
-				invoiceItemDAO.save(lateFeeItem);
-				invoiceItemDAO.save(i);
-			}
-		}
+            // Add Late Fee to Invoice
+            i.getItems().add(lateFeeItem);
+            i.updateAmount();
+            i.updateAmountApplied();
+            AccountingSystemSynchronization.setToSynchronize(i);
+
+            i.setAuditColumns(new User(User.SYSTEM));
+            if (i.getAccount() instanceof ContractorAccount) {
+                ((ContractorAccount) i.getAccount()).syncBalance();
+                invoiceItemDAO.save(i.getAccount());
+            }
+            invoiceItemDAO.save(lateFeeItem);
+            invoiceItemDAO.save(i);
+        }
 	}
 
-	public void sendNoActionEmailToTrialAccounts() throws Exception {
+    private boolean invoiceHasReactivation(Invoice i) {
+        for (InvoiceItem ii : i.getItems()) {
+            if (ii.getInvoiceFee().isReactivation()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void sendNoActionEmailToTrialAccounts() throws Exception {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 
 		for (ContractorAccount cAccount : conList) {
