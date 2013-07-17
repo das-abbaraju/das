@@ -51,6 +51,7 @@
     <bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
     <bean id="CountrySubdivisionDAO" class="com.picsauditing.dao.CountrySubdivisionDAO"/>
     <bean id="CronDAO" class="com.picsauditing.dao.CronDAO"/>
+    <bean id="CreditMemoDAO" class="com.picsauditing.dao.CreditMemoDAO" />
     <bean id="EbixLoader" class="com.picsauditing.util.EbixLoader"/>
     <bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
     <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
