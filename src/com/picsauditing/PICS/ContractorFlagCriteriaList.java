@@ -34,7 +34,7 @@ public class ContractorFlagCriteriaList {
 		return categories;
 	}
 
-	public List<FlagCriteria> getCriteria(String category) {
+	public List<FlagCriteria> getCriteria(FlagCriteriaCategory category) {
 		return categoryMap.get(category);
 	}
 

@@ -1128,4 +1128,8 @@ public class ContractorDashboard extends ContractorActionSupport {
         profiler.debug("ContractorDashboard.getOperatorUsersWithPermission took " + stopwatch.getElapsedTime() + "ms");
         return result;
     }
+
+    public boolean shouldShowFlagCriteriaCategory(FlagCriteriaCategory category) {
+        return category != FlagCriteriaCategory.InsuranceCriteria;
+    }
 }
