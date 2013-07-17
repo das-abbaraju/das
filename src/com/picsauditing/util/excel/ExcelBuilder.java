@@ -13,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +58,13 @@ public class ExcelBuilder {
 
 	private void setColumnStyles(HSSFSheet sheet) {
 		HSSFFont font = createFont();
-		HSSFDataFormat df = workbook.createDataFormat();
 
 		short colCounter = 0;
 		for (ExcelColumn column : columns) {
 			HSSFCellStyle cellStyle = workbook.createCellStyle();
-			cellStyle.setDataFormat(df.getFormat(column.getCellType().getFormat()));
+            DataFormat df = workbook.getCreationHelper().createDataFormat();
+            String format = column.getCellType().getFormat();
+            cellStyle.setDataFormat(df.getFormat(format));
 			cellStyle.setFont(font);
 			sheet.setDefaultColumnStyle(colCounter, cellStyle);
 			colCounter++;
