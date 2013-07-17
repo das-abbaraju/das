@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
@@ -10,6 +11,7 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
+import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -82,11 +84,18 @@ public class AuditDataSave extends AuditActionSupport {
 			auditID = auditData.getAudit().getId();
 			// question might not be fully reloaded with related records
 			auditData.setQuestion(questionDao.find(auditData.getQuestion().getId()));
-
-			if (conAudit == null) {
-				findConAudit();
-			}
-
+             if (conAudit == null) {
+                try {
+                    findConAudit();
+                } catch (RecordNotFoundException e){
+                    addActionError(getText("Audit.error.AuditNotFound"));
+                    return SUCCESS;
+                }
+                catch (NoRightsException e) {
+                    addActionError(getText("Audit.error.AuditNotFound"));
+                    return SUCCESS;
+                }
+            }
 			/*
 			 * If we are reloading the question, we need to exit early to
 			 * prevent the object from saving.
@@ -345,6 +354,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private void changeAuditDataAnswer(AuditData newCopy) {
 		boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
 		boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
+
+        if (!isCanEditAudit()) {
+            return;
+        }
 
 		if (isAudit && !isAnnualUpdate) {
 			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
