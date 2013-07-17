@@ -16,7 +16,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -89,6 +91,8 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	protected String fax;
 	protected Double corruptionPerceptionIndex;
 	protected boolean proforma;
+	protected String picsEmail;
+	protected BusinessUnit businessUnit;
 
 	protected Currency currency = Currency.USD;
 
@@ -209,6 +213,24 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	public void setProforma(boolean proforma) {
 		this.proforma = proforma;
+	}
+
+	public String getPicsEmail() {
+		return picsEmail;
+	}
+
+	public void setPicsEmail(String picsEmail) {
+		this.picsEmail = picsEmail;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="businessUnitID")
+	public BusinessUnit getBusinessUnit() {
+		return businessUnit;
+	}
+
+	public void setBusinessUnit(BusinessUnit businessUnit) {
+		this.businessUnit = businessUnit;
 	}
 
 	@OneToMany(mappedBy = "country")
