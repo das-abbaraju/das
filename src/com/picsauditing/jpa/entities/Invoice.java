@@ -193,7 +193,7 @@ public class Invoice extends Transaction {
 		}
 
         for (CreditMemoAppliedToInvoice memo : creditMemos)
-            amountApplied.add(memo.getAmount());
+            amountApplied = amountApplied.add(memo.getAmount());
 
 		super.updateAmountApplied();
 	}
@@ -262,13 +262,13 @@ public class Invoice extends Transaction {
 		return this.totalCommissionEligibleFees;
 	}
 
-	@Transient
-	public BigDecimal getTaxlessSubtotal() {
-		BigDecimal subtotal = BigDecimal.ZERO.setScale(2, RoundingMode.UP);
-		for (InvoiceItem item : items)
-			if (!item.getInvoiceFee().isTax()) {
-				subtotal = subtotal.add(item.getAmount());
-			}
-		return subtotal;
-	}
+    @Transient
+    public BigDecimal getTaxlessSubTotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (InvoiceItem item : items)
+            if (!item.getInvoiceFee().isTax()) {
+                subtotal = item.getAmount().add(subtotal);
+            }
+        return subtotal;
+    }
 }
