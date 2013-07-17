@@ -303,25 +303,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		operator.getFlagCriteriaInherited();
 		// Filter out here?
 		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited(insurance);
-		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
+		List<FlagCriteriaOperator> valid = new ArrayList<>();
 
 		// Sort by category, description
-		Collections.sort(inheritedCriteria, new Comparator<FlagCriteriaOperator>() {
-			public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
-				FlagCriteria f1 = o1.getCriteria();
-				FlagCriteria f2 = o2.getCriteria();
-
-				// Display order matches, sort by category
-				if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
-					// If category matches, sort by label
-					if (f1.getCategory().equals(f2.getCategory())) {
-						return f1.getLabel().compareTo(f2.getLabel());
-					} else
-						return f1.getCategory().compareTo(f2.getCategory());
-				} else
-					return f1.getDisplayOrder() - f2.getDisplayOrder();
-			}
-		});
+		Collections.sort(inheritedCriteria, FlagCriteriaOperator.COMPARATOR);
 
 		for (FlagCriteriaOperator inherited : inheritedCriteria) {
 			FlagCriteria criteria = inherited.getCriteria();

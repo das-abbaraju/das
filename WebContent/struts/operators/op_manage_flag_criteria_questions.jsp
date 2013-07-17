@@ -73,7 +73,7 @@
 				</s:else>
 			</td>
 			<td>
-				<s:select list="operator.tags" name="operatorTag" listKey="id" listValue="tag" headerKey="0" 
+				<s:select list="operator.inheritedTags" name="operatorTag" listKey="id" listValue="tag" headerKey="0"
 					headerValue="- %{getText('OperatorTag')} -" />
 			</td>
 		</tr>

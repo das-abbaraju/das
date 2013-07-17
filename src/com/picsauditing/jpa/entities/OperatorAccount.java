@@ -485,6 +485,22 @@ public class OperatorAccount extends Account {
 		return tags;
 	}
 
+    @Transient
+    public List<OperatorTag> getInheritedTags() {
+        List<OperatorTag> tags = new ArrayList<>();
+        tags.addAll(this.getTags());
+
+        for (OperatorAccount parent: this.getParentOperators()) {
+            for (OperatorTag tag: parent.getTags()) {
+                if (tag.isInheritable()) {
+                    tags.add(tag);
+                }
+            }
+        }
+
+        return tags;
+    }
+
 	public void setTags(List<OperatorTag> value) {
 		this.tags = value;
 	}
