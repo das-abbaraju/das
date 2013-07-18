@@ -28,19 +28,22 @@ public class HtmlWriter {
     private final String HTML_FOOTER = "</table></td></tr></table></body></html>";
     private final String TABLE_STYLE = "border-spacing: 0; border-collapse: collapse; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px;";
     private final String TH_STYLE = "background-color: #454545; border: 1px solid #454545; color: #ccc; font-weight: bold; padding: 4px 0px 0px 5px;";
+    private final String TH_END_COLUMN_WIDTH_STYLE = "width: 29px; ";
 
     private final String TD_BORDER_STYLE = "border: 1px solid #808080; color: #333; padding: 4px 6px; ";
     private final String TD_NO_TOP_BORDER_STYLE = "border-top: none; ";
     private final String TD_NO_BOTTOM_BORDER_STYLE = "border-bottom: none; ";
     private final String TD_BACKGROUND_STYLE = "background-color: #f1f1f2; ";
     private final String TD_END_ROW_BACKGROUND_STYLE = "background-color: #eaeaea; ";
+    private final String TD_TEXT_ALIGN_LEFT_STYLE = "text-align: left; ";
     private final String TD_TEXT_ALIGN_RIGHT_STYLE = "text-align: right; ";
     private final String TD_TEXT_ALIGN_CENTER_STYLE = "text-align: center; ";
     private final String TD_COMMON_BORDER_STYLE = TD_BORDER_STYLE + TD_NO_TOP_BORDER_STYLE + TD_NO_BOTTOM_BORDER_STYLE;
-    private final String TD_END_STYLE = TD_BORDER_STYLE + TD_NO_TOP_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
+    private final String TD_END_STYLE = TD_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
+    private final String TD_END_NO_TOP_STYLE = TD_END_STYLE + TD_NO_TOP_BORDER_STYLE;
     private final String TD_END_ROW_STYLE = TD_END_STYLE + TD_END_ROW_BACKGROUND_STYLE;
-    private final String TD_END_COLUMN_STYLE = TD_END_STYLE + TD_NO_BOTTOM_BORDER_STYLE + TD_BACKGROUND_STYLE;
-    private final String TD_END_ROW_COLUMN_STYLE = TD_END_STYLE + TD_BACKGROUND_STYLE;
+    private final String TD_END_COLUMN_STYLE = TD_END_NO_TOP_STYLE + TD_NO_BOTTOM_BORDER_STYLE + TD_BACKGROUND_STYLE;
+    private final String TD_END_ROW_COLUMN_STYLE = TD_END_NO_TOP_STYLE + TD_BACKGROUND_STYLE;
 
     private final int MAX_COLUMNS = 5;
     private final int MAX_ROWS = 100;
@@ -75,9 +78,12 @@ public class HtmlWriter {
             if (column.getDisplayType() == DisplayType.Number) {
                 style += TD_TEXT_ALIGN_RIGHT_STYLE;
             }
+            else
+                style += TD_TEXT_ALIGN_LEFT_STYLE;
 
             if (countColumns == MAX_COLUMNS) {
-                addTH("...", TH_STYLE);
+                String endColumnHeaderStyle = TH_STYLE + TD_TEXT_ALIGN_CENTER_STYLE + TH_END_COLUMN_WIDTH_STYLE;
+                addTH("...", endColumnHeaderStyle);
                 break;
             }
 
@@ -145,6 +151,8 @@ public class HtmlWriter {
 
         if (displayType == DisplayType.Number)
             style += TD_TEXT_ALIGN_RIGHT_STYLE;
+        else
+            style += TD_TEXT_ALIGN_LEFT_STYLE;
 
         return style;
     }
@@ -152,7 +160,7 @@ public class HtmlWriter {
     private void addRowNumber(int currentRow) {
         boolean isOddRow = (currentRow) % 2 == 0;
 
-        String style = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_CENTER_STYLE;
+        String style = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_RIGHT_STYLE;
         if (!isOddRow) {
             style += TD_BACKGROUND_STYLE;
         }
