@@ -232,6 +232,12 @@ AuditTypeID
 AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeRenewable
+CemexPostEvalPerformanceRecommendationAnswer
+CemexPostEvalPerformanceRecommendationComment
+CemexPostEvalSafetyRecommendationAnswer
+CemexPostEvalSafetyRecommendationComment
+CemexPostEvalSiteAnswer
+CemexPostEvalSiteComment
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
@@ -256,7 +262,6 @@ PreviousAuditScore
 PreviousAuditTypeName
 SafetyManualAnswer
 SafetyManualComment
-SafetyManualDateVerified
 TrirAnswer
 
 Model: ContractorFees
