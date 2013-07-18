@@ -19,6 +19,9 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String Emr = "Emr";
     public static final String Trir = "Trir";
     public static final String PreviousAudit = "PreviousAudit";
+    public static final String CemexPostEvalSafetyRecommendation = "CemexSafetyRecommendation";
+    public static final String CemexPostEvalPerformanceRecommendation = "CemexPerformanceRecommendation";
+    public static final String CemexPostEvalSite = "CemexPostEvalSite";
 
 	/**
 	 * This is here ONLY for use when the audit type only has a single cao such
@@ -101,6 +104,21 @@ public class ContractorAuditTable extends AbstractTable {
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
         trir.setCategory(FieldCategory.DocumentsAndAudits);
         trir.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey cemexPostEvalSafetyRecommendation = addOptionalKey(new ReportForeignKey(CemexPostEvalSafetyRecommendation, new AuditDataTable(),
+                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 14719")));
+        cemexPostEvalSafetyRecommendation.setCategory(FieldCategory.DocumentsAndAudits);
+        cemexPostEvalSafetyRecommendation.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey cemexPostEvalPerformanceRecommendation = addOptionalKey(new ReportForeignKey(CemexPostEvalPerformanceRecommendation, new AuditDataTable(),
+                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 14720")));
+        cemexPostEvalPerformanceRecommendation.setCategory(FieldCategory.DocumentsAndAudits);
+        cemexPostEvalPerformanceRecommendation.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey cemexPostEvalSite = addOptionalKey(new ReportForeignKey(CemexPostEvalSite, new AuditDataTable(),
+                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 17071")));
+        cemexPostEvalSite.setCategory(FieldCategory.DocumentsAndAudits);
+        cemexPostEvalSite.setMinimumImportance(FieldImportance.Required);
 
     }
 }

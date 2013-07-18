@@ -80,6 +80,15 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec emr = conAudit.join(ContractorAuditTable.Emr);
         emr.alias = "Emr";
 
+        ModelSpec cemexPostEvalSafetyRecommendation = conAudit.join(ContractorAuditTable.CemexPostEvalSafetyRecommendation);
+        cemexPostEvalSafetyRecommendation.alias = "CemexPostEvalSafetyRecommendation";
+
+        ModelSpec cemexPostEvalPerformanceRecommendation = conAudit.join(ContractorAuditTable.CemexPostEvalPerformanceRecommendation);
+        cemexPostEvalPerformanceRecommendation.alias = "CemexPostEvalPerformanceRecommendation";
+
+        ModelSpec cemexPostEvalSite = conAudit.join(ContractorAuditTable.CemexPostEvalSite);
+        cemexPostEvalSite.alias = "CemexPostEvalSite";
+
         return spec;
 	}
 
