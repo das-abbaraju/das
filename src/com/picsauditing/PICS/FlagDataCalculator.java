@@ -472,10 +472,11 @@ public class FlagDataCalculator {
                     if (opCriteria.getOperator().isOrIsDescendantOf(cao.getOperator().getId()) && cao.isVisible()) {
                         return true;
                     }
+	            return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean isStatisticValidForOperator(OperatorAccount operator, ContractorAccount con) {
