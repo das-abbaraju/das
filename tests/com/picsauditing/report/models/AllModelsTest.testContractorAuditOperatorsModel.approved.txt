@@ -42,6 +42,7 @@ CemexPostEvalSafetyRecommendationAnswer
 CemexPostEvalSafetyRecommendationComment
 CemexPostEvalSiteAnswer
 CemexPostEvalSiteComment
+ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorBalance

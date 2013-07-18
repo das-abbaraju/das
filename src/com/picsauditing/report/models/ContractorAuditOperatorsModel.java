@@ -145,6 +145,15 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
 		contractorsRequiringAnnualUpdateEmail.requirePermission(OpPerms.DevelopmentEnvironment);
 		fields.put(CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL.toUpperCase(), contractorsRequiringAnnualUpdateEmail);
 
-		return fields;
+        Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
+        clientSite.setVisible(false);
+        clientSite.setPrefixValue("SELECT co.subID " +
+                "FROM generalcontractors co " +
+                "WHERE co.genID IN ");
+        clientSite.setSuffixValue("");
+        clientSite.setCategory(FieldCategory.ReportingClientSite);
+        fields.put(clientSite.getName().toUpperCase(), clientSite);
+
+        return fields;
 	}
 }
