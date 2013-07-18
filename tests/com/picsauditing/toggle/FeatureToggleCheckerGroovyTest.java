@@ -10,6 +10,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.picsauditing.jpa.entities.*;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
@@ -30,10 +32,6 @@ import org.slf4j.Logger;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 
 public class FeatureToggleCheckerGroovyTest {
 	private FeatureToggleCheckerGroovy featureToggleCheckerGroovy;
@@ -276,7 +274,18 @@ public class FeatureToggleCheckerGroovyTest {
 		assertThat((Script) element.getObjectValue(), is(equalTo(script)));
 	}
 
-	private void trueScript(String scriptBody) throws Exception {
+    @Test
+    public void testGroovyScript_PermissionsAccountStatus() throws Exception {
+        String scriptBody = "permissions.accountStatus == com.picsauditing.jpa.entities.AccountStatus.Demo";
+
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Demo);
+        trueScript(scriptBody);
+
+        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
+        falseScript(scriptBody);
+    }
+
+    private void trueScript(String scriptBody) throws Exception {
 		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", scriptBody);
 		Object result = script.run();
 		assertTrue((Boolean) result);
