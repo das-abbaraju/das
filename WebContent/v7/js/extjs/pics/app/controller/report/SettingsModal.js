@@ -17,6 +17,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'shareSetting',
         selector: 'reportsharesetting'
     }, {
+        ref: 'exportSetting',
+        selector: 'reportexportsetting'
+    }, {
         ref: 'reportInfoSetting',
         selector: 'reportinfosetting'
     }, {
@@ -36,6 +39,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.control({
             'reportsettingsmodal': {
                 beforerender: this.beforeSettingsModalRender,
+                beforeshow: this.beforeSettingsModalShow,
                 close: this.closeSettingsModal
             },
 
@@ -58,10 +62,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reporteditsetting': {
                 afterrender: this.afterEditSettingRender
-            },
-
-            'reportsettingsmodal reportexportsetting': {
-                afterrender: this.afterExportSettingRender
             },
 
             'reportsettingsmodal reporteditsetting button[action=edit]':  {
@@ -123,13 +123,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    afterExportSettingRender: function (cmp, eOpts) {
-        cmp.update({
-            record_count: this.getFormattedRecordCount(),
-            page_count: '50'
-        });
-    },
-
     beforeSettingsModalRender: function (cmp, eOpts) {
             var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -140,7 +133,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
             edit_setting_form.loadRecord(report);
         }
     },
-    
+
+    beforeSettingsModalShow: function (cmp, eOpts) {
+        var export_setting_view = this.getExportSetting();
+
+        export_setting_view.update({
+            record_count: this.getFormattedRecordCount()
+        });
+    },
+
     closeSettingsModal: function (cmp, eOpts) {
         var settings_modal_tabs_view = this.getSettingsModalTabs(),
             edit_setting_view = this.getEditSetting(),
