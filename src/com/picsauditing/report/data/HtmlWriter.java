@@ -22,14 +22,14 @@ public class HtmlWriter {
 
     private final String HTML_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
             "<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-            "<body style=\"width: 100%; margin: 0; padding: 0;\">" +
-            "<table style=\"width: 100%; padding: 0; border-spacing: 0; border: 0; width:100%; line-height: 100%;\">" +
+            "<body style=\"width: 100%; margin: 0; padding: 0px;\">" +
+            "<table style=\"width: 100%; padding: 0px; border-spacing: 0; border: 0; width:100%; line-height: 100%;\">" +
             "<tr><td>";
     private final String HTML_FOOTER = "</table></td></tr></table></body></html>";
     private final String TABLE_STYLE = "border-spacing: 0; border-collapse: collapse; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px;";
-    private final String TH_STYLE = "background-color: #454545; border: 1px solid #454545; color: #ccc; font-weight: bold; padding: 4 0 0 5;";
+    private final String TH_STYLE = "background-color: #454545; border: 1px solid #454545; color: #ccc; font-weight: bold; padding: 4px 0px 0px 5px;";
 
-    private final String TD_BORDER_STYLE = "border: 1px solid #808080; color: #333; padding: 4 6; ";
+    private final String TD_BORDER_STYLE = "border: 1px solid #808080; color: #333; padding: 4px 6px; ";
     private final String TD_NO_TOP_BORDER_STYLE = "border-top: none; ";
     private final String TD_NO_BOTTOM_BORDER_STYLE = "border-bottom: none; ";
     private final String TD_BACKGROUND_STYLE = "background-color: #f1f1f2; ";
@@ -77,7 +77,7 @@ public class HtmlWriter {
             }
 
             if (countColumns == MAX_COLUMNS) {
-                addTH("...", style);
+                addTH("...", TH_STYLE);
                 break;
             }
 
