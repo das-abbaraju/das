@@ -468,11 +468,15 @@ public class FlagDataCalculator {
     private boolean auditIsApplicableForThisOperator(FlagCriteriaOperator opCriteria, FlagCriteria criteria, ContractorAccount con) {
         for (ContractorAudit ca : con.getAudits()) {
             if (criteria.getQuestion() != null && ca.getAuditType().equals(criteria.getQuestion().getAuditType()) && !ca.isExpired()) {
-                for (ContractorAuditOperator cao: ca.getOperators()) {
-                    if (opCriteria.getOperator().isOrIsDescendantOf(cao.getOperator().getId()) && cao.isVisible()) {
-                        return true;
-                    }
-	            return false;
+	            for (ContractorAuditOperator cao : ca.getOperators()) {
+		            if (cao.isVisible()) {
+			            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				            if (caop.getOperator().isOrIsDescendantOf(opCriteria.getOperator().getId())) {
+					            return true;
+				            }
+			            }
+		            }
+		            return false;
                 }
             }
         }
