@@ -239,6 +239,10 @@ public class Filter extends ReportElement {
 			return false;
 		}
 
+        if (field.getFilterType() == FilterType.Boolean && value.equals("all")) {
+            return false;
+        }
+
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
 
