@@ -9710,11 +9710,6 @@ textarea.x-form-invalid-field {
   opacity: 0.6;
   width: 11px; }
 
-/* line 3, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_checkbox.scss */
-.x-form-checkbox,
-.x-form-radio {
-  background-image: url(../../app/resources/images/form/checkbox.gif); }
-
 /* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_loadmask.scss */
 .x-css-shadow {
   -webkit-box-shadow: #333333 0px 0px 3px !important;

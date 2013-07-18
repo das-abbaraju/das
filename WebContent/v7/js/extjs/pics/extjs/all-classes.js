@@ -82770,11 +82770,25 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
 
     createValueField: function () {
         return {
-            xtype: 'checkbox',
-            boxLabel: 'True',
-            inputValue: true,
-            name: 'value',
-            uncheckedValue: false
+            xtype      : 'radiogroup',
+            defaults: {
+                flex: 1,
+                name: 'value',
+                margin: '0 10 0 0'
+            },
+            layout: 'hbox',
+            items: [
+                {
+                    boxLabel  : 'Yes',
+                    inputValue: 'true',
+                }, {
+                    boxLabel  : 'No',
+                    inputValue: 'false'
+                }, {
+                    boxLabel  : 'All',
+                    inputValue: 'all'
+                }
+            ]
         };
     }
 });
