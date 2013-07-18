@@ -452,6 +452,13 @@ public class InputValidatorTest {
 		assertEquals(InputValidator.NO_ERROR, result);
 	}
 
+	@Test
+	public void testValidateLastName_OneCharacterLastNameIsValid() {
+		String errorMessageKey = inputValidator.validateLastName("x");
+
+		assertEquals(InputValidator.NO_ERROR, errorMessageKey);
+	}
+
 	private Date buildValidDate() {
 		Date date = new Date();
 		date.setDate(1);

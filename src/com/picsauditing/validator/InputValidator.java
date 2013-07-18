@@ -231,14 +231,9 @@ public class InputValidator {
 		return NO_ERROR;
 	}
 
-	// TODO: Cleanup
 	public String validateLastName(String name) {
 		if (StringUtils.isEmpty(name)) {
 			return REQUIRED_KEY;
-		}
-
-		if (name.length() < MIN_STRING_LENGTH_2) {
-			return MIN_2_CHARS_KEY;
 		}
 
 		if (name.length() > MAX_STRING_LENGTH_50) {
