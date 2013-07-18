@@ -20,6 +20,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'exportSetting',
         selector: 'reportexportsetting'
     }, {
+        ref: 'subscribeSetting',
+        selector: 'reportsubscribesetting'
+    }, {
         ref: 'reportInfoSetting',
         selector: 'reportinfosetting'
     }, {
