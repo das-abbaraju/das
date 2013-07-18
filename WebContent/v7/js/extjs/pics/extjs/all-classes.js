@@ -83359,6 +83359,27 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         this.items.get('message').update(values);
     }
 });
+Ext.define('PICS.view.report.settings.SubscribeSetting', {
+    extend: 'Ext.form.Panel',
+    alias: 'widget.reportsubscribesetting',
+
+    border: 0,
+    id: 'report_subscribe',
+    items: [{
+            xtype: 'component',
+            html:  new Ext.Template([
+                '<p class="coming-soon">' + 'Coming Soon' /*PICS.text('Report.execute.editSetting.noEditTitle')*/ + '</p>'
+            ])
+    }],
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
+
+    // custom config
+    modal_title: 'Report Subscriptions', //PICS.text('Report.execute.subscribeSetting.title'),
+    title: '<i class="icon-envelope icon-large"></i>' + 'Subscribe' //PICS.text('Report.execute.subscribeSetting.tabName')
+});
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
@@ -92993,7 +93014,8 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         'PICS.view.report.settings.CopySetting',
         'PICS.view.report.settings.EditSetting',
         'PICS.view.report.settings.ExportSetting',
-        'PICS.view.report.settings.share.ShareSetting'
+        'PICS.view.report.settings.share.ShareSetting',
+        'PICS.view.report.settings.SubscribeSetting'
     ],
 
     border: false,
@@ -93005,6 +93027,8 @@ Ext.define('PICS.view.report.settings.SettingsModalTabs', {
         xtype: 'reportsharesetting'
     }, {
         xtype: 'reportexportsetting'
+    }, {
+        xtype: 'reportsubscribesetting'
     }],
     tabBar: {
         border: false,
@@ -98706,6 +98730,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'exportSetting',
         selector: 'reportexportsetting'
+    }, {
+        ref: 'subscribeSetting',
+        selector: 'reportsubscribesetting'
     }, {
         ref: 'reportInfoSetting',
         selector: 'reportinfosetting'
