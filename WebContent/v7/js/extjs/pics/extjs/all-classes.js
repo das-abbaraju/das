@@ -83320,7 +83320,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
+        text : '<i class="icon-print icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
         cls: 'default print',
         id: 'print-button',
         tooltip: PICS.text('Report.execute.exportSetting.tooltipPreview'),
