@@ -1,6 +1,7 @@
 package com.picsauditing.report.data;
 
 import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.SqlFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,9 @@ public class ReportDataConverterForExtJS extends ReportDataConverter {
         }
 
         FieldType type = cell.getColumn().getField().getType();
+        if (cell.getColumn().getSqlFunction() == SqlFunction.Date && type == FieldType.DateTime) {
+            type = FieldType.Date;
+        }
 
         Object result = convertValueBasedOnCellColumn(cell, false);
         if (result == null) {
