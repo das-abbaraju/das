@@ -83368,7 +83368,7 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     items: [{
             xtype: 'component',
             html:  new Ext.Template([
-                '<p class="coming-soon">' + 'Coming Soon' /*PICS.text('Report.execute.editSetting.noEditTitle')*/ + '</p>'
+                '<p class="coming-soon">' + PICS.text('Report.execute.subscribeSetting.ComingSoon') + '</p>'
             ])
     }],
     layout: {
@@ -83377,8 +83377,8 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     },
 
     // custom config
-    modal_title: 'Report Subscriptions', //PICS.text('Report.execute.subscribeSetting.title'),
-    title: '<i class="icon-envelope icon-large"></i>' + 'Subscribe' //PICS.text('Report.execute.subscribeSetting.tabName')
+    modal_title: PICS.text('Report.execute.subscribeSetting.title'),
+    title: '<i class="icon-envelope icon-large"></i>' + PICS.text('Report.execute.subscribeSetting.tabName')
 });
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
