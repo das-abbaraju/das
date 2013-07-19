@@ -83342,7 +83342,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                'All {record_count} rows will be exported.',
+                PICS.text('Report.execute.exportSetting.exportMessage', '{record_count}'),
             '</p>'
         ]),
         margin: '20 0 0 0'
