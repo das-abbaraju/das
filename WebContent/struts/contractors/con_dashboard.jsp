@@ -196,9 +196,7 @@
 </s:if>
 
 <s:if test="co != null">
-    <s:if test="!permissions.contractor" >
 	    <s:include value="_con-dashboard-message.jsp"/>
-    </s:if>
 
 	<div class="co_flag">
 		<s:url action="ContractorFlag" var="contractor_flag">

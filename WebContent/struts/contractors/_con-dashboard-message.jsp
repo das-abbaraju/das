@@ -28,11 +28,6 @@
                 name="ContractorView.ContractorDashboard.NotApproved"/> <s:property
                 value="%{co.operatorAccount.name}"/>.
         </p>
-        <p>
-            <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
-                <s:param>${picsRepresentativeForOperator.name}</s:param>
-            </s:text>
-        </p>
     </div>
 </s:elseif>
 
@@ -137,12 +132,6 @@
             <s:property value="contractor.name"/> <s:text
                 name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
                 value="%{co.operatorAccount.name}"/>.
-        </p>
-
-        <p>
-            <s:text name="ContractorView.ContractorDashboard.PICSManagerContact">
-                <s:param>${picsRepresentativeForOperator.name}</s:param>
-            </s:text>
         </p>
     </div>
 </s:elseif>
