@@ -63,6 +63,7 @@ public class ReportService {
 	public ReportPreferencesService reportPreferencesService;
 
 	private I18nCache i18nCache;
+    private static final int EXPORT_LIMIT = 10000;
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
@@ -95,6 +96,7 @@ public class ReportService {
 		}
 
 		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
+        responseJson.put(ReportJson.REPORT_EXPORT_LIMIT, EXPORT_LIMIT);
 
 		return responseJson;
 	}
@@ -349,7 +351,7 @@ public class ReportService {
 	public ReportResults buildReportResultsForPrinting(ReportContext reportContext, Report report)
 			throws ReportValidationException, PicsSqlException {
 		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
-        sql.setLimit(10000);
+        sql.setLimit(EXPORT_LIMIT);
 		List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 		ReportResults reportResults = prepareReportForPrinting(report, reportContext, queryResults);
 

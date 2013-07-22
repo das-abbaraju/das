@@ -17,6 +17,7 @@ public class ReportJson {
 	public static final String REPORT_MODEL_TYPE = "type";
 	public static final String REPORT_NAME = "name";
 	public static final String REPORT_DESCRIPTION = "description";
+    public static final String REPORT_EXPORT_LIMIT = "export_limit";
 
 	public static final String REPORT_FILTER_EXPRESSION = "filter_expression";
 	public static final String REPORT_EDITABLE = "is_editable";
