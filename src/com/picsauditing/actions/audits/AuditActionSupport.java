@@ -879,6 +879,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return true;
 		}
 
+		if (permissions.isAdmin()) {
+			return true;
+		}
 		/*
 		 * Contractors are only allowed to edit the limits and policy
 		 * information BEFORE the policy is submitted. Once the policy is
@@ -896,6 +899,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 
+		// check policy category fro cao after incomplete
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+		for (ContractorAuditOperator cao:conAudit.getOperatorsVisible()) {
+			setCategoryBuilderToSpecificCao(builder, cao);
+			if (builder.isCategoryApplicable(category, cao) && cao.getStatus().after(AuditStatus.Incomplete)) {
+					return false;
+			}
+		}
 		return true;
 	}
 
