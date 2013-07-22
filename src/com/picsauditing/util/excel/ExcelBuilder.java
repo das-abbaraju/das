@@ -26,6 +26,7 @@ public class ExcelBuilder {
 	private HSSFWorkbook workbook = new HSSFWorkbook();;
 	private List<ExcelColumn> columns = new ArrayList<ExcelColumn>();
 	private static short FONT_SIZE = 12;
+    private static final int MAX_ROWS = 10000;
 
 	private static final Logger logger = LoggerFactory.getLogger(ExcelBuilder.class);
 
@@ -106,6 +107,10 @@ public class ExcelBuilder {
 	private void buildRows(HSSFSheet sheet, ReportResults data) {
 		int rowCounter = 1;
 		for (ReportRow row : data.getRows()) {
+            if (rowCounter == MAX_ROWS) {
+                break;
+            }
+
 			HSSFRow r = sheet.createRow(rowCounter++);
 			buildRow(row, r);
 		}
