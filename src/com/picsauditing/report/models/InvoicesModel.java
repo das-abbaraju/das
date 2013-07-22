@@ -39,7 +39,7 @@ public class InvoicesModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 
 		Field accountName = fields.get("AccountName".toUpperCase());
-		accountName.setUrl("ContractorView.action?id={AccountID}");
+		accountName.setUrl("BillingDetail.action?id={AccountID}");
 
 		return fields;
 	}

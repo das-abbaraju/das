@@ -10,6 +10,7 @@ AccountStatus
 AccountTimezone
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorCcOnFile
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorFeeCurrentAmount
