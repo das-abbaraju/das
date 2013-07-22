@@ -349,6 +349,7 @@ public class ReportService {
 	public ReportResults buildReportResultsForPrinting(ReportContext reportContext, Report report)
 			throws ReportValidationException, PicsSqlException {
 		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+        sql.setLimit(10000);
 		List<BasicDynaBean> queryResults = runQuery(sql, new JSONObject());
 		ReportResults reportResults = prepareReportForPrinting(report, reportContext, queryResults);
 

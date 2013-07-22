@@ -98959,6 +98959,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             data_table_store = data_table_view.getStore(),
             record_count = data_table_store.getTotalCount();
 
+        if (record_count > 10000) {
+            record_count = 10000;
+        }
+
         return Ext.util.Format.number(record_count, '0,000');
     },
 
