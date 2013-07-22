@@ -339,7 +339,7 @@
 									</s:form>
 								</s:if>
 								<s:else>
-									<div id="override" style="display: none">
+									<div id="override">
 										<s:form id="form_override" enctype="multipart/form-data" method="POST">
 											<s:hidden name="id" />
 											<s:hidden name="opID" />
@@ -355,11 +355,12 @@
 														<ul class="radio inline">
 															<s:iterator value="unusedCoFlag" var="flag">
 																<s:set name="flagcolor" value="#flag.toLowerCase()" />
+																<s:set name="hovertext" value="getText('FlagColor.' + #flag)" />
 
 																<li>
 																	<input type="radio" name="forceFlag" id="forceFlag${flag}" value="${flag}" />
 																	<label for="forceFlag${flag}">
-																		<img src= "images/icon_${flagcolor}FlagBig.gif" />
+																		<img title="${hovertext}" src="images/icon_${flagcolor}FlagBig.gif" />
 																	</label>
 																</li>
 															</s:iterator>
