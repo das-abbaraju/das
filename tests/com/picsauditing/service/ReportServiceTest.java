@@ -125,7 +125,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 
 		JSONObject responseJson = reportService.buildJsonResponse(reportContext);
 
-		assertEquals(2, responseJson.size());
+		assertEquals(3, responseJson.size());
 
 		JSONObject resultsJson = (JSONObject) responseJson.get(ReportJson.LEVEL_RESULTS);
 		assertEquals(3, resultsJson.size());
