@@ -17,6 +17,7 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String SafetyManual = "SafetyManual";
     public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
+    public static final String Lwcr = "Lwcr";
     public static final String Trir = "Trir";
     public static final String PreviousAudit = "PreviousAudit";
     public static final String CemexPostEvalSafetyRecommendation = "CemexSafetyRecommendation";
@@ -99,6 +100,11 @@ public class ContractorAuditTable extends AbstractTable {
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + EmrStatistics.QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR)));
         emr.setCategory(FieldCategory.DocumentsAndAudits);
         emr.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey lwcr = addOptionalKey(new ReportForeignKey(Lwcr, new AuditDataTable(),
+                new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR)));
+        lwcr.setCategory(FieldCategory.DocumentsAndAudits);
+        lwcr.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey trir = addOptionalKey(new ReportForeignKey(Trir, new AuditDataTable(),
                 new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));

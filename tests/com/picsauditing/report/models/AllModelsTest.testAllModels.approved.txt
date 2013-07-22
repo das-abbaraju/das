@@ -216,6 +216,7 @@ AuditCreationDate
 AuditEffectiveDate
 AuditExpiresDate
 AuditID
+AuditLwcrAnswer
 AuditOperatorAccountID
 AuditOperatorAccountName
 AuditOperatorAuditSubStatus
