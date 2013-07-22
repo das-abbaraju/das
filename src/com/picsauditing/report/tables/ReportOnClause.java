@@ -8,6 +8,7 @@ public class ReportOnClause {
 	public static final String AccountID = "{CURRENT_ACCOUNTID}";
 	public static final String UserID = "{CURRENT_USERID}";
 	public static final String Alias = "_ALIAS}";
+    public static final String ThirdAlias = "{THIRD" + Alias;
 	public static final String FromAlias = "{FROM" + Alias;
 	public static final String ToAlias = "{TO" + Alias;
 	
@@ -38,7 +39,7 @@ public class ReportOnClause {
 		this.extraClauses = extraClauses;
 	}
 
-	public String toSql(String fromAlias, String toAlias, Permissions permissions) {
+	public String toSql(String fromAlias, String toAlias, String thirdAlias, Permissions permissions) {
         String onClause = "1";
         if (fromKey != null && toKey != null)
 		    onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
@@ -51,6 +52,10 @@ public class ReportOnClause {
 		onClause = onClause.replace(UserID, permissions.getUserIdString());
 		onClause = onClause.replace(FromAlias, fromAlias);
 		onClause = onClause.replace(ToAlias, toAlias);
+
+        if (thirdAlias != null)
+            onClause = onClause.replace(ThirdAlias, thirdAlias);
+
 		return onClause;
 	}
 }

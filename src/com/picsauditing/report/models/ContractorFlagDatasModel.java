@@ -36,6 +36,7 @@ public class ContractorFlagDatasModel extends AbstractModel {
 
 		ModelSpec operator = coOperator.join(AccountTable.Operator);
 		operator.alias = "Operator";
+        spec.thirdAlias = operator.alias;
 
 		ModelSpec operatorCriteria = spec.join(FlagDataTable.OperatorCriteria);
 		operatorCriteria.alias = "OperatorCriteria";

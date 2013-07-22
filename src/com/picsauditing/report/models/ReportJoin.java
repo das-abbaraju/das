@@ -22,6 +22,7 @@ import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
+    private String thirdAlias = "";
 	private String fromAlias = "";
 	private String alias = "";
 	private AbstractTable toTable;
@@ -43,7 +44,15 @@ public class ReportJoin {
 		return importantEnough;
 	}
 
-	public String getFromAlias() {
+    public String getThirdAlias() {
+        return thirdAlias;
+    }
+
+    public void setThirdAlias(String thirdAlias) {
+        this.thirdAlias = thirdAlias;
+    }
+
+    public String getFromAlias() {
 		return fromAlias;
 	}
 

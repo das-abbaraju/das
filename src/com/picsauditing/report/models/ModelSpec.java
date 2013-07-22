@@ -7,6 +7,7 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 public class ModelSpec {
+    String thirdAlias;
 	String fromAlias;
 	String key;
 	String alias;

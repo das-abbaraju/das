@@ -33,8 +33,9 @@ public class FlagDataTable extends AbstractTable {
 		addRequiredKey(operator);
 
 		ReportForeignKey operatorCriteria = new ReportForeignKey(OperatorCriteria, new FlagCriteriaOperatorTable(),
-				new ReportOnClause("criteriaID", "criteriaID", ReportOnClause.FromAlias + ".opID = "
-						+ ReportOnClause.ToAlias + ".opID"));
+				new ReportOnClause("criteriaID", "criteriaID", "(" + ReportOnClause.FromAlias + ".opID = "
+						+ ReportOnClause.ThirdAlias + ".id OR " + ReportOnClause.FromAlias + ".opID = "
+                        + ReportOnClause.ThirdAlias + ".inheritFlagCriteria)"));
 		operatorCriteria.setCategory(FieldCategory.ReportingClientSite);
 		operatorCriteria.setMinimumImportance(FieldImportance.Required);
 		addRequiredKey(operatorCriteria);
