@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
+        text : '<i class="icon-print icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
         cls: 'default print',
         id: 'print-button',
         tooltip: PICS.text('Report.execute.exportSetting.tooltipPreview'),
@@ -29,7 +29,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                'All {record_count} rows will be exported.',
+                PICS.text('Report.execute.exportSetting.exportMessage', '{record_count}'),
             '</p>'
         ]),
         margin: '20 0 0 0'

@@ -834,8 +834,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Ignore
+
+    @Ignore("until Kirk can fix on Monday 7/22/13")
 	public void testIsFlagged_AuditApprovedAuditQuestionVerifiedWithSubmittedWorkflow() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Approved);
 		
@@ -941,8 +941,8 @@ public class FlagDataCalculatorTest {
 		
 		assertNull(result);
 	}
-	
-	@Ignore
+
+    @Ignore("until Kirk can fix on Monday 7/22/13")
 	public void testIsFlagged_AuditCompleteFailsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		
@@ -974,8 +974,8 @@ public class FlagDataCalculatorTest {
 		
 		assertTrue(result);
 	}
-	
-	@Ignore
+
+    @Ignore("until Kirk can fix on Monday 7/22/13")
 	public void testIsFlagged_AuditCompleteSucceedsCPIQuestionCheck() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccount(AuditStatus.Complete);
 		

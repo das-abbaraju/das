@@ -83320,7 +83320,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     items: [{
         xtype: 'button',
         action: 'print-preview',
-        text : '<i class="icon-picture icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
+        text : '<i class="icon-print icon-large"></i><span>' + PICS.text('Report.execute.exportSetting.buttonPrint') + '</span>',
         cls: 'default print',
         id: 'print-button',
         tooltip: PICS.text('Report.execute.exportSetting.tooltipPreview'),
@@ -83342,7 +83342,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                'All {record_count} rows will be exported.',
+                PICS.text('Report.execute.exportSetting.exportMessage', '{record_count}'),
             '</p>'
         ]),
         margin: '20 0 0 0'
@@ -83368,7 +83368,7 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     items: [{
             xtype: 'component',
             html:  new Ext.Template([
-                '<p class="coming-soon">' + 'Coming Soon' /*PICS.text('Report.execute.editSetting.noEditTitle')*/ + '</p>'
+                '<p class="coming-soon">' + PICS.text('Report.execute.subscribeSetting.ComingSoon') + '</p>'
             ])
     }],
     layout: {
@@ -83377,8 +83377,8 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     },
 
     // custom config
-    modal_title: 'Report Subscriptions', //PICS.text('Report.execute.subscribeSetting.title'),
-    title: '<i class="icon-envelope icon-large"></i>' + 'Subscribe' //PICS.text('Report.execute.subscribeSetting.tabName')
+    modal_title: PICS.text('Report.execute.subscribeSetting.title'),
+    title: '<i class="icon-envelope icon-large"></i>' + PICS.text('Report.execute.subscribeSetting.tabName')
 });
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
