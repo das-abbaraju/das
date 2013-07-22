@@ -471,13 +471,13 @@ public class FlagDataCalculator {
 	            for (ContractorAuditOperator cao : ca.getOperators()) {
 		            if (cao.isVisible()) {
 			            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				            if (caop.getOperator().isOrIsDescendantOf(opCriteria.getOperator().getId())) {
+				            if (caop.getOperator().getId() == operator.getId()) {
 					            return true;
 				            }
 			            }
 		            }
-		            return false;
                 }
+	            return false;
             }
         }
         return true;
