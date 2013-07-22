@@ -42,6 +42,12 @@ public class ContractorOperatorsModel extends AbstractModel {
         accountManagerUser.alias = "AccountManagerUser";
         accountManagerUser.category = FieldCategory.CustomerService;
 
+        ModelSpec salesRep = opAccount.join(AccountTable.SalesRep);
+        salesRep.category = FieldCategory.CustomerService;
+
+        ModelSpec salesRepUser = salesRep.join(AccountUserTable.User);
+        salesRepUser.category = FieldCategory.CustomerService;
+
         ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
 		contractor.alias = "Contractor";
 		contractor.minimumImportance = FieldImportance.Average;
