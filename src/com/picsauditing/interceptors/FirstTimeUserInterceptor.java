@@ -55,7 +55,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 	}
 
     private boolean isUserElligible(Permissions permissions) {
-        return permissions.getSwitchedToUserName() != null && permissions.isLoggedIn();
+        return permissions.getSwitchedToUserName() == null && permissions.isLoggedIn();
     }
 
     private boolean hittingReportsManager(ActionInvocation invocation) {

@@ -61,6 +61,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testIntercept_RedirectForFirstTimeUser() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
@@ -81,6 +82,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testShouldRedirectToV7NavigationTutorial_AlreadyUsedDynamicReports() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUsingVersion7MenusDate()).thenReturn(new Date());
@@ -93,6 +95,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testShouldRedirectToV7NavigationTutorial_FirstTimeUser() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUsingVersion7MenusDate()).thenReturn(null);
@@ -105,6 +108,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testIntercept_reportsManagerTutorial_RedirectForFirstTimeUser() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
 		when(permissions.isDynamicReportsUser()).thenReturn(true);
@@ -127,6 +131,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testShouldRedirectToReportsManagerTutorial_notFirstVisit() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
 		when(permissions.isDynamicReportsUser()).thenReturn(true);
@@ -141,6 +146,7 @@ public class FirstTimeUserInterceptorTest extends PicsTranslationTest {
 
 	@Test
 	public void testShouldRedirectToReportsManagerTutorial_FirstTimeUser() throws Exception {
+        when(permissions.getSwitchedToUserName()).thenReturn(null);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.isUsingVersion7Menus()).thenReturn(false);
 		when(permissions.isDynamicReportsUser()).thenReturn(true);
