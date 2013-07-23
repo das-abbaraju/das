@@ -66328,6 +66328,9 @@ Ext.define('PICS.data.ServerCommunication', {
     
                             loadDataTableStore(json);
     
+                            // TODO: Find a better place for non-report data like this.
+                            PICS.export_limit = json.export_limit;
+
                             success_callback.apply(scope, arguments);
                         }
                     }
@@ -83347,7 +83350,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                PICS.text('Report.execute.exportSetting.exportMessage', '{record_count}'),
+                '{export_message}',
             '</p>'
         ]),
         margin: '20 0 0 0'
@@ -83360,7 +83363,19 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     modal_title: PICS.text('Report.execute.exportSetting.title'),
     title: '<i class="icon-download icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName'),
 
-    update: function (values) {
+    update: function (record_count) {
+        var values = {},
+            export_limit = PICS.export_limit;
+
+        if (record_count < export_limit) {
+            values.export_message = PICS.text('Report.execute.exportSetting.exportMessage', Ext.util.Format.number(record_count, '0,000'));
+        } else {
+            values.export_message = [
+                PICS.text('Report.execute.exportSetting.limitExceeded') + '</br>',
+                PICS.text('Report.execute.exportSetting.rowsExported', Ext.util.Format.number(export_limit, '0,000'))
+            ].join('');
+        }
+
         this.items.get('message').update(values);
     }
 });
@@ -98856,9 +98871,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     beforeSettingsModalShow: function (cmp, eOpts) {
         var export_setting_view = this.getExportSetting();
 
-        export_setting_view.update({
-            record_count: this.getFormattedRecordCount()
-        });
+        export_setting_view.update(this.getRecordCount());
     },
 
     closeSettingsModal: function (cmp, eOpts) {
@@ -98959,16 +98972,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    getFormattedRecordCount: function () {
+    getRecordCount: function () {
         var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
-            data_table_store = data_table_view.getStore(),
-            record_count = data_table_store.getTotalCount();
+            data_table_store = data_table_view.getStore();
 
-        if (record_count > 10000) {
-            record_count = 10000;
-        }
-
-        return Ext.util.Format.number(record_count, '0,000');
+        return data_table_store.getTotalCount();
     },
 
     openSettingsModal: function (action) {

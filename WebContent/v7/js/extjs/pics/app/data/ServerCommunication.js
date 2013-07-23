@@ -184,6 +184,9 @@ Ext.define('PICS.data.ServerCommunication', {
     
                             loadDataTableStore(json);
     
+                            // TODO: Find a better place for non-report data like this.
+                            PICS.export_limit = json.export_limit;
+
                             success_callback.apply(scope, arguments);
                         }
                     }

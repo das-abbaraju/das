@@ -140,9 +140,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     beforeSettingsModalShow: function (cmp, eOpts) {
         var export_setting_view = this.getExportSetting();
 
-        export_setting_view.update({
-            record_count: this.getFormattedRecordCount()
-        });
+        export_setting_view.update(this.getRecordCount());
     },
 
     closeSettingsModal: function (cmp, eOpts) {
@@ -243,16 +241,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    getFormattedRecordCount: function () {
+    getRecordCount: function () {
         var data_table_view = Ext.ComponentQuery.query('reportdatatable')[0],
-            data_table_store = data_table_view.getStore(),
-            record_count = data_table_store.getTotalCount();
+            data_table_store = data_table_view.getStore();
 
-        if (record_count > 10000) {
-            record_count = 10000;
-        }
-
-        return Ext.util.Format.number(record_count, '0,000');
+        return data_table_store.getTotalCount();
     },
 
     openSettingsModal: function (action) {

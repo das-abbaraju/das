@@ -29,7 +29,7 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
         id: 'message',
         tpl: new Ext.XTemplate([
             '<p class="export-message">',
-                PICS.text('Report.execute.exportSetting.exportMessage', '{record_count}'),
+                '{export_message}',
             '</p>'
         ]),
         margin: '20 0 0 0'
@@ -42,7 +42,19 @@ Ext.define('PICS.view.report.settings.ExportSetting', {
     modal_title: PICS.text('Report.execute.exportSetting.title'),
     title: '<i class="icon-download icon-large"></i>' + PICS.text('Report.execute.exportSetting.tabName'),
 
-    update: function (values) {
+    update: function (record_count) {
+        var values = {},
+            export_limit = PICS.export_limit;
+
+        if (record_count < export_limit) {
+            values.export_message = PICS.text('Report.execute.exportSetting.exportMessage', Ext.util.Format.number(record_count, '0,000'));
+        } else {
+            values.export_message = [
+                PICS.text('Report.execute.exportSetting.limitExceeded') + '</br>',
+                PICS.text('Report.execute.exportSetting.rowsExported', Ext.util.Format.number(export_limit, '0,000'))
+            ].join('');
+        }
+
         this.items.get('message').update(values);
     }
 });
