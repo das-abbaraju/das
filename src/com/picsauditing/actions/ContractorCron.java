@@ -678,10 +678,6 @@ public class ContractorCron extends PicsActionSupport {
 		Iterator<FlagDataOverride> itr = co.getContractorAccount().getFlagDataOverrides().iterator();
 		while (itr.hasNext()) {
 			FlagDataOverride override = itr.next();
-			if (!isOverrideApplicableToOperator(override)) {
-				dao.deleteData(FlagDataOverride.class, "id=" + override.getId());
-				continue;
-			}
 			if (override.getOperator().equals(co.getOperatorAccount())) {
 				if (!overridesMap.containsKey(override.getCriteria())) {
 					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
@@ -784,8 +780,8 @@ public class ContractorCron extends PicsActionSupport {
 		co.setAuditColumns(new User(User.SYSTEM));
 	}
 
-	private boolean isOverrideApplicableToOperator(FlagDataOverride override) {
-		for (FlagCriteriaOperator fco:override.getOperator().getFlagCriteriaInherited()) {
+	private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {
+		for (FlagCriteriaOperator fco:operator.getFlagCriteriaInherited()) {
 			if (override.getCriteria().equals(fco.getCriteria())) {
 				// need to check if audit is not expired
 				if (!Strings.isEmpty(override.getYear())) {
