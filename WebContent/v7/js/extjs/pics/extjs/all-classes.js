@@ -82784,13 +82784,13 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
             layout: 'hbox',
             items: [
                 {
-                    boxLabel  : 'Yes',
+                    boxLabel: PICS.text('Report.execute.booleanFilter.yes'),
                     inputValue: 'true',
                 }, {
-                    boxLabel  : 'No',
+                    boxLabel: PICS.text('Report.execute.booleanFilter.no'),
                     inputValue: 'false'
                 }, {
-                    boxLabel  : 'All',
+                    boxLabel: PICS.text('Report.execute.booleanFilter.all'),
                     inputValue: 'all'
                 }
             ]
