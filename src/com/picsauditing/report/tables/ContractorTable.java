@@ -24,6 +24,10 @@ public class ContractorTable extends AbstractTable {
     public static final String ContractorTrade = "ContractorTrade";
     public static final String ContractorFee = "ContractorFee";
     public static final String WelcomeCall = "WelcomeCall";
+    public static final String GeneralLiability = "GeneralLiability";
+    public static final String AutoLiability = "AutoLiability";
+    public static final String WorkersComp = "WorkersComp";
+    public static final String ExcessLiability = "ExcessLiability";
 
     public ContractorTable() {
         super("contractor_info");
@@ -77,6 +81,22 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey welcomeCallKey = addOptionalKey(new ReportForeignKey(WelcomeCall, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.WELCOME)));
         welcomeCallKey.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey generalLiability = addOptionalKey(new ReportForeignKey(GeneralLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 13")));
+        generalLiability.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey autoLiability = addOptionalKey(new ReportForeignKey(AutoLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 15")));
+        autoLiability.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey workersComp = addOptionalKey(new ReportForeignKey(WorkersComp, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 14")));
+        workersComp.setMinimumImportance(FieldImportance.Required);
+
+        ReportForeignKey excessLiability = addOptionalKey(new ReportForeignKey(ExcessLiability, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 16")));
+        excessLiability.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
                 new ReportOnClause("requestedByID")));

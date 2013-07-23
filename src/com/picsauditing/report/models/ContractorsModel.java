@@ -28,6 +28,19 @@ public class ContractorsModel extends AbstractModel {
 		}
 		contractor.join(ContractorTable.PQF);
 
+        ModelSpec general = contractor.join(ContractorTable.GeneralLiability);
+        general.join(ContractorAuditTable.GLEachOccurrence);
+        general.join(ContractorAuditTable.GLGeneralAggregate);
+
+        ModelSpec auto = contractor.join(ContractorTable.AutoLiability);
+        auto.join(ContractorAuditTable.ALCombinedSingle);
+
+        ModelSpec workers = contractor.join(ContractorTable.WorkersComp);
+        workers.join(ContractorAuditTable.WCEachAccident);
+
+        ModelSpec excess = contractor.join(ContractorTable.ExcessLiability);
+        excess.join(ContractorAuditTable.EXEachOccurrence);
+
         ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
         contractorTrade.alias = "ContractorTrade";
         ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
@@ -133,6 +146,13 @@ public class ContractorsModel extends AbstractModel {
         reportingClient.setSuffixValue("");
         reportingClient.setCategory(FieldCategory.ReportingClientSite);
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
+
+
+        fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase()).setType(FieldType.Number);
+        fields.get("ContractorGeneralLiabilityGLGeneralAggregateAnswer".toUpperCase()).setType(FieldType.Number);
+        fields.get("ContractorAutoLiabilityALCombinedSingleAnswer".toUpperCase()).setType(FieldType.Number);
+        fields.get("ContractorWorkersCompWCEachAccidentAnswer".toUpperCase()).setType(FieldType.Number);
+        fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase()).setType(FieldType.Number);
 
         return fields;
 	}
