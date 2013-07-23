@@ -13,7 +13,10 @@ import java.util.Set;
 
 import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.models.audits.AuditEditModel;
+import com.picsauditing.util.EmailAddressUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,6 +56,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
 	private AuditEditModel auditEditModel;
+	@Autowired
+	private EmailSender emailSender;
 
 
 	protected int auditID = 0;
@@ -78,6 +83,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public String execute() throws Exception {
 		this.findConAudit();
 
+		return SUCCESS;
+	}
+
+	public String emailReminder() throws Exception {
+		this.findConAudit();
+
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(12);
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
+		emailBuilder.setConAudit(conAudit);
+		EmailQueue email = emailBuilder.build();
+		email.setSubjectViewableById(Account.EVERYONE);
+		email.setBodyViewableById(Account.EVERYONE);
+		emailSender.send(email);
+		String note = "PQF/Annual Update reminder email sent to " + emailBuilder.getSentTo();
+		addNote(contractor, note, NoteCategory.Audits);
+
+		addActionMessage("The PQF/Annual Update reminder email was sent and the contractor notes were stamped");
 		return SUCCESS;
 	}
 
@@ -126,6 +151,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 			refreshAudit = true;
 		if (conAudit.getAuditType().getClassType().isPolicy() && !conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 			refreshAudit = true;
+	}
+
+	public boolean isShowEmailReminder() {
+		if (!permissions.isAdmin())
+			return false;
+
+		if ((conAudit.getAuditType().isPicsPqf() || conAudit.getAuditType().isAnnualAddendum())
+				&& conAudit.hasCaoStatus(AuditStatus.Pending))
+			return true;
+		return false;
 	}
 
 	public boolean isRefreshAudit() {

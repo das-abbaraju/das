@@ -409,6 +409,16 @@ a.email {
 	zoom: 1;
 }
 
+a.email2 {
+    padding-left: 17px;
+    margin-left: 5px;
+    background: url('../images/icon_link_email.png') no-repeat right center;
+    padding-right: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
+    zoom: 1;
+}
+
 a.email_left {
     background: url('../images/icon_link_email.png') no-repeat left center;
     padding-left: 15px;
