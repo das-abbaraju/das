@@ -195,6 +195,9 @@ public class ReportPreferencesService {
 	}
 
 	private boolean sortOrderNeedsToBeReIndexed(List<ReportUser> sortedFavorites) {
+        if (sortedFavorites.isEmpty())
+            return false;
+
 		ReportUser firstReportUserInList = sortedFavorites.get(0);
 		int highestSortOrder = firstReportUserInList.getSortOrder();
 
