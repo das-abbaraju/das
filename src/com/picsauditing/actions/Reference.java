@@ -47,7 +47,7 @@ public class Reference extends PicsActionSupport {
 
         boolean isFromReportsMenu = from != null && from.equals("ReportsMenu");
 
-        if (!isFirstTimeReportsManagerUser() && isFromReportsMenu) {
+        if ((!isFirstTimeReportsManagerUser() || permissions.getSwitchedToUserName() != null) && isFromReportsMenu) {
             setUrlForRedirect("ManageReports!search.action");
             return REDIRECT;
         } else {

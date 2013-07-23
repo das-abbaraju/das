@@ -43,8 +43,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 			return false;
 		}
 
-		return (permissions.isLoggedIn() && permissions.getUsingVersion7MenusDate() == null && permissions
-				.isUsingVersion7Menus());
+		return (isUserElligible(permissions) && permissions.getUsingVersion7MenusDate() == null && permissions.isUsingVersion7Menus());
 	}
 
 	private boolean shouldRedirectToReportsManagerTutorial(Permissions permissions, ActionInvocation invocation) {
@@ -52,11 +51,14 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
 			return false;
 		}
 
-		return (permissions.isLoggedIn() && hittingReportsManager(invocation)
-				&& permissions.getReportsManagerTutorialDate() == null );
+		return (isUserElligible(permissions) && hittingReportsManager(invocation) && permissions.getReportsManagerTutorialDate() == null);
 	}
 
-	private boolean hittingReportsManager(ActionInvocation invocation) {
+    private boolean isUserElligible(Permissions permissions) {
+        return permissions.getSwitchedToUserName() != null && permissions.isLoggedIn();
+    }
+
+    private boolean hittingReportsManager(ActionInvocation invocation) {
 		Object action = invocation.getAction();
 		return action.getClass().equals(ManageReports.class);
 	}
