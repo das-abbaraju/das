@@ -1194,6 +1194,10 @@
 		<action name="ChartsDemo" class="com.picsauditing.actions.ChartsDemo">
 			<result>struts/charts-demo.jsp</result>
 		</action>
+
+        <action name="HelpCenter" class="com.picsauditing.actions.HelpCenter">
+            <result>/struts/blank.jsp</result>
+        </action>
 	</package>
 
 	<!-- Reports & API -->

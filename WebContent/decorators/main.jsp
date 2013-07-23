@@ -332,15 +332,6 @@
 String mibew_href = MenuBuilder.getMibewURL(locale, permissions);
 String chat_link_text = translationService.getText("Header.Chat", locale);
 String help_link_text = translationService.getText("Header.HelpCenter", locale);
-String help_url = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-
-if (permissions.isOperatorCorporate()) {
-	help_url += "os_username=operator&os_password=oper456ator";
-} else if (permissions.isContractor()) {
-	help_url += "os_username=contractor&os_password=con123tractor";
-} else {
-	help_url += "os_username=admin&os_password=ad9870mins";
-}
 %>
 
 <div id="main">
@@ -349,7 +340,7 @@ if (permissions.isOperatorCorporate()) {
 
 		<div id="helpbox">
 			<div id="helpcenter" style="float:left;">
-				<a href="<%= help_url %>" target="_BLANK"><%= help_link_text %></a>
+				<a href="/HelpCenter.action" target="_BLANK"><%= help_link_text %></a>
 			</div>
 
 			<div id="helpchat" style="float:left;">
