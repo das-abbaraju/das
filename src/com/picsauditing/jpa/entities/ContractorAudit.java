@@ -154,7 +154,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.Date, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.ExpirationDate, category = FieldCategory.DocumentsAndAudits, importance = FieldImportance.Average)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
