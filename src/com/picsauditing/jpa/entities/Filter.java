@@ -153,8 +153,12 @@ public class Filter extends ReportElement {
 			if (filterValue.equalsIgnoreCase("Yes")) {
 				return true + Strings.EMPTY_STRING;
 			}
+            if (filterValue.equalsIgnoreCase("X")) {
+                return true + Strings.EMPTY_STRING;
+            }
 
-			return false + Strings.EMPTY_STRING;
+
+            return false + Strings.EMPTY_STRING;
 		}
 
 		// todo: combine the logic below where possible

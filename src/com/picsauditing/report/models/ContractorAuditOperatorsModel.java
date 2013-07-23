@@ -82,18 +82,6 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         ModelSpec emr = conAudit.join(ContractorAuditTable.Emr);
         emr.alias = "Emr";
 
-        ModelSpec cemexPostEvalSafetyRecommendation = conAudit.join(ContractorAuditTable.CemexPostEvalSafetyRecommendation);
-        cemexPostEvalSafetyRecommendation.alias = "CemexPostEvalSafetyRecommendation";
-        cemexPostEvalSafetyRecommendation.minimumImportance = FieldImportance.Average;
-
-        ModelSpec cemexPostEvalPerformanceRecommendation = conAudit.join(ContractorAuditTable.CemexPostEvalPerformanceRecommendation);
-        cemexPostEvalPerformanceRecommendation.alias = "CemexPostEvalPerformanceRecommendation";
-        cemexPostEvalPerformanceRecommendation.minimumImportance = FieldImportance.Average;
-
-        ModelSpec cemexPostEvalSite = conAudit.join(ContractorAuditTable.CemexPostEvalSite);
-        cemexPostEvalSite.alias = "CemexPostEvalSite";
-        cemexPostEvalSite.minimumImportance = FieldImportance.Average;
-
         return spec;
 	}
 

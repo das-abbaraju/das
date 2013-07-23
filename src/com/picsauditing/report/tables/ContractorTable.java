@@ -14,7 +14,6 @@ public class ContractorTable extends AbstractTable {
     public static final String CustomerService = "CustomerService";
     public static final String InsideSales = "InsideSales";
     public static final String RecommendedCSR = "RecommendedCSR";
-    public static final String PQF = "PQF";
     public static final String Flag = "Flag";
     public static final String FlagCriteriaContractor = "FlagCriteriaContractor";
     public static final String RequestedBy = "RequestedBy";
@@ -23,6 +22,9 @@ public class ContractorTable extends AbstractTable {
     public static final String ContractorStatistics = "ContractorStatistics";
     public static final String ContractorTrade = "ContractorTrade";
     public static final String ContractorFee = "ContractorFee";
+
+    public static final String CemexPostEval = "CemexPostEval";
+    public static final String PQF = "PQF";
     public static final String WelcomeCall = "WelcomeCall";
     public static final String GeneralLiability = "GeneralLiability";
     public static final String AutoLiability = "AutoLiability";
@@ -73,6 +75,10 @@ public class ContractorTable extends AbstractTable {
         ReportForeignKey insideSalesRep = addOptionalKey(insideSales);
         insideSalesRep.setCategory(FieldCategory.CustomerService);
         insideSalesRep.setMinimumImportance(FieldImportance.Average);
+
+        ReportForeignKey cemexPostEval = addRequiredKey(new ReportForeignKey(CemexPostEval, new ContractorAuditTable(),
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456")));
+        cemexPostEval.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));

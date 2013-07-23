@@ -10,6 +10,7 @@ public enum ModelType {
     ContractorFees,
     ContractorFlagCriteriaDatas,
     ContractorFlagDatas,
+    ContractorAuditMassDatas,
     ContractorNumbers,
     ContractorOperators,
     Contractors,
