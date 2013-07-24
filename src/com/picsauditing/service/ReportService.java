@@ -14,6 +14,7 @@ import java.util.*;
 
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.report.data.*;
 import com.picsauditing.report.models.ReportModelFactory;
@@ -46,7 +47,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.models.ReportModelFactory;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.excel.ExcelBuilder;
@@ -61,6 +61,8 @@ public class ReportService {
 	private SqlBuilder sqlBuilder;
 	@Autowired
 	public ReportPreferencesService reportPreferencesService;
+    @Autowired
+    private EmailSubscriptionDAO emailSubscriptionDAO;
 
 	private I18nCache i18nCache;
     private static final int EXPORT_LIMIT = 10000;
@@ -75,7 +77,9 @@ public class ReportService {
 		JSONObject responseJson = new JSONObject();
 
 		if (reportContext.includeReport) {
-			JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions);
+            List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(reportContext.permissions.getUserId(), report.getId());
+
+            JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions, subscriptions);
 			responseJson.put(LEVEL_REPORT, reportJson);
 		}
 

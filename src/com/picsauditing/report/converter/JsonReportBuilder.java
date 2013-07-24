@@ -5,6 +5,8 @@ import static com.picsauditing.report.ReportJson.*;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -12,11 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportElement;
-import com.picsauditing.jpa.entities.Sort;
 import com.picsauditing.report.ReportValidationException;
 import com.picsauditing.service.PermissionService;
 import com.picsauditing.service.ReportPreferencesService;
@@ -32,10 +29,10 @@ public class JsonReportBuilder {
 	protected static PermissionService permissionService;
 	protected static ReportPreferencesService reportPreferencesService;
 
-	public static JSONObject buildReportJson(Report report, Permissions permissions) {
+	public static JSONObject buildReportJson(Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		JSONObject json = new JSONObject();
 
-		addReportLevelData(json, report, permissions);
+		addReportLevelData(json, report, permissions, subscriptions);
 
 		addColumns(json, report.getColumns());
 		addFilters(json, report.getFilters());
@@ -44,7 +41,7 @@ public class JsonReportBuilder {
 		return json;
 	}
 
-	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions) {
+	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
 		json.put(REPORT_NAME, report.getName());
@@ -53,6 +50,14 @@ public class JsonReportBuilder {
 
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
 		json.put(REPORT_FAVORITE, getReportPreferencesService().isUserFavoriteReport(permissions.getUserId(), report.getId()));
+
+        SubscriptionTimePeriod frequency;
+        if (!subscriptions.isEmpty())
+            frequency = subscriptions.get(0).getTimePeriod();
+        else
+            frequency = SubscriptionTimePeriod.None;
+
+        json.put(REPORT_SUBSCRIPTION_FREQUENCY, frequency);
 	}
 
 	public static PermissionService getPermissionService() {
