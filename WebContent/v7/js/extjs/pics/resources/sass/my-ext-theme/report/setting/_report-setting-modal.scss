@@ -98,14 +98,16 @@
 
 #report_edit,
 #report_copy,
-#report_share
+#report_share,
+#report_subscribe
 {
 	padding: 8px 10px 10px;
 }
 
 #report_edit-body,
 #report_copy-body,
-#report_share-body
+#report_share-body,
+#report_subscribe-body
 {
 	height: auto !important;
 }
@@ -113,6 +115,7 @@
 #report_edit .x-toolbar,
 #report_copy .x-toolbar,
 #report_share .x-toolbar
+#report_subscribe .x-toolbar
 {
 	top: auto !important;
 }

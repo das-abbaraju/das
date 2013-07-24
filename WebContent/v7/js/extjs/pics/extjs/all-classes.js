@@ -66579,6 +66579,17 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
 
+            requestSubscription: function (frequency) {
+                var url = PICS.data.ServerCommunicationUrl.getRequestSubscriptionUrl();
+
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        frequency: frequency
+                    }
+                });
+            },
+
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
@@ -66686,6 +66697,18 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var params = Ext.Object.fromQueryString(window.location.search),
                 report_id = params.report,
                 path = 'ReportApi!favorite.action?';
+
+            var params = {
+                reportId: report_id
+            };
+
+            return path + Ext.Object.toQueryString(params);
+        },
+
+        getRequestSubscriptionUrl: function () {
+            var params = Ext.Object.fromQueryString(window.location.search),
+                report_id = params.report,
+                path = 'ReportApi!subscribe.action?';
 
             var params = {
                 reportId: report_id
@@ -83384,17 +83407,38 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     alias: 'widget.reportsubscribesetting',
 
     border: 0,
+
     id: 'report_subscribe',
+
     items: [{
-            xtype: 'component',
-            html:  new Ext.Template([
-                '<p class="coming-soon">' + PICS.text('Report.execute.subscribeSetting.ComingSoon') + '</p>'
-            ])
+        xtype: 'radiogroup',
+        defaults: {
+            flex: 1,
+            name: 'subscription_frequency',
+            margin: '0 0 10 0'
+        },
+        layout: 'vbox',
+        items: [{
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelNever'),
+            inputValue: 'None'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelDaily'),
+            inputValue: 'Daily'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelWeekly'),
+            inputValue: 'Weekly'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelMonthly'),
+            inputValue: 'Monthly'
+        }]
     }],
+
     layout: {
         type: 'vbox',
-        align: 'center'
+        align: 'center',
     },
+
+    padding: '40 0 0 0',
 
     // custom config
     modal_title: PICS.text('Report.execute.subscribeSetting.title'),
@@ -97243,6 +97287,9 @@ Ext.define('PICS.model.report.Report', {
     }, {
         name: 'is_favorite',
         type: 'boolean'
+    }, {
+        name: 'subscription_frequency',
+        type: 'string'
     }],
 
     hasMany: [{
@@ -98827,6 +98874,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
+            },
+
+            'reportsettingsmodal reportsubscribesetting radiogroup': {
+                change: this.requestSubscription
             }
         });
 
@@ -98859,12 +98910,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     beforeSettingsModalRender: function (cmp, eOpts) {
             var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
+                report = report_store.first(),
+                edit_setting_view = this.getEditSetting(),
+                edit_setting_form = edit_setting_view.getForm(),
+                subscribe_setting_view = this.getSubscribeSetting(),
+                subscribe_setting_form = subscribe_setting_view.getForm();
     
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
+        }
+
+        if (subscribe_setting_form) {
+            subscribe_setting_form.loadRecord(report);
         }
     },
 
@@ -99171,6 +99228,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         };
 
         PICS.data.ServerCommunication.shareReport(options);
+    },
+
+    requestSubscription: function (cmp, e, eOpts) {
+        var subscribe_setting_view = this.getSubscribeSetting(),
+            subscribe_setting_form = subscribe_setting_view.getForm(),
+            subscription_frequency = subscribe_setting_form.getValues().subscription_frequency;
+
+        PICS.data.ServerCommunication.requestSubscription(subscription_frequency);
     }
 });
 /**

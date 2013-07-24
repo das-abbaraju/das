@@ -96,6 +96,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsharesetting button[action=share]': {
                 click: this.onReportModalShareClick
+            },
+
+            'reportsettingsmodal reportsubscribesetting radiogroup': {
+                change: this.requestSubscription
             }
         });
 
@@ -128,12 +132,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     beforeSettingsModalRender: function (cmp, eOpts) {
             var report_store = this.getReportReportsStore(),
-            report = report_store.first(),
-            edit_setting_view = this.getEditSetting(),
-            edit_setting_form = edit_setting_view.getForm();
+                report = report_store.first(),
+                edit_setting_view = this.getEditSetting(),
+                edit_setting_form = edit_setting_view.getForm(),
+                subscribe_setting_view = this.getSubscribeSetting(),
+                subscribe_setting_form = subscribe_setting_view.getForm();
     
         if (edit_setting_form) {
             edit_setting_form.loadRecord(report);
+        }
+
+        if (subscribe_setting_form) {
+            subscribe_setting_form.loadRecord(report);
         }
     },
 
@@ -440,5 +450,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
         };
 
         PICS.data.ServerCommunication.shareReport(options);
+    },
+
+    requestSubscription: function (cmp, e, eOpts) {
+        var subscribe_setting_view = this.getSubscribeSetting(),
+            subscribe_setting_form = subscribe_setting_view.getForm(),
+            subscription_frequency = subscribe_setting_form.getValues().subscription_frequency;
+
+        PICS.data.ServerCommunication.requestSubscription(subscription_frequency);
     }
 });

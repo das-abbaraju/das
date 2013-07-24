@@ -3,17 +3,38 @@ Ext.define('PICS.view.report.settings.SubscribeSetting', {
     alias: 'widget.reportsubscribesetting',
 
     border: 0,
+
     id: 'report_subscribe',
+
     items: [{
-            xtype: 'component',
-            html:  new Ext.Template([
-                '<p class="coming-soon">' + PICS.text('Report.execute.subscribeSetting.ComingSoon') + '</p>'
-            ])
+        xtype: 'radiogroup',
+        defaults: {
+            flex: 1,
+            name: 'subscription_frequency',
+            margin: '0 0 10 0'
+        },
+        layout: 'vbox',
+        items: [{
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelNever'),
+            inputValue: 'None'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelDaily'),
+            inputValue: 'Daily'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelWeekly'),
+            inputValue: 'Weekly'
+        }, {
+            boxLabel: PICS.text('Report.execute.subscribeSetting.labelMonthly'),
+            inputValue: 'Monthly'
+        }]
     }],
+
     layout: {
         type: 'vbox',
-        align: 'center'
+        align: 'center',
     },
+
+    padding: '40 0 0 0',
 
     // custom config
     modal_title: PICS.text('Report.execute.subscribeSetting.title'),

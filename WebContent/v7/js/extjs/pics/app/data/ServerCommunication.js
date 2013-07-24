@@ -435,6 +435,17 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
 
+            requestSubscription: function (frequency) {
+                var url = PICS.data.ServerCommunicationUrl.getRequestSubscriptionUrl();
+
+                Ext.Ajax.request({
+                    url: url,
+                    params: {
+                        frequency: frequency
+                    }
+                });
+            },
+
             unfavoriteReport: function () {
                 var url = PICS.data.ServerCommunicationUrl.getUnfavoriteReportUrl();
 
