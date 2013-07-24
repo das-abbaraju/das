@@ -195,6 +195,16 @@ public enum Subscription implements Translatable {
 			setRequiredForAdmin(true);
 		}
 	},
+    DynamicReports {
+        public void initialize() {
+            // TODO: template ID here is a dummy ID, fill it with the real one
+            setTemplateID(348);
+            setDefaultTimePeriod(SubscriptionTimePeriod.None);
+            setRequiredForAdmin(true);
+            setRequiredForOperator(true);
+            setRequiredForContractor(true);
+        }
+    },
 	RejectedInsurance {
 		public void initialize() {
 			setTemplateID(248);
