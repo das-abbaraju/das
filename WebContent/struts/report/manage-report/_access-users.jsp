@@ -27,6 +27,9 @@
             <li class="user ${access_type} clearfix" data-user-id="${person.id}" ${current_user}>
                 <s:if test="#person.owner">
                     <div class="is-owner pull-right">
+                        <s:if test="report.public">
+                            <i class="icon-search"></i>
+                        </s:if>
                         <i class="icon-key"></i> <s:text name="ManageReports.access.dropDown.owner" />
                     </div>
                 </s:if>
