@@ -57,7 +57,7 @@ public class JsonReportBuilder {
         else
             frequency = SubscriptionTimePeriod.None;
 
-        json.put(REPORT_SUBSCRIPTION_FREQUENCY, frequency);
+        json.put(REPORT_SUBSCRIPTION_FREQUENCY, frequency.toString());
 	}
 
 	public static PermissionService getPermissionService() {
