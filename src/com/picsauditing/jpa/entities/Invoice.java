@@ -10,13 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import javax.persistence.Column;
 
 import com.picsauditing.access.OpPerms;
 import org.apache.commons.collections.CollectionUtils;
@@ -29,6 +24,8 @@ import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.PicsDateFormat;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Parameter;
 
 @SuppressWarnings("serial")
 @Entity
@@ -239,6 +236,9 @@ public class Invoice extends Transaction {
 		return this.commissionEligibleFeeMap;
 	}
 
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.InvoiceType") })
+    @Enumerated(EnumType.STRING)
+    @Column(name = "invoiceType", nullable = false)
     @ReportField(category = FieldCategory.Invoicing, type = FieldType.InvoiceType, importance = FieldImportance.Required)
     public InvoiceType getInvoiceType() {
         return invoiceType;
