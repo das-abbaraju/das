@@ -115,34 +115,6 @@
 
 	<script type="text/javascript">
 		$(function () {
-			$(document).ajaxError(function (e, xhr, originalSettings, exception) {
-				if (xhr.status == 401) {
-					$.facebox(function () {
-						$.get('Login!overlay.action', function (response, status, loginXhr) {
-							var html = $(response).addClass('overlay');
-							html.find('#login').ajaxForm({
-								url: 'Login!ajax.action',
-								dataType: 'json',
-								success: function (response, status, formXhr, $form) {
-									if (response.loggedIn) {
-										$.facebox.close();
-										if (originalSettings.url.indexOf('?') != -1) {
-											originalSettings.url = originalSettings.url.replace(/\?.*$/, '');
-										}
-										$.ajax(originalSettings);
-									} else {
-										$('#loginMessages').msg('error', response.actionError, true);
-										$('#username').focus();
-									}
-								}
-							});
-							$.facebox(html);
-							html.find('#username').focus();
-						});
-					});
-				}
-			});
-
 			$('#debug-menu, #debug-menu_menu').live('click', function (e) {
 				e.preventDefault();
 				$('body').toggleClass('debugging');

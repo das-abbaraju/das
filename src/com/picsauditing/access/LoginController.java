@@ -153,6 +153,17 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	@Anonymous
+	@SuppressWarnings("unchecked")
+	public String sessionLogout() throws Exception {
+		logout();
+
+		json = new JSONObject();
+		json.put("referer", getReferer());
+
+		return JSON;
+	}
+
 	private String switchBack() throws Exception {
 		loadPermissions(false);
 		switchToUser = 0;

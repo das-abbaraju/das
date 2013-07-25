@@ -2,6 +2,7 @@ package com.picsauditing.actions.users;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 
 public class SessionAjax extends PicsActionSupport {
@@ -9,25 +10,29 @@ public class SessionAjax extends PicsActionSupport {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unchecked")
-	public String getUserSessionTimeout() {
+	@Anonymous
+	public String getUserSession() {
 		json = new JSONObject();
 
-		if (permissions != null) {
-			json.put("sessionTimeoutInSeconds", permissions.getSessionCookieTimeoutInSeconds());
+		if (sessionCookieIsValidAndNotExpired()) {
+			json = getSessionExpiration();
 		} else {
-			json.put("error", "Permissions object was null.");
+			json.put("error", "No User Session Found");
 		}
 
 		return JSON;
 	}
 
-	// The session timeout is reset in the SecurityInterceptor
 	@SuppressWarnings("unchecked")
-	public String resetTimeout() {
+	public JSONObject getSessionExpiration() {
 		json = new JSONObject();
 
-		json.put("result", "success");
+		if (permissions != null) {
+			json.put("sessionDuration", permissions.getSessionCookieTimeoutInSeconds());
+		} else {
+			json.put("error", "Permissions object was null.");
+		}
 
-		return JSON;
+		return json;
 	}
 }

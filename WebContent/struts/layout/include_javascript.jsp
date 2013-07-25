@@ -5,7 +5,7 @@
 <%--
 Note: 1.7.2 version affects the website in the followings ways, upgrading jquery.ui may effect the following
 
-- Including multiple jquery.ui will break plugins 
+- Including multiple jquery.ui will break plugins
 - UI calendar z-index
 - MySchedule calendar plugin
 
@@ -27,6 +27,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <%-- END v7 Chart Classes --%>
 
 <script src="v7/js/vendor/select2.js?v=${version}"></script>
+<script src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>
