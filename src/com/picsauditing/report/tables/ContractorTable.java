@@ -123,7 +123,6 @@ public class ContractorTable extends AbstractTable {
 
         ReportForeignKey trade = new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id",
                 "conID"));
-//        trade.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(trade);
 
         ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),

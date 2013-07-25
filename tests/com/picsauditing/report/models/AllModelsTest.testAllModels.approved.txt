@@ -774,6 +774,7 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountID
 AccountName
+ContractorTradeActivityPercent
 ContractorTradeManufacture
 ContractorTradeSelfPerformed
 TradeName
