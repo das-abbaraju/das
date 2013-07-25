@@ -39,7 +39,6 @@ AccountTimezone
 AccountTransportationServices
 AccountWebUrl
 AccountZip
-ClientSite
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorAutoLiabilityALCombinedSingleAnswer
@@ -80,6 +79,7 @@ ContractorRecommendedCSRName
 ContractorSafetyRisk
 ContractorSafetyRiskVerified
 ContractorSoleProprietor
+ContractorSupplierDiversity
 ContractorTagTagID
 ContractorTransportationRisk
 ContractorTransportationRiskVerified
@@ -89,6 +89,7 @@ ContractorWatchwatch
 ContractorWorkersCompID
 ContractorWorkersCompTypeName
 ContractorWorkersCompWCEachAccidentAnswer
+ContractorWorksAtClientSite
+ContractorWorksForReportingClient
 DirectTradeName
-ReportingClient
 TradeName
