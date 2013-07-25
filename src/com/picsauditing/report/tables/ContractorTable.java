@@ -80,7 +80,7 @@ public class ContractorTable extends AbstractTable {
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456")));
         cemexPostEval.setMinimumImportance(FieldImportance.Required);
 
-        ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
+        ReportForeignKey pqfKey = addRequiredKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
         pqfKey.setMinimumImportance(FieldImportance.Required);
 
@@ -89,19 +89,19 @@ public class ContractorTable extends AbstractTable {
         welcomeCallKey.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey generalLiability = addOptionalKey(new ReportForeignKey(GeneralLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 13")));
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 13 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
         generalLiability.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey autoLiability = addOptionalKey(new ReportForeignKey(AutoLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 15")));
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 15 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
         autoLiability.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey workersComp = addOptionalKey(new ReportForeignKey(WorkersComp, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 14")));
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 14 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
         workersComp.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey excessLiability = addOptionalKey(new ReportForeignKey(ExcessLiability, new ContractorAuditTable(),
-                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 16")));
+                new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 16 AND (" + ReportOnClause.ToAlias + ".expiresDate > NOW() OR " + ReportOnClause.ToAlias + ".expiresDate IS NULL)")));
         excessLiability.setMinimumImportance(FieldImportance.Required);
 
         ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),

@@ -128,7 +128,7 @@ public class ContractorsModel extends AbstractModel {
         accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
-        Field clientSite = new Field("ClientSite","Account.id",FieldType.Operator);
+        Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
         clientSite.setVisible(false);
         clientSite.setPrefixValue("SELECT co.subID " +
                 "FROM generalcontractors co " +
@@ -137,7 +137,7 @@ public class ContractorsModel extends AbstractModel {
         clientSite.setCategory(FieldCategory.ReportingClientSite);
         fields.put(clientSite.getName().toUpperCase(), clientSite);
 
-        Field reportingClient = new Field("ReportingClient","Account.id",FieldType.Operator);
+        Field reportingClient = new Field("ContractorWorksForReportingClient","Account.id",FieldType.Operator);
         reportingClient.setVisible(false);
         reportingClient.setPrefixValue("SELECT co.subID " +
                 "FROM generalcontractors co " +
@@ -147,12 +147,34 @@ public class ContractorsModel extends AbstractModel {
         reportingClient.setCategory(FieldCategory.ReportingClientSite);
         fields.put(reportingClient.getName().toUpperCase(), reportingClient);
 
+        Field supplierDiversity = new Field("ContractorSupplierDiversity","ContractorPQF.id",FieldType.SupplierDiversity);
+        supplierDiversity.setVisible(false);
+        supplierDiversity.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
+        supplierDiversity.setSuffixValue("");
+        supplierDiversity.setCategory(FieldCategory.ReportingClientSite);
+        fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
 
-        fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase()).setType(FieldType.Number);
-        fields.get("ContractorGeneralLiabilityGLGeneralAggregateAnswer".toUpperCase()).setType(FieldType.Number);
-        fields.get("ContractorAutoLiabilityALCombinedSingleAnswer".toUpperCase()).setType(FieldType.Number);
-        fields.get("ContractorWorkersCompWCEachAccidentAnswer".toUpperCase()).setType(FieldType.Number);
-        fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase()).setType(FieldType.Number);
+        Field GLEachOccurrence = fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase());
+        GLEachOccurrence.setType(FieldType.Number);
+        GLEachOccurrence.setDatabaseColumnName("REPLACE(" + GLEachOccurrence.getDatabaseColumnName() + ",',','')");
+
+        Field GLGeneralAggregate = fields.get("ContractorGeneralLiabilityGLGeneralAggregateAnswer".toUpperCase());
+        GLGeneralAggregate.setType(FieldType.Number);
+        GLGeneralAggregate.setDatabaseColumnName("REPLACE(" + GLGeneralAggregate.getDatabaseColumnName() + ",',','')");
+
+        Field ALCombinedSingle = fields.get("ContractorAutoLiabilityALCombinedSingleAnswer".toUpperCase());
+        ALCombinedSingle.setType(FieldType.Number);
+        ALCombinedSingle.setDatabaseColumnName("REPLACE(" + ALCombinedSingle.getDatabaseColumnName() + ",',','')");
+
+        Field WCEachAccident = fields.get("ContractorWorkersCompWCEachAccidentAnswer".toUpperCase());
+        WCEachAccident.setType(FieldType.Number);
+        WCEachAccident.setDatabaseColumnName("REPLACE(" + WCEachAccident.getDatabaseColumnName() + ",',','')");
+
+        Field EXEachOccurrence = fields.get("ContractorExcessLiabilityEXEachOccurrenceAnswer".toUpperCase());
+        EXEachOccurrence.setType(FieldType.Number);
+        EXEachOccurrence.setDatabaseColumnName("REPLACE(" + EXEachOccurrence.getDatabaseColumnName() + ",',','')");
 
         return fields;
 	}

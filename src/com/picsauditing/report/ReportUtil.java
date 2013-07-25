@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import javax.persistence.EnumType;
 import javax.servlet.ServletOutputStream;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -28,11 +29,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
-import com.picsauditing.jpa.entities.Column;
-import com.picsauditing.jpa.entities.Filter;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.Sort;
-import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
@@ -350,9 +346,11 @@ public final class ReportUtil {
 	private static Object getKeyForEnum(FieldType fieldType, Enum enumValue) {
 		if (fieldType.getEnumType() == EnumType.ORDINAL) {
 			return enumValue.ordinal();
-		} else {
+		} else if (fieldType.getEnumType() == EnumType.STRING) {
 			return enumValue.name();
-		}
+		} else {
+            return ((ReportEnum) enumValue).getValue();
+        }
 	}
 
 	@SuppressWarnings("rawtypes")
