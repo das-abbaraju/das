@@ -644,7 +644,7 @@ public class BillingCalculatorSingle {
 
 
     private void addSSIPDiscountIfApplies(ContractorAccount contractor, List<InvoiceItem> items) {
-        if (containsActivation(items) && containsAuditGuard(items) &&  contractorDeservesSSIPDiscount(contractor) && shouldShowSsip(contractor)) {
+        if (containsActivation(items) && containsAuditGuard(items) &&  contractorDeservesSSIPDiscount(contractor) && shouldAddSsipDiscount(contractor)) {
             InvoiceItem activation = findIn(FeeClass.Activation, items);
             InvoiceItem lineItem = createLineItem(contractor, FeeClass.SSIPDiscountFee, 1);
             lineItem.setAmount(activation.getAmount().multiply(BigDecimal.valueOf(-1)));
@@ -678,7 +678,7 @@ public class BillingCalculatorSingle {
 		return meetsDiscountCriteria(ssipRegistrations.get(0), ssipExpirations.get(0));
 	}
 
-    public boolean shouldShowSsip(ContractorAccount contractor) {
+    public boolean shouldAddSsipDiscount(ContractorAccount contractor) {
         for (AuditTypeRule rule : ruleCache.getRules(contractor)) {
             if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
                 return true;
