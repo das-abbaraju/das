@@ -1,10 +1,7 @@
 package com.picsauditing.access;
 
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Strings;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountLockedException;
@@ -48,29 +45,36 @@ public class LoginService {
 	}
 
 	public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {
-		HomePageType homePageType = null;
 		Account account = user.getAccount();
 		if (account.isContractor()) {
-			if (account.getStatus().isDeactivated()) {
-				homePageType = HomePageType.Deactivated;
+            if (account.getStatus().isDeactivated()) {
+				return HomePageType.Deactivated;
 			} else if (account.getStatus().isDeclined()) {
-                homePageType = HomePageType.Declined;
+                return HomePageType.Declined;
             } else {
-				ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+                if (account.getStatus().isPending() && Strings.isNotEmpty(preLoginUrl) && preLoginUrl.contains("InvoiceDetail") ) {
+                    for (Invoice invoice : ((ContractorAccount) account).getInvoices()) {
+                        String linkToInvoice = "InvoiceDetail.action?invoice.id=" + invoice.getId();
+                        if (preLoginUrl.contains(linkToInvoice)) {
+                            return HomePageType.PreLogin;
+                        }
+                    }
+                }
+
+                ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
 				if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
-					homePageType = HomePageType.PreLogin;
+					return HomePageType.PreLogin;
 				} else {
-					homePageType = HomePageType.ContractorRegistrationStep;
+                    return HomePageType.ContractorRegistrationStep;
 				}
 			}
 		} else {
 			if (Strings.isNotEmpty(preLoginUrl)) {
-				homePageType = HomePageType.PreLogin;
+                return HomePageType.PreLogin;
 			} else {
-				homePageType = HomePageType.HomePage;
+                return HomePageType.HomePage;
 			}
 		}
-		return homePageType;
 	}
 
 	private void processReset(String key, User user) throws InvalidResetKeyException {
