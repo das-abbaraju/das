@@ -89,8 +89,7 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 
 		BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(
 				invoiceCommission.getRevenuePercent());
-		BigDecimal revenueAmount = invoiceCommission.getInvoice().getTotalCommissionEligibleInvoice(true)
-				.multiply(revenuePercent);
+		BigDecimal revenueAmount = invoiceCommission.getInvoice().getCommissionableAmount().multiply(revenuePercent);
 		return revenueAmount;
 	}
 

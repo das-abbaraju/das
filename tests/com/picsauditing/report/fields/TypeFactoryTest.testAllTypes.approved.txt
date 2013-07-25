@@ -26,6 +26,7 @@ FlagColor	Multiselect	Flag	Count,CountDistinct,Max,Min
 FlagCriteriaOptionCode	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Float	Number	Number	Count,CountDistinct,Average,Round,Sum,StdDev,Max,Min
 Integer	Number	Number	Count,CountDistinct,Average,Sum,StdDev,Max,Min
+InvoiceType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 LowMedHigh	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 MultiYearScope	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 NetworkLevel	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase

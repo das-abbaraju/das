@@ -162,9 +162,9 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			}
 		}
 
-		double totalCommissionEligible = invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+		double totalCommissionEligible = invoice.getCommissionableAmount().doubleValue();
 		if (totalCommissionEligible > 0) {
-			result /= invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+			result /= totalCommissionEligible;
 		}
 
 		return result;

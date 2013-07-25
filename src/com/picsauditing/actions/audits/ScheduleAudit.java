@@ -563,6 +563,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
 		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
+        invoice.setInvoiceType(InvoiceType.OtherFees);
 		AccountingSystemSynchronization.setToSynchronize(invoice);
 		invoice = invoiceService.saveInvoice(invoice);
 

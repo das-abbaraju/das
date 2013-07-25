@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Vector;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,31 +31,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
-import com.picsauditing.jpa.entities.BillingStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.salecommission.InvoiceObserver;
@@ -368,6 +344,7 @@ public class BillingCalculatorSingle {
 		toUpdate.setPaidDate(updateWith.getPaidDate());
 		toUpdate.setPoNumber(updateWith.getPoNumber());
 		toUpdate.setTotalAmount(updateWith.getTotalAmount());
+        toUpdate.setCommissionableAmount(updateWith.getCommissionableAmount());
 		AccountingSystemSynchronization.setToSynchronize(toUpdate);
 
 		invoiceService.saveInvoice(toUpdate);
@@ -388,14 +365,15 @@ public class BillingCalculatorSingle {
 		// refactor)
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM));
+			invoice = createInvoiceWithItems(contractor, invoiceItems, new User(User.SYSTEM), billingStatus);
 			taxService.applyTax(invoice);
 		}
 		return invoice;
 	}
 
-	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser) {
+	public Invoice createInvoiceWithItems(ContractorAccount contractor, List<InvoiceItem> invoiceItems, User auditUser, BillingStatus billingStatus) {
 		BigDecimal invoiceTotal = calculateInvoiceTotal(invoiceItems);
+        BigDecimal invoiceCommissionable = calculateInvoiceCommissionable(invoiceItems);
 
 		Invoice invoice = new Invoice();
 		invoice.setAccount(contractor);
@@ -403,7 +381,10 @@ public class BillingCalculatorSingle {
 		invoice.setStatus(TransactionStatus.Unpaid);
 		invoice.setItems(invoiceItems);
 		invoice.setTotalAmount(invoiceTotal);
+        invoice.setCommissionableAmount(invoiceCommissionable);
 		invoice.setAuditColumns(auditUser);
+
+        invoice.setInvoiceType(convertBillingStatusToInvoiceType(billingStatus));
 
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			AccountingSystemSynchronization.setToSynchronize(invoice);
@@ -433,12 +414,38 @@ public class BillingCalculatorSingle {
 		return invoice;
 	}
 
+    private InvoiceType convertBillingStatusToInvoiceType(BillingStatus billingStatus) {
+        switch (billingStatus) {
+            case Upgrade:
+                return InvoiceType.Upgrade;
+            case Renewal:
+            case RenewalOverdue:
+                return InvoiceType.Renewal;
+            case Activation:
+            case Reactivation:
+                return InvoiceType.Activation;
+            default:
+                return InvoiceType.OtherFees;
+        }
+    }
+
 	public BigDecimal calculateInvoiceTotal(List<InvoiceItem> invoiceItems) {
 		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (InvoiceItem item : invoiceItems) {
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 		}
 		return invoiceTotal;
+	}
+
+    public BigDecimal calculateInvoiceCommissionable(List<InvoiceItem> invoiceItems) {
+        BigDecimal invoiceCommissionable = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+
+        for (InvoiceItem item : invoiceItems) {
+            if (item.getInvoiceFee().isCommissionEligible()) {
+                invoiceCommissionable = invoiceCommissionable.add(item.getAmount());
+            }
+        }
+        return invoiceCommissionable;
 	}
 
 	private static void calculateAndSetDueDateOn(Invoice invoice, ContractorAccount contractor) {

@@ -39,6 +39,7 @@ public enum FieldType {
 	FlagCriteriaOptionCode(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FlagCriteriaOptionCode.class, EnumType.STRING),
 	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
 	Integer(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
+    InvoiceType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, InvoiceType.class, EnumType.STRING),
 	LowMedHigh(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, LowMedHigh.class, EnumType.ORDINAL),
 	MultiYearScope(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, MultiYearScope.class, EnumType.STRING),
 	NetworkLevel(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, NetworkLevel.class, EnumType.ORDINAL),

@@ -398,8 +398,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private void updateTotals() {
 		if (!invoice.getStatus().isPaid()) {
 			invoice.setTotalAmount(BigDecimal.ZERO);
+            invoice.setCommissionableAmount(BigDecimal.ZERO);
+
 			for (InvoiceItem item : invoice.getItems()) {
 				invoice.setTotalAmount(invoice.getTotalAmount().add(item.getAmount()));
+
+                if (item.getInvoiceFee().isCommissionEligible()) {
+                    invoice.setCommissionableAmount(invoice.getCommissionableAmount().add(item.getAmount()));
+                }
 			}
 		}
 	}

@@ -32,6 +32,7 @@ InvoiceAmountApplied
 InvoiceCurrency
 InvoiceDueDate
 InvoiceInvoiceID
+InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
