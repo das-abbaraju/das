@@ -96,6 +96,24 @@
  * Tab Content
  */
 
+#report_subscribe
+{
+	.x-fieldset-body
+	{
+		margin-left: 27px;
+	}
+
+	fieldset
+	{
+		margin-top: 14px;
+	}
+
+	legend
+	{
+		margin-bottom: 10px;
+	}
+}
+
 #report_edit,
 #report_copy,
 #report_share,
@@ -369,7 +387,7 @@
 /***
  * Tabs
  */
- 
+
 #report_settings_modal_tabbar
 {
 	background: #454545;
@@ -381,6 +399,11 @@
 	border-right: 1px solid #333333;
 	border-top: 1px solid #333333;
 	padding: 5px;
+}
+
+#report_settings_modal_tabbar .x-tab-active:last-child
+{
+  width: 72px;
 }
 
 #report_settings_modal_tabbar .x-tab button
