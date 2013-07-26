@@ -717,9 +717,6 @@ public class BillingCalculatorSingle {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
 						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
-					invoice.setCreationDate(new Date());
-                    invoiceItemDAO.save(invoice);
-
 					contractor.setStatus(AccountStatus.Active);
                     contractor.setMembershipAndRenewalDates(new Date());
 					contractor.setAuditColumns(new User(User.SYSTEM));
