@@ -188,7 +188,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			// Free accounts should just be activated
 			contractor.setStatus(AccountStatus.Active);
 			contractor.setAuditColumns(permissions);
-            contractor.setMembershipAndRenewalDates(new Date());
+			contractor.setMembershipDate(new Date());
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
 			}
@@ -295,7 +295,6 @@ public class RegistrationMakePayment extends RegistrationAction {
 		closeRelatedRegistrationRequests();
 		if (contractor.getStatus().equals(AccountStatus.Requested)) {
 			contractor.setStatus(AccountStatus.Active);
-            contractor.setMembershipAndRenewalDates(new Date());
 			contractorAccountDao.save(contractor);
 		}
 

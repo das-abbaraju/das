@@ -197,12 +197,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 
-            if (contractor.isActive()) {
-                if (wasContractorPendingRequestedOrDeactivated()) {
-                    contractor.setMembershipAndRenewalDates(new Date());
-                }
-            }
-
 			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
@@ -211,11 +205,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-    private boolean wasContractorPendingRequestedOrDeactivated() {
-        return contractorAccountDao.find(contractor.getId()).getStatus().isPendingRequestedOrDeactivated();
-    }
-
-    protected void checkListOnlyAcceptability() {
+	protected void checkListOnlyAcceptability() {
 		if (AccountLevel.ListOnly == contractor.getAccountLevel()) {
 			// Now check if they have a product risk level
 			if (!contractor.isListOnlyEligible()) {
@@ -502,9 +492,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public String reactivate() throws Exception {
 		contractor.setRenew(true);
 		if (contractor.isHasFreeMembership()) {
-            if (contractor.getStatus() != AccountStatus.Active) {
-                contractor.setMembershipAndRenewalDates(new Date());
-            }
 			contractor.setStatus(AccountStatus.Active);
 		}
 
