@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ContractorAuditMassDatasModel extends AbstractModel {
-	public ContractorAuditMassDatasModel(Permissions permissions) {
+public class ContractorAuditOperatorCemexModel extends AbstractModel {
+	public ContractorAuditOperatorCemexModel(Permissions permissions) {
 		super(permissions, new ContractorTable());
 	}
 
