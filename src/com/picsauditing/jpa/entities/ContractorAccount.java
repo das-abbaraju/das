@@ -1118,8 +1118,6 @@ public class ContractorAccount extends Account implements JSONable {
 		 * or renewal. We're not looking for upgrades here.
 		 */
 		boolean foundMembership = false;
-		boolean foundMembershipDate = false;
-		boolean foundPaymentExpires = false;
 
 		/**
 		 * Go through the list of invoices in reverse order (most recent first).
@@ -1215,29 +1213,6 @@ public class ContractorAccount extends Account implements JSONable {
 									invoiceItem.getInvoiceFee());
 							setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 						}
-
-						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
-							paymentExpires = invoiceItem.getPaymentExpires();
-							foundPaymentExpires = true;
-						}
-					}
-					if (!foundMembershipDate
-							&& (invoiceItem.getInvoiceFee().isActivation() || invoiceItem.getInvoiceFee()
-							.isReactivation())) {
-						if (invoice.getPayments().size() > 0) {
-							List<PaymentApplied> sortedPaymentList = new ArrayList<PaymentApplied>(
-									invoice.getPayments());
-							Collections.sort(invoice.getPayments(), new Comparator<PaymentApplied>() {
-								public int compare(PaymentApplied paymentOne, PaymentApplied paymentTwo) {
-									return paymentTwo.getCreationDate().compareTo(paymentOne.getCreationDate());
-								}
-							});
-
-							PaymentApplied payment = sortedPaymentList.get(0);
-
-							membershipDate = payment.getCreationDate();
-							foundMembershipDate = true;
-						}
 					}
 					// Checking for ImportPQF fee and potentially others
 					if (!foundImportPQFFee && invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)
@@ -1248,9 +1223,6 @@ public class ContractorAccount extends Account implements JSONable {
 					}
 				}
 
-				if (foundPaymentExpires) {
-					foundMembership = true;
-				}
 				invoice.getCommissionEligibleFees(true);
 			}
 		}
@@ -1281,14 +1253,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee) {
 			clearCurrentFee(FeeClass.ImportFee, feeDAO);
-		}
-
-		if (!foundPaymentExpires) {
-			paymentExpires = creationDate;
-		}
-
-		if (!foundMembershipDate) {
-			membershipDate = null;
 		}
 	}
 
