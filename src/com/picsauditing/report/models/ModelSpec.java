@@ -13,6 +13,7 @@ public class ModelSpec {
 	String alias;
 	FieldCategory category;
 	FieldImportance minimumImportance;
+    boolean forceRequired;
 	List<ModelSpec> joins = new ArrayList<ModelSpec>();
 
 	public ModelSpec(String key, String alias, FieldCategory category) {

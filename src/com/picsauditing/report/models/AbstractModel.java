@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.tables.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +68,10 @@ public abstract class AbstractModel {
 
 	private ReportJoin appendToJoin(String fromAlias, ModelSpec childSpec, String thirdAlias, ReportForeignKey key) {
 		ReportJoin childJoin = parseSpec(key.getTable(), childSpec);
+
+        if (childSpec.forceRequired) {
+            key.setJoinType(JoinType.RequiredJoin);
+        }
 
 		childJoin.setJoinType(key.getJoinType());
 		childJoin.setAlias(childSpec.alias);
