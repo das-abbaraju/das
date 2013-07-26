@@ -197,6 +197,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 
+            if (contractor.isActive()) {
+                if (wasContractorPendingRequestedOrDeactivated()) {
+                    contractor.setMembershipAndRenewalDates(new Date());
+                }
+            }
+
 			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
