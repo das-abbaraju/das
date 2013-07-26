@@ -18,17 +18,14 @@
         <a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
         	<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
         </a>
-       <%-- TODO: Add boolean for accountManagerOrSalesRepresentative in java --%>
-        <s:if test="accountManagerOrSalesRepresentative || debugging">
-            <a
-                href="javascript:;"
-                title="<s:text name="javascript.OpensInNewWindow" />"
-                class="add"
-                data-url="ReportNewReqConImport.action"
-                id="ImportRegistrationRequests">
-                <s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
-            </a>
-        </s:if>
+        <a
+            href="javascript:;"
+            title="<s:text name="javascript.OpensInNewWindow" />"
+            class="add"
+            data-url="ReportNewReqConImport.action"
+            id="ImportRegistrationRequests">
+            <s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
+        </a>
     </div>
 	<s:if test="report.allRows == 0">
 		<div class="alert">

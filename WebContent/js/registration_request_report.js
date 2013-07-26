@@ -13,12 +13,10 @@
 
 
             confirmDownload: function(results, url) {
-				var confirmed = false;
+				var confirmed = true;
 
 				if (results > 500) {
 					confirmed = confirm(translate('JS.ConfirmDownloadAllRows'));
-				} else {
-					confirmed = true;
 				}
 				
 				if (confirmed) {
@@ -28,8 +26,9 @@
 			
 			downloadResults: function(download_url) {
 				var $contractor_search_form = $('#form1'),
-				default_action = $contractor_search_form.attr('action');
+					default_action = $contractor_search_form.attr('action');
 
+				// must make non-ajax post request to ensure foreign characters display correctly and do not break the request
 				$contractor_search_form.attr('action', download_url);
 				$contractor_search_form.submit();
 				$contractor_search_form.attr('action', default_action);
