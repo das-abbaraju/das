@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.model.account.AccountStatusChanges;
@@ -98,6 +99,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 		if (ACTIVATE_BUTTON.equals(button)) {
 			contractor.setStatus(AccountStatus.Active);
+            contractor.setMembershipAndRenewalDates(new Date());
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
 					Account.PicsID, billingNoteModel.findUserForPaymentNote(permissions));
 		}

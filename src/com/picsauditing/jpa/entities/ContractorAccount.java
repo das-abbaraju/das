@@ -23,6 +23,7 @@ import com.picsauditing.validator.InputValidator;
 import com.picsauditing.validator.VATValidator;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Sort;
@@ -572,6 +573,11 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setMembershipDate(Date membershipDate) {
 		this.membershipDate = membershipDate;
 	}
+
+    public void setMembershipAndRenewalDates(Date date) {
+        this.membershipDate = date;
+        this.paymentExpires = DateUtils.addYears(date,1);
+    }
 
 	/**
 	 * The date the contractor last reviewed their facility list
