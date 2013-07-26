@@ -699,4 +699,16 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setInsideSalesId(int insideSalesId) {
 		this.insideSalesId = insideSalesId;
 	}
+
+	public boolean showISRAssginment() {
+		AccountStatus status = contractor.getStatus();
+
+		if (status.equals(AccountStatus.Pending) ||
+				status.equals(AccountStatus.Requested) ||
+				status.equals(AccountStatus.Deactivated) ||
+				status.equals(AccountStatus.Declined)) {
+			return true;
+		}
+		return false;
+	}
 }
