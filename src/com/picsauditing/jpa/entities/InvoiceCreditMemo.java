@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class InvoiceCreditMemo extends Transaction {
 
     private PaymentMethod paymentMethod = PaymentMethod.RefundCreditMemo;
-    private List<RefundItem> refundItems;
+    private List<RefundItem> refundItems = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     public PaymentMethod getPaymentMethod() {

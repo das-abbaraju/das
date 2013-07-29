@@ -33,6 +33,7 @@ public class CreditMemoAppliedToInvoice extends TransactionApplied {
         CreditMemoAppliedToInvoice applied = new CreditMemoAppliedToInvoice();
         applied.setInvoice(inv);
         applied.setCreditMemo(new InvoiceCreditMemo());
+        applied.getCreditMemo().setAccount(inv.getAccount());
         return applied;
     }
 

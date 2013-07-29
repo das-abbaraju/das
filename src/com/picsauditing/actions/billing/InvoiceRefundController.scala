@@ -25,7 +25,7 @@ class InvoiceRefundController extends ContractorActionSupport with Preparable {
   @BeanProperty
   var invoice: Invoice = null
 
-  private val REDIRECT = "InvoiceDetail.action?invoice.id=" + invoice.getId
+  private lazy val REDIRECT = "InvoiceDetail.action?invoice.id="
 
   def prepare = {
     invoice = invoiceDAO.find(getParameter("invoice.id"))
@@ -35,7 +35,7 @@ class InvoiceRefundController extends ContractorActionSupport with Preparable {
 
   def doRefund = try { if (refunds != null && !refunds.isEmpty) {
     save(refundFor(invoice))
-    setUrlForRedirect(REDIRECT)
+    setUrlForRedirect(REDIRECT + invoice.getId)
     Action.INPUT
   } else {
     addActionError("You must select items to refund.")
@@ -59,7 +59,7 @@ class InvoiceRefundController extends ContractorActionSupport with Preparable {
     refunds map { proposedRefundId => generatedReturnItem { foundInvoiceItemFor(proposedRefundId) }}}.toList
 
   private def foundInvoiceItemFor(proposedRefundItemId: int) = {
-    val matchingItem = existingUnrefundedInvoiceItem(_)(proposedRefundItemId)
+    val matchingItem: InvoiceItem => Boolean = existingUnrefundedInvoiceItem(_)(proposedRefundItemId)
 
     invoice.getItems find matchingItem match {
       case Some(item) => Right(item)
