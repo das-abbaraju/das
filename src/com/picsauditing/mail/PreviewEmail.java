@@ -3,27 +3,48 @@ package com.picsauditing.mail;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.mail.subscription.DynamicReportsSubscription;
+import com.picsauditing.mail.subscription.SubscriptionBuilder;
+import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Locale;
+import java.util.Map;
 
 public class PreviewEmail extends PicsActionSupport {
-	private ContractorAccount contractor;
+    @Autowired
+    EmailSubscriptionDAO subscriptionDAO;
+    @Autowired
+    SubscriptionBuilderFactory subscriptionBuilderFactory;
+    private ContractorAccount contractor;
 	private User user;
 	private Locale locale;
 	private int templateID;
+    private int subscriptionID;
 	private EmailQueue email;
 
-	@Anonymous
+    @Anonymous
 	public String execute() throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(templateID);
-		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 
-		//TODO
-		//emailBuilder.setLocale(locale);
+        if (subscriptionID != 0) {
+            EmailSubscription emailSubscription = subscriptionDAO.find(subscriptionID);
+
+            SubscriptionBuilder builder = subscriptionBuilderFactory.getBuilder(emailSubscription.getSubscription());
+            Map<String, Object> tokens = builder.process(emailSubscription);
+
+            emailBuilder.addAllTokens(tokens);
+            templateID = emailSubscription.getSubscription().getTemplateID();
+        }
+        else if (templateID != 0) {
+            emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+        }
+		emailBuilder.setTemplate(templateID);
 
 		email = emailBuilder.build();
 
@@ -62,7 +83,15 @@ public class PreviewEmail extends PicsActionSupport {
 		this.templateID = templateID;
 	}
 
-	public EmailQueue getEmail() {
+    public int getSubscriptionID() {
+        return subscriptionID;
+    }
+
+    public void setSubscriptionID(int subscriptionID) {
+        this.subscriptionID = subscriptionID;
+    }
+
+    public EmailQueue getEmail() {
 		return email;
 	}
 

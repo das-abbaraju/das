@@ -197,8 +197,7 @@ public enum Subscription implements Translatable {
 	},
     DynamicReports {
         public void initialize() {
-            // TODO: template ID here is a dummy ID, fill it with the real one
-            setTemplateID(348);
+            setTemplateID(350);
             setDefaultTimePeriod(SubscriptionTimePeriod.None);
             setRequiredForAdmin(true);
             setRequiredForOperator(true);

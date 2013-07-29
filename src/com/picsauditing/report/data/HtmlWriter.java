@@ -20,12 +20,9 @@ public class HtmlWriter {
     private ReportResults reportResults;
     private StringBuilder html;
 
-    private final String HTML_HEADER = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" +
-            "<html xmlns=\"http://www.w3.org/1999/xhtml\">" +
-            "<body style=\"width: 100%; margin: 0; padding: 0px;\">" +
-            "<table style=\"width: 100%; padding: 0px; border-spacing: 0; border: 0; width:100%; line-height: 100%;\">" +
+    private final String HTML_HEADER = "<table style=\"width: 100%; padding: 0px; border-spacing: 0; border: 0; width:100%; line-height: 100%;\">" +
             "<tr><td>";
-    private final String HTML_FOOTER = "</table></td></tr></table></body></html>";
+    private final String HTML_FOOTER = "</table></td></tr></table>";
     private final String TABLE_STYLE = "border-spacing: 0; border-collapse: collapse; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px;";
     private final String TH_STYLE = "background-color: #454545; border: 1px solid #454545; color: #ccc; font-weight: bold; padding: 4px 0px 0px 5px;";
     private final String TH_END_COLUMN_WIDTH_STYLE = "width: 29px; ";
@@ -45,8 +42,8 @@ public class HtmlWriter {
     private final String TD_END_COLUMN_STYLE = TD_END_NO_TOP_STYLE + TD_NO_BOTTOM_BORDER_STYLE + TD_BACKGROUND_STYLE;
     private final String TD_END_ROW_COLUMN_STYLE = TD_END_NO_TOP_STYLE + TD_BACKGROUND_STYLE;
 
-    private final int MAX_COLUMNS = 5;
-    private final int MAX_ROWS = 100;
+    public static final int MAX_COLUMNS = 5;
+    public static final int MAX_ROWS = 100;
 
     public HtmlWriter(ReportResults reportResults, Locale locale) {
         html = new StringBuilder();
@@ -120,7 +117,9 @@ public class HtmlWriter {
 
             html.append("<tr>");
 
-            addRowNumber(countRows);
+            boolean isLastRow = countRows+1 == reportResults.size();
+
+            addRowNumber(countRows, isLastRow);
 
             for (Column column : reportResults.getColumns()) {
                 if (countColumns == MAX_COLUMNS) {
@@ -128,7 +127,7 @@ public class HtmlWriter {
                     break;
                 }
 
-                addTD(createColumnStyle(isOddRow, column.getDisplayType()), createCells(row.getCellByColumn(column)));
+                addTD(createColumnStyle(isOddRow, isLastRow, column.getDisplayType()), createCells(row.getCellByColumn(column)));
 
                 countColumns++;
             }
@@ -140,7 +139,7 @@ public class HtmlWriter {
         html.append("</tbody>");
     }
 
-    private String createColumnStyle(boolean oddRow, DisplayType displayType) {
+    private String createColumnStyle(boolean oddRow, boolean lastRow, DisplayType displayType) {
         if (!displayType.isNumber())
             displayType = DisplayType.String;
 
@@ -148,6 +147,9 @@ public class HtmlWriter {
 
         if (!oddRow)
             style += TD_BACKGROUND_STYLE;
+
+        if (lastRow)
+            style = StringUtils.remove(style,TD_NO_BOTTOM_BORDER_STYLE);
 
         if (displayType == DisplayType.Number)
             style += TD_TEXT_ALIGN_RIGHT_STYLE;
@@ -157,13 +159,16 @@ public class HtmlWriter {
         return style;
     }
 
-    private void addRowNumber(int currentRow) {
+    private void addRowNumber(int currentRow, boolean lastRow) {
         boolean isOddRow = (currentRow) % 2 == 0;
 
         String style = TD_COMMON_BORDER_STYLE + TD_TEXT_ALIGN_RIGHT_STYLE;
         if (!isOddRow) {
             style += TD_BACKGROUND_STYLE;
         }
+
+        if (lastRow)
+            style = StringUtils.remove(style,TD_NO_BOTTOM_BORDER_STYLE);
 
         addTD(style, new Integer(currentRow+1).toString());
     }

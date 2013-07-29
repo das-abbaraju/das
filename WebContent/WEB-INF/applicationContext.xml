@@ -100,6 +100,7 @@
     <bean id="PaymentCommissionDAO" class="com.picsauditing.dao.PaymentCommissionDAO"/>
     <bean id="PasswordDAO" class="com.picsauditing.dao.PasswordDAO"/>
     <bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
+    <bean id="ReportApi" class="com.picsauditing.actions.report.ReportApi"/>
     <bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
     <bean id="ReportElementDAO" class="com.picsauditing.dao.ReportElementDAO"/>
     <bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>

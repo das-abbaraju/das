@@ -65,8 +65,8 @@ public class SubscriptionBuilderFactory {
 			return openTasks;
 		case CancelledScheduledAudits:
 			return cancelledScheduleAudits;
-            case DynamicReports:
-                return dynamicReports;
+        case DynamicReports:
+            return dynamicReports;
 		case RejectedInsurance:
 			return insuranceRejected;
 		default:
