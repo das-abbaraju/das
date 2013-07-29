@@ -9,6 +9,7 @@
         <pattern>/ManageReports*.action</pattern>
         <pattern>/NewYearMailer*.action</pattern>
         <pattern>/ReportTester.action</pattern>
+        <pattern>/InvoiceRefund.action</pattern>
     </decorator>
     <decorator name="contractor-layout" page="contractor-layout.jsp">
     	<pattern>/Temp*.action</pattern>

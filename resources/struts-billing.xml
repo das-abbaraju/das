@@ -86,5 +86,17 @@
             <result type="file" />
         </action>
         <action name="ProcessCommission" class="com.picsauditing.actions.billing.ProcessCommission" />
+
+        <action name="InvoiceRefund" class="com.picsauditing.actions.billing.InvoiceRefundController">
+            <result>struts/reports/invoice-refund.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">InvoiceDetail</param>
+				<param name="invoice.id">${invoice.id}</param>
+			</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">InvoiceRefund</param>
+				<param name="invoice.id">${invoice.id}</param>
+			</result>
+        </action>
 	</package>
 </struts>
