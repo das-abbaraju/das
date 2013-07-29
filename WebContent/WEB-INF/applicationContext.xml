@@ -272,6 +272,14 @@
         <property name="queueCapacity" value="25"/>
     </bean>
 
+    <!-- this is intentionally a singleton -->
+    <bean id="translationLookupEventListener" class="com.picsauditing.model.events.TranslationLookupEventListener" />
+
+    <bean id="applicationEventMulticaster"
+          class="org.springframework.context.event.SimpleApplicationEventMulticaster">
+        <property name="taskExecutor" ref="taskExecutor"/>
+    </bean>
+
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

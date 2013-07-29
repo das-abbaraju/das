@@ -29,6 +29,16 @@
 		memoryStoreEvictionPolicy="LFU">
 	</cache>
 
+	<cache name="i18n" maxElementsInMemory="20000" eternal="false"
+		timeToLiveSeconds="3600" timeToIdleSeconds="1800" overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+    <cache name="i18nLocale" maxElementsInMemory="10000" eternal="false"
+           timeToLiveSeconds="1800" timeToIdleSeconds="1800" overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU">
+    </cache>
+
 	<!--
 		Configuring Query Cache
 	-->

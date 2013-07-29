@@ -166,7 +166,7 @@ public class I18nCache implements TranslationService, Serializable {
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Table<String, String, String> newTranslationsForJS = TreeBasedTable.create();
 
-			List<BasicDynaBean> messages = getAppTranslationDAO().getTranslationsForI18nCache();
+			List<BasicDynaBean> messages = appTranslationDAO().getTranslationsForI18nCache();
 			for (BasicDynaBean message : messages) {
 				String key = String.valueOf(message.get("msgKey"));
 				newCache.put(TranslationUtil.prepareKeyForCache(key), String.valueOf(message.get("locale")),
@@ -175,7 +175,7 @@ public class I18nCache implements TranslationService, Serializable {
 				newCacheUsage.put(key, lastUsed);
 			}
 
-			List<ContextTranslation> contextTranslations = getAppTranslationDAO().findAllForJS();
+			List<ContextTranslation> contextTranslations = appTranslationDAO().findAllForJS();
 			for (ContextTranslation contextTranslation : contextTranslations) {
 				String key = contextTranslation.getI18nKey();
 				String translation = contextTranslation.getTranslaton();
@@ -319,23 +319,23 @@ public class I18nCache implements TranslationService, Serializable {
 	}
 
 	private boolean isEmptyStringValidTranslation() {
-		return getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
+		return featureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION);
 	}
 
-	public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
-		if (CollectionUtils.isEmpty(locales) || Strings.isEmpty(actionName) || Strings.isEmpty(methodName)) {
-			return Collections.emptyList();
-		}
+    public List<Map<String, String>> getTranslationsForJS(String actionName, String methodName, Set<String> locales) {
+        if (CollectionUtils.isEmpty(locales) || Strings.isEmpty(actionName) || Strings.isEmpty(methodName)) {
+            return Collections.emptyList();
+        }
 
-		List<String> keys = generateKeys(actionName, methodName, locales);
+        List<String> keys = generateKeys(actionName, methodName, locales);
 
-		List<Map<String, String>> translations = new ArrayList<>();
-		for (String key : keys) {
-			translations.add(Collections.unmodifiableMap(translationsForJS.row(key)));
-		}
+        List<Map<String, String>> translations = new ArrayList<>();
+        for (String key : keys) {
+            translations.add(Collections.unmodifiableMap(translationsForJS.row(key)));
+        }
 
-		return translations;
-	}
+        return translations;
+    }
 
 	private List<String> generateKeys(String actionName, String methodName, Set<String> locales) {
 		List<String> keys = new ArrayList<String>();
@@ -347,7 +347,7 @@ public class I18nCache implements TranslationService, Serializable {
 		return keys;
 	}
 
-	private AppTranslationDAO getAppTranslationDAO() {
+	private AppTranslationDAO appTranslationDAO() {
 		if (appTranslationDAO == null) {
 			// not using the SpringUtils because the SpringContext has not been
 			// loaded before this is called.
@@ -358,7 +358,7 @@ public class I18nCache implements TranslationService, Serializable {
 		return appTranslationDAO;
 	}
 
-	private FeatureToggle getFeatureToggle() {
+	private FeatureToggle featureToggle() {
 		if (featureToggle == null) {
 			featureToggle = new FeatureToggleCheckerGroovy(new JdbcFeatureToggleProvider(), null);
 		}
