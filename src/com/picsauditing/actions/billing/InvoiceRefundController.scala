@@ -1,6 +1,6 @@
 package com.picsauditing.actions.billing
 
-import com.opensymphony.xwork2.Preparable
+import com.opensymphony.xwork2.{Action, Preparable}
 import com.picsauditing.actions.contractors.ContractorActionSupport
 import com.picsauditing.dao.{CreditMemoDAO, InvoiceDAO}
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,20 +25,24 @@ class InvoiceRefundController extends ContractorActionSupport with Preparable {
   @BeanProperty
   var invoice: Invoice = null
 
-  private val REDIRECT = ""
+  private val REDIRECT = "InvoiceDetail.action?invoice.id=" + invoice.getId
 
   def prepare = {
     invoice = invoiceDAO.find(getParameter("invoice.id"))
   }
 
-  override def execute = "SUCCESS"
+  override def execute = Action.SUCCESS
 
-  def doRefund = if (refunds != null && !refunds.isEmpty) {
+  def doRefund = try { if (refunds != null && !refunds.isEmpty) {
     save(refundFor(invoice))
     setUrlForRedirect(REDIRECT)
+    Action.INPUT
   } else {
     addActionError("You must select items to refund.")
     execute
+  }} catch {
+    case e => addActionError("There has been a problem creating your refund.")
+    Action.ERROR
   }
 
   private def refundFor(invoice: Invoice) = {
