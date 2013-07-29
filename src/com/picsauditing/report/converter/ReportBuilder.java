@@ -175,7 +175,33 @@ public class ReportBuilder {
 		return filter;
 	}
 
-	private static void toElementFromJSON(JSONObject json, ReportElement element) {
+    public static Report addDynamicParameters(Report report, JSONArray parameters, boolean removeAggregates) {
+        if (removeAggregates)
+            clearAggregateFunctions(report);
+
+        if (parameters != null && !parameters.isEmpty())
+            addDynamicFilters(report, parameters);
+
+        return report;
+    }
+
+    private static void clearAggregateFunctions(Report report) {
+        for (Column column : report.getColumns()) {
+            if (!column.hasNoSqlFunction() && column.getSqlFunction().isAggregate()) {
+                column.setSqlFunction(null);
+                column.setName(column.getFieldNameWithoutMethod());
+            }
+        }
+    }
+
+    private static void addDynamicFilters(Report report, JSONArray parameters) {
+        for (int i = 0; i < parameters.size(); i++) {
+            JSONObject json = (JSONObject) parameters.get(i);
+            report.addFilter(toFilter(json));
+        }
+    }
+
+    private static void toElementFromJSON(JSONObject json, ReportElement element) {
 		try {
 			Object idObj = json.get(REPORT_ELEMENT_DB_ID);
 

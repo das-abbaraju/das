@@ -69,41 +69,41 @@ public class ReportService {
 	private static final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
 	@SuppressWarnings("unchecked")
-	public JSONObject buildJsonResponse(ReportContext reportContext) throws ReportValidationException,
-			RecordNotFoundException, SQLException {
-		Report report = createOrLoadReport(reportContext);
-		SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
+    public JSONObject buildJsonResponse(ReportContext reportContext, JSONArray parameters, boolean removeAggregates) throws ReportValidationException,
+            RecordNotFoundException, SQLException {
+        Report report = createOrLoadReport(reportContext, parameters, removeAggregates);
+        SelectSQL sql = initializeReportAndBuildSql(reportContext, report);
 
-		JSONObject responseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
 
-		if (reportContext.includeReport) {
+        if (reportContext.includeReport) {
             List<EmailSubscription> subscriptions = emailSubscriptionDAO.findByUserIdReportId(reportContext.permissions.getUserId(), report.getId());
 
             JSONObject reportJson = JsonReportBuilder.buildReportJson(report, reportContext.permissions, subscriptions);
-			responseJson.put(LEVEL_REPORT, reportJson);
-		}
+            responseJson.put(LEVEL_REPORT, reportJson);
+        }
 
-		AbstractModel reportModel = ReportModelFactory.build(report.getModelType(), reportContext.permissions);
-		if (reportContext.includeColumns) {
-			JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_COLUMNS, columnsJson);
-		}
+        AbstractModel reportModel = ReportModelFactory.build(report.getModelType(), reportContext.permissions);
+        if (reportContext.includeColumns) {
+            JSONArray columnsJson = JsonReportElementsBuilder.buildColumns(reportModel, reportContext.permissions);
+            responseJson.put(LEVEL_COLUMNS, columnsJson);
+        }
 
-		if (reportContext.includeFilters) {
-			JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
-			responseJson.put(LEVEL_FILTERS, filtersJson);
-		}
+        if (reportContext.includeFilters) {
+            JSONArray filtersJson = JsonReportElementsBuilder.buildFilters(reportModel, reportContext.permissions);
+            responseJson.put(LEVEL_FILTERS, filtersJson);
+        }
 
-		if (reportContext.includeData) {
-			JSONObject dataJson = buildDataJson(report, reportContext, sql);
-			responseJson.put(LEVEL_RESULTS, dataJson);
-		}
+        if (reportContext.includeData) {
+            JSONObject dataJson = buildDataJson(report, reportContext, sql);
+            responseJson.put(LEVEL_RESULTS, dataJson);
+        }
 
-		responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
+        responseJson.put(ReportJson.EXT_JS_SUCCESS, true);
         responseJson.put(ReportJson.REPORT_EXPORT_LIMIT, EXPORT_LIMIT);
 
-		return responseJson;
-	}
+        return responseJson;
+    }
 
 	public SelectSQL initializeReportAndBuildSql(ReportContext reportContext, Report report)
 			throws ReportValidationException {
@@ -114,7 +114,7 @@ public class ReportService {
 		return sql;
 	}
 
-	public Report createOrLoadReport(ReportContext reportContext) throws RecordNotFoundException,
+	public Report createOrLoadReport(ReportContext reportContext, JSONArray parameters, boolean removeAggregates) throws RecordNotFoundException,
 			ReportValidationException {
 		JSONObject reportJson = buildReportJsonFromPayload(reportContext.payloadJson);
 
@@ -125,12 +125,14 @@ public class ReportService {
 			report = loadReportFromDatabase(reportContext.reportId);
 		}
 
+        ReportBuilder.addDynamicParameters(report, parameters, removeAggregates);
+
 		report.sortColumns();
 
 		return report;
 	}
 
-	private JSONObject buildReportJsonFromPayload(JSONObject payloadJson) {
+    private JSONObject buildReportJsonFromPayload(JSONObject payloadJson) {
 		JSONObject reportJson = new JSONObject();
 
 		if (JSONUtilities.isNotEmpty(payloadJson)) {

@@ -11,8 +11,10 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,9 @@ public class ReportApi extends PicsApiSupport {
 	private ModelType type;
 	private String fieldId;
 
+    protected String dynamicParameters;
+    protected boolean removeAggregates;
+
     private SubscriptionTimePeriod frequency = SubscriptionTimePeriod.None;
 
 	private static final String PRINT = "print";
@@ -70,8 +75,13 @@ public class ReportApi extends PicsApiSupport {
 		JSONObject payloadJson = getJsonFromRequestPayload();
 		ReportContext reportContext = buildReportContext(payloadJson);
 
+        JSONArray params = null;
+        if (dynamicParameters != null) {
+            params = (JSONArray)new JSONParser().parse(dynamicParameters);
+        }
+
 		try {
-			json = reportService.buildJsonResponse(reportContext);
+			json = reportService.buildJsonResponse(reportContext, params, removeAggregates);
 		} catch (ReportValidationException rve) {
 			logger.error("Invalid report in ReportApi.execute()", rve);
 			writeJsonException(json, rve);
@@ -330,4 +340,19 @@ public class ReportApi extends PicsApiSupport {
 		this.reportJson = reportJson;
 	}
 
+    public boolean isRemoveAggregates() {
+        return removeAggregates;
+    }
+
+    public void setRemoveAggregates(boolean removeAggregates) {
+        this.removeAggregates = removeAggregates;
+    }
+
+    public String getDynamicParameters() {
+        return dynamicParameters;
+    }
+
+    public void setDynamicParameters(String dynamicParameters) {
+        this.dynamicParameters = dynamicParameters;
+    }
 }

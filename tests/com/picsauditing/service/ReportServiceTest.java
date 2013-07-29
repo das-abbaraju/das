@@ -60,6 +60,9 @@ import com.picsauditing.search.SelectSQL;
 
 public class ReportServiceTest extends PicsTranslationTest {
 
+    private JSONArray parameters;
+    private boolean removeAggregates;
+
 	private ReportService reportService;
 
 	@Mock
@@ -123,7 +126,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(reportDao.runQuery(eq(selectSql.toString()))).thenReturn(mockReportSearchResults);
 		when(permissions.isAdmin()).thenReturn(true);
 
-		JSONObject responseJson = reportService.buildJsonResponse(reportContext);
+		JSONObject responseJson = reportService.buildJsonResponse(reportContext, parameters, removeAggregates);
 
 		assertEquals(3, responseJson.size());
 
@@ -206,7 +209,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
         when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 
-		Report resultReport = reportService.createOrLoadReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext, parameters, removeAggregates);
 
 		assertEquals(REPORT_ID, resultReport.getId());
 	}
@@ -220,7 +223,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 
-		Report resultReport = reportService.createOrLoadReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext, parameters, removeAggregates);
 
 		assertEquals(report, resultReport);
 	}
@@ -234,7 +237,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		when(permissionService.canUserEditReport(permissions, REPORT_ID)).thenReturn(false);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 
-		Report resultReport = reportService.createOrLoadReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext, parameters, removeAggregates);
 
 		assertEquals(report, resultReport);
 	}
@@ -247,7 +250,7 @@ public class ReportServiceTest extends PicsTranslationTest {
 		setupMockBasicReport();
 		when(reportDao.findById(anyInt())).thenReturn(report);
 
-		Report resultReport = reportService.createOrLoadReport(reportContext);
+		Report resultReport = reportService.createOrLoadReport(reportContext, parameters, removeAggregates);
 
 		assertEquals(report.getId(), resultReport.getId());
 		assertEquals(report.getModelType(), resultReport.getModelType());
