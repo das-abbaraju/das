@@ -37,9 +37,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!copy.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
@@ -64,9 +62,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!info.action?';
 
-            var params = {
-                reportId: report_id,
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
@@ -77,9 +73,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!download.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
@@ -90,9 +84,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!favorite.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
@@ -104,9 +96,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 report_id = params.report,
                 path = 'ReportApi!subscribe.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             return path + Ext.Object.toQueryString(params);
         },
@@ -132,7 +122,6 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi.action?';
 
             var params = {
-                reportId: report_id,
                 includeReport: true,
                 includeData: true
             };
@@ -147,7 +136,6 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'ReportApi.action?';
 
             var params = {
-                reportId: report_id,
                 includeData: true,
                 page: page,
                 limit: limit
@@ -164,7 +152,6 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
                 path = 'Autocompleter.action?';
 
             var params = {
-                reportId: report_id,
                 fieldId: field_id
             };
 
@@ -175,9 +162,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!print.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
@@ -285,9 +270,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!unfavorite.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
