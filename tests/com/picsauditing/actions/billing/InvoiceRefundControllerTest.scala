@@ -15,6 +15,8 @@ import com.picsauditing.service.i18n.{TranslationServiceFactory, TranslationServ
 import java.util
 import java.util.Date
 import org.junit.Ignore
+import com.opensymphony.xwork2.Action
+
 
 @RunWith(classOf[JUnitRunner])
 class InvoiceRefundControllerTest extends FlatSpec with BeforeAndAfter with MockitoSugar with AssertionsForJUnit {
@@ -65,12 +67,12 @@ class InvoiceRefundControllerTest extends FlatSpec with BeforeAndAfter with Mock
 
   it should "return SUCCESS when no refundIDs are provided, and doRefund is called." in {
     classUnderTest.refunds = List()
-    assert("SUCCESS" === classUnderTest.doRefund)
+    assert(Action.SUCCESS === classUnderTest.doRefund)
   }
 
   it should "return SUCCESS when the refund list is null and doRefund is called." in {
     classUnderTest.setRefunds(null)
-    assert("SUCCESS" === classUnderTest.doRefund)
+    assert(Action.SUCCESS === classUnderTest.doRefund)
   }
 
 //// I'm commenting this out because the invoice's fee-ordering logic breaks this, and I don't have the time to fix it.
