@@ -45,7 +45,7 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
         boolean isNotFullReport = reportExceedsColumnMax || reportExceedsRowMax;
 
         tokens.put("notFullReport", isNotFullReport);
-        tokens.put("subscriptionFrequency", subscription.getTimePeriod());
+        tokens.put("subscriptionFrequency", subscription.getTimePeriod().toString().toLowerCase());
         tokens.put("report", report);
         tokens.put("reportData", output);
         tokens.put("reportLink", "https://www.picsorganizer.com/Report.action?report=" + report.getId());
