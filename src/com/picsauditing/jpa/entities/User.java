@@ -430,6 +430,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.groups = groups;
 	}
 
+    @Transient
+    public Set<UserGroup> getAllInheritedGroups() {
+        Set<UserGroup> userGroups = new HashSet<UserGroup>();
+        for (UserGroup group : groups) {
+            userGroups.add(group);
+            userGroups.addAll(group.getGroup().getAllInheritedGroups());
+        }
+
+        return userGroups;
+    }
+
 	@OneToMany(mappedBy = "group", cascade = { CascadeType.ALL })
 	public List<UserGroup> getMembers() {
 		return members;
