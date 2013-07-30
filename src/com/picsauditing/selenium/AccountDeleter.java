@@ -33,10 +33,12 @@ public class AccountDeleter extends Deleter {
 		}
 		{
 			Delete t = new Delete("contractor_audit");
-			t.addJoin("WHERE t.conID IN (" + IDs + ")");
-			t.delete(db);
-			t.table = "contractor_fee";
-			t.delete(db);
+			t.addJoin("WHERE conID IN (" + IDs + ") ORDER BY id DESC");
+			t.deleteSingleTable(db);
+
+			t = new Delete("contractor_fee");
+            t.addJoin("WHERE t.conID IN (" + IDs + ")");
+            t.delete(db);
 			t.table = "email_queue";
 			t.delete(db);
 			t.table = "contractor_trade";
