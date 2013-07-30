@@ -15,7 +15,6 @@ public class PrintIolRmpAudit extends PicsActionSupport {
 	private ContractorAudit audit;
 	private Map<Integer, AuditData> answerMap = new HashMap<>();
 
-
 	public String execute(){
 		for (AuditData answer: audit.getData()) {
 			answerMap.put(answer.getQuestion().getId(), answer);
@@ -23,8 +22,11 @@ public class PrintIolRmpAudit extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public AuditData getAnswer(int questionId) {
-		return answerMap.get(questionId);
+	public AuditData getAuditDataIfAnswerNotEmpty(int questionId) {
+		AuditData auditData = answerMap.get(questionId);
+		String answer = auditData.getAnswer();
+
+		return !answer.isEmpty() ? auditData : null;
 	}
 
 	public ContractorAudit getAudit() {
@@ -51,5 +53,13 @@ public class PrintIolRmpAudit extends PicsActionSupport {
 		}
 
 		return null;
+	}
+
+	public String getTranslationKeyForAnswer(AuditData auditData) {
+		return "AuditOptionGroup." + auditData.getQuestion().getOption().getId() + "." + auditData.getAnswer();
+	}
+
+	public String getTranslationKeyForTitle(int id) {
+		return "AuditQuestion." + id + ".title";
 	}
 }
