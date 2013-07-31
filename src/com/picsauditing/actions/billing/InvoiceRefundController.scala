@@ -48,7 +48,10 @@ class InvoiceRefundController extends ContractorActionSupport with Preparable {
   private def refundFor(invoice: Invoice) = {
     val refund = CreditMemoAppliedToInvoice.from(invoice)
     refundItemsPickedFrom(invoice) foreach { item => item match {
-        case Some(refundItem) => refund.getCreditMemo.getItems.add(refundItem)
+        case Some(refundItem) => {
+          refund.getCreditMemo.getItems.add(refundItem)
+          refundItem.setCreditMemo(refund.getCreditMemo)
+        }
         case None => {} // Do nothing.
       }
     }
