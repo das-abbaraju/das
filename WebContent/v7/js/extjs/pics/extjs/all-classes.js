@@ -66724,8 +66724,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getRequestSubscriptionUrl: function () {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = Ext.Object.fromQueryString(window.location.search),
                 path = 'ReportApi!subscribe.action?';
 
             var params = {};
