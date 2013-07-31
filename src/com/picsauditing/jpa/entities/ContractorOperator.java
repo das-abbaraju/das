@@ -258,14 +258,11 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	@Transient
 	public boolean isForcedFlag() {
 		if (forceFlag == null || forceEnd == null) {
-			// Just double check they are both set back to null
-			removeForceFlag();
 			return false;
 		}
 
 		// We have a forced flag, but make sure it's still in effect
 		if (forceEnd.before(new Date())) {
-			removeForceFlag();
 			return false;
 		}
 		return true;
