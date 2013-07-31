@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('widget.chart.FlagsChart', {
+    PICS.define('widget.chart.custom-color-chart.FlagsChart', {
         extend: 'widget.chart.CustomColorChart',
 
         methods: {
