@@ -1,0 +1,36 @@
+#InvoiceRefund__page {
+    .table th
+    {
+        text-align: center;
+    }
+
+    .table th:first-child,
+    .table td:first-child
+    {
+        padding-left: 0px;
+        padding-right: 0px;
+        vertical-align: middle;
+    }
+
+    tr td:first-child
+    {
+        text-align: center;
+    }
+
+    input[type=checkbox]
+    {
+        margin-top: -3px;
+    }
+
+    td span
+    {
+        color: #444;
+        font-style: italic;
+        font-size: 13px;
+    }
+
+    td.number
+    {
+        text-align: right;
+    }
+}
