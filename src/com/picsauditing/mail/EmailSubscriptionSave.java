@@ -37,7 +37,7 @@ public class EmailSubscriptionSave extends PicsActionSupport {
 		User user = dao.find(User.class, permissions.getUserId());
 
 		String note = user.getName()
-				+ " changed his " + eu.getSubscription().toString() + " email subscription to " + eu.getTimePeriod();
+				+ " changed their " + eu.getSubscription().toString() + " email subscription to " + eu.getTimePeriod();
 
 		addNoteToAccount(user.getAccount(),
 				note,
