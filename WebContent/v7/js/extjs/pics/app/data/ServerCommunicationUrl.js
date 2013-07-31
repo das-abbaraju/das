@@ -92,10 +92,12 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getRequestSubscriptionUrl: function () {
-            var base_api_params = Ext.Object.fromQueryString(window.location.search),
+            var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!subscribe.action?';
 
             var params = {};
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
