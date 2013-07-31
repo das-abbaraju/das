@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContractorDashboardApprovalMessage {
@@ -79,16 +80,17 @@ public class ContractorDashboardApprovalMessage {
 	private Result getCorporateApprovedStatus(ContractorOperator corporate) {
 		StopWatch stopwatch = new Slf4JStopWatch(profiler);
 		stopwatch.start();
-		List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Rejected, ApprovalStatus.Pending);
+		List<ContractorOperator> existing = contractorOperatorDAO.findDecendentsByStatus(corporate, ApprovalStatus.Rejected, ApprovalStatus.Pending);
 		stopwatch.stop();
 		profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
+
 		return (existing.isEmpty()) ? Result.ShowNothing : Result.ShowEverySiteExceptApprovedOnes;
 	}
 
 	private Result getCorporateNotApprovedStatus(ContractorOperator corporate) {
 		StopWatch stopwatch = new Slf4JStopWatch(profiler);
 		stopwatch.start();
-		List<ContractorOperator> existing = contractorOperatorDAO.findByContractorAndWorkStatus(corporate.getContractorAccount(), ApprovalStatus.Approved);
+		List<ContractorOperator> existing = contractorOperatorDAO.findDecendentsByStatus(corporate, ApprovalStatus.Approved);
 		stopwatch.stop();
 		profiler.debug("ContractorDashboardApprovalMessage.getMessage took " + stopwatch.getElapsedTime() + "ms");
 		return (existing.isEmpty()) ? Result.ContractorNotApproved : Result.ContractorNotApprovedExpectSomeSites;
