@@ -90,12 +90,12 @@
                         countryString: country_string
                     },
                     success: function (data, textStatus, XMLHttpRequest) {
-                        var pics_phone = $('#pics_phone_number');
+                        var pics_phone = $('.pics_phone_number');
 
-                        if (pics_phone.length > 0) {
-                            pics_phone.html(data.picsPhoneNumber);
-                            pics_phone.attr("title", data.country);
-                        }
+                        pics_phone.each(function () {
+                            $(this).html(data.picsPhoneNumber);
+                            $(this).attr("title", data.country);
+                        });
                     }
                 });
 			}
