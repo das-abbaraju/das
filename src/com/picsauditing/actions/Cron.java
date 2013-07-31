@@ -80,8 +80,6 @@ public class Cron extends PicsActionSupport {
 	@Autowired
 	protected OperatorAccountDAO operatorDAO;
 	@Autowired
-	protected NoteDAO noteDAO;
-	@Autowired
 	protected UserDAO userDAO;
     @Autowired
     private ReportDAO reportDAO;
@@ -682,7 +680,7 @@ public class Cron extends PicsActionSupport {
 						note.setNoteCategory(NoteCategory.Registration);
 						note.setCanContractorView(true);
 						note.setViewableBy(operatorDAO.find(Account.PicsID));
-						noteDAO.save(note);
+						noteDao.save(note);
 
 						request.setLastContactedByAutomatedEmailDate(new Date());
 					} else if (requestedContractor instanceof ContractorRegistrationRequest) {
@@ -806,7 +804,7 @@ public class Cron extends PicsActionSupport {
 		note.setNoteCategory(noteCategory);
 		note.setAuditColumns(system);
 		note.setViewableById(Account.PicsID);
-		noteDAO.save(note);
+		noteDao.save(note);
 	}
 
 	public void sendDelinquentContractorsEmail() throws Exception {
@@ -1094,7 +1092,7 @@ public class Cron extends PicsActionSupport {
 			note.setNoteCategory(NoteCategory.Flags);
 			note.setAuditColumns(system);
 			note.setViewableBy(fdo.getOperator());
-			noteDAO.save(note);
+			noteDao.save(note);
 
 			flagDataOverrideDAO.remove(fdo);
 			fdoIter.remove();
@@ -1122,7 +1120,7 @@ public class Cron extends PicsActionSupport {
 			note.setNoteCategory(NoteCategory.Flags);
 			note.setAuditColumns(system);
 			note.setViewableBy(override.getOperatorAccount());
-			noteDAO.save(note);
+			noteDao.save(note);
 
 			override.setForceEnd(null);
 			override.setForceFlag(null);

@@ -99,6 +99,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     protected UserLoginLogDAO loginLogDAO;
     @Autowired
 	private PermissionBuilder permissionBuilder;
+	@Autowired
+	protected NoteDAO noteDao;
 
 	protected Collection<String> alertMessages;
 

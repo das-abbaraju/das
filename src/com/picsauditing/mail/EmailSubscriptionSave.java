@@ -2,8 +2,7 @@ package com.picsauditing.mail;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 
 @SuppressWarnings("serial")
 public class EmailSubscriptionSave extends PicsActionSupport {
@@ -34,8 +33,37 @@ public class EmailSubscriptionSave extends PicsActionSupport {
 				eu.setTimePeriod(sPeriod);
 		}
 		eu = emailSubscriptionDAO.save(eu);
+
+		User user = dao.find(User.class, permissions.getUserId());
+
+		String note = user.getName()
+				+ " changed his " + eu.getSubscription().toString() + " email subscription to " + eu.getTimePeriod();
+
+		addNoteToAccount(user.getAccount(),
+				note,
+				NoteCategory.General,
+				LowMedHigh.Med,
+				true,
+				1);
+
 		return SUCCESS;
 	}
+
+	public void addNoteToAccount(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+		boolean canContractorView, int viewableBy) {
+		Note note = new Note();
+		note.setAccount(account);
+		note.setAuditColumns(permissions);
+		note.setSummary(newNote);
+		note.setPriority(priority);
+		note.setNoteCategory(category);
+		note.setViewableById(viewableBy);
+		note.setCanContractorView(canContractorView);
+		note.setStatus(NoteStatus.Closed);
+		noteDao.save(note);
+		return;
+	}
+
 
 	public SubscriptionTimePeriod getSPeriod() {
 		return sPeriod;
