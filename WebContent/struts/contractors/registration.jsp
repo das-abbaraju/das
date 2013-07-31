@@ -134,6 +134,7 @@
                             name="language"
                             value="language"
                             id="registration_language"
+                            cssClass="select2Min"
                         />
                     </li>
                     <li id="registration_dialect">
@@ -142,11 +143,15 @@
                     <li class="country">
                         <s:select
                             list="countryList"
-                            cssClass="contractor-country"
+                            cssClass="select2 contractor-country"
                             name="contractor.country.isoCode"
                             listKey="isoCode"
                             listValue="name"
                         />
+                    </li>
+                    <li class="timezone">
+                        <label for="contractor_timezone"><s:text name="global.timezone" /></label>
+                        <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
                     </li>
                     <li>
 						<s:textfield name="contractor.name" />
@@ -182,7 +187,7 @@
                             <s:property value="getCountrySubdivisionLabelFor(#country_value)" />
                         </label>
 
-                        <select class="contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
+                        <select class="select2 contractor-countrySubdivision" id="Registration_contractor_countrySubdivision" name="countrySubdivision">
                             <option value="">- <s:text name="CountrySubdivisionList.list.select.header" /> -</option>
                             <s:iterator value="getCountrySubdivisionList(#country_value)" var="country_subdivision_list_item">
                                 <s:set var="country_subdivision_selection" value="''" />
@@ -195,21 +200,12 @@
 
                         <s:fielderror fieldName="countrySubdivision" id="Registration_country_subdivision_error" />
 					</li>
-					<li class="zip" style="${zip_display}">
+					<li class="zipcode" style="${zip_display}">
 						<s:textfield name="contractor.zip" />
 					</li>
 					<li id="vat_id">
 						<s:textfield name="contractor.vatId" />
 					</li>
-                    <li>
-                        <s:select
-                                id="timezone"
-                                name="contractor.timezone"
-                                headerKey=""
-                                headerValue="%{getText('Timezone.list.select.header')}"
-                                list="timezones"
-                                value="contractor.timezone.iD" />
-                    </li>
                 </ul>
 			</section>
 		</div>

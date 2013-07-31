@@ -907,7 +907,6 @@ footer .footer-menu a {
 	left: 3px;
 }
 
-.make-payment .invoice tr.total td {
 	background: #c8e0f0;
 	color: #70a7cb;
 	font-size: 24px;
@@ -1084,7 +1083,7 @@ footer .footer-menu a {
 
 #pro-forma-button {
 	float: left;
-	margin-top: 88px;	
+	margin-top: 88px;
 }
 
 #ccexp {
@@ -1265,13 +1264,12 @@ footer .footer-menu a {
 	float: right;
 }
 
-.service-evaluation-form ul.checkbox-list input 
+.service-evaluation-form ul.checkbox-list input
 {
 	margin: 3px 6px 3px 0px;
 }
 #autofill
 {
-	margin-top: 10px; 
 }
 
 .RegistrationMakePayment-page .phone

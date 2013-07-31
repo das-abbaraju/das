@@ -94,6 +94,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2.css?v=${version}"/>
 	<link rel="stylesheet" type="text/css" href="v7/css/vendor/select2/select2-override.css?v=${version}"/>
+	<link rel="stylesheet" type="text/css" href="css/timezone.css?v=${version}"/>
 
 	<link rel="stylesheet" type="text/css" href="css/bootstrap/css/font-awesome.min.css?v=${version}"/>
 	<!--[if lt IE 8]>

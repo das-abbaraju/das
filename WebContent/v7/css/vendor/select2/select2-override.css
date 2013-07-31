@@ -1,3 +1,23 @@
+.select2-container {
+    font-size: 13px;
+}
+
+.select2-drop
+{
+    z-index: 11000;
+}
+
+.select2-results li
+{
+    line-height: 16px;
+}
+
+.select2-results {
+    font-size: 13px;
+}
+
+
+/*Multi Select*/
 .select2-container-multi .select2-choices .select2-search-choice
 {
     padding: 3px 20px 3px 5px;
@@ -8,24 +28,8 @@
     left: auto;
 }
 
-.select2-choices
+.select2-container .select2-choices
 {
     font-size: 12px;
     line-height: 12px;
-}
-
-.select2-drop
-{
-    z-index: 11000;
-}
-
-.select2-results li
-{
-    font-size: 16px;
-    line-height: 16px;
-}
-
-.select2-results .select2-result-label
-{
-    font-size: 12px;
 }

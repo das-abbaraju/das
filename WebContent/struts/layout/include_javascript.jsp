@@ -26,8 +26,12 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/_child/StackedFlagsChart.js?v=${version}"></script>
 <%-- END v7 Chart Classes --%>
 
-<script src="v7/js/vendor/select2.js?v=${version}"></script>
-<script src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/vendor/select2.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/country/zipcode.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics//select2/select2.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/timezone/timezone.js?v=${version}"></script>
+
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>

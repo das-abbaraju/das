@@ -1184,6 +1184,10 @@
 			<result>struts/error/deactivated.jsp</result>
 		</action>
 
+        <action name="TimeZoneRetriever" class="com.picsauditing.actions.TimeZoneRetriever">
+            <result type="json"></result>
+        </action>
+
 		<action name="Temp" class="com.picsauditing.actions.Temp">
 			<result>/struts/temp/test.jsp</result>
 			<result name="contractor-menu">/struts/temp/contractor-menu.jsp</result>
