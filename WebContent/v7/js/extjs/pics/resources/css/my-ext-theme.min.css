@@ -9061,7 +9061,7 @@ textarea.x-form-invalid-field {
   margin-top: 14px; }
 /* line 112, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_subscribe legend {
-  margin-bottom: 10px; }
+  padding-bottom: 10px; }
 
 /* line 121, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit,
