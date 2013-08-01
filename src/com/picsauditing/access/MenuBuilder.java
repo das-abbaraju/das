@@ -262,10 +262,10 @@ public final class MenuBuilder {
 			manageMenu.addChild(getText("menu.UserAccounts"), "UsersManage.action", "users_manage");
 		}
 
-        if (permissions.hasPermission(OpPerms.ManageCsrAssignment)) {
-            manageMenu.addChild("Recommended CSR Assignment", "ManageRecommendedCSRAssignment.action",
-                    "RecommendedCsrAssignment");
-        }
+		if (permissions.hasPermission(OpPerms.ManageCsrAssignment)) {
+			manageMenu.addChild("Recommended CSR Assignment", "ManageRecommendedCSRAssignment.action",
+					"RecommendedCsrAssignment");
+		}
 
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
@@ -303,10 +303,10 @@ public final class MenuBuilder {
 			}
 		}
 
-        if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
-            manageMenu.addChild(getText("ReportInsuranceApproval.title"),
-                    "ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
-        }
+		if (permissions.hasPermission(OpPerms.InsuranceApproval)) {
+			manageMenu.addChild(getText("ReportInsuranceApproval.title"),
+					"ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
+		}
 
 		if (permissions.has(OpPerms.FormsAndDocs)) {
 			manageMenu.addChild(getText("Resources.title"), "Resources.action", "resources");
@@ -331,12 +331,12 @@ public final class MenuBuilder {
 					"report_flag_changes");
 		}
 
-        if (permissions.hasPermission(OpPerms.ContractorDetails)) {
-            manageMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
-                    "QuestionAnswerSearch");
-        }
+		if (permissions.hasPermission(OpPerms.ContractorDetails)) {
+			manageMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
+					"QuestionAnswerSearch");
+		}
 
-        addEmailSubmenu(manageMenu, permissions);
+		addEmailSubmenu(manageMenu, permissions);
 
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
@@ -347,35 +347,34 @@ public final class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-        if (favoriteReports.isEmpty()) {
-            reportsMenu.addChild(getText("menu.ReportsManager.GettingStarted"), "Reference!reportsManager.action?from=ReportsMenu", "getting_started");
-        }
-        else {
-            reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+		if (favoriteReports.isEmpty()) {
+			reportsMenu.addChild(getText("menu.ReportsManager.GettingStarted"), "Reference!reportsManager.action?from=ReportsMenu", "getting_started");
+		} else {
+			reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-            if (permissions.getAccountStatus() != AccountStatus.Demo)
-                addLegacyReports(permissions, reportsMenu);
+			if (permissions.getAccountStatus() != AccountStatus.Demo)
+				addLegacyReports(permissions, reportsMenu);
 
-            if (permissions.has(OpPerms.Report)) {
-                MenuComponent adminMenu = reportsMenu.addChild("Administration");
-                adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
-                adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
-            }
+			if (permissions.has(OpPerms.Report)) {
+				MenuComponent adminMenu = reportsMenu.addChild("Administration");
+				adminMenu.addChild("Create Report", "CreateReport.action", "CreateReport");
+				adminMenu.addChild("Report Tester", "ReportTester.action", "ReportTester");
+			}
 
-            FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-            if (CollectionUtils.isNotEmpty(favoriteReports)) {
-                reportsMenu.addChild("separator", null);
-                MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
+			FeatureToggle featureToggle = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
+			if (CollectionUtils.isNotEmpty(favoriteReports)) {
+				reportsMenu.addChild("separator", null);
+				MenuComponent favoriteLabel = buildUniqueFavoritesMenuComponent();
 
-                reportsMenu.addChild(favoriteLabel);
-            }
+				reportsMenu.addChild(favoriteLabel);
+			}
 
-            for (ReportUser reportUser : favoriteReports) {
-                Report report = reportUser.getReport();
-                reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-                        "report_" + report.getId());
-            }
-        }
+			for (ReportUser reportUser : favoriteReports) {
+				Report report = reportUser.getReport();
+				reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+						"report_" + report.getId());
+			}
+		}
 	}
 
 	private static void addLegacyReports(Permissions permissions, MenuComponent reportsMenu) {
@@ -392,23 +391,23 @@ public final class MenuBuilder {
 					"ReportNewRequestedContractor");
 		}
 
-        if (permissions.hasPermission(OpPerms.AssignAudits)) {
-            if (permissions.isOperatorCorporate()) {
-                legacyMenu.addChild("Sched. &amp; Assign",
-                        "AuditAssignments.action?filter.status=Active",
-                        "AuditAssignments");
-            } else {
-                legacyMenu.addChild("Sched. &amp; Assign",
-                        "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
-                        "AuditAssignments");
-            }
-        }
+		if (permissions.hasPermission(OpPerms.AssignAudits)) {
+			if (permissions.isOperatorCorporate()) {
+				legacyMenu.addChild("Sched. &amp; Assign",
+						"AuditAssignments.action?filter.status=Active",
+						"AuditAssignments");
+			} else {
+				legacyMenu.addChild("Sched. &amp; Assign",
+						"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
+						"AuditAssignments");
+			}
+		}
 
-        if (permissions.hasPermission(OpPerms.RiskRank)) {
-            legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
-        }
+		if (permissions.hasPermission(OpPerms.RiskRank)) {
+			legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
+		}
 
-        if (permissions.hasPermission(OpPerms.ContractorApproval)) {
+		if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			legacyMenu.addChild(getText("ContractorApproval.title"), "ContractorApproval.action?filter.workStatus=P",
 					"subMenu_ApproveContractors");
 		}
@@ -482,11 +481,15 @@ public final class MenuBuilder {
 			userMenu.addChild(getText("Menu.SwitchToVersion6"), "ProfileEdit!version6Menu.action?u=" + permissions.getUserId(), "switch_to_v6");
 		}
 
-		if (permissions.getAdminID() > 0) {
+		if (switchedToAnotherUser(permissions)) {
 			userMenu.addChild("Switch Back", "Login.action?button=switchBack", "switch_back");
 		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
+	}
+
+	private static boolean switchedToAnotherUser(Permissions permissions) {
+		return permissions.getAdminID() > 0 && permissions.getAdminID() != permissions.getUserId();
 	}
 
 	private static void addAuditsSubmenu(MenuComponent parentMenu, Permissions permissions) {
@@ -548,10 +551,10 @@ public final class MenuBuilder {
 			}
 		}
 
-        if (permissions.hasPermission(OpPerms.EmailQueue)) {
-            emailMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
-                    "EmailQueue");
-        }
+		if (permissions.hasPermission(OpPerms.EmailQueue)) {
+			emailMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
+					"EmailQueue");
+		}
 
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			emailMenu.addChild("New Year Mailer", "NewYearMailer.action", "NewYearMailer");

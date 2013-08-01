@@ -2,7 +2,9 @@ package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -15,8 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.security.auth.login.*;
-import javax.servlet.http.*;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
@@ -34,7 +40,7 @@ public class LoginController extends PicsActionSupport {
 
 	@Autowired
 	private LoginService loginService;
-    @Autowired
+	@Autowired
 	protected PermissionBuilder permissionBuilder;
 
 	private User user;
@@ -52,20 +58,20 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-            if (sessionCookieIsValidAndNotExpired()) {
-                switchToUser = getClientSessionUserID();
-                return switchTo();
-            } else {
-                clearPicsOrgCookie();
+			if (sessionCookieIsValidAndNotExpired()) {
+				switchToUser = getClientSessionUserID();
+				return switchTo();
+			} else {
+				clearPicsOrgCookie();
 
-                if (ActionContext.getContext().getLocale() == null) {
-                    ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
-                            .getVisibleLanguages());
-                    ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
-                }
+				if (ActionContext.getContext().getLocale() == null) {
+					ExtractBrowserLanguage languageUtility = new ExtractBrowserLanguage(getRequest(), supportedLanguages
+							.getVisibleLanguages());
+					ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
+				}
 
-                return SUCCESS;
-            }
+				return SUCCESS;
+			}
 		} else if ("confirm".equals(button)) {
 			return confirm();
 		} else if ("logout".equals(button)) {
@@ -186,7 +192,7 @@ public class LoginController extends PicsActionSupport {
 
 		doSwitchToUser(switchToUser);
 		username = permissions.getUsername();
-        logSwitchToAttempt(user);
+		logSwitchToAttempt(user);
 		return REDIRECT;
 	}
 
@@ -200,9 +206,9 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
-            if (adminID != userID) {
-			    permissions.setSwitchedToUserName(user.getName());
-            }
+			if (adminID != userID) {
+				permissions.setSwitchedToUserName(user.getName());
+			}
 
 			if (adminIsTranslator) {
 				permissions.setTranslatorOn();
@@ -312,7 +318,7 @@ public class LoginController extends PicsActionSupport {
 		updateUserForSuccessfulLogin();
 
 		setBetaTestingCookie();
-        logCredentialLoginAttempt(user);
+		logCredentialLoginAttempt(user);
 
 		if (permissions.belongsToGroups() || permissions.isContractor()) {
 			return setRedirectUrlPostLogin();
@@ -324,7 +330,7 @@ public class LoginController extends PicsActionSupport {
 
 	private boolean logAndMessageError(String error) throws Exception {
 		if (StringUtils.isNotEmpty(error)) {
-            logCredentialLoginAttempt(user);
+			logCredentialLoginAttempt(user);
 			addActionError(error);
 			ActionContext.getContext().getSession().clear();
 			return true;
@@ -379,11 +385,11 @@ public class LoginController extends PicsActionSupport {
 			case Deactivated:
 				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
 				break;
-            case Declined:
-                // per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
-                // just show them deactivated
-                redirectURL = DEACTIVATED_ACCOUNT_PAGE;
-                break;
+			case Declined:
+				// per PICS-10995 - declined is an internal status and doesn't need to be shown on a special page
+				// just show them deactivated
+				redirectURL = DEACTIVATED_ACCOUNT_PAGE;
+				break;
 		}
 
 		return redirectURL;
@@ -424,7 +430,7 @@ public class LoginController extends PicsActionSupport {
 		return userBetaTester;
 	}
 
-    /* GETTER & SETTERS */
+	/* GETTER & SETTERS */
 	private HttpServletResponse getResponse() {
 		return ServletActionContext.getResponse();
 	}
