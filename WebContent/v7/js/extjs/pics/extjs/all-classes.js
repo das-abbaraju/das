@@ -66780,13 +66780,14 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
         },
 
         getMultiSelectUrl: function (field_id) {
-            var params = Ext.Object.fromQueryString(window.location.search),
-                report_id = params.report,
+            var base_api_params = this.getBaseApiParams(),
                 path = 'Autocompleter.action?';
 
             var params = {
                 fieldId: field_id
             };
+
+            Ext.apply(params, base_api_params);
 
             return path + Ext.Object.toQueryString(params);
         },
