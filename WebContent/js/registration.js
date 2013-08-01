@@ -23,62 +23,59 @@
 		}
 	};
 
-	// contractor create account help text displayed on input focus
-	REGISTRATION.help_text = {
-		init: function () {
-			if ($('.Registration-page').length) {
-				var element = $('.help-text');
+    // contractor create account help text displayed on input focus
+    REGISTRATION.help_text = {
+        init: function () {
+            if ($('.Registration-page').length) {
+                var element = $('.help-text');
 
-				element.each(function (key, value) {
-					var html = $(this).html(),
-                        label = $(this).siblings('label'),
-                        input = $(this).siblings('input[type=text], input[type=password], select');
+                element.each(function (key, value) {
+                    var html = $(this).html();
+                    var label = $(this).siblings('label');
+                    var input = $(this).siblings('input[type=text], input[type=password], select');
 
-                        label.attr('title', label.html().replace(':', ''));
-                        label.attr('data-content', html.replace('"', "'"));
+                    label.attr('title', label.html().replace(':', ''));
+                    label.attr('data-content', html.replace('"', "'"));
 
-                        label.popover({
-                            placement: 'bottom',
-                            trigger: 'manual'
+                    label.popover({
+                        placement: 'bottom',
+                        trigger: 'manual'
+                    });
+
+                    input.bind('focus', function (event) {
+                        label.popover('show');
+                    });
+
+                    input.bind('blur', function (event) {
+                        label.popover('hide');
+                    });
+
+                    // ie specific js to shim select menus
+                    if ($.browser.msie && $.browser.version == 6) {
+                        input.bind('focus', function () {
+                            var container = $('.popover:last'),element = $('.inner', container);
+                            var offset = element.offset();
+                            var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
+
+                            // paste shim
+                            shim.css({
+                                'height': element.height(),
+                                'left': offset.left,
+                                'position': 'absolute',
+                                'top': offset.top,
+                                'width': element.width()
+                            }).prependTo('body');
                         });
 
-                        input.bind('focus', function (event) {
-
-                            label.popover('show');
+                        // add blur event to destroy iframe
+                        input.blur('blur', function () {
+                            $('iframe.shim:first').remove();
                         });
-
-                        input.bind('blur', function (event) {
-                            label.popover('hide');
-                        });
-
-
-					// ie specific js to shim select menus
-					if ($.browser.msie && $.browser.version == 6) {
-						input.bind('focus', function () {
-							var container = $('.popover:last');
-							var element = $('.inner', container);
-							var offset = element.offset();
-							var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
-
-							// paste shim
-							shim.css({
-								'height': element.height(),
-								'left': offset.left,
-								'position': 'absolute',
-								'top': offset.top,
-								'width': element.width()
-							}).prependTo('body');
-						});
-
-						// add blur event to destroy iframe
-						input.blur('blur', function () {
-							$('iframe.shim:first').remove();
-						});
-					}
-				});
-			}
-		}
-	};
+                    }
+                });
+            }
+        }
+    };
 
 	REGISTRATION.language_dropdown = {
 		init: function () {
@@ -119,8 +116,6 @@
                      $('#dialect_selection').select2({
                         minimumResultsForSearch: -1
                     });
-
-
                 }
             });
         },
@@ -291,23 +286,24 @@
                 $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
                 $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
 
-	            company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+	            company_information.on('change', '#Registration_contractor_country_isoCode', this.checkVatRequired);
 
                 // Show or hide the vat id field based on the Country default value.
                 company_information.find('#Registration_contractor_country_isoCode').trigger('change');
 
                 if ($('.Registration-page').length) {
-                    $('.registration').delegate('#autofill', 'click', this.autofillRegistrationFormForDev);
+                    $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
                 } else if ($('.RegistrationServiceEvaluation-page').length) {
-                    $('.service-evaluation').delegate('#autofill', 'click', this.autofillRegistrationServiceEvaluationFormForDev);
+                    $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
                 }
 
-
                 if ($('.Registration-page').length) {
-                    this.initializeCountry();
-                    this.initializeSelect2Elements();
+                    var Timezone = PICS.getClass('timezone.Timezone');
 
-                    $('.country select').on('change', $.proxy(this.processCountryChange, this));
+                    this.getTimezonesByCountry();
+                    this.renderSelect2Elements();
+
+                    $('.country select').on('change', $.proxy(this.updateFieldsBasedonCountry, this));
                 }
 	        },
 
@@ -381,108 +377,20 @@
                 });
             },
 
-            getCountrySubdivision: function (selected_country) {
-                var that = this;
-
-                //PLEASE REMOVE IF WE DON'T NEED!!!!!!!!!!!!!!!
-                //NEED TO CHECK HOW PARAMS ARE SET FROM REG REQUEST EMAIL LINK
-                //all this does is save the current value in a variable to re-set after ajax request which was this
-
-                //                 if ($('.contractor-country').length) {
-                //     that.events.update_countrySubdivision_list.call(that, selectedSubdivision);
-                // }
-
-                    //save initial selected value
-                //  if ($('#requested_contractor').length) {
-                //      var countrySubdivision_element = $('.registration-form li.countrySubdivision');
-
-                //      selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
-                //     }
-                // }
-
-                PICS.ajax({
-                    url: 'CountrySubdivisionListAjax!registration.action',
-                    data: {
-                        countryString: selected_country,
-                        prefix: 'contractor.'
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        that.renderCountrySubdivsion(data);
-                    }
-                });
-            },
-
-            initializeCountry: function () {
+            getTimezonesByCountry: function () {
                 var $country = $('.country select'),
-                    selected_country = $country.val(),
-                    Zipcode = PICS.getClass('country.Zipcode');
+                    selected_country = $country.val() || '',
+                    Timezone = PICS.getClass('timezone.Timezone');
 
-                Zipcode.render(selected_country, $('.zipcode'));
-
-                this.getCountrySubdivision(selected_country);
+                Timezone.getTimezones(selected_country);
             },
 
-            initializeSelect2Elements: function () {
+            renderSelect2Elements: function () {
                 var select2Elements = PICS.getClass('select2.Select2');
 
                 select2Elements.render();
 
                 this.bindSelect2EventstoPopover();
-
-                this.setTimezoneByCountry();
-            },
-
-            processCountryChange: function (event) {
-                var $country = $(event.target),
-                    selected_country = $country.val(),
-                    Zipcode = PICS.getClass('country.Zipcode');
-
-                this.setTimezoneByCountry();
-                this.getCountrySubdivision(selected_country);
-                Zipcode.render(selected_country, $('.zipcode'));
-                this.renderRegistrationPhone(selected_country);
-            },
-
-            renderCountrySubdivsion: function (data) {
-                var subdivision_data = $.trim(data),
-                    $subdivision = $('.countrySubdivision');
-
-                if (subdivision_data.length > 0) {
-                    $subdivision.html(subdivision_data);
-
-                    $subdivision.slideDown(400);
-
-                    $subdivision.find('select').select2();
-                } else {
-                    $subdivision.slideUp(400);
-                    $subdivision.html('');
-                }
-            },
-
-            renderRegistrationPhone: function (selected_country) {
-                PICS.ajax({
-                    url: 'CountrySubdivisionListAjax!phone.action',
-                    dataType: 'json',
-                    data: {
-                        countryString: selected_country
-                    },
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        var $pics_phone = $('#pics_phone_number');
-
-                        if ($pics_phone.length > 0) {
-                            $pics_phone.html(data.picsPhoneNumber);
-                            $pics_phone.attr("title", data.country);
-                        }
-                    }
-                });
-            },
-
-            setTimezoneByCountry: function () {
-                var $country = $('.country select'),
-                    selected_country = $country.val() || '',
-                    timezone = PICS.getClass('timezone.Timezone');
-
-                timezone.getTimezones(selected_country);
             },
 
             showBasicModal: function (event) {
@@ -551,7 +459,55 @@
                     $('.ssip-details-container').slideUp(400);
                     $('.provide-ssip-details-later-message').slideDown(400);
                 }
-            }
+            },
+
+            updateCountrySubvisions: function (selected_country) {
+                var Country = PICS.getClass('country.Country')
+                    that = this;
+
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!registration.action',
+                    data: {
+                        countryString: selected_country,
+                        prefix: 'contractor.'
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        Country.renderSubdivision(data);
+                    }
+                });
+            },
+
+            updateFieldsBasedonCountry: function (event) {
+                var $country = $(event.target),
+                    selected_country = $country.val(),
+                    Zipcode = PICS.getClass('country.Zipcode');
+
+                this.getTimezonesByCountry();
+
+                this.updateCountrySubvisions(selected_country);
+
+                this.updatePhoneNumber(selected_country);
+
+                Zipcode.modifyZipcodeDisplay(selected_country, $('.zipcode'));
+            },
+
+            updatePhoneNumber: function (selected_country) {
+                PICS.ajax({
+                    url: 'CountrySubdivisionListAjax!phone.action',
+                    dataType: 'json',
+                    data: {
+                        countryString: selected_country
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var $pics_phone = $('#pics_phone_number');
+
+                        if ($pics_phone.length > 0) {
+                            $pics_phone.html(data.picsPhoneNumber);
+                            $pics_phone.attr("title", data.country);
+                        }
+                    }
+                });
+            },
 	    }
 	});
 })(jQuery);

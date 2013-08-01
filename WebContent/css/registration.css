@@ -906,7 +906,7 @@ footer .footer-menu a {
 	position: relative;
 	left: 3px;
 }
-
+-.make-payment .invoice tr.total td {
 	background: #c8e0f0;
 	color: #70a7cb;
 	font-size: 24px;
@@ -1270,6 +1270,7 @@ footer .footer-menu a {
 }
 #autofill
 {
+	margin-top: 10px;
 }
 
 .RegistrationMakePayment-page .phone
@@ -1278,3 +1279,8 @@ footer .footer-menu a {
     font-size: 13px;
     margin: 10px 0px;
 }
+
+/* Timezone styles specific to registration */
+.Registration-page .select2-offscreen {
+	display: none;
+ }
