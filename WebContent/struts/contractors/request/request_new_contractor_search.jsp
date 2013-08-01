@@ -16,20 +16,15 @@
 	</p>
 	<p>
 		<s:iterator value="results" var="result">
-			<s:if test="worksForOperator || permissions.picsEmployee">
-				<s:url action="ContractorView" var="contractor_view">
-					<s:param name="id">
-						${result.id}
-					</s:param>
-				</s:url>
-				<a href="${contractor_view}">
-					${result.name}
-				</a>
-			</s:if>
-			<s:else>
+		    <s:url action="ContractorView" var="contractor_view">
+				<s:param name="id">
+					${result.id}
+				</s:param>
+		    </s:url>
+			<a href="${contractor_view}">
 				${result.name}
-			</s:else>
-			<br />
+			</a>
+		<br />
 		</s:iterator>
 	</p>
 </div>
