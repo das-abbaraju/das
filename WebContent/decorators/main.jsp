@@ -196,6 +196,9 @@
 
 <header>
 	<s:action name="Menu!menu" executeResult="true"/>
+    
+    <%-- include javascript translations --%>
+    <s:action name="TranslateJS2" executeResult="true" />    
 </header>
 <%
 	}
