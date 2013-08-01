@@ -100,8 +100,7 @@ public class IGVerification extends ContractorActionSupport {
 	
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String sendEmail() throws Exception {
-		previewEmail.setBody(body);
-		previewEmail.setSubject(subject);
+		start();
 		previewEmail.setMediumPriority();
 
 		try {
