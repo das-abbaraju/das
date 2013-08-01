@@ -4,8 +4,10 @@ PICS.define('timezone.Timezone', {
             var that = this;
 
             PICS.ajax({
-                url: 'TimeZoneRetriever.action?countryCode=' + country,
-                type: 'get',
+                url: 'TimeZoneRetriever.action',
+                data: {
+                    countryCode: country
+                },
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
                     if (callback) {
@@ -13,7 +15,6 @@ PICS.define('timezone.Timezone', {
                     } else {
                         that.renderTimezoneList(data);
                     }
-
                 }
             });
         },
