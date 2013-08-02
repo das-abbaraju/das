@@ -31,6 +31,8 @@ public class ContractorDashboardApprovalMessage {
 		if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId()) && !permissions.isAdmin() && !permissions.isContractor()) {
 			return Result.ShowNothing;
 		}
+
+        // check operators, admins, contractors
 		if (contractorOperator.isWorkingStatus(ApprovalStatus.Rejected)) {
 			return permissions.isCorporate() || permissions.isAdmin() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
 		}
