@@ -66819,9 +66819,7 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi!save.action?';
 
-            var params = {
-                reportId: report_id
-            };
+            var params = {};
 
             Ext.apply(params, base_api_params);
 
