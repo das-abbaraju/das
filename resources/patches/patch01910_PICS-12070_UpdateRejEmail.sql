@@ -42,14 +42,13 @@ SET body='<!DOCTYPE html>
            <br />
            <a href="https://www.picsorganizer.com/Audit.action?auditID=$audit.id">$audit.auditType.name</a></div>
           <p>
-           The PICS system did not accept the policy submitted, due to:<br />
 #foreach ( $caow in $caowList)
 #if ( $caow.cao.audit.auditType.id == $audit.auditType.id )
-* $caow.cao.operator.name: $caow.notes<br />
+           The PICS system did not accept the policy submitted for $caow.cao.operator.name due to:<br /><br />
+$caow.notes<br /><br />
 #end
 #end
 #end
-<br />
            Please correct the issue and re-upload any insurance certificate to your PICS account. If you have questions, or need assistance, please contact me directly at the information listed in my signature below.<br />
            <br />
            As a reminder, when you renew any policy, please be sure to upload the associated new certificate, to keep your PICS information up to date.<br />
