@@ -165,7 +165,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
             return;
         }
 
-        Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebt);
+        Payment payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.BadDebtCreditMemo);
         PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, billingNoteModel.findUserForPaymentNote(permissions), payment.getTotalAmount());
         payment.setStatus(TransactionStatus.BadDebt);
         payment.setAuditColumns(getUser());
