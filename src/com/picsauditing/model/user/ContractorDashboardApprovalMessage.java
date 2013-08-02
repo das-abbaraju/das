@@ -28,15 +28,15 @@ public class ContractorDashboardApprovalMessage {
 			return Result.ShowNothing;
 		}
 
-		if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId())) {
+		if (!isUserAssociatedWithAccount(contractorOperator.getOperatorAccount(), permissions.getAccountId()) && !permissions.isAdmin() && !permissions.isContractor()) {
 			return Result.ShowNothing;
 		}
 		if (contractorOperator.isWorkingStatus(ApprovalStatus.Rejected)) {
-			return permissions.isCorporate() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
+			return permissions.isCorporate() || permissions.isAdmin() ? getCorporateNotApprovedStatus(contractorOperator) : Result.ContractorNotApproved;
 		}
 
 		if (!basicPermissions(permissions.has(OpPerms.ViewUnApproved), permissions.isApprovesRelationships(),
-				permissions.hasPermission(OpPerms.ContractorApproval))) {
+				permissions.hasPermission(OpPerms.ContractorApproval)) || permissions.isAdmin()) {
 
 			if (contractorOperator.isWorkingStatus(ApprovalStatus.Pending)) {
 				if (!usersWithPermissions.isEmpty()) {
@@ -102,8 +102,8 @@ public class ContractorDashboardApprovalMessage {
 			return true;
 
 		for (OperatorAccount parent : operator.getParentOperators()) {
-			if (parent.getId() == permissionsAccountId) ;
-			return true;
+			if (parent.getId() == permissionsAccountId)
+				return true;
 		}
 
 		return false;
@@ -114,7 +114,7 @@ public class ContractorDashboardApprovalMessage {
 	}
 
 	private boolean basicPermissions(boolean permissionsHasPermissionViewUnApproved,
-									 boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
+	                                 boolean permissionsApprovesRelationships, boolean permissionsHasPermissionContractorApproval) {
 		return (permissionsHasPermissionViewUnApproved ||
 				canApproveContractors(permissionsApprovesRelationships, permissionsHasPermissionContractorApproval));
 	}
