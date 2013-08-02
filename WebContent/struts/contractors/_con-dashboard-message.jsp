@@ -44,65 +44,79 @@
 <s:elseif test="#result.showListOperator">
     <div class="alert">
         <p>
-            <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
         </p>
-        <ul class="users-with-permissions">
-            <s:iterator value="#users_with_permissions" status="loop_index">
-                <li>
-                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
-                        <s:param><s:property value="name"/></s:param>
-                        <s:param><s:property value="account.name"/></s:param>
-                    </s:text>
-                </li>
-            </s:iterator>
-        </ul>
+        <s:if test="!permissions.contractor" >
+            <p>
+                <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+            </p>
+            <ul class="users-with-permissions">
+                <s:iterator value="#users_with_permissions" status="loop_index">
+                    <li>
+                        <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                            <s:param><s:property value="name"/></s:param>
+                            <s:param><s:property value="account.name"/></s:param>
+                        </s:text>
+                    </li>
+                </s:iterator>
+            </ul>
+        </s:if>
     </div>
 </s:elseif>
 
 <s:elseif test="#result.showListCorporate">
     <div class="alert">
         <p>
-            <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+            <s:property value="contractor.name"/> <s:text
+                name="ContractorView.ContractorDashboard.PendingApproval"/> <s:property
+                value="%{co.operatorAccount.name}"/>.
         </p>
-        <ul class="users-with-permissions">
-            <s:iterator value="#corporate_users_with_permissions" status="loop_index">
-                <li>
-                    <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
-                        <s:param><s:property value="name"/></s:param>
-                        <s:param><s:property value="account.name"/></s:param>
-                    </s:text>
-                </li>
-            </s:iterator>
-        </ul>
+        <s:if test="!permissions.contractor" >
+            <p>
+                <s:text name="ContractorView.ContractorDashboard.ApprovalContact"/>:
+            </p>
+            <ul class="users-with-permissions">
+                <s:iterator value="#corporate_users_with_permissions" status="loop_index">
+                    <li>
+                        <s:text name="ContractorView.ContractorDashboard.ApprovalContactSites">
+                            <s:param><s:property value="name"/></s:param>
+                            <s:param><s:property value="account.name"/></s:param>
+                        </s:text>
+                    </li>
+                </s:iterator>
+            </ul>
+        </s:if>
     </div>
 </s:elseif>
 
 <s:elseif test="#result.contractorNotApprovedExpectSomeSites"> <!--Corporate Not Approved.  Child sites: Approved, Not Approved -->
 
-	<!-- Show just one client site's data -->
-	<s:if test="#unapproved_sites.size() == 1" >
-		<div class="alert">
-			<p>
-				<s:property value="contractor.name"/>
-				<s:text name="ContractorView.ContractorDashboard.AwaitingApprovalSingle"/>
-			</p>
-		</div>
-	</s:if>
-	<s:else>
-		<div class="alert">
-			<p>
-				<s:property value="contractor.name"/>
-				<s:text name="ContractorView.ContractorDashboard.AwaitingApproval"/>
-			</p>
-		</div>
-		<ul class="users-with-permissions">
-			<s:iterator value="#unapproved_sites" var="unapproved_site">
-				<li>
-					<s:property value="#unapproved_site.name"/>
-				</li>
-			</s:iterator>
-		</ul>
-	</s:else>
+    <!-- Show just one client site's data -->
+    <s:if test="#unapproved_sites.size() == 1" >
+        <div class="alert">
+            <p>
+                <s:property value="contractor.name"/>
+                <s:text name="ContractorView.ContractorDashboard.AwaitingApprovalSingle"/>
+            </p>
+        </div>
+    </s:if>
+    <s:else>
+        <div class="alert">
+            <p>
+                <s:property value="contractor.name"/>
+                <s:text name="ContractorView.ContractorDashboard.AwaitingApproval"/>
+            </p>
+        </div>
+        <ul class="users-with-permissions">
+            <s:iterator value="#unapproved_sites" var="unapproved_site">
+                <li>
+                    <s:property value="#unapproved_site.name"/>
+                </li>
+            </s:iterator>
+        </ul>
+    </s:else>
 
 </s:elseif>
 
