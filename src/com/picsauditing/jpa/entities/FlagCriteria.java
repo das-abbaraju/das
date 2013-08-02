@@ -79,12 +79,6 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
     public String backwardCompatibleCategoryForEnum(FlagCriteriaCategory category) {
         if (category == null) {
             return Strings.EMPTY_STRING;
-        } else if (category == FlagCriteriaCategory.InsuranceAMBClass) {
-            return "Insurance AMB Class";
-        } else if (category == FlagCriteriaCategory.InsuranceAMBRating) {
-            return "Insurance AMB Rating";
-        } else if (category == FlagCriteriaCategory.InsuranceCriteria) {
-            return "Insurance Criteria";
         } else {
             return category.toString();
         }
