@@ -18,12 +18,12 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="v7/js/pics/widget/mibew.js?v=${version}"></script>
 
 <%-- v7 Chart Classes --%>
-<script type="text/javascript" src="v7/js/pics/widget/chart/_Chart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/CustomColorChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/BasicChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/StackedColumnChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/FlagsChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/StackedFlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/Chart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/child/BasicChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/child/StackedColumnChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/CustomColorChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/child/flags-chart/FlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/child/flags-chart/child/StackedFlagsChart.js?v=${version}"></script>
 <%-- END v7 Chart Classes --%>
 
 <script src="v7/js/vendor/select2.js?v=${version}"></script>

@@ -1,6 +1,6 @@
 (function ($) {
-    PICS.define('widget.chart.StackedFlagsChart', {
-        extend: 'widget.chart.FlagsChart',
+    PICS.define('widget.chart.custom-color-chart.flags-chart.StackedFlagsChart', {
+        extend: 'widget.chart.custom-color-chart.FlagsChart',
 
         methods: {
             init: function () {
