@@ -33,6 +33,7 @@ public interface FeatureToggle {
 	String TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER = "Toggle.TranslationServiceAdapter";
 	String TOGGLE_COUNTRY_PHONE_NUMBER = "Toggle.CountryPhoneNumber";
 	String TOGGLE_EMPTY_STRING_IS_VALID_TRANSLATION = "Toggle.EmptyStringIsValidTranslation";
+	String TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE = "Toggle.UseNewTranslationsDataSource";
 
 	boolean isFeatureEnabled(String toggleName);
 
