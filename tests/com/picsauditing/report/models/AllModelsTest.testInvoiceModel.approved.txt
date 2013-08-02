@@ -22,6 +22,8 @@ ContractorAuditGUARD
 ContractorBalance
 ContractorDocuGUARD
 ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk

@@ -901,6 +901,8 @@ ContractorAccountLevel
 ContractorAuditGUARD
 ContractorDocuGUARD
 ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorProductRisk
