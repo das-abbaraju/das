@@ -862,6 +862,7 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
+InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
 InvoiceInvoiceID
@@ -909,6 +910,7 @@ ContractorProductRisk
 ContractorSafetyRisk
 ContractorTransportationRisk
 InvoiceAmountApplied
+InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
 InvoiceInvoiceID
@@ -1040,6 +1042,7 @@ CommissionUserStartDate
 CommissionUserUserID
 CommissionUserUserName
 InvoiceAmountApplied
+InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
 InvoiceInvoiceID
@@ -1199,6 +1202,7 @@ FeeFeeClass
 FeeMaxFacilities
 FeeName
 InvoiceAmountApplied
+InvoiceCreationDate
 InvoiceCurrency
 InvoiceDueDate
 InvoiceInvoiceID
