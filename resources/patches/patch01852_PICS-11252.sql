@@ -1,4 +1,4 @@
-INSERT IGNORE INTO token (tokenName,listType,velocityCode)
+INSERT INTO token (tokenName,listType,velocityCode)
 VALUES ('ReportName','ALL','$report.name'),
 ('ReportDescription','ALL','$report.description'),
 ('ReportLink','ALL','$reportLink'),
