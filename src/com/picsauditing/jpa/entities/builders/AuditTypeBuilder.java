@@ -1,8 +1,11 @@
 package com.picsauditing.jpa.entities.builders;
 
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OperatorAccount;
+
+import java.util.ArrayList;
 
 public class AuditTypeBuilder {
 	private AuditType type = new AuditType();
@@ -30,4 +33,13 @@ public class AuditTypeBuilder {
 		type.setAccount(operator);
 		return this;
 	}
+
+    public AuditTypeBuilder categories(AuditCategory category) {
+        if (type.getCategories() == null) {
+            type.setCategories(new ArrayList<AuditCategory>());
+        }
+
+        type.getCategories().add(category);
+        return this;
+    }
 }

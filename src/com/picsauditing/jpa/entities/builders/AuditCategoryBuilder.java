@@ -13,4 +13,9 @@ public class AuditCategoryBuilder {
     public AuditCategory build() {
         return auditCategory;
     }
+
+    public AuditCategoryBuilder name(String name) {
+        auditCategory.setName(name);
+        return this;
+    }
 }
