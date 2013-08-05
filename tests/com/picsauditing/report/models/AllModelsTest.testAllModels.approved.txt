@@ -384,6 +384,58 @@ SafetyManualAnswer
 SafetyManualComment
 TrirAnswer
 
+Model: ContractorAuditOperatorWorkflows
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountName
+AccountStatus
+AccountTimezone
+AuditAssignedDate
+AuditAuditFor
+AuditAuditLocation
+AuditAuditorConfirm
+AuditAuditorID
+AuditAuditorName
+AuditClosingAuditorID
+AuditClosingAuditorName
+AuditContractorConfirm
+AuditCreationDate
+AuditEffectiveDate
+AuditExpiresDate
+AuditID
+AuditOperatorAccountID
+AuditOperatorAccountName
+AuditOperatorID
+AuditOperatorStatus
+AuditOperatorWorkflowID
+AuditOperatorWorkflowNotes
+AuditOperatorWorkflowPreviousStatus
+AuditOperatorWorkflowStatus
+AuditOperatorWorkflowUserID
+AuditOperatorWorkflowUserName
+AuditScheduledDate
+AuditScore
+AuditTypeClassType
+AuditTypeID
+AuditTypeMonthsToExpire
+AuditTypeName
+AuditTypeRenewable
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorProductRisk
+ContractorSafetyRisk
+ContractorTransportationRisk
+
 Model: ContractorFees
 Permission: Permissions{permissions=[]}
 ----------------------------------------
