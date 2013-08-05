@@ -125,9 +125,26 @@
                             data_table = new google.visualization.DataTable(google_data),
                             options = getAllOptions(child, data_table);
 
+                        google.visualization.events.addListener(chart, 'select', function () { redirect(chart, data_table); } );
                         chart.draw(data_table, options);
                     }
                 });
+            }
+
+            function redirect(chart, data_table) {
+                var selection = chart.getSelection()[0],
+                    url;
+
+                // We use typeof here because row and column can equal zero.
+                if (typeof selection.row != 'undefined' && typeof selection.column != 'undefined') {
+                    url = data_table.getProperty(selection.row, selection.column, 'url');
+                } else if (typeof selection.row != 'undefined') {
+                    url = data_table.getRowProperty(selection.row, 'url');
+                } else if (typeof selection.column != 'undefined') {
+                    url = data_table.getColumnProperty(selection.column, 'url');
+                }
+
+                window.location = url;
             }
 
             return {
