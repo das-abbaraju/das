@@ -15,6 +15,7 @@ public class AccountTable extends AbstractTable {
 	public static final String Invoice = "Invoice";
 	public static final String AccountManager = "AccountManager";
 	public static final String SalesRep = "SalesRep";
+    public static final String Note = "Note";
     public static final String LastLogin = "LastLogin";
 
     public AccountTable() {
@@ -64,5 +65,7 @@ public class AccountTable extends AbstractTable {
         ReportForeignKey lastLogin = new ReportForeignKey(LastLogin, new AccountLastLoginView(), new ReportOnClause("id", "accountID"));
         lastLogin.setMinimumImportance(FieldImportance.Average);
         addOptionalKey(lastLogin);
+
+        addRequiredKey(new ReportForeignKey(Note, new NoteTable(), new ReportOnClause("id", "accountID")));
     }
 }

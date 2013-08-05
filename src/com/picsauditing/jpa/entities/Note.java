@@ -18,6 +18,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.picsauditing.jpa.entities.builders.NoteBuilder;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +66,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	}
 
 	@Column(name = "summary", length = 150, nullable = false)
+    @ReportField(importance = FieldImportance.Required)
 	public String getSummary() {
 		return summary;
 	}
@@ -73,6 +77,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "noteCategory", nullable = false)
+    @ReportField(type = FieldType.NoteCategory, importance = FieldImportance.Required)
 	public NoteCategory getNoteCategory() {
 		return noteCategory;
 	}
@@ -83,6 +88,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "priority")
+    @ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average)
 	public LowMedHigh getPriority() {
 		return priority;
 	}
@@ -124,6 +130,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "status")
+    @ReportField(type = FieldType.NoteStatus, importance = FieldImportance.Required)
 	public NoteStatus getStatus() {
 		return status;
 	}
@@ -133,6 +140,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
+    @ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getFollowupDate() {
 		return followupDate;
 	}

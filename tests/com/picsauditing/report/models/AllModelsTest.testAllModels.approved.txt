@@ -1,3 +1,36 @@
+Model: AccountNotes
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountAddress
+AccountAddress2
+AccountAddress3
+AccountCity
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountFax
+AccountFullAddress
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountNoteID
+AccountNoteNoteCategory
+AccountNoteStatus
+AccountNoteSummary
+AccountNoteUserID
+AccountNoteUserName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountPhone
+AccountRequiresCompetencyReview
+AccountRequiresOQ
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+AccountWebUrl
+AccountZip
+
 Model: Accounts
 Permission: Permissions{permissions=[]}
 ----------------------------------------

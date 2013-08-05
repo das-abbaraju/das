@@ -30,6 +30,8 @@ InvoiceType	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,Lo
 LowMedHigh	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 MultiYearScope	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 NetworkLevel	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+NoteCategory	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
+NoteStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Number	Number	Number	Count,CountDistinct,Average,Round,Sum,StdDev,Max,Min
 Operator	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 OperatorTag	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase

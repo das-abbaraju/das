@@ -1,7 +1,8 @@
 package com.picsauditing.report.models;
 
 public enum ModelType {
-	Accounts,
+	AccountNotes,
+    Accounts,
     AuditTypes,
     ContractorAudits,
     ContractorAuditDatas,
