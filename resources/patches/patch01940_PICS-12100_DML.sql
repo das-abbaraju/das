@@ -10,7 +10,8 @@ END AS invoiceType,
 GROUP_CONCAT(f.fee) AS fees FROM 
 invoice i
 LEFT JOIN invoice_item ii ON i.id = ii.invoiceID
-LEFT JOIN invoice_fee f ON ii.feeID = f.id 
+LEFT JOIN invoice_fee f ON ii.feeID = f.id
+WHERE tableType = 'I'
 GROUP BY i.id DESC;
 
 UPDATE invoice i
