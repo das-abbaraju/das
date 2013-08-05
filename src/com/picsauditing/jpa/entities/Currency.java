@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Transient;
 
+@Deprecated
 public enum Currency {
 	USD("USD", "$"),        //US Dollar             (symbol placed before amounts)
     CAD("CAD", "$"),        //Canadian Dollar       (symbol placed before amounts)
@@ -15,47 +16,56 @@ public enum Currency {
 	private String display;
 	private String symbol;
 
+    @Deprecated
 	private Currency(String display, String icon) {
 		this.display = display;
 		this.symbol = icon;
 	}
 
+    @Deprecated
 	public String getDisplay() {
 		return display;
 	}
 
+    @Deprecated
 	public boolean isCAD() {
 		return this.equals(CAD);
 	}
 
+    @Deprecated
 	public boolean isUSD() {
 		return this.equals(USD);
 	}
-	
 
+
+    @Deprecated
 	public boolean isGBP() {
 		return this.equals(GBP);
 	}
-	
 
+
+    @Deprecated
 	public boolean isEUR() {
 		return this.equals(EUR);
 	}
 
+    @Deprecated
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 
+    @Deprecated
 	public String getSymbol() {
 		return symbol;
 	}
 
-	@Transient
+    @Deprecated
+    @Transient
 	public boolean isTaxable() {
-		//return isCAD() || isGBP() || isEUR();
 		return isCAD() || isGBP();
 	}
 
+    @Deprecated
     public com.picsauditing.currency.Currency toNewCurrency() {
         return com.picsauditing.currency.Currency.valueOf(this.name());
     }

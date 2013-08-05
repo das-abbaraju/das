@@ -53,56 +53,52 @@ public class InvoiceService {
 		return false;
 	}
 
-	public InvoiceFee getCanadianTaxInvoiceFeeForProvince(CountrySubdivision countrySubdivision) throws Exception {
+	public InvoiceFee getTaxInvoiceFee(FeeClass feeClass, Country country, CountrySubdivision countrySubdivision) throws Exception {
+        List<InvoiceFeeCountry> regionalInvoiceFees = getAllTaxFeesByRegion(feeClass, country, countrySubdivision);
 
-		InvoiceFeeCountry provinceTaxFee = getProvinceTaxFee(countrySubdivision);
-		InvoiceFee canadianTaxInvoiceFee = provinceTaxFee.getInvoiceFee();
+        InvoiceFee taxInvoiceFee = null;
+        if (regionalInvoiceFees != null && !regionalInvoiceFees.isEmpty()) {
+            InvoiceFeeCountry regionalTaxFee = getEffectiveRegionalTaxFee(regionalInvoiceFees);
 
-		canadianTaxInvoiceFee.setSubdivisionFee(provinceTaxFee);
+            if (regionalTaxFee != null) {
+                taxInvoiceFee = regionalTaxFee.getInvoiceFee();
+                taxInvoiceFee.setRegionalFee(regionalTaxFee);
+            }
+        }
 
-		return canadianTaxInvoiceFee;
+		return taxInvoiceFee;
 	}
 
-	InvoiceFeeCountry getProvinceTaxFee(CountrySubdivision countrySubdivision) throws Exception {
-		List<InvoiceFeeCountry> invoiceFeeCountries = getAllTaxFeesForProvince(countrySubdivision);
-		return getProvinceTaxFeeCurrentlyInEffect(invoiceFeeCountries);
-	}
+	private List<InvoiceFeeCountry> getAllTaxFeesByRegion(FeeClass feeClass, Country country, CountrySubdivision countrySubdivision) throws RecordNotFoundException {
+        List<InvoiceFeeCountry> invoiceFeeCountries = invoiceFeeCountryDAO.findAllInvoiceFeeCountrySubdivision(feeClass, countrySubdivision);
 
-	private List<InvoiceFeeCountry> getAllTaxFeesForProvince(CountrySubdivision countrySubdivision) throws RecordNotFoundException {
-		List<InvoiceFeeCountry> invoiceFeeCountries = invoiceFeeCountryDAO.findAllInvoiceFeeCountry(FeeClass.CanadianTax, countrySubdivision);
-		if (invoiceFeeCountries == null) {
-			throw new RecordNotFoundException("InvoiceFeeCountry records for feeClass: "
-					+ FeeClass.CanadianTax  + " and subdivision isoCode: " + countrySubdivision.getIsoCode());
-		}
+        if (invoiceFeeCountries == null || invoiceFeeCountries.isEmpty()) {
+            invoiceFeeCountries = invoiceFeeCountryDAO.findAllInvoiceFeeCountry(feeClass, country);
+        }
+
 		return invoiceFeeCountries;
 	}
 
-	private InvoiceFeeCountry getProvinceTaxFeeCurrentlyInEffect(List<InvoiceFeeCountry> invoiceFeeCountries) throws Exception {
+	private InvoiceFeeCountry getEffectiveRegionalTaxFee(List<InvoiceFeeCountry> invoiceFeeCountries) throws Exception {
 		if (invoiceFeeCountries.size() == 1) {
 			return invoiceFeeCountries.get(0);
 		}
 
-		sortByEffectiveDateDecending(invoiceFeeCountries);
-		Date today = getTodayDate();
+        Collections.sort(invoiceFeeCountries, new Comparator<InvoiceFeeCountry>() {
+            @Override
+            public int compare(InvoiceFeeCountry i1, InvoiceFeeCountry i2) {
+                return i1.getEffectiveDate().compareTo(i2.getEffectiveDate());
+            }
+        });
+        Collections.reverse(invoiceFeeCountries);
+
+        Date today = new DateTime().toDate();
 		for (InvoiceFeeCountry invoiceFeeCountry : invoiceFeeCountries) {
 			if (!today.before(invoiceFeeCountry.getEffectiveDate())) {
 				return invoiceFeeCountry;
 			}
 		}
-		throw new Exception("None of the invoiceFeeCountries in are currently in effect.");
-	}
 
-	private void sortByEffectiveDateDecending(List<InvoiceFeeCountry> invoiceFeeCountries) {
-		Collections.sort(invoiceFeeCountries, new Comparator<InvoiceFeeCountry>() {
-			@Override
-			public int compare(InvoiceFeeCountry i1, InvoiceFeeCountry i2) {
-				return i1.getEffectiveDate().compareTo(i2.getEffectiveDate());
-			}
-		});
-		Collections.reverse(invoiceFeeCountries);
-	}
-
-	private Date getTodayDate() {
-		return new DateTime().toDate();
+        return null;
 	}
 }

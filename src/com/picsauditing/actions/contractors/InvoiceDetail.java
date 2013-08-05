@@ -360,7 +360,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         }
 
         AccountingSystemSynchronization.setToSynchronize(invoice);
-        invoice.updateAmount();
+        invoice.updateTotalAmount();
         invoice.updateAmountApplied();
         invoiceService.saveInvoice(invoice);
 

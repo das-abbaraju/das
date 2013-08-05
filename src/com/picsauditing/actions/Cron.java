@@ -901,7 +901,7 @@ public class Cron extends PicsActionSupport {
 
             // Add Late Fee to Invoice
             i.getItems().add(lateFeeItem);
-            i.updateAmount();
+            i.updateTotalAmount();
             i.updateAmountApplied();
             AccountingSystemSynchronization.setToSynchronize(i);
 

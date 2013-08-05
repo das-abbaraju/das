@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 
 public class InvoiceFeeCountryDAO extends PicsDAO {
 
-	public List<InvoiceFeeCountry> findAllInvoiceFeeCountry(FeeClass feeClass, CountrySubdivision countrySubdivision) {
+	public List<InvoiceFeeCountry> findAllInvoiceFeeCountrySubdivision(FeeClass feeClass, CountrySubdivision countrySubdivision) {
 		Query query = em.createQuery("SELECT c FROM InvoiceFeeCountry c JOIN c.invoiceFee " +
 				"WHERE c.invoiceFee.feeClass = :feeClass AND c.subdivision = :countrySubdivision");
 
@@ -22,7 +22,17 @@ public class InvoiceFeeCountryDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<InvoiceFeeCountry> findVisibleByCountryAndFeeClassList(Country country, Set<FeeClass> feeClassList) {
+    public List<InvoiceFeeCountry> findAllInvoiceFeeCountry(FeeClass feeClass, Country country) {
+        Query query = em.createQuery("SELECT c FROM InvoiceFeeCountry c JOIN c.invoiceFee " +
+                "WHERE c.invoiceFee.feeClass = :feeClass AND c.country = :country");
+
+        query.setParameter("feeClass", feeClass);
+        query.setParameter("country", country);
+
+        return query.getResultList();
+    }
+
+    public List<InvoiceFeeCountry> findVisibleByCountryAndFeeClassList(Country country, Set<FeeClass> feeClassList) {
 		Query query = em.createQuery("SELECT c FROM InvoiceFeeCountry c JOIN c.invoiceFee i " +
 				"WHERE c.country = :country AND c.invoiceFee.feeClass IN (:feeClassList) AND i.visible = 1");
 

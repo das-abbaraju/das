@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -81,7 +80,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 				}
 			}
 
-			invoice.updateAmount();
+			invoice.updateTotalAmount();
 			AccountingSystemSynchronization.setToSynchronize(invoice);
 			invoiceService.saveInvoice(invoice);
 			addActionMessage(message);
@@ -108,7 +107,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 					}
 				}
 
-				invoice.updateAmount();
+				invoice.updateTotalAmount();
 				AccountingSystemSynchronization.setToSynchronize(invoice);
 				invoiceService.saveInvoice(invoice);
 			}

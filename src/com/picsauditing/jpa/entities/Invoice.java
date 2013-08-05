@@ -48,10 +48,26 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public boolean hasTax() {
-		return TaxService.invoiceHasTax(this);
+        return (getTaxItem() != null);
 	}
 
-	@Transient
+    @Transient
+    public InvoiceItem getTaxItem() {
+        for (InvoiceItem item : items) {
+            InvoiceFee invoiceFee = item.getInvoiceFee();
+            if (invoiceFee == null) {
+                continue;
+            }
+
+            if (InvoiceService.TAX_FEE_CLASSES.contains(invoiceFee.getFeeClass())) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    @Transient
 	public boolean isOverdue() {
 		if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
 			return false;
@@ -168,10 +184,14 @@ public class Invoice extends Transaction {
 	}
 
 	@Transient
-	public void updateAmount() {
+	public void updateTotalAmount() {
 		totalAmount = BigDecimal.ZERO;
 		for (InvoiceItem item : items) {
 			totalAmount = totalAmount.add(item.getAmount());
+
+            if (item.getInvoiceFee().isCommissionEligible()) {
+                commissionableAmount = commissionableAmount.add(item.getAmount());
+            }
 		}
 	}
 

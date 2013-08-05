@@ -359,4 +359,21 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 		return invoiceFee.getAmount();
 	}
+
+    @Transient
+    public boolean isTaxable() {
+        return (getTaxFeeClass() != null);
+    }
+
+    @Transient
+    public FeeClass getTaxFeeClass() {
+        if(isCanada()) {
+            return FeeClass.CanadianTax;
+        }
+        else if (isUK()) {
+            return FeeClass.VAT;
+        }
+
+        return null;
+    }
 }
