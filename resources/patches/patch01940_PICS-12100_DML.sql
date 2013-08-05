@@ -1,4 +1,4 @@
-DROP TABLE temp_invoice_type_calc;
+DROP TABLE IF EXISTS temp_invoice_type_calc;
 CREATE TEMPORARY TABLE temp_invoice_type_calc AS
 SELECT i.id, i.accountID, 
 CASE 
