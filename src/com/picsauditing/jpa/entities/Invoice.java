@@ -186,6 +186,8 @@ public class Invoice extends Transaction {
 	@Transient
 	public void updateTotalAmount() {
 		totalAmount = BigDecimal.ZERO;
+        commissionableAmount = BigDecimal.ZERO;
+
 		for (InvoiceItem item : items) {
 			totalAmount = totalAmount.add(item.getAmount());
 
