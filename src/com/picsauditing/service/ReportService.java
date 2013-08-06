@@ -276,7 +276,10 @@ public class ReportService {
 		}
 
 		sql.setPageNumber(reportContext.limit, reportContext.pageNumber);
-		List<BasicDynaBean> queryResults = runQuery(sql, dataJson);
+
+        List<BasicDynaBean> queryResults = null;
+        if (!sql.getFields().isEmpty())
+		    queryResults = runQuery(sql, dataJson);
 
 		ReportResults reportResults = buildReportResults(report, reportContext, queryResults);
 

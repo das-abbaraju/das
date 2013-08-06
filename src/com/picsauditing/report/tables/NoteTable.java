@@ -12,6 +12,7 @@ public class NoteTable extends AbstractTable {
     public NoteTable() {
 		super("note");
 		addPrimaryKey();
+        addCreationDate();
 		addFields(Note.class);
 	}
 
