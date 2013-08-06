@@ -726,7 +726,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
+			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.UPDATE));
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
 			return true;
 		}
