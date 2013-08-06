@@ -439,8 +439,11 @@ public final class MenuBuilder {
 		referenceMenu.addChild("Navigation Menu", "Reference!navigationMenu.action", "navigation_menu");
 		referenceMenu.addChild("Navigation Restructure", "Reference!navigationRestructure.action",
 				"navigation_restructure");
-		referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
-		referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
+
+		if (!permissions.isContractor()) {
+			referenceMenu.addChild("Dynamic Reports", "Reference!dynamicReport.action", "dynamic_report");
+			referenceMenu.addChild("Reports Manager", "Reference!reportsManager.action", "reports_manager");
+		}
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
