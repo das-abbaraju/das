@@ -4,21 +4,11 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th>
-                Old
-            </th>
-			<th>
-                New
-            </th>
-			<th>
-                Contractor
-            </th>
-			<th>
-                Operator
-            </th>
-			<th>
-                Last Calc
-            </th>
+			<th>Old</th>
+			<th>New</th>
+			<th>Contractor</th>
+			<th>Operator</th>
+			<th>Last Updated</th>
 		</tr>
 	</thead>
     
@@ -47,9 +37,6 @@
                 <s:param name="id">${operator_id}</s:param>
             </s:url>
             
-            <%-- sync --%>
-            <s:set var="recalculation" value="get('lastRecalculation')" />
-            
 			<tr>
 				<td class="center">
                     <s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString(), 'Old Flag: ')" escape="false"/>
@@ -64,7 +51,7 @@
                     <a href="${operator_url}">${operator_name}</a>
                 </td>
 				<td>
-                    ${recalculation} mins ago
+                    <s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                 </td>
 			</tr>
 		</s:iterator>

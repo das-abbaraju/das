@@ -166,7 +166,7 @@ function caoDetailsClueTips(caoID){
 			<pics:permission perm="AllContractors">
 				<th><a href="?orderBy=operator.name,a.name">Operator</a></th>
 			</pics:permission>
-			<th>Last Calc</th>
+			<th>Last Updated</th>
 			<!-- <th>Member Since</th> -->
 			<s:if test="filter.caoChangesFlagChanges">
 				<th>CAO Details</th>
@@ -179,7 +179,7 @@ function caoDetailsClueTips(caoID){
 		<s:set name="gcID" value="get('gcID')"></s:set>
 		<s:set name="caoID" value="get('caoID')"></s:set>
 		<tr id="row<s:property value="#gcID"/>">
-			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Calculated: <s:date name="get('lastRecalculation')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />)"
+			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Updated: <s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />)"
 					rel="ContractorFlagAjax.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>" class="contractorQuick"
 					href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>">
 						<img src="images/icon_<s:property value="get('baselineFlag').toString().toLowerCase()" />Flag.gif" width="10" height="12" border="0" />
@@ -212,7 +212,7 @@ function caoDetailsClueTips(caoID){
 			</pics:permission>
 			<td id="add_details_<s:property value="get('gcID')"/>">
 				<a title="Additional Details" rel="ContractorFlagChangesAjaxAddDetails.action?id=<s:property value="get('gcID')"/>">
-					<s:date name="get('lastRecalculation')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+					<s:date name="get('flagLastUpdated')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 				</a>
 				<script type="text/javascript">
 					addDetailsClueTips(
