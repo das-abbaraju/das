@@ -279,8 +279,7 @@ public final class ContractorSubmenuBuilder {
 
 			MenuComponent supportMenu = menubar.addChild(getText("menu.Support"));
 
-			String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&os_username=admin&os_password=ad9870mins";
-			supportMenu.addChild(getText("Header.HelpCenter"), helpUrl, "help_center");
+			supportMenu.addChild(getText("Header.HelpCenter"), "HelpCenter.action", "help_center");
 			supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
 			supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
 			supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
