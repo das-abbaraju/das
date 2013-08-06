@@ -144,7 +144,9 @@
                     url = data_table.getColumnProperty(selection.column, 'url');
                 }
 
-                window.location = url;
+                if (url) {
+                    window.location = url;
+                }
             }
 
             return {
