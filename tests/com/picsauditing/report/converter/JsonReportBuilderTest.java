@@ -131,6 +131,7 @@ public class JsonReportBuilderTest {
 
 		// Column specific properties
 		String url = "www.picsauditing.com";
+        String expectedURL = "Report.action?report=0&removeAggregates=true&dynamicParameters=[]";
 		SqlFunction sqlFunction = SqlFunction.Max;
 		int width = 123;
 		boolean sortable = true;
@@ -161,7 +162,7 @@ public class JsonReportBuilderTest {
 
 		assertContains(REPORT_COLUMNS, jsonString);
 		assertJson(COLUMN_TYPE, columnType, jsonString);
-		assertJson(COLUMN_URL, url, jsonString);
+		assertJson(COLUMN_URL, expectedURL, jsonString);
 		assertJson(COLUMN_SQL_FUNCTION, sqlFunction, jsonString);
 		assertJsonNoQuotes(COLUMN_WIDTH, width, jsonString);
 		assertJsonNoQuotes(COLUMN_SORTABLE, sortable, jsonString);
@@ -258,7 +259,8 @@ public class JsonReportBuilderTest {
 		mockMinimalReport();
 
 		Column column = new Column();
-		column.setField(null);
+        Field field = new Field("Name", "name", FieldType.String);
+        column.setField(field);
 
 		List<Column> columns = new ArrayList<Column>();
 		columns.add(column);
