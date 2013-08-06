@@ -275,7 +275,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		try {
 			Database.executeBatch(sql, clientSiteServices, new CommissionAuditQueryMapper());
 		} catch (Exception e) {
-			logger.error("An error occurred while performing a batch insert for invoice commissions", e);
+			logger.debug("An error occurred while performing a batch insert for invoice commissions", e);
 		}
 	}
 
