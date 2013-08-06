@@ -30,6 +30,7 @@ public class ProcessQBResponseXMLStrategy {
 
 	private String parentNodeNameAddResult;
 	private String parentNodeNameQueryResult;
+	private String parentNodeNameUpdateResult;
 	private String detailNodeName;
 	private String requestType;
 	private PicsDAO dao;
@@ -60,7 +61,7 @@ public class ProcessQBResponseXMLStrategy {
 			}
 		} else {
 			errorMessages.append(getRequestType() + " Request failed");
-			if (isAddRequest(parentNode.getNodeName())) {
+			if (isAddOrUpdateRequest(parentNode.getNodeName())) {
 				errorMessages.append("requestID " + getNodeRequestIDAttribute(parentNode));
 			}
 			errorMessages.append("<br/>");
@@ -79,9 +80,10 @@ public class ProcessQBResponseXMLStrategy {
 		return attributes.getNamedItem("statusMessage").getNodeValue().equals("Status OK");
 	}
 
-	protected Boolean isAddRequest(String parentNodeName) {
-		return (parentNodeName.equals(getParentNodeNameAddResult()) ? true : false);
+	protected Boolean isAddOrUpdateRequest(String parentNodeName) {
+		return (parentNodeName.equals(getParentNodeNameAddResult()) || parentNodeName.equals(getParentNodeNameUpdateResult()) ? true : false);
 	}
+
 
 	public static NodeList findQBXMLMsgsRsChildNodes(InputStream inputStream, StringBuilder actionMessages, StringBuilder errorMessages) throws IOException, SAXException, ParserConfigurationException {
 
@@ -132,14 +134,17 @@ public class ProcessQBResponseXMLStrategy {
 			switch (node.getNodeName()) {
 				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
+				case ProcessQBResponseXMLInvoiceAddOrUpdate.PARENT_NODE_NAME_UPDATE_RESULT:
 					processor = ProcessQBResponseXMLInvoiceAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
+				case ProcessQBResponseXMLCustomerAddOrUpdate.PARENT_NODE_NAME_UPDATE_RESULT:
 					processor = ProcessQBResponseXMLCustomerAddOrUpdate.factory(actionMessages,errorMessages,caDao);
 					break;
 				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_ADD_RESULT:
 				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_QUERY_RESULT:
+				case ProcessQBResponseXMLPaymentAddOrUpdate.PARENT_NODE_NAME_UPDATE_RESULT:
 					processor = ProcessQBResponseXMLPaymentAddOrUpdate.factory(actionMessages,errorMessages,nullDao);
 					break;
 				default:
@@ -168,8 +173,8 @@ public class ProcessQBResponseXMLStrategy {
 				tablePK = nodeInQuestion.getTextContent().replaceAll("[^0-9]", "");
 			}
 			if (!qbListID.isEmpty() && !tablePK.isEmpty()) {
-				boolean isAddNotJustQuerySoSetQbSyncToFalse = isAddRequest(parentNodeName);
-				updateDatabaseTable(qbListID, tablePK, isAddNotJustQuerySoSetQbSyncToFalse);
+				boolean isAddorUpdateButNotQuerySoSetQbSyncToFalse = isAddOrUpdateRequest(parentNodeName);
+				updateDatabaseTable(qbListID, tablePK, isAddorUpdateButNotQuerySoSetQbSyncToFalse);
 				return;
 			}
 		}
@@ -353,4 +358,14 @@ public class ProcessQBResponseXMLStrategy {
 	public ContractorAccountDAO getContractorAccountDAO() {
 		return contractorAccountDAO;
 	}
+
+
+	public String getParentNodeNameUpdateResult() {
+		return parentNodeNameUpdateResult;
+	}
+
+	public void setParentNodeNameUpdateResult(String parentNodeNameUpdateResult) {
+		this.parentNodeNameUpdateResult = parentNodeNameUpdateResult;
+	}
+
 }
