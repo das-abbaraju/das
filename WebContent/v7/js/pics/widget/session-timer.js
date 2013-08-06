@@ -6,7 +6,7 @@
             var session = {
                 duration: 3600,
                 notification_duration: 60,
-                hasSession: false
+                sessionActive: false
             };
 
             return {
@@ -24,12 +24,28 @@
 
                     // any ajax made from the site will restart the session timeout
                     $(document).on('ajaxSend', function (event, jqXHR, settings) {
-                        if (that.hasSession) {
+                        if (that.getSessionActive()) {
                             PICS.debounce(that.initializeSessionTimeout(), 250);
                         }
                     });
 
                     this.getSessionDuration();
+                },
+
+                getSessionTimeoutNotification: function () {
+                    PICS.ajax({
+                        url: "SessionTimeout.action",
+                        dataType: 'html',
+                        success: function(data, textStatus, jqXHR) {
+                            var $notification_element = $(data.trim());
+
+                            $notification_element.prependTo('body');
+                        }
+                    });
+                },
+
+                getSessionActive: function () {
+                    return this.sessionActive;
                 },
 
                 getSessionDuration: function () {
@@ -39,18 +55,16 @@
                         url: "SessionAjax!getUserSession.action",
                         dataType: 'json',
                         success: function(data, textStatus, jqXHR) {
-                            session.duration = data.sessionDuration;
-
-                            // Don't start the session timeout for @Anonymous pages
-                            if (typeof session.duration != 'number') {
-                                return false;
+                            function isPageAnonymous() {
+                                return data.error;
                             }
 
-                            //boolean used to restrict ajaxSend to users with session established
-                            that.hasSession = true;
-
-                            // Initialize session timer for the first time
-                            that.initializeSessionTimeout();
+                            if (!isPageAnonymous()) {
+                                that.setSessionDuration(data.sessionDuration);
+                                that.setSessionActive(true);
+                                that.initializeSessionTimeout();
+                                that.getSessionTimeoutNotification();
+                            }
                         }
                     });
                 },
@@ -61,7 +75,7 @@
                     // session.notification_duration = 10;
 
                     //clear timers
-                    clearTimeout(session.sessionExpirationTimer);
+                    clearTimeout(session.expiration_timer);
                     clearTimeout(session.notification_timer);
 
                     //remove notification
@@ -74,13 +88,26 @@
                 },
 
                 logout: function () {
-                    document.location = this.REDIRECTION_TARGET + '?button=logout';
+                    PICS.ajax({
+                        url: "Login!sessionLogout.action",
+                        dataType: 'json',
+                        success: function(data, textStatus, jqXHR) {
+                            if (data.referer) {
+                                //redirect to referer to set "from" cookie
+                                //to triggger redirect to previous page on login
+                                document.location = data.referer;
+                            } else {
+                                this.REDIRECTION_TARGET + '?button=logout';
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            this.REDIRECTION_TARGET + '?button=logout';
+                        }
+                    });
                 },
 
                 removeSessionTimeoutNotification: function () {
-                    $('.session-timeout-notification').slideUp(400, function () {
-                        $(this).remove();
-                    });
+                    $('.session-timeout-notification').slideUp();
                 },
 
                 // make an ajax request to restart session via ajaxSend() above to re-initialize session
@@ -100,21 +127,16 @@
                     }
                 },
 
+                setSessionDuration: function (duration) {
+                    session.duration = duration;
+                },
+
+                setSessionActive: function (value) {
+                    this.sessionActive = value;
+                },
+
                 showSessionTimeoutNotification: function () {
-                    var $notification_element = $('<div class="session-timeout-notification alert navbar-fixed-top">').html(function () {
-                        return [
-                            '<button type="button" class="close" data-dismiss="alert">×</button>',
-                            '<h4>Auto Logout</h4>',
-                            '<p>You will be logged off in <strong class="time">' + session.remaining_time + '</strong> seconds due to inactivity. ',
-                            '<a href="#">Click here to continue using PICS Organizer.</a>',
-                            '</p>'
-                        ].join('');
-                    });
-
-                    $notification_element.prependTo('body');
-
-                    // show session timeout notification
-                    $notification_element.slideDown();
+                    $('.session-timeout-notification').slideDown();
                 },
 
                 startSessionTimeout: function () {
@@ -140,7 +162,7 @@
 
                         session.remaining_time -= 1;
 
-                        session.sessionExpirationTimer = setTimeout($.proxy(this.expireSession, this), 1000);
+                        session.expiration_timer = setTimeout($.proxy(this.expireSession, this), 1000);
                     } else {
                         this.logout();
                     }

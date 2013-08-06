@@ -751,25 +751,26 @@ body {
 }
 /* line 2, ../sass/pics/widgets/pics/_session-timer.scss */
 .session-timeout-notification {
+  display: none;
   font-size: 13px;
   line-height: 1;
   margin: 0px;
   z-index: 99999;
 }
-/* line 9, ../sass/pics/widgets/pics/_session-timer.scss */
+/* line 10, ../sass/pics/widgets/pics/_session-timer.scss */
 .session-timeout-notification h4 {
   color: #e67e1c;
 }
-/* line 14, ../sass/pics/widgets/pics/_session-timer.scss */
+/* line 15, ../sass/pics/widgets/pics/_session-timer.scss */
 .session-timeout-notification p {
   margin: 0px;
 }
-/* line 19, ../sass/pics/widgets/pics/_session-timer.scss */
+/* line 20, ../sass/pics/widgets/pics/_session-timer.scss */
 .session-timeout-notification a {
   color: #226396;
   text-decoration: none;
 }
-/* line 25, ../sass/pics/widgets/pics/_session-timer.scss */
+/* line 26, ../sass/pics/widgets/pics/_session-timer.scss */
 .session-timeout-notification a:hover {
   color: #73BBE8;
 }
