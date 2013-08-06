@@ -154,6 +154,7 @@ public class ContractorsModel extends AbstractModel {
                 "WHERE (pd.answer = 'X' OR pd.answer = 'Yes') AND questionID IN ");
         supplierDiversity.setSuffixValue("");
         supplierDiversity.setCategory(FieldCategory.ReportingClientSite);
+        supplierDiversity.setRequiredJoin("ContractorPQF");
         fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
 
         Field GLEachOccurrence = fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase());

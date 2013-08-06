@@ -80,7 +80,7 @@ public class ContractorTable extends AbstractTable {
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 456")));
         cemexPostEval.setMinimumImportance(FieldImportance.Required);
 
-        ReportForeignKey pqfKey = addRequiredKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
+        ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
                 new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = " + AuditType.PQF)));
         pqfKey.setMinimumImportance(FieldImportance.Required);
 
