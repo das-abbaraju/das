@@ -2,6 +2,7 @@ package com.picsauditing.report.converter;
 
 import static com.picsauditing.report.ReportJson.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class JsonReportBuilder {
 
+    private static int reportID;
 	private static final Logger logger = LoggerFactory.getLogger(JsonReportBuilder.class);
 
 	// FOR TESTING ONLY
@@ -31,6 +33,8 @@ public class JsonReportBuilder {
 
 	public static JSONObject buildReportJson(Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		JSONObject json = new JSONObject();
+
+        reportID = report.getId();
 
 		addReportLevelData(json, report, permissions, subscriptions);
 
@@ -77,6 +81,7 @@ public class JsonReportBuilder {
 
 		Collections.sort(columns);
 		assignColumnIds(columns);
+        setDrillDownURL(columns);
 
 		for (Column column : columns) {
 			try {
@@ -89,7 +94,42 @@ public class JsonReportBuilder {
 		json.put(REPORT_COLUMNS, jsonArray);
 	}
 
-	protected static void assignColumnIds(List<Column> columns) {
+    private static void setDrillDownURL(List<Column> columns) {
+        List <Column> aggregateColumns = new ArrayList<Column>();
+        JSONArray dynamicParameters = new JSONArray();
+
+        for (Column column : columns) {
+            if (column.getSqlFunction() != null && column.getSqlFunction().isAggregate()) {
+                aggregateColumns.add(column);
+            }
+            else {
+                JSONObject param = new JSONObject();
+                param.put(REPORT_ELEMENT_FIELD_ID,column.getName());
+                param.put(FILTER_OPERATOR,column.getField().getFilterType().defaultOperator.toString());
+                param.put(FILTER_VALUE,"{" + column.getName() + "}");
+                dynamicParameters.add(param);
+
+//                try {
+//                    Filter dynamicFilter = new Filter();
+//                    dynamicFilter.setField(column.getField());
+//                    dynamicFilter.setName(column.getName());
+//                    dynamicFilter.setOperator(column.getField().getFilterType().defaultOperator);
+//                    dynamicFilter.setValue("{" + column.getName() + "}");
+//                    dynamicParameters.add(filterToJson(dynamicFilter));
+//                } catch (ReportValidationException rve) {
+//                    logger.error(rve.getMessage());
+//                }
+            }
+        }
+
+        String drillDownURL = "Report.action?report=" + reportID + "&removeAggregates=true&dynamicParameters=" + dynamicParameters;
+
+        for (Column aggregateColumn : aggregateColumns) {
+            aggregateColumn.getField().setUrl(drillDownURL);
+        }
+    }
+
+    protected static void assignColumnIds(List<Column> columns) {
 		for (int i = 0; i < columns.size(); i++) {
 			Column column = columns.get(i);
 			column.setColumnId(COLUMN_ID_PREFIX + i);
