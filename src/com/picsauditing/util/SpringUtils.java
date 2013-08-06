@@ -43,6 +43,7 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String USER_DAO = "UserDAO";
 	public static final String EMAIL_REPORT_RUNNER = "EmailReportRunner";
 	public static final String EMAIL_REQUEST_PUBLISHER = "EmailRequestPublisher";
+	public static final String CONTRACTOR_SUBMENU_BUILDER = "ContractorSubmenuBuilder";
 
 	private static ApplicationContext applicationContext;
 

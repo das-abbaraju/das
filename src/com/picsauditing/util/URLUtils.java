@@ -1,18 +1,17 @@
 package com.picsauditing.util;
 
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.dispatcher.mapper.ActionMapping;
+import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
+import org.apache.struts2.views.util.DefaultUrlHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.dispatcher.mapper.ActionMapping;
-import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
-import org.apache.struts2.views.util.DefaultUrlHelper;
 
 public class URLUtils implements StreamContentProvider {
 	private static final String URL_SEPARATOR = "/";
@@ -75,9 +74,8 @@ public class URLUtils implements StreamContentProvider {
 	 * Generated URI with encoded parameters.
 	 *
 	 * @param action
-	 * @param parameters
-	 *            must be in key, value pairs to be placed into a
-	 *            <code>&lt;String, Object&gt;</code> map.
+	 * @param parameters must be in key, value pairs to be placed into a
+	 *                   <code>&lt;String, Object&gt;</code> map.
 	 */
 	public String getActionUrl(String action, Object... parameters) {
 		if (parameters != null && parameters.length % 2 == 0) {
@@ -100,17 +98,12 @@ public class URLUtils implements StreamContentProvider {
 	/**
 	 * Generated URI with encoded parameters.
 	 *
-	 * @param action
-	 *            action name
-	 * @param method
-	 *            method name, use null if not needed
-	 * @param parameters
-	 *            &lt;String, Object&gt; map of parameter name, parameter value
-	 * @param useFullUrl
-	 *            whether to display something like
-	 *            "https://www.picsorganizer.com" beforehand
-	 * @return
-	 *         "/Action!method.action?param1key=param1value&amp;param2key=param2value"
+	 * @param action     action name
+	 * @param method     method name, use null if not needed
+	 * @param parameters &lt;String, Object&gt; map of parameter name, parameter value
+	 * @param useFullUrl whether to display something like
+	 *                   "https://www.picsorganizer.com" beforehand
+	 * @return "/Action!method.action?param1key=param1value&amp;param2key=param2value"
 	 */
 	public String getActionUrl(String action, String method, Map<String, Object> parameters, boolean useFullUrl) {
 		ActionMapping mapping = new ActionMapping(action, getNamespace(), method, parameters);
@@ -127,7 +120,11 @@ public class URLUtils implements StreamContentProvider {
 
 	private String getNamespace() {
 		if (namespace == null) {
-			namespace = ServletActionContext.getActionMapping().getNamespace();
+			if (ServletActionContext.getActionMapping() != null) {
+				namespace = ServletActionContext.getActionMapping().getNamespace();
+			} else {
+				namespace = "/";
+			}
 		}
 
 		return namespace;

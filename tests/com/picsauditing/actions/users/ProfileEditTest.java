@@ -1,6 +1,7 @@
 package com.picsauditing.actions.users;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
@@ -18,8 +19,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ProfileEditTest extends PicsActionTest {
+	public static final int USER_ID = 12345;
 	private ProfileEdit profileEdit;
 
+	@Mock
+	private Permissions permissions;
 	@Mock
 	private User user;
 	@Mock
@@ -33,6 +37,10 @@ public class ProfileEditTest extends PicsActionTest {
 
 		profileEdit = new ProfileEdit();
 
+		when(permissions.getUserId()).thenReturn(USER_ID);
+		when(user.getId()).thenReturn(USER_ID);
+
+		Whitebox.setInternalState(profileEdit, "permissions", permissions);
 		Whitebox.setInternalState(profileEdit, "userDAO", userDAO);
 	}
 
@@ -47,6 +55,7 @@ public class ProfileEditTest extends PicsActionTest {
 		verify(user).setUsingDynamicReports(false);
 		verify(user).setUsingVersion7Menus(false);
 		verify(userDAO).save(user);
+		verify(permissions).setUsingVersion7Menus(false);
 	}
 
 	@Test
@@ -62,5 +71,6 @@ public class ProfileEditTest extends PicsActionTest {
 		verify(user).setUsingVersion7Menus(true);
 		verify(user).setUsingVersion7MenusDate(any(Date.class));
 		verify(userDAO).save(user);
+		verify(permissions).setUsingVersion7Menus(true);
 	}
 }
