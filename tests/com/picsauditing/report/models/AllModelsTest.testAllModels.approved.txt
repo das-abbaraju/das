@@ -1331,6 +1331,7 @@ UserDepartment
 UserEmail
 UserFax
 UserFirstName
+UserGroup
 UserID
 UserIsActive
 UserIsGroup

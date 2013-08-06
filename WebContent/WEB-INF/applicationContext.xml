@@ -225,7 +225,6 @@
     <bean id="OptionGroupAutocompleteService"
           class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
     <bean id="OptionValueAutocompleteService"
-
           class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
     <bean id="ReportService" class="com.picsauditing.service.ReportService"/>
     <bean id="ManageReportsService" class="com.picsauditing.service.ManageReportsService"/>
@@ -234,6 +233,7 @@
     <bean id="CountrySubdivisionAutocompleteService"
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
+    <bean id="UserGroupAutocompleteService" class="com.picsauditing.actions.autocomplete.UserGroupAutocompleteService"/>
     <bean id="UserService" class="com.picsauditing.access.UserService"/>
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>

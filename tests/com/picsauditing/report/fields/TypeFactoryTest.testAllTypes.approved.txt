@@ -46,4 +46,5 @@ Trade	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCa
 TransactionStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 UserAccountRole	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 UserID	UserID	Number	Count,CountDistinct,Max,Min
+UserGroup	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 WaitingOn	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase

@@ -59,6 +59,7 @@ public enum FieldType {
 	TransactionStatus(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, TransactionStatus.class, EnumType.STRING),
 	UserAccountRole(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, UserAccountRole.class, EnumType.STRING),
 	UserID(FilterType.UserID, DisplayType.Number, SqlFunctionProfile.Boolean, null, null),
+    UserGroup(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
 	WaitingOn(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, WaitingOn.class, EnumType.ORDINAL);
 
 	private FilterType filterType;

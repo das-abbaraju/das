@@ -59,7 +59,15 @@ public class UsersModel extends AbstractModel {
 		accountType.setTranslationPrefixAndSuffix("AccountType", "");
 		fields.put(ACCOUNT_TYPE.toUpperCase(), accountType);
 
-		return fields;
+        Field accountManager = new Field("UserGroup","User.id",FieldType.UserGroup);
+        accountManager.setVisible(false);
+        accountManager.setPrefixValue("SELECT userID FROM calc_inherited_user_group ciug " +
+                "WHERE groupID IN ");
+        accountManager.setSuffixValue("");
+        accountManager.setCategory(FieldCategory.CustomerService);
+        fields.put(accountManager.getName().toUpperCase(), accountManager);
+
+        return fields;
 	}
 
 	@Override

@@ -8,16 +8,13 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.security.EncodedKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.ContractorWatch;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
@@ -48,7 +45,24 @@ public class UserDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<User> findByEmail(String email) {
+    public List<User> findWhere(String where, int limit) {
+        if (where == null) {
+            where = "";
+        }
+
+        if (where.length() > NO_LIMIT) {
+            where = "WHERE " + where;
+        }
+
+        Query query = em.createQuery("SELECT u from User u " + where + " ORDER BY u.name");
+        if (limit > 0) {
+            query.setMaxResults(limit);
+        }
+
+        return query.getResultList();
+    }
+
+    public List<User> findByEmail(String email) {
 		Query query = em.createQuery("SELECT u FROM User u WHERE email = ?");
 		query.setParameter(1, email);
 		query.setMaxResults(10);
