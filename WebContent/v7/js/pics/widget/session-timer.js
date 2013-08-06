@@ -37,9 +37,7 @@
                         url: "SessionTimeout.action",
                         dataType: 'html',
                         success: function(data, textStatus, jqXHR) {
-                            var $notification_element = $(data.trim());
-
-                            $notification_element.prependTo('body');
+                            session.timeout_notification = data.trim();
                         }
                     });
                 },
@@ -107,7 +105,9 @@
                 },
 
                 removeSessionTimeoutNotification: function () {
-                    $('.session-timeout-notification').slideUp();
+                    $('.session-timeout-notification').slideUp(400, function () {
+                        $(this).remove();
+                    });
                 },
 
                 // make an ajax request to restart session via ajaxSend() above to re-initialize session
@@ -136,6 +136,8 @@
                 },
 
                 showSessionTimeoutNotification: function () {
+                    $(session.timeout_notification).prependTo('body');
+
                     $('.session-timeout-notification').slideDown();
                 },
 
