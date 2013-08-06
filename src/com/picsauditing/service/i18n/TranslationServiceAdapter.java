@@ -30,9 +30,7 @@ public class TranslationServiceAdapter implements TranslationService {
             ((System.getProperty("translation.server") == null) ? "http://acoustickitty.picsorganizer.com" : System.getProperty("translation.server")) + "/api/";
     private static final String LOCALES_URL = TRANSLATION_URL + "locales/";
     private static final String CACHE_NAME = "i18n";
-    private static final String LOCALE_CACHE_NAME = "i18nLocale";
     private static Cache cache;
-    private static Cache localeCache;
     private static final String environment = System.getProperty("pics.env");
     private Client client;
 
@@ -40,7 +38,6 @@ public class TranslationServiceAdapter implements TranslationService {
         // CacheManager.create returns the existing singleton if it already exists
         CacheManager manager = CacheManager.create();
         cache = manager.getCache(CACHE_NAME);
-        localeCache = manager.getCache(LOCALE_CACHE_NAME);
     }
 
 	public static TranslationServiceAdapter getInstance() {
@@ -291,20 +288,13 @@ public class TranslationServiceAdapter implements TranslationService {
 
     private JSONArray allLocalesForKey(String key) {
         JSONArray locales = new JSONArray();
-        Element element = localeCache.get(key);
-        if (element != null) {
-            locales = (JSONArray) element.getObjectValue();
+        ClientResponse response = makeServiceApiCall(getLocalesUrl(key));
+        if (response.getStatus() != 200) {
+            logger.error("Failed : HTTP error code : {}", response.getStatus());
+            locales.add("en_US");
         } else {
-            ClientResponse response = makeServiceApiCall(getLocalesUrl(key));
-            if (response.getStatus() != 200) {
-                logger.error("Failed : HTTP error code : {}", response.getStatus());
-                locales.add("en_US");
-            } else {
-                JSONObject json = parseJson(response.getEntity(String.class));
-                locales = (JSONArray) json.get("locales");
-            }
-            element = new Element(key, locales);
-            localeCache.put(element);
+            JSONObject json = parseJson(response.getEntity(String.class));
+            locales = (JSONArray) json.get("locales");
         }
         return locales;
     }
