@@ -128,35 +128,6 @@ public class ContractorsModel extends AbstractModel {
         accountManager.setCategory(FieldCategory.CustomerService);
         fields.put(accountManager.getName().toUpperCase(), accountManager);
 
-//        Field location = new Field("Location","Account.id",FieldType.Location);
-//        location.setVisible(false);
-//        location.setPrefixValue("EXISTS (SELECT 'x' FROM pqfdata d " +
-//                " JOIN audit_question aq ON aq.id = d.questionID " +
-//                " WHERE ca1.id = d.auditID " +
-//                " AND aq.uniqueCode IN ");
-//        location.setSuffixValue("AND d.answer != 'No' LIMIT 1");
-//        location.setCategory(FieldCategory.CustomerService);
-//        fields.put(location.getName().toUpperCase(), location);
-//
-//        List<String> regions = new ArrayList<String>();
-//
-//        if (!regions.isEmpty()) {
-//            String countryList = Strings.implodeForDB(regions);
-//            sb.append("a.country IN (").append(countryList).append(")");
-//        }
-//
-//        if (!regions.isEmpty()) {
-//            if (!regions.isEmpty())
-//                sb.append(" OR ");
-//
-//            String regionList = Strings.implodeForDB(regions);
-//            sb.append("a.countrySubdivision IN (").append(regionList).append(") OR ")
-//                    .append("EXISTS (SELECT 'x' FROM pqfdata d ")
-//                    .append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
-//                    .append("AND aq.uniqueCode IN (").append(regionList)
-//                    .append(") AND d.answer != 'No' LIMIT 1) ");
-//        }
-//
         Field clientSite = new Field("ContractorWorksAtClientSite","Account.id",FieldType.Operator);
         clientSite.setVisible(false);
         clientSite.setPrefixValue("SELECT co.subID " +

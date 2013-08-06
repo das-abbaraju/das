@@ -41,7 +41,6 @@ public enum FieldType {
 	Integer(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
     InvoiceType(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, InvoiceType.class, EnumType.STRING),
 	LowMedHigh(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, LowMedHigh.class, EnumType.ORDINAL),
-    Location(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
 	MultiYearScope(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, MultiYearScope.class, EnumType.STRING),
 	NetworkLevel(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, NetworkLevel.class, EnumType.ORDINAL),
     NoteCategory(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, NoteCategory.class, EnumType.STRING),
