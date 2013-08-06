@@ -64,9 +64,19 @@
                     <s:iterator value="availableField">
                         <tr>
                             <td><s:property value="name" /></td>
-                            <td><s:text name="%{'Report.Category.' + category}" /></td>
-
                             <s:set name="fieldKey" value="'Report.' + name" />
+
+                            <s:if test="hasKey(#fieldKey + '.category')">
+                                <td><s:text name="%{#fieldKey + '.category'}" /></td>
+                            </s:if>
+                            <s:else>
+                                <td class="translation-form"><form action="ManageTranslations.action" target="_BLANK" class="form-search">
+                                    <input type="hidden" name="translation.locale" value="en" />
+                                    <s:hidden name="translation.key" value="%{#fieldKey + '.category'}" />
+                                    <input type="text" name="translation.value" class="input-small" placeholder="Category" />
+                                    <button type="submit" class="btn btn-small" name="button" value="save">Add</button>
+                                </form></td>
+                            </s:else>
                             <s:if test="hasKey(#fieldKey)">
                                 <td><a href="ManageTranslations.action?key=<s:property value="#fieldKey" />"
                                        target="_BLANK">
