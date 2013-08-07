@@ -170,7 +170,7 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		verify(translationService, atLeastOnce()).getText(translationKeyCaptor.capture(), any(Locale.class));
 
 		assertTrue(translationKeyCaptor.getAllValues().contains(AuditMenuBuilder.SUMMARY));
-		assertTrue(translationKeyCaptor.getAllValues().contains("ContractorActionSupport.ManageCertificates"));
+		assertTrue(translationKeyCaptor.getAllValues().contains("ContractorSubmenu.MenuItem.CertificatesManager"));
 	}
 
 	@Test

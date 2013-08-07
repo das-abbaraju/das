@@ -103,8 +103,8 @@ public class AuditMenuBuilder {
 	}
 
 	private void buildDocuGUARDSection() {
-		buildPQFSection();
 		buildAnnualUpdatesSection();
+		buildPQFSection();
 
 		if (docuGUARDAddMoreLinkVisible) {
 			String contractorDocumentsPage = urlUtils().getActionUrl("ContractorDocuments", "id", contractor.getId());
@@ -125,12 +125,16 @@ public class AuditMenuBuilder {
 					AuditType auditType = audit.getAuditType();
 
 					if (auditType.getClassType().isPqf() && auditType.getId() != AuditType.IHG_INSURANCE_QUESTIONAIRE) {
-						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
-								|| auditType.getId() == AuditType.IMPORT_PQF) {
-							if (counter < MAX_MENU_ITEM || auditType.isPicsPqf()) {
+						if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
+							if (counter < MAX_MENU_ITEM) {
 								MenuComponent childMenu = createAuditMenuItem(audit);
 								childMenu.setUrl(urlUtils().getActionUrl("Audit", "auditID", audit.getId()));
-								addToServiceMenu(Service.DOCUGUARD, childMenu);
+
+								if (auditType.isPicsPqf()) {
+									addToStartOfServiceMenu(Service.DOCUGUARD, childMenu);
+								} else {
+									addToServiceMenu(Service.DOCUGUARD, childMenu);
+								}
 							}
 
 							// Put Trades menu after 'PQF' menu entry
@@ -225,16 +229,16 @@ public class AuditMenuBuilder {
 				}
 
 				if (counter > 0) {
-					addToStartOfServiceMenu(Service.INSUREGUARD, summary);
-
-					MenuComponent certificates = new MenuComponent(getText("ContractorActionSupport.ManageCertificates"), conInsureGUARDPage);
-					addToServiceMenu(Service.INSUREGUARD, certificates);
-
 					if (permissions.hasPermission(OpPerms.AuditVerification)) {
 						String insureGUARDVerificationPage = urlUtils().getActionUrl("InsureGuardVerification", "contractor", contractor.getId());
 						MenuComponent verification = new MenuComponent(getText("ContractorActionSupport.InsuranceVerification"), insureGUARDVerificationPage);
-						addToServiceMenu(Service.INSUREGUARD, verification);
+						addToStartOfServiceMenu(Service.INSUREGUARD, verification);
 					}
+
+					MenuComponent certificates = new MenuComponent(getText("ContractorSubmenu.MenuItem.CertificatesManager"), conInsureGUARDPage);
+					addToStartOfServiceMenu(Service.INSUREGUARD, certificates);
+
+					addToStartOfServiceMenu(Service.INSUREGUARD, summary);
 				}
 			}
 		} catch (Exception exception) {
