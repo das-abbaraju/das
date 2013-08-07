@@ -1133,7 +1133,7 @@ div.blockDialog {
 }
 
 #debug-menu span:after {
-	content: " OFF";	
+	content: " OFF";
 }
 
 .debugging #debug-menu span:after {
@@ -1366,7 +1366,7 @@ div.blockDialog {
 .translation-list .suggestTranslation
 {
 	position: absolute;
-	text-decoration: none;	
+	text-decoration: none;
 }
 
 .translation-list .view-mode.view-more
@@ -1598,7 +1598,7 @@ div.blockDialog {
 #userSavePassword .cancel-password
 {
 	float: right;
-	margin-right: 50px;	
+	margin-right: 50px;
 }
 
 /* referral program */
@@ -1618,7 +1618,7 @@ div.blockDialog {
 .referral-program p
 {
 	font-size: 15px;
-	padding: 12px 0px;	
+	padding: 12px 0px;
 }
 
 .ui-datepicker {
@@ -1678,4 +1678,87 @@ div.blockDialog {
 {
     font-weight: normal;
     display: block;
+}
+
+/* Sesssion Timer */
+.session-timeout-notification.alert {
+    background: #FCF3CC;
+    border: 1px solid #E67E1C;
+    color: #E67E1C;
+    display:none;
+    font-size: 13px;
+	left: 0;
+    margin: 0px;
+    padding: 8px 35px 8px 14px;
+	right: 0;
+	position: fixed;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    top: 0px;
+    width: auto;
+    z-index: 99999;
+}
+
+.session-timeout-notification.alert strong,
+.session-timeout-notification.alert b
+{
+    font-weight: bold;
+}
+
+.session-timeout-notification.alert h4
+{
+        color: #e67e1c;
+        font-size: 18px;
+        line-height: 18px;
+}
+
+.session-timeout-notification.alert p
+{
+    padding: 0px;
+}
+
+.session-timeout-notification.alert .close
+{
+    background: transparent;
+    border: 0;
+    color: #000000;
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0;
+    position: relative;
+    right: -21px;
+    text-shadow: 0 1px 0 #ffffff;
+    opacity: 0.2;
+    filter: alpha(opacity=20);
+    -webkit-appearance: none;
+}
+
+.session-timeout-notification.alert .close:hover
+{
+    cursor: pointer;
+    color: #000000;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+    text-decoration: none;
+}
+
+.session-timeout-notification.alert button.close
+{
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    -webkit-appearance: none;
+}
+
+.session-timeout-notification.alert a
+{
+    color: #226396;
+    text-decoration: none;
+}
+
+.session-timeout-notification.alert a:hover
+{
+    color: #73BBE8;
 }

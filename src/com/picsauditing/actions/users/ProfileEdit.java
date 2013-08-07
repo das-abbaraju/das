@@ -47,7 +47,6 @@ public class ProfileEdit extends PicsActionSupport {
 	 * This method needs to be anonymous to prevent the user from redirecting on
 	 * login if the {@link User}'s forcePasswordReset is true.
 	 */
-	@Anonymous
 	public String execute() throws Exception {
 		String loginResult = checkProfileEditLogin();
 

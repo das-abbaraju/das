@@ -749,6 +749,32 @@ body {
     width: 100%;
   }
 }
+/* line 2, ../sass/pics/widgets/pics/_session-timer.scss */
+.session-timeout-notification {
+  display: none;
+  font-size: 13px;
+  line-height: 1;
+  margin: 0px;
+  z-index: 99999;
+}
+/* line 10, ../sass/pics/widgets/pics/_session-timer.scss */
+.session-timeout-notification h4 {
+  color: #e67e1c;
+}
+/* line 15, ../sass/pics/widgets/pics/_session-timer.scss */
+.session-timeout-notification p {
+  margin: 0px;
+}
+/* line 20, ../sass/pics/widgets/pics/_session-timer.scss */
+.session-timeout-notification a {
+  color: #226396;
+  text-decoration: none;
+}
+/* line 26, ../sass/pics/widgets/pics/_session-timer.scss */
+.session-timeout-notification a:hover {
+  color: #73BBE8;
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert {
   background: #fcf3cc;

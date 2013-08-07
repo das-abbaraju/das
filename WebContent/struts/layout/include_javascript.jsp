@@ -5,7 +5,7 @@
 <%--
 Note: 1.7.2 version affects the website in the followings ways, upgrading jquery.ui may effect the following
 
-- Including multiple jquery.ui will break plugins 
+- Including multiple jquery.ui will break plugins
 - UI calendar z-index
 - MySchedule calendar plugin
 
@@ -19,14 +19,15 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 
 <%-- v7 Chart Classes --%>
 <script type="text/javascript" src="v7/js/pics/widget/chart/Chart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/child/BasicChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/child/StackedColumnChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/CustomColorChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/child/flags-chart/FlagsChart.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widget/chart/child/custom-color-chart/child/flags-chart/child/StackedFlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/BasicChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/StackedColumnChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/CustomColorChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/FlagsChart.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widget/chart/_child/custom-color-chart/_child/flags-chart/_child/StackedFlagsChart.js?v=${version}"></script>
 <%-- END v7 Chart Classes --%>
 
 <script src="v7/js/vendor/select2.js?v=${version}"></script>
+<script src="v7/js/pics/widget/session-timer.js?v=${version}"></script>
 <%-- END DO NOT MODIFY --%>
 
 <script type="text/javascript" src="js/main.js?v=${version}"></script>

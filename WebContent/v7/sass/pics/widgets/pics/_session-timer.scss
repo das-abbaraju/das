@@ -1,0 +1,29 @@
+.session-timeout-notification
+{
+    display: none;
+    font-size: 13px;
+    line-height: 1;
+    margin: 0px;
+    z-index: 99999;
+
+    h4
+    {
+        color: #e67e1c;
+    }
+
+    p
+    {
+        margin: 0px;
+    }
+
+    a
+    {
+        color: #226396;
+        text-decoration: none;
+    }
+
+    a:hover
+    {
+        color: #73BBE8;
+    }
+}

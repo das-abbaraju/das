@@ -81,7 +81,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		// Find requested or denied or pending but not active that have been requested,
 		// being careful to excluded those rows which contractor cron corporate rollup created
-		String whereClause = "(gc.createdBy != 1) " +
+		String whereClause = "(gc.createdBy != 1 or gc.createdBy IS NULL) " +
 				"AND (a.status = 'Requested' " +
 					"OR (a.status = 'Declined' AND a.reason IS NOT NULL) " +
 					"OR (a.status = 'Pending' AND a.id IN " +
