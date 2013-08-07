@@ -21,7 +21,7 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
             items: [
                 {
                     boxLabel: PICS.text('Report.execute.booleanFilter.yes'),
-                    inputValue: 'true',
+                    inputValue: 'true'
                 }, {
                     boxLabel: PICS.text('Report.execute.booleanFilter.no'),
                     inputValue: 'false'

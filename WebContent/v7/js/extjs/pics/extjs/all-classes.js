@@ -48058,7 +48058,7 @@ Ext.define('Ext.data.proxy.Server', {
      * @cfg {Number} timeout
      * The number of milliseconds to wait for a response. Defaults to 30000 milliseconds (30 seconds).
      */
-    timeout : 30000,
+    timeout : 60000,
 
     /**
      * @cfg {Object} api
@@ -48668,7 +48668,7 @@ Ext.define('Ext.data.Connection', {
      * @cfg {Number} timeout
      * The timeout in milliseconds to be used for requests.
      */
-    timeout : 30000,
+    timeout : 60000,
 
     /**
      * @cfg {Object} extraParams
@@ -66417,6 +66417,10 @@ Ext.define('PICS.data.ServerCommunication', {
                 
                 // sync
                 report_store.sync({
+                    failure: function (batch, options) {
+                        console.log('here')
+                    },
+
                     callback: function (batch, eOpts) {
                         var operation = batch.operations[batch.current],
                             response = operation.response,
@@ -82825,7 +82829,7 @@ Ext.define('PICS.view.report.filter.base.Boolean', {
             items: [
                 {
                     boxLabel: PICS.text('Report.execute.booleanFilter.yes'),
-                    inputValue: 'true',
+                    inputValue: 'true'
                 }, {
                     boxLabel: PICS.text('Report.execute.booleanFilter.no'),
                     inputValue: 'false'
