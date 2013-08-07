@@ -46,6 +46,7 @@ import com.picsauditing.util.Strings;
  */
 public final class ReportUtil {
 
+    public static final String CATEGORY_KEY_SUFFIX = ".category";
 	public static final String HELP_KEY_SUFFIX = ".help";
 	public static final String REPORT_KEY_PREFIX = "Report.";
 	public static final String REPORT_CATEGORY_KEY_PREFIX = "Report.Category.";
@@ -99,28 +100,6 @@ public final class ReportUtil {
 			}
 
 		}
-	}
-
-	public static Map<String, String> getTranslatedFunctionsForField(Locale locale, DisplayType type) {
-		Map<String, String> translatedFunctions = new TreeMap<String, String>();
-		/*
-		 * for (SqlFunction function : type.getFunctions()) {
-		 * translatedFunctions.put(function.toString(),
-		 * getText("Report.Function." + function.toString(), locale)); }
-		 */
-		return translatedFunctions;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static JSONArray convertTranslatedFunctionstoJson(Map<String, String> map) {
-		JSONArray functionsArray = new JSONArray();
-		for (String key : map.keySet()) {
-			JSONObject translatedFunction = new JSONObject();
-			translatedFunction.put("key", key);
-			translatedFunction.put("value", map.get(key));
-			functionsArray.add(translatedFunction);
-		}
-		return functionsArray;
 	}
 
 	private static void addTranslationLabelsToFilters(Report report, Locale locale) {
@@ -180,142 +159,16 @@ public final class ReportUtil {
 	}
 
 	public static String translateCategory(Field field, Locale locale) {
-		String translatedText = getText(REPORT_CATEGORY_KEY_PREFIX + field.getCategory(), locale);
+        String translatedText = null;
 
-		if (translatedText == null) {
-			translatedText = getText("Report.Category.General", locale);
-		}
+        if (field != null) {
+            translatedText = getText(REPORT_KEY_PREFIX + field.getName() + CATEGORY_KEY_SUFFIX, locale);
+        }
 
-		if (translatedText == null) {
-			translatedText = "?" + field.getCategory();
-		}
+        if (translatedText == null)
+            return getText("Report.Category.General", locale);
 
 		return translatedText;
-	}
-
-	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
-		// Set up
-		Map<String, String> translations = new TreeMap<String, String>();
-		LanguageModel languageModel = SpringUtils.getBean(SpringUtils.LANGUAGE_MODEL);
-		Set<Locale> locales = languageModel.getVisibleLocales();
-		SqlFunction[] methods = SqlFunction.values();
-		String fileName = "Column translations for DR";
-
-		// Excel setup
-		HSSFWorkbook workBook = new HSSFWorkbook();
-
-		HSSFDataFormat df = workBook.createDataFormat();
-		HSSFFont font = workBook.createFont();
-		font.setFontHeightInPoints((short) 12);
-
-		HSSFCellStyle cellStyle = workBook.createCellStyle();
-		cellStyle.setDataFormat(df.getFormat("@"));
-
-		cellStyle.setFont(font);
-
-		HSSFFont headerFont = workBook.createFont();
-		headerFont.setFontHeightInPoints((short) 12);
-		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-
-		HSSFCellStyle headerStyle = workBook.createCellStyle();
-		headerStyle.setFont(headerFont);
-		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-
-		int sheetNumber = 0;
-
-		for (Locale locale : locales) {
-			translations.clear();
-			// get the translations
-			populateTranslationToPrint(translations, allReports, methods, locale);
-
-			// convert to Excel sheet
-			sheetNumber = createExcelSheet(translations, workBook, cellStyle, headerStyle, sheetNumber, locale);
-		}
-
-		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + fileName);
-		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		workBook.write(outstream);
-		outstream.flush();
-		ServletActionContext.getResponse().flushBuffer();
-	}
-
-	private static int createExcelSheet(Map<String, String> translations, HSSFWorkbook workBook,
-			HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
-		HSSFSheet sheet = workBook.createSheet();
-
-		sheet.setDefaultColumnStyle(0, cellStyle);
-		sheet.setDefaultColumnStyle(1, cellStyle);
-		sheet.setDefaultColumnStyle(2, cellStyle);
-
-		workBook.setSheetName(sheetNumber, "DR Translations for " + locale.getDisplayLanguage());
-		sheetNumber++;
-
-		int rowNumber = 0;
-
-		// Add the Column Headers to the top of the report
-		HSSFRow row = sheet.createRow(rowNumber);
-		rowNumber++;
-
-		HSSFCell col1 = row.createCell(0);
-		col1.setCellValue(new HSSFRichTextString("MsgKey"));
-		col1.setCellStyle(headerStyle);
-		HSSFCell col2 = row.createCell(1);
-		col2.setCellValue(new HSSFRichTextString("MsgValue"));
-		col2.setCellStyle(headerStyle);
-		HSSFCell col3 = row.createCell(2);
-		col3.setCellValue(new HSSFRichTextString("Description"));
-		col3.setCellStyle(headerStyle);
-
-		for (String msgKey : translations.keySet()) {
-			String msgValue = translations.get(msgKey);
-
-			row = sheet.createRow(rowNumber);
-			rowNumber++;
-			col1 = row.createCell(0);
-			col1.setCellValue(new HSSFRichTextString(msgKey));
-			col2 = row.createCell(1);
-			col2.setCellValue(new HSSFRichTextString(msgValue));
-		}
-
-		sheet.autoSizeColumn(0);
-		sheet.autoSizeColumn(1);
-		return sheetNumber;
-	}
-
-	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
-			SqlFunction[] methods, Locale locale) {
-		for (Report report : reports) {
-			Map<String, Field> availableFields = ReportModelFactory.build(report.getModelType(),
-					createSuperUserPermissions()).getAvailableFields();
-
-			for (Field field : availableFields.values()) {
-				String category = field.getCategory().toString();
-				String fieldCategoryKey = REPORT_CATEGORY_KEY_PREFIX + category;
-				String fieldKey = REPORT_KEY_PREFIX + field.getName();
-				String fieldHelpKey = fieldKey + HELP_KEY_SUFFIX;
-
-				translations.put(fieldKey, translateLabel(field, locale));
-				translations.put(fieldHelpKey, getText(fieldHelpKey, locale));
-				translations.put(fieldCategoryKey, translateCategory(field, locale));
-			}
-		}
-
-		for (SqlFunction queryMethod : methods) {
-			String fieldSuffixKey = REPORT_FUNCTION_KEY_PREFIX + queryMethod.name();
-			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
-		}
-	}
-
-	private static Permissions createSuperUserPermissions() {
-		Permissions permissions = new Permissions();
-		for (OpPerms opPerm : OpPerms.values()) {
-			UserAccess userAccess = new UserAccess();
-			userAccess.setOpPerm(opPerm);
-			permissions.getPermissions().add(userAccess);
-		}
-		permissions.setAccountType("Corporate");
-		return permissions;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
