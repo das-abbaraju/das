@@ -37,7 +37,9 @@
                         url: "SessionTimeout.action",
                         dataType: 'html',
                         success: function(data, textStatus, jqXHR) {
-                            session.timeout_notification = $.trim(data);
+                            var notification_html = $.trim(data);
+
+                            session.timeout_notification = $(notification_html);
                         }
                     });
                 },
