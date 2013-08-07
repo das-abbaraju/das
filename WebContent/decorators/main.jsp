@@ -45,6 +45,7 @@
 	MenuComponent menu = new MenuComponent();
 	String homePageUrl = "";
 	if (useVersion7Menus) {
+        MenuBuilder.reportUserDAO = SpringUtils.getBean("ReportUserDAO");
 		homePageUrl = MenuBuilder.getHomePage(permissions);
 	} else {
 		menu = PicsMenu.getMenu(permissions);

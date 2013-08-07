@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 
+import com.picsauditing.dao.ReportUserDAO;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +78,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserService userService;
 	@Mock
 	private LanguageModel languageModel;
+    @Mock
+    private ReportUserDAO reportUserDAO;
 
 	private LoginService loginService = new LoginService();
 
@@ -95,7 +98,8 @@ public class LoginControllerTest extends PicsActionTest {
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
 
 		MockitoAnnotations.initMocks(this);
-		loginController = new LoginController();
+        LoginController.reportUserDAO = reportUserDAO;
+        loginController = new LoginController();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
@@ -324,6 +328,7 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.setSwitchToUser(SWITCH_USER_ID);
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
+        when(switchUser.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
 		when(switchUser.getLocale()).thenReturn(Locale.ENGLISH);
 

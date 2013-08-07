@@ -28,6 +28,8 @@ public final class MenuBuilder {
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 	private static TranslationService translationService = TranslationServiceFactory.getTranslationService();
 
+    public static ReportUserDAO reportUserDAO;
+
 	private MenuBuilder() {
 	}
 
@@ -586,7 +588,6 @@ public final class MenuBuilder {
 			return "Home.action";
 		}
 
-        ReportUserDAO reportUserDAO = SpringUtils.getBean("ReportUserDAO");
         List<ReportUser> reportUsers = reportUserDAO.findAllFavorite(permissions.getUserId());
         Report report = null;
 
