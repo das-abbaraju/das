@@ -2,11 +2,13 @@ package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -36,6 +38,9 @@ public class LoginController extends PicsActionSupport {
 	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
+
+    // FOR TESTING ONLY
+    protected static ReportUserDAO reportUserDAO;
 
 	@Autowired
 	private LoginService loginService;
@@ -385,6 +390,7 @@ public class LoginController extends PicsActionSupport {
 				break;
 			case HomePage:
 				if (user.isUsingVersion7Menus()) {
+                    MenuBuilder.reportUserDAO = setReportUserDAO();
 					redirectURL = MenuBuilder.getHomePage(permissions);
 				} else {
 					MenuComponent menu = PicsMenu.getMenu(permissions);
@@ -404,7 +410,7 @@ public class LoginController extends PicsActionSupport {
 		return redirectURL;
 	}
 
-	private String getPreLoginUrl() {
+    private String getPreLoginUrl() {
 		// Find out if the user previously timed out on a page, so we can forward to it if appropriate for the user
 		String urlPreLogin = null;
 		Cookie cookie = CookieSupport.cookieFromRequest(getRequest(), CookieSupport.PRELOGIN_URL_COOKIE_NAME);
@@ -515,4 +521,9 @@ public class LoginController extends PicsActionSupport {
 		this.sessionTimeout = sessionTimeout;
 	}
 
+    public static ReportUserDAO setReportUserDAO() {
+        if (reportUserDAO == null)
+            return SpringUtils.getBean("ReportUserDAO");
+        return reportUserDAO;
+    }
 }
