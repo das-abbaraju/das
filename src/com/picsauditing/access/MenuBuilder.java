@@ -3,6 +3,7 @@ package com.picsauditing.access;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import com.picsauditing.service.i18n.TranslationService;
@@ -576,7 +577,7 @@ public final class MenuBuilder {
 		}
 	}
 
-	public static String getHomePage(MenuComponent menu, Permissions permissions) {
+	public static String getHomePage(Permissions permissions) {
 		if (permissions.isContractor()) {
 			return "ContractorView.action";
 		}
@@ -585,26 +586,20 @@ public final class MenuBuilder {
 			return "Home.action";
 		}
 
-		if (menu == null || menu.getChildren() == null || menu.getChildren().isEmpty()) {
-			return "Home.action";
-		}
+        ReportUserDAO reportUserDAO = SpringUtils.getBean("ReportUserDAO");
+        List<ReportUser> reportUsers = reportUserDAO.findAllFavorite(permissions.getUserId());
+        Report report = null;
 
-		String url = null;
-		for (MenuComponent subMenu : menu.getChildren()) {
-			url = subMenu.getUrl();
-			if (!Strings.isEmpty(url)) {
-				return url;
-			}
+        if (reportUsers != null && !reportUsers.isEmpty()) {
+            report = reportUsers.get(0).getReport();
+        }
 
-			for (MenuComponent subSubMenu : subMenu.getChildren()) {
-				url = subSubMenu.getUrl();
-				if (!Strings.isEmpty(url)) {
-					return url;
-				}
-			}
-		}
-
-		return url;
+        if (report != null) {
+            return "Report.action?report=" + report.getId();
+        }
+        else {
+            return "Reference!reportsManager.action?from=ReportsMenu";
+        }
 	}
 
 	private static String getText(String key) {

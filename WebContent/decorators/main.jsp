@@ -45,8 +45,7 @@
 	MenuComponent menu = new MenuComponent();
 	String homePageUrl = "";
 	if (useVersion7Menus) {
-		menu = MenuBuilder.buildMenubar(permissions);
-		homePageUrl = MenuBuilder.getHomePage(menu, permissions);
+		homePageUrl = MenuBuilder.getHomePage(permissions);
 	} else {
 		menu = PicsMenu.getMenu(permissions);
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);

@@ -3,8 +3,7 @@ package com.picsauditing.access;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -204,7 +203,7 @@ public class LoginController extends PicsActionSupport {
 		doSwitchToUser(switchToUser);
 		username = permissions.getUsername();
 		logSwitchToAttempt(user);
-		return REDIRECT;
+		return setRedirectUrlPostLogin();
 	}
 
 	private void doSwitchToUser(int userID) throws Exception {
@@ -386,8 +385,7 @@ public class LoginController extends PicsActionSupport {
 				break;
 			case HomePage:
 				if (user.isUsingVersion7Menus()) {
-					MenuComponent menu = MenuBuilder.buildMenubar(permissions);
-					redirectURL = MenuBuilder.getHomePage(menu, permissions);
+					redirectURL = MenuBuilder.getHomePage(permissions);
 				} else {
 					MenuComponent menu = PicsMenu.getMenu(permissions);
 					redirectURL = PicsMenu.getHomePage(menu, permissions);
