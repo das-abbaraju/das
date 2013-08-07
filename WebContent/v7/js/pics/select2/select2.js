@@ -1,7 +1,8 @@
+//any element with 'select2' as a class generates a default select2
+//any element with 'select2Min' as a class generates a select2 without the searcn field
 PICS.define('select2.Select2', {
     methods: {
-        render: function () {
-            //select2 is default, select2Min has no search field
+        init: function () {
             var select2Min = $('.select2Min'),
                 select2Default = $('.select2');
 

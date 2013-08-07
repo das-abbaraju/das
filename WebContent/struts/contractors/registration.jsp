@@ -152,6 +152,7 @@
                     <li class="timezone">
                         <label for="contractor_timezone"><s:text name="global.timezone" /></label>
                         <input class="timezone_input" name="contractor.timezone" data-placeholder="<s:text name='Timezone.list.select.header' />"/>
+                        <s:hidden id="registration_requested_timezone" name="contractor.timezone" />
                     </li>
                     <li>
 						<s:textfield name="contractor.name" />

@@ -298,12 +298,10 @@
                 }
 
                 if ($('.Registration-page').length) {
-                    var Timezone = PICS.getClass('timezone.Timezone');
+                    this.updateFieldsRelativeToCountry();
+                    this.bindSelect2EventstoPopover();
 
-                    this.getTimezonesByCountry();
-                    this.renderSelect2Elements();
-
-                    $('.country select').on('change', $.proxy(this.updateFieldsBasedonCountry, this));
+                    $('.country select').on('change', $.proxy(this.updateFieldsRelativeToCountry, this));
                 }
 	        },
 
@@ -313,12 +311,12 @@
                 // Company Info
                 $('[name=language]').children().first().attr('selected','selected');
                 $('[name=dialect]').children().last().attr('selected','selected');
-                $('[name="contractor.timezone"]').children().last().attr('selected','selected');
                 $('[name="contractor.country.isoCode"]').children().first().attr('selected','selected');
+                $('[name="contractor.timezone"]').select2('val', 'America/Los_Angeles')
                 $('[name="contractor.name"]').val("My Company" +  new Date().getTime() );
                 $('[name="contractor.address"]').val("123 Anywhere St");
                 $('[name="contractor.city"]').val("Springfield");
-                $('[name="countrySubdivision"]').children().last().attr('selected','selected');
+                $('[name="countrySubdivision"]').select2('val', 'US-CA')
                 $('[name="contractor.zip"]').val("12345");
 
                 // Contact Info
@@ -375,22 +373,6 @@
                         }
                     }
                 });
-            },
-
-            getTimezonesByCountry: function () {
-                var $country = $('.country select'),
-                    selected_country = $country.val() || '',
-                    Timezone = PICS.getClass('timezone.Timezone');
-
-                Timezone.getTimezones(selected_country);
-            },
-
-            renderSelect2Elements: function () {
-                var select2Elements = PICS.getClass('select2.Select2');
-
-                select2Elements.render();
-
-                this.bindSelect2EventstoPopover();
             },
 
             showBasicModal: function (event) {
@@ -477,18 +459,17 @@
                 });
             },
 
-            updateFieldsBasedonCountry: function (event) {
-                var $country = $(event.target),
-                    selected_country = $country.val(),
-                    Zipcode = PICS.getClass('country.Zipcode');
-
-                this.getTimezonesByCountry();
+            updateFieldsRelativeToCountry: function () {
+                var $country = $('.country select'),
+                    selected_country = $country.val() || '';
 
                 this.updateCountrySubvisions(selected_country);
 
                 this.updatePhoneNumber(selected_country);
 
-                Zipcode.modifyZipcodeDisplay(selected_country, $('.zipcode'));
+                this.updateTimezonesByCountry(selected_country);
+
+                this.updateZipcode(selected_country);
             },
 
             updatePhoneNumber: function (selected_country) {
@@ -499,15 +480,41 @@
                         countryString: selected_country
                     },
                     success: function (data, textStatus, XMLHttpRequest) {
-                        var $pics_phone = $('#pics_phone_number');
+                        var $pics_phone = $('.pics_phone_number');
 
-                        if ($pics_phone.length > 0) {
-                            $pics_phone.html(data.picsPhoneNumber);
-                            $pics_phone.attr("title", data.country);
-                        }
+                        $pics_phone.each(function (index, element) {
+                            $(element).html(data.picsPhoneNumber);
+                            $(element).attr("title", data.country);
+                        });
                     }
                 });
             },
+
+            prefillTimezoneFromRegistrationRequestValue: function () {
+                var $registration_request_timezone = $('#registration_requested_timezone'),
+                    prefilled_timezone = $registration_request_timezone.val();
+
+                if (prefilled_timezone) {
+                    $('input.timezone_input').val(prefilled_timezone);
+                }
+
+                //remove prefilled timezone value to prevent submission of duplicate values
+                $('#registration_requested_timezone').remove();
+            },
+
+            updateTimezonesByCountry: function (selected_country) {
+                var Timezone = PICS.getClass('timezone.Timezone');
+
+                this.prefillTimezoneFromRegistrationRequestValue();
+
+                Timezone.getTimezones(selected_country);
+            },
+
+            updateZipcode: function (selected_country) {
+                var Zipcode = PICS.getClass('country.Zipcode');
+
+                Zipcode.modifyZipcodeDisplay(selected_country, $('.zipcode'));
+            }
 	    }
 	});
 })(jQuery);

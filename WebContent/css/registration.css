@@ -1284,3 +1284,7 @@ footer .footer-menu a {
 .Registration-page .select2-offscreen {
 	display: none;
  }
+
+ .Registration-page input.timezone_input {
+	width: 300px;
+ }
