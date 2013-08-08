@@ -71,6 +71,7 @@ ContractorLastContactedByInsideSalesDate
 ContractorLcCorNotification
 ContractorLcCorPhase
 ContractorMembershipDate
+ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPayingFacilities
@@ -102,5 +103,7 @@ ContractorWorkersCompTypeName
 ContractorWorkersCompWCEachAccidentAnswer
 ContractorWorksAtClientSite
 ContractorWorksForReportingClient
+ContractorWorksPeriodicIn
+ContractorWorksPermanentIn
 DirectTradeName
 TradeName

@@ -79,6 +79,7 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
+ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName
 ContractorProductRisk
@@ -99,5 +100,7 @@ ContractorWorkersCompTypeName
 ContractorWorkersCompWCEachAccidentAnswer
 ContractorWorksAtClientSite
 ContractorWorksForReportingClient
+ContractorWorksPeriodicIn
+ContractorWorksPermanentIn
 DirectTradeName
 TradeName

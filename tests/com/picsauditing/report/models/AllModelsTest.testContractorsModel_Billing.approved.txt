@@ -69,6 +69,7 @@ ContractorInsureGUARD
 ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
+ContractorOfficeIn
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPaymentMethod
@@ -91,5 +92,7 @@ ContractorWorkersCompTypeName
 ContractorWorkersCompWCEachAccidentAnswer
 ContractorWorksAtClientSite
 ContractorWorksForReportingClient
+ContractorWorksPeriodicIn
+ContractorWorksPermanentIn
 DirectTradeName
 TradeName

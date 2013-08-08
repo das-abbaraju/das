@@ -157,6 +157,36 @@ public class ContractorsModel extends AbstractModel {
         supplierDiversity.setRequiredJoin("ContractorPQF");
         fields.put(supplierDiversity.getName().toUpperCase(), supplierDiversity);
 
+        Field worksPeriodicIn = new Field("ContractorWorksPeriodicIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        worksPeriodicIn.setVisible(false);
+        worksPeriodicIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'YesPeriodicWithoutOffice' " +
+                "WHERE aq.uniqueCode IN ");
+        worksPeriodicIn.setSuffixValue("");
+        worksPeriodicIn.setRequiredJoin("ContractorPQF");
+        fields.put(worksPeriodicIn.getName().toUpperCase(), worksPeriodicIn);
+
+        Field worksPermanentIn = new Field("ContractorWorksPermanentIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        worksPermanentIn.setVisible(false);
+        worksPermanentIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'Yes' " +
+                "WHERE aq.uniqueCode IN ");
+        worksPermanentIn.setSuffixValue("");
+        worksPermanentIn.setRequiredJoin("ContractorPQF");
+        fields.put(worksPermanentIn.getName().toUpperCase(), worksPermanentIn);
+
+        Field officeIn = new Field("ContractorOfficeIn","ContractorPQF.id",FieldType.CountrySubdivision);
+        officeIn.setVisible(false);
+        officeIn.setPrefixValue("SELECT pd.auditID " +
+                "FROM pqfdata pd " +
+                "JOIN audit_question aq ON pd.questionID = aq.id AND pd.answer = 'YesWithOffice' " +
+                "WHERE aq.uniqueCode IN ");
+        officeIn.setSuffixValue("");
+        officeIn.setRequiredJoin("ContractorPQF");
+        fields.put(officeIn.getName().toUpperCase(), officeIn);
+
         Field GLEachOccurrence = fields.get("ContractorGeneralLiabilityGLEachOccurrenceAnswer".toUpperCase());
         GLEachOccurrence.setType(FieldType.Number);
         GLEachOccurrence.setDatabaseColumnName("REPLACE(" + GLEachOccurrence.getDatabaseColumnName() + ",',','')");
