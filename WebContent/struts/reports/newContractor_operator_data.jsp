@@ -15,7 +15,7 @@
 </s:if>
 <s:else>
     <div style="padding: 5px;">
-        <a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
+        <a href="RequestNewContractorAccount.action" class="add" id="AddRegistrationRequest">
         	<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
         </a>
         <a
