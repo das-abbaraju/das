@@ -22,6 +22,15 @@ public class ReportResults {
         this.columns = columns;
     }
 
+    public int getReportId() {
+        if (columns.isEmpty()) {
+            return 0;
+        }
+        else {
+            return columns.get(0).getReport().getId();
+        }
+    }
+
     @Deprecated
     public void addRow(ReportRow row) {
         rows.add(row);

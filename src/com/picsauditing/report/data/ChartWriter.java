@@ -11,8 +11,14 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import static com.picsauditing.report.ReportJson.FILTER_OPERATOR;
+import static com.picsauditing.report.ReportJson.FILTER_VALUE;
+import static com.picsauditing.report.ReportJson.REPORT_ELEMENT_FIELD_ID;
 
 public class ChartWriter {
     private static final Logger logger = LoggerFactory.getLogger(ChartWriter.class);
@@ -88,12 +94,16 @@ public class ChartWriter {
 
             for (Column column : reportResults.getColumns()) {
                 ReportCell cell = row.getCellByColumn(column);
+
+                setDrillDownURL(row);
                 cellsJson.add(createCellJson(cell, column.getField().getPreTranslation(), column.getField().getPostTranslation()));
 
                 if (cell.getColumn().getDisplayType() == DisplayType.Flag) {
                     String p = cell.getValue() + "-flag";
                     styleJson.put("style_type", p.toLowerCase());
                 }
+
+                styleJson.put("url", column.getField().getUrl());
             }
             JSONObject rowJson = new JSONObject();
             rowJson.put("c", cellsJson);
@@ -108,6 +118,7 @@ public class ChartWriter {
 
     private JSONObject createCellJson(ReportCell cell, String prefix, String suffix) {
         JSONObject json = new JSONObject();
+
         switch (cell.getColumn().getDisplayType()) {
             case Number:
                 json.put("v", Double.parseDouble(cell.getValue().toString()));
@@ -116,6 +127,12 @@ public class ChartWriter {
                 String text = cell.getValue().toString();
                 text = applyPrefixSuffix(prefix, suffix, text);
                 json.put("v", getText(text,locale));
+        }
+
+        if (cell.getColumn().getField().getUrl() != null) {
+            JSONObject styleJson = new JSONObject();
+            styleJson.put("url", cell.getColumn().getField().getUrl());
+            json.put("p", styleJson);
         }
 
         return json;
@@ -134,5 +151,30 @@ public class ChartWriter {
 
     protected static String getText(String key, Locale locale) {
         return i18nCache.getText(key, locale);
+    }
+
+    private void setDrillDownURL(ReportRow row) {
+        List <Column> aggregateColumns = new ArrayList<Column>();
+        JSONArray dynamicParameters = new JSONArray();
+
+        for (Column column : reportResults.getColumns()) {
+            ReportCell cell = row.getCellByColumn(column);
+            if (column.getSqlFunction() != null && column.getSqlFunction().isAggregate()) {
+                aggregateColumns.add(column);
+            }
+            else {
+                JSONObject param = new JSONObject();
+                param.put(REPORT_ELEMENT_FIELD_ID,column.getName());
+                param.put(FILTER_OPERATOR,column.getField().getFilterType().defaultOperator.toString());
+                param.put(FILTER_VALUE,cell.getValue());
+                dynamicParameters.add(param);
+            }
+        }
+
+        String drillDownURL = "Report.action?report=" + reportResults.getReportId() + "&removeAggregates=true&dynamicParameters=" + dynamicParameters;
+
+        for (Column aggregateColumn : aggregateColumns) {
+            aggregateColumn.getField().setUrl(drillDownURL);
+        }
     }
 }

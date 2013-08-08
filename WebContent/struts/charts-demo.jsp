@@ -50,7 +50,7 @@
                 </p>
             </div>
         </s:if>
-                
+
                 <div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
                     <div class="panel" id="panel<s:property value="widgetID"/>">
                         <div class="panel_header">

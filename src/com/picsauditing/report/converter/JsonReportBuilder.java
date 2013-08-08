@@ -108,17 +108,6 @@ public class JsonReportBuilder {
                 param.put(FILTER_OPERATOR,column.getField().getFilterType().defaultOperator.toString());
                 param.put(FILTER_VALUE,"{" + column.getName() + "}");
                 dynamicParameters.add(param);
-
-//                try {
-//                    Filter dynamicFilter = new Filter();
-//                    dynamicFilter.setField(column.getField());
-//                    dynamicFilter.setName(column.getName());
-//                    dynamicFilter.setOperator(column.getField().getFilterType().defaultOperator);
-//                    dynamicFilter.setValue("{" + column.getName() + "}");
-//                    dynamicParameters.add(filterToJson(dynamicFilter));
-//                } catch (ReportValidationException rve) {
-//                    logger.error(rve.getMessage());
-//                }
             }
         }
 
