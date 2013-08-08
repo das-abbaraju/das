@@ -63,24 +63,19 @@
 			</a>
 		</pics:permission>
 		
-		<s:if test="!contractor.status.requested">
-			<div class="info">
-				<s:if test="contractor.status.active">
-					<s:text name="RequestNewContractor.message.Registered">
-						<s:param>
-							${contractor.name}
-						</s:param>
-						<s:param>
-							<s:date name="contractor.membershipDate" />
-						</s:param>
-					</s:text>
-				</s:if>
-				<s:else>
-					<s:text name="RequestNewContractor.message.RequestClosed" />
-				</s:else>
-			</div>
-		</s:if>
-		
+        <s:if test="contractor.status.active">
+            <div class="info">
+                <s:text name="RequestNewContractor.message.Registered">
+                    <s:param>
+                        ${contractor.name}
+                    </s:param>
+                    <s:param>
+                        <s:date name="contractor.membershipDate" />
+                    </s:param>
+                </s:text>
+            </div>
+        </s:if>
+
 		<s:form action="RequestNewContractorAccount" validate="true" id="request_form">
 			<s:hidden name="contractor" />
 			<s:hidden name="id" />
