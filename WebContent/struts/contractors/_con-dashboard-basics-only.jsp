@@ -35,9 +35,14 @@
 						<s:if test="showLogo">
 							<img class="contractor_logo" src="ContractorLogo.action?id=${id}"/>
 						</s:if>
-						
-						<span id="description">${contractor.descriptionHTML}</span>
-						
+
+                        <s:if test="contractor.description != nulll">
+						    <span id="description">${contractor.descriptionHTML}</span>
+                        </s:if>
+                        <s:if test="contractor.status.pending">
+                            <div class="info"><s:text name="ContractorDashboard.ContractorIsRegistering" /></div>
+                        </s:if>
+
 						<s:if test="!isStringEmpty(contractor.brochureFile)">
 							<p class="web">
 								<strong>
@@ -52,11 +57,11 @@
 								</strong>
 							</p>
 						</s:if>
-						
+
 						<s:if test="contractor.trades.size() > 0">
 							<s:include value="../trades/contractor_trade_cloud.jsp"/>
 						</s:if>
-						
+
 						<div class="clear"></div>
 					</div>
 				</div>
@@ -73,36 +78,36 @@
 					<div class="panel_content">
 						<h4>
 							${contractor.name}
-							
+
 							<s:if test="!isStringEmpty(contractor.dbaName)">
 								<br/>
 								<s:text name="ContractorAccount.dbaName.short" />
 								${contractor.dbaName}
 							</s:if>
 						</h4>
-						
+
 						<p>
 							<s:text name="ContractorAccount.id" />:
 							<strong>${contractor.id}</strong>
 						</p>
-						
+
 						<pics:permission perm="PicsScore">
 							<p>
 								<s:text name="ContractorAccount.score" />:
 								<strong>${contractor.score}</strong>
 							</p>
 						</pics:permission>
-						
+
 						<p>
 							<s:text name="ContractorView.MemberSince" />:
 							<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
 						</p>
-			
+
 						<p>
 							<s:text name="ContractorAccount.type" />:
 							${commaSeparatedContractorTypes}
 						</p>
-						
+
 						<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
 							<p>
 								<s:text name="ContractorView.SubcontractingUnder" />:
@@ -113,12 +118,12 @@
 								</s:iterator>
 							</p>
 						</s:if>
-						
+
 						<div class="clear"></div>
 					</div>
 				</div>
 			</div>
-			
+
 			<%-- Contact Info --%>
 			<div class="panel_placeholder">
 				<div class="panel">
@@ -170,7 +175,7 @@
 								${contractor.country.name}
 							</span>
 						</p>
-						
+
 						<div class="telecommunications">
 							<s:iterator value="contractor.getUsersByRole('ContractorAdmin')" var="contractor_user">
 								<p class="contact">
@@ -184,7 +189,7 @@
 								</p>
 							</s:iterator>
 						</div>
-						
+
 						<div class="clear"></div>
 					</div>
 				</div>
