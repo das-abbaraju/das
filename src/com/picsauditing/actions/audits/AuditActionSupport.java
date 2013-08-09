@@ -366,6 +366,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
+            if (type.getWorkFlow().isUseStateForEdit()) {
+                AuditEditModel model = new AuditEditModel();
+                return model.canEdit(conAudit, permissions);
+            }
 			if (newStatus.isSubmitted()) {
 				return true;
 			}
