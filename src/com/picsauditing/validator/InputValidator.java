@@ -280,7 +280,7 @@ public class InputValidator {
 	}
 
 	public String validateEmail(String email, boolean required) {
-		return validateString(email, required, false, true, true, false, true, false);
+		return validateString(email, required, false, true, false, false, true, false);
 	}
 
 	public String validatePhoneNumber(String phoneNumber) {
